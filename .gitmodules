@@ -1,0 +1,81 @@
+﻿[submodule "apps/shenron"]
+	path = apps/shenron
+	url = https://github.com/aphrody-labs/shenron.git
+	branch = main
+[submodule "apps/rosegriffon"]
+	path = apps/rosegriffon
+	url = https://github.com/aphrody-labs/rosegriffon.git
+	branch = main
+[submodule "packages/ai-triad"]
+	path = packages/ai-triad
+	url = https://github.com/aphrody-dev/src-ai-triad.git
+	branch = main
+[submodule "packages/bun-parity"]
+	path = packages/bun-parity
+	url = https://github.com/aphrody-dev/src-bun-parity.git
+	branch = main
+[submodule "packages/bun-plugins"]
+	path = packages/bun-plugins
+	url = https://github.com/aphrody-dev/src-bun-plugins.git
+	branch = main
+[submodule "packages/chromium-bun"]
+	path = packages/chromium-bun
+	url = https://github.com/aphrody-dev/src-chromium-bun.git
+	branch = main
+[submodule "packages/env-kit"]
+	path = packages/env-kit
+	url = https://github.com/aphrody-dev/src-env-kit.git
+	branch = main
+[submodule "packages/forge"]
+	path = packages/forge
+	url = https://github.com/aphrody-dev/src-forge.git
+	branch = main
+[submodule "packages/google-design"]
+	path = packages/google-design
+	url = https://github.com/aphrody-dev/src-google-design.git
+	branch = main
+[submodule "packages/pi-opencode"]
+	path = packages/pi-opencode
+	url = https://github.com/aphrody-dev/src-pi-opencode.git
+	branch = main
+[submodule "packages/brain"]
+	path = packages/brain
+	url = https://github.com/aphrody-dev/src-brain.git
+	branch = main
+[submodule "crates/bench"]
+	path = crates/bench
+	url = https://github.com/aphrody-dev/src-bench.git
+	branch = main
+[submodule "crates/depot"]
+	path = crates/depot
+	url = https://github.com/aphrody-dev/src-depot.git
+	branch = main
+[submodule "crates/gamescope-rs"]
+	path = crates/gamescope-rs
+	url = https://github.com/aphrody-dev/src-gamescope-rs.git
+	branch = main
+[submodule "crates/ring3-agent"]
+	path = crates/ring3-agent
+	url = https://github.com/aphrody-dev/src-ring3-agent.git
+	branch = main
+[submodule "crates/rust-stack"]
+	path = crates/rust-stack
+	url = https://github.com/aphrody-dev/src-rust-stack.git
+	branch = main
+[submodule "crates/unix"]
+	path = crates/unix
+	url = https://github.com/aphrody-dev/src-unix.git
+	branch = main
+[submodule "crates/wayland"]
+	path = crates/wayland
+	url = https://github.com/aphrody-dev/src-wayland.git
+	branch = main
+[submodule "crates/xtask"]
+	path = crates/xtask
+	url = https://github.com/aphrody-dev/src-xtask.git
+	branch = main
+[submodule "infra"]
+	path = infra
+	url = https://github.com/aphrody-dev/src-infra.git
+	branch = main
+

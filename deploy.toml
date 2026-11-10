@@ -1,0 +1,125 @@
+# =============================================================================
+# Sovereign Multi-Cloud & Self-Hosted Deployment Manifest (`C:\src\deploy.toml`)
+# Engine: `src-deploy` / `dpl` (Go 1.27 + Zig CGO + Rust + Bun v1.4.4 FFI)
+# =============================================================================
+
+[engine]
+module = "sovereign.local/infra"
+cli = "src-deploy"
+shim = "dpl"
+go_version = "1.27.0"
+cshared_dll = "C:/Users/aphro/.local/bin/infra_go.dll"
+oci_spec = "1.1"
+caddyfile_out = "C:/src/infra/generated/Caddyfile"
+plan_out = "C:/src/infra/generated/deploy-plan.json"
+
+[mesh]
+network_cidr = "10.200.77.0/24"
+tunnel_protocol = "MASQUE+WireGuard"
+config_dir = "C:/src/infra/mesh-vn/generated"
+
+[nodes.fr1]
+provider = "ovhcloud"
+public_ip = "51.77.147.152"
+mesh_ip = "10.200.77.1"
+region = "eu-fr"
+role = "primary-eu-production-edge"
+ssh_user = "ubuntu"
+
+[nodes.fr2]
+provider = "ovhcloud"
+public_ip = "51.255.162.6"
+mesh_ip = "10.200.77.3"
+region = "eu-fr"
+role = "eu-ha-replica-postgres-r2-ollama"
+ssh_user = "ubuntu"
+
+[nodes.usa]
+provider = "hostinger"
+public_ip = "72.60.186.43"
+mesh_ip = "10.200.77.5"
+region = "us-google-egress"
+role = "strict-google-gemini-egress-only"
+ssh_user = "root"
+allow_non_google_workloads = false
+
+[cloud]
+cloudflare_account_id = "ca22c1a51a145f919b54afa18d936516"
+gcloud_project = "aphrody"
+gcloud_region = "europe-west1"
+ollama_models = ["qwen3-coder", "deepseek-r1", "gemma4"]
+
+[services.aphrody]
+path = "C:/src/apps/aphrody"
+runtime = "bun-fullstack"
+region = "eu-fr"
+nodes = ["fr1", "fr2"]
+domains = ["aphrody.com", "www.aphrody.com"]
+port = 3000
+blue_port = 13000
+green_port = 23000
+r2_bucket = "aphrody-assets"
+verify_gate = "wck check C:/src/apps/aphrody"
+
+[services.shenron]
+path = "C:/src/apps/shenron"
+runtime = "bun-fullstack"
+region = "eu-fr"
+nodes = ["fr1", "fr2"]
+domains = ["dragonballfr.com", "www.dragonballfr.com", "tv.dragonballfr.com"]
+port = 3100
+blue_port = 13100
+green_port = 23100
+r2_bucket = "shenron-cdn"
+
+[services.rosegriffon]
+path = "C:/src/apps/rosegriffon"
+runtime = "bun-fullstack"
+region = "eu-fr"
+nodes = ["fr1", "fr2"]
+domains = ["rosegriffon.fr", "www.rosegriffon.fr"]
+port = 3320
+blue_port = 13320
+green_port = 23320
+r2_bucket = "rosegriffon-media"
+
+[services.ai-os]
+path = "C:/src/packages/ai-os"
+runtime = "bun-fullstack"
+region = "eu-fr"
+nodes = ["fr1", "fr2"]
+domains = ["ai.aphrody.com"]
+port = 4000
+blue_port = 14000
+green_port = 24000
+
+[services.rust-stack]
+path = "C:/src/crates/depot"
+runtime = "rust-daemon"
+region = "eu-fr"
+nodes = ["fr1", "fr2"]
+domains = ["depot.internal.aphrody.com"]
+port = 4100
+blue_port = 14100
+green_port = 24100
+
+[services.ai-triad]
+path = "C:/src/packages/pi-opencode"
+runtime = "bun-fullstack"
+region = "us-google-egress"
+google_egress = true
+nodes = ["usa", "fr2"]
+domains = ["gemini-egress.internal.aphrody.com", "triad.aphrody.com"]
+port = 4200
+blue_port = 14200
+green_port = 24200
+
+[services.ring3-agent]
+path = "C:/src/crates/ring3-agent"
+runtime = "rust-daemon"
+region = "eu-fr"
+nodes = ["fr2", "fr1"]
+domains = ["r3d.internal.aphrody.com"]
+port = 8080
+blue_port = 18080
+green_port = 28080
