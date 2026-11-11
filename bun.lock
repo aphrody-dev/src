@@ -1,0 +1,154 @@
+{
+  "lockfileVersion": 2,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "@sovereign/monorepo",
+      "devDependencies": {
+        "@types/bun": "latest",
+      },
+    },
+    "infra/ffi-bridge": {
+      "name": "@aphrody/infra-ffi-bridge",
+      "version": "1.27.0",
+      "devDependencies": {
+        "@types/bun": "latest",
+      },
+    },
+    "infra/mesh-vn": {
+      "name": "@aphrody/mesh-vn",
+      "version": "1.0.0",
+      "bin": {
+        "net": "./src/cli.ts",
+      },
+    },
+    "packages/ai-os": {
+      "name": "@aphrody/ai-os",
+      "version": "1.0.0",
+      "bin": {
+        "ai-os": "./src/cli.ts",
+      },
+    },
+    "packages/ai-triad": {
+      "name": "@aphrody/ai-triad",
+      "version": "1.0.0",
+      "bin": {
+        "triad": "./src/cli.ts",
+      },
+    },
+    "packages/brain": {
+      "name": "@aphrody/brain",
+      "version": "0.1.0",
+      "bin": {
+        "brain": "./src/cli.ts",
+      },
+      "devDependencies": {
+        "@types/bun": "^1.4.4",
+      },
+    },
+    "packages/bun-parity": {
+      "name": "@aphrody/bun-parity",
+      "version": "1.0.0",
+      "bin": {
+        "bpt": "./bin/bpt.ts",
+      },
+    },
+    "packages/bun-plugins": {
+      "name": "@aphrody/bun-plugins",
+      "version": "1.0.0",
+    },
+    "packages/chromium-bun": {
+      "name": "@aphrody/chromium-bun",
+      "version": "1.0.0",
+      "devDependencies": {
+        "@types/bun": "latest",
+      },
+    },
+    "packages/env-kit": {
+      "name": "@aphrody/env-kit",
+      "version": "1.0.0",
+      "bin": {
+        "env-kit": "./src/cli.ts",
+      },
+      "devDependencies": {
+        "@types/bun": "latest",
+      },
+    },
+    "packages/forge": {
+      "name": "@aphrody/forge",
+      "version": "1.0.0",
+      "bin": {
+        "frg": "src/cli.ts",
+      },
+    },
+    "packages/google-design": {
+      "name": "@aphrody/google-design",
+      "version": "1.0.0",
+      "bin": {
+        "gds": "./cli.ts",
+      },
+    },
+    "packages/knowledge-engine": {
+      "name": "@aphrody/knowledge-engine",
+      "version": "1.0.0",
+      "bin": {
+        "ske": "./src/cli.ts",
+        "knowledge-engine": "./src/cli.ts",
+      },
+    },
+    "packages/pi-opencode": {
+      "name": "@aphrody/pi-opencode",
+      "version": "1.0.0",
+      "bin": {
+        "pi-opencode": "./src/cli.ts",
+      },
+      "devDependencies": {
+        "@types/bun": "latest",
+      },
+    },
+    "packages/wck": {
+      "name": "@aphrody/wck",
+      "version": "1.0.0",
+      "bin": {
+        "wck": "./src/cli.ts",
+      },
+    },
+  },
+  "packages": {
+    "@aphrody/ai-os": ["@aphrody/ai-os@workspace:packages/ai-os"],
+
+    "@aphrody/ai-triad": ["@aphrody/ai-triad@workspace:packages/ai-triad"],
+
+    "@aphrody/brain": ["@aphrody/brain@workspace:packages/brain"],
+
+    "@aphrody/bun-parity": ["@aphrody/bun-parity@workspace:packages/bun-parity"],
+
+    "@aphrody/bun-plugins": ["@aphrody/bun-plugins@workspace:packages/bun-plugins"],
+
+    "@aphrody/chromium-bun": ["@aphrody/chromium-bun@workspace:packages/chromium-bun"],
+
+    "@aphrody/env-kit": ["@aphrody/env-kit@workspace:packages/env-kit"],
+
+    "@aphrody/forge": ["@aphrody/forge@workspace:packages/forge"],
+
+    "@aphrody/google-design": ["@aphrody/google-design@workspace:packages/google-design"],
+
+    "@aphrody/infra-ffi-bridge": ["@aphrody/infra-ffi-bridge@workspace:infra/ffi-bridge"],
+
+    "@aphrody/knowledge-engine": ["@aphrody/knowledge-engine@workspace:packages/knowledge-engine"],
+
+    "@aphrody/mesh-vn": ["@aphrody/mesh-vn@workspace:infra/mesh-vn"],
+
+    "@aphrody/pi-opencode": ["@aphrody/pi-opencode@workspace:packages/pi-opencode"],
+
+    "@aphrody/wck": ["@aphrody/wck@workspace:packages/wck"],
+
+    "@types/bun": ["@types/bun@1.4.4", "", { "dependencies": { "bun-types": "1.4.4" } }, "sha512-9wkRDXUXK124pEnAutE6n/l18j+i9GC5IAHK8TmX/2nlySETmky0OU6yL5U8pW1AoKh++AN9auDCr647BfurjQ=="],
+
+    "@types/node": ["@types/node@26.6.6", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-MzQj+8Kx3XI40OmUAE6Qoh58ZMNstNNMwn2nfd3qWsfe7nDNSqJNzes4njhz6AHwrSHOffSLwXU6yb474Q4aog=="],
+
+    "bun-types": ["bun-types@1.4.4", "", { "dependencies": { "@types/node": "*", "undici-types": "*" } }, "sha512-yjrJh5oGX7mMPKGd19YXyIjmEuj4G4zNC30bs7PM9Az7NQ3ndF3j6hbeRdvJTRQEhJ/FYQwW0a2moweEi2hMxQ=="],
+
+    "undici-types": ["undici-types@8.9.0", "", {}, "sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg=="],
+  }
+}

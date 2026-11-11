@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-11-10T23:24:04.5775898+01:00",
+  "generated_at": "2026-11-11T02:54:29.7043659+01:00",
   "hardware": {
     "os": "Windows NT (x86_64)",
     "cpu": "Intel Core i7-13700F (Raptor Lake sm_89)",
@@ -26,8 +26,16 @@
   "repositories": {
     "apps/aphrody": {
       "path": "C:\\src\\apps\\aphrody",
-      "url": "local:apps/aphrody",
-      "commit": "16cb7b6d1ccfcca991848a2550d34f9a6f3de1f8",
+      "url": "https://github.com/aphrody-dev/aphrody.git",
+      "commit": "e25db4e6e674a14182249bb9b086badc5ee8d78f",
+      "branch": "main",
+      "engine": "git",
+      "sparse_paths": null
+    },
+    "apps/aphrody-app": {
+      "path": "C:\\src\\apps\\aphrody-app",
+      "url": "https://github.com/aphrody-dev/aphrody-app.git",
+      "commit": "b378ca34836363366a95cefc79e69b6f1def7684",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
@@ -43,14 +51,14 @@
     "apps/shenron": {
       "path": "C:\\src\\apps\\shenron",
       "url": "https://github.com/aphrody-labs/shenron.git",
-      "commit": "4cb6ab25177bc51e77ad4c3a07455468df0aa525",
+      "commit": "b4cc7921582aa3a29624f91c91a03dee6bd73fa3",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
     },
     "crates/bench": {
       "path": "C:\\src\\crates\\bench",
-      "url": "local:crates/bench",
+      "url": "https://github.com/aphrody-dev/bench.git",
       "commit": "59f5a1f046b383980b62af6fd741e546e8402e7b",
       "branch": "main",
       "engine": "git",
@@ -58,23 +66,23 @@
     },
     "crates/depot": {
       "path": "C:\\src\\crates\\depot",
-      "url": "local:crates/depot",
-      "commit": "ac21b4d586c67dcf5c4d0207a58da0a7a1231ad2",
+      "url": "https://github.com/aphrody-dev/depot.git",
+      "commit": "abafd494d3730e7f08e112b396410eecda91c75d",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
     },
     "crates/gamescope-rs": {
       "path": "C:\\src\\crates\\gamescope-rs",
-      "url": "local:crates/gamescope-rs",
-      "commit": "66edc5f7a60c72bbd3ecbec7a395ef3ea35330c2",
+      "url": "https://github.com/aphrody-dev/gamescope-rs.git",
+      "commit": "df5c763bc3afb3a4f153d5ff9f5539ec19eaef0f",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
     },
     "crates/ring3-agent": {
       "path": "C:\\src\\crates\\ring3-agent",
-      "url": "local:crates/ring3-agent",
+      "url": "https://github.com/aphrody-dev/ring3-agent.git",
       "commit": "390e9867117e9c3da9dd943d7f10c9def16a2d0f",
       "branch": "main",
       "engine": "git",
@@ -82,7 +90,7 @@
     },
     "crates/rust-stack": {
       "path": "C:\\src\\crates\\rust-stack",
-      "url": "local:crates/rust-stack",
+      "url": "https://github.com/aphrody-dev/rust-stack.git",
       "commit": "3d254e0e6bdb1153f395955e7c5391061b635daa",
       "branch": "main",
       "engine": "git",
@@ -90,15 +98,15 @@
     },
     "crates/unix": {
       "path": "C:\\src\\crates\\unix",
-      "url": "local:crates/unix",
-      "commit": "6ea10d48063dc611e7c7f0a3deaba1a083c00742",
+      "url": "https://github.com/aphrody-dev/unix.git",
+      "commit": "94037bbb803a2c06a1c8f441b8bc57bbf8c47af5",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
     },
     "crates/wayland": {
       "path": "C:\\src\\crates\\wayland",
-      "url": "local:crates/wayland",
+      "url": "https://github.com/aphrody-dev/wayland.git",
       "commit": "b20b73a28df646b7a8c5c24de9ca9532c5d541b8",
       "branch": "main",
       "engine": "git",
@@ -106,104 +114,120 @@
     },
     "crates/xtask": {
       "path": "C:\\src\\crates\\xtask",
-      "url": "local:crates/xtask",
-      "commit": "bc4051435a83b154672e777f8e2af0e2de916d46",
+      "url": "https://github.com/aphrody-dev/xtask.git",
+      "commit": "490cb416c6529c3044d994ddfeea6b38ec2116ad",
       "branch": "main",
       "engine": "jj",
       "sparse_paths": null
     },
     "infra": {
       "path": "C:\\src\\infra",
-      "url": "local:infra",
-      "commit": "bedd4e89013e901e05a4f82a1c5c4d6b2d946417",
+      "url": "https://github.com/aphrody-dev/infra.git",
+      "commit": "8ff9598203cafd44744628aac4a3faad48565c53",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
     },
     "infra/mesh-vn": {
       "path": "C:\\src\\infra\\mesh-vn",
-      "url": "local:infra/mesh-vn",
-      "commit": "2f81bf77dd867ae52af4e27499a57109a7a17f0d",
+      "url": "https://github.com/aphrody-dev/mesh-vn.git",
+      "commit": "5d850084b702faacd99f4c07d09a4385ee89b8b0",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
     },
     "packages/ai-os": {
       "path": "C:\\src\\packages\\ai-os",
-      "url": "local:packages/ai-os",
-      "commit": "c6307c5ae4faa4b95622f256c93e8dd4386f162a",
+      "url": "https://github.com/aphrody-dev/ai-os.git",
+      "commit": "f0e55f26f434cfc656bdc6a4bd71f4ca1fa82dca",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
     },
     "packages/ai-triad": {
       "path": "C:\\src\\packages\\ai-triad",
-      "url": "local:packages/ai-triad",
-      "commit": "13db507313cff7436720a43aff242f0af457240d",
+      "url": "https://github.com/aphrody-dev/ai-triad.git",
+      "commit": "9021161fb85a0c9f197720681906fbcac87faa00",
+      "branch": "main",
+      "engine": "git",
+      "sparse_paths": null
+    },
+    "packages/brain": {
+      "path": "C:\\src\\packages\\brain",
+      "url": "https://github.com/aphrody-dev/brain.git",
+      "commit": "c4293c5084f0cbb397fe250d94998a8c21325a43",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
     },
     "packages/bun-parity": {
       "path": "C:\\src\\packages\\bun-parity",
-      "url": "local:packages/bun-parity",
-      "commit": "b556e3a0513f2b0b23d7456c87482f94f36ae8d7",
+      "url": "https://github.com/aphrody-dev/bun-parity.git",
+      "commit": "5f5b7d4534065da6db2af76c0d4f522573e04bab",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
     },
     "packages/bun-plugins": {
       "path": "C:\\src\\packages\\bun-plugins",
-      "url": "local:packages/bun-plugins",
-      "commit": "637e6443467fce61c8797287f2f98d8049122823",
+      "url": "https://github.com/aphrody-dev/bun-plugins.git",
+      "commit": "08cd8c2b3169f2e753357c8148315790084695b0",
       "branch": "main",
       "engine": "jj",
       "sparse_paths": null
     },
     "packages/chromium-bun": {
       "path": "C:\\src\\packages\\chromium-bun",
-      "url": "local:packages/chromium-bun",
-      "commit": "46aa5e783c741eb51018c63bd67276a49798a92d",
+      "url": "https://github.com/aphrody-dev/chromium-bun.git",
+      "commit": "4f1146e23c00c54c5cb5150457700bf5af5ad933",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
     },
     "packages/env-kit": {
       "path": "C:\\src\\packages\\env-kit",
-      "url": "local:packages/env-kit",
-      "commit": "0d87b3747a175dae36f3293043b6a2f9a94984f2",
+      "url": "https://github.com/aphrody-dev/env-kit.git",
+      "commit": "55c0c9e649de045b4dd0efe7488e94ca44340f65",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
     },
     "packages/forge": {
       "path": "C:\\src\\packages\\forge",
-      "url": "local:packages/forge",
-      "commit": "6517f9cc67757632bf3eb72b133fc78181b6bc77",
+      "url": "https://github.com/aphrody-dev/forge.git",
+      "commit": "b26ce5fe7126791daeca3cc4ea1740220024f523",
       "branch": "main",
       "engine": "jj",
       "sparse_paths": null
     },
     "packages/google-design": {
       "path": "C:\\src\\packages\\google-design",
-      "url": "local:packages/google-design",
-      "commit": "1dfe6b4195eb029c18077b23ac5ed43877b9c684",
+      "url": "https://github.com/aphrody-dev/google-design.git",
+      "commit": "b63c5a7e8f5b5e0ebeb35055c265b0be5f62bb6c",
+      "branch": "main",
+      "engine": "git",
+      "sparse_paths": null
+    },
+    "packages/knowledge-engine": {
+      "path": "C:\\src\\packages\\knowledge-engine",
+      "url": "https://github.com/aphrody-dev/knowledge-engine.git",
+      "commit": "23f8eecc41ed7c855f83ab748407fc4eece60225",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
     },
     "packages/pi-opencode": {
       "path": "C:\\src\\packages\\pi-opencode",
-      "url": "local:packages/pi-opencode",
-      "commit": "2ea29b8014276562a6bd3ec8add16057ff3d9049",
+      "url": "https://github.com/aphrody-dev/pi-opencode.git",
+      "commit": "a60ef24740b5b7c4bf46788f6f2d90cb4c39c87b",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
     },
     "packages/wck": {
       "path": "C:\\src\\packages\\wck",
-      "url": "local:packages/wck",
-      "commit": "62e63a3cd242f71aa90c105d3d8708b93a810eb9",
+      "url": "https://github.com/aphrody-dev/wck.git",
+      "commit": "6877a13cc532cf8c5893be48b916b4c82ab452bf",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
@@ -344,6 +368,30 @@
       "engine": "git",
       "sparse_paths": null
     },
+    "third_party/dioxus-labs/blitz": {
+      "path": "C:\\src\\third_party\\dioxus-labs\\blitz",
+      "url": "https://github.com/DioxusLabs/blitz.git",
+      "commit": "e65ec76e1568a69ed83cbb4b94797db088607ec4",
+      "branch": "main",
+      "engine": "git",
+      "sparse_paths": null
+    },
+    "third_party/dioxus-labs/parley": {
+      "path": "C:\\src\\third_party\\dioxus-labs\\parley",
+      "url": "https://github.com/linebender/parley.git",
+      "commit": "36f82852f0516108586e9f5a7b0056e872c1f933",
+      "branch": "main",
+      "engine": "git",
+      "sparse_paths": null
+    },
+    "third_party/dioxus-labs/vello": {
+      "path": "C:\\src\\third_party\\dioxus-labs\\vello",
+      "url": "https://github.com/linebender/vello.git",
+      "commit": "6293f3b74498582752c3734888608030dfd8cc0e",
+      "branch": "main",
+      "engine": "git",
+      "sparse_paths": null
+    },
     "third_party/go-ecosystem/caddy": {
       "path": "C:\\src\\third_party\\go-ecosystem\\caddy",
       "url": "https://github.com/caddyserver/caddy.git",
@@ -380,6 +428,62 @@
       "path": "C:\\src\\third_party\\go-ecosystem\\ollama",
       "url": "https://github.com/ollama/ollama.git",
       "commit": "6140670fd1952941041dce5fb3f8932091bc22e4",
+      "branch": "main",
+      "engine": "git",
+      "sparse_paths": null
+    },
+    "third_party/google-ecosystem/android-skills": {
+      "path": "C:\\src\\third_party\\google-ecosystem\\android-skills",
+      "url": "https://github.com/android/skills.git",
+      "commit": "5815d27fda564aa9f07ebdcb5e57ed3e8d904e0d",
+      "branch": "main",
+      "engine": "git",
+      "sparse_paths": null
+    },
+    "third_party/google-ecosystem/design-md": {
+      "path": "C:\\src\\third_party\\google-ecosystem\\design-md",
+      "url": "https://github.com/google-labs-code/design.md.git",
+      "commit": "1ed38aa9dd4451b9039f9aeb9ed1d2579edafddf",
+      "branch": "main",
+      "engine": "git",
+      "sparse_paths": null
+    },
+    "third_party/google-ecosystem/gemini-skills": {
+      "path": "C:\\src\\third_party\\google-ecosystem\\gemini-skills",
+      "url": "https://github.com/google-gemini/gemini-skills.git",
+      "commit": "0f596dbdcbde186e3d418d1279f7f499fe9afbf5",
+      "branch": "main",
+      "engine": "git",
+      "sparse_paths": null
+    },
+    "third_party/google-ecosystem/google-skills": {
+      "path": "C:\\src\\third_party\\google-ecosystem\\google-skills",
+      "url": "https://github.com/google/skills.git",
+      "commit": "64d010629e61e4a7d59fc21e042362f370b5888b",
+      "branch": "main",
+      "engine": "git",
+      "sparse_paths": null
+    },
+    "third_party/google-ecosystem/googleworkspace-cli": {
+      "path": "C:\\src\\third_party\\google-ecosystem\\googleworkspace-cli",
+      "url": "https://github.com/googleworkspace/cli.git",
+      "commit": "cd3697e07eb520056dcf142d0c7439bbb9ba32e9",
+      "branch": "main",
+      "engine": "git",
+      "sparse_paths": null
+    },
+    "third_party/google-ecosystem/jules-skills": {
+      "path": "C:\\src\\third_party\\google-ecosystem\\jules-skills",
+      "url": "https://github.com/google-labs-code/jules-skills.git",
+      "commit": "7a76d3bfcf4258ee437d65b5d12e54b51c395de5",
+      "branch": "main",
+      "engine": "git",
+      "sparse_paths": null
+    },
+    "third_party/google-ecosystem/stitch-skills": {
+      "path": "C:\\src\\third_party\\google-ecosystem\\stitch-skills",
+      "url": "https://github.com/google-labs-code/stitch-skills.git",
+      "commit": "0337446dadde6f8c94210444e2aa9d546126480f",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
@@ -452,6 +556,14 @@
       "engine": "git",
       "sparse_paths": null
     },
+    "third_party/microsoft/FluidFramework": {
+      "path": "C:\\src\\third_party\\microsoft\\FluidFramework",
+      "url": "https://github.com/microsoft/FluidFramework.git",
+      "commit": "99c702811376dc0bddb236a18b4df8bfb471410e",
+      "branch": "main",
+      "engine": "git",
+      "sparse_paths": null
+    },
     "third_party/microsoft/fluentui": {
       "path": "C:\\src\\third_party\\microsoft\\fluentui",
       "url": "https://github.com/microsoft/fluentui.git",
@@ -468,10 +580,18 @@
         "/packages/web-components/"
       ]
     },
+    "third_party/microsoft/webui": {
+      "path": "C:\\src\\third_party\\microsoft\\webui",
+      "url": "https://github.com/microsoft/webui.git",
+      "commit": "30ca60aa4bdc1beab040dae32e1c10e195ec9113",
+      "branch": "main",
+      "engine": "git",
+      "sparse_paths": null
+    },
     "third_party/n2b": {
       "path": "C:\\src\\third_party\\n2b",
       "url": "local:third_party/n2b",
-      "commit": "82b68a2a31ad977d737a315a96f566d5b36471a0",
+      "commit": "cc2a4fd88fd21dbb0311a46ae1434bb8f4d2bc81",
       "branch": "main",
       "engine": "git",
       "sparse_paths": null
@@ -708,6 +828,22 @@
         "/crates/",
         "/packages/turbo-repository/"
       ]
+    },
+    "third_party/wayland-2026/smithay": {
+      "path": "C:\\src\\third_party\\wayland-2026\\smithay",
+      "url": "https://github.com/Smithay/smithay.git",
+      "commit": "3a08ff960e90e5ee472f6195254d02167571f428",
+      "branch": "master",
+      "engine": "git",
+      "sparse_paths": null
+    },
+    "third_party/webmcp": {
+      "path": "C:\\src\\third_party\\webmcp",
+      "url": "https://github.com/webmachinelearning/webmcp.git",
+      "commit": "aa1b51cf61aef6ed849b0e9e732617fd57872757",
+      "branch": "main",
+      "engine": "git",
+      "sparse_paths": null
     },
     "third_party/wgpu": {
       "path": "C:\\src\\third_party\\wgpu",

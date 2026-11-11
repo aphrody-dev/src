@@ -1,4 +1,4 @@
-﻿# Root Workspace Secret Guard (C:\src)
+# Root Workspace Secret Guard (C:\src)
 .env
 .env.*
 !.env.example
@@ -26,6 +26,7 @@ graphify-out/
 !/infra/
 !/.gitignore
 !/.gitmodules
+!/.graphifyignore
 !/.env.example
 !/AGENTS.md
 !/CLAUDE.md
@@ -33,6 +34,7 @@ graphify-out/
 !/README.md
 !/justfile
 !/package.json
+!/bun.lock
 !/install.ps1
 !/install.sh
 !/deploy.ps1
