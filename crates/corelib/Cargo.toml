@@ -1,0 +1,54 @@
+[package]
+name = "sovereign-corelib"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0 OR MIT"
+description = "Unified sovereign core library consolidating GPU, RE, Emulation, and WASM surfaces for Shenron and RoseGriffon"
+authors = ["Aphrody / DeepMind Antigravity"]
+
+[lib]
+name = "corelib"
+crate-type = ["cdylib", "rlib"]
+path = "src/lib.rs"
+
+[features]
+default = ["gpu", "re", "emulation"]
+gpu = ["dep:wgpu", "dep:pollster", "dep:bytemuck"]
+re = ["dep:sha2", "dep:byteorder"]
+emulation = []
+wasm = ["dep:wasm-bindgen", "dep:js-sys", "dep:web-sys", "dep:serde-wasm-bindgen"]
+full = ["gpu", "re", "emulation", "wasm"]
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"
+log = "0.4"
+
+# GPU Surface dependencies
+wgpu = { version = "30.0.0", path = "../../third_party/wgpu/wgpu", optional = true }
+pollster = { version = "0.4", optional = true }
+bytemuck = { version = "1.22", features = ["derive"], optional = true }
+
+# RE Surface dependencies
+sha2 = { version = "0.10", optional = true }
+byteorder = { version = "1.5", optional = true }
+
+# WASM Surface dependencies
+wasm-bindgen = { version = "0.2.130", optional = true }
+js-sys = { version = "0.3.107", optional = true }
+web-sys = { version = "0.3.107", optional = true }
+serde-wasm-bindgen = { version = "0.6", optional = true }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+memmap2 = "0.9"
+
+[dev-dependencies]
+tempfile = "3.17"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"

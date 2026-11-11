@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-11-11T10:49:01.2780505+01:00",
+  "generated_at": "2026-11-11T11:53:57.9532806+01:00",
   "hardware": {
     "os": "Windows NT (x86_64)",
     "cpu": "Intel Core i7-13700F (Raptor Lake sm_89)",
@@ -26,7 +26,7 @@
     "zig": "0.17.0"
   },
   "pillars": {
-    "git_superproject_commit": "c981f30b6af3010843de8ef6251345a34faf1f1f",
+    "git_superproject_commit": "1e449ec3ec86e60a29ad49b86369e4bb48d0b682",
     "chromium_src_commit": "4c7244a405d326e284710231ff609168dceb9044",
     "linux_kernel_commit": "7475ea8b58616b33c04afb976cf0fbaad9dd63fb",
     "aosp_manifest_commit": "1ed30a827f1156dc831083e6cf999d6bd9deae18"
@@ -67,7 +67,7 @@
     "apps/rosegriffon": {
       "path": "C:\\src\\apps\\rosegriffon",
       "url": "https://github.com/aphrody-labs/rosegriffon.git",
-      "commit": "3f626b20efb2077da4bf47b6576138958cd43b4f",
+      "commit": "35249094faefda1e978e602662d4227462cd813f",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -116,7 +116,7 @@
     "crates/depot": {
       "path": "C:\\src\\crates\\depot",
       "url": "https://github.com/aphrody-dev/depot.git",
-      "commit": "e278142820f0796a6b0cd790c3806d05febdbeea",
+      "commit": "a448c16a7628b1a2d1f02abf2a99875fa8360b9a",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -320,7 +320,7 @@
     "packages/bun-plugins": {
       "path": "C:\\src\\packages\\bun-plugins",
       "url": "https://github.com/aphrody-dev/bun-plugins.git",
-      "commit": "08cd8c2b3169f2e753357c8148315790084695b0",
+      "commit": "25fe633ed587dd3f3ca67031061bda0e17c4cf3a",
       "branch": "main",
       "engine": "jj",
       "pillar": "git",
@@ -368,7 +368,7 @@
     "packages/forge": {
       "path": "C:\\src\\packages\\forge",
       "url": "https://github.com/aphrody-dev/forge.git",
-      "commit": "66211fd2930ee5dfceb20331a2b80b0f9009b355",
+      "commit": "ccc59e212dc128399d779453153604c8cbe86eca",
       "branch": "main",
       "engine": "jj",
       "pillar": "git",

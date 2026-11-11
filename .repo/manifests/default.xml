@@ -14,10 +14,10 @@
 
   <project path="apps/aphrody" name="aphrody" remote="aphrody" revision="278050d3b77734c210a2cda2beca235606f67f48" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="apps/aphrody-app" name="aphrody-app" remote="aphrody" revision="b378ca34836363366a95cefc79e69b6f1def7684" upstream="main" groups="aosp,pdk,sovereign" />
-  <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="3f626b20efb2077da4bf47b6576138958cd43b4f" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="35249094faefda1e978e602662d4227462cd813f" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="apps/shenron" name="shenron" remote="aphrody-labs" revision="46f1f542c61503d39d5d91a9a444292178370bfb" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/bench" name="bench" remote="aphrody" revision="a3c7c1168ccbce3fc468d13489284080292bb98a" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="crates/depot" name="depot" remote="aphrody" revision="e278142820f0796a6b0cd790c3806d05febdbeea" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="crates/depot" name="depot" remote="aphrody" revision="a448c16a7628b1a2d1f02abf2a99875fa8360b9a" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/gamescope-rs" name="gamescope-rs" remote="aphrody" revision="7a77c8da4678043a7ce71015892c83a04f6d1a9e" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/ring3-agent" name="ring3-agent" remote="aphrody" revision="390e9867117e9c3da9dd943d7f10c9def16a2d0f" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/rust-stack" name="rust-stack" remote="aphrody" revision="a3b765d44ddb024fe675b746be81787d34f73a07" upstream="main" groups="monorepo,first-party,sovereign" />
@@ -30,10 +30,10 @@
   <project path="packages/ai-triad" name="ai-triad" remote="aphrody" revision="21561066f849fe42574ce618aee1e2805087dad7" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/brain" name="brain" remote="aphrody" revision="c4293c5084f0cbb397fe250d94998a8c21325a43" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/bun-parity" name="bun-parity" remote="aphrody" revision="5f5b7d4534065da6db2af76c0d4f522573e04bab" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/bun-plugins" name="bun-plugins" remote="aphrody" revision="08cd8c2b3169f2e753357c8148315790084695b0" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/bun-plugins" name="bun-plugins" remote="aphrody" revision="25fe633ed587dd3f3ca67031061bda0e17c4cf3a" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/chromium-bun" name="chromium-bun" remote="aphrody" revision="4f1146e23c00c54c5cb5150457700bf5af5ad933" upstream="main" groups="chromium,browser,sovereign" />
   <project path="packages/env-kit" name="env-kit" remote="aphrody" revision="08aec5505ea450511fd2a2766ff2c700290cc2ba" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/forge" name="forge" remote="aphrody" revision="66211fd2930ee5dfceb20331a2b80b0f9009b355" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/forge" name="forge" remote="aphrody" revision="ccc59e212dc128399d779453153604c8cbe86eca" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/google-design" name="google-design" remote="aphrody" revision="b63c5a7e8f5b5e0ebeb35055c265b0be5f62bb6c" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/knowledge-engine" name="knowledge-engine" remote="aphrody" revision="ef4a8464fb0f5215efe6912107ed592246463b66" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/pi-opencode" name="pi-opencode" remote="aphrody" revision="a60ef24740b5b7c4bf46788f6f2d90cb4c39c87b" upstream="main" groups="monorepo,first-party,sovereign" />
