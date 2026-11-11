@@ -1,0 +1,21 @@
+{
+  "name": "@aphrody/yolo",
+  "version": "1.0.0",
+  "description": "Reproducible Fullstack Aphrody Bun v1.4.4 Framework, AST Module Graph, Material Design 3 Stack, Aphrody Pets & 3-VPS Search Inspector",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "yolo": "./server.ts"
+  },
+  "scripts": {
+    "build": "bun run build.ts",
+    "build:aot": "bun build --compile --minify --bytecode server.ts --outfile C:/Users/aphro/.local/bin/yolo.exe",
+    "dev": "bun run server.ts",
+    "start": "bun run server.ts",
+    "test": "bun test",
+    "fmt": "bun fmt",
+    "check": "bun check"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

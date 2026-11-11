@@ -193,10 +193,13 @@ export function readCurrentAgyMode(
     try {
       return JSON.parse(readFileSync(statePath, "utf8")) as AgyModeState;
     } catch {
-      // fallback to minimal baseline
+      // fallback to global full-design fullstack default
     }
   }
-  return switchAgyMode("minimal", { statePath });
+  return switchAgyMode("fullstack", {
+    domainFocus: "full-design-pro-max",
+    statePath,
+  });
 }
 
 // ============================================================================

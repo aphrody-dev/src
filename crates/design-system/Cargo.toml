@@ -6,6 +6,8 @@ members = [
     "crates/aphrody-design-emit",
     "crates/aphrody-design-layout",
     "crates/aphrody-design-icons",
+    "crates/aphrody-design-sprite-sheet",
+    "crates/aphrody-design-identity",
 ]
 
 [workspace.package]

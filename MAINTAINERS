@@ -104,11 +104,10 @@ T:	git https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
 T:	git https://github.com/aphrody-dev/unix.git
 T:	quilt docs/patches/
 F:	MAINTAINERS
-F:	crates/awesome-posix-discovery/
 F:	crates/unix/
 F:	docs/linux-kernel-story/
 F:	docs/patches/
-F:	packages/kernel-crawler/
+F:	packages/knowledge-engine/
 F:	third_party/archlinux/
 F:	third_party/cachyos/
 F:	third_party/linux/

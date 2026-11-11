@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Unreal Engine .uasset package summary parser
+// Unreal Engine .uasset FPackageFileSummary & FNameEntrySerialized Table Parser
 
 export const PACKAGE_FILE_TAG = 0x9E2A83C1;
 
@@ -66,4 +66,45 @@ export function parseUAssetSummary(buffer: Uint8Array): UAssetSummary {
     importCount,
     importOffset,
   };
+}
+
+/**
+ * Parse the serialized FName string table (`FNameEntrySerialized[]`) at `summary.nameOffset`.
+ */
+export function parseUAssetNameTable(
+  buffer: Uint8Array,
+  nameOffset: number,
+  nameCount: number,
+  hasCasePreservingHashes = true,
+): string[] {
+  const view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+  const names: string[] = [];
+  let cursor = nameOffset;
+
+  for (let i = 0; i < nameCount && cursor + 4 <= buffer.length; i++) {
+    const rawLen = view.getInt32(cursor, true);
+    cursor += 4;
+    let str = "";
+    if (rawLen > 0) {
+      const slice = buffer.subarray(cursor, cursor + rawLen);
+      const end = slice[slice.length - 1] === 0 ? slice.length - 1 : slice.length;
+      str = new TextDecoder("utf-8").decode(slice.subarray(0, end));
+      cursor += rawLen;
+    } else if (rawLen < 0) {
+      const byteLen = -rawLen * 2;
+      const slice = buffer.subarray(cursor, cursor + byteLen);
+      const end =
+        slice.length >= 2 && slice[slice.length - 2] === 0 && slice[slice.length - 1] === 0
+          ? slice.length - 2
+          : slice.length;
+      str = new TextDecoder("utf-16le").decode(slice.subarray(0, end));
+      cursor += byteLen;
+    }
+    if (hasCasePreservingHashes && cursor + 4 <= buffer.length) {
+      cursor += 4; // NonCasePreservingHash (u16) + CasePreservingHash (u16)
+    }
+    names.push(str);
+  }
+
+  return names;
 }

@@ -21,9 +21,9 @@
   <project path="crates/gamescope-rs" name="gamescope-rs" remote="aphrody" revision="7a77c8da4678043a7ce71015892c83a04f6d1a9e" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/ring3-agent" name="ring3-agent" remote="aphrody" revision="390e9867117e9c3da9dd943d7f10c9def16a2d0f" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/rust-stack" name="rust-stack" remote="aphrody" revision="098565de91e6182646c0ab6085d5919bc0d84ae7" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="crates/unix" name="unix" remote="aphrody" revision="b2e6fa0f722c73699c9ae72301d23740802c2f47" upstream="main" groups="kernel,gki,distro,sovereign" />
+  <project path="crates/unix" name="unix" remote="aphrody" revision="61d29aab5b7edfbe149c91c23b79ef0786976dfb" upstream="main" groups="kernel,gki,distro,sovereign" />
   <project path="crates/wayland" name="wayland" remote="aphrody" revision="891e89c87f29c9df9e1ca0e90047045fcd38f528" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="crates/xtask" name="xtask" remote="aphrody" revision="67f7a6f994a51e18cef9fcdcc74a3a9d47e8271d" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="crates/xtask" name="xtask" remote="aphrody" revision="84ace1bd8d3b2b5038b98bc0990eb0ae65a5b992" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="infra" name="infra" remote="aphrody" revision="46f7fee90279a9b605096c4f5cd655b97b4341e3" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="infra/mesh-vn" name="mesh-vn" remote="aphrody" revision="5d850084b702faacd99f4c07d09a4385ee89b8b0" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/ai-os" name="ai-os" remote="aphrody" revision="da1999e304a812fc2eba24b49d3f9a800a2eccd8" upstream="main" groups="monorepo,first-party,sovereign" />
@@ -32,10 +32,10 @@
   <project path="packages/bun-parity" name="bun-parity" remote="aphrody" revision="c80e20e28be618a8551ec3749d692ce35ad16603" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/bun-plugins" name="bun-plugins" remote="aphrody" revision="25fe633ed587dd3f3ca67031061bda0e17c4cf3a" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/chromium-bun" name="chromium-bun" remote="aphrody" revision="ac774946b5ce6b542aeea703ef37e48425c699c5" upstream="main" groups="chromium,browser,sovereign" />
-  <project path="packages/env-kit" name="env-kit" remote="aphrody" revision="855ea30846e2ea60363646eebecc22802e1a70fd" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/env-kit" name="env-kit" remote="aphrody" revision="bfbc5d6e775f93b06aeab20caaefd1acd147003f" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/forge" name="forge" remote="aphrody" revision="ccc59e212dc128399d779453153604c8cbe86eca" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/google-design" name="google-design" remote="aphrody" revision="ce9bd60a97528a030c1746237f7d1405011155cc" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/knowledge-engine" name="knowledge-engine" remote="aphrody" revision="ef4a8464fb0f5215efe6912107ed592246463b66" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/knowledge-engine" name="knowledge-engine" remote="aphrody" revision="7322c91afd85299e469dafd095a155bb817ad83b" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/pi-opencode" name="pi-opencode" remote="aphrody" revision="0941f906af4dc8d4c3e71dfb1ecbad5836af3b42" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/wck" name="wck" remote="aphrody" revision="b4c4ecb8b7bf22a680493e7a4ae35657d4862bad" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="third_party/agent-browser" name="agent-browser" remote="aphrody" revision="d129226078e0fc8ee5dec48fbc96a46df5d0aafd" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />

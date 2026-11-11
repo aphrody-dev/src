@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-11-11T12:45:16.3218607+01:00",
+  "generated_at": "2026-11-11T13:23:33.3019358+01:00",
   "hardware": {
     "os": "Windows NT (x86_64)",
     "cpu": "Intel Core i7-13700F (Raptor Lake sm_89)",
@@ -26,7 +26,7 @@
     "zig": "0.17.0"
   },
   "pillars": {
-    "git_superproject_commit": "2397dc0b18077557c8d127bd5c8f7f966b87dcdd",
+    "git_superproject_commit": "1a8ab6d96e71ca3af9550d1c07d8dcdaca0fe410",
     "chromium_src_commit": "4c7244a405d326e284710231ff609168dceb9044",
     "linux_kernel_commit": "7475ea8b58616b33c04afb976cf0fbaad9dd63fb",
     "aosp_manifest_commit": "1ed30a827f1156dc831083e6cf999d6bd9deae18"
@@ -180,7 +180,7 @@
     "crates/unix": {
       "path": "C:\\src\\crates\\unix",
       "url": "https://github.com/aphrody-dev/unix.git",
-      "commit": "b2e6fa0f722c73699c9ae72301d23740802c2f47",
+      "commit": "61d29aab5b7edfbe149c91c23b79ef0786976dfb",
       "branch": "main",
       "engine": "git",
       "pillar": "linux-kernel",
@@ -212,7 +212,7 @@
     "crates/xtask": {
       "path": "C:\\src\\crates\\xtask",
       "url": "https://github.com/aphrody-dev/xtask.git",
-      "commit": "67f7a6f994a51e18cef9fcdcc74a3a9d47e8271d",
+      "commit": "84ace1bd8d3b2b5038b98bc0990eb0ae65a5b992",
       "branch": "main",
       "engine": "jj",
       "pillar": "git",
@@ -352,7 +352,7 @@
     "packages/env-kit": {
       "path": "C:\\src\\packages\\env-kit",
       "url": "https://github.com/aphrody-dev/env-kit.git",
-      "commit": "855ea30846e2ea60363646eebecc22802e1a70fd",
+      "commit": "bfbc5d6e775f93b06aeab20caaefd1acd147003f",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -400,7 +400,7 @@
     "packages/knowledge-engine": {
       "path": "C:\\src\\packages\\knowledge-engine",
       "url": "https://github.com/aphrody-dev/knowledge-engine.git",
-      "commit": "ef4a8464fb0f5215efe6912107ed592246463b66",
+      "commit": "7322c91afd85299e469dafd095a155bb817ad83b",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
