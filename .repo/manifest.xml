@@ -15,7 +15,7 @@
   <project path="apps/aphrody" name="aphrody" remote="aphrody" revision="278050d3b77734c210a2cda2beca235606f67f48" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="apps/aphrody-app" name="aphrody-app" remote="aphrody" revision="b378ca34836363366a95cefc79e69b6f1def7684" upstream="main" groups="aosp,pdk,sovereign" />
   <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="0eb274317ab384e057957fe2d7071dff174a4882" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="apps/shenron" name="shenron" remote="aphrody-labs" revision="c32a9886a13fc637b571735d467859d2cd7a0472" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="apps/shenron" name="shenron" remote="aphrody-labs" revision="e07b40ee99b0292d709edb8df51dd0a798ea0c0a" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/bench" name="bench" remote="aphrody" revision="a3c7c1168ccbce3fc468d13489284080292bb98a" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/depot" name="depot" remote="aphrody" revision="a448c16a7628b1a2d1f02abf2a99875fa8360b9a" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/gamescope-rs" name="gamescope-rs" remote="aphrody" revision="7a77c8da4678043a7ce71015892c83a04f6d1a9e" upstream="main" groups="monorepo,first-party,sovereign" />

@@ -23,7 +23,7 @@ deps = {
   'apps/aphrody': 'https://github.com/aphrody-dev/aphrody.git@278050d3b77734c210a2cda2beca235606f67f48',
   'apps/aphrody-app': 'https://github.com/aphrody-dev/aphrody-app.git@b378ca34836363366a95cefc79e69b6f1def7684',
   'apps/rosegriffon': 'https://github.com/aphrody-labs/rosegriffon.git@0eb274317ab384e057957fe2d7071dff174a4882',
-  'apps/shenron': 'https://github.com/aphrody-labs/shenron.git@c32a9886a13fc637b571735d467859d2cd7a0472',
+  'apps/shenron': 'https://github.com/aphrody-labs/shenron.git@e07b40ee99b0292d709edb8df51dd0a798ea0c0a',
   'crates/bench': 'https://github.com/aphrody-dev/bench.git@a3c7c1168ccbce3fc468d13489284080292bb98a',
   'crates/depot': 'https://github.com/aphrody-dev/depot.git@a448c16a7628b1a2d1f02abf2a99875fa8360b9a',
   'crates/gamescope-rs': 'https://github.com/aphrody-dev/gamescope-rs.git@7a77c8da4678043a7ce71015892c83a04f6d1a9e',
