@@ -14,30 +14,30 @@
 
   <project path="apps/aphrody" name="aphrody" remote="aphrody" revision="278050d3b77734c210a2cda2beca235606f67f48" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="apps/aphrody-app" name="aphrody-app" remote="aphrody" revision="b378ca34836363366a95cefc79e69b6f1def7684" upstream="main" groups="aosp,pdk,sovereign" />
-  <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="35249094faefda1e978e602662d4227462cd813f" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="apps/shenron" name="shenron" remote="aphrody-labs" revision="46f1f542c61503d39d5d91a9a444292178370bfb" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="f885be1ad73497ebf762e0c57c72a82e2d029a41" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="apps/shenron" name="shenron" remote="aphrody-labs" revision="6821d07ea83e553019456e4579b1f7cba5d479f2" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/bench" name="bench" remote="aphrody" revision="a3c7c1168ccbce3fc468d13489284080292bb98a" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/depot" name="depot" remote="aphrody" revision="a448c16a7628b1a2d1f02abf2a99875fa8360b9a" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/gamescope-rs" name="gamescope-rs" remote="aphrody" revision="7a77c8da4678043a7ce71015892c83a04f6d1a9e" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/ring3-agent" name="ring3-agent" remote="aphrody" revision="390e9867117e9c3da9dd943d7f10c9def16a2d0f" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/rust-stack" name="rust-stack" remote="aphrody" revision="a3b765d44ddb024fe675b746be81787d34f73a07" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="crates/unix" name="unix" remote="aphrody" revision="7584c837f4bdbcdce66cbe1d972ac50da6eaad34" upstream="main" groups="kernel,gki,distro,sovereign" />
-  <project path="crates/wayland" name="wayland" remote="aphrody" revision="b20b73a28df646b7a8c5c24de9ca9532c5d541b8" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="crates/unix" name="unix" remote="aphrody" revision="b2e6fa0f722c73699c9ae72301d23740802c2f47" upstream="main" groups="kernel,gki,distro,sovereign" />
+  <project path="crates/wayland" name="wayland" remote="aphrody" revision="891e89c87f29c9df9e1ca0e90047045fcd38f528" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/xtask" name="xtask" remote="aphrody" revision="67f7a6f994a51e18cef9fcdcc74a3a9d47e8271d" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="infra" name="infra" remote="aphrody" revision="4bf98e6a7bb252df0ed200fb7dce6b68ccac8ba4" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="infra" name="infra" remote="aphrody" revision="46f7fee90279a9b605096c4f5cd655b97b4341e3" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="infra/mesh-vn" name="mesh-vn" remote="aphrody" revision="5d850084b702faacd99f4c07d09a4385ee89b8b0" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/ai-os" name="ai-os" remote="aphrody" revision="18d61199d08a24e418778041e30cb38193039ede" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/ai-triad" name="ai-triad" remote="aphrody" revision="21561066f849fe42574ce618aee1e2805087dad7" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/brain" name="brain" remote="aphrody" revision="c4293c5084f0cbb397fe250d94998a8c21325a43" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/bun-parity" name="bun-parity" remote="aphrody" revision="5f5b7d4534065da6db2af76c0d4f522573e04bab" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/ai-os" name="ai-os" remote="aphrody" revision="da1999e304a812fc2eba24b49d3f9a800a2eccd8" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/ai-triad" name="ai-triad" remote="aphrody" revision="95575713577973f577f157946beb3c4205e774e1" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/brain" name="brain" remote="aphrody" revision="ddff926efb1b1bbb97fc7b70bc2a3653d301194c" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/bun-parity" name="bun-parity" remote="aphrody" revision="c80e20e28be618a8551ec3749d692ce35ad16603" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/bun-plugins" name="bun-plugins" remote="aphrody" revision="25fe633ed587dd3f3ca67031061bda0e17c4cf3a" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/chromium-bun" name="chromium-bun" remote="aphrody" revision="4f1146e23c00c54c5cb5150457700bf5af5ad933" upstream="main" groups="chromium,browser,sovereign" />
-  <project path="packages/env-kit" name="env-kit" remote="aphrody" revision="08aec5505ea450511fd2a2766ff2c700290cc2ba" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/chromium-bun" name="chromium-bun" remote="aphrody" revision="ac774946b5ce6b542aeea703ef37e48425c699c5" upstream="main" groups="chromium,browser,sovereign" />
+  <project path="packages/env-kit" name="env-kit" remote="aphrody" revision="855ea30846e2ea60363646eebecc22802e1a70fd" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/forge" name="forge" remote="aphrody" revision="ccc59e212dc128399d779453153604c8cbe86eca" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/google-design" name="google-design" remote="aphrody" revision="b63c5a7e8f5b5e0ebeb35055c265b0be5f62bb6c" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/google-design" name="google-design" remote="aphrody" revision="2c2f611e1b129ff746db23e9b357dc1491a36e45" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/knowledge-engine" name="knowledge-engine" remote="aphrody" revision="ef4a8464fb0f5215efe6912107ed592246463b66" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/pi-opencode" name="pi-opencode" remote="aphrody" revision="a60ef24740b5b7c4bf46788f6f2d90cb4c39c87b" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/wck" name="wck" remote="aphrody" revision="6877a13cc532cf8c5893be48b916b4c82ab452bf" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/pi-opencode" name="pi-opencode" remote="aphrody" revision="0941f906af4dc8d4c3e71dfb1ecbad5836af3b42" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/wck" name="wck" remote="aphrody" revision="b4c4ecb8b7bf22a680493e7a4ae35657d4862bad" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="third_party/agent-browser" name="agent-browser" remote="aphrody" revision="d129226078e0fc8ee5dec48fbc96a46df5d0aafd" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/agent-desktop" name="agent-desktop" remote="aphrody" revision="8e8dd7cbefe6d4421a0147aee0aad78dc6ace2b4" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/ai-ecosystem/antigravity-sdk-python" name="google-antigravity/antigravity-sdk-python" remote="github" revision="75ba22bd00afae2f46393ff31f30c3f0df52982f" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
