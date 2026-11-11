@@ -41,3 +41,5 @@ graphify-out/
 !/deploy.sh
 !/deploy.toml
 !/src.lock.json
+!/.gitlab-ci.yml
+!/cloudbuild.yaml
