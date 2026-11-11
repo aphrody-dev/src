@@ -1,0 +1,88 @@
+---
+title: "Concurrency and Synchronization: The Big Kernel Lock, Spinlocks, and RCU"
+description: "How Linux conquered multi-core systems: SMP scalability, the elimination of the Big Kernel Lock (BKL), and Paul McKenney's Read-Copy Update (RCU)."
+tags: ["linux", "kernel", "concurrency", "smp", "bkl", "spinlocks", "rcu", "multicore"]
+chapter: 8
+order: 8
+---
+
+# Concurrency and Synchronization: The Big Kernel Lock, Spinlocks, and RCU
+
+## 1. The Multi-Core Challenge: From Uniprocessor to 1,024-Core SMP
+
+Linux was originally engineered strictly for a single uniprocessor Intel 80386. In uniprocessor kernels:
+- Mutual exclusion inside Ring 0 is achieved simply by disabling local CPU interrupts (`cli`) around critical sections and re-enabling them (`sti`).
+- Because only one CPU core exists, disabling interrupts prevents preemptive thread switches.
+
+In 1996, Linux 2.0 introduced Symmetric Multi-Processing (**SMP**) support for dual-Pentium motherboards. However, disabling interrupts on CPU 0 does not stop CPU 1 from executing kernel code simultaneously. Two processors modifying the same linked list concurrently corrupt memory pointers instantly.
+
+---
+
+## 2. The Era of the Big Kernel Lock (BKL)
+
+To achieve fast time-to-market for SMP, Linux 2.0 introduced a global coarse-grained lock: the **Big Kernel Lock** (BKL), implemented via `lock_kernel()` and `unlock_kernel()`.
+
+```
+                    CPU 0                                    CPU 1
+  +---------------------------------------+  +---------------------------------------+
+  | User application enters sys_read()    |  | User application enters sys_write()   |
+  | Acquires Big Kernel Lock (BKL)        |  | Attempts lock_kernel()                |
+  | Reading disk blocks...                |  | BLOCKED! Spun in tight loop...        |
+  | Critical section executes             |  | Waiting for CPU 0 to finish           |
+  | unlock_kernel()                       |  | Acquires BKL and proceeds             |
+  +---------------------------------------+  +---------------------------------------+
+```
+
+### 2.1 The Architectural Flaw of BKL
+1. **Total Serial Execution**: Only one CPU core could execute inside the kernel at any given time.
+2. **Recursive and Sleeping Lock**: A task holding BKL could sleep during an I/O wait; the kernel released the lock automatically and reacquired it upon wake-up, leading to intricate race conditions and high latency spikes.
+3. **Scaling Collapse**: On a 4-way or 8-way SMP system, CPUs spent 70% of their cycles spinning on the BKL rather than executing productive code.
+
+### 2.2 The Great BKL Extermination (Linux 2.6 to 2.6.39)
+Led by Ingo Molnar, Thomas Gleixner, Arnd Bergmann, and Linus Torvalds, the kernel community spent over a decade dismantling the BKL:
+- Replaced global locks with fine-grained per-subsystem spinlocks, per-inode mutexes, and per-CPU runqueues.
+- In **Linux 2.6.39** (May 2011), the final `lock_kernel()` reference was removed from the tree, and the BKL was formally declared dead.
+
+---
+
+## 3. Kernel Synchronization Primitives
+
+Modern Linux provides an array of synchronization primitives tailored to latency and sleep requirements:
+
+| Primitive | Context Permitted | Mechanism | Re-entrancy | Use Case |
+| :--- | :--- | :--- | :--- | :--- |
+| **Spinlock** (`spinlock_t`) | Interrupt & Process | Busy-wait (atomic test-and-set) | Non-recursive | Microsecond critical sections, IRQ handlers |
+| **Mutex** (`struct mutex`) | Process Context Only | Sleeps task via wait queues | Non-recursive | Long operations, I/O waits, memory allocation |
+| **rwlock** (`rwlock_t`) | Process & Interrupt | Multiple readers, single writer | Non-recursive | Read-heavy structures (mostly superseded by RCU) |
+| **Atomic** (`atomic_t`) | Any Context | Hardware atomic instructions (`LOCK CMPXCHG`) | N/A | Reference counters, statistics |
+| **RCU** | Any Context | Lockless readers, deferred reclamation | Re-entrant | Read-mostly data structures (routing, dentries) |
+
+---
+
+## 4. Read-Copy Update (RCU): Paul McKenney's Masterpiece
+
+Traditional reader-writer locks (`rwlock_t`) suffer from cache-line bouncing: every reader must atomically increment a counter in shared memory, causing cache invalidations across hundreds of CPU cores.
+
+**Read-Copy Update (RCU)**, championed by **Paul E. McKenney**, solves this by eliminating all locking, atomic operations, and memory barriers from the read path.
+
+```
+Time ---------------------------------------------------------------------------------------->
+[Reader 1]   rcu_read_lock() ---- Read Node A (Old) ----------------- rcu_read_unlock()
+                                                                       (Grace Period Ends)
+                                                                               |
+[Writer]     1. Allocate Node A' (Copy)                                        |
+             2. Modify Node A' in memory                                       |
+             3. rcu_assign_pointer(ptr, Node A')  (smp_store_release)          |
+             4. call_rcu() / synchronize_rcu() -------------------------------> kfree(Node A)
+                                                                               (Safe to free!)
+                                                                               
+[Reader 2]                     rcu_read_lock() ---- Read Node A' (New) -------- rcu_read_unlock()
+```
+
+### 4.1 The Three Core Steps of RCU
+1. **Read**: Readers invoke `rcu_read_lock()` and `rcu_read_unlock()`. On non-preemptible kernels, these are **zero-overhead compiler barriers** (`barrier()`). Readers dereference pointers using `rcu_dereference()` and never block or write to shared cache lines.
+2. **Copy and Update**: When a writer wants to update an element, it duplicates the struct, updates the copy, and atomically updates the pointer using `rcu_assign_pointer()`. Existing readers continue viewing the old structure safely.
+3. **Reclaim (The Grace Period)**: The old structure cannot be freed immediately because active readers may still be reading it. The writer waits for a **Grace Period**—a period during which every CPU core on the system has undergone at least one context switch (a quiescent state). Once all pre-existing readers complete, `kfree()` safely reclaims the old node.
+
+### 4.2 Impact on Real-World Scale
+Without RCU, the Linux network routing table (`fib_lookup`) and VFS directory cache (`dcache`) could not scale to millions of requests per second on 128-core cloud instances. RCU is recognized as one of the most significant computer science contributions born in the Linux kernel.

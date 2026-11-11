@@ -1,0 +1,93 @@
+---
+title: "The Golden Rule: 'We Do Not Break Userspace'"
+description: "Linus Torvalds' absolute ABI stability directive, the sacred boundary between kernel space and userland, and why internal kernel ABIs remain unstable."
+tags: ["linux", "kernel", "abi", "userspace", "torvalds-rules", "systems-engineering"]
+chapter: 6
+order: 6
+---
+
+# The Golden Rule: "We Do Not Break Userspace"
+
+## 1. The Directive That Built the Modern World
+
+In software engineering, backwards compatibility is often treated as a secondary feature or discarded across major version boundaries. In the Linux kernel, one rule stands absolute above all design aesthetics, algorithmic elegance, clean code dogmas, and performance refactorings:
+
+> **"WE DO NOT BREAK USERSPACE!"**
+> — Linus Torvalds
+
+If a change in the Linux kernel causes a user program that previously worked to crash, hang, misbehave, or return an unexpected error code, that change is considered a **kernel regression and a bug**, regardless of how buggy, invalid, or technically incorrect the user program was.
+
+The patch causing the regression will be reverted immediately upon confirmation.
+
+```
+       +-----------------------------------------------------------+
+       |                  USERSPACE (Ring 3)                       |
+       |  glibc / musl, systemd, bun, chrome, proprietary bin,     |
+       |  binary compiled in 1995 on a 486 running Slackware       |
+       +-----------------------------------------------------------+
+                                    |
+                 =======================================
+                 SACRED UNBREAKABLE BOUNDARY: SYSCALL / ABI
+                 =======================================
+                                    |
+       +-----------------------------------------------------------+
+       |                  KERNEL SPACE (Ring 0)                    |
+       |  Virtual Memory, Schedulers, Filesystems, Device Drivers  |
+       |  (Internal APIs: EXPORT_SYMBOL, headers change daily)     |
+       +-----------------------------------------------------------+
+```
+
+---
+
+## 2. Linus's Philosophy: Pragmatism Over Theoretical Purity
+
+In multiple famous LKML emails over the decades, Linus Torvalds has defended this principle against kernel developers who argued that userspace was using an API "wrongly" or relying on undocumented behavior:
+
+> *"The kernel's job is to run user programs. If a user program stops working, it is by definition a bug in the kernel. I do not care if the program was written by an idiot who misunderstood the documentation. If it worked yesterday and doesn't work today with a new kernel, the new kernel is broken."*
+
+### Why This Directive Mattered Economically:
+1. **User Confidence**: IT administrators, enterprise corporations, and consumers could upgrade their kernel to gain security patches, driver support, and hardware compatibility without fearing that their mission-critical proprietary binaries would break.
+2. **Elimination of Version Lock**: On systems like Unix or Windows where certain userspace subsystems break across releases, users refuse to upgrade. Linux users routinely run modern 6.x kernels with 20-year-old legacy root filesystems.
+3. **Decoupling of System Lifecycles**: Application developers do not need to coordinate with kernel release cycles.
+
+---
+
+## 3. The Dual Nature: Stable System Call ABI vs. Unstable Internal KAPI
+
+It is critical to distinguish between the two boundaries in the Linux kernel:
+
+```
++------------------------------------+------------------------------------+
+| The Kernel-Userspace ABI           | The In-Kernel KAPI / Driver API   |
++------------------------------------+------------------------------------+
+| Boundary: User Space <-> Kernel    | Boundary: Core Kernel <-> Driver   |
+| System calls, ioctl numbers, sysfs | EXPORT_SYMBOL_GPL, struct defs     |
+| Guarantee: 100% Permanently Stable | Guarantee: NEVER STABLE            |
+| Code compiled 30 years ago works   | Internal interfaces refactored     |
+| on Linux 6.x without recompiling   | fearlessly at any commit           |
++------------------------------------+------------------------------------+
+```
+
+### Why Linux Refuses an In-Kernel Driver ABI
+Operating systems like Windows NT maintain a strict Binary Driver Interface (WDM, KMDF) allowing vendors to ship binary drivers (`.sys`) that work across multiple OS versions.
+
+Linux deliberately rejects this model (as documented in `Documentation/process/stable-api-nonsense.rst` by Greg Kroah-Hartman):
+1. **Prevents Bit-Rot**: If an internal subsystem needs an overhaul (e.g. converting from spinlocks to mutexes, or adding lockless RCU traversal), kernel developers can update all drivers in the tree simultaneously in one patch series.
+2. **Eliminates Shims and Workarounds**: Kernel code does not carry hundreds of dead layers to maintain ABI compatibility for out-of-tree binary drivers.
+3. **Forces Upstreaming**: Hardware vendors are compelled to contribute their drivers directly into the upstream kernel tree if they want them to work across future kernel updates.
+
+---
+
+## 4. Famous Case Studies
+
+### 4.1 The Mauro Carvalho Chehab / PulseAudio `ioctl` Confrontation
+During the Linux 3.8-rc1 development cycle, a patch in `drivers/media/v4l2-core/` altered an `ioctl` return code from `-EINVAL` to `-ENOENT`. This broke PulseAudio and KDE media apps during sound initialization. When subsystem maintainer Mauro Carvalho Chehab suggested that PulseAudio had buggy error handling, Linus intervened with his most famous LKML directive:
+> *"Mauro, SHUT THE FUCK UP! It's a bug alright - in the kernel. How long have you been a maintainer? And you still haven't learnt the first rule of kernel maintenance? If a change results in user programs breaking, it's a bug in the kernel. We never EVER blame the user programs... WE DO NOT BREAK USERSPACE!"*
+The patch was promptly reverted.
+
+### 4.2 `/proc` and `/sys` Parsing
+Developers often consider the textual formatting of `/proc` and `/sys` to be informational. However, when userspace utilities (such as `procps`, `top`, or `udev`) parse these files using specific string matches or column indices, altering the whitespace or field order breaks userspace. The kernel considers even whitespace changes in established `/proc` files to be ABI violations if it causes standard utilities to fail.
+
+### 4.3 `clone3` and the glibc/Docker Seccomp Filter Fiasco
+When the new `clone3()` system call was added, older versions of Docker had hardcoded seccomp filters that returned `EPERM` instead of `ENOSYS` for unknown syscalls. Glibc attempted to use `clone3()` and fell back only on `ENOSYS`. Because Docker returned `EPERM`, glibc crashed applications inside containers.
+Although Docker's seccomp filter configuration was objectively flawed, the kernel community spent significant engineering effort ensuring compatibility and establishing strict testing guidelines for new syscall introductions.

@@ -1,0 +1,93 @@
+---
+title: "Kernel.org: The Global Infrastructure Powering Linux Releases"
+description: "The history, architecture, git.kernel.org mirrors, mirrorbrain, and security hardening of the Linux Kernel Archives."
+tags: ["linux", "kernel", "kernelorg", "infrastructure", "git", "cdn", "security"]
+chapter: 4
+order: 4
+---
+
+# Kernel.org: The Global Infrastructure Powering Linux Releases
+
+## 1. Origins: From nic.funet.fi to Transmeta and ISC (1991–2002)
+
+When Linux was first released in September 1991, it lived on an FTP server in Espoo, Finland: `nic.funet.fi` (Finnish University and Research Network), managed by Ari Lemmke. Lemmke named the directory `/pub/OS/Linux`, coining the official name "Linux" when Linus originally contemplated calling it "Freax" (a portmanteau of *Free*, *Freak*, and *x*).
+
+As download traffic surged into gigabytes per day, universities began mirroring the tree. In 1997, **Peter Anvin** (H. Peter Anvin) registered `kernel.org` to establish a dedicated, non-academic home for the official Linux Kernel Archives.
+
+Initial hosting was supported by the **Internet Software Consortium (ISC)** and later **Transmeta Corporation**, where Linus Torvalds worked from 1997 to 2003 developing x86 code-morphing software.
+
+```
+       [Developer Push / Maintainer Git Trees]
+                          |
+                          v
+         +----------------------------------+
+         |      gitolite.kernel.org         |  (Strict SSH access,
+         |      Master Git Repository       |   YubiKey 2FA, PGP keys)
+         +----------------------------------+
+                          |
+                          | Fastly & Global Anycast Tier
+                          v
+   +----------------------------------------------+
+   |           Global CDN / Edge Caching          |
+   |          (Fastly + Regional Tier 1s)         |
+   +----------------------------------------------+
+         /                |                 \
+        v                 v                  v
+ [Europe Edge]    [Americas Edge]     [Asia-Pac Edge]
+        |                 |                  |
+        +-----------------+------------------+
+                          |
+                          v
+   [Tens of Millions of git fetch / git clone / tarball requests]
+```
+
+---
+
+## 2. The 2011 Security Breach and Complete Re-Architecture
+
+In August 2011, system administrators discovered that several servers within the `kernel.org` cluster had been compromised via stolen credentials. An attacker had obtained root access on multiple infrastructure nodes.
+
+### 2.1 The Security Response
+Led by kernel.org systems administrator John Hawley ("warthog9") and H. Peter Anvin, joined in late 2011 by **Konstantin Ryabitsev** (Lead Systems Administrator for the Linux Foundation) and the kernel security team:
+1. **Source Code Integrity Verified**: Because Git uses cryptographic SHA-1 hashes linking every commit to its ancestral tree, Linus and subsystem maintainers could mathematically verify that **not a single line of kernel code had been altered**. If an attacker had modified any byte, the commit hash and tree hashes would have broken.
+2. **Cluster Teardown and Rebuild**: The entire physical and virtual cluster was wiped down to bare metal.
+3. **Hardened Architecture Introduced**:
+   - Compulsory Hardware 2FA (YubiKeys) for all maintainers pushing to `git.kernel.org`.
+   - Ephemeral virtualized build and distribution machines.
+   - Elimination of interactive shell access on production distribution nodes.
+   - PGP/GPG Web of Trust requirement: all tags and tarballs signed by Linus Torvalds or Greg Kroah-Hartman with offline master keys.
+
+---
+
+## 3. Git.kernel.org Architecture and Scaling
+
+Today, `git.kernel.org` hosts hundreds of separate subsystem repositories:
+- `torvalds/linux.git` (Linus Torvalds' upstream master tree).
+- `stable/linux.git` (Greg Kroah-Hartman & Sasha Levin's stable and LTS trees).
+- `netdev/net-next.git` (Networking subsystem).
+- `tip/tip.git` (x86, scheduler, locking, RCU).
+- Subsystem maintainer worktrees (ARM, RISC-V, DRM graphics, Btrfs, XFS, etc.).
+
+### 3.1 Scaling Repositories with Grokmirror and Public-Inbox
+Serving hundreds of gigabytes of Git history to millions of developers across the world required specialized engineering:
+- **Grokmirror**: A tool developed by Konstantin Ryabitsev that reads Git manifests, tracks ref changes, and synchronizes mirror servers incrementally via JSON metadata files, reducing sync overhead from CPU-heavy `git-fetch` to simple HTTPS range requests.
+- **Git Alternate Object Directories**: All clones on `git.kernel.org` share common historical Git objects via `/var/lib/git/alternates`, avoiding petabytes of duplicated disk storage across different subsystem forks.
+- **Public-Inbox and lore.kernel.org**: In 2018, Kernel.org replaced legacy mailing list archives with **lore.kernel.org**, a modern, decentralized, Git-backed email archiving engine created by Eric Wong. Every email sent to LKML is stored as a Git commit with an SHA-1, allowing developers to clone the entire history of Linux discussions via `git clone https://lore.kernel.org/all`.
+
+---
+
+## 4. The Linux Foundation Governance
+
+In 2007, the **Open Source Development Labs (OSDL)** merged with the **Free Standards Group** to form the **Linux Foundation**.
+- **Role**: Provides the non-profit corporate umbrella, financial backing, and legal defense for the Linux kernel and Linus Torvalds.
+- **Fellowship**: Linus Torvalds and Greg Kroah-Hartman are Linux Foundation Fellows, allowing them to remain completely independent of any individual corporate vendor (e.g. Google, Red Hat, Microsoft, Intel).
+- **Trademarks**: The trademark "Linux" is held by Linus Torvalds and managed by the Linux Mark Institute.
+
+---
+
+## 5. Security and Release Integrity: `b4` and Attestation
+
+In recent years, kernel patch workflows have transitioned to **`b4`**, an open-source tool designed by Konstantin Ryabitsev:
+- Automates fetching patch series from `lore.kernel.org`.
+- Verifies DKIM signatures on emails and cryptographic PGP signatures on patches.
+- Applies patches cleanly to local Git working trees while retaining full attribution and reviewer trailers (`Reviewed-by:`, `Acked-by:`).

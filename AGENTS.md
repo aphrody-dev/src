@@ -7,9 +7,10 @@ Compatible with **Google Antigravity (`agy`)**, **OpenAI Codex (`codex`)**, **An
 `C:\src` enforces a strict POSIX/Chromium/Kernel hierarchy separating sovereign first-party code from upstream vendor trees:
 
 - [`C:\src\apps\`](file:///C:/src/apps) — Generalist production platforms (`aphrody`, `aphrody-app`, `shenron`, `rosegriffon`).
-- [`C:\src\packages\`](file:///C:/src/packages) — Bun v1.4.4 Full-Rust Workspace packages (`ai-os`, `agy`, `ai-triad`, `brain`, `knowledge-engine`, `pi-opencode`, `env-kit`, `google-design`, `wck`, `bun-parity`, `chromium-bun`, `forge`, `bun-plugins`).
-- [`C:\src\crates\`](file:///C:/src/crates) — Rust 2024 Systems, Desktop & WSLg/Kernel crates (`rust-stack`, `ring3-agent`, `depot`, `xtask`, `wayland`, `gamescope-rs`, `unix`, `bench`).
+- [`C:\src\packages\`](file:///C:/src/packages) — Bun v1.4.4 Full-Rust Workspace packages (`ai-os`, `agy`, `ai-triad`, `brain`, `knowledge-engine`, `pi-opencode`, `env-kit`, `google-design`, `wck`, `bun-parity`, `chromium-bun`, `forge`, `bun-plugins`, `kernel-crawler`).
+- [`C:\src\crates\`](file:///C:/src/crates) — Rust 2024 Systems, Desktop & WSLg/Kernel crates (`rust-stack`, `ring3-agent`, `depot`, `xtask`, `wayland`, `gamescope-rs`, `unix`, `bench`, `awesome-posix-discovery`).
 - [`C:\src\infra\`](file:///C:/src/infra) — Go 1.27 + Cloudflare + Docker/OCI + GitLab + Google Cloud + Stalwart Mail + WireGuard/MASQUE One-Click Deploy Engine (`src-deploy`, `infra_go.dll`, `mesh-vn`, `gcloud`, `gitlab`, `mail`, `ffi-bridge`).
+- [`C:\src\tools\`](file:///C:/src/tools) — Reproducible Monorepo Architecture, Domain-Purity & Hygiene Gate (`archguard`).
 - [`C:\src\third_party\`](file:///C:/src/third_party) — Upstream vendor checkouts (`linux`, `chromium`, `bun`, `omacom`, `cachyos`, `archlinux`, `design-ecosystem`, `google-ecosystem`, `depot_tools`, `labs`, `ai-ecosystem`, `rust-ecosystem`, `go-ecosystem`, `dioxus`, `taffy`, `wgpu`, `winit`, `zed`).
 
 ## 2. Single AI Product Ownership & Anti-AI-Slop Design-First Gate
@@ -29,4 +30,5 @@ Managed via `env-kit accounts` with isolated `gcloud` named configurations shari
 - **Sacred Host Userspace**: Never modify `C:\Windows\System32` or host OS directories. Install userland CLIs and shared libraries (`.exe`, `.dll`, `.cmd`) exclusively in `C:\Users\aphro\.local\bin`.
 - **Bun v1.4.4 Full-Rust Native First**: Use `bun fmt`, `bun check`, `bun test`, `bun:sqlite`, `Bun.SQL`, `bun:ffi`, and `bun build --compile` with zero unnecessary npm dependencies.
 - **Tri-Forge Synchronization (`frg`)**: Keep repositories synchronized across **GitHub** (`aphrody-dev`), **GitLab** (`gitlab.com/aphrody-dev` & `git.aphrody.com`), and **Google Git** (GCP `aphrody` Developer Connect / Source Repos).
+- **Domain Purity (`archguard check --strict`)**: `C:\src\crates\*` is strictly pure Rust 2024 / native code (zero `.ts`/`.js`/npm files); `C:\src\packages\*` is strictly `@aphrody/*` Bun v1.4.4 packages (zero root `Cargo.toml`/`go.mod`); enforced deterministically by [`C:\src\tools\archguard`](file:///C:/src/tools/archguard).
 - **Secret Hygiene (`C:\src\.env`) & Zero Emojis**: Never print, log, or commit raw secret values from `C:\src\.env` (only `.env.example` may be committed). Strictly zero emojis in code, assets, Markdown, or commits.

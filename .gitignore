@@ -19,15 +19,22 @@ graphify-out/
 # Allowlist: the root repo is the manifest of the monorepo (units are submodules, upstreams are pinned in src.lock.json)
 /*
 !/.agents/
+!/.repo/
+!/.repo/manifests/
+!/.repo/manifest.xml
 !/docs/
 !/apps/
 !/packages/
 !/crates/
 !/infra/
+!/tools/
 !/.gitignore
+!/.gitattributes
 !/.gitmodules
 !/.graphifyignore
 !/.env.example
+!/DEPS
+!/MAINTAINERS
 !/AGENTS.md
 !/CLAUDE.md
 !/GEMINI.md

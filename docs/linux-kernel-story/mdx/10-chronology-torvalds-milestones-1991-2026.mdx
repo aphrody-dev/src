@@ -1,0 +1,73 @@
+---
+title: "The Linux Torvalds Chronology and Major Milestones (1991–2026)"
+description: "Comprehensive release-by-release historical timeline of the Linux kernel, major milestones, architectural shifts, and Linus Torvalds' career."
+tags: ["linux", "kernel", "chronology", "timeline", "milestones", "torvalds-biography"]
+chapter: 10
+order: 10
+---
+
+# The Linux Torvalds Chronology and Major Milestones (1991–2026)
+
+## 1. Complete Release Chronology & Key Milestones
+
+| Year | Version | Key Architectural Milestones & Engineering Breakthroughs | Linus Torvalds Context |
+| :--- | :--- | :--- | :--- |
+| **1991** | **0.01 – 0.02** | Initial releases on `nic.funet.fi`. Written strictly for 80386 protected mode. Demand paging, COW, Minix fs, GCC 1.40 ported (full self-hosting achieved in 0.11 on Dec 8, 1991). | Student at Univ of Helsinki; announced on `comp.os.minix`. |
+| **1992** | **0.12 – 0.95** | Tanenbaum-Torvalds debate. Swapping to disk added. Ext filesystem introduced to replace Minix limits. GPLv2 license adopted. | Linus switches license from custom non-commercial to GNU GPLv2. |
+| **1994** | **1.0.0** | First official stable release. TCP/IP BSD-compatible networking stack, Ext2 filesystem, dynamic buffer cache. | Released at Univ of Helsinki computer science auditorium. |
+| **1995** | **1.2.0** | Initial multi-architecture support: DEC Alpha (64-bit!), SPARC, MIPS. IP firewalling. | Proved Linux was not permanently tied to Intel x86. |
+| **1996** | **2.0.0** | Symmetric Multi-Processing (SMP) via Big Kernel Lock (BKL). Memory management overhauled. Tux the Penguin adopted as mascot. | Linux becomes viable for enterprise multi-CPU server hardware. |
+| **1999** | **2.2.0** | IPv6 support, UltraSPARC support, read-only UFS/HFS, SLAB allocator introduced. | Linux recognized as primary threat to proprietary Unix. |
+| **2001** | **2.4.0 – 2.4.15** | USB support, PCMCIA, Logical Volume Manager (LVM), Ext3 journaling filesystem (merged in 2.4.15), raw I/O, PAE (up to 64GB RAM on 32-bit x86). | Adopted by major enterprise vendors (IBM, HP, Dell). |
+| **2003** | **2.6.0** | Massive rewrite: Ingo Molnar $O(1)$ scheduler, preemption in kernel (`CONFIG_PREEMPT`), Native POSIX Thread Library (NPTL), sysfs, ALSA. | Linus leaves Transmeta to work full-time at OSDL / Linux Foundation. |
+| **2005** | **2.6.12** | **BitKeeper crisis occurs.** Linus writes **Git** in 14 days; Linux kernel source history migrated permanently to Git repository. | The creation of Git revolutionizes all software development. |
+| **2007** | **2.6.21 – 2.6.23** | Tickless kernel (`NO_HZ` in 2.6.21). Completely Fair Scheduler (CFS) replaces $O(1)$ in 2.6.23. SLUB allocator replaces SLAB as default. | Continuous improvement in interactive desktop responsiveness. |
+| **2008** | **2.6.27** | Android initial mainline merges begin; Btrfs initial development; kernel tracing (`ftrace`). | Linux begins its journey to dominating mobile smartphones. |
+| **2011** | **2.6.39** | **Final eradication of the Big Kernel Lock (BKL)** after 15 years of fine-grained locking refactoring. | Scalability barrier permanently eliminated. |
+| **2011** | **3.0.0** | 20th Anniversary release. Linus simplifies versioning scheme (drops the 2.6.x 3rd number). Cleaned out obsolete architectures. | Over 15 million lines of code. |
+| **2014** | **3.18** | Extended Berkeley Packet Filter (**eBPF**) merged; programmable kernel-space observability and networking begins. | Alexei Starovoitov and Daniel Borkmann revolutionize in-kernel VM. |
+| **2015** | **4.0.0** | Kernel live patching (`kpatch`/`kgraft`) without rebooting. Version number bumped via Google+ community poll. | Linux powers 100% of the world's top 500 supercomputers. |
+| **2019–2020** | **5.1 – 5.6** | Jens Axboe introduces **`io_uring`** in 5.1, ushering in high-throughput lockless async I/O. WireGuard VPN merged in 5.6. | Cloud-native microservices and databases reach unprecedented IOPS. |
+| **2022** | **6.1.0** | **Rust in the Linux Kernel** officially merged, introducing first-class memory safety into the kernel tree. | Linus accepts Rust after thorough testing and consensus. |
+| **2023** | **6.6.0** | Earliest Eligible Virtual Deadline First (**EEVDF**) scheduler replaces CFS, resolving latency vs throughput trade-offs. | Peter Zijlstra's algorithmic breakthrough lands upstream. |
+| **2024–2026** | **6.12 – 7.4+** | Full PREEMPT_RT real-time merged in mainline; expanded Rust drivers (DRM, NVMe); hardware acceleration & AI/NPU subsystems. | Linus maintains upstream oversight, upholding userspace stability. |
+
+---
+
+## 2. Linus Torvalds' Personal Evolution & Engineering Legacy
+
+### 2.1 The Philosophy of "Good Taste"
+In his 2016 TED interview, Linus Torvalds articulated his core definition of engineering excellence—what he calls "good taste in code":
+
+> *"Sometimes you can see a problem from a different angle so that the special cases disappear, and the special case just becomes the normal case. That's good code."*
+
+He illustrated this with a classic single-linked list removal:
+```c
+// Bad Taste: Special case for head of list
+void remove_element(struct node **head, struct node *entry) {
+    struct node *prev = NULL;
+    struct node *walk = *head;
+    while (walk != entry) {
+        prev = walk;
+        walk = walk->next;
+    }
+    if (!prev)
+        *head = entry->next; // Special case for head!
+    else
+        prev->next = entry->next;
+}
+
+// Good Taste: Using double pointers eliminating all branch conditions
+void remove_element_good(struct node **head, struct node *entry) {
+    struct node **walk = head;
+    while (*walk != entry)
+        walk = &(*walk)->next;
+    *walk = entry->next; // Works for head and inner nodes identically!
+}
+```
+
+### 2.2 Linus's Engineering Tenets
+1. **Never Break Userspace**: Pragmatism over purity.
+2. **Efficiency and Simplicity**: If an optimization adds 500 lines of complex locking for a 1% gain on an artificial benchmark, reject it.
+3. **Data Structures Over Code**: *"Bad programmers worry about the code. Good programmers worry about data structures and their relationships."*
+4. **Meritocracy and Web of Trust**: Subsystem leads earn responsibility through sustained accuracy and technical rigor over years.

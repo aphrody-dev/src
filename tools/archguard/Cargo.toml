@@ -1,0 +1,31 @@
+[package]
+name = "archguard"
+version = "0.1.0"
+edition = "2024"
+authors = ["aphrody-dev <contact@aphrody.com>"]
+description = "Sovereign Monorepo Architecture, Domain-Purity, Boundary & Hygiene Auditor (archguard)"
+license = "MIT OR Apache-2.0"
+
+[[bin]]
+name = "archguard"
+path = "src/main.rs"
+
+[lib]
+name = "archguard"
+path = "src/lib.rs"
+
+[dependencies]
+argh = "0.1.13"
+blake3 = { version = "1.6.1", features = ["mmap", "rayon"] }
+rayon = "1.10.0"
+regex = "1.11.1"
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+toml = "0.8.20"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true

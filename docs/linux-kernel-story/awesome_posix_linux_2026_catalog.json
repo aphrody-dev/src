@@ -1,0 +1,301 @@
+{
+  "generated_at": "2026-11-11T06:53:03.231374600+00:00",
+  "engine": "Gitoxide (gix v0.61) + Gitingest Native Rust Ingestion Pipeline",
+  "gix_version": "v0.61.0",
+  "gitingest_integration": "Automated codebase digest generation for LLM prompt ingestion",
+  "kernel_variants_2026": [
+    {
+      "name": "Upstream Mainline / Stable (Linux 6.12+ / 7.x)",
+      "upstream_basis": "git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git",
+      "primary_patches": [
+        "PREEMPT_RT mainline merge",
+        "EEVDF (Peter Zijlstra)",
+        "Rust for Linux drivers (Miguel Ojeda)",
+        "io_uring fixed-buffer zero-copy (Jens Axboe)"
+      ],
+      "target_usecase": "Canonical reference for all Linux systems",
+      "scheduler_default": "EEVDF",
+      "memory_allocator": "SLUB (SLAB & SLOB eradicated)",
+      "io_uring_status": "Complete wire-speed support + SQPOLL",
+      "rust_readiness": "Production in DRM, Binder, NVMe, Network PHY",
+      "libc_target": "glibc / musl",
+      "unique_features": [
+        "Sacred userspace ABI stability guarantee",
+        "Strict 9-10 week merge window and -rc cadence",
+        "Multi-architecture support (x86_64, arm64, riscv, s390x)"
+      ]
+    },
+    {
+      "name": "AOSP / Android Common Kernel (ACK 6.6 / 6.12 GKI)",
+      "upstream_basis": "android.googlesource.com/kernel/common",
+      "primary_patches": [
+        "Generic Kernel Image (GKI) partition isolation",
+        "Android Binder IPC with Rust bindings",
+        "Energy Aware Scheduling (EAS) for big.LITTLE / DynamIQ",
+        "Ashmem, anonymous shared memory, and Low Memory Killer (LMK)"
+      ],
+      "target_usecase": "Smartphones, tablets, Android Auto, IoT devices",
+      "scheduler_default": "EEVDF with EAS (Energy Aware Scheduling)",
+      "memory_allocator": "SLUB + dm-verity zram memory compaction",
+      "io_uring_status": "Restricted or sandboxed by default via SELinux/seccomp policies",
+      "rust_readiness": "Extensive AOSP Rust userspace + Rust Binder driver in kernel",
+      "libc_target": "Bionic libc",
+      "unique_features": [
+        "GKI enables single binary kernel across Qualcomm, MediaTek, Tensor",
+        "Strict SELinux enforcement with zero unconfined domains",
+        "Upstream-first kernel strategy required by Google since Android 12"
+      ]
+    },
+    {
+      "name": "WSL2 Kernel (Microsoft WSL2 Linux Kernel)",
+      "upstream_basis": "github.com/microsoft/WSL2-Linux-Kernel",
+      "primary_patches": [
+        "Hyper-V VMBus integration & Synthetic GPU (dxgkrnl / d3dkmthk)",
+        "Plan 9 (9P) & Virtio-FS filesystem drivers for C:\\ host mounts",
+        "Memory reclaiming ballooning driver via Hyper-V balloon",
+        "Mirrored Mode networking (MASQUE & loopback bridge to Windows NT)"
+      ],
+      "target_usecase": "Seamless Linux userspace inside Windows 11 / Windows Server",
+      "scheduler_default": "EEVDF tuned for Hyper-V dynamic core multiplexing",
+      "memory_allocator": "SLUB + Hyper-V memory reclaim protocol",
+      "io_uring_status": "Fully enabled for host-guest virtual disk operations",
+      "rust_readiness": "Compatible with upstream Rust modules; build uses Clang/LLVM",
+      "libc_target": "Distro-dependent (glibc / musl)",
+      "unique_features": [
+        "Direct DirectX 12, CUDA sm_89, and DirectML GPU paravirtualization (/dev/dxg)",
+        "Sub-second boot times (<300ms) directly from Hyper-V Type-1 hypervisor",
+        "Zero host filesystem overhead via WSLg Wayland compositor bridging to RDP-Rail"
+      ]
+    },
+    {
+      "name": "Arch Linux Kernel (linux / linux-zen / CachyOS)",
+      "upstream_basis": "gitlab.archlinux.org / CachyOS BORE kernel",
+      "primary_patches": [
+        "BORE (Burst-Oriented Response Enhancer) or Zen interactive tweaks",
+        "x86-64-v3 and x86-64-v4 AVX-512 march microarchitecture optimizations",
+        "ZSTD compressed initramfs and module compression",
+        "Bcachefs native integration and latest DKMS modules"
+      ],
+      "target_usecase": "High-performance rolling-release desktop, gaming, and workstation",
+      "scheduler_default": "EEVDF-BORE or sched-ext (BFP extensible scheduler)",
+      "memory_allocator": "SLUB optimized with sysfs transparent huge pages",
+      "io_uring_status": "Unrestricted high-throughput wire speed enabled",
+      "rust_readiness": "CONFIG_RUST=y enabled on experimental/testing builds",
+      "libc_target": "glibc (rolling bleeding-edge)",
+      "unique_features": [
+        "Sub-millisecond frame pacing for Proton / Steam gaming",
+        "sched-ext user-space schedulers (scx_rusty, scx_lavd) via eBPF",
+        "Zero lag desktop audio and compositor scheduling"
+      ]
+    },
+    {
+      "name": "Alpine Linux Kernel (linux-lts / linux-virt)",
+      "upstream_basis": "git.alpinelinux.org/aports/tree/main/linux-lts",
+      "primary_patches": [
+        "Grsecurity / PaX legacy inspirations with upstream PaX-style hardening",
+        "Minimal container configuration stripping legacy ATA and sound drivers",
+        "Musl libc first-class integration and static linking ergonomics"
+      ],
+      "target_usecase": "Cloud containers, Docker/Podman micro-images, embedded appliances",
+      "scheduler_default": "EEVDF stock LTS",
+      "memory_allocator": "SLUB minimal configuration",
+      "io_uring_status": "Enabled in standard kernels, stripped in hardened minimal profiles",
+      "rust_readiness": "Standard upstream readiness",
+      "libc_target": "musl libc",
+      "unique_features": [
+        "Root filesystem images under 5 MB total footprint",
+        "Pure musl ABI eliminating glibc bloat and complex resolver daemons",
+        "Ultra-fast cold-start times for serverless microVMs (Firecracker / Cloud Hypervisor)"
+      ]
+    },
+    {
+      "name": "NixOS Kernel (pkgs.linuxPackages_latest)",
+      "upstream_basis": "github.com/NixOS/nixpkgs/tree/master/pkgs/os-specific/linux/kernel",
+      "primary_patches": [
+        "Deterministic Nix store build pipeline (`/nix/store/...-linux-6.x`)",
+        "ZFS on Linux (OpenZFS) native module integration",
+        "Kernel module deduplication and reproducible initrd generation"
+      ],
+      "target_usecase": "Reproducible enterprise infrastructure, DevOps, and sovereign homelabs",
+      "scheduler_default": "EEVDF",
+      "memory_allocator": "SLUB",
+      "io_uring_status": "Fully enabled with kernel boot parameter tunables",
+      "rust_readiness": "Packaged with Nix-managed rustc and bindgen toolchains",
+      "libc_target": "glibc (Nix store managed)",
+      "unique_features": [
+        "100% bit-for-bit reproducible kernel builds",
+        "Generation-based atomic rollback of kernel images via GRUB/systemd-boot",
+        "Zero dependency collision between conflicting third-party DKMS modules"
+      ]
+    }
+  ],
+  "rewritten_kernels_non_c": [
+    {
+      "name": "Redox OS",
+      "language": "Rust (100% Safe/Unsafe Rust)",
+      "architecture_type": "Microkernel (seL4 and MINIX inspired)",
+      "posix_compliance_level": "High (Relibc provides standard POSIX C library)",
+      "repo_url": "gitlab.redox-os.org/redox-os/redox",
+      "status": "Active development (boots GUI desktop Orbital, runs Python, Bash)",
+      "key_innovations": [
+        "Zero-copy event passing via URLs (`file:`, `tcp:`, `orbital:`)",
+        "All drivers and filesystems execute in Ring 3 userspace",
+        "Relibc: Full POSIX libc written purely in Rust"
+      ]
+    },
+    {
+      "name": "Theseus OS",
+      "language": "Rust",
+      "architecture_type": "Single Address Space Operating System (SASOS)",
+      "posix_compliance_level": "Selective POSIX compatibility layer",
+      "repo_url": "github.com/theseus-os/Theseus",
+      "status": "Academic research / Active",
+      "key_innovations": [
+        "Eliminates hardware MMU page table protections; uses compiler language-safety instead",
+        "Every kernel subsystem is a distinct, hot-swappable cell entity",
+        "Zero context-switch overhead across subsystem boundaries"
+      ]
+    },
+    {
+      "name": "Asterinas (formerly OSDK / Asterinas Kernel)",
+      "language": "Rust",
+      "architecture_type": "Framekernel (Hybrid Monolithic / Microkernel)",
+      "posix_compliance_level": "High Linux Syscall Compatibility (Linux ABI compatible)",
+      "repo_url": "github.com/asterinas/asterinas",
+      "status": "Production-oriented (boots Linux containers directly)",
+      "key_innovations": [
+        "Direct replacement for Linux kernel in cloud containers",
+        "Framekernel architecture isolates OS components using safe Rust boundaries",
+        "Runs unmodified Linux binary executables (Bash, Redis, Nginx, Python)"
+      ]
+    },
+    {
+      "name": "seL4 Microkernel",
+      "language": "Formally Verified C + Isabelle/HOL + Rust proofs",
+      "architecture_type": "Pure L4-style Microkernel with Capability-based Security",
+      "posix_compliance_level": "Via userspace personality servers (e.g. CAmkES, microkit)",
+      "repo_url": "github.com/seL4/seL4",
+      "status": "Production sovereign (defense, aerospace, automotive, medical)",
+      "key_innovations": [
+        "Mathematical proof of freedom from buffer overflows, null derefs, and memory leaks",
+        "Capability-based access control governing all hardware resources",
+        "Sub-microsecond IPC latency, outperforming Mach by an order of magnitude"
+      ]
+    },
+    {
+      "name": "Zig OS / Mitchellh Libxev Kernel Experiments",
+      "language": "Zig",
+      "architecture_type": "Monolithic bare-metal and freestanding unikernels",
+      "posix_compliance_level": "Freestanding / POSIX-adjacent",
+      "repo_url": "github.com/ziglang/zig",
+      "status": "Experimental & Unikernel",
+      "key_innovations": [
+        "Comptime memory allocation verification and zero-overhead safety checks",
+        "Direct replacement for C toolchains without libc bloat"
+      ]
+    }
+  ],
+  "awesome_ecosystem_indexes": [
+    {
+      "category": "Awesome Linux & Kernel Internals",
+      "lists": [
+        {
+          "title": "Awesome Linux Kernel Development",
+          "repo_url": "github.com/0xAX/linux-insides",
+          "topic": "Kernel boot process, memory management, interrupts, syscalls",
+          "items_count_estimate": 450,
+          "last_refreshed": "2026-11-11T06:53:03.231374600+00:00",
+          "highlighted_innovations": [
+            "Step-by-step disassembly of `x86_64` early boot (`head64.c`)",
+            "Deep dive into CPU setup, paging init, and trap tables"
+          ]
+        },
+        {
+          "title": "Awesome eBPF",
+          "repo_url": "github.com/zoidbergwill/awesome-ebpf",
+          "topic": "In-kernel bytecode, XDP, Cilium, bpftrace, BCC, Tetragon",
+          "items_count_estimate": 320,
+          "last_refreshed": "2026-11-11T06:53:03.231374600+00:00",
+          "highlighted_innovations": [
+            "CO-RE (Compile Once, Run Everywhere) portable tracing",
+            "Kernel packet manipulation without context switches via XDP"
+          ]
+        },
+        {
+          "title": "Awesome Rust for Linux",
+          "repo_url": "github.com/Rust-for-Linux/linux",
+          "topic": "Safe kernel abstractions, driver writing in Rust, bindgen bindings",
+          "items_count_estimate": 180,
+          "last_refreshed": "2026-11-11T06:53:03.231374600+00:00",
+          "highlighted_innovations": [
+            "Safe DRM graphics drivers (Nova GPU driver)",
+            "Compile-time typestates for hardware registers"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Awesome POSIX, Unix & Systems Standards",
+      "lists": [
+        {
+          "title": "Awesome POSIX",
+          "repo_url": "github.com/jlevon/posix",
+          "topic": "IEEE 1003.1-2024 (POSIX Issue 8), Open Group Base Specifications",
+          "items_count_estimate": 150,
+          "last_refreshed": "2026-11-11T06:53:03.231374600+00:00",
+          "highlighted_innovations": [
+            "POSIX.1-2024 standardized APIs (`getline`, `strndup`, `openat2`)",
+            "Deprecation of obsolete BSD interfaces in favor of atomic `*at()` calls"
+          ]
+        },
+        {
+          "title": "Awesome Unix Philosophy & Minimalist Systems",
+          "repo_url": "github.com/jedisct1/awesome-unix",
+          "topic": "Single-purpose composable tools, suckless tools, plan9, plan9port",
+          "items_count_estimate": 210,
+          "last_refreshed": "2026-11-11T06:53:03.231374600+00:00",
+          "highlighted_innovations": [
+            "Uutils: Complete rewrite of GNU coreutils in memory-safe Rust",
+            "Pure text stream parsing pipelines with zero memory bloat"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Awesome 2026 Distributions & Package Engines",
+      "lists": [
+        {
+          "title": "Awesome Nix / NixOS",
+          "repo_url": "github.com/nix-community/awesome-nix",
+          "topic": "Pure functional packages, flakes, devshells, nix-darwin",
+          "items_count_estimate": 580,
+          "last_refreshed": "2026-11-11T06:53:03.231374600+00:00",
+          "highlighted_innovations": [
+            "Hermetic build isolation eliminating 'works on my machine'",
+            "Atomic system generations and binary cache distribution"
+          ]
+        },
+        {
+          "title": "Awesome Arch / CachyOS Gaming",
+          "repo_url": "github.com/CachyOS/CachyOS-PKGBUILDS",
+          "topic": "BORE scheduler, proton-cachyos, UKSM, x86-64-v4 packages",
+          "items_count_estimate": 290,
+          "last_refreshed": "2026-11-11T06:53:03.231374600+00:00",
+          "highlighted_innovations": [
+            "sched-ext BPF scheduler integration for zero frame drops",
+            "Custom LLVM/Clang kernel compiler flags and ThinLTO"
+          ]
+        }
+      ]
+    }
+  ],
+  "new_2026_concepts_and_workflows": [
+    "sched-ext (SCX): Fully programmable userspace CPU schedulers running inside Linux kernel via eBPF (merged in Linux 6.12)",
+    "io_uring Network Zero-Copy: Full zero-copy transmit and receive for multi-gigabit workloads without socket buffer copying",
+    "bcachefs: The 2024-2026 modern copy-on-write filesystem uniting Btrfs flexibility with XFS speed",
+    "Rust DRM GPU Drivers: Project Nova (open-source Rust driver for NVIDIA GSP/Turing/Ada Lovelace architectures)",
+    "IEEE 1003.1-2024 (POSIX Issue 8): The biggest POSIX standard update in 16 years, deprecating archaic interfaces and codifying atomic filesystem operations",
+    "WSL2 Mirrored Mode & Hyper-V D3D12 Paravirtualization: Zero-overhead hybrid Windows/Linux computing running at bare-metal speeds",
+    "Gitingest + Gitoxide Acceleration: 100x faster repository ingestion and AST parsing for autonomous coding harnesses"
+  ]
+}

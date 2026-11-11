@@ -1,0 +1,141 @@
+---
+title: "Kernel Subsystems Deep Dive: VFS, Memory Management, and Schedulers"
+description: "Detailed architecture of Linux core subsystems: Virtual File System (VFS), Buddy Allocator, SLUB, and the evolution from O(1) to CFS and EEVDF."
+tags: ["linux", "kernel", "vfs", "mm", "buddy-allocator", "slub", "cfs", "eevdf", "scheduler"]
+chapter: 7
+order: 7
+---
+
+# Kernel Subsystems Deep Dive: VFS, Memory Management, and Schedulers
+
+## 1. The Virtual Filesystem (VFS) Architecture
+
+The Virtual Filesystem (VFS) is an abstraction layer that allows diverse filesystems (Ext4, XFS, Btrfs, NFS, procfs, sysfs, overlayfs) to coexist seamlessly behind uniform POSIX system calls (`open()`, `read()`, `write()`, `close()`).
+
+```
+                              Userspace API
+                   (open, read, write, stat, ioctl)
+                                  |
+                                  v
++-----------------------------------------------------------------------------+
+|                           VFS Abstraction Layer                             |
+|                                                                             |
+|   +-----------------------+              +------------------------------+   |
+|   |   dentry Cache (dcache)   | <---------> |    Inode Cache (icache)      |   |
+|   |  Fast path path-lookup|              | Metadata (mode, size, uid)   |   |
+|   +-----------------------+              +------------------------------+   |
+|               |                                         |                   |
+|               v                                         v                   |
+|   +-----------------------+              +------------------------------+   |
+|   |      struct file      |              |      struct superblock       |   |
+|   | Per-open fd descriptor|              | Filesystem instance mount    |   |
+|   +-----------------------+              +------------------------------+   |
++-----------------------------------------------------------------------------+
+         |                        |                          |
+         v                        v                          v
+  +--------------+         +--------------+           +--------------+
+  |     ext4     |         |     xfs      |           |    procfs    |
+  | (disk block) |         | (disk block) |           |  (synthetic) |
+  +--------------+         +--------------+           +--------------+
+```
+
+### 1.1 The Four Core VFS Objects
+1. **`struct super_block`**: Represents an entire mounted filesystem. Contains global filesystem state, block size, device pointers, and operation tables (`s_op`: `alloc_inode`, `destroy_inode`, `write_inode`, `sync_fs`, `statfs`). (Note: `write_super` was removed from `super_operations` in Linux 3.7).
+2. **`struct inode`**: Represents an individual file or directory object on disk. Holds file size, permissions, owner, timestamps, and block mapping, along with `i_op` (inode operations like `create`, `lookup`, `mkdir`) and `i_fop` (file operations).
+3. **`struct dentry`** (Directory Entry): Links file paths to inodes. Resolving `/usr/bin/bun` requires finding the `dentry` for `usr`, then `bin`, then `bun`. Dentries are cached in the high-performance **dcache** using lockless RCU path-walking (`rcu-walk`), achieving sub-microsecond path resolution without disk reads.
+4. **`struct file`**: Represents an open file instance created by `sys_open()`. Tracks the current read/write offset (`f_pos`), access flags (`f_flags`), credentials, and pointer to the corresponding dentry via `f_path.dentry`.
+
+---
+
+## 2. Memory Management: Buddy Allocator, SLUB, and Page Cache
+
+Memory management in Linux operates across physical page allocation, kernel object caching, and userland address spaces.
+
+```
++-----------------------------------------------------------------------------+
+|                               NUMA Nodes                                    |
+|   +--------------------+                             +--------------------+ |
+|   |    Node 0 (CPU 0)  |                             |    Node 1 (CPU 1)  | |
+|   |  Zones: DMA, DMA32,|                             |  Zones: DMA, DMA32,| |
+|   |         NORMAL     |                             |         NORMAL     | |
+|   +--------------------+                             +--------------------+ |
++-----------------------------------------------------------------------------+
+                                      |
+                                      v
++-----------------------------------------------------------------------------+
+|                        Buddy Allocator (Page Frames)                        |
+|   Manages power-of-two blocks of physical 4KB pages:                        |
+|   Order 0 (4KB), Order 1 (8KB), Order 2 (16KB) ... Order 10 (4MB)           |
++-----------------------------------------------------------------------------+
+                 /                                           \
+                v                                             v
++-------------------------------+             +-------------------------------+
+|    SLUB Allocator             |             |          Page Cache           |
+| High-speed object caching     |             | Caches file blocks in memory  |
+| for struct task_struct,       |             | (struct address_space),       |
+| struct inode, sk_buff         |             | dirty page writeback daemons  |
++-------------------------------+             +-------------------------------+
+```
+
+### 2.1 The Buddy Allocator
+The Buddy Allocator manages physical memory in contiguous chunks of $2^n \times 4096$ bytes (from Order 0 to Order 10).
+- When a 16 KB allocation (Order 2) is requested and none is free, an Order 3 block (32 KB) is split into two "buddies" of 16 KB.
+- When blocks are freed, the kernel checks if the neighboring buddy is free; if so, they are coalesced back into a larger contiguous block, combating physical memory fragmentation.
+
+### 2.2 The SLAB, SLOB, and SLUB Allocators
+Allocating an entire 4 KB page for a 128-byte kernel structure is wasteful.
+- **SLAB**: Developed by Jeff Bonwick (Sun/Solaris) and adopted in Linux 2.2. Pre-allocates caches of frequently created objects.
+- **SLUB**: Christoph Lameter's streamlined, lockless successor that became the default allocator in Linux 2.6.23. It removed complex descriptor queues, reducing overhead and maximizing cache locality for modern multi-socket NUMA systems. (SLOB was removed in Linux 6.2, and legacy SLAB was removed in Linux 6.5, leaving SLUB as the sole slab allocator in modern kernels).
+
+Additionally, modern page caching has transitioned from individual `struct page` tracking to **`struct folio`** (introduced by Matthew Wilcox), managed by an XArray structure (`i_mapping->i_pages`) for multi-page allocation transparency.
+
+---
+
+## 3. The CPU Scheduler Evolution: From $O(1)$ to CFS to EEVDF
+
+CPU scheduling determines which thread runs on which hardware CPU core at any given nanosecond.
+
+```
+       +--------------------------------------------------------+
+       |             Linux 0.01 - 2.4: O(N) Scheduler           |
+       |  Linear scan over task array. Slow with many tasks.    |
+       +--------------------------------------------------------+
+                                  |
+                                  v
+       +--------------------------------------------------------+
+       |             Linux 2.6: Ingo Molnar's O(1)              |
+       |  Active & Expired priority arrays with bitmasks.       |
+       |  O(1) time complexity, but complex heuristics.         |
+       +--------------------------------------------------------+
+                                  |
+                                  v
+       +--------------------------------------------------------+
+       |         Linux 2.6.23 - 6.5: Completely Fair (CFS)      |
+       |  Red-Black Tree ordered by virtual runtime (vruntime). |
+       |  Models an 'ideal multi-tasking CPU'.                  |
+       +--------------------------------------------------------+
+                                  |
+                                  v
+       +--------------------------------------------------------+
+       |         Linux 6.6+: EEVDF (Peter Zijlstra)             |
+       |  Earliest Eligible Virtual Deadline First.             |
+       |  Decouples latency (deadline) from throughput (weight).|
+       +--------------------------------------------------------+
+```
+
+### 3.1 The Completely Fair Scheduler (CFS)
+Introduced by Ingo Molnar in Linux 2.6.23:
+- Replaced heuristic heuristics with mathematical fairness.
+- Each runnable task accumulates **`vruntime`** (virtual runtime), calculated based on the physical execution time scaled inversely by the task's `nice` priority:
+  $$\Delta \text{vruntime} = \Delta \text{exec\_time} \times \frac{\text{NICE\_0\_LOAD}}{\text{task\_weight}}$$
+- All runnable tasks are stored in a self-balancing **Red-Black tree** (`rb_node`), keyed by `vruntime`. The leftmost task (`rb_leftmost`) has executed the least virtual time and is picked next.
+
+### 3.2 The Modern Era: EEVDF (Linux 6.6+)
+While CFS delivered excellent throughput, it struggled with low-latency interactive tasks without custom latency-nice hacks.
+Peter Zijlstra replaced CFS with **EEVDF** (Earliest Eligible Virtual Deadline First), based on the seminal 1995 scheduling algorithm by **Ion Stoica and Hussein Abdel-Wahab** (*"Earliest Eligible Virtual Deadline First: A Flexible and Accurate Mechanism for Proportional Share Resource Allocation"*):
+- Tasks specify two attributes: **Weight** (proportional resource share) and **Latency sensitivity** (time slice quantum $q_i$).
+- EEVDF calculates:
+  1. **Lag**: $\text{lag}_i = V - v_i$, where $V$ is system virtual time and $v_i$ is task virtual runtime.
+  2. **Eligibility**: A task is eligible to run if $\text{lag}_i \ge 0$ ($v_i \le V$).
+  3. **Virtual Deadline**: $d_i = v_i + \frac{q_i}{w_i}$.
+- EEVDF picks the eligible task with the earliest virtual deadline ($\min d_i$), providing predictable low latency for audio, gaming, and interactive user interfaces without compromising server batch throughput.

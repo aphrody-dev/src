@@ -1,0 +1,291 @@
+---
+title: "The Linux Genesis: From 80386 Hardware to comp.os.minix (1991)"
+description: "How Linus Torvalds engineered Linux version 0.01 on an Intel 80386 clone, task switching in hardware, and the historic Minix announcement."
+tags: ["linux", "kernel", "torvalds", "history", "80386", "minix"]
+chapter: 1
+order: 1
+---
+
+# The Linux Genesis: From 80386 Hardware to comp.os.minix (1991)
+
+## 1. Context: Helsinki, January 1991
+
+In early 1991, Linus Benedict Torvalds, a 21-year-old computer science student at the University of Helsinki, purchased his first personal computer:
+- **Processor**: Intel 80386DX at 33 MHz (with full 32-bit registers, MMU, and protected mode support).
+- **RAM**: 4 Megabytes.
+- **Storage**: 40 Megabyte Conner hard drive.
+- **Operating System installed**: MS-DOS, quickly upgraded to Andrew S. Tanenbaum's MINIX for educational experimentation.
+
+MINIX was a microkernel-based teaching operating system created to accompany Tanenbaum's seminal textbook *Operating Systems: Design and Implementation*. While MINIX was educational and functional, it possessed strict pedagogical limitations:
+1. Licensing restricted commercial and non-academic modifications.
+2. The design favored microkernel purity over POSIX pragmatism and raw hardware exploitation.
+3. Tanenbaum intentionally kept the system small and simple to fit student curricula, declining to accept feature expansions like virtual memory paging or raw task switching optimizations.
+
+Linus wanted a terminal emulator to dial into the University of Helsinki's DEC MicroVAX cluster. Rather than writing a userspace application on DOS or MINIX, Linus decided to learn the raw Intel 80386 hardware architecture directly from the Intel manuals.
+
+```
+       +------------------------------------------------------------+
+       |                  University MicroVAX                       |
+       +------------------------------------------------------------+
+                                     ^
+                                     |  Modem / Serial line
+                                     v
+       +------------------------------------------------------------+
+       |                   Intel 80386 Raw PC                       |
+       |  +-----------------------+      +-----------------------+  |
+       |  |  Task 1: Read Keyboard| <--> |  Task 2: Write Screen |  |
+       |  |     & Send to Modem   |      |     from Modem Buffer |  |
+       |  +-----------------------+      +-----------------------+  |
+       |  +------------------------------------------------------+  |
+       |  |   80386 Hardware Task State Segments (TSS) & IRQs    |  |
+       |  +------------------------------------------------------+  |
+       +------------------------------------------------------------+
+```
+
+---
+
+## 2. Exploiting the 80386 Hardware
+
+Unlike the 8086/80286, the 80386 offered:
+- Full 32-bit linear address space (4 GB flat addressability).
+- Paged Memory Management Unit (PMMU) supporting 4 KB page frames.
+- 4 privilege rings (Ring 0 for Kernel, Ring 3 for User applications).
+- Hardware Task State Segment (TSS) switching via `ljmp` to a TSS selector.
+
+Linus wrote two threads of execution in assembly and C:
+- Thread A read characters from the keyboard and wrote them to the serial modem port.
+- Thread B read characters from the modem port and wrote them to the video display buffer.
+
+To switch between these two threads, Linus utilized the hardware task-switching mechanism of the 80386. When a timer interrupt fired (IRQ0 via the 8259A PIC), the CPU saved all general-purpose registers into the current TSS and restored them from the destination TSS.
+
+When Linus accidentally dialed into his university account and wanted to download and save files locally, he realized a simple terminal emulator was insufficient: he needed a disk driver, a filesystem, and memory management. The terminal emulator evolved into an operating system kernel.
+
+---
+
+## 3. The Historic Announcement: August 25, 1991
+
+On August 25, 1991, Linus posted his famous message to the Usenet newsgroup `comp.os.minix`:
+
+```text
+From: torvalds@klaava.Helsinki.FI (Linus Benedict Torvalds)
+Newsgroups: comp.os.minix
+Subject: What would you like to see most in minix?
+Summary: small poll for new operating system
+Message-ID: <1991Aug25.205708.9541@klaava.Helsinki.FI>
+Date: 25 Aug 91 20:57:08 GMT
+Organization: University of Helsinki
+
+Hello everybody out there using minix -
+
+I'm doing a (free) operating system (just a hobby, won't be big and
+professional like gnu) for 386(486) AT clones.  This has been brewing
+since april, and is starting to get ready.  I'd like any feedback on
+things people like/dislike in minix, as my OS resembles it somewhat
+(same physical layout of the file-system (due to practical reasons)
+among other things).
+
+I've currently ported bash(1.08) and gcc(1.40), and things seem to work.
+This implies that I'll get something practical within a few months, and
+I'd like to know what features most people would want.  Any suggestions
+are welcome, but I won't promise I'll implement them :-)
+
+                Linus (torvalds@kruuna.helsinki.fi)
+
+PS.  Yes - it's free of any minix code, and it has a multi-threaded fs.
+It is NOT portable (uses 386 task switching etc), and it probably never
+will support anything other than AT-harddisks, as that's all I have :-(.
+```
+
+---
+
+## 4. Architectural Analysis: Linux 0.01 (September 1991)
+
+Linux 0.01 was released on the Helsinki University FTP server (`nic.funet.fi`) under `/pub/OS/Linux` on September 17, 1991. The entire source tree was approximately 10,239 lines of C and assembly.
+
+### 4.1 Source Code Tree Layout
+```
+linux-0.01/
+|-- Makefile
+|-- boot/
+|   |-- bootsect.s       # 512-byte MBR bootloader in 8086 real-mode assembly
+|   |-- head.s           # 32-bit entry point, page table setup, GDT/IDT init
+|   `-- setup.s          # Hardware detection and switch to protected mode
+|-- fs/
+|   |-- block_dev.c      # Block I/O operations
+|   |-- buffer.c         # Unified buffer cache (hash tables + LRU free list)
+|   |-- file_dev.c       # Regular file handling
+|   |-- inode.c          # Inode allocation, locking, and release
+|   |-- namei.c          # Path resolution and directory lookup
+|   |-- open.c           # sys_open, sys_close, permissions
+|   |-- read_write.c     # sys_read, sys_write dispatching
+|   |-- stat.c           # File metadata querying
+|   |-- super.c          # Superblock read/mount logic
+|   `-- truncate.c       # Truncating files to zero length
+|-- include/
+|   |-- a.out.h          # Binary format definition
+|   |-- asm/
+|   |   |-- io.h         # inb, outb port inline macros
+|   |   |-- memory.h     # memcpy, memset using x86 rep movsl
+|   |   |-- segment.h    # get_fs_byte, put_fs_byte for user/kernel copy
+|   |   `-- system.h     # cli, sti, iret, lidt, lgdt macros
+|   |-- const.h
+|   |-- ctype.h
+|   |-- errno.h
+|   |-- signal.h
+|   |-- stdarg.h
+|   |-- string.h
+|   |-- sys/
+|   |   |-- stat.h
+|   |   |-- times.h
+|   |   |-- types.h
+|   |   |-- utsname.h
+|   |   `-- wait.h
+|   |-- termios.h
+|   |-- time.h
+|   `-- unistd.h
+|-- init/
+|   `-- main.c           # Kernel entry point: memory sizing, initialization, Task 0
+|-- kernel/
+|   |-- Makefile
+|   |-- asm.s            # Low-level CPU exception handlers (traps)
+|   |-- console.c        # VGA text mode (80x25) console driver
+|   |-- exit.c           # Process termination, wait4, zombie reaper
+|   |-- fork.c           # sys_fork, copy_process, TSS setup
+|   |-- hd.c             # AT Winchester hard disk driver with interrupt handler
+|   |-- keyboard.s       # PC/AT keyboard scan code interpreter
+|   |-- mktime.c         # CMOS RTC time calculation
+|   |-- panic.c          # Kernel panic halt loop
+|   |-- printk.c         # vsprintf formatting to console buffer
+|   |-- sched.c          # The 0.01 scheduler: counter-based round-robin
+|   |-- serial.c         # RS-232 16450/16550 UART serial driver
+|   |-- sys.c            # System call dispatcher table
+|   |-- system_call.s    # int 0x80 assembly handler
+|   |-- traps.c          # C routines for CPU faults and exceptions
+|   `-- vsprintf.c       # Standard formatted printing implementation
+`-- mm/
+    |-- Makefile
+    |-- memory.c         # Page frame allocation, demand paging, COW
+    `-- page.s           # Page fault exception handler (int 14)
+```
+
+---
+
+## 5. Deep-Dive: Memory Management and Copy-on-Write (COW)
+
+Even in version 0.01, Linus implemented **Demand Paging** and **Copy-On-Write (COW)**, a sophistication that MINIX lacked.
+
+```
+Process A (Parent)                         Process B (Child)
++-----------------------+                  +-----------------------+
+| Page Directory Entry  |                  | Page Directory Entry  |
++-----------------------+                  +-----------------------+
+           |                                          |
+           v                                          v
++-----------------------+                  +-----------------------+
+| Page Table Entry      |                  | Page Table Entry      |
+| Physical: 0x00100000  |                  | Physical: 0x00100000  |
+| Read-Only (Bit 1 = 0) |                  | Read-Only (Bit 1 = 0) |
++-----------------------+                  +-----------------------+
+           \                                          /
+            \                                        /
+             v                                      v
+         +----------------------------------------------+
+         |      Physical 4KB Memory Page 0x00100000     |
+         |         mem_map[PAGE_INDEX] = 2              |
+         +----------------------------------------------+
+                               |
+                               | Write Attempt by Child
+                               v
+         +----------------------------------------------+
+         | CR2 stores faulting virtual address          |
+         | CPU triggers Vector 14: Page Fault (page.s)  |
+         | un_wp_page() allocates new frame 0x00200000  |
+         | memcpy(0x00200000, 0x00100000, 4096)        |
+         | Process B PTE updated: 0x00200000 (RW = 1)   |
+         | mem_map[OLD_PAGE_INDEX] decremented to 1     |
+         +----------------------------------------------+
+```
+
+### 5.1 Physical Page Tracker (`mm/memory.c`)
+Physical memory was tracked through an array of 16-bit words (`unsigned short`):
+```c
+static unsigned short mem_map [ PAGING_PAGES ] = {0,};
+```
+Every 4 KB page above 1 MB (below 1 MB was reserved for kernel code, data, BIOS, and buffer cache) had an entry in `mem_map`:
+- `0`: Free page frame.
+- `1`: Allocated to a single process.
+- `>1`: Shared read-only across multiple processes via COW.
+
+`get_free_page()` used inline x86 assembly (`std; repne scasw`) to scan `mem_map` backwards from `HIGH_MEMORY` for a free word entry (`0`), set it to `1`, and return the physical page address.
+
+When `sys_fork()` was invoked, Linus did not duplicate the physical memory of the process. Instead, `copy_page_tables()` duplicated the page directory and page table entries, clearing the `R/W` bit (making them read-only) and incrementing the count in `mem_map[]`.
+
+When either parent or child attempted to write to the shared page:
+1. The 80386 MMU detected a write violation on a read-only page.
+2. The CPU placed the faulting linear address into register `CR2` and triggered Interrupt 14.
+3. `mm/page.s` intercepted vector 14 and called `do_no_page()` or `do_wp_page()`.
+4. If `mem_map[page] == 1`, the page was marked writable immediately.
+5. If `mem_map[page] > 1`, a new 4 KB physical page frame was allocated from the top of memory, the 4096 bytes were copied, the writing process's page table was repointed to the new page with `R/W=1`, and the old page's refcount in `mem_map` was decremented.
+
+---
+
+## 6. Process Scheduling: The `counter` Algorithm
+
+The scheduler in `kernel/sched.c` was compact, elegant, and directly inspired by simplicity:
+
+```c
+void schedule(void)
+{
+    int i, next, c;
+    struct task_struct ** p;
+
+    /* Check alarm signals and wake up sleeping tasks */
+    for(p = &LAST_TASK ; p > &FIRST_TASK ; --p)
+        if (*p) {
+            if ((*p)->alarm && (*p)->alarm < jiffies) {
+                (*p)->signal |= (1<<(SIGALRM-1));
+                (*p)->alarm = 0;
+            }
+            if ((*p)->signal && (*p)->state==TASK_INTERRUPTIBLE)
+                (*p)->state=TASK_RUNNING;
+        }
+
+    /* Select task with highest counter */
+    while (1) {
+        c = -1;
+        next = 0;
+        i = NR_TASKS;
+        p = &task[NR_TASKS];
+        while (--i) {
+            if (!*--p)
+                continue;
+            if ((*p)->state == TASK_RUNNING && (*p)->counter > c)
+                c = (*p)->counter, next = i;
+        }
+        if (c) break;
+        
+        /* If all runnable tasks have counter == 0, replenish counters */
+        for(p = &LAST_TASK ; p > &FIRST_TASK ; --p)
+            if (*p)
+                (*p)->counter = ((*p)->counter >> 1) + (*p)->priority;
+    }
+    switch_to(next);
+}
+```
+
+### Characteristics:
+- **Maximum Tasks**: `NR_TASKS` was defined as `64`.
+- **Preemption**: Timer tick (100 Hz, `HZ=100`) decremented `current->counter`. When `counter` reached `0`, `schedule()` was invoked.
+- **Dynamic Priority Boosting**: If all runnable tasks exhausted their quantum (`c == 0`), every task in the system (including blocked/sleeping tasks) had its counter replenished:
+  $$\text{counter}_{\text{new}} = \left\lfloor \frac{\text{counter}_{\text{old}}}{2} \right\rfloor + \text{priority}$$
+  This gave I/O-bound tasks higher responsiveness upon waking up because their unused counter decayed exponentially toward $2 \times \text{priority}$, ensuring interactive terminals felt instantaneous.
+
+---
+
+## 7. The First Root Filesystem and Bash Port
+
+Linux 0.01 required:
+- An already installed MINIX partition to boot, partition the disk, and provide binaries.
+- GCC 1.40 and GNU Bash 1.08.
+
+Because Linux 0.01 did not have a compiler on itself, Linus cross-compiled Linux from within MINIX. By October 5, 1991, version 0.02 could run GNU Bash and GCC binaries, though it still required MINIX to setup partitions and compile. The ultimate self-hosting milestone was officially achieved on December 8, 1991 with Linux 0.11, the first kernel compiled entirely on Linux itself.

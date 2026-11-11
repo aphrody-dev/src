@@ -1,0 +1,113 @@
+---
+title: "The Linux Development Model: Maintainers, Merge Windows, and RC Cycles"
+description: "How thousands of developers collaborate without anarchy: the 2-week merge window, -rc release candidates, pull requests, and subsystem hierarchies."
+tags: ["linux", "kernel", "development-model", "merge-window", "subsystems", "workflow"]
+chapter: 5
+order: 5
+---
+
+# The Linux Development Model: Maintainers, Merge Windows, and RC Cycles
+
+## 1. The Scaling Paradox: How Does Linus Merge 15,000 Changes Every 9 Weeks?
+
+The Linux kernel is the largest collaborative software project in human history:
+- Over 35 million lines of code.
+- Over 2,000 contributing companies and tens of thousands of individual engineers.
+- An average of 8 to 10 commits merged every single hour, 24 hours a day, 365 days a year.
+
+No single human could review or test this volume of code directly. The development model functions through an uncompromising, strictly hierarchical **Web of Trust**.
+
+```
+       +-----------------------------------------------------+
+       |              Linus Torvalds (Upstream)              |
+       +-----------------------------------------------------+
+                       ^                       ^
+          Pull Request |          Pull Request |
+                       |                       |
+       +---------------------+   +---------------------+
+       |    Subsystem Lead   |   |    Subsystem Lead   |
+       |  (e.g. David Miller/|   | (e.g. Greg K-H: USB,|
+       |   Jakub Kicinski)   |   |       Driver Core)  |
+       +---------------------+   +---------------------+
+                 ^                         ^
+    Pull Request |            Pull Request |
+                 |                         |
+       +---------------------+   +---------------------+
+       |   Sub-Maintainer    |   |   Sub-Maintainer    |
+       | (e.g. Wireless Core)|   |  (e.g. xHCI / USB3) |
+       +---------------------+   +---------------------+
+                 ^                         ^
+          Email  |                  Email  |
+          Patch  |                  Patch  |
+       +---------------------+   +---------------------+
+       | Individual Hacker / |   | Hardware Vendor Eng |
+       | Corporate Engineer  |   | (Intel, AMD, Nvidia)|
+       +---------------------+   +---------------------+
+```
+
+---
+
+## 2. The 9-to-10 Week Kernel Cadence
+
+Linux releases adhere to a strict time-based release schedule rather than feature-driven deadlines. A complete release cycle spans approximately **63 to 70 days** (9 to 10 weeks).
+
+```
+Week:   0      1      2      3      4      5      6      7      8      9-10
+        |------|------|------|------|------|------|------|------|------|----->
+Phase:  [ Merge Window ] [ -rc1 ] [ -rc2 ] [ -rc3 ] [ -rc4 ] [ -rc5 ] [ -rc6/7 ] -> Final Release
+           (2 Weeks)                      (Stabilization & Bug Fixes Only)
+```
+
+### 2.1 The Merge Window (Days 0 to 14)
+When a final kernel (e.g., `v6.12`) is released on a Sunday afternoon, Linus immediately opens the **2-Week Merge Window** for the next version (`v6.13`).
+- Subsystem maintainers submit signed Git pull requests containing features developed and baked in `linux-next` during the preceding months.
+- Linus reviews diffstats, commit summaries, and code quality, pulling roughly 10,000 to 15,000 commits into his tree.
+- At the end of the two weeks, Linus closes the merge window and tags **`-rc1`** (Release Candidate 1).
+
+### 2.2 The Stabilization Phase (-rc1 to Final)
+After `-rc1`, the kernel tree enters strict feature freeze:
+- **No new features are accepted**.
+- Only bug fixes, regression fixes, security patches, and hardware documentation corrections are permitted.
+- Weekly release candidates are tagged every Sunday: `-rc2`, `-rc3`, `-rc4`, `-rc5`, `-rc6`, and `-rc7`.
+- If critical regressions remain, an `-rc8` may be cut; otherwise, the final kernel release is tagged, and the merge window for the subsequent version opens within minutes.
+
+---
+
+## 3. The Role of `linux-next`
+
+Code does not enter Linus's tree directly from a contributor's laptop. It must first survive **`linux-next`**, maintained by **Stephen Rothwell**.
+- `linux-next` continuously merges hundreds of subsystem maintainer git branches every night.
+- Automated testing farms (KernelCI, Intel 0-Day Test Robot, LKFT, Syzkaller) build thousands of architecture configurations (x86_64, arm64, riscv, s390, m68k) and run automated boot and fuzzing suites.
+- Merge conflicts, API mismatches, and build breakages between different subsystems are detected and resolved weeks before the code ever reaches Linus Torvalds.
+
+---
+
+## 4. Subsystem Maintainer Roles and Code Ownership
+
+The kernel source tree contains a central database file: **`MAINTAINERS`**.
+When a developer modifies a file, the `scripts/get_maintainer.pl` script inspects this file to output the designated leads:
+
+```text
+$ ./scripts/get_maintainer.pl -f drivers/nvme/host/core.c
+Keith Busch <kbusch@kernel.org> (maintainer:NVM EXPRESS DRIVER)
+Jens Axboe <axboe@kernel.dk> (maintainer:NVM EXPRESS DRIVER)
+Christoph Hellwig <hch@lst.de> (maintainer:NVM EXPRESS DRIVER)
+Sagi Grimberg <sagi@grimberg.me> (maintainer:NVM EXPRESS DRIVER)
+linux-nvme@lists.infradead.org (open list:NVM EXPRESS DRIVER)
+```
+
+### Reviewer Trailers and Attestation
+Every commit in the kernel carries an immutable audit trail of peer review:
+- `Signed-off-by:` Certifies the **Developer Certificate of Origin (DCO)**, confirming the author has the legal right to submit the code under the GPLv2.
+- `Reviewed-by:` States an independent engineer conducted an exhaustive line-by-line review.
+- `Acked-by:` The subsystem maintainer acknowledges and accepts the patch into their tree.
+- `Tested-by:` Confirmation by a QA tester or engineer that the patch was verified on real hardware.
+- `Reported-by:` / `Closes:` Links to the original bug report or issue tracker.
+
+---
+
+## 5. Stable and Long Term Support (LTS) Branches
+
+Once Linus tags a final release, he immediately moves on to the next merge window. Maintenance of released kernels transitions to **Greg Kroah-Hartman** and **Sasha Levin**:
+- **Stable Releases**: Receive critical bug fixes backported from Linus's master tree (e.g. `6.12.1`, `6.12.2`). A fix must land in Linus's tree before it can be backported to stable ("Linus first" rule).
+- **LTS (Long Term Support)**: Designated releases maintained for multiple years to support enterprise distributions (RHEL, Ubuntu, SUSE), Android smartphones, and embedded automotive platforms.

@@ -65,6 +65,8 @@ build-rust-unix-wayland:
   tags:
     - archlinux-pkgctl
   script:
+    - cargo run --manifest-path tools/archguard/Cargo.toml -- check --strict --root .
+    - cargo test --manifest-path tools/archguard/Cargo.toml
     - cargo check --manifest-path crates/unix/Cargo.toml --all-targets
     - cargo check --manifest-path crates/wayland/Cargo.toml --all-targets
 

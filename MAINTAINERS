@@ -1,0 +1,168 @@
+List of maintainers (C:\src Sovereign Monorepo)
+===============================================
+
+Descriptions of section entries and preferred order
+---------------------------------------------------
+	M:	*Mail* patches to: FullName <address@domain>
+	L:	*Mailing list* that is relevant to this area
+	S:	*Status* (Supported, Maintained, Odd Fixes, Orphan, Obsolete)
+	W:	*Web-page* with status/info
+	T:	*SCM* tree type and location (git, quilt)
+	F:	*Files* and directories wildcard patterns
+	X:	*Excluded* files and directories
+
+Maintainers List
+----------------
+
+ANDROID AOSP, GKI & APHRODY MOBILE SHELL
+M:	Aphrody Engineering <contact@aphrody.com>
+L:	contact@aphrody.com
+S:	Supported
+W:	https://about.aphrody.com
+T:	git https://android.googlesource.com/platform/manifest.git
+T:	git https://android.googlesource.com/kernel/build.git
+T:	git https://github.com/aphrody-dev/aphrody-app.git
+F:	.repo/manifests/
+F:	apps/aphrody-app/crates/aphrody-android/
+F:	third_party/aosp/
+F:	third_party/google-ecosystem/
+
+APHRODY.COM WEB & DESKTOP PLATFORM
+M:	Aphrody Engineering <contact@aphrody.com>
+L:	contact@aphrody.com
+S:	Supported
+W:	https://about.aphrody.com
+T:	git https://github.com/aphrody-dev/aphrody.git
+T:	git https://github.com/aphrody-dev/aphrody-app.git
+T:	git https://github.com/aphrody-dev/google-design.git
+T:	git https://github.com/aphrody-dev/wck.git
+F:	apps/aphrody/
+F:	apps/aphrody-app/
+F:	packages/google-design/
+F:	packages/wck/
+
+BUN V1.4.4 FULL-RUST RUNTIME & PARITY PATCH ENGINE
+M:	Aphrody Engineering <contact@aphrody.com>
+L:	contact@aphrody.com
+S:	Supported
+W:	https://about.aphrody.com
+T:	git https://github.com/aphrody-dev/bun.git
+T:	git https://github.com/oven-sh/bun.git
+T:	git https://github.com/aphrody-dev/bun-parity.git
+T:	quilt packages/bun-parity/patches/
+F:	packages/bun-parity/
+F:	packages/bun-plugins/
+F:	third_party/bun/
+
+CHROMIUM, BLINK, V8 & DEPOT_TOOLS INTEGRATION
+M:	Aphrody Engineering <contact@aphrody.com>
+L:	contact@aphrody.com
+S:	Supported
+W:	https://about.aphrody.com
+T:	git https://chromium.googlesource.com/chromium/src.git
+T:	git https://chromium.googlesource.com/chromium/tools/depot_tools.git
+T:	git https://github.com/aphrody-dev/chromium-bun.git
+T:	git https://github.com/aphrody-dev/depot.git
+F:	DEPS
+F:	crates/depot/
+F:	packages/chromium-bun/
+F:	third_party/chromium/
+F:	third_party/depot_tools/
+
+GO 1.27 CLOUD INFRASTRUCTURE, OCI DEPLOY & MESH NETWORK
+M:	Aphrody Engineering <contact@aphrody.com>
+L:	contact@aphrody.com
+S:	Supported
+W:	https://about.aphrody.com
+T:	git https://github.com/aphrody-dev/infra.git
+T:	git https://github.com/aphrody-dev/mesh-vn.git
+F:	deploy.toml
+F:	infra/
+F:	infra/ffi-bridge/
+F:	infra/mesh-vn/
+
+GRAPHICS, WAYLAND COMPOSITOR & GAMESCOPE WEBGPU
+M:	Aphrody Engineering <contact@aphrody.com>
+L:	contact@aphrody.com
+S:	Supported
+W:	https://about.aphrody.com
+T:	git https://github.com/aphrody-dev/wayland.git
+T:	git https://github.com/aphrody-dev/gamescope-rs.git
+F:	crates/gamescope-rs/
+F:	crates/wayland/
+F:	third_party/wgpu/
+F:	third_party/winit/
+
+LINUX KERNEL 7.4+, DISTRO PACKAGING & PATCH QUEUES
+M:	Aphrody Engineering <contact@aphrody.com>
+L:	contact@aphrody.com
+S:	Supported
+W:	https://about.aphrody.com
+T:	git https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+T:	git https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+T:	git https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+T:	git https://github.com/aphrody-dev/unix.git
+T:	quilt docs/patches/
+F:	MAINTAINERS
+F:	crates/awesome-posix-discovery/
+F:	crates/unix/
+F:	docs/linux-kernel-story/
+F:	docs/patches/
+F:	packages/kernel-crawler/
+F:	third_party/archlinux/
+F:	third_party/cachyos/
+F:	third_party/linux/
+F:	third_party/omacom/
+
+MONOREPO VCS ORCHESTRATION, TRI-FORGE & ARCHITECTURE GATE
+M:	Aphrody Engineering <contact@aphrody.com>
+L:	contact@aphrody.com
+S:	Supported
+W:	https://about.aphrody.com
+T:	git https://github.com/aphrody-dev/src.git
+T:	git https://github.com/aphrody-dev/xtask.git
+T:	git https://github.com/aphrody-dev/forge.git
+F:	.gitattributes
+F:	.gitignore
+F:	.gitmodules
+F:	crates/xtask/
+F:	justfile
+F:	packages/env-kit/
+F:	packages/forge/
+F:	src.lock.json
+F:	tools/archguard/
+
+RING-3 HARDWARE TELEMETRY, BENCHMARKS & PURE-RUST STACK
+M:	Aphrody Engineering <contact@aphrody.com>
+L:	contact@aphrody.com
+S:	Supported
+W:	https://about.aphrody.com
+T:	git https://github.com/aphrody-dev/ring3-agent.git
+T:	git https://github.com/aphrody-dev/bench.git
+T:	git https://github.com/aphrody-dev/rust-stack.git
+F:	crates/bench/
+F:	crates/ring3-agent/
+F:	crates/rust-stack/
+
+SOVEREIGN AI CONTROL PLANE & KNOWLEDGE ENGINE
+M:	Aphrody Engineering <contact@aphrody.com>
+L:	contact@aphrody.com
+S:	Supported
+W:	https://about.aphrody.com
+T:	git https://github.com/aphrody-dev/ai-os.git
+T:	git https://github.com/aphrody-dev/ai-triad.git
+T:	git https://github.com/aphrody-dev/knowledge-engine.git
+T:	git https://github.com/aphrody-dev/pi-opencode.git
+F:	.agents/
+F:	packages/agy/
+F:	packages/ai-os/
+F:	packages/ai-triad/
+F:	packages/brain/
+F:	packages/knowledge-engine/
+F:	packages/pi-opencode/
+
+THE REST
+M:	Aphrody Engineering <contact@aphrody.com>
+S:	Maintained
+F:	*
+F:	*/

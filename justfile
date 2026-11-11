@@ -6,9 +6,13 @@ set shell := ["powershell", "-NoProfile", "-Command"]
 default:
     just --list
 
-# Verify all 16 sovereign compiler, VCS, cloud, and AI CLI toolchains
+# Verify all 17 sovereign compiler, VCS, cloud, architecture, and AI CLI toolchains
 doctor:
     xtk doctor
+
+# Run deterministic monorepo architecture, domain-purity, boundary & hygiene gate
+archguard:
+    archguard check --strict --root "C:\src"
 
 # Check masked C:\src\.env vault, NTFS ACLs, and multi-editor auth wiring
 env-doctor:
@@ -54,9 +58,27 @@ install-shims:
 slim-all:
     xtk slim-all
 
-# Generate deterministic C:\src\src.lock.json pinning commits and toolchains
+# Generate deterministic C:\src\src.lock.json + Chromium DEPS + AOSP default.xml + Kernel MAINTAINERS
 lock:
     xtk lock
+
+# Synchronize 4-pillar governance manifests (DEPS, .repo/manifests/default.xml, MAINTAINERS, docs/patches/series)
+manifests:
+    xtk manifests
+
+# Run full 4-pillar VCS governance audit (Git + Chromium + Kernel + AOSP + NTFS junctions)
+vcs-audit:
+    xtk audit-vcs
+    depot manifests
+    frg pillars
+
+# Run Sovereign Monorepo Architecture & Domain-Purity Gate
+arch-check:
+    archguard check
+
+# Lookup Linux Kernel style MAINTAINERS ownership for a path (usage: just maintainer third_party/linux/Makefile)
+maintainer target="third_party/linux":
+    depot maintainer "{{target}}"
 
 # Run Sovereign Local Forge CLI (usage: just forge status, just forge slim)
 forge cmd="status":
@@ -99,8 +121,9 @@ deploy-plan:
 fmt:
     bun fmt
 
-# Run three-way Rust <-> Bun <-> Go FFI & workspace verification tests
+# Run three-way Rust <-> Bun <-> Go FFI, architecture gate & workspace verification tests
 verify-all:
+    archguard check --strict --root "C:\src"
     xtk doctor
     bun test "C:\src\packages\env-kit" "C:\src\packages\pi-opencode" "C:\src\packages\ai-triad"
     cargo test --manifest-path "C:\src\crates\rust-stack\Cargo.toml"

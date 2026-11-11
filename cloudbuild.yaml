@@ -35,7 +35,7 @@ steps:
         bun build --compile packages/forge/src/cli.ts --outfile dist/frg
         ./dist/frg remotes
 
-  # 2. Verify Rust Systems Crates (unix + wayland WSLg)
+  # 2. Verify Architecture Domain-Purity Gate & Rust Systems Crates (archguard + unix + wayland WSLg)
   - id: verify-rust-crates
     name: rust:1.85-bookworm
     entrypoint: bash
@@ -44,6 +44,8 @@ steps:
       - -ceu
       - |
         apt-get update && apt-get install -y --no-install-recommends pkg-config libwayland-dev libxkbcommon-dev libpixman-1-dev
+        cargo run --manifest-path tools/archguard/Cargo.toml -- check --strict --root .
+        cargo test --manifest-path tools/archguard/Cargo.toml
         cargo check --manifest-path crates/unix/Cargo.toml --all-targets
         cargo check --manifest-path crates/wayland/Cargo.toml --all-targets
 

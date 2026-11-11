@@ -11,7 +11,8 @@
   "scripts": {
     "fmt": "bun fmt",
     "fmt:check": "bun fmt --check",
-    "doctor": "xtk doctor && env-kit doctor && triad doctor && src-deploy doctor",
+    "arch": "archguard check --strict",
+    "doctor": "archguard check --strict && xtk doctor && env-kit doctor && triad doctor && src-deploy doctor",
     "test:packages": "bun test packages/ai-triad packages/env-kit packages/pi-opencode packages/ai-os packages/wck packages/knowledge-engine",
     "deploy": "src-deploy up --all --dry-run",
     "deploy:live": "src-deploy up --all"

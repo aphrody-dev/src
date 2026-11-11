@@ -1,0 +1,57 @@
+{
+  "version": "2026.11.0",
+  "monorepo_root": "C:\\src",
+  "sole_ai_owner": "packages/ai-os",
+  "allowed_root_physical_dirs": [
+    ".agents",
+    ".gemini",
+    ".git",
+    ".jj",
+    ".repo",
+    ".cache",
+    "apps",
+    "crates",
+    "docs",
+    "graphify-out",
+    "infra",
+    "node_modules",
+    "packages",
+    "third_party",
+    "tools",
+    "var"
+  ],
+  "domains": {
+    "crates": {
+      "path": "crates",
+      "required_manifest": "Cargo.toml",
+      "required_edition": "2024",
+      "forbidden_extensions": [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".cts", ".mts", ".py", ".pyc", ".go"],
+      "forbidden_files": ["package.json", "tsconfig.json", "bun.lock", "bun.lockb", "package-lock.json", "pnpm-lock.yaml", "yarn.lock", "go.mod", "go.sum", "pyproject.toml", "requirements.txt"]
+    },
+    "packages": {
+      "path": "packages",
+      "required_manifest": "package.json",
+      "required_scope_prefix": "@aphrody/",
+      "forbidden_root_files": ["Cargo.toml", "go.mod", "package-lock.json", "pnpm-lock.yaml", "yarn.lock", ".env"],
+      "allowed_native_subdirs": ["crates", "native", "rust-core", "rust-desktop", "loaders", "zig", "python"],
+      "zero_npm_deps_enforced": true
+    },
+    "apps": {
+      "path": "apps",
+      "pure_rust_apps": ["aphrody-app"],
+      "zero_npm_apps": ["aphrody"]
+    },
+    "infra": {
+      "path": "infra",
+      "required_manifest": "go.mod",
+      "allowed_bun_subpackages": ["ffi-bridge", "mesh-vn"]
+    },
+    "tools": {
+      "path": "tools",
+      "required_manifest_one_of": ["Cargo.toml", "package.json"],
+      "required_docs": "README.md",
+      "required_tests_dir": "tests",
+      "description": "Reproducible monorepo architecture, boundary, and quality verification tools"
+    }
+  }
+}
