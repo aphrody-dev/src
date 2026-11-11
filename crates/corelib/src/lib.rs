@@ -21,7 +21,10 @@ pub use re::{
 };
 pub use emulation::{InputState, SimulationClock, SovereignVfs};
 pub use wasm::{WasmBrowserConfig, WasmBufferPayload, WasmEngineTelemetry};
-pub use epic::{EgsManifestHeader, PakInfo, UAssetSummary, PAK_FILE_MAGIC, PACKAGE_FILE_TAG, EGS_MANIFEST_MAGIC};
+pub use epic::{
+    ArcSysCelMaterial, BevyMigratedEntity, BevySceneBundle, BevyTransform, EgsManifestHeader,
+    PakInfo, UAssetSummary, EGS_MANIFEST_MAGIC, PACKAGE_FILE_TAG, PAK_FILE_MAGIC,
+};
 
 #[cfg(test)]
 mod tests {
@@ -137,5 +140,31 @@ mod tests {
         assert_eq!(manifest.header_size, 128);
         assert!(manifest.is_compressed);
         assert_eq!(manifest.version, 2);
+    }
+
+    #[test]
+    fn test_ue5_to_bevy_coordinate_conversion() {
+        // Unreal: X=100cm (Forward), Y=200cm (Right), Z=300cm (Up)
+        // Bevy: X=2.0m, Y=3.0m, Z=-1.0m
+        let transform = BevyTransform::from_unreal_coords(100.0, 200.0, 300.0);
+        assert!((transform.translation[0] - 2.0).abs() < 1e-4);
+        assert!((transform.translation[1] - 3.0).abs() < 1e-4);
+        assert!((transform.translation[2] - -1.0).abs() < 1e-4);
+    }
+
+    #[test]
+    fn test_bevy_scene_bundle_from_uasset() {
+        let mut uasset_bytes = vec![0u8; 64];
+        uasset_bytes[0..4].copy_from_slice(&PACKAGE_FILE_TAG.to_le_bytes());
+        uasset_bytes[12..16].copy_from_slice(&(522i32).to_le_bytes());
+
+        let summary = UAssetSummary::parse(&uasset_bytes).unwrap();
+        let scene = BevySceneBundle::from_uasset(&summary, "HeroCharacter");
+
+        assert_eq!(scene.scene_name, "HeroCharacter");
+        assert_eq!(scene.entities.len(), 1);
+        assert_eq!(scene.entities[0].entity_name, "HeroCharacter_RootActor");
+        assert!(scene.entities[0].is_player);
+        assert!(scene.entities[0].material.normal_steering);
     }
 }

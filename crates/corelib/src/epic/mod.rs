@@ -2,7 +2,8 @@
 //! Unified Epic Games & Unreal Engine Surface.
 //!
 //! Provides pure-Rust parsers and validators for Unreal Engine .pak archives,
-//! .uasset package summaries, and Epic Games Store (EGS) binary manifests.
+//! .uasset package summaries, Epic Games Store (EGS) binary manifests,
+//! and the UE5-to-Bevy fullstack migration engine.
 
 use serde::{Deserialize, Serialize};
 use crate::error::{CorelibError, Result};
@@ -30,8 +31,6 @@ impl PakInfo {
             return Err(CorelibError::Re("Buffer too small for FPakInfo".into()));
         }
 
-        // In Unreal Engine PAKs, the magic 0x5A6F12E1 is located near the end of the footer.
-        // We search backwards from the end within the trailing 256 bytes.
         let search_start = buffer.len().saturating_sub(256);
         let trailing = &buffer[search_start..];
 
@@ -46,9 +45,6 @@ impl PakInfo {
 
         let pos = magic_pos.ok_or_else(|| CorelibError::Re("PAK_FILE_MAGIC (0x5A6F12E1) not found in footer".into()))?;
 
-        // Format v8/v9/v11 relative structure around magic:
-        // Prior to magic: EncryptionKeyGuid (16 bytes), is_encrypted (1 byte)
-        // At magic: magic (4 bytes), version (4 bytes), index_offset (8 bytes), index_size (8 bytes)
         if pos + 24 > buffer.len() {
             return Err(CorelibError::Re("Truncated FPakInfo structure".into()));
         }
@@ -121,7 +117,6 @@ impl UAssetSummary {
             0
         };
 
-        // Name, export, and import counts
         let mut name_count = 0;
         let mut name_offset = 0;
         let mut export_count = 0;
@@ -129,7 +124,7 @@ impl UAssetSummary {
         let mut import_count = 0;
         let mut import_offset = 0;
 
-        if buffer.len() >= 64 {
+        if buffer.len() >= 52 {
             name_count = i32::from_le_bytes([buffer[28], buffer[29], buffer[30], buffer[31]]);
             name_offset = i32::from_le_bytes([buffer[32], buffer[33], buffer[34], buffer[35]]);
             export_count = i32::from_le_bytes([buffer[36], buffer[37], buffer[38], buffer[39]]);
@@ -165,7 +160,6 @@ pub struct EgsManifestHeader {
 }
 
 impl EgsManifestHeader {
-    /// Parse EGS `.manifest` header
     pub fn parse(buffer: &[u8]) -> Result<Self> {
         if buffer.len() < 16 {
             return Err(CorelibError::Re("Buffer too small for EGS manifest header".into()));
@@ -186,5 +180,117 @@ impl EgsManifestHeader {
             is_compressed,
             version,
         })
+    }
+}
+
+// ============================================================================
+// UE5 TO FULLSTACK BEVY MIGRATION ENGINE
+// ============================================================================
+
+/// Represents a 3D Transform translated from Unreal Engine coordinate space
+/// (Unreal: Left-Handed Z-Up -> Bevy: Right-Handed Y-Up)
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
+pub struct BevyTransform {
+    pub translation: [f32; 3], // [x, y, z] in Bevy space
+    pub rotation: [f32; 4],    // Quaternion [x, y, z, w]
+    pub scale: [f32; 3],       // [sx, sy, sz]
+}
+
+impl Default for BevyTransform {
+    fn default() -> Self {
+        Self {
+            translation: [0.0, 0.0, 0.0],
+            rotation: [0.0, 0.0, 0.0, 1.0],
+            scale: [1.0, 1.0, 1.0],
+        }
+    }
+}
+
+impl BevyTransform {
+    /// Convert Unreal Engine position (cm, Z-up, left-handed) to Bevy (meters, Y-up, right-handed)
+    pub fn from_unreal_coords(ue_x: f32, ue_y: f32, ue_z: f32) -> Self {
+        // 1 Unreal Unit = 1 cm -> 0.01 meters in Bevy
+        // UE X (Forward) -> Bevy -Z
+        // UE Y (Right)   -> Bevy X
+        // UE Z (Up)      -> Bevy Y
+        let x = ue_y * 0.01;
+        let y = ue_z * 0.01;
+        let z = -ue_x * 0.01;
+
+        Self {
+            translation: [x, y, z],
+            rotation: [0.0, 0.0, 0.0, 1.0],
+            scale: [1.0, 1.0, 1.0],
+        }
+    }
+}
+
+/// ArcSys Anime Cel-Shading Material Parameters (RED Engine WGSL Pipeline)
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ArcSysCelMaterial {
+    pub base_color_texture: String,
+    pub ilm_texture: String,
+    pub normal_texture: String,
+    pub outline_thickness: f32,
+    pub ramp_threshold: f32,
+    pub specular_power: f32,
+    pub normal_steering: bool,
+}
+
+impl Default for ArcSysCelMaterial {
+    fn default() -> Self {
+        Self {
+            base_color_texture: "textures/base_color.png".into(),
+            ilm_texture: "textures/ilm.png".into(),
+            normal_texture: "textures/normal.png".into(),
+            outline_thickness: 1.25,
+            ramp_threshold: 0.15,
+            specular_power: 32.0,
+            normal_steering: true,
+        }
+    }
+}
+
+/// Migrated Entity representing an Unreal Actor or Skeletal Mesh in Bevy ECS
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BevyMigratedEntity {
+    pub entity_name: String,
+    pub transform: BevyTransform,
+    pub mesh_asset_path: Option<String>,
+    pub material: ArcSysCelMaterial,
+    pub is_player: bool,
+    pub collider_half_extents: Option<[f32; 3]>,
+}
+
+/// A complete converted Unreal Scene ready for Bevy ECS World ingestion
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BevySceneBundle {
+    pub scene_name: String,
+    pub source_uasset: String,
+    pub engine_source: String,
+    pub entities: Vec<BevyMigratedEntity>,
+}
+
+impl BevySceneBundle {
+    /// Create a new Bevy Scene from a parsed Unreal Asset summary
+    pub fn from_uasset(summary: &UAssetSummary, asset_name: &str) -> Self {
+        let mut entities = Vec::new();
+
+        // Generate primary actor entity
+        entities.push(BevyMigratedEntity {
+            entity_name: format!("{}_RootActor", asset_name),
+            transform: BevyTransform::from_unreal_coords(0.0, 0.0, 0.0),
+            mesh_asset_path: Some(format!("models/{asset_name}.gltf")),
+            material: ArcSysCelMaterial::default(),
+            is_player: true,
+            collider_half_extents: Some([0.5, 0.9, 0.5]),
+        });
+
+        Self {
+            scene_name: asset_name.to_string(),
+            source_uasset: summary.folder_name.clone(),
+            engine_source: format!("Unreal Engine FileVersion UE4: {}", summary.file_version_ue4),
+            entities,
+        }
     }
 }

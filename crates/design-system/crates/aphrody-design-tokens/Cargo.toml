@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "aphrody-design-tokens"
+version = { workspace = true }
+edition.workspace = true
+rust-version.workspace = true
+authors = ["Aphrody Contributors"]
+repository = "https://github.com/aphrody-dev/monorepo"
+license = "MIT OR Apache-2.0"
+description = "Canonical multi-preset design tokens (Neutral, Material Design 3, Fluent 2, Apple HIG Liquid Glass, Aphrody Byron Love) and HCT dynamic color engine for Aphrody Design."
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "warn"
+
+[features]
+# `std` enables String-returning helpers (CSS export) and 5-preset DynamicScheme builders.
+# Without this feature the crate is `no_std` + `no_alloc` — safe on wasm32-unknown-unknown and embedded targets.
+default = ["std"]
+std     = ["dep:base64", "dep:aphrody-design-shared"]
+embedded-fonts = []
+# PNG/JPEG decode for `image::decode_image` / `image::source_color_from_image_bytes`.
+image   = ["std", "dep:image"]
+# Serde derives for the token types shared with serialized snapshots (`ColorRoles`, `ThemeMode`).
+serde   = ["dep:serde"]
+
+[dependencies]
+base64 = { workspace = true, optional = true }
+image = { workspace = true, optional = true, features = ["png", "jpeg"] }
+serde = { workspace = true, optional = true, features = ["derive"] }
+aphrody-design-shared = { workspace = true, optional = true }
+
+[dev-dependencies]
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true, features = ["float_roundtrip"] }

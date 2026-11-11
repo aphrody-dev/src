@@ -1,0 +1,39 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "aphrody-design-layout"
+version = { workspace = true }
+edition.workspace = true
+rust-version.workspace = true
+license = "MIT OR Apache-2.0"
+description = "One CSS + Tailwind v3/v4 layout engine for every Aphrody Design host: Lightning CSS + Tailwind utilities laid out by Taffy 0.15"
+repository = "https://github.com/aphrody-dev/monorepo"
+publish = false
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[features]
+default = []
+# CSS -> bevy::ui::Node (Bevy 0.20).
+bevy = ["dep:bevy"]
+# Computed rects as egui::Rect for Ui::put.
+egui = ["dep:egui"]
+
+[dependencies]
+lightningcss = { workspace = true }
+taffy = { workspace = true, features = [
+  "std",
+  "taffy_tree",
+  "flexbox",
+  "grid",
+  "block_layout",
+  "content_size",
+] }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+bevy = { workspace = true, optional = true, features = ["std", "bevy_ui"] }
+egui = { workspace = true, optional = true }
+
+[[example]]
+name = "settings"
+path = "examples/settings.rs"

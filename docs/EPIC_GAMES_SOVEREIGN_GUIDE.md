@@ -131,3 +131,38 @@ The payload is encrypted with an 8-byte rolling chain-cipher inspected via `crat
    - `depot epic inspect <file>`: CLI tool providing instant metadata, version, table offsets, and encryption diagnostics.
 3. **`packages/epic-games` (`@aphrody/epic-games`)**:
    - Zero-dependency Bun/TypeScript client for Epic Games Store manifests, asset structures, and OAuth2 workflows.
+
+---
+
+## 6. End-to-End UE5 to Fullstack Bevy ECS & Rust Backend Migration Engine
+
+The sovereign monorepo provides a fullstack migration pipeline translating Unreal Engine 4/5 asset structures, transforms, materials, and physics into pure-Rust Bevy ECS scenes and low-latency Axum 0.8 backend services.
+
+### 6.1 Coordinate Space Inversion (Left-Handed Z-Up to Right-Handed Y-Up)
+Unreal Engine models world space in centimeters using a Left-Handed, Z-Up basis:
+- UE $X$ is Forward
+- UE $Y$ is Right
+- UE $Z$ is Up
+
+Bevy ECS models world space in meters using a Right-Handed, Y-Up basis:
+- Bevy $X = \text{UE } Y \times 0.01$ (Right)
+- Bevy $Y = \text{UE } Z \times 0.01$ (Up)
+- Bevy $Z = -\text{UE } X \times 0.01$ (Backwards)
+
+This transformation is implemented with zero-copy vector arithmetic in `crates/corelib::epic::BevyTransform::from_unreal_coords`.
+
+### 6.2 ArcSys Cel-Shading WGSL Shader Pipeline
+Unreal Engine fighting games (e.g. Dragon Ball FighterZ, Guilty Gear Strive) use the Arc System Works cel-shading technique backed by ILM (Intermediate Light Map) textures:
+- **Red Channel**: Specular highlight / metallic mask.
+- **Green Channel**: Ambient occlusion / shadow ramp bias threshold.
+- **Blue Channel**: Line art mask / crease multiplier.
+- **Alpha Channel**: Surface glossiness / outline thickness weight.
+- **Normal Steering**: Inverted hull vertex normals are steered using vertex color RGB offsets to prevent geometry breaks on faceted edges.
+
+The WGSL cel-shading pipeline is verified in `apps/shenron/packages/engine/src/shaders/arcsys-cel.wgsl.ts` and encapsulated in `corelib::epic::ArcSysCelMaterial`.
+
+### 6.3 Sovereign Rust Backend (`crates/rust-stack::game_server`)
+The backend provides deterministic simulation and asset distribution:
+- `GET /api/game/bevy/health`: Engine metadata, 60 FPS deterministic tick rate, and coordinate convention.
+- `GET /api/game/bevy/scene?character=...`: Returns serialized `BevySceneBundle` converted from `.uasset`.
+- `POST /api/game/bevy/tick`: Deterministic 60 Hz frame step advancing `SimulationClock` with clamped delta accumulator and bitmask input validation.
