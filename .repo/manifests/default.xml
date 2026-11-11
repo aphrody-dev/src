@@ -14,10 +14,10 @@
 
   <project path="apps/aphrody" name="aphrody" remote="aphrody" revision="278050d3b77734c210a2cda2beca235606f67f48" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="apps/aphrody-app" name="aphrody-app" remote="aphrody" revision="b378ca34836363366a95cefc79e69b6f1def7684" upstream="main" groups="aosp,pdk,sovereign" />
-  <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="56d11287af76d3a05eed81515b30b1e29408da7b" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="apps/shenron" name="shenron" remote="aphrody-labs" revision="b4cc7921582aa3a29624f91c91a03dee6bd73fa3" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="3f626b20efb2077da4bf47b6576138958cd43b4f" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="apps/shenron" name="shenron" remote="aphrody-labs" revision="46f1f542c61503d39d5d91a9a444292178370bfb" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/bench" name="bench" remote="aphrody" revision="a3c7c1168ccbce3fc468d13489284080292bb98a" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="crates/depot" name="depot" remote="aphrody" revision="abafd494d3730e7f08e112b396410eecda91c75d" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="crates/depot" name="depot" remote="aphrody" revision="e278142820f0796a6b0cd790c3806d05febdbeea" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/gamescope-rs" name="gamescope-rs" remote="aphrody" revision="7a77c8da4678043a7ce71015892c83a04f6d1a9e" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/ring3-agent" name="ring3-agent" remote="aphrody" revision="390e9867117e9c3da9dd943d7f10c9def16a2d0f" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/rust-stack" name="rust-stack" remote="aphrody" revision="a3b765d44ddb024fe675b746be81787d34f73a07" upstream="main" groups="monorepo,first-party,sovereign" />
@@ -26,7 +26,7 @@
   <project path="crates/xtask" name="xtask" remote="aphrody" revision="67f7a6f994a51e18cef9fcdcc74a3a9d47e8271d" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="infra" name="infra" remote="aphrody" revision="4bf98e6a7bb252df0ed200fb7dce6b68ccac8ba4" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="infra/mesh-vn" name="mesh-vn" remote="aphrody" revision="5d850084b702faacd99f4c07d09a4385ee89b8b0" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/ai-os" name="ai-os" remote="aphrody" revision="f0e55f26f434cfc656bdc6a4bd71f4ca1fa82dca" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/ai-os" name="ai-os" remote="aphrody" revision="18d61199d08a24e418778041e30cb38193039ede" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/ai-triad" name="ai-triad" remote="aphrody" revision="21561066f849fe42574ce618aee1e2805087dad7" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/brain" name="brain" remote="aphrody" revision="c4293c5084f0cbb397fe250d94998a8c21325a43" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/bun-parity" name="bun-parity" remote="aphrody" revision="5f5b7d4534065da6db2af76c0d4f522573e04bab" upstream="main" groups="monorepo,first-party,sovereign" />
@@ -141,6 +141,7 @@
   <project path="third_party/tree-sitter/tree-sitter-html" name="tree-sitter/tree-sitter-html" remote="github" revision="73a3947324f6efddf9e17c0ea58d454843590cc0" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/tree-sitter/tree-sitter-javascript" name="tree-sitter/tree-sitter-javascript" remote="github" revision="58404d8cf191d69f2674a8fd507bd5776f46cb11" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/tree-sitter/tree-sitter-json" name="tree-sitter/tree-sitter-json" remote="github" revision="254c42a6476413b776221e03982ac8ae159eeb72" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/tree-sitter/tree-sitter-lua" name="tree-sitter-grammars/tree-sitter-lua" remote="github" revision="10fe0054734eec83049514ea2e718b2a56acd0c9" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/tree-sitter/tree-sitter-python" name="tree-sitter/tree-sitter-python" remote="github" revision="26855eabccb19c6abf499fbc5b8dc7cc9ab8bc64" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/tree-sitter/tree-sitter-rust" name="tree-sitter/tree-sitter-rust" remote="github" revision="77a3747266f4d621d0757825e6b11edcbf991ca5" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/tree-sitter/tree-sitter-typescript" name="tree-sitter/tree-sitter-typescript" remote="github" revision="75b3874edb2dc714fb1fd77a32013d0f8699989f" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-11-11T09:23:39.5799466+01:00",
+  "generated_at": "2026-11-11T10:49:01.2780505+01:00",
   "hardware": {
     "os": "Windows NT (x86_64)",
     "cpu": "Intel Core i7-13700F (Raptor Lake sm_89)",
@@ -26,7 +26,7 @@
     "zig": "0.17.0"
   },
   "pillars": {
-    "git_superproject_commit": "0b8cdd0ca7e0d29a106381f3030da7798f155303",
+    "git_superproject_commit": "c981f30b6af3010843de8ef6251345a34faf1f1f",
     "chromium_src_commit": "4c7244a405d326e284710231ff609168dceb9044",
     "linux_kernel_commit": "7475ea8b58616b33c04afb976cf0fbaad9dd63fb",
     "aosp_manifest_commit": "1ed30a827f1156dc831083e6cf999d6bd9deae18"
@@ -67,12 +67,13 @@
     "apps/rosegriffon": {
       "path": "C:\\src\\apps\\rosegriffon",
       "url": "https://github.com/aphrody-labs/rosegriffon.git",
-      "commit": "56d11287af76d3a05eed81515b30b1e29408da7b",
+      "commit": "3f626b20efb2077da4bf47b6576138958cd43b4f",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
       "remotes": {
         "all": "https://github.com/aphrody-labs/rosegriffon.git",
+        "bunos-vps": "ubuntu@51.77.147.152:/home/ubuntu/src/bun-os",
         "gitlab": "https://gitlab.com/aphrody-dev/rosegriffon.git",
         "gitlab-self": "https://git.aphrody.com/aphrody/rosegriffon.git",
         "google": "https://source.developers.google.com/p/aphrody/r/rosegriffon",
@@ -83,7 +84,7 @@
     "apps/shenron": {
       "path": "C:\\src\\apps\\shenron",
       "url": "https://github.com/aphrody-labs/shenron.git",
-      "commit": "b4cc7921582aa3a29624f91c91a03dee6bd73fa3",
+      "commit": "46f1f542c61503d39d5d91a9a444292178370bfb",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -115,7 +116,7 @@
     "crates/depot": {
       "path": "C:\\src\\crates\\depot",
       "url": "https://github.com/aphrody-dev/depot.git",
-      "commit": "abafd494d3730e7f08e112b396410eecda91c75d",
+      "commit": "e278142820f0796a6b0cd790c3806d05febdbeea",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -255,7 +256,7 @@
     "packages/ai-os": {
       "path": "C:\\src\\packages\\ai-os",
       "url": "https://github.com/aphrody-dev/ai-os.git",
-      "commit": "f0e55f26f434cfc656bdc6a4bd71f4ca1fa82dca",
+      "commit": "18d61199d08a24e418778041e30cb38193039ede",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -1271,7 +1272,7 @@
     "third_party/n2b": {
       "path": "C:\\src\\third_party\\n2b",
       "url": "local:third_party/n2b",
-      "commit": "cc2a4fd88fd21dbb0311a46ae1434bb8f4d2bc81",
+      "commit": "b576117a8e87aa118c5d9cdf272a76865c36ecce",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -1754,6 +1755,18 @@
       "pillar": "git",
       "remotes": {
         "origin": "https://github.com/tree-sitter/tree-sitter-json.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/tree-sitter/tree-sitter-lua": {
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-lua",
+      "url": "https://github.com/tree-sitter-grammars/tree-sitter-lua.git",
+      "commit": "10fe0054734eec83049514ea2e718b2a56acd0c9",
+      "branch": "main",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/tree-sitter-grammars/tree-sitter-lua.git"
       },
       "sparse_paths": null
     },
