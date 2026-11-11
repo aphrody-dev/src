@@ -9,6 +9,7 @@ pub mod gpu;
 pub mod re;
 pub mod emulation;
 pub mod wasm;
+pub mod epic;
 
 pub use error::{CorelibError, Result};
 pub use gpu::{GpuOptions, GpuPowerPreference, GpuReport, RowLayout};
@@ -20,6 +21,7 @@ pub use re::{
 };
 pub use emulation::{InputState, SimulationClock, SovereignVfs};
 pub use wasm::{WasmBrowserConfig, WasmBufferPayload, WasmEngineTelemetry};
+pub use epic::{EgsManifestHeader, PakInfo, UAssetSummary, PAK_FILE_MAGIC, PACKAGE_FILE_TAG, EGS_MANIFEST_MAGIC};
 
 #[cfg(test)]
 mod tests {
@@ -82,5 +84,58 @@ mod tests {
         input.end_frame();
         assert_eq!(input.buttons_pressed, 0);
         assert!(input.is_down(InputState::BUTTON_A));
+    }
+
+    #[test]
+    fn test_epic_uasset_summary_parser() {
+        let mut uasset_bytes = vec![0u8; 128];
+        uasset_bytes[0..4].copy_from_slice(&PACKAGE_FILE_TAG.to_le_bytes()); // 0x9E2A83C1
+        uasset_bytes[4..8].copy_from_slice(&(-7i32).to_le_bytes()); // legacy file version
+        uasset_bytes[12..16].copy_from_slice(&(522i32).to_le_bytes()); // UE4.27
+        uasset_bytes[28..32].copy_from_slice(&(42i32).to_le_bytes()); // name_count
+
+        assert_eq!(sniff_format(&uasset_bytes), BinaryFormat::UnrealAssetPackage);
+
+        let summary = UAssetSummary::parse(&uasset_bytes).unwrap();
+        assert_eq!(summary.tag, PACKAGE_FILE_TAG);
+        assert_eq!(summary.legacy_file_version, -7);
+        assert_eq!(summary.file_version_ue4, 522);
+        assert_eq!(summary.name_count, 42);
+    }
+
+    #[test]
+    fn test_epic_pak_footer_parser() {
+        let mut pak_bytes = vec![0u8; 256];
+        // At byte index 200: magic 0x5A6F12E1, version 8, index_offset 1024, index_size 2048
+        let pos = 200;
+        pak_bytes[pos..pos + 4].copy_from_slice(&PAK_FILE_MAGIC.to_le_bytes());
+        pak_bytes[pos + 4..pos + 8].copy_from_slice(&(8u32).to_le_bytes());
+        pak_bytes[pos + 8..pos + 16].copy_from_slice(&(1024u64).to_le_bytes());
+        pak_bytes[pos + 16..pos + 24].copy_from_slice(&(2048u64).to_le_bytes());
+
+        assert_eq!(sniff_format(&pak_bytes), BinaryFormat::UnrealPakArchive);
+
+        let info = PakInfo::parse(&pak_bytes).unwrap();
+        assert_eq!(info.magic, PAK_FILE_MAGIC);
+        assert_eq!(info.version, 8);
+        assert_eq!(info.index_offset, 1024);
+        assert_eq!(info.index_size, 2048);
+    }
+
+    #[test]
+    fn test_epic_egs_manifest_parser() {
+        let mut manifest_bytes = vec![0u8; 32];
+        manifest_bytes[0..4].copy_from_slice(&EGS_MANIFEST_MAGIC.to_le_bytes()); // 0x0B83C027
+        manifest_bytes[4..8].copy_from_slice(&(128u32).to_le_bytes()); // header_size
+        manifest_bytes[8] = 1; // is_compressed
+        manifest_bytes[12..16].copy_from_slice(&(2u32).to_le_bytes()); // version 2
+
+        assert_eq!(sniff_format(&manifest_bytes), BinaryFormat::EgsManifest);
+
+        let manifest = EgsManifestHeader::parse(&manifest_bytes).unwrap();
+        assert_eq!(manifest.magic, EGS_MANIFEST_MAGIC);
+        assert_eq!(manifest.header_size, 128);
+        assert!(manifest.is_compressed);
+        assert_eq!(manifest.version, 2);
     }
 }

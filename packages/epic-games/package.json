@@ -1,0 +1,16 @@
+{
+  "name": "@aphrody/epic-games",
+  "version": "0.1.0",
+  "description": "Pure-Bun TypeScript SDK for Epic Games Store protocols, Unreal Engine .pak archives, UAsset summaries, and EOS authentication",
+  "type": "module",
+  "main": "src/index.ts",
+  "bin": {
+    "egs": "src/cli.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "inspect": "bun run src/cli.ts inspect"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

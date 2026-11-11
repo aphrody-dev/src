@@ -23,6 +23,9 @@ pub enum BinaryFormat {
     PeExecutable,
     ElfExecutable,
     MachOExecutable,
+    UnrealPakArchive,
+    UnrealAssetPackage,
+    EgsManifest,
     Unknown([u8; 4]),
 }
 
@@ -47,7 +50,22 @@ pub fn sniff_format(bytes: &[u8]) -> BinaryFormat {
         || bytes.starts_with(&[0xCF, 0xFA, 0xED, 0xFE])
     {
         BinaryFormat::MachOExecutable
+    } else if bytes.starts_with(&[0xC1, 0x83, 0x2A, 0x9E]) {
+        BinaryFormat::UnrealAssetPackage
+    } else if bytes.starts_with(&[0x27, 0xC0, 0x83, 0x0B]) || bytes.starts_with(&[0x26, 0xC0, 0x83, 0x0B]) {
+        BinaryFormat::EgsManifest
     } else {
+        // Check for trailing Unreal .pak magic (FPakInfo)
+        if bytes.len() >= 44 {
+            let search_start = bytes.len().saturating_sub(256);
+            let trailing = &bytes[search_start..];
+            for i in (0..trailing.len().saturating_sub(3)).rev() {
+                if trailing[i..i + 4] == [0xE1, 0x12, 0x6F, 0x5A] {
+                    return BinaryFormat::UnrealPakArchive;
+                }
+            }
+        }
+
         let mut magic = [0u8; 4];
         magic.copy_from_slice(&bytes[..4]);
         BinaryFormat::Unknown(magic)

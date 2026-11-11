@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-11-11T12:03:00.5816599+01:00",
+  "generated_at": "2026-11-11T12:12:45.3595693+01:00",
   "hardware": {
     "os": "Windows NT (x86_64)",
     "cpu": "Intel Core i7-13700F (Raptor Lake sm_89)",
@@ -26,7 +26,7 @@
     "zig": "0.17.0"
   },
   "pillars": {
-    "git_superproject_commit": "41bb0fe4a3069c1e3c6a795cd0c2f2b4a3714f3e",
+    "git_superproject_commit": "f056ef295f49ced7653e9c91157e7ff1794f874a",
     "chromium_src_commit": "4c7244a405d326e284710231ff609168dceb9044",
     "linux_kernel_commit": "7475ea8b58616b33c04afb976cf0fbaad9dd63fb",
     "aosp_manifest_commit": "1ed30a827f1156dc831083e6cf999d6bd9deae18"
@@ -84,7 +84,7 @@
     "apps/shenron": {
       "path": "C:\\src\\apps\\shenron",
       "url": "https://github.com/aphrody-labs/shenron.git",
-      "commit": "6821d07ea83e553019456e4579b1f7cba5d479f2",
+      "commit": "e70f9e99feaf9bcedaa635386b09906babcb38ef",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
