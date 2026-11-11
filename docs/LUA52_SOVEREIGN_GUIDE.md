@@ -126,3 +126,85 @@ export default withLua({
   reactStrictMode: true,
 });
 ```
+
+---
+
+## 6. WezTerm Tuning for Lua Gaming & Terminal Applications
+
+WezTerm (`.wezterm.lua`) is a GPU-accelerated terminal emulator configured natively in Lua. By combining WebGPU hardware acceleration and raw keyboard protocols, it delivers sub-millisecond input latency for terminal games and Lua development.
+
+### 6.1 Hardware & Display Directives
+- **WebGPU on Discrete GPU**: `config.front_end = "WebGpu"` with `config.webgpu_power_preference = "HighPerformance"` (targets NVIDIA RTX 4070 Ada Lovelace `sm_89`).
+- **High-Refresh Display**: `config.max_fps = 144` and `config.animation_fps = 120` bypass the default 60 FPS cap.
+- **DWM Composition Bypass**: `config.win32_system_backdrop = "Disable"` prevents Windows Desktop Window Manager composition lag.
+- **Custom Block Glyphs**: `config.custom_block_glyphs = true` ensures pixel-perfect rendering of half-block ANSI characters (`U+2580..U+259F`) directly in shader memory.
+- **Zero Cursor Redraws**: `config.cursor_blink_rate = 0` eliminates periodic timer interrupts when idle.
+
+### 6.2 Raw Input Protocols for Game Controls
+- **Kitty Keyboard Protocol**: `config.enable_kitty_keyboard = true` distinguishes keydown, keyup, and key-repeat events for real-time controls (WASD, arrows, jump).
+- **CSI u Key Encoding**: `config.enable_csi_u_key_encoding = true` handles chorded modifiers without ambiguity.
+- **Fullscreen Action**: `F11` and `Alt+Enter` trigger `wezterm.action.ToggleFullScreen`.
+
+---
+
+## 7. Lua Game IDE Best Practices & Tooling Stack
+
+### 7.1 Static Typing with LuaCATS & LuaLS
+- **Class and Field Contracts**:
+  ```lua
+  ---@class Player
+  ---@field entity Entity
+  ---@field speed number
+  ---@field health integer
+  local Player = {}
+  ```
+- **Strict Data Schemas**: Protect item, enemy, and level configuration tables with `(exact)`:
+  ```lua
+  ---@class (exact) WeaponConfig
+  ---@field damage number
+  ---@field cooldown number
+  ---@field projectile_speed number
+  ```
+- **Engine Stubs & Meta Definitions**:
+  Mark definition files with `---@meta` (`types/bevy.d.lua`) to provide IDE autocompletion for host engine reflection without polluting runtime globals.
+
+### 7.2 Tooling Integration
+- **Linter**: `selene` for AST-level scope analysis and flagging undeclared variables.
+- **Formatter**: `stylua` for zero-configuration, deterministic formatting.
+- **Debugger**: Debug Adapter Protocol (DAP) via `local-lua-debugger-vscode` or `mobdebug`.
+- **Hot Reload Architecture**: Decouple state from logic: persist entity variables in Rust ECS components or a dedicated `_STATE` table so reloading script files preserves active game sessions.
+
+---
+
+## 8. Bevy Engine Lua Plugin Architecture
+
+### 8.1 Entity-Centric Script Component
+Scripts attach directly to Bevy entities as components:
+```rust
+#[derive(Component)]
+pub struct LuaScriptComponent {
+    pub script_path: PathBuf,
+    pub is_initialized: bool,
+    pub reload_generation: u32,
+}
+```
+
+### 8.2 Reflection Bridge (`bevy_reflect`)
+Expose custom game components to Lua without manual FFI bindings:
+```rust
+#[derive(Component, Reflect, Default)]
+#[reflect(Component)]
+pub struct Transform2D {
+    pub x: f32,
+    pub y: f32,
+}
+
+// In Bevy App setup:
+app.register_type::<Transform2D>();
+```
+
+### 8.3 Script Lifecycle Execution
+- `on_init(event)`: Called once when the entity is spawned or script is loaded.
+- `on_update(event)`: Called every frame in the Bevy update schedule with `delta_time`.
+- `on_collision(event)`: Dispatched when physics collision pairs are detected.
+
