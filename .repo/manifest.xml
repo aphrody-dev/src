@@ -14,7 +14,7 @@
 
   <project path="apps/aphrody" name="aphrody" remote="aphrody" revision="278050d3b77734c210a2cda2beca235606f67f48" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="apps/aphrody-app" name="aphrody-app" remote="aphrody" revision="b378ca34836363366a95cefc79e69b6f1def7684" upstream="main" groups="aosp,pdk,sovereign" />
-  <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="4cd308ca453da3ffb89d0def4dd6790a6d9cbb41" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="56d11287af76d3a05eed81515b30b1e29408da7b" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="apps/shenron" name="shenron" remote="aphrody-labs" revision="b4cc7921582aa3a29624f91c91a03dee6bd73fa3" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/bench" name="bench" remote="aphrody" revision="a3c7c1168ccbce3fc468d13489284080292bb98a" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/depot" name="depot" remote="aphrody" revision="abafd494d3730e7f08e112b396410eecda91c75d" upstream="main" groups="monorepo,first-party,sovereign" />
@@ -132,6 +132,18 @@
   <project path="third_party/storytold/storyteller-bevy" name="storytold/storyteller-bevy" remote="github" revision="4ce8b72c4cf3263ef9df99761f93832009026a89" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/symphony" name="openai/symphony" remote="github" revision="be10a1b79df723d6d7612b5651c8522704dafb2e" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/taffy" name="DioxusLabs/taffy" remote="github" revision="6009614720b71fad810ecf618f5086460fa1f0b8" upstream="feat/google-design-web-vitals" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/tree-sitter/tree-sitter" name="tree-sitter/tree-sitter" remote="github" revision="8a476cb87443c11e63b23f797af8927c60755e13" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/tree-sitter/tree-sitter-bash" name="tree-sitter/tree-sitter-bash" remote="github" revision="a06c2e4415e9bc0346c6b86d401879ffb44058f7" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/tree-sitter/tree-sitter-c" name="tree-sitter/tree-sitter-c" remote="github" revision="b780e47fc780ddc8da13afa35a3f4ed5c157823d" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/tree-sitter/tree-sitter-cpp" name="tree-sitter/tree-sitter-cpp" remote="github" revision="c009222808634c1014f82438d4883753516a2c24" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/tree-sitter/tree-sitter-css" name="tree-sitter/tree-sitter-css" remote="github" revision="dda5cfc5722c429eaba1c910ca32c2c0c5bb1a3f" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/tree-sitter/tree-sitter-go" name="tree-sitter/tree-sitter-go" remote="github" revision="2346a3ab1bb3857b48b29d779a1ef9799a248cd7" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/tree-sitter/tree-sitter-html" name="tree-sitter/tree-sitter-html" remote="github" revision="73a3947324f6efddf9e17c0ea58d454843590cc0" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/tree-sitter/tree-sitter-javascript" name="tree-sitter/tree-sitter-javascript" remote="github" revision="58404d8cf191d69f2674a8fd507bd5776f46cb11" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/tree-sitter/tree-sitter-json" name="tree-sitter/tree-sitter-json" remote="github" revision="254c42a6476413b776221e03982ac8ae159eeb72" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/tree-sitter/tree-sitter-python" name="tree-sitter/tree-sitter-python" remote="github" revision="26855eabccb19c6abf499fbc5b8dc7cc9ab8bc64" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/tree-sitter/tree-sitter-rust" name="tree-sitter/tree-sitter-rust" remote="github" revision="77a3747266f4d621d0757825e6b11edcbf991ca5" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/tree-sitter/tree-sitter-typescript" name="tree-sitter/tree-sitter-typescript" remote="github" revision="75b3874edb2dc714fb1fd77a32013d0f8699989f" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/vcs/gitoxide" name="GitoxideLabs/gitoxide" remote="github" revision="d1e064e3fb494dc98f6e3ec38961c1608058ee63" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/vcs/jj" name="jj-vcs/jj" remote="github" revision="406bacfae4db2a2bbbd70c575fb485f0ccf7339e" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/vcs/just" name="casey/just" remote="github" revision="7b7b51bec9359a5b4a76321018db65d07978fecc" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />

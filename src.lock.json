@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-11-11T08:41:27.9789980+01:00",
+  "generated_at": "2026-11-11T09:23:39.5799466+01:00",
   "hardware": {
     "os": "Windows NT (x86_64)",
     "cpu": "Intel Core i7-13700F (Raptor Lake sm_89)",
@@ -26,7 +26,7 @@
     "zig": "0.17.0"
   },
   "pillars": {
-    "git_superproject_commit": "c13f1ef6ed018b215f37f241d4d7d02596f261a9",
+    "git_superproject_commit": "0b8cdd0ca7e0d29a106381f3030da7798f155303",
     "chromium_src_commit": "4c7244a405d326e284710231ff609168dceb9044",
     "linux_kernel_commit": "7475ea8b58616b33c04afb976cf0fbaad9dd63fb",
     "aosp_manifest_commit": "1ed30a827f1156dc831083e6cf999d6bd9deae18"
@@ -67,7 +67,7 @@
     "apps/rosegriffon": {
       "path": "C:\\src\\apps\\rosegriffon",
       "url": "https://github.com/aphrody-labs/rosegriffon.git",
-      "commit": "4cd308ca453da3ffb89d0def4dd6790a6d9cbb41",
+      "commit": "56d11287af76d3a05eed81515b30b1e29408da7b",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -1646,6 +1646,150 @@
       "pillar": "git",
       "remotes": {
         "origin": "https://github.com/DioxusLabs/taffy.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/tree-sitter/tree-sitter": {
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter",
+      "url": "https://github.com/tree-sitter/tree-sitter.git",
+      "commit": "8a476cb87443c11e63b23f797af8927c60755e13",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/tree-sitter/tree-sitter.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/tree-sitter/tree-sitter-bash": {
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-bash",
+      "url": "https://github.com/tree-sitter/tree-sitter-bash.git",
+      "commit": "a06c2e4415e9bc0346c6b86d401879ffb44058f7",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/tree-sitter/tree-sitter-bash.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/tree-sitter/tree-sitter-c": {
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-c",
+      "url": "https://github.com/tree-sitter/tree-sitter-c.git",
+      "commit": "b780e47fc780ddc8da13afa35a3f4ed5c157823d",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/tree-sitter/tree-sitter-c.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/tree-sitter/tree-sitter-cpp": {
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-cpp",
+      "url": "https://github.com/tree-sitter/tree-sitter-cpp.git",
+      "commit": "c009222808634c1014f82438d4883753516a2c24",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/tree-sitter/tree-sitter-cpp.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/tree-sitter/tree-sitter-css": {
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-css",
+      "url": "https://github.com/tree-sitter/tree-sitter-css.git",
+      "commit": "dda5cfc5722c429eaba1c910ca32c2c0c5bb1a3f",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/tree-sitter/tree-sitter-css.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/tree-sitter/tree-sitter-go": {
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-go",
+      "url": "https://github.com/tree-sitter/tree-sitter-go.git",
+      "commit": "2346a3ab1bb3857b48b29d779a1ef9799a248cd7",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/tree-sitter/tree-sitter-go.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/tree-sitter/tree-sitter-html": {
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-html",
+      "url": "https://github.com/tree-sitter/tree-sitter-html.git",
+      "commit": "73a3947324f6efddf9e17c0ea58d454843590cc0",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/tree-sitter/tree-sitter-html.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/tree-sitter/tree-sitter-javascript": {
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-javascript",
+      "url": "https://github.com/tree-sitter/tree-sitter-javascript.git",
+      "commit": "58404d8cf191d69f2674a8fd507bd5776f46cb11",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/tree-sitter/tree-sitter-javascript.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/tree-sitter/tree-sitter-json": {
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-json",
+      "url": "https://github.com/tree-sitter/tree-sitter-json.git",
+      "commit": "254c42a6476413b776221e03982ac8ae159eeb72",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/tree-sitter/tree-sitter-json.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/tree-sitter/tree-sitter-python": {
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-python",
+      "url": "https://github.com/tree-sitter/tree-sitter-python.git",
+      "commit": "26855eabccb19c6abf499fbc5b8dc7cc9ab8bc64",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/tree-sitter/tree-sitter-python.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/tree-sitter/tree-sitter-rust": {
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-rust",
+      "url": "https://github.com/tree-sitter/tree-sitter-rust.git",
+      "commit": "77a3747266f4d621d0757825e6b11edcbf991ca5",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/tree-sitter/tree-sitter-rust.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/tree-sitter/tree-sitter-typescript": {
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-typescript",
+      "url": "https://github.com/tree-sitter/tree-sitter-typescript.git",
+      "commit": "75b3874edb2dc714fb1fd77a32013d0f8699989f",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/tree-sitter/tree-sitter-typescript.git"
       },
       "sparse_paths": null
     },
