@@ -20,6 +20,36 @@
     "tools",
     "var"
   ],
+  "upstream_gates": {
+    "chromium": {
+      "deps_manifest": "DEPS",
+      "required_commit_hash_length": 40,
+      "max_binary_size_mb": 50.0,
+      "presubmit_gate": true
+    },
+    "linux": {
+      "maintainers_file": "MAINTAINERS",
+      "patch_series_file": "docs/patches/series",
+      "canonical_status": ["Supported", "Maintained", "Odd Fixes", "Orphan", "Obsolete"],
+      "verify_patterns_on_disk": true
+    },
+    "bun": {
+      "runtime_version": "1.4.4",
+      "full_rust_parity": true,
+      "forbidden_glue_files": ["binding.gyp"],
+      "forbidden_lifecycle_scripts": ["postinstall", "preinstall"]
+    },
+    "graph": {
+      "layers": [
+        { "level": 0, "name": "Layer 0: Native Kernel & Primitives", "path": "crates/unix" },
+        { "level": 1, "name": "Layer 1: Systems & Infra Foundations", "paths": ["crates/*", "infra/*"] },
+        { "level": 2, "name": "Layer 2: Sovereign Polyglot Packages", "path": "packages/*" },
+        { "level": 3, "name": "Layer 3: User Applications & Tools", "paths": ["apps/*", "tools/*"] }
+      ],
+      "enforce_monotonicity": true,
+      "enforce_acyclic": true
+    }
+  },
   "domains": {
     "crates": {
       "path": "crates",
@@ -53,5 +83,24 @@
       "required_tests_dir": "tests",
       "description": "Reproducible monorepo architecture, boundary, and quality verification tools"
     }
-  }
+  },
+  "rules": [
+    { "id": "ARCH-001", "category": "crate-domain-purity", "severity": "error" },
+    { "id": "ARCH-002", "category": "crate-manifest-edition", "severity": "warn" },
+    { "id": "ARCH-003", "category": "package-domain-purity", "severity": "error" },
+    { "id": "ARCH-004", "category": "app-contract-purity", "severity": "error" },
+    { "id": "ARCH-005", "category": "root-topology-junctions", "severity": "error" },
+    { "id": "ARCH-006", "category": "infra-domain-purity", "severity": "error" },
+    { "id": "ARCH-007", "category": "host-userspace-boundary", "severity": "error" },
+    { "id": "ARCH-008", "category": "secret-vault-hygiene", "severity": "error" },
+    { "id": "ARCH-009", "category": "zero-emoji-anti-slop", "severity": "error" },
+    { "id": "ARCH-010", "category": "single-ai-product-ownership", "severity": "error" },
+    { "id": "ARCH-011", "category": "tools-domain-purity", "severity": "error" },
+    { "id": "ARCH-012", "category": "atlas-link-integrity", "severity": "error" },
+    { "id": "ARCH-013", "category": "manifest-versioning-integrity", "severity": "error" },
+    { "id": "ARCH-014", "category": "chromium-deps-binary-hygiene", "severity": "error" },
+    { "id": "ARCH-015", "category": "linux-upstream-maintainers-hygiene", "severity": "error" },
+    { "id": "ARCH-016", "category": "bun-speed-zero-glue-hygiene", "severity": "error" },
+    { "id": "ARCH-017", "category": "graph-acyclic-boundaries", "severity": "error" }
+  ]
 }

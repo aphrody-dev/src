@@ -1,5 +1,8 @@
-use archguard::{AuditConfig, RULES, VERSION, format_human_report, run_audit};
+use archguard::{
+    build_monorepo_graph, format_human_report, run_audit, AuditConfig, RULES, VERSION,
+};
 use argh::FromArgs;
+use std::fs;
 use std::path::PathBuf;
 use std::process;
 
@@ -39,6 +42,7 @@ struct Cli {
 enum SubCmd {
     Check(CheckCmd),
     Rules(RulesCmd),
+    Graph(GraphCmd),
 }
 
 #[derive(FromArgs, PartialEq, Debug)]
@@ -75,6 +79,23 @@ struct RulesCmd {
     json: bool,
 }
 
+#[derive(FromArgs, PartialEq, Debug)]
+/// generate monorepo architecture dependency graph (Mermaid, DOT, or JSON)
+#[argh(subcommand, name = "graph")]
+struct GraphCmd {
+    /// target monorepo root directory (default: C:\src)
+    #[argh(option)]
+    root: Option<String>,
+
+    /// output format: mermaid (default), dot, or json
+    #[argh(option, default = "String::from(\"mermaid\")")]
+    format: String,
+
+    /// optional file path to write output to
+    #[argh(option, short = 'o')]
+    output: Option<String>,
+}
+
 fn default_root() -> PathBuf {
     if cfg!(windows) {
         PathBuf::from(r"C:\src")
@@ -84,7 +105,6 @@ fn default_root() -> PathBuf {
 }
 
 fn main() {
-    // Support `--version` directly before argh if passed alone
     let raw_args: Vec<String> = std::env::args().skip(1).collect();
     if raw_args.iter().any(|a| a == "--version" || a == "-V") {
         println!("archguard v{VERSION} (Rust 2024 Sovereign Monorepo Architecture Gate)");
@@ -106,17 +126,40 @@ fn main() {
                 );
             } else {
                 println!("ARCHGUARD v{VERSION} — Enforced Architectural Rules:");
-                println!("{:<10} {:<8} {:<28} {}", "RULE", "DEFAULT", "CATEGORY", "SUMMARY");
-                println!("{}", "-".repeat(100));
+                println!("{:<10} {:<8} {:<36} {}", "RULE", "DEFAULT", "CATEGORY", "SUMMARY");
+                println!("{}", "-".repeat(110));
                 for rule in RULES {
                     println!(
-                        "{:<10} {:<8} {:<28} {}",
+                        "{:<10} {:<8} {:<36} {}",
                         rule.id,
                         rule.default_severity.as_str(),
                         rule.category,
                         rule.summary
                     );
                 }
+            }
+        }
+        Some(SubCmd::Graph(g)) => {
+            let root_path = g.root.or(cli.root).map(PathBuf::from).unwrap_or_else(default_root);
+            let graph = build_monorepo_graph(&root_path);
+            let rendered = match g.format.to_ascii_lowercase().as_str() {
+                "dot" => graph.to_dot(),
+                "json" => graph.to_json(),
+                _ => graph.to_mermaid(),
+            };
+
+            if let Some(out_file) = g.output {
+                let out_p = PathBuf::from(out_file);
+                if let Some(parent) = out_p.parent() {
+                    let _ = fs::create_dir_all(parent);
+                }
+                if let Err(e) = fs::write(&out_p, &rendered) {
+                    eprintln!("Error writing graph output to {}: {}", out_p.display(), e);
+                    process::exit(1);
+                }
+                println!("Graph written to {}", out_p.display());
+            } else {
+                print!("{rendered}");
             }
         }
         Some(SubCmd::Check(c)) => {

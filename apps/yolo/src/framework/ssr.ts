@@ -4,10 +4,8 @@
  * Injects cryptographic per-request CSP nonces, dynamic Material Design 3 HCT CSS variables,
  * canonical metadata, and initial deterministic JSON hydration state.
  */
-import {
-  exportWebCss,
-  generateDynamicTheme,
-} from "../../../../packages/google-design/src/index.ts";
+import { generateDynamicTheme } from "../../../../packages/google-design/src/color-utils/hct.ts";
+import { exportWebCss } from "../../../../packages/google-design/src/theme-builder/exporter.ts";
 
 export interface YoloSsrRenderOptions {
   nonce: string;

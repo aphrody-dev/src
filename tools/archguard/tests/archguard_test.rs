@@ -304,3 +304,132 @@ fn detects_missing_or_invalid_version_in_package_or_crate_arch_013() {
         .collect();
     assert_eq!(arch013.len(), 2, "expected 2 versioning findings, got: {arch013:?}");
 }
+
+#[test]
+fn detects_chromium_deps_non_sha1_and_unnormalized_paths_arch_014() {
+    let ws = TempWorkspace::new("chromium_deps");
+    ws.write(
+        "DEPS",
+        "deps = {\n  'apps/aphrody/': 'https://github.com/aphrody-dev/aphrody.git@not-a-40-char-sha',\n}\n",
+    );
+
+    let report = run_audit(&AuditConfig {
+        root: ws.path().to_path_buf(),
+        strict: true,
+        only_rule: Some("ARCH-014".into()),
+        check_docs_emojis: true,
+    });
+
+    assert!(!report.clean);
+    let arch014: Vec<_> = report
+        .findings
+        .iter()
+        .filter(|f| f.rule_id == "ARCH-014")
+        .collect();
+    assert!(arch014.len() >= 2, "expected trailing slash and non-sha1 findings, got: {arch014:?}");
+}
+
+#[test]
+fn detects_linux_maintainers_nonexistent_pattern_and_broken_patch_series_arch_015() {
+    let ws = TempWorkspace::new("linux_maintainers");
+    ws.write(
+        "MAINTAINERS",
+        "FOO SUBSYSTEM\nM: John Doe <john@example.com>\nS: Supported\nF: crates/non_existent_folder/\n",
+    );
+    ws.write(
+        "docs/patches/series",
+        "missing-patch.patch -p1\n",
+    );
+
+    let report = run_audit(&AuditConfig {
+        root: ws.path().to_path_buf(),
+        strict: true,
+        only_rule: Some("ARCH-015".into()),
+        check_docs_emojis: true,
+    });
+
+    assert!(!report.clean);
+    let arch015: Vec<_> = report
+        .findings
+        .iter()
+        .filter(|f| f.rule_id == "ARCH-015")
+        .collect();
+    assert!(arch015.len() >= 2, "expected MAINTAINERS F: and patch series findings, got: {arch015:?}");
+}
+
+#[test]
+fn detects_bun_binding_gyp_and_legacy_postinstall_arch_016() {
+    let ws = TempWorkspace::new("bun_speed");
+    ws.write(
+        "packages/bad-gyp/package.json",
+        "{\n  \"name\": \"@aphrody/bad-gyp\",\n  \"version\": \"1.0.0\",\n  \"scripts\": { \"postinstall\": \"node-gyp rebuild\" }\n}\n",
+    );
+    ws.write("packages/bad-gyp/binding.gyp", "{}\n");
+
+    let report = run_audit(&AuditConfig {
+        root: ws.path().to_path_buf(),
+        strict: true,
+        only_rule: Some("ARCH-016".into()),
+        check_docs_emojis: true,
+    });
+
+    assert!(!report.clean);
+    let arch016: Vec<_> = report
+        .findings
+        .iter()
+        .filter(|f| f.rule_id == "ARCH-016")
+        .collect();
+    assert_eq!(arch016.len(), 2, "expected binding.gyp and postinstall findings, got: {arch016:?}");
+}
+
+#[test]
+fn detects_upward_layer_dependency_and_cycles_in_graph_arch_017() {
+    let ws = TempWorkspace::new("graph_boundaries");
+    // Package A depends on Package B, Package B depends on Package A (Cycle)
+    ws.write(
+        "packages/pkg-a/package.json",
+        "{\n  \"name\": \"@aphrody/pkg-a\",\n  \"version\": \"1.0.0\",\n  \"dependencies\": { \"@aphrody/pkg-b\": \"workspace:*\" }\n}\n",
+    );
+    ws.write(
+        "packages/pkg-b/package.json",
+        "{\n  \"name\": \"@aphrody/pkg-b\",\n  \"version\": \"1.0.0\",\n  \"dependencies\": { \"@aphrody/pkg-a\": \"workspace:*\" }\n}\n",
+    );
+
+    let report = run_audit(&AuditConfig {
+        root: ws.path().to_path_buf(),
+        strict: true,
+        only_rule: Some("ARCH-017".into()),
+        check_docs_emojis: true,
+    });
+
+    assert!(!report.clean);
+    let arch017: Vec<_> = report
+        .findings
+        .iter()
+        .filter(|f| f.rule_id == "ARCH-017")
+        .collect();
+    assert!(!arch017.is_empty(), "expected cycle finding in ARCH-017, got: {arch017:?}");
+    assert!(arch017.iter().any(|f| f.message.contains("Cyclic dependency detected")));
+}
+
+#[test]
+fn generates_architecture_graph_mermaid_dot_and_json() {
+    let ws = TempWorkspace::new("graph_export");
+    ws.write(
+        "crates/unix/Cargo.toml",
+        "[package]\nname = \"unix\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+    );
+    ws.write(
+        "packages/core/package.json",
+        "{\n  \"name\": \"@aphrody/core\",\n  \"version\": \"1.0.0\",\n  \"dependencies\": {}\n}\n",
+    );
+
+    let graph = archguard::build_monorepo_graph(ws.path());
+    let mermaid = graph.to_mermaid();
+    let dot = graph.to_dot();
+    let json = graph.to_json();
+
+    assert!(mermaid.contains("flowchart TD"));
+    assert!(dot.contains("digraph MonorepoArchitecture"));
+    assert!(json.contains("\"nodes\":"));
+}
