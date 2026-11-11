@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-11-11T12:22:47.4206849+01:00",
+  "generated_at": "2026-11-11T12:37:28.6091111+01:00",
   "hardware": {
     "os": "Windows NT (x86_64)",
     "cpu": "Intel Core i7-13700F (Raptor Lake sm_89)",
@@ -26,7 +26,7 @@
     "zig": "0.17.0"
   },
   "pillars": {
-    "git_superproject_commit": "bca544b2897ddb96f6c77a027df4e141ba1add58",
+    "git_superproject_commit": "00a499a41eb9457cdf3820142dbaca6dcda188e0",
     "chromium_src_commit": "4c7244a405d326e284710231ff609168dceb9044",
     "linux_kernel_commit": "7475ea8b58616b33c04afb976cf0fbaad9dd63fb",
     "aosp_manifest_commit": "1ed30a827f1156dc831083e6cf999d6bd9deae18"
@@ -67,7 +67,7 @@
     "apps/rosegriffon": {
       "path": "C:\\src\\apps\\rosegriffon",
       "url": "https://github.com/aphrody-labs/rosegriffon.git",
-      "commit": "f885be1ad73497ebf762e0c57c72a82e2d029a41",
+      "commit": "0eb274317ab384e057957fe2d7071dff174a4882",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -84,7 +84,7 @@
     "apps/shenron": {
       "path": "C:\\src\\apps\\shenron",
       "url": "https://github.com/aphrody-labs/shenron.git",
-      "commit": "fbdee7b3a629c7ba9a413997af53e21412fc1c2e",
+      "commit": "c32a9886a13fc637b571735d467859d2cd7a0472",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -164,7 +164,7 @@
     "crates/rust-stack": {
       "path": "C:\\src\\crates\\rust-stack",
       "url": "https://github.com/aphrody-dev/rust-stack.git",
-      "commit": "a3b765d44ddb024fe675b746be81787d34f73a07",
+      "commit": "098565de91e6182646c0ab6085d5919bc0d84ae7",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -384,7 +384,7 @@
     "packages/google-design": {
       "path": "C:\\src\\packages\\google-design",
       "url": "https://github.com/aphrody-dev/google-design.git",
-      "commit": "2c2f611e1b129ff746db23e9b357dc1491a36e45",
+      "commit": "ce9bd60a97528a030c1746237f7d1405011155cc",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
