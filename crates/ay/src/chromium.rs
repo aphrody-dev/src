@@ -1,5 +1,6 @@
 //! Chromium tooling: the depot_tools entry points rewritten in Rust (`ay gclient`, `ay fetch`,
-//! `ay vpy`) and the upstream binaries `ay` locates and runs (`ay cipd`, `ay ninja`, `ay gn`).
+//! `ay vpy`, `ay cipd ensure`) and the upstream binaries `ay` locates and runs (other `ay cipd`
+//! subcommands, `ay ninja`, `ay gn`).
 //! Plan and status: docs/DEPOT_TOOLS_RUST.md.
 
 /// Which tool a `Route::Chromium` runs.
@@ -18,10 +19,13 @@ pub fn run(tool: Tool, args: &[String]) -> i32 {
         Tool::Gclient => depot_gclient::cli::run_gclient("ay gclient", args),
         Tool::Fetch => depot_gclient::cli::run_fetch("ay fetch", args),
         Tool::Vpy => depot_vpython::run("ay vpy", args),
-        Tool::Cipd => {
-            let a: Vec<&str> = args.iter().map(String::as_str).collect();
-            depot_gclient::cli::run_cipd(&a)
-        }
+        // `ensure` in Rust (crates/depot-cipd), other subcommands through the Go client.
+        Tool::Cipd => depot_cipd::cli::run(args, &|a| {
+            depot_core::DepotTools::run_passthrough("cipd", a).unwrap_or_else(|e| {
+                eprintln!("cipd: {e}");
+                127
+            })
+        }),
         Tool::Ninja => depot_core::build_tools::run_ninja(args),
         Tool::Gn => depot_core::build_tools::run_gn(args),
     }

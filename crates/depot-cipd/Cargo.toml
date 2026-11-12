@@ -1,0 +1,20 @@
+[package]
+name = "depot-cipd"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository = "https://github.com/aphrody-dev/depot"
+description = "CIPD client in Rust: `cipd ensure` with the luci-go site root layout, instances cached in depot-cas (`ay cipd ensure`)"
+publish = false
+
+[dependencies]
+base64.workspace = true
+depot-cas.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2 = "0.11"
+ureq = "3"
+zip = { version = "9", default-features = false, features = ["deflate"] }
+
+[dev-dependencies]
+tempfile = "3"

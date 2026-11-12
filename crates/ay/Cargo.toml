@@ -24,6 +24,7 @@ path = "src/lib.rs"
 archguard.workspace = true
 clap.workspace = true
 depot-cli.workspace = true
+depot-cipd.workspace = true
 depot-core.workspace = true
 depot-gclient = { path = "../depot-gclient" }
 depot-vpython = { path = "../depot-vpython" }
