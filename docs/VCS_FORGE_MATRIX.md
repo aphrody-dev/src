@@ -1,0 +1,143 @@
+# VCS, large files and forges for `ay`
+
+Snapshot 2026-11-12. Stars, last push, license and latest release from `gh api repos/<o>/<r>` and
+`gh api repos/<o>/<r>/releases/latest`; Forgejo from the Codeberg API; crates from crates.io. Local
+pins are the `third_party/vcs/*` checkouts. This page does not repeat:
+
+- [RUST_STACK.md](./RUST_STACK.md): one fork per layer, compatibility oracles (Git, Binary-asset VCS rows).
+- [DEPOT_TOOLS_RUST.md](./DEPOT_TOOLS_RUST.md): per-subcommand git/gix/jj coverage of our call sites
+  ("Replacing Git for Windows") and what `crates/depot-cas` takes from Lore ("Lore: what we take").
+- [ECOSYSTEM_CHOICES.md](./ECOSYSTEM_CHOICES.md): crate selection rules, russh, keyring, object_store, dev CLIs.
+
+## 1. VCS engines
+
+| Engine | Lang | License | Stars | Last push | Latest | Model | Git interop | Local pin |
+|---|---|---|---|---|---|---|---|---|
+| git | C | GPL-2.0 | 64.3k | 2026-11-11 | v2.56.1 (tag) | distributed, snapshot DAG | reference | none |
+| Git for Windows | C + MSYS2 | GPL-2.0 | 9.5k | 2026-11-12 | v2.56.1.windows.1 / 2026-11-10 | git + POSIX runtime | reference | installed 2.56.0.windows.4 |
+| gitoxide (`gix`) | Rust | Apache-2.0 / MIT | 12.1k | 2026-11-12 | CLI v0.61.0, crate gix 0.90.0 / 2026-10-22 | library + `gix`/`ein` CLI | same on-disk format | `third_party/vcs/gitoxide` d1e064e; workspace `gix = 0.90.0` |
+| jj | Rust | Apache-2.0 | 32.5k | 2026-11-12 | v0.47.1 / 2026-11-05 | change-based, working copy is a commit, oplog | git backend, colocated repos | `third_party/vcs/jj` 406bacf; tools.toml 0.46.0 |
+| Sapling | Rust, C++, Python | GPL-2.0 | 7.3k | 2026-11-12 | 0.2.20261103 / 2026-11-04 | stacks, smartlog; server Mononoke | clones git remotes | none |
+| Pijul | Rust | GPL-2.0 | n/a (Nest) | crate 2026-10-30 | pijul 0.15.0 | patch theory, commutative changes | none (import only) | none |
+| Lore (EpicGames) | Rust | MIT | 9.1k | 2026-11-12 | v0.13.0 / 2026-11-06 | centralized, content-addressed, sparse hydration, FUSE, advisory locks | none (own protocol) | `third_party/vcs/lore` 166908c, `aphrody-dev/lore` |
+| Radicle (heartwood) | Rust | MIT / Apache-2.0 | 273 | 2026-11-11 | no GH release; crate radicle 0.25.1 | P2P gossip, git storage, COBs | git remote helper `rad://` | `third_party/vcs/radicle` 8b05332 (upstream origin, no fork) |
+| GitButler (client) | Rust, TS | FSL-1.1 (fair source) | 22.0k | 2026-11-12 | n/a | virtual branches over git | git | none; license excludes forking for a competing product |
+
+### Git for Windows bundle (installed, `C:\Program Files\Git`)
+
+| Component | Version seen | Rust replacement | Status in `ay` |
+|---|---|---|---|
+| git | 2.56.0.windows.4 | gix + jj | see DEPOT_TOOLS_RUST table |
+| MSYS2 runtime + bash | bash 5.3.15 (cygwin target) | brush, Bun shell | pwsh twins exist for `install`/`deploy` |
+| coreutils, sed, awk, grep, find, less, vim, perl, tig | MSYS2 builds, 366 files in `usr/bin` | uutils, ripgrep, fd, sd | uutils installed |
+| OpenSSH (ssh, scp, sftp, ssh-agent, ssh-keygen) | OpenSSH_10.6p1, OpenSSL 3.5.9 | russh, russh-sftp | `ay ssh` (`crates/remote`); gix still spawns `ssh` |
+| curl + OpenSSL | debug-enabled libcurl in PATH | ureq/reqwest + rustls | gix `reqwest` transport |
+| GnuPG (commit signing) | gpg 2.x | sequoia-openpgp, or SSH signing | jj signs (gpg/ssh); gix cannot create signed commits |
+| Git Credential Manager | 2.9.1 installed; upstream v3.0.2 / 2026-10-26 (C#, MIT) | `gix-credentials::helper::main` + keyring | plan in DEPOT_TOOLS_RUST |
+| git-lfs | 3.8.1 (Go 1.27.3); upstream v3.8.1 / 2026-10-22 | see section 2 | `GIT_LFS_SKIP_SMUDGE=1` |
+| scalar | bundled | `jj util gc`, gix maintenance (none yet) | still git |
+
+### gix feature parity (gitoxide `crate-status.md` at d1e064e, gix 0.90)
+
+| Feature | git | gix | jj 0.47 | Evidence / note |
+|---|---|---|---|---|
+| clone (full, shallow) | yes | yes | yes | shallow clone and fetch checked; bundles and include-tags-when-shallow open |
+| fetch | yes | yes | yes | negotiation consecutive/skipping/noop; `FETCH_HEAD` not written |
+| push | yes | no | yes (git subprocess) | "push and self-contained clone/fetch over file:// and ssh://" open |
+| checkout / switch / reset orchestration | yes | partial | yes | index-from-tree + `gix-worktree-state` yes; orchestration open; submodules and sparse not handled at checkout |
+| merge | yes | tree and blob merge only | yes | `gix-merge` three-way blob/tree; no `MERGE_HEAD` workflow |
+| rebase, cherry-pick, stash, apply, am, bisect | yes | no | rebase yes | `gix-rebase`, `gix-stash`, `gix-apply`, `gix-sequencer` all unchecked |
+| status | yes | yes | yes | index-worktree with renames and untracked, index-index; tree-index and fsmonitor open |
+| worktree | yes | open, create linked | workspaces | move, remove, repair, prunable open |
+| submodules | yes | read, list, active, status | no | CRUD and update open |
+| sparse checkout / sparse index | yes | no | partial (`jj sparse`) | both unchecked |
+| partial clone (`--filter`, promisor) | yes | no | no | promisor section unchecked |
+| LFS | via git-lfs | no | no | `gix-lfs` is a placeholder (process protocol planned) |
+| commit and tag signing | yes | no (create) | yes | gitoxide issue #12 |
+| credential helpers | yes | yes | via git | launches helpers; `helper::main()` for Rust helpers; no URL-rewrite selection |
+| protocol v2 | yes | yes | via git | V1 and V2 over git://, http(s), ssh (external `ssh`); no native SSH, no server `accept` |
+| SHA-256, reftable | experimental (Git 3.0 track) | no | no | hash abstraction only; "Git 3.0 compatibility" unchecked |
+| hooks | yes | no | no | `core.hooksPath`, client and server hooks open |
+| config write | yes | low level only | yes | no write-back API |
+
+Difference with DEPOT_TOOLS_RUST: crate-status now marks "create linked worktrees" as done; the
+workspace already pins gix 0.90.0 while `tools.toml` still installs the 0.61.0 CLI.
+
+## 2. Large files
+
+| Tool | Lang | License | Stars / DL | Last activity | Latest | Kind | Storage | Fits `ay` |
+|---|---|---|---|---|---|---|---|---|
+| git-lfs | Go | MIT | 14.6k | 2026-11-06 | v3.8.1 / 2026-10-22 | client, batch API spec | server-defined | wire protocol is the de facto standard; keep as oracle |
+| rudolfs | Rust | MIT | 524 | 2026-09-15 | no GH release | LFS server, caching | S3, local disk | small, no auth; candidate server base |
+| oxlfs, LFSX, local-lfs, git-remote-object-store | Rust | AGPL-3.0, MPL-2.0, MIT, Apache-2.0 | 5-19 | 2026-09..11 | none | LFS servers / agents | local, object store | too young |
+| git-xet (`huggingface/xet-core/git_xet`) | Rust | Apache-2.0 | 629 | 2026-11-12 | xet-core v1.8.0 / 2026-10-30; crates 1.8.1 (2.1M DL) | git-lfs custom transfer agent + CAS | Xet CAS, chunk dedup | only Rust LFS transfer agent with traction; HF-centric backend |
+| Oxen (`liboxen`) | Rust | Apache-2.0 | 1.2k / 206k DL | 2026-11-12 | v0.67.1 / 2026-11-10 | own data VCS | own server | not git-compatible |
+| DVC | Python | Apache-2.0 | 16.0k | 2026-11-09 | 3.67.1 / 2026-03-31 | pointer files next to git | any remote | Python, out of scope |
+| git-annex | Haskell | AGPL-3.0 / GPL-3.0 | not on GitHub | active | n/a | symlink pointers, special remotes | any remote | Haskell, no Windows symlink story |
+| Lore content store | Rust | MIT | (see 1) | 2026-11-12 | v0.13.0 | FastCDC v2020 fragments, blake3, zstd, FUSE hydration | Lore server, S3 (`lore-aws`) | storage model reused, protocol not |
+| `crates/depot-cas` | Rust | ours | n/a | in tree | n/a | Lore-model fragment store for GCS/CIPD pins | `%LOCALAPPDATA%\depot_tools\cas` | in use by `ay gclient sync` |
+
+Constraints: googlesource mirrors answer the LFS batch endpoint with HTTP 405, so
+`crates/depot-gclient/src/sync.rs` sets `GIT_LFS_SKIP_SMUDGE=1`. SourceHut has no LFS (ticket
+git.sr.ht#363 open). No Rust crate implements the git-lfs client side generically; gix has none yet.
+
+## 3. Forges
+
+| Forge | Lang | License | Stars | Latest | Self-host | CI | Review model | Packages | LFS | ForgeFed | GitHub API compat | Rust parts |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| GitHub | Ruby, Go, Rust | proprietary | n/a | SaaS / GHES | GHES (paid) | Actions | PR, per-PR reviews | yes | yes | no | reference | code search (Blackbird) |
+| GitLab CE | Ruby, Go | MIT (CE) | 24.6k (mirror) | push 2026-10-23 | yes | GitLab CI + runner (Go) | MR, approvals | yes | yes | started, not shipped | no (own REST/GraphQL) | glfm markdown (comrak) |
+| Gitea | Go | MIT | 59.0k | v28.3.0 / 2026-11-01 | yes | Gitea Actions (act_runner, act fork) | PR | yes (cargo, npm, OCI, ...) | yes | no | GitHub-v3-styled, not compatible; Actions YAML compatible | none |
+| Forgejo | Go | GPL-3.0 (since v9) | 5.8k (Codeberg) | v17.0.1 / 2026-10-26 | yes | Forgejo Actions (forgejo-runner) | PR, AGit flow | yes | yes | experimental: stars, user follow | same as Gitea | none |
+| Codeberg | Forgejo | n/a (e.V. hosted) | n/a | follows Forgejo | no (SaaS) | Forgejo Actions, Woodpecker | PR | yes | yes, quota | as Forgejo | as Forgejo | none |
+| SourceHut | Go, Python | AGPL-3.0 | not on GitHub | rolling | yes | builds.sr.ht | email patches (`git send-email`), lists | no | no | no | no | none |
+| Gerrit | Java (JGit) | Apache-2.0 | 1.2k (mirror) | push 2026-11-12 | yes | none built in (Zuul, Jenkins, LUCI) | per-commit change, Change-Id, votes, CQ | no | plugin | no | no | none; Chromium's review, `ay cl` targets it |
+| Radicle | Rust | MIT / Apache-2.0 | 273 | heartwood 2026-11-11 | P2P seed nodes | CI broker | patches as COBs | no | no | own P2P, not ForgeFed | no | all |
+| OneDev | Java | MIT | 15.4k | v17.2.0 / 2026-11-11 | yes | built in | PR, code comments | yes | yes | no | no | none |
+| Gogs | Go | MIT | 47.9k | v0.14.4 / 2026-11-12 | yes | none | PR (basic) | no | yes | no | GitHub-v3-styled subset | none |
+| rgit | Rust | WTFPL | 215 | push 2025-10-01 | yes (read only) | no | none | no | no | no | no | all (git2, axum) |
+| mega (gitmono-dev) | Rust + TS | Apache-2.0 | 540 | push 2026-09-16 | yes | no | monorepo, Piper-style | no | yes (own LFS) | no | no | core |
+| gill | Rust | MIT | 45 | push 2026-01-05 | yes | no | PR | no | no | ForgeFed (early) | no | all |
+
+GitLab, GitHub Enterprise and Gerrit are the only ones with large production review deployments;
+no Rust forge has CI, packages and review together.
+
+## 4. Tools around GitHub and git
+
+| Tool | Lang | License | Stars | Latest | Role | In tools.toml | Verdict |
+|---|---|---|---|---|---|---|---|
+| gh | Go | MIT | 47.0k | v2.103.3 / 2026-10-26 | GitHub CLI | yes | keep until `ay cloud` covers PR/issues/releases |
+| act | Go | MIT | 72.7k | v0.2.97 / 2026-11-04 | run Actions locally | no | add; also the base of Gitea act_runner |
+| actionlint | Go | MIT | 4.4k | push 2026-07-16 | workflow linter | no | add for `.github/workflows` |
+| octocrab | Rust | MIT / Apache-2.0 | 1.5k | v0.54.9 / 2026-10-31 | GitHub API crate | n/a (crate) | candidate for `crates/depot-forge` (`github.rs` is hand-rolled) |
+| git-cliff | Rust | Apache-2.0 / MIT | 12.4k | v2.14.2 / 2026-09-18 | changelog from commits | no | add; feeds `dist` releases |
+| cocogitto | Rust | MIT | 1.2k | push 2026-04-22 | conventional commits, bump | no | skip (git-cliff covers changelogs) |
+| git-absorb | Rust | BSD-3-Clause | 5.8k | 0.9.0 / 2026-02-14 | fixup into stack | no | add (jj has `jj absorb` natively) |
+| delta | Rust | MIT | 32.7k | 0.20.1 / 2026-10-04 | diff pager | yes, `aphrody-dev/delta` | keep |
+| gitui | Rust | MIT | 22.7k | v0.28.1 / 2026-03-24 | TUI (gitoxide + git2) | no | add |
+| gitu | Rust | MIT | 2.9k | push 2026-10-28 | Magit-style TUI | no | optional |
+| lazygit | Go | MIT | 83.9k | v0.66.3 / 2026-11-07 | TUI | no | skip, gitui covers it in Rust |
+| onefetch | Rust | MIT | 12.1k | 3.2.0 / 2026-10-31 | repo summary, on gix | no | optional |
+| git-branchless | Rust | Apache-2.0 / MIT | 4.1k | v0.11.1 / 2026-05-21 | smartlog, restack | no | skip, jj supersedes |
+| git-stack | Rust | Apache-2.0 / MIT | 653 | push 2026-11-02 | stacked branches | no | skip, jj supersedes |
+| spr | Rust | MIT | 542 | v1.3.7 / 2025-08-25 | one PR per commit on GitHub | no | skip, stale |
+| jj-ryu, stakk, jjpr | Rust | MIT, Apache-2.0 | 200 / 33 / 19 | 2026-11 | stacked GitHub PRs from jj | no | evaluate jj-ryu |
+| ghstack | Python | MIT | 1.0k | push 2026-09-24 | stacked PRs | no | skip (Python) |
+| av, git-town | Go | MIT | 511 / 3.4k | v0.1.48, v24.1.1 | stacked PRs, branch sync | no | skip (Go) |
+| git-graph | Rust | MIT | 1.0k | push 2026-11-04 | commit graph render | no | optional |
+| typos | Rust | Apache-2.0 / MIT | 4.2k | push 2026-11-11 | spell check in CI | no | add |
+| woodpecker | Go | Apache-2.0 | 8.2k | push 2026-11-12 | CI for Forgejo/Gitea | no | only if Forgejo Actions is not enough |
+
+## Decision
+
+| Need | Pick | Fork under `aphrody-dev` | Compatibility test |
+|---|---|---|---|
+| Local VCS engine (library) | gix 0.90 for read, fetch, checkout, status | `aphrody-dev/gitoxide` (exists) | gitoxide's own `tests/` + git `t/` subset for the subcommands in the DEPOT_TOOLS_RUST table |
+| Local VCS UX (push, rebase, stacks, worktrees) | jj, colocated with `.git` | `aphrody-dev/jj` (exists); bump tools.toml 0.46.0 -> 0.47.1 | jj test suite; `git fsck` and `git log` identical after `jj git push` round trip |
+| Windows git replacement | `ay git` (gix) + jj + `ay ssh` (russh) + uutils; Git for Windows kept only for `ay git slim` partial clones and LFS | gitoxide, jj, russh (exist) | `ay gclient sync` and `ay doctor` pass with Git for Windows removed from PATH |
+| LFS client | none to fork yet: keep `git-lfs` binary behind `GIT_LFS_SKIP_SMUDGE=1`; implement batch API in gix-lfs style later | none; watch `huggingface/xet-core` (git_xet) as a Rust transfer-agent reference | git-lfs `t/` integration suite against our client |
+| LFS server / large assets | `crates/depot-cas` (Lore model) for pins; Lore itself for binary-first repos; rudolfs if a plain LFS endpoint is needed on fr1 | `aphrody-dev/lore` (exists); rudolfs only if adopted | Lore integration tests; git-lfs client `t/` against the server |
+| Forge for our code | GitHub stays primary; Forgejo as self-hosted mirror on fr1 | none (Forgejo on Codeberg, run upstream release) | `ay git` multi-forge push to both, ref lists identical |
+| CI | GitHub Actions; Forgejo Actions on the mirror; `act` locally | none | same workflow YAML green on GitHub, forgejo-runner and `act` |
+| Review | GitHub PRs for our repos; Gerrit via `ay cl` for Chromium; stacked PRs via jj | none | `ay cl upload` matches `git cl upload` change metadata |
+| GitHub API in `ay` | octocrab, replacing hand-rolled `depot-forge/src/github.rs` | none | `depot-forge` tests against recorded GitHub responses |
