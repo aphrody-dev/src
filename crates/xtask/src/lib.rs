@@ -676,7 +676,7 @@ pub fn render_kernel_maintainers() -> String {
                 "DEPS",
                 "crates/depot-cli/",
                 "crates/depot-core/",
-                "crates/depot-ffi/",
+                "crates/ffi/",
                 "crates/depot-forge/",
                 "crates/depot-graph/",
                 "crates/depot-ingest/",

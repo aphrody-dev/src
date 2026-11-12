@@ -27,9 +27,8 @@ pub use epic::{
     PakInfo, UAssetSummary, EGS_MANIFEST_MAGIC, PACKAGE_FILE_TAG, PAK_FILE_MAGIC,
 };
 pub use web::{
-    AdblockCheckResult, BOQ_XSSI_PREFIX, SovereignAdblockEngine, aphrody_adblock_eval,
-    aphrody_boq_parse, aphrody_chromium_buf_free, boq_encode_f_req, boq_extract_chunks,
-    boq_first_envelope, boq_parse_envelopes, boq_strip_xssi,
+    AdblockCheckResult, BOQ_XSSI_PREFIX, SovereignAdblockEngine, boq_encode_f_req,
+    boq_extract_chunks, boq_first_envelope, boq_parse_envelopes, boq_strip_xssi,
 };
 
 #[cfg(test)]

@@ -1,20 +1,36 @@
 [package]
-name = "depot-ffi"
+name = "ffi"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-repository = "https://github.com/aphrody-dev/depot"
+description = "Stable C ABI over the depot and corelib web libraries (aphrody_ffi shared library)"
+publish = false
 
 [lib]
+name = "aphrody_ffi"
 crate-type = ["cdylib", "rlib"]
 
+[features]
+default = ["depot", "web"]
+depot = [
+  "dep:depot-core",
+  "dep:depot-treesitter",
+  "dep:depot-re",
+  "dep:depot-migrate",
+  "dep:depot-forge",
+  "dep:depot-ingest",
+  "dep:depot-graph",
+]
+web = ["dep:corelib"]
+
 [dependencies]
-depot-core.workspace = true
-depot-treesitter.workspace = true
-depot-re.workspace = true
-depot-migrate.workspace = true
-depot-forge.workspace = true
-depot-ingest.workspace = true
-depot-graph.workspace = true
+corelib = { workspace = true, optional = true }
+depot-core = { workspace = true, optional = true }
+depot-treesitter = { workspace = true, optional = true }
+depot-re = { workspace = true, optional = true }
+depot-migrate = { workspace = true, optional = true }
+depot-forge = { workspace = true, optional = true }
+depot-ingest = { workspace = true, optional = true }
+depot-graph = { workspace = true, optional = true }
 serde.workspace = true
 serde_json.workspace = true

@@ -8,7 +8,7 @@ authors = ["Aphrody / DeepMind Antigravity"]
 
 [lib]
 name = "corelib"
-crate-type = ["cdylib", "rlib"]
+crate-type = ["rlib"]
 path = "src/lib.rs"
 
 [features]

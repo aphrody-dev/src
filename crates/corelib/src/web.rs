@@ -1,16 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
-//! Google Boq (`batchexecute`) Wire Protocol, Sovereign Adblock Engine, and `bun:ffi` C-ABI Bridge.
+//! Google Boq (`batchexecute`) Wire Protocol, Sovereign Adblock Engine. The C ABI over them lives in `crates/ffi` (`aphrody_*`).
 //!
 //! Consolidates `crates/aphrody-boq`, `crates/aphrody-chromium-ffi`, and `crates/brave-adblock`
 //! from `yolo-rs/yolo-web` into `sovereign-corelib` (`corelib::web`) with zero external bloat.
-//!
-//! C-ABI envelope returned by FFI functions:
-//! ```text
-//! [u64 payload length, little endian][u8 status: 0 ok, 1 error][UTF-8 payload]
-//! ```
 
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
+use serde_json::Value;
 use std::collections::HashSet;
 
 // ============================================================================
@@ -307,88 +302,10 @@ impl SovereignAdblockEngine {
     }
 }
 
-// ============================================================================
-// 3. C-ABI `bun:ffi` Exports (`aphrody_chromium_*`, `aphrody_adblock_*`, `aphrody_boq_*`)
-// ============================================================================
-
-const FFI_HEADER_LEN: usize = 9;
-
-fn ffi_pack_buffer(status: u8, payload: &[u8]) -> *mut u8 {
-    let mut out = Vec::with_capacity(FFI_HEADER_LEN + payload.len());
-    out.extend_from_slice(&(payload.len() as u64).to_le_bytes());
-    out.push(status);
-    out.extend_from_slice(payload);
-    let mut boxed = out.into_boxed_slice();
-    let ptr = boxed.as_mut_ptr();
-    std::mem::forget(boxed);
-    ptr
-}
-
-unsafe fn ffi_slice<'a>(ptr: *const u8, len: usize) -> &'a [u8] {
-    if ptr.is_null() || len == 0 {
-        &[]
-    } else {
-        unsafe { std::slice::from_raw_parts(ptr, len) }
-    }
-}
-
-/// Free a framed buffer returned by any `aphrody_*` C-ABI function.
-#[unsafe(no_mangle)]
-pub unsafe extern "C" fn aphrody_chromium_buf_free(ptr: *mut u8) {
-    if ptr.is_null() {
-        return;
-    }
-    unsafe {
-        let mut len_bytes = [0u8; 8];
-        std::ptr::copy_nonoverlapping(ptr, len_bytes.as_mut_ptr(), 8);
-        let total = FFI_HEADER_LEN + u64::from_le_bytes(len_bytes) as usize;
-        drop(Box::from_raw(std::ptr::slice_from_raw_parts_mut(ptr, total)));
-    }
-}
-
-/// Parse a Google Boq `batchexecute` response over C-ABI and return JSON array of envelopes.
-#[unsafe(no_mangle)]
-pub unsafe extern "C" fn aphrody_boq_parse(raw_ptr: *const u8, raw_len: usize) -> *mut u8 {
-    let bytes = unsafe { ffi_slice(raw_ptr, raw_len) };
-    let Ok(text) = std::str::from_utf8(bytes) else {
-        return ffi_pack_buffer(1, b"boq input must be valid UTF-8");
-    };
-    let envelopes = boq_parse_envelopes(text);
-    let serialized = serde_json::to_vec(&envelopes).unwrap_or_else(|_| b"[]".to_vec());
-    ffi_pack_buffer(0, &serialized)
-}
-
-/// Evaluate a URL against newline-delimited Adblock rules over C-ABI.
-#[unsafe(no_mangle)]
-pub unsafe extern "C" fn aphrody_adblock_eval(
-    rules_ptr: *const u8,
-    rules_len: usize,
-    url_ptr: *const u8,
-    url_len: usize,
-) -> *mut u8 {
-    let Ok(rules) = std::str::from_utf8(unsafe { ffi_slice(rules_ptr, rules_len) }) else {
-        return ffi_pack_buffer(1, b"rules must be UTF-8");
-    };
-    let Ok(url) = std::str::from_utf8(unsafe { ffi_slice(url_ptr, url_len) }) else {
-        return ffi_pack_buffer(1, b"url must be UTF-8");
-    };
-    let engine = SovereignAdblockEngine::from_rules(rules);
-    let res = engine.check_network_url(url);
-    let payload = serde_json::to_vec(&json!({
-        "matched": res.matched,
-        "blocked": res.blocked,
-        "important": res.important,
-        "filter": res.filter,
-        "exception": res.exception,
-        "cosmeticSelectors": engine.cosmetic_hide_selectors,
-    }))
-    .unwrap_or_default();
-    ffi_pack_buffer(0, &payload)
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serde_json::json;
 
     #[test]
     fn test_boq_encode_and_parse_roundtrip() {
