@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-11-12T09:22:06.1848751+01:00",
+  "generated_at": "2026-11-12T09:25:17.9074143+01:00",
   "hardware": {
     "os": "Windows NT (x86_64)",
     "cpu": "Intel Core i7-13700F (Raptor Lake sm_89)",
@@ -25,14 +25,14 @@
     "zig": "0.17.0"
   },
   "pillars": {
-    "git_superproject_commit": "77989604fc28c28c36f170fa8fd93fe3affeef35",
+    "git_superproject_commit": "f7c98266ff07d751d3949a45099c757b144a3211",
     "chromium_src_commit": "ef68a767a544b5544e46944e4b3be15e9ce0b6d4",
     "linux_kernel_commit": "7475ea8b58616b33c04afb976cf0fbaad9dd63fb",
     "aosp_manifest_commit": "1ed30a827f1156dc831083e6cf999d6bd9deae18"
   },
   "repositories": {
     "apps/r2b": {
-      "path": ".\\apps\\r2b",
+      "path": "C:\\src\\apps\\r2b",
       "url": "https://github.com/aphrody-labs/r2b.git",
       "commit": "f939b732839cb5ead9ca45851f472b6d12a478c6",
       "branch": "main",
@@ -44,9 +44,9 @@
       "sparse_paths": null
     },
     "apps/rosegriffon": {
-      "path": ".\\apps\\rosegriffon",
+      "path": "C:\\src\\apps\\rosegriffon",
       "url": "https://github.com/aphrody-labs/rosegriffon.git",
-      "commit": "30c97f9c1b885a6de3d79432648f56f207dbec89",
+      "commit": "045851b0458d31a614ac2c22343c37062fdabc23",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -61,7 +61,7 @@
       "sparse_paths": null
     },
     "apps/shenron": {
-      "path": ".\\apps\\shenron",
+      "path": "C:\\src\\apps\\shenron",
       "url": "https://github.com/aphrody-labs/shenron.git",
       "commit": "e9d40698e2a69132b2448088f19d19ed8e6914d6",
       "branch": "main",
@@ -77,7 +77,7 @@
       "sparse_paths": null
     },
     "crates/bench": {
-      "path": ".\\crates\\bench",
+      "path": "C:\\src\\crates\\bench",
       "url": "https://github.com/aphrody-dev/bench.git",
       "commit": "6b0c980b99139cf69cc9d391143afda675732570",
       "branch": "main",
@@ -93,7 +93,7 @@
       "sparse_paths": null
     },
     "crates/ring3-agent": {
-      "path": ".\\crates\\ring3-agent",
+      "path": "C:\\src\\crates\\ring3-agent",
       "url": "https://github.com/aphrody-dev/ring3-agent.git",
       "commit": "d282118ea23d9d20da4a73d9b574376702b01b6b",
       "branch": "main",
@@ -109,7 +109,7 @@
       "sparse_paths": null
     },
     "crates/rust-stack": {
-      "path": ".\\crates\\rust-stack",
+      "path": "C:\\src\\crates\\rust-stack",
       "url": "https://github.com/aphrody-dev/rust-stack.git",
       "commit": "0652a8d2f24f3d773b5a91a621c4fee4e322c5be",
       "branch": "main",
@@ -125,9 +125,9 @@
       "sparse_paths": null
     },
     "packages/bun-plugins": {
-      "path": ".\\packages\\bun-plugins",
+      "path": "C:\\src\\packages\\bun-plugins",
       "url": "https://github.com/aphrody-dev/src.git",
-      "commit": "77989604fc28c28c36f170fa8fd93fe3affeef35",
+      "commit": "f7c98266ff07d751d3949a45099c757b144a3211",
       "branch": "main",
       "engine": "jj",
       "pillar": "git",
@@ -141,9 +141,9 @@
       "sparse_paths": null
     },
     "packages/forge": {
-      "path": ".\\packages\\forge",
+      "path": "C:\\src\\packages\\forge",
       "url": "https://github.com/aphrody-dev/src.git",
-      "commit": "77989604fc28c28c36f170fa8fd93fe3affeef35",
+      "commit": "f7c98266ff07d751d3949a45099c757b144a3211",
       "branch": "main",
       "engine": "jj",
       "pillar": "git",
@@ -157,7 +157,7 @@
       "sparse_paths": null
     },
     "third_party/agent-browser": {
-      "path": ".\\third_party\\agent-browser",
+      "path": "C:\\src\\third_party\\agent-browser",
       "url": "https://github.com/aphrody-dev/agent-browser.git",
       "upstream_url": "https://github.com/vercel-labs/agent-browser.git",
       "commit": "d129226078e0fc8ee5dec48fbc96a46df5d0aafd",
@@ -171,7 +171,7 @@
       "sparse_paths": null
     },
     "third_party/agent-desktop": {
-      "path": ".\\third_party\\agent-desktop",
+      "path": "C:\\src\\third_party\\agent-desktop",
       "url": "https://github.com/aphrody-dev/agent-desktop.git",
       "upstream_url": "https://github.com/vercel-labs/agent-desktop.git",
       "commit": "8e8dd7cbefe6d4421a0147aee0aad78dc6ace2b4",
@@ -185,7 +185,7 @@
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/antigravity-sdk-python": {
-      "path": ".\\third_party\\ai-ecosystem\\antigravity-sdk-python",
+      "path": "C:\\src\\third_party\\ai-ecosystem\\antigravity-sdk-python",
       "url": "https://github.com/aphrody-dev/antigravity-sdk-python.git",
       "upstream_url": "https://github.com/google-antigravity/antigravity-sdk-python.git",
       "commit": "75ba22bd00afae2f46393ff31f30c3f0df52982f",
@@ -199,7 +199,7 @@
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/cc-switch": {
-      "path": ".\\third_party\\ai-ecosystem\\cc-switch",
+      "path": "C:\\src\\third_party\\ai-ecosystem\\cc-switch",
       "url": "https://github.com/aphrody-dev/cc-switch.git",
       "upstream_url": "https://github.com/farion1231/cc-switch.git",
       "commit": "efbec38f0e1ecaee2a488d619190b7ec4075238b",
@@ -213,7 +213,7 @@
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/cc-switch-cli": {
-      "path": ".\\third_party\\ai-ecosystem\\cc-switch-cli",
+      "path": "C:\\src\\third_party\\ai-ecosystem\\cc-switch-cli",
       "url": "https://github.com/aphrody-dev/cc-switch-cli.git",
       "upstream_url": "https://github.com/SaladDay/cc-switch-cli.git",
       "commit": "4dfe82f4b8794211375283f1e5e494a390181aa0",
@@ -227,7 +227,7 @@
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/claude-code": {
-      "path": ".\\third_party\\ai-ecosystem\\claude-code",
+      "path": "C:\\src\\third_party\\ai-ecosystem\\claude-code",
       "url": "https://github.com/aphrody-dev/claude-code.git",
       "upstream_url": "https://github.com/anthropics/claude-code.git",
       "commit": "ab49b8966bd80199f493a31dad9396f8743e73a7",
@@ -241,7 +241,7 @@
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/cliproxyapi": {
-      "path": ".\\third_party\\ai-ecosystem\\cliproxyapi",
+      "path": "C:\\src\\third_party\\ai-ecosystem\\cliproxyapi",
       "url": "https://github.com/aphrody-dev/CLIProxyAPI.git",
       "upstream_url": "https://github.com/router-for-me/CLIProxyAPI.git",
       "commit": "d1ea84f4b338f553d2818091ec9425a4ff742c78",
@@ -255,7 +255,7 @@
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/codex": {
-      "path": ".\\third_party\\ai-ecosystem\\codex",
+      "path": "C:\\src\\third_party\\ai-ecosystem\\codex",
       "url": "https://github.com/aphrody-dev/codex.git",
       "upstream_url": "https://github.com/openai/codex.git",
       "commit": "568c592f9cbe4388aafe9759bf6f3ed1bb0fd5e3",
@@ -269,7 +269,7 @@
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/gemini-cli": {
-      "path": ".\\third_party\\ai-ecosystem\\gemini-cli",
+      "path": "C:\\src\\third_party\\ai-ecosystem\\gemini-cli",
       "url": "https://github.com/aphrody-dev/gemini-cli.git",
       "upstream_url": "https://github.com/google-gemini/gemini-cli.git",
       "commit": "e5d88fb2c036ce7e0c27131469cd963221b9d9e7",
@@ -283,7 +283,7 @@
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/omniroute": {
-      "path": ".\\third_party\\ai-ecosystem\\omniroute",
+      "path": "C:\\src\\third_party\\ai-ecosystem\\omniroute",
       "url": "https://github.com/aphrody-dev/OmniRoute.git",
       "upstream_url": "https://github.com/cheaper-inference/OmniRoute.git",
       "commit": "de7d72384f5352d5c7ea47459b990ee20f04686f",
@@ -297,7 +297,7 @@
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/opencodex": {
-      "path": ".\\third_party\\ai-ecosystem\\opencodex",
+      "path": "C:\\src\\third_party\\ai-ecosystem\\opencodex",
       "url": "https://github.com/aphrody-dev/opencodex.git",
       "upstream_url": "https://github.com/lidge-jun/opencodex.git",
       "commit": "bceee7fe7f4f7820491d36a71f97b2650c844309",
@@ -311,7 +311,7 @@
       "sparse_paths": null
     },
     "third_party/aosp/build/kleaf": {
-      "path": ".\\third_party\\aosp\\build\\kleaf",
+      "path": "C:\\src\\third_party\\aosp\\build\\kleaf",
       "url": "https://android.googlesource.com/kernel/build.git",
       "commit": "1b5e08e214a85267a83df17c09436e7e8952f7d3",
       "branch": "main-kernel",
@@ -323,7 +323,7 @@
       "sparse_paths": null
     },
     "third_party/aosp/platform/manifest": {
-      "path": ".\\third_party\\aosp\\platform\\manifest",
+      "path": "C:\\src\\third_party\\aosp\\platform\\manifest",
       "url": "https://android.googlesource.com/platform/manifest.git",
       "commit": "1ed30a827f1156dc831083e6cf999d6bd9deae18",
       "branch": "main",
@@ -335,7 +335,7 @@
       "sparse_paths": null
     },
     "third_party/archlinux/arch-wsl": {
-      "path": ".\\third_party\\archlinux\\arch-wsl",
+      "path": "C:\\src\\third_party\\archlinux\\arch-wsl",
       "url": "https://gitlab.archlinux.org/archlinux/arch-WSL.git",
       "commit": "0000000000000000000000000000000000000000",
       "branch": "detached",
@@ -347,7 +347,7 @@
       "sparse_paths": null
     },
     "third_party/archlinux/archinstall": {
-      "path": ".\\third_party\\archlinux\\archinstall",
+      "path": "C:\\src\\third_party\\archlinux\\archinstall",
       "url": "https://gitlab.archlinux.org/archlinux/archinstall.git",
       "commit": "2c25540ad56b23922b9bbf44320b3154c0ecfd15",
       "branch": "master",
@@ -359,7 +359,7 @@
       "sparse_paths": null
     },
     "third_party/archlinux/archlinux-wsl": {
-      "path": ".\\third_party\\archlinux\\archlinux-wsl",
+      "path": "C:\\src\\third_party\\archlinux\\archlinux-wsl",
       "url": "https://gitlab.archlinux.org/archlinux/archlinux-wsl.git",
       "commit": "ba2e8beb7c5bc2e117efa834e81292b588eaff6c",
       "branch": "main",
@@ -371,7 +371,7 @@
       "sparse_paths": null
     },
     "third_party/archlinux/devtools": {
-      "path": ".\\third_party\\archlinux\\devtools",
+      "path": "C:\\src\\third_party\\archlinux\\devtools",
       "url": "https://gitlab.archlinux.org/archlinux/devtools.git",
       "commit": "c677b681beb02427762e49deef31f635edc2834f",
       "branch": "master",
@@ -383,7 +383,7 @@
       "sparse_paths": null
     },
     "third_party/archlinux/mkinitcpio": {
-      "path": ".\\third_party\\archlinux\\mkinitcpio",
+      "path": "C:\\src\\third_party\\archlinux\\mkinitcpio",
       "url": "https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio.git",
       "commit": "68ebfd2688eb356468232d5495e35b1463927b5d",
       "branch": "master",
@@ -395,7 +395,7 @@
       "sparse_paths": null
     },
     "third_party/archlinux/pacman": {
-      "path": ".\\third_party\\archlinux\\pacman",
+      "path": "C:\\src\\third_party\\archlinux\\pacman",
       "url": "https://gitlab.archlinux.org/pacman/pacman.git",
       "commit": "a6f7467d8c7c4d7e9cc846884e74c0ab7215c48d",
       "branch": "master",
@@ -407,7 +407,7 @@
       "sparse_paths": null
     },
     "third_party/archlinux/pkg-cosmic-session": {
-      "path": ".\\third_party\\archlinux\\pkg-cosmic-session",
+      "path": "C:\\src\\third_party\\archlinux\\pkg-cosmic-session",
       "url": "https://gitlab.archlinux.org/archlinux/packaging/packages/cosmic-session.git",
       "commit": "a838e8eb106183e0c93c1fcc3ce8613dc603a384",
       "branch": "main",
@@ -419,7 +419,7 @@
       "sparse_paths": null
     },
     "third_party/archlinux/pkg-hyprland": {
-      "path": ".\\third_party\\archlinux\\pkg-hyprland",
+      "path": "C:\\src\\third_party\\archlinux\\pkg-hyprland",
       "url": "https://gitlab.archlinux.org/archlinux/packaging/packages/hyprland.git",
       "commit": "77a60031eb27d3ef6723e8b9854ba875db0dbd4e",
       "branch": "main",
@@ -431,7 +431,7 @@
       "sparse_paths": null
     },
     "third_party/archlinux/pkg-linux": {
-      "path": ".\\third_party\\archlinux\\pkg-linux",
+      "path": "C:\\src\\third_party\\archlinux\\pkg-linux",
       "url": "https://gitlab.archlinux.org/archlinux/packaging/packages/linux.git",
       "commit": "a6ef53be1f83078a3311939f9b7df866853d2a04",
       "branch": "main",
@@ -443,7 +443,7 @@
       "sparse_paths": null
     },
     "third_party/bun": {
-      "path": ".\\third_party\\bun",
+      "path": "C:\\src\\third_party\\bun",
       "url": "https://github.com/aphrody-dev/bun.git",
       "upstream_url": "https://github.com/oven-sh/bun.git",
       "commit": "3d03a0a9e0ea3a9f0be91f79ad2dfa4c57f76ddf",
@@ -457,7 +457,7 @@
       "sparse_paths": null
     },
     "third_party/cachyos/CachyOS-PKGBUILDS": {
-      "path": ".\\third_party\\cachyos\\CachyOS-PKGBUILDS",
+      "path": "C:\\src\\third_party\\cachyos\\CachyOS-PKGBUILDS",
       "url": "https://github.com/CachyOS/CachyOS-PKGBUILDS.git",
       "commit": "2d24d58d6ba3213fc2c03dc89326131823ab5155",
       "branch": "master",
@@ -469,7 +469,7 @@
       "sparse_paths": null
     },
     "third_party/cachyos/WSL": {
-      "path": ".\\third_party\\cachyos\\WSL",
+      "path": "C:\\src\\third_party\\cachyos\\WSL",
       "url": "https://github.com/CachyOS/WSL.git",
       "commit": "1065a908203603e80d82573ff73cb58aa8df4f83",
       "branch": "master",
@@ -481,7 +481,7 @@
       "sparse_paths": null
     },
     "third_party/cachyos/ananicy-rules": {
-      "path": ".\\third_party\\cachyos\\ananicy-rules",
+      "path": "C:\\src\\third_party\\cachyos\\ananicy-rules",
       "url": "https://github.com/CachyOS/ananicy-rules.git",
       "commit": "03ef03fbf7e834385377432ccecaedd32e3414bb",
       "branch": "master",
@@ -493,7 +493,7 @@
       "sparse_paths": null
     },
     "third_party/cachyos/cachy-chroot": {
-      "path": ".\\third_party\\cachyos\\cachy-chroot",
+      "path": "C:\\src\\third_party\\cachyos\\cachy-chroot",
       "url": "https://github.com/CachyOS/cachy-chroot.git",
       "commit": "c87f36a4650fc3a592f2e4ea6e85042e2b492429",
       "branch": "main",
@@ -505,7 +505,7 @@
       "sparse_paths": null
     },
     "third_party/cachyos/cachyos-hyprland-settings": {
-      "path": ".\\third_party\\cachyos\\cachyos-hyprland-settings",
+      "path": "C:\\src\\third_party\\cachyos\\cachyos-hyprland-settings",
       "url": "https://github.com/CachyOS/cachyos-hyprland-settings.git",
       "commit": "4aa4a28450f4f5dd6d2af84e80bc402817396606",
       "branch": "master",
@@ -517,7 +517,7 @@
       "sparse_paths": null
     },
     "third_party/cachyos/cachyos-niri-settings": {
-      "path": ".\\third_party\\cachyos\\cachyos-niri-settings",
+      "path": "C:\\src\\third_party\\cachyos\\cachyos-niri-settings",
       "url": "https://github.com/CachyOS/cachyos-niri-settings.git",
       "commit": "114bce2cc341eeeb8e88e51d6e4437647d6fb047",
       "branch": "master",
@@ -529,7 +529,7 @@
       "sparse_paths": null
     },
     "third_party/cachyos/cachyos-wsl": {
-      "path": ".\\third_party\\cachyos\\cachyos-wsl",
+      "path": "C:\\src\\third_party\\cachyos\\cachyos-wsl",
       "url": "https://github.com/CachyOS/cachyos-wsl.git",
       "commit": "2cedd88a388677bdb1dc0adb080d5ac7bc4805b5",
       "branch": "cachyos",
@@ -541,7 +541,7 @@
       "sparse_paths": null
     },
     "third_party/cachyos/kernel-patches": {
-      "path": ".\\third_party\\cachyos\\kernel-patches",
+      "path": "C:\\src\\third_party\\cachyos\\kernel-patches",
       "url": "https://github.com/CachyOS/kernel-patches.git",
       "commit": "706b5652a82404eb2a75c79da3b726eec07a5642",
       "branch": "master",
@@ -553,7 +553,7 @@
       "sparse_paths": null
     },
     "third_party/cachyos/pkg-manage-util": {
-      "path": ".\\third_party\\cachyos\\pkg-manage-util",
+      "path": "C:\\src\\third_party\\cachyos\\pkg-manage-util",
       "url": "https://github.com/CachyOS/pkg-manage-util.git",
       "commit": "8b49ff7e5490eacba3a7830263c1f7b4fc7114ba",
       "branch": "develop",
@@ -565,7 +565,7 @@
       "sparse_paths": null
     },
     "third_party/cargo": {
-      "path": ".\\third_party\\cargo",
+      "path": "C:\\src\\third_party\\cargo",
       "url": "https://github.com/rust-lang/cargo.git",
       "commit": "31d3246e0e8d3a80d4a90b54aa48ff180adb408b",
       "branch": "detached",
@@ -585,7 +585,7 @@
       ]
     },
     "third_party/chromium/src": {
-      "path": ".\\third_party\\chromium\\src",
+      "path": "C:\\src\\third_party\\chromium\\src",
       "url": "https://chromium.googlesource.com/chromium/src.git",
       "commit": "ef68a767a544b5544e46944e4b3be15e9ce0b6d4",
       "branch": "detached",
@@ -597,7 +597,7 @@
       "sparse_paths": null
     },
     "third_party/cloudflare/boringtun": {
-      "path": ".\\third_party\\cloudflare\\boringtun",
+      "path": "C:\\src\\third_party\\cloudflare\\boringtun",
       "url": "https://github.com/cloudflare/boringtun.git",
       "commit": "6dcc889a95ad82400932f785d874421d70308195",
       "branch": "master",
@@ -609,7 +609,7 @@
       "sparse_paths": null
     },
     "third_party/cloudflare/cloudflared": {
-      "path": ".\\third_party\\cloudflare\\cloudflared",
+      "path": "C:\\src\\third_party\\cloudflare\\cloudflared",
       "url": "https://github.com/cloudflare/cloudflared.git",
       "commit": "095f3caf1dd9084cfe063ca40a4e5b0709e53e5b",
       "branch": "master",
@@ -621,7 +621,7 @@
       "sparse_paths": null
     },
     "third_party/depot_tools": {
-      "path": ".\\third_party\\depot_tools",
+      "path": "C:\\src\\third_party\\depot_tools",
       "url": "https://chromium.googlesource.com/chromium/tools/depot_tools.git",
       "commit": "1afcf0756e47f3a6ee82d7736b9fcda2d57b268e",
       "branch": "detached",
@@ -633,7 +633,7 @@
       "sparse_paths": null
     },
     "third_party/design-ecosystem/awesome-design-md": {
-      "path": ".\\third_party\\design-ecosystem\\awesome-design-md",
+      "path": "C:\\src\\third_party\\design-ecosystem\\awesome-design-md",
       "url": "https://github.com/VoltAgent/awesome-design-md.git",
       "commit": "fcc70284932276d085f01ef9f83edde90b1258cb",
       "branch": "main",
@@ -645,7 +645,7 @@
       "sparse_paths": null
     },
     "third_party/design-ecosystem/humanizer": {
-      "path": ".\\third_party\\design-ecosystem\\humanizer",
+      "path": "C:\\src\\third_party\\design-ecosystem\\humanizer",
       "url": "https://github.com/blader/humanizer.git",
       "commit": "b48c832f0f809c1b5658edbb838c2521b72f2413",
       "branch": "main",
@@ -657,7 +657,7 @@
       "sparse_paths": null
     },
     "third_party/design-ecosystem/impeccable": {
-      "path": ".\\third_party\\design-ecosystem\\impeccable",
+      "path": "C:\\src\\third_party\\design-ecosystem\\impeccable",
       "url": "https://github.com/pbakaus/impeccable.git",
       "commit": "f2baa414a87d9acf1e21ccf776bfaec0262ad6df",
       "branch": "main",
@@ -669,7 +669,7 @@
       "sparse_paths": null
     },
     "third_party/design-ecosystem/threejs-skills": {
-      "path": ".\\third_party\\design-ecosystem\\threejs-skills",
+      "path": "C:\\src\\third_party\\design-ecosystem\\threejs-skills",
       "url": "https://github.com/CloudAI-X/threejs-skills.git",
       "commit": "0e181866f095b5f06d005133876e926515390d95",
       "branch": "main",
@@ -681,7 +681,7 @@
       "sparse_paths": null
     },
     "third_party/design-ecosystem/ui-ux-pro-max-skill": {
-      "path": ".\\third_party\\design-ecosystem\\ui-ux-pro-max-skill",
+      "path": "C:\\src\\third_party\\design-ecosystem\\ui-ux-pro-max-skill",
       "url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git",
       "commit": "6ae86f61f520d6ca229d2f40e070410638c908c5",
       "branch": "main",
@@ -693,7 +693,7 @@
       "sparse_paths": null
     },
     "third_party/dioxus": {
-      "path": ".\\third_party\\dioxus",
+      "path": "C:\\src\\third_party\\dioxus",
       "url": "https://github.com/DioxusLabs/dioxus.git",
       "commit": "17d9a5924e845e4f37deca3fada6c35d1d836af0",
       "branch": "main",
@@ -705,7 +705,7 @@
       "sparse_paths": null
     },
     "third_party/dioxus-labs/blitz": {
-      "path": ".\\third_party\\dioxus-labs\\blitz",
+      "path": "C:\\src\\third_party\\dioxus-labs\\blitz",
       "url": "https://github.com/DioxusLabs/blitz.git",
       "commit": "e65ec76e1568a69ed83cbb4b94797db088607ec4",
       "branch": "main",
@@ -717,7 +717,7 @@
       "sparse_paths": null
     },
     "third_party/dioxus-labs/parley": {
-      "path": ".\\third_party\\dioxus-labs\\parley",
+      "path": "C:\\src\\third_party\\dioxus-labs\\parley",
       "url": "https://github.com/linebender/parley.git",
       "commit": "36f82852f0516108586e9f5a7b0056e872c1f933",
       "branch": "main",
@@ -729,7 +729,7 @@
       "sparse_paths": null
     },
     "third_party/dioxus-labs/vello": {
-      "path": ".\\third_party\\dioxus-labs\\vello",
+      "path": "C:\\src\\third_party\\dioxus-labs\\vello",
       "url": "https://github.com/linebender/vello.git",
       "commit": "6293f3b74498582752c3734888608030dfd8cc0e",
       "branch": "main",
@@ -741,7 +741,7 @@
       "sparse_paths": null
     },
     "third_party/docs-ecosystem/archlinux-docker": {
-      "path": ".\\third_party\\docs-ecosystem\\archlinux-docker",
+      "path": "C:\\src\\third_party\\docs-ecosystem\\archlinux-docker",
       "url": "https://gitlab.archlinux.org/archlinux/archlinux-docker.git",
       "commit": "d9f7a01562208910488140c54ffe402c3e7a231e",
       "branch": "master",
@@ -756,7 +756,7 @@
       ]
     },
     "third_party/docs-ecosystem/docker-alpine": {
-      "path": ".\\third_party\\docs-ecosystem\\docker-alpine",
+      "path": "C:\\src\\third_party\\docs-ecosystem\\docker-alpine",
       "url": "https://github.com/alpinelinux/docker-alpine.git",
       "commit": "2c36a79aaaec3582d3b1961c9245b1a8a5a144dc",
       "branch": "master",
@@ -771,7 +771,7 @@
       ]
     },
     "third_party/docs-ecosystem/docker-docs": {
-      "path": ".\\third_party\\docs-ecosystem\\docker-docs",
+      "path": "C:\\src\\third_party\\docs-ecosystem\\docker-docs",
       "url": "https://github.com/docker/docs.git",
       "commit": "61cbfdc1e72d0ac62dbac59ceaf7b94dcbe69c80",
       "branch": "main",
@@ -787,7 +787,7 @@
       ]
     },
     "third_party/docs-ecosystem/kubernetes-website": {
-      "path": ".\\third_party\\docs-ecosystem\\kubernetes-website",
+      "path": "C:\\src\\third_party\\docs-ecosystem\\kubernetes-website",
       "url": "https://github.com/kubernetes/website.git",
       "commit": "4706565788493db5750bda0d57f651823378189a",
       "branch": "main",
@@ -805,7 +805,7 @@
       ]
     },
     "third_party/docs-ecosystem/nix-dev": {
-      "path": ".\\third_party\\docs-ecosystem\\nix-dev",
+      "path": "C:\\src\\third_party\\docs-ecosystem\\nix-dev",
       "url": "https://github.com/NixOS/nix.dev.git",
       "commit": "edeead537a0b7b356aaf6dc2767a74acfe6c3805",
       "branch": "master",
@@ -821,7 +821,7 @@
       ]
     },
     "third_party/gcc": {
-      "path": ".\\third_party\\gcc",
+      "path": "C:\\src\\third_party\\gcc",
       "url": "https://gcc.gnu.org/git/gcc.git",
       "commit": "3c632b99e2192ac7cd65a95a1cb049cc48ea350e",
       "branch": "detached",
@@ -845,7 +845,7 @@
       ]
     },
     "third_party/glibc": {
-      "path": ".\\third_party\\glibc",
+      "path": "C:\\src\\third_party\\glibc",
       "url": "https://sourceware.org/git/glibc.git",
       "commit": "c3a3a9808ad3ab4a3336836833f83288b672ccbf",
       "branch": "detached",
@@ -870,7 +870,7 @@
       ]
     },
     "third_party/go-ecosystem/caddy": {
-      "path": ".\\third_party\\go-ecosystem\\caddy",
+      "path": "C:\\src\\third_party\\go-ecosystem\\caddy",
       "url": "https://github.com/caddyserver/caddy.git",
       "commit": "f458aa0081f55445b09fae9799d40ed98ed4b3b7",
       "branch": "master",
@@ -882,7 +882,7 @@
       "sparse_paths": null
     },
     "third_party/go-ecosystem/cloudflare-go": {
-      "path": ".\\third_party\\go-ecosystem\\cloudflare-go",
+      "path": "C:\\src\\third_party\\go-ecosystem\\cloudflare-go",
       "url": "https://github.com/cloudflare/cloudflare-go.git",
       "commit": "d2f77a066fb7efbdb1572d2b0ac52dc4fa248ffb",
       "branch": "main",
@@ -894,7 +894,7 @@
       "sparse_paths": null
     },
     "third_party/go-ecosystem/go-containerregistry": {
-      "path": ".\\third_party\\go-ecosystem\\go-containerregistry",
+      "path": "C:\\src\\third_party\\go-ecosystem\\go-containerregistry",
       "url": "https://github.com/google/go-containerregistry.git",
       "commit": "bc0638f2d1730249dfef1f0230f3143150dc433a",
       "branch": "main",
@@ -906,7 +906,7 @@
       "sparse_paths": null
     },
     "third_party/go-ecosystem/go-ovh": {
-      "path": ".\\third_party\\go-ecosystem\\go-ovh",
+      "path": "C:\\src\\third_party\\go-ecosystem\\go-ovh",
       "url": "https://github.com/ovh/go-ovh.git",
       "commit": "848d5657f9ce8b2341949d4a337ad053c706f3f5",
       "branch": "master",
@@ -918,7 +918,7 @@
       "sparse_paths": null
     },
     "third_party/go-ecosystem/ollama": {
-      "path": ".\\third_party\\go-ecosystem\\ollama",
+      "path": "C:\\src\\third_party\\go-ecosystem\\ollama",
       "url": "https://github.com/ollama/ollama.git",
       "commit": "6140670fd1952941041dce5fb3f8932091bc22e4",
       "branch": "main",
@@ -930,7 +930,7 @@
       "sparse_paths": null
     },
     "third_party/google-ecosystem/android-skills": {
-      "path": ".\\third_party\\google-ecosystem\\android-skills",
+      "path": "C:\\src\\third_party\\google-ecosystem\\android-skills",
       "url": "https://github.com/android/skills.git",
       "commit": "5815d27fda564aa9f07ebdcb5e57ed3e8d904e0d",
       "branch": "main",
@@ -942,7 +942,7 @@
       "sparse_paths": null
     },
     "third_party/google-ecosystem/design-md": {
-      "path": ".\\third_party\\google-ecosystem\\design-md",
+      "path": "C:\\src\\third_party\\google-ecosystem\\design-md",
       "url": "https://github.com/google-labs-code/design.md.git",
       "commit": "1ed38aa9dd4451b9039f9aeb9ed1d2579edafddf",
       "branch": "main",
@@ -954,7 +954,7 @@
       "sparse_paths": null
     },
     "third_party/google-ecosystem/gemini-skills": {
-      "path": ".\\third_party\\google-ecosystem\\gemini-skills",
+      "path": "C:\\src\\third_party\\google-ecosystem\\gemini-skills",
       "url": "https://github.com/google-gemini/gemini-skills.git",
       "commit": "0f596dbdcbde186e3d418d1279f7f499fe9afbf5",
       "branch": "main",
@@ -966,7 +966,7 @@
       "sparse_paths": null
     },
     "third_party/google-ecosystem/google-skills": {
-      "path": ".\\third_party\\google-ecosystem\\google-skills",
+      "path": "C:\\src\\third_party\\google-ecosystem\\google-skills",
       "url": "https://github.com/google/skills.git",
       "commit": "64d010629e61e4a7d59fc21e042362f370b5888b",
       "branch": "main",
@@ -978,7 +978,7 @@
       "sparse_paths": null
     },
     "third_party/google-ecosystem/googleworkspace-cli": {
-      "path": ".\\third_party\\google-ecosystem\\googleworkspace-cli",
+      "path": "C:\\src\\third_party\\google-ecosystem\\googleworkspace-cli",
       "url": "https://github.com/googleworkspace/cli.git",
       "commit": "cd3697e07eb520056dcf142d0c7439bbb9ba32e9",
       "branch": "main",
@@ -990,7 +990,7 @@
       "sparse_paths": null
     },
     "third_party/google-ecosystem/jules-skills": {
-      "path": ".\\third_party\\google-ecosystem\\jules-skills",
+      "path": "C:\\src\\third_party\\google-ecosystem\\jules-skills",
       "url": "https://github.com/google-labs-code/jules-skills.git",
       "commit": "7a76d3bfcf4258ee437d65b5d12e54b51c395de5",
       "branch": "main",
@@ -1002,7 +1002,7 @@
       "sparse_paths": null
     },
     "third_party/google-ecosystem/stitch-skills": {
-      "path": ".\\third_party\\google-ecosystem\\stitch-skills",
+      "path": "C:\\src\\third_party\\google-ecosystem\\stitch-skills",
       "url": "https://github.com/google-labs-code/stitch-skills.git",
       "commit": "0337446dadde6f8c94210444e2aa9d546126480f",
       "branch": "main",
@@ -1014,7 +1014,7 @@
       "sparse_paths": null
     },
     "third_party/heretic": {
-      "path": ".\\third_party\\heretic",
+      "path": "C:\\src\\third_party\\heretic",
       "url": "https://github.com/p-e-w/heretic.git",
       "commit": "a14b8543537b50ce8db4db7eaae4eb295d5d5142",
       "branch": "master",
@@ -1026,7 +1026,7 @@
       "sparse_paths": null
     },
     "third_party/hostinger-api": {
-      "path": ".\\third_party\\hostinger-api",
+      "path": "C:\\src\\third_party\\hostinger-api",
       "url": "https://github.com/hostinger/api.git",
       "commit": "076a6521424a202a8bdca4c368d1b6a567ecaba9",
       "branch": "main",
@@ -1038,7 +1038,7 @@
       "sparse_paths": null
     },
     "third_party/hostinger-api-cli": {
-      "path": ".\\third_party\\hostinger-api-cli",
+      "path": "C:\\src\\third_party\\hostinger-api-cli",
       "url": "https://github.com/hostinger/api-cli.git",
       "commit": "6528a8004bb59859a8e859968a58ce1fd1e2f6e1",
       "branch": "main",
@@ -1050,7 +1050,7 @@
       "sparse_paths": null
     },
     "third_party/hostinger-api-mcp-server": {
-      "path": ".\\third_party\\hostinger-api-mcp-server",
+      "path": "C:\\src\\third_party\\hostinger-api-mcp-server",
       "url": "https://github.com/hostinger/api-mcp-server.git",
       "commit": "e1fa6858729a8bd2c06df95a7c87c8b81eecd593",
       "branch": "main",
@@ -1062,7 +1062,7 @@
       "sparse_paths": null
     },
     "third_party/hostinger-api-typescript-sdk": {
-      "path": ".\\third_party\\hostinger-api-typescript-sdk",
+      "path": "C:\\src\\third_party\\hostinger-api-typescript-sdk",
       "url": "https://github.com/hostinger/api-typescript-sdk.git",
       "commit": "7492d50d63c59ac24edea1f1a5fb6c6eb116678e",
       "branch": "main",
@@ -1074,7 +1074,7 @@
       "sparse_paths": null
     },
     "third_party/hostinger-claude-plugin": {
-      "path": ".\\third_party\\hostinger-claude-plugin",
+      "path": "C:\\src\\third_party\\hostinger-claude-plugin",
       "url": "https://github.com/hostinger/claude-plugin.git",
       "commit": "413bad4df76c92afa8f9e159206c7f49697c627e",
       "branch": "main",
@@ -1086,7 +1086,7 @@
       "sparse_paths": null
     },
     "third_party/hostinger-hostinger-agent-skills": {
-      "path": ".\\third_party\\hostinger-hostinger-agent-skills",
+      "path": "C:\\src\\third_party\\hostinger-hostinger-agent-skills",
       "url": "https://github.com/hostinger/hostinger-agent-skills.git",
       "commit": "d950a084183860a87b4c4d2fec8a5bad324f5349",
       "branch": "main",
@@ -1098,7 +1098,7 @@
       "sparse_paths": null
     },
     "third_party/labs": {
-      "path": ".\\third_party\\labs",
+      "path": "C:\\src\\third_party\\labs",
       "url": "local:third_party/labs",
       "commit": "c16b054d521cb388be93dabba1bb7a4dbd29619b",
       "branch": "main",
@@ -1107,7 +1107,7 @@
       "sparse_paths": null
     },
     "third_party/linux": {
-      "path": ".\\third_party\\linux",
+      "path": "C:\\src\\third_party\\linux",
       "url": "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git",
       "upstream_url": "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git",
       "commit": "7475ea8b58616b33c04afb976cf0fbaad9dd63fb",
@@ -1152,7 +1152,7 @@
       ]
     },
     "third_party/llvm-project": {
-      "path": ".\\third_party\\llvm-project",
+      "path": "C:\\src\\third_party\\llvm-project",
       "url": "https://github.com/llvm/llvm-project.git",
       "commit": "392dfff97d29b59d77e5cac6d4b6ef2585fe7117",
       "branch": "detached",
@@ -1187,7 +1187,7 @@
       ]
     },
     "third_party/locally-uncensored": {
-      "path": ".\\third_party\\locally-uncensored",
+      "path": "C:\\src\\third_party\\locally-uncensored",
       "url": "https://github.com/PurpleDoubleD/locally-uncensored.git",
       "commit": "3dff4291f8ad5a86078679e23c7a0a2cd2adf9b3",
       "branch": "master",
@@ -1199,7 +1199,7 @@
       "sparse_paths": null
     },
     "third_party/longbridge/gpui-component": {
-      "path": ".\\third_party\\longbridge\\gpui-component",
+      "path": "C:\\src\\third_party\\longbridge\\gpui-component",
       "url": "https://github.com/longbridge/gpui-component.git",
       "commit": "6808964c3a5e0ef970e47b696e8a800575cb21a7",
       "branch": "main",
@@ -1211,7 +1211,7 @@
       "sparse_paths": null
     },
     "third_party/microsoft/FluidFramework": {
-      "path": ".\\third_party\\microsoft\\FluidFramework",
+      "path": "C:\\src\\third_party\\microsoft\\FluidFramework",
       "url": "https://github.com/microsoft/FluidFramework.git",
       "commit": "99c702811376dc0bddb236a18b4df8bfb471410e",
       "branch": "main",
@@ -1223,7 +1223,7 @@
       "sparse_paths": null
     },
     "third_party/microsoft/fluentui": {
-      "path": ".\\third_party\\microsoft\\fluentui",
+      "path": "C:\\src\\third_party\\microsoft\\fluentui",
       "url": "https://github.com/microsoft/fluentui.git",
       "commit": "485355d27452890bac9954cda30c0dbf1934da41",
       "branch": "master",
@@ -1243,7 +1243,7 @@
       ]
     },
     "third_party/microsoft/webui": {
-      "path": ".\\third_party\\microsoft\\webui",
+      "path": "C:\\src\\third_party\\microsoft\\webui",
       "url": "https://github.com/microsoft/webui.git",
       "commit": "30ca60aa4bdc1beab040dae32e1c10e195ec9113",
       "branch": "main",
@@ -1255,7 +1255,7 @@
       "sparse_paths": null
     },
     "third_party/n2b": {
-      "path": ".\\third_party\\n2b",
+      "path": "C:\\src\\third_party\\n2b",
       "url": "local:third_party/n2b",
       "commit": "b576117a8e87aa118c5d9cdf272a76865c36ecce",
       "branch": "main",
@@ -1264,7 +1264,7 @@
       "sparse_paths": null
     },
     "third_party/omacom/aether": {
-      "path": ".\\third_party\\omacom\\aether",
+      "path": "C:\\src\\third_party\\omacom\\aether",
       "url": "https://github.com/omacom/aether.git",
       "commit": "d302f534f998186f026e64482ffdd000c752d414",
       "branch": "main",
@@ -1276,7 +1276,7 @@
       "sparse_paths": null
     },
     "third_party/omacom/herdr": {
-      "path": ".\\third_party\\omacom\\herdr",
+      "path": "C:\\src\\third_party\\omacom\\herdr",
       "url": "https://github.com/omacom/herdr.git",
       "commit": "6c6ddcd49384d6ea9f0ee2e63bf7b2643dfd5bcf",
       "branch": "master",
@@ -1288,7 +1288,7 @@
       "sparse_paths": null
     },
     "third_party/omacom/omarchy": {
-      "path": ".\\third_party\\omacom\\omarchy",
+      "path": "C:\\src\\third_party\\omacom\\omarchy",
       "url": "https://github.com/omacom/omarchy.git",
       "commit": "7a9a1e930921f8d18db98e189a6280e6b1c0cc32",
       "branch": "quattro",
@@ -1300,7 +1300,7 @@
       "sparse_paths": null
     },
     "third_party/omacom/omarchy-pkgs": {
-      "path": ".\\third_party\\omacom\\omarchy-pkgs",
+      "path": "C:\\src\\third_party\\omacom\\omarchy-pkgs",
       "url": "https://github.com/omacom/omarchy-pkgs.git",
       "commit": "94a574face9bd86c481f9b259f038e8901134c1c",
       "branch": "master",
@@ -1312,7 +1312,7 @@
       "sparse_paths": null
     },
     "third_party/omacom/omarchy-plugin-marketplace": {
-      "path": ".\\third_party\\omacom\\omarchy-plugin-marketplace",
+      "path": "C:\\src\\third_party\\omacom\\omarchy-plugin-marketplace",
       "url": "https://github.com/omacom/omarchy-plugin-marketplace.git",
       "commit": "4100bf8a0a0e296460c153f85c776d1aa7839ee7",
       "branch": "main",
@@ -1324,7 +1324,7 @@
       "sparse_paths": null
     },
     "third_party/omacom/omarchy-site": {
-      "path": ".\\third_party\\omacom\\omarchy-site",
+      "path": "C:\\src\\third_party\\omacom\\omarchy-site",
       "url": "https://github.com/omacom/omarchy-site.git",
       "commit": "fc2e079bb6759afb8ffa1f3bdb21d183110a03fa",
       "branch": "master",
@@ -1336,7 +1336,7 @@
       "sparse_paths": null
     },
     "third_party/omacom/try-omarchy-windows": {
-      "path": ".\\third_party\\omacom\\try-omarchy-windows",
+      "path": "C:\\src\\third_party\\omacom\\try-omarchy-windows",
       "url": "https://github.com/omacom/try-omarchy-windows.git",
       "commit": "c08b94f5cffd419b76a99eafc359e8a06f4c1182",
       "branch": "master",
@@ -1348,7 +1348,7 @@
       "sparse_paths": null
     },
     "third_party/omacom/ttfx": {
-      "path": ".\\third_party\\omacom\\ttfx",
+      "path": "C:\\src\\third_party\\omacom\\ttfx",
       "url": "https://github.com/omacom/ttfx.git",
       "commit": "14ed2742596f0056b13e25d14a83ea851adc2294",
       "branch": "master",
@@ -1360,7 +1360,7 @@
       "sparse_paths": null
     },
     "third_party/opencode": {
-      "path": ".\\third_party\\opencode",
+      "path": "C:\\src\\third_party\\opencode",
       "url": "https://github.com/anomalyco/opencode.git",
       "commit": "c5a153288b0d85f886c47436783c3c5f7913f0de",
       "branch": "dev",
@@ -1372,7 +1372,7 @@
       "sparse_paths": null
     },
     "third_party/opentui": {
-      "path": ".\\third_party\\opentui",
+      "path": "C:\\src\\third_party\\opentui",
       "url": "https://github.com/aphrody-dev/opentui.git",
       "commit": "4d40024a7b9f58d320aad211c22ab7e5f0665d87",
       "branch": "main",
@@ -1384,7 +1384,7 @@
       "sparse_paths": null
     },
     "third_party/pi": {
-      "path": ".\\third_party\\pi",
+      "path": "C:\\src\\third_party\\pi",
       "url": "https://github.com/earendil-works/pi.git",
       "commit": "750d6210308eb4ef4fa393dce7b7490be8234eeb",
       "branch": "main",
@@ -1396,7 +1396,7 @@
       "sparse_paths": null
     },
     "third_party/ralph": {
-      "path": ".\\third_party\\ralph",
+      "path": "C:\\src\\third_party\\ralph",
       "url": "https://github.com/snarktank/ralph.git",
       "commit": "6c53cb0b831ebe8739c6a003e22af14902d8b0b5",
       "branch": "main",
@@ -1408,7 +1408,7 @@
       "sparse_paths": null
     },
     "third_party/rust": {
-      "path": ".\\third_party\\rust",
+      "path": "C:\\src\\third_party\\rust",
       "url": "https://github.com/rust-lang/rust.git",
       "commit": "708c94ef093ecc42fb8851e17d8383d999727abc",
       "branch": "detached",
@@ -1466,7 +1466,7 @@
       ]
     },
     "third_party/rust-ecosystem/async-openai": {
-      "path": ".\\third_party\\rust-ecosystem\\async-openai",
+      "path": "C:\\src\\third_party\\rust-ecosystem\\async-openai",
       "url": "https://github.com/64bit/async-openai.git",
       "commit": "e4daebb3ef3f4b89df9fbab5fb319bff077dcfce",
       "branch": "main",
@@ -1478,7 +1478,7 @@
       "sparse_paths": null
     },
     "third_party/rust-ecosystem/axum-login": {
-      "path": ".\\third_party\\rust-ecosystem\\axum-login",
+      "path": "C:\\src\\third_party\\rust-ecosystem\\axum-login",
       "url": "https://github.com/maxcountryman/axum-login.git",
       "commit": "151c72d7a1b4646830f86b4332e6bd6e34d719a7",
       "branch": "main",
@@ -1490,7 +1490,7 @@
       "sparse_paths": null
     },
     "third_party/rust-ecosystem/better-auth-rs": {
-      "path": ".\\third_party\\rust-ecosystem\\better-auth-rs",
+      "path": "C:\\src\\third_party\\rust-ecosystem\\better-auth-rs",
       "url": "https://github.com/better-auth-rs/better-auth-rs.git",
       "commit": "23c89f4e51999fe5767804879c82c60249cf9f84",
       "branch": "master",
@@ -1502,7 +1502,7 @@
       "sparse_paths": null
     },
     "third_party/rust-ecosystem/dioxus-components": {
-      "path": ".\\third_party\\rust-ecosystem\\dioxus-components",
+      "path": "C:\\src\\third_party\\rust-ecosystem\\dioxus-components",
       "url": "https://github.com/DioxusLabs/components.git",
       "commit": "9a758255ea26e2b20c8cecf4c1c946feb9e71da7",
       "branch": "main",
@@ -1514,7 +1514,7 @@
       "sparse_paths": null
     },
     "third_party/rust-ecosystem/forgecode": {
-      "path": ".\\third_party\\rust-ecosystem\\forgecode",
+      "path": "C:\\src\\third_party\\rust-ecosystem\\forgecode",
       "url": "https://github.com/tailcallhq/forgecode.git",
       "commit": "a22b49288856d5b3f3ca57e8532683d54a662c8c",
       "branch": "main",
@@ -1526,7 +1526,7 @@
       "sparse_paths": null
     },
     "third_party/rust-ecosystem/goose": {
-      "path": ".\\third_party\\rust-ecosystem\\goose",
+      "path": "C:\\src\\third_party\\rust-ecosystem\\goose",
       "url": "https://github.com/aaif-goose/goose.git",
       "commit": "14bf51817b79f6e98ca73c6eda61c11d9d5cc892",
       "branch": "main",
@@ -1538,7 +1538,7 @@
       "sparse_paths": null
     },
     "third_party/rust-ecosystem/moly-ai": {
-      "path": ".\\third_party\\rust-ecosystem\\moly-ai",
+      "path": "C:\\src\\third_party\\rust-ecosystem\\moly-ai",
       "url": "https://github.com/moly-ai/moly-ai.git",
       "commit": "a19a6c12af936b4ba488211934e0f78ae039c1a6",
       "branch": "main",
@@ -1550,7 +1550,7 @@
       "sparse_paths": null
     },
     "third_party/rust-ecosystem/rauthy": {
-      "path": ".\\third_party\\rust-ecosystem\\rauthy",
+      "path": "C:\\src\\third_party\\rust-ecosystem\\rauthy",
       "url": "https://github.com/sebadob/rauthy.git",
       "commit": "2574f526140139e4339bb89dfcffbc4feba14ebd",
       "branch": "main",
@@ -1562,7 +1562,7 @@
       "sparse_paths": null
     },
     "third_party/rust-ecosystem/rust-ui": {
-      "path": ".\\third_party\\rust-ecosystem\\rust-ui",
+      "path": "C:\\src\\third_party\\rust-ecosystem\\rust-ui",
       "url": "https://github.com/rust-ui/ui.git",
       "commit": "4f5a516e76d75a15a587ab2169352cf34fd318d0",
       "branch": "main",
@@ -1574,7 +1574,7 @@
       "sparse_paths": null
     },
     "third_party/rust-ecosystem/shadcn-ui-rs": {
-      "path": ".\\third_party\\rust-ecosystem\\shadcn-ui-rs",
+      "path": "C:\\src\\third_party\\rust-ecosystem\\shadcn-ui-rs",
       "url": "https://github.com/RustForWeb/shadcn-ui.git",
       "commit": "21a6cf5d49b135a0ea3f7591a19a6153c87a2fa1",
       "branch": "main",
@@ -1586,7 +1586,7 @@
       "sparse_paths": null
     },
     "third_party/rust-ecosystem/tabby": {
-      "path": ".\\third_party\\rust-ecosystem\\tabby",
+      "path": "C:\\src\\third_party\\rust-ecosystem\\tabby",
       "url": "https://github.com/TabbyML/tabby.git",
       "commit": "21b29048d7bcf6b94f9f482f2d0fd05efadfd19f",
       "branch": "main",
@@ -1598,7 +1598,7 @@
       "sparse_paths": null
     },
     "third_party/rust-ecosystem/tensorzero": {
-      "path": ".\\third_party\\rust-ecosystem\\tensorzero",
+      "path": "C:\\src\\third_party\\rust-ecosystem\\tensorzero",
       "url": "https://github.com/tensorzero/tensorzero.git",
       "commit": "62eb8f63e8ec62018d70420dbf1a8c5d1c026315",
       "branch": "main",
@@ -1610,7 +1610,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/depotdownloader": {
-      "path": ".\\third_party\\steam-ecosystem\\depotdownloader",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\depotdownloader",
       "url": "https://github.com/SteamRE/DepotDownloader.git",
       "commit": "1847160f18122838e691ab9be83e92fdc6779d6a",
       "branch": "master",
@@ -1622,7 +1622,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/lancache-dns": {
-      "path": ".\\third_party\\steam-ecosystem\\lancache-dns",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\lancache-dns",
       "url": "https://github.com/lancachenet/lancache-dns.git",
       "commit": "86e86a0eed5daed51c67f27d663a179653c90955",
       "branch": "master",
@@ -1634,7 +1634,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/lancache-monolithic": {
-      "path": ".\\third_party\\steam-ecosystem\\lancache-monolithic",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\lancache-monolithic",
       "url": "https://github.com/lancachenet/monolithic.git",
       "commit": "f7057caff38bed4d5981114ad895792e2e230b99",
       "branch": "master",
@@ -1646,7 +1646,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/node-steam-session": {
-      "path": ".\\third_party\\steam-ecosystem\\node-steam-session",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\node-steam-session",
       "url": "https://github.com/DoctorMcKay/node-steam-session.git",
       "commit": "3ac0f34fd964b3f886ba18ef4824ac43c942e030",
       "branch": "master",
@@ -1658,7 +1658,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/node-steam-user": {
-      "path": ".\\third_party\\steam-ecosystem\\node-steam-user",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\node-steam-user",
       "url": "https://github.com/DoctorMcKay/node-steam-user.git",
       "commit": "02818bd08090b58ff54f1d9ce0073319b8e1eef7",
       "branch": "master",
@@ -1670,7 +1670,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/steam-lancache-prefill": {
-      "path": ".\\third_party\\steam-ecosystem\\steam-lancache-prefill",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steam-lancache-prefill",
       "url": "https://github.com/tpill90/steam-lancache-prefill.git",
       "commit": "84ab0fcf8967be69d63e4f6160857966584c4e84",
       "branch": "master",
@@ -1682,7 +1682,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/steam-protobufs": {
-      "path": ".\\third_party\\steam-ecosystem\\steam-protobufs",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steam-protobufs",
       "url": "https://github.com/SteamTracking/Protobufs.git",
       "commit": "01c423cd60e1ebff7e798f50d3b388d9e6d9fd32",
       "branch": "master",
@@ -1694,7 +1694,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/steam-rs": {
-      "path": ".\\third_party\\steam-ecosystem\\steam-rs",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steam-rs",
       "url": "https://github.com/garhow/steam-rs.git",
       "commit": "e61e0e74422e69e7976a1361dec05d455470fcae",
       "branch": "main",
@@ -1706,7 +1706,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/steam-vent": {
-      "path": ".\\third_party\\steam-ecosystem\\steam-vent",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steam-vent",
       "url": "https://codeberg.org/steam-vent/steam-vent.git",
       "commit": "a9e8164ccd8a7b537da59a652093b0318f416105",
       "branch": "main",
@@ -1718,7 +1718,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/steamappinfo": {
-      "path": ".\\third_party\\steam-ecosystem\\steamappinfo",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steamappinfo",
       "url": "https://github.com/xPaw/SteamAppInfo.git",
       "commit": "32a4912a9b49679cfc6a7c6f7988b39ba86b267a",
       "branch": "master",
@@ -1730,7 +1730,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/steamctl": {
-      "path": ".\\third_party\\steam-ecosystem\\steamctl",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steamctl",
       "url": "https://github.com/ValvePython/steamctl.git",
       "commit": "274a8db0ccedb7cf1f80546581916874c20dc317",
       "branch": "master",
@@ -1742,7 +1742,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/steamkit": {
-      "path": ".\\third_party\\steam-ecosystem\\steamkit",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steamkit",
       "url": "https://github.com/SteamRE/SteamKit.git",
       "commit": "7c6e2f0309aa2d33c0769d18cf799450c0d02f91",
       "branch": "master",
@@ -1754,7 +1754,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/steamlocate-rs": {
-      "path": ".\\third_party\\steam-ecosystem\\steamlocate-rs",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steamlocate-rs",
       "url": "https://github.com/WilliamVenner/steamlocate-rs.git",
       "commit": "d740b423aee82e8e742595d0cdb4edcc91c24216",
       "branch": "master",
@@ -1766,7 +1766,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/steamroom": {
-      "path": ".\\third_party\\steam-ecosystem\\steamroom",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steamroom",
       "url": "https://github.com/landaire/steamroom.git",
       "commit": "21ba4f8b2117bd72f85b0f3ecde8825a8ca8f128",
       "branch": "main",
@@ -1778,7 +1778,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/steamtracking": {
-      "path": ".\\third_party\\steam-ecosystem\\steamtracking",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steamtracking",
       "url": "https://github.com/SteamTracking/SteamTracking.git",
       "commit": "5ac8059e326268232f8bf80ba49e75d9cea69ed5",
       "branch": "master",
@@ -1793,7 +1793,7 @@
       ]
     },
     "third_party/steam-ecosystem/steamworks-rs": {
-      "path": ".\\third_party\\steam-ecosystem\\steamworks-rs",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steamworks-rs",
       "url": "https://github.com/Noxime/steamworks-rs.git",
       "commit": "d8114185613be4dbfe4897c8484d0b2670fd3cd7",
       "branch": "master",
@@ -1805,7 +1805,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/valvekeyvalue": {
-      "path": ".\\third_party\\steam-ecosystem\\valvekeyvalue",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\valvekeyvalue",
       "url": "https://github.com/ValveResourceFormat/ValveKeyValue.git",
       "commit": "5149a2b1fe72bea1b2fac1b8b24e11c1755c9ece",
       "branch": "master",
@@ -1817,7 +1817,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/valvepython-steam": {
-      "path": ".\\third_party\\steam-ecosystem\\valvepython-steam",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\valvepython-steam",
       "url": "https://github.com/ValvePython/steam.git",
       "commit": "26166e047b66a7be10bdf3c90e2e14de9283ab5a",
       "branch": "master",
@@ -1829,7 +1829,7 @@
       "sparse_paths": null
     },
     "third_party/steam-ecosystem/vdf-rs": {
-      "path": ".\\third_party\\steam-ecosystem\\vdf-rs",
+      "path": "C:\\src\\third_party\\steam-ecosystem\\vdf-rs",
       "url": "https://codeberg.org/CosmicHarper/vdf-rs.git",
       "commit": "c19bed30f80a5a8839b04066f02172e9229444b8",
       "branch": "main",
@@ -1841,7 +1841,7 @@
       "sparse_paths": null
     },
     "third_party/storytold/RuntimeAudioImporter": {
-      "path": ".\\third_party\\storytold\\RuntimeAudioImporter",
+      "path": "C:\\src\\third_party\\storytold\\RuntimeAudioImporter",
       "url": "https://github.com/storytold/RuntimeAudioImporter.git",
       "commit": "2ecfcee44daccc6dcffd7533f7455fa2f5498c33",
       "branch": "main",
@@ -1853,7 +1853,7 @@
       "sparse_paths": null
     },
     "third_party/storytold/artcraft": {
-      "path": ".\\third_party\\storytold\\artcraft",
+      "path": "C:\\src\\third_party\\storytold\\artcraft",
       "url": "https://github.com/storytold/artcraft.git",
       "commit": "83aad5eb544e7f98b924f9b3652cfdb0a1023f47",
       "branch": "main",
@@ -1865,7 +1865,7 @@
       "sparse_paths": null
     },
     "third_party/storytold/hanashi-graphics-demo": {
-      "path": ".\\third_party\\storytold\\hanashi-graphics-demo",
+      "path": "C:\\src\\third_party\\storytold\\hanashi-graphics-demo",
       "url": "https://github.com/storytold/hanashi-graphics-demo.git",
       "commit": "86ffdb51a880023fe999c40b9519ee425c746cba",
       "branch": "main",
@@ -1877,7 +1877,7 @@
       "sparse_paths": null
     },
     "third_party/storytold/point-generator": {
-      "path": ".\\third_party\\storytold\\point-generator",
+      "path": "C:\\src\\third_party\\storytold\\point-generator",
       "url": "https://github.com/storytold/point-generator.git",
       "commit": "29938fd712e474a9a968f8a735080ecca708c8bd",
       "branch": "master",
@@ -1889,7 +1889,7 @@
       "sparse_paths": null
     },
     "third_party/storytold/storyteller-bevy": {
-      "path": ".\\third_party\\storytold\\storyteller-bevy",
+      "path": "C:\\src\\third_party\\storytold\\storyteller-bevy",
       "url": "https://github.com/storytold/storyteller-bevy.git",
       "commit": "4ce8b72c4cf3263ef9df99761f93832009026a89",
       "branch": "main",
@@ -1901,7 +1901,7 @@
       "sparse_paths": null
     },
     "third_party/symphony": {
-      "path": ".\\third_party\\symphony",
+      "path": "C:\\src\\third_party\\symphony",
       "url": "https://github.com/openai/symphony.git",
       "commit": "be10a1b79df723d6d7612b5651c8522704dafb2e",
       "branch": "main",
@@ -1913,7 +1913,7 @@
       "sparse_paths": null
     },
     "third_party/taffy": {
-      "path": ".\\third_party\\taffy",
+      "path": "C:\\src\\third_party\\taffy",
       "url": "https://github.com/DioxusLabs/taffy.git",
       "commit": "6009614720b71fad810ecf618f5086460fa1f0b8",
       "branch": "feat/google-design-web-vitals",
@@ -1925,7 +1925,7 @@
       "sparse_paths": null
     },
     "third_party/tree-sitter/tree-sitter": {
-      "path": ".\\third_party\\tree-sitter\\tree-sitter",
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter",
       "url": "https://github.com/tree-sitter/tree-sitter.git",
       "commit": "8a476cb87443c11e63b23f797af8927c60755e13",
       "branch": "master",
@@ -1937,7 +1937,7 @@
       "sparse_paths": null
     },
     "third_party/tree-sitter/tree-sitter-bash": {
-      "path": ".\\third_party\\tree-sitter\\tree-sitter-bash",
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-bash",
       "url": "https://github.com/tree-sitter/tree-sitter-bash.git",
       "commit": "a06c2e4415e9bc0346c6b86d401879ffb44058f7",
       "branch": "master",
@@ -1949,7 +1949,7 @@
       "sparse_paths": null
     },
     "third_party/tree-sitter/tree-sitter-c": {
-      "path": ".\\third_party\\tree-sitter\\tree-sitter-c",
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-c",
       "url": "https://github.com/tree-sitter/tree-sitter-c.git",
       "commit": "b780e47fc780ddc8da13afa35a3f4ed5c157823d",
       "branch": "master",
@@ -1961,7 +1961,7 @@
       "sparse_paths": null
     },
     "third_party/tree-sitter/tree-sitter-cpp": {
-      "path": ".\\third_party\\tree-sitter\\tree-sitter-cpp",
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-cpp",
       "url": "https://github.com/tree-sitter/tree-sitter-cpp.git",
       "commit": "c009222808634c1014f82438d4883753516a2c24",
       "branch": "master",
@@ -1973,7 +1973,7 @@
       "sparse_paths": null
     },
     "third_party/tree-sitter/tree-sitter-css": {
-      "path": ".\\third_party\\tree-sitter\\tree-sitter-css",
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-css",
       "url": "https://github.com/tree-sitter/tree-sitter-css.git",
       "commit": "dda5cfc5722c429eaba1c910ca32c2c0c5bb1a3f",
       "branch": "master",
@@ -1985,7 +1985,7 @@
       "sparse_paths": null
     },
     "third_party/tree-sitter/tree-sitter-go": {
-      "path": ".\\third_party\\tree-sitter\\tree-sitter-go",
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-go",
       "url": "https://github.com/tree-sitter/tree-sitter-go.git",
       "commit": "2346a3ab1bb3857b48b29d779a1ef9799a248cd7",
       "branch": "master",
@@ -1997,7 +1997,7 @@
       "sparse_paths": null
     },
     "third_party/tree-sitter/tree-sitter-html": {
-      "path": ".\\third_party\\tree-sitter\\tree-sitter-html",
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-html",
       "url": "https://github.com/tree-sitter/tree-sitter-html.git",
       "commit": "73a3947324f6efddf9e17c0ea58d454843590cc0",
       "branch": "master",
@@ -2009,7 +2009,7 @@
       "sparse_paths": null
     },
     "third_party/tree-sitter/tree-sitter-javascript": {
-      "path": ".\\third_party\\tree-sitter\\tree-sitter-javascript",
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-javascript",
       "url": "https://github.com/tree-sitter/tree-sitter-javascript.git",
       "commit": "58404d8cf191d69f2674a8fd507bd5776f46cb11",
       "branch": "master",
@@ -2021,7 +2021,7 @@
       "sparse_paths": null
     },
     "third_party/tree-sitter/tree-sitter-json": {
-      "path": ".\\third_party\\tree-sitter\\tree-sitter-json",
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-json",
       "url": "https://github.com/tree-sitter/tree-sitter-json.git",
       "commit": "254c42a6476413b776221e03982ac8ae159eeb72",
       "branch": "master",
@@ -2033,7 +2033,7 @@
       "sparse_paths": null
     },
     "third_party/tree-sitter/tree-sitter-lua": {
-      "path": ".\\third_party\\tree-sitter\\tree-sitter-lua",
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-lua",
       "url": "https://github.com/tree-sitter-grammars/tree-sitter-lua.git",
       "commit": "10fe0054734eec83049514ea2e718b2a56acd0c9",
       "branch": "main",
@@ -2045,7 +2045,7 @@
       "sparse_paths": null
     },
     "third_party/tree-sitter/tree-sitter-python": {
-      "path": ".\\third_party\\tree-sitter\\tree-sitter-python",
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-python",
       "url": "https://github.com/tree-sitter/tree-sitter-python.git",
       "commit": "26855eabccb19c6abf499fbc5b8dc7cc9ab8bc64",
       "branch": "master",
@@ -2057,7 +2057,7 @@
       "sparse_paths": null
     },
     "third_party/tree-sitter/tree-sitter-rust": {
-      "path": ".\\third_party\\tree-sitter\\tree-sitter-rust",
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-rust",
       "url": "https://github.com/tree-sitter/tree-sitter-rust.git",
       "commit": "77a3747266f4d621d0757825e6b11edcbf991ca5",
       "branch": "master",
@@ -2069,7 +2069,7 @@
       "sparse_paths": null
     },
     "third_party/tree-sitter/tree-sitter-typescript": {
-      "path": ".\\third_party\\tree-sitter\\tree-sitter-typescript",
+      "path": "C:\\src\\third_party\\tree-sitter\\tree-sitter-typescript",
       "url": "https://github.com/tree-sitter/tree-sitter-typescript.git",
       "commit": "75b3874edb2dc714fb1fd77a32013d0f8699989f",
       "branch": "master",
@@ -2081,7 +2081,7 @@
       "sparse_paths": null
     },
     "third_party/vcs/gitoxide": {
-      "path": ".\\third_party\\vcs\\gitoxide",
+      "path": "C:\\src\\third_party\\vcs\\gitoxide",
       "url": "https://github.com/GitoxideLabs/gitoxide.git",
       "commit": "d1e064e3fb494dc98f6e3ec38961c1608058ee63",
       "branch": "main",
@@ -2093,7 +2093,7 @@
       "sparse_paths": null
     },
     "third_party/vcs/jj": {
-      "path": ".\\third_party\\vcs\\jj",
+      "path": "C:\\src\\third_party\\vcs\\jj",
       "url": "https://github.com/jj-vcs/jj.git",
       "commit": "406bacfae4db2a2bbbd70c575fb485f0ccf7339e",
       "branch": "main",
@@ -2105,7 +2105,7 @@
       "sparse_paths": null
     },
     "third_party/vcs/just": {
-      "path": ".\\third_party\\vcs\\just",
+      "path": "C:\\src\\third_party\\vcs\\just",
       "url": "https://github.com/casey/just.git",
       "commit": "7b7b51bec9359a5b4a76321018db65d07978fecc",
       "branch": "master",
@@ -2117,7 +2117,7 @@
       "sparse_paths": null
     },
     "third_party/vcs/radicle": {
-      "path": ".\\third_party\\vcs\\radicle",
+      "path": "C:\\src\\third_party\\vcs\\radicle",
       "url": "https://github.com/radicle-dev/heartwood.git",
       "commit": "8b053320dc3d5dc2189be3105546ed4d852b0583",
       "branch": "main",
@@ -2129,7 +2129,7 @@
       "sparse_paths": null
     },
     "third_party/vercel/turborepo": {
-      "path": ".\\third_party\\vercel\\turborepo",
+      "path": "C:\\src\\third_party\\vercel\\turborepo",
       "url": "https://github.com/vercel/turborepo.git",
       "commit": "e8cc6745dad7d12ee261b961220d9375c3cc9c9c",
       "branch": "main",
@@ -2150,7 +2150,7 @@
       ]
     },
     "third_party/wayland-2026/smithay": {
-      "path": ".\\third_party\\wayland-2026\\smithay",
+      "path": "C:\\src\\third_party\\wayland-2026\\smithay",
       "url": "https://github.com/Smithay/smithay.git",
       "commit": "3a08ff960e90e5ee472f6195254d02167571f428",
       "branch": "master",
@@ -2162,7 +2162,7 @@
       "sparse_paths": null
     },
     "third_party/webmcp": {
-      "path": ".\\third_party\\webmcp",
+      "path": "C:\\src\\third_party\\webmcp",
       "url": "https://github.com/webmachinelearning/webmcp.git",
       "commit": "aa1b51cf61aef6ed849b0e9e732617fd57872757",
       "branch": "main",
@@ -2174,7 +2174,7 @@
       "sparse_paths": null
     },
     "third_party/wgpu": {
-      "path": ".\\third_party\\wgpu",
+      "path": "C:\\src\\third_party\\wgpu",
       "url": "https://github.com/gfx-rs/wgpu.git",
       "commit": "101edc8f3afa5bf41bc3ab4ca801f3e67c22d499",
       "branch": "trunk",
@@ -2186,7 +2186,7 @@
       "sparse_paths": null
     },
     "third_party/winit": {
-      "path": ".\\third_party\\winit",
+      "path": "C:\\src\\third_party\\winit",
       "url": "https://github.com/rust-windowing/winit.git",
       "commit": "b31115a6eeb882ac2aaa886ac6371aa2cf642933",
       "branch": "master",
@@ -2198,7 +2198,7 @@
       "sparse_paths": null
     },
     "third_party/zed": {
-      "path": ".\\third_party\\zed",
+      "path": "C:\\src\\third_party\\zed",
       "url": "https://github.com/zed-industries/zed.git",
       "commit": "3def8bad0b62dbda02d5b67b00df96fe8d3957bd",
       "branch": "main",
