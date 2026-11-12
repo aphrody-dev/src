@@ -4,8 +4,8 @@
 
 | Brique | Où | Ce que ça fait | Langage |
 |---|---|---|---|
-| browser/factory/chromium-factory.sh | labs → fr1 /srv/chromium/factory | refresh channels, `gclient sync -D --nohooks --no-history`, runhooks, `gn gen`, `autoninja headless_shell`, publish R2 | bash + depot_tools (Python) |
-| browser/factory/cros-factory.sh | labs → fr1 | `repo init/sync` release-R157, `cros build-packages`, `cros build-image` (flags vérifiés dans chromite), publish R2 | bash + chromite (Python) |
+| infra/chromium-factory/chromium-factory.sh | labs → fr1 /srv/chromium/factory | refresh channels, `gclient sync -D --nohooks --no-history`, runhooks, `gn gen`, `autoninja headless_shell`, publish R2 | bash + depot_tools (Python) |
+| infra/chromium-factory/cros-factory.sh | labs → fr1 | `repo init/sync` release-R157, `cros build-packages`, `cros build-image` (flags vérifiés dans chromite), publish R2 | bash + chromite (Python) |
 | aphrody x channels | labs crates/conformance/channels.rs | versions Stable/Beta/Dev/Canary + DEPS (v8, skia, dawn, angle…), clang, rust | Rust |
 | ay gclient (depot-gclient) | src crates | DEPS/.gclient eval, revinfo, getdep/setdep, **sync sur gitoxide** (`--apply`, `-j`, `--populate-cache`), hooks/runhooks, GCS ; CIPD délégué | Rust |
 | depot-cipd, depot-vpython (`ay vpy`), depot-cas (FastCDC, d'après Lore) | src crates | client CIPD, specs vpython sur uv, store content-addressed | Rust |
@@ -51,3 +51,26 @@ Chaque phase se ferme sur une mesure, pas sur une intention.
 | F6 ChromiumOS | build-packages + build-image amd64-generic (en file derrière F0), publish R2 | image bootable en QEMU |
 
 Hors périmètre, volontairement : réécrire gn, siso ou chromite en Rust (aucun gain mesurable, coût énorme). n2 écarté (pas de REAPI).
+
+## F1 REAPI : résultats (2026-11-12)
+
+- Cause racine du « Permission denied (os error 13) » : systemd 262 (prd, Arch) monte le StateDirectory DynamicUser (`/var/lib/private`) en `noexec,nosuid,idmapped` dans le namespace du service. Le bit exec est bien conservé (NativeLink garde les exécutables en 0555 dans `cas.exec/`), c'est le montage qui bloque `execve`. Reproduit avec `systemd-run -p DynamicUser=yes -p StateDirectory=nativelink …` : clang → EACCES ; avec `-p ExecPaths=/var/lib/private/nativelink` → OK. fr2 (systemd 261) n'était pas concerné.
+- Correctif (`infra/chromium-factory/nativelink/deploy.sh`) : `ExecPaths=/var/lib/private/nativelink` sur l'unité worker ; DynamicUser, ProtectSystem=strict, ProtectHome=read-only, NoNewPrivileges conservés (pas de root).
+- Redéployé : server fr1, workers prd (80 GB de cache) et fr2 (20 GB) actifs.
+- Test (fr1, `nice -n 19`, `out/re-test`, use_remoteexec=true) : `sys_info.o` + `file_path.o` → remote:1 (exécuté sur fr2, exit 0), cache:1, 0 erreur ; second run après suppression des .o (`rand_util.o`, `sys_info.o`, `file_path.o`) → cache:3 remote:0, 0 erreur reapi.
+- Restent à faire : worker fr1 (F0 `chromium-factory-build` relancé et actif au moment du test) ; rebuild complet depuis un out/ vide pour mesurer la durée froide et le taux AC.
+
+## F3 résultats (2026-11-12)
+
+Checkout 157 sur fr1 (`/srv/chromium`, `src@4b3d0dab`, `custom_vars checkout_pgo_profiles`). `ay` 0.2.0 compilé sur prd (cargo 1.99.1, `-p aphrody --bin ay`, arbre de travail C:\src incluant le `sync.rs` modifié non commité, 188 s), copié en `fr1:~/bin/ay` (sha256 `8f34cad7…`). Mesures en `nice -n 19` pendant un build Chromium (load ~16), sorties dans `fr1:~/f3/`.
+
+| Commande | Python gclient | `ay gclient` | Diff |
+|---|---|---|---|
+| `revinfo` (trié, 251 lignes) | 24,1 s | 0,058 s | 0 ligne |
+| hooks (118, run/skip + cwd + action) | 28,0 s ¹ | 0,048 s | 0 ligne |
+| `getdep` (5 `--var`, 3 `-r`) | 0,89 s | 0,038 s | 0 ligne (même erreur sur un `-r path:pkg` CIPD invalide) |
+| `sync` dry-run | — | 0,94 s | 250 deps : 218 git à jour, 0 clone/fetch/checkout, 32 CIPD listés |
+
+¹ Python n'a pas de commande de listing : `~/f3/pyhooks.py` charge l'arbre comme `revinfo` puis imprime `GetHooks()` au format `ay`. `gclient flatten` est inutilisable ici (AssertionError sur `chromium_revision` dans `third_party/dawn`).
+
+Aucun écart, donc aucun patch depot-gclient. Restent pour F3 : `sync --apply --populate-cache` sur une copie, et `--cipd` (le plan sans `--cipd` liste les 32 paquets sans les traiter).

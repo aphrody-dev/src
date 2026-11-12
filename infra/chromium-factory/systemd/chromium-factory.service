@@ -1,11 +1,22 @@
 [Unit]
-Description=Chromium factory (labs_agent headless_shell, Chrome Stable)
-After=network-online.target
+Description=Chromium factory (labs_agent headless_shell, Chrome Stable) via aphrody-factory
+Wants=network-online.target
+After=network-online.target nativelink-server.service
 [Service]
 Type=oneshot
 User=ubuntu
-Nice=10
-IOSchedulingClass=idle
+# systemd-run without User= left HOME unset (`HOME: unbound variable`, 2026-11-12 16:21:05).
+Environment=HOME=/home/ubuntu
+Environment=PATH=/home/ubuntu/bin:/home/ubuntu/depot_tools:/home/ubuntu/.local/bin:/usr/local/bin:/usr/bin:/bin
 WorkingDirectory=/srv/chromium
-ExecStart=/srv/chromium/factory/chromium-factory.sh all stable
+# Never next to the ChromiumOS factory (its repo sync overlapped the F0 build for 69 min).
+ExecCondition=/bin/sh -c '! systemctl is-active --quiet cros-factory.service'
+# Resumable: `all` skips steps already recorded in /srv/chromium/factory-state.json; doctor gates build.
+ExecStart=/srv/chromium/factory/bin/aphrody-factory all --refresh-channels --channel stable --config /srv/chromium/factory/factory.toml
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
 TimeoutStartSec=infinity
+# siso gets SIGTERM first and flushes siso_metrics.json / .siso_fs_state.
+KillMode=mixed
+TimeoutStopSec=120

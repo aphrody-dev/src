@@ -59,7 +59,7 @@ Cible commune avec la session labs (référence : `labs/docs/ROOT-ARCHITECTURE.m
 | `nt/vendor` (35 clones) | supprimé le 2026-11-12 (sans modification locale) ; LiberNT déplacé dans `third_party/LiberNT` | doublons de `third_party` |
 | `labs/crates/*`                        | `crates/*`                                                             | merge par la session labs (worktree `merge/labs`) : dependencies, profils, cargo-features, `[patch]` |
 | `labs/vendor/{glob-match,quinn-proto}` | forks + `[patch.crates-io]`                                            |                                                                                                      |
-| `labs/browser/factory`                 | `infra/chromium-factory`                                               |                                                                                                      |
+| `labs/infra/chromium-factory`                 | `infra/chromium-factory`                                               |                                                                                                      |
 | `labs/forks/oils`                      | `third_party/oils`                                                     | branche windows-native                                                                               |
 | `third_party/<cat>/<dépôt>`            | `third_party/<nom>`                                                    | `packages/machine/src/flatten-third-party.ts` (voir §5)                                              |
 | `configuration/` (racine, ARCH-005)    | `packages/machine`                                                     | ARCH-006 interdit le TS dans `infra/`                                                                |

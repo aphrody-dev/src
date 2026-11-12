@@ -9,7 +9,7 @@ Sources : code.claude.com/docs (computer-use, setup, env-vars), Microsoft Learn 
 | Claude Code (binaire Bun/JS) → outil Bash | un processus shell par commande + rejeu du snapshot | docs setup [V], snapshot observé |
 | bash.exe (Git Bash = MSYS2) | émulation POSIX (fork émulé, cygpath) | remplacé par niubash 1.5.0 : 16,3 ms vs 19,2 ms (nt-03) |
 | outil PowerShell | démarrage pwsh lourd | désactivé (CLAUDE_CODE_USE_POWERSHELL_TOOL=0) |
-| CreateProcessW par commande | coût de création de processus Windows + scan Defender | exclusions Defender déjà posées ; mesure par commande [NV] (source introuvable: mesure locale requise) |
+| CreateProcessW par commande | coût de création de processus Windows + scan Defender | exclusions Defender déjà posées ; mesure par commande [NV] (nécessite Windows propre) |
 | sortie via pipes, pas ConPTY | pas de TTY ; sortie tronquée à BASH_MAX_OUTPUT_LENGTH (30000 par défaut, max 150000) | docs env-vars [V] |
 | GUI | `computer-use` du CLI = **macOS seulement** ; sous Windows uniquement dans Claude Desktop | docs computer-use [V] |
 | captures d'écran | downscale + aller-retour modèle : méthode la plus lente, utilisée en dernier recours (MCP > Bash > Chrome > computer use) | docs computer-use [V] |

@@ -22,7 +22,7 @@ const DEPS_KEYS: [&str; 11] = [
     "catapult_revision",
 ];
 
-#[derive(Debug, Default, PartialEq)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct Channel {
     pub name: String,
     pub chromium: String,
@@ -182,9 +182,49 @@ pub fn fetch_toml(platform: &str, generated: &str) -> Result<String, String> {
     })
 }
 
+/// Parse a chrome-channels.toml rendered by [`fetch_toml`] back into channels (file order is not
+/// kept; channels come back sorted by name).
+pub fn parse_toml(src: &str) -> Result<Vec<Channel>, String> {
+    let doc: toml::Table = src.parse().map_err(|e| format!("chrome-channels.toml: {e}"))?;
+    let Some(toml::Value::Table(chans)) = doc.get("channel") else {
+        return Err("chrome-channels.toml: no [channel.*] table".into());
+    };
+    let mut out = Vec::with_capacity(chans.len());
+    for (name, v) in chans {
+        let t = v.as_table().ok_or_else(|| format!("channel.{name}: not a table"))?;
+        let s = |k: &str| t.get(k).and_then(toml::Value::as_str).map(str::to_owned);
+        out.push(Channel {
+            name: name.clone(),
+            chromium: s("chromium").ok_or_else(|| format!("channel.{name}: no chromium"))?,
+            v8: s("v8").unwrap_or_default(),
+            clang: s("clang"),
+            rust: s("rust"),
+            deps: DEPS_KEYS.iter().filter_map(|k| Some(((*k).to_owned(), s(k)?))).collect(),
+        });
+    }
+    Ok(out)
+}
+
+/// The channel named `name` (case-insensitive: `stable`, `Beta`...).
+pub fn find(channels: &[Channel], name: &str) -> Option<Channel> {
+    channels.iter().find(|c| c.name.eq_ignore_ascii_case(name)).cloned()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn parses_rendered_toml() {
+        let src = "# x\n[channel.stable]\nchromium = \"157.0.8103.78\"\nv8 = \"15.7\"\nclang = \"llvmorg-24\"\nv8_revision = \"abc\"\n\n[channel.beta]\nchromium = \"158.0.1.2\"\nv8 = \"15.8\"\n";
+        let c = parse_toml(src).unwrap();
+        let s = find(&c, "Stable").unwrap();
+        assert_eq!(s.chromium, "157.0.8103.78");
+        assert_eq!(s.clang.as_deref(), Some("llvmorg-24"));
+        assert_eq!(s.deps, vec![("v8_revision".to_owned(), "abc".to_owned())]);
+        assert_eq!(find(&c, "beta").unwrap().rust, None);
+        assert!(parse_toml("x = 1").is_err());
+    }
 
     #[test]
     fn parses_deps_and_versions() {

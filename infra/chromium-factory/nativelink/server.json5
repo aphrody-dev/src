@@ -21,7 +21,8 @@
         ac: [{ instance_name: "main", ac_store: "AC" }],
         execution: [{ instance_name: "main", cas_store: "CAS", scheduler: "MAIN" }],
         capabilities: [{ instance_name: "main", remote_execution: { scheduler: "MAIN" } }],
-        bytestream: { cas_stores: { main: "CAS" } },
+        // Array format (1.8.5 warned "deprecated map format" for `cas_stores: { main: ... }`).
+        bytestream: [{ instance_name: "main", cas_store: "CAS" }],
       } },
     { listener: { http: { socket_address: "10.200.77.1:50061" } },
       services: { worker_api: { scheduler: "MAIN" }, health: {} } },

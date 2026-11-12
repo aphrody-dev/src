@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Deploy NativeLink: `deploy.sh server` on fr1, `deploy.sh worker <sched-ip> <cache-bytes>` on each builder.
+# Deploy NativeLink: `deploy.sh server` on fr1, `deploy.sh worker <sched-ip> <cache-bytes> [jobs]` on each builder.
 set -euo pipefail
 V=1.8.5; role=$1; here="$(cd "$(dirname "$0")" && pwd)"
 if ! /usr/local/bin/nativelink --version 2>/dev/null | grep -q "$V"; then
@@ -13,8 +13,12 @@ if [ "$role" = server ]; then
 ExecStartPre=+/bin/chown -R nativelink-server /home/nativelink"
 else
   sudo install -m644 "$here/worker.json5" /etc/nativelink/worker.json5
-  cfg=/etc/nativelink/worker.json5; # systemd >= 262 mounts the DynamicUser state dir (/var/lib/private) noexec+idmapped: re-allow exec for the work dir.
-  envs="Environment=NL_SCHED=$2 NL_CACHE_BYTES=$3 NL_JOBS=$(nproc)
+  cfg=/etc/nativelink/worker.json5
+  # systemd >= 262 mounts the DynamicUser state dir (/var/lib/private) noexec+idmapped: re-allow exec for the work dir.
+  # NL_JOBS: 4th arg, else MemAvailable/2.5 GiB capped at nproc (max cxx RSS 2.97 GB in F0;
+  # fr2 11 GiB with nproc=6 would OOM). Planned: fr1 10, prd 4, fr2 3.
+  jobs="${4:-$(awk -v n="$(nproc)" '/MemAvailable/{j=int($2/2621440); if(j>n)j=n; if(j<1)j=1; print j}' /proc/meminfo)}"
+  envs="Environment=NL_SCHED=$2 NL_CACHE_BYTES=$3 NL_JOBS=$jobs
 ExecPaths=/var/lib/private/nativelink"
 fi
 sudo tee /etc/systemd/system/nativelink-$role.service >/dev/null <<UNIT

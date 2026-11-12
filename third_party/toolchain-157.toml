@@ -1,0 +1,120 @@
+# Toolchain Chromium 157 (F-tool), publiée sur R2 le 2026-11-12.
+# Source : prebuilts Chromium (tools/clang/scripts/update.py, tools/rust/update_rust.py, checkout fr1).
+# Repack : .tar.xz -> .tar.zst (zstd -19), nom content-addressed = <paquet>.<blake3[0:16]>.tar.zst.
+# lld, ld.lld, lld-link et llvm-* sont inclus dans le paquet clang (pas de paquet lld séparé : 404).
+
+[toolchain]
+chromium = "157.0.8103.78"
+clang_revision = "llvmorg-24-init-7747-g62397f8b"
+clang_sub_revision = 67
+rust_revision = "1edd55dcfcd573872c727fa3e086369a71661ee0"
+rust_sub_revision = 1125
+clang_version = "clang version 24.0.0git (llvm-project 86922d51225db089fffb99475eefc4904f79e3c8)"
+rustc_version = "rustc 1.100.0-nightly (1edd55dcf 2026-09-09)"
+llvm_version = "24.0.0"
+r2_bucket = "aphrody-chromium"
+r2_prefix = "toolchain/157/"
+
+[[file]]
+platform = "linux-x64"
+package = "clang-llvmorg-24-init-7747-g62397f8b-67"
+r2_key = "toolchain/157/linux-x64/clang-llvmorg-24-init-7747-g62397f8b-67.834a632abe4fb607.tar.zst"
+size = 73445495
+sha256 = "3d42b5e20a8c757ba48f7ab49d7e7a5170490a47c9099edeff94a55e6cc7c50a"
+blake3 = "834a632abe4fb6074e3f659a8121f7e76cc77d442da43ce34e426fee6e29b42e"
+files = 418
+source_url = "https://commondatastorage.googleapis.com/chromium-browser-clang/Linux_x64/clang-llvmorg-24-init-7747-g62397f8b-67.tar.xz"
+source_size = 57258740
+source_sha256 = "ab8ec1e75c7f74565e9f893212262780abc9174363ce5f1ff670c415e9cd4147"
+source_blake3 = "e1856db0d50f5be22a16c87c4e7cfffb72ee54e87430b4140f79f5ed5a06adee"
+
+[[file]]
+platform = "linux-x64"
+package = "llvm-code-coverage-llvmorg-24-init-7747-g62397f8b-67"
+r2_key = "toolchain/157/linux-x64/llvm-code-coverage-llvmorg-24-init-7747-g62397f8b-67.19bcc61681f65553.tar.zst"
+size = 2536766
+sha256 = "c934064cd1007cb78c36762e46d67341a3cdcfe2f1be7af3ebe656ab15ba5218"
+blake3 = "19bcc61681f65553faffe883e22d1addb511056f96b5f5a1e50b4f4bb6cbb99b"
+files = 2
+source_url = "https://commondatastorage.googleapis.com/chromium-browser-clang/Linux_x64/llvm-code-coverage-llvmorg-24-init-7747-g62397f8b-67.tar.xz"
+source_size = 2374572
+source_sha256 = "b69495731e398beb837f5261f62408e9d2bb44f255b4dbd403b3deeb6d8b0646"
+source_blake3 = "19d29d3590e7426ad82c9c29142d9829be234bf99d755cf8edd1a05aa15f4a6e"
+
+[[file]]
+platform = "linux-x64"
+package = "llvmobjdump-llvmorg-24-init-7747-g62397f8b-67"
+r2_key = "toolchain/157/linux-x64/llvmobjdump-llvmorg-24-init-7747-g62397f8b-67.24dd6175e3a21f8e.tar.zst"
+size = 13273160
+sha256 = "0aab1d5d7445e6c253cce4e361a02f9ba289698cf95ea368a167906d2ddfe722"
+blake3 = "24dd6175e3a21f8e43b6b041287d8dd290dc83e5a610df7588d8ee21ba5fc58b"
+files = 6
+source_url = "https://commondatastorage.googleapis.com/chromium-browser-clang/Linux_x64/llvmobjdump-llvmorg-24-init-7747-g62397f8b-67.tar.xz"
+source_size = 5924452
+source_sha256 = "c575a16aa6516a47ad58c6f66ea604d3ec183d9b7a6ca72139b10d01a3ade984"
+source_blake3 = "649aed0063c243da9e4ad46b31b5f7817a5dad68529401e21fa633904ce7b06f"
+
+[[file]]
+platform = "linux-x64"
+package = "rust-toolchain-1edd55dcfcd573872c727fa3e086369a71661ee0-1125-llvmorg-24-init-7747-g62397f8b"
+r2_key = "toolchain/157/linux-x64/rust-toolchain-1edd55dcfcd573872c727fa3e086369a71661ee0-1125-llvmorg-24-init-7747-g62397f8b.38a905180891b56d.tar.zst"
+size = 336049934
+sha256 = "889b194b8f4abefbfd5cbfa03def6a9a442990cc82ce92a5bf68b9df31dd8cdf"
+blake3 = "38a905180891b56d9576a623b6d7e9be54fdf9187466864e5ed26061b0136af9"
+files = 7266
+source_url = "https://commondatastorage.googleapis.com/chromium-browser-clang/Linux_x64/rust-toolchain-1edd55dcfcd573872c727fa3e086369a71661ee0-1125-llvmorg-24-init-7747-g62397f8b.tar.xz"
+source_size = 287212360
+source_sha256 = "6287ecced3bc5113122a88dbe15c910edec0828718423a67529c24de0f060e98"
+source_blake3 = "0fe0cf086ef38d7b9d75f3ed2af3d4de3cc891c097d2d924da1c2085834dca16"
+
+[[file]]
+platform = "windows-x64"
+package = "clang-llvmorg-24-init-7747-g62397f8b-67"
+r2_key = "toolchain/157/windows-x64/clang-llvmorg-24-init-7747-g62397f8b-67.9d1731a1f5f3db29.tar.zst"
+size = 61182119
+sha256 = "8671b551cfb763aecd617a772de4454587b7118cf116c8630b4ede22b7c0711c"
+blake3 = "9d1731a1f5f3db2994143e9667f63946f5b608ebf0dba66ad85f5e4086bb5781"
+files = 349
+source_url = "https://commondatastorage.googleapis.com/chromium-browser-clang/Win/clang-llvmorg-24-init-7747-g62397f8b-67.tar.xz"
+source_size = 51825724
+source_sha256 = "194d833174c9ab6ea1d5e5f9902fcc946a4b713c5ef573e112dfc48450c849e4"
+source_blake3 = "c23dc4a18510c193f1366b187269b1877200968a32d8d08d1221a89131384e7a"
+
+[[file]]
+platform = "windows-x64"
+package = "llvm-code-coverage-llvmorg-24-init-7747-g62397f8b-67"
+r2_key = "toolchain/157/windows-x64/llvm-code-coverage-llvmorg-24-init-7747-g62397f8b-67.a01a70ed96163f2c.tar.zst"
+size = 2724656
+sha256 = "9cb0f0c2d90c942e3ff5de4939d0f18049398dc9a8f19aae16d672378b376b72"
+blake3 = "a01a70ed96163f2c2ac5617b73dd82dfc011399186cd3395c1071930ff223df3"
+files = 2
+source_url = "https://commondatastorage.googleapis.com/chromium-browser-clang/Win/llvm-code-coverage-llvmorg-24-init-7747-g62397f8b-67.tar.xz"
+source_size = 2527436
+source_sha256 = "c6ffba53da37b3d037bceea588a7cc5781361f018998733cc70c897e13f53168"
+source_blake3 = "cf35cadd4ae5c1c824a2d556285e6e97273b610c723e81e8ed5bc0446f8f613b"
+
+[[file]]
+platform = "windows-x64"
+package = "llvmobjdump-llvmorg-24-init-7747-g62397f8b-67"
+r2_key = "toolchain/157/windows-x64/llvmobjdump-llvmorg-24-init-7747-g62397f8b-67.364a0e04325aa97f.tar.zst"
+size = 13113930
+sha256 = "d20a3b181304c606dcb6c66dfa993eb9b4cf0b84ac12921495a0dbe5883902e0"
+blake3 = "364a0e04325aa97f5260cf320b5183f7022a184dd87b88cfd4060b5d77645529"
+files = 6
+source_url = "https://commondatastorage.googleapis.com/chromium-browser-clang/Win/llvmobjdump-llvmorg-24-init-7747-g62397f8b-67.tar.xz"
+source_size = 6010708
+source_sha256 = "dbc2063e2ca76a1917a3347ff7d6807a450d14bb7d11bc3c98c3ef8d428f63fe"
+source_blake3 = "3d6eb8a03b8abc95406b72f8597912ed75f2d5797fd6c89a9792e371b9ae0635"
+
+[[file]]
+platform = "windows-x64"
+package = "rust-toolchain-1edd55dcfcd573872c727fa3e086369a71661ee0-1125-llvmorg-24-init-7747-g62397f8b"
+r2_key = "toolchain/157/windows-x64/rust-toolchain-1edd55dcfcd573872c727fa3e086369a71661ee0-1125-llvmorg-24-init-7747-g62397f8b.7c8a1b7f8609ae8a.tar.zst"
+size = 508479392
+sha256 = "c8aa331179bd0f149b6285f513469297427a94b2314f8dc7e3221d5deaf8fb16"
+blake3 = "7c8a1b7f8609ae8a5a36a88d8b3204ca925de1079427291a004c999096eae9d4"
+files = 7322
+source_url = "https://commondatastorage.googleapis.com/chromium-browser-clang/Win/rust-toolchain-1edd55dcfcd573872c727fa3e086369a71661ee0-1125-llvmorg-24-init-7747-g62397f8b.tar.xz"
+source_size = 425602544
+source_sha256 = "d921778843d10fee506621af6457b0011da63ad6882e2508c91509a92c0cae49"
+source_blake3 = "d97b43ad159ba2f579edfd59b7de73e119dc525f922f762183280a58a05cafec"

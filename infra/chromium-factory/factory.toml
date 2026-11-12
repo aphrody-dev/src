@@ -1,0 +1,52 @@
+# aphrody-factory config on fr1 (deployed to /srv/chromium/factory/factory.toml). Values = built-in
+# defaults, written out so the sizing is visible. Sizing from F0 (2026-11-12): max cxx RSS 2.97 GB,
+# build peak 19.8 GiB with 12 local jobs.
+root = "/srv/chromium"
+factory = "/srv/chromium/factory"
+out_name = "labs_agent"          # stable: keeps thinlto-cache and siso state across versions
+target = "headless_shell"
+args = "args/labs_agent.gn"
+ay = "/home/ubuntu/bin/ay"
+sync_with_ay = false             # true once `ay gclient sync --apply --populate-cache --cipd` is validated (F3)
+depot_tools = "/home/ubuntu/depot_tools"
+state = "/srv/chromium/factory-state.json"
+
+[reapi]
+enabled = true
+address = "10.200.77.1:50051"
+worker_api = "10.200.77.1:50061"
+instance = "main"
+project = "aphrody"
+local_jobs = 4                   # fr1 also runs a 10-slot worker
+remote_jobs = 26                 # ~1.5 x (10 + 4 + 3) worker slots
+
+[[workers]]
+name = "fr1"                     # deploy after the F0 stop: deploy.sh worker 10.200.77.1 100000000000 10
+jobs = 10
+min_mem_gb = 26
+
+[[workers]]
+name = "prd"
+ssh = "prd"
+jobs = 4                         # 8 cores but ~5 GiB MemAvailable next to its services
+min_mem_gb = 10
+
+[[workers]]
+name = "fr2"
+ssh = "fr2"
+jobs = 3                         # 6 cores / 11 GiB
+min_mem_gb = 8
+
+[publish]
+remote = "r2-chromium"
+bucket = "aphrody-chromium"
+prefix = "labs_agent"
+zstd_level = 19
+staging = "/srv/chromium/publish"
+
+[doctor]
+min_free_gb_src = 40
+min_free_gb_cas = 160
+cas_path = "/home"
+min_mem_avail_gb = 16
+conflicting = ["siso", "ninja", "autoninja", "cros_sdk", "repo", "emerge", "gclient"]

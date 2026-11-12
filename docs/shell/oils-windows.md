@@ -68,21 +68,21 @@ Pas de ré-exec avec état sérialisé. Selon le thunk :
 ## Stubs et limites connues
 
 - **Écrivain in-process infini** (`while true; do echo y; done | head -1`) : bloque (il tourne avant le lecteur). [V]
-- **Sortie in-process > 16 Mo** dans un pipe ou `$(…)` (ex. 20 Mo de `printf`) : bloque, car le buffer du pipe est de 16 Mo (quota NPFS supposé honoré [NV] (source introuvable: mesure locale requise, interdite) ; 2 Mo vérifiés). [V]
+- **Sortie in-process > 16 Mo** (ex. 20 Mo de `printf` dans un pipe ou `$(…)`) : **levée** (commits 996dee3 + afe7c4c, branche windows-native). Un thread pompe la sortie de l'enfant in-process en mémoire (plafond 1 Gio), puis la recopie dans le vrai pipe ; si le lecteur ferme, la pompe ferme aussi, et un `yes` lancé par exec reçoit un broken pipe. Testé avec le binaire cross-compilé sur prd (clang-cl + lld-link, SDK xwin MSVC 14.44) : `f | wc -c` = 20000001, `${#x}` = 20000000, `2>&1 |` OK, shell-matrix 29/34 comme avant. L'ancien binaire bloque sur le même test (timeout). Désactivable avec `OILS_WIN_NO_PUMP=1`. [V]
 - Isolation in-process partielle : mutation en place d'un tableau existant (`a[0]=x`), `set --`, alias, `umask`, `ulimit`, fds ≥ 3 ouverts dans le sous-shell fuient vers le parent. `$BASHPID`/`$$` = pid du shell. [NV pour chaque cas, déduit du code]
-- fds ≥ 3 non transmis aux enfants (`cmd 3>f` : seul le shell les voit). [NV] (source introuvable: test local requis)
-- Pas de contrôle de jobs : `setpgid`/`tcsetpgrp` no-op, `fg/bg/jobs`, SIGTSTP absents. `kill` = `TerminateProcess(128+sig)` ; Ctrl-C via `SetConsoleCtrlHandler` → SIGINT (non testé interactivement [NV] (source introuvable: test interactif requis)). Codes NTSTATUS ≥ 0xC0000000 → SIGSEGV (0xC000013A → SIGINT).
+- fds ≥ 3 non transmis aux enfants (`cmd 3>f` : seul le shell les voit). [NV] (nécessite Windows propre)
+- Pas de contrôle de jobs : `setpgid`/`tcsetpgrp` no-op, `fg/bg/jobs`, SIGTSTP absents. `kill` = `TerminateProcess(128+sig)` ; Ctrl-C via `SetConsoleCtrlHandler` → SIGINT (non testé interactivement [NV] (nécessite Windows propre, test interactif)). Codes NTSTATUS ≥ 0xC0000000 → SIGSEGV (0xC000013A → SIGINT).
 - `getppid` = 1, `setrlimit` no-op, `getrlimit` = infini (NOFILE = 8192), `st_ino` = 0 (`-ef` passe par l'index NTFS), `S_ISLNK` = 0 (`[ -L ]` toujours faux).
 - Pas de readline (`HAVE_READLINE` absent) : le mode interactif lit des lignes brutes. FANOS (`--headless`) : stub ENOSYS.
 - Arguments non traduits : `cat /c/x` passe `/c/x` tel quel aux programmes natifs (pas d'heuristique MSYS).
 - `.bat/.cmd` : arguments passés à travers le parseur de `cmd.exe` (classe BatBadBut) [V blog.rust-lang.org CVE-2024-24576].
-- Regex `=~` : `std::regex::extended` (ERE POSIX de la STL MSVC [V learn.microsoft.com/cpp/standard-library/regular-expressions-cpp]), pas la libc ; classes et backrefs exotiques non testées [NV] (source introuvable: test local requis).
+- Regex `=~` : `std::regex::extended` (ERE POSIX de la STL MSVC [V learn.microsoft.com/cpp/standard-library/regular-expressions-cpp]), pas la libc ; classes et backrefs exotiques non testées [NV] (nécessite Windows propre).
 - Un appel CRT « invalid parameter » survient à chaque pipeline (probablement un double `close`), désormais inoffensif ; cause non identifiée.
 
 ## Prochaines étapes
 
 1. Régénérer `_gen` depuis le fork (mycpp/ASDL) pour supprimer `asdl_empty_bases` et `line_patch` ; porter les 3 correctifs `os_path`/`state` en Python (`pylib/os_path.py`, `core/state.py`).
-2. Enfants in-process : thread de drainage ou fichier temporaire pour `$(…)` → lever la limite 16 Mo ; détecter l'écrivain infini (timeout ou vrai sous-processus).
+2. ~~Enfants in-process : thread de drainage → lever la limite 16 Mo~~ fait (pompe, voir plus haut). Reste à faire : détecter l'écrivain infini (`f() { yes; }; f | head -1` bloque toujours ; avec la pompe, il bloque une fois le plafond de 1 Gio atteint).
 3. Vrai sous-processus pour `( … )`/`&` : ré-exec `osh.exe` avec état sérialisé (`declare -p`, `declare -f`, alias, `shopt -p`, `set +o`) + source du nœud via les spans de l'arena.
 4. Transmission des fds ≥ 3 (`lpReserved2` du CRT), `$$`/`$BASHPID`, `getppid` réel (NtQueryInformationProcess).
 5. Ligne interactive : éditeur maison (console VT) à la place de readline.

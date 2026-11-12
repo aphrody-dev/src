@@ -65,7 +65,7 @@ Compat : suite de 2 500+ cas comparant stdout/stderr/exit/FS avec bash, exécut�
 | Redirections `>`, `2>&1`, `/dev/null` | OK ; `/dev/null` mappé vers NUL [V brush-core/src/sys/windows/fs.rs open_null_file] | faible |
 | Heredocs / here-strings | OK, sauf via `declare -f` (#1580) | moyen |
 | Sous-shells `( )`, `$( )` | OK ; traps EXIT sous-shell (#1540) | faible |
-| Process substitution | blocages (#1662, #1294) ; Windows [NV] (source introuvable: pas d'issue Windows spécifique trouvée) | moyen |
+| Process substitution | blocages (#1662, #1294) ; Windows [NV] (nécessite Windows propre ; brush main échoue `bash-procsub` dans shell-matrix, 2026-11-12) | moyen |
 | Jobs en fond `&`, `wait` | partiel ; `wait -n`, `disown` absents ; contrôle de jobs Windows limité | moyen |
 | Signaux / traps | partiel (« some traps » manquants) ; pas de SIGINT POSIX sous Windows | moyen |
 | Codes de sortie | OK (comparés par la suite) | faible |

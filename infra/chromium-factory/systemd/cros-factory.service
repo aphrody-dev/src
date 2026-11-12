@@ -1,0 +1,17 @@
+[Unit]
+Description=ChromiumOS factory (amd64-generic, release branch of Chrome Stable)
+Wants=network-online.target
+After=network-online.target
+[Service]
+Type=oneshot
+User=ubuntu
+Environment=HOME=/home/ubuntu
+Environment=PATH=/home/ubuntu/bin:/home/ubuntu/depot_tools:/home/ubuntu/.local/bin:/usr/local/bin:/usr/bin:/bin
+WorkingDirectory=/home/ubuntu
+# Serialized behind the Chromium factory (F6 queued after F0/F1).
+ExecCondition=/bin/sh -c '! systemctl is-active --quiet chromium-factory.service'
+# chromite stays Python; only orchestration moves to Rust later (`aphrody-factory cros`).
+ExecStart=/srv/chromium/factory/cros-factory.sh all amd64-generic
+Nice=15
+IOSchedulingClass=idle
+TimeoutStartSec=infinity

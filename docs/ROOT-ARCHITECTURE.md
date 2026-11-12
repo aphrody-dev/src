@@ -44,7 +44,7 @@ Disparaissent de la racine (à fondre dans les dossiers ci-dessus) : Dockerfile,
 | coreutils-1/2/3, uutils-coreutils, findutils-1, sed-1, fx-1, wterm-1, skills-3, vcpkg-1 | un fork par upstream | les suffixés (après accord propriétaire) |
 | brush / niubash / osh comme bash.exe | un seul choix mesuré (niubash aujourd'hui, osh candidat) | config des autres |
 | docs labs + src/docs (60+ fichiers) | docs/ par couche, un fichier par sujet | rapports historiques → docs/archive/ |
-| scripts shell factory | crates/browser-factory (F4) | browser/factory/*.sh |
+| scripts shell factory | crates/browser-factory (F4) | infra/chromium-factory/*.sh |
 
 ## Ordre de fusion (sans régression)
 
@@ -66,7 +66,8 @@ Tout nom doit pouvoir changer sans réécrire le code : nom du dépôt (`src`), 
 
 ## Annexe : architecture labs v0 (fusionnée depuis C:\labs\docs\ARCHITECTURE.md, 2026-11-12)
 
-Chemins d'origine : `crates/cli` est devenu `crates/aphrody-cli`, `browser/factory` `infra/chromium-factory`, `vendor/` `third_party/patches/`.
+Chemins d'origine : `crates/cli` est devenu `crates/aphrody-cli`, `infra/chromium-factory` `infra/chromium-factory`, `vendor/` `third_party/patches/`.
+
 
 
 Status: v0 architecture. Implemented: conformance harness skeleton, Lore absorbed. Versions read from crates.io on 2026-11-12.
@@ -222,7 +223,7 @@ MSRV: the workspace declares `rust-version = "1.97"` because `oxc 0.158.0` decla
 
 ### 5. Data flows
 
-### 5.1 `aphrody dev`
+#### 5.1 `aphrody dev`
 
 ```
 fs watcher (io/notify) --changed paths--> module graph (bundle, incremental)
@@ -242,7 +243,7 @@ tailwind scanner (oxide) --candidates--> tailwind compiler --> css (lightningcss
 - Modules are transpiled lazily, on first request, and cached by content hash in `.aphrody/cache` (zstd).
 - HMR has two paths: client modules use React Refresh boundaries, and server modules invalidate the Flight payload, which the client refetches with `router.refresh()` semantics.
 
-### 5.2 `aphrody build`
+#### 5.2 `aphrody build`
 
 ```
 next.config.* (evaluated in runtime) --> route discovery (app/, pages/)
@@ -255,7 +256,7 @@ next.config.* (evaluated in runtime) --> route discovery (app/, pages/)
 - `build` is deterministic: the same inputs and lockfile produce byte-identical output. CI checks this with a two-build hash comparison.
 - `build --target <vercel|node|static|oci>` selects the output adapter. The default is `vercel`, which is BOA v3.
 
-### 5.3 `aphrody serve`
+#### 5.3 `aphrody serve`
 
 ```
 .vercel/output/config.json --routes--> router (net, matches BOA v3 route phases)
@@ -265,7 +266,7 @@ next.config.* (evaluated in runtime) --> route discovery (app/, pages/)
 ```
 - `serve` runs the same artifact Vercel would run, so local and remote behavior match. This is also how the Build Output v3 suite runs in CI without network access.
 
-### 5.4 `aphrody deploy`
+#### 5.4 `aphrody deploy`
 
 ```
 build --target vercel  -->  .vercel/output

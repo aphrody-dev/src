@@ -17,7 +17,7 @@ Règle : **une toolchain = celle du canal Chromium suivi**, publiée sur R2 par 
 | Rust (src) | rustc de Chromium (ou nightly appariée, `rustc -vV`) + lld | `-Clinker-plugin-lto`, thin ; fat pour `min` | Windows : clang-cl + lld-link, `AR=llvm-lib` (lib.exe plante sur les .obj LTO) [V doc rustc] |
 | C / C++ (src, vcpkg) | clang-cl / clang via triplet custom `VCPKG_CHAINLOAD_TOOLCHAIN_FILE` → toolchain.cmake LLVM | `-flto=thin` | [V learn.microsoft.com/vcpkg/users/triplets] |
 | LiberNT / ReactOS | clang-cl (cible PE) au lieu de RosBE GCC/MinGW | à mesurer | ReactOS a un support clang partiel [NV] |
-| bun | build upstream CMake + clang ; aligner sur la version LLVM de Chromium | thin [NV] | version LLVM exigée par bun [NV : SetupLLVM introuvable via gh aujourd'hui] |
+| bun (réécrit en Rust, plus de Zig) | scripts TS + ninja ; CMake 3.30.5 seulement pour les deps ; Rust nightly-2026-09-15, LLVM 23.1.1 (clang et rustc sur le même majeur) [V oven-sh/bun ccb3611f2a, 2026-11-12] | ThinLTO cross-language bun+JSC+Rust par défaut en release ; PGO C++/Rust + orderfile, PGO indisponible sous Windows [V] | écart : Chromium 157 = LLVM 24, bun = LLVM 23. Deux toolchains tant que bun n'est pas porté sur 24 (à tester sur prd). Détails : docs/bun/AOT-LTO-FFI-2026.md |
 | node-api (N-API) addons | clang-cl + lld ; ABI C stable | thin entre l'addon et les libs C/Rust | via napi-rs pour Rust [NV] |
 | .NET 10/11 | NativeAOT (ILCompiler) ; lien natif link.exe ou lld-link [NV] | pas de LTO IL↔LLVM | interop : `[LibraryImport]` vers les libs C ABI ; node-api-dotnet pour le pont JS [NV] |
 | Go, Zig, Python | Zig = LLVM (zig cc) ; Go = son propre backend (cgo via clang) ; Python = extensions via clang | Zig oui ; Go non | séparés par langage, liens uniquement via ABI C |
@@ -63,3 +63,31 @@ Anglais, et seulement là où le code ne dit pas déjà ce qu'il fait (pourquoi,
 4. `depot-capi` + bindings générés pour bun, node-api et .NET.
 5. `ay prune` en mode rapport, puis appliqué par PR.
 6. LiberNT, puis bun, avec la même toolchain (expérimental, mesuré).
+
+## vcpkg résultats (2026-11-12, fr2)
+
+Fichiers : `infra/vcpkg/triplets/x64-linux-llvm.cmake`, `x64-windows-llvm.cmake`, `infra/vcpkg/toolchains/linux-llvm.cmake`, `windows-llvm.cmake`. Mécanisme `VCPKG_CHAINLOAD_TOOLCHAIN_FILE` [V learn.microsoft.com/vcpkg/users/triplets]. Usage : `vcpkg install <port>:x64-linux-llvm --overlay-triplets=infra/vcpkg/triplets`.
+
+- Toolchain Linux : clang/clang++ + `-fuse-ld=lld` (`CMAKE_LINKER_TYPE LLD`), llvm-ar/llvm-ranlib/llvm-nm, `-flto=thin -fPIC`, libs statiques, CRT dynamique. `LABS_LTO=off` coupe ThinLTO. Triple forcé à `x86_64-unknown-linux-gnu` (celui de rustc) : sans ça lld avertit « Linking two modules of different target triples » en LTO croisé (`x86_64-pc-linux-gnu` côté clang Ubuntu).
+- Toolchain Windows : clang-cl, lld-link, llvm-lib, llvm-rc, llvm-mt, `-flto=thin`, `/MD`. [NV] écrite, jamais testée (aucun build Windows autorisé).
+- Swap de toolchain : `LLVM_ROOT` (passé par `VCPKG_ENV_PASSTHROUGH`) pointe vers le `bin` de la toolchain. Défaut provisoire : apt.llvm.org `/usr/lib/llvm-23/bin` (Linux), `C:/Program Files/LLVM/bin` (Windows). Quand `third_party/toolchain-157.toml` existera (toolchain Chromium 157 sur R2, `aphrody-chromium/toolchain/157/`), exporter `LLVM_ROOT=<pose>/bin` ; aucun fichier à modifier. Le hash de la toolchain entre dans l'ABI vcpkg, les binaires cachés seront donc reconstruits.
+
+Validation sur fr2 (Ubuntu 26.10, 6 cœurs, `nice`, `VCPKG_MAX_CONCURRENCY=4`) [V] :
+
+| Élément | Résultat |
+| --- | --- |
+| vcpkg | fork aphrody-labs/vcpkg `177e817` (shallow), outil 2026-10-29 |
+| clang | 23.1.6 (apt.llvm.org `llvm-toolchain-resolute-23` ; la distro n'a que 22.1.8, pas de dépôt apt.llvm.org pour 26.10) |
+| rustc | nightly 1.102.0 (3ef0c22cd 2026-11-11), LLVM 23.1.5 ; même majeure que clang, LTO croisé OK |
+| zlib 1.3.2#3, zstd 1.5.7, fmt | build OK en 23 s ; libz.a 15 objets, libzstd.a 37, libfmt.a 2 : tous `LLVM IR bitcode` (`file`), producteur `LLVM23.1.6` (`llvm-bcanalyzer -dump`) |
+| Rust `-Clinker-plugin-lto` + libzstd.a | `rustc -Clinker-plugin-lto -Clinker=clang -Clink-arg=-fuse-ld=lld -l static=zstd` : lien OK, aller-retour compress/decompress OK, aucun avertissement après correction du triple |
+
+Notes : installés sur fr2 et laissés en place : `clang-23 lld-23 llvm-23` (apt.llvm.org, `/etc/apt/sources.list.d/llvm23.list`), `zip`, rustup nightly minimal (la toolchain `stable` de fr2 est cassée : « missing manifest »). Arbre de travail et cache binaire vcpkg supprimés (~460 Mo).
+
+## F-tool résultats (2026-11-12)
+
+- Source : prebuilts Chromium 157 (`CLANG_REVISION` llvmorg-24-init-7747-g62397f8b-67, `RUST_REVISION` 1edd55dc…-1125), `commondatastorage.googleapis.com/chromium-browser-clang/{Linux_x64,Win}/`.
+- Paquets : clang (inclut lld, ld.lld, lld-link, llvm-ar/nm/objcopy/readobj/symbolizer…), llvm-code-coverage, llvmobjdump, rust-toolchain (rustc, cargo, clippy, rustfmt, bindgen, crubit). Pas de paquet lld séparé (404).
+- R2 : `aphrody-chromium/toolchain/157/{linux-x64,windows-x64}/<paquet>.<blake3[0:16]>.tar.zst` (8 objets, ~1,0 Go) ; manifeste `third_party/toolchain-157.toml` (tailles, sha256, blake3, URLs source).
+- Vérifié sur prd (Linux) : `clang version 24.0.0git` (llvm-project 86922d51) ; `rustc 1.100.0-nightly (1edd55dcf 2026-09-09)`, `LLVM version: 24.0.0`. Même LLVM majeur.
+- Note : zstd -19 est ~15-25 % plus gros que le xz d'origine ; à reconsidérer (`--ultra -22 --long`) si la taille compte.

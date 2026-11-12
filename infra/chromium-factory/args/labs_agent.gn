@@ -1,4 +1,19 @@
-# labs_agent: optimized headless Chromium for agents (headless_shell lineage).
+# labs_agent: optimized headless Chromium for agents (headless_shell lineage), Chrome 157.
+# Every arg below was checked with `gn args out/labs_agent-157.0.8103.78 --list --short` on fr1
+# (2026-11-12). aphrody-factory appends `use_siso` / `use_remoteexec` after its generated marker;
+# do not set them here.
+#
+# Kept on purpose (product, not build cost):
+#   is_official_build -> ThinLTO + CFI (is_cfi, use_cfi_icall default true) + PGO.
+#   chrome_pgo_phase = 2 -> needs custom_vars checkout_pgo_profiles (set by `sync`); profile fetch is
+#   part of sync, not of the build.
+#   thin_lto_enable_cache defaults to true: cache in $root_out_dir/thinlto-cache
+#   (build/config/compiler/BUILD.gn:784-789), hence the stable out dir `out/labs_agent`.
+# Not applicable in 157 (absent from `gn args --list`): enable_nacl, use_jumbo_build.
+# Measured as negligible (F0 metrics, core-seconds): printing 44, pdf 10, device/vr 64,
+# screen_ai 14, on_device_translation 32 -> left at default (Page.printToPDF needs printing).
+# perfetto trace_processor (279 objects, 3790 s) comes from base -> libperfetto (JSON trace export
+# used by CDP Tracing), kept.
 is_official_build = true
 is_debug = false
 dcheck_always_on = false
@@ -13,4 +28,9 @@ use_cups = false
 use_pulseaudio = false
 use_vaapi = false
 headless_use_prefs = false
+# headless_enable_commands (default true) asserts !headless_use_embedded_resources
+# (headless/BUILD.gn:23): never set headless_use_embedded_resources = true.
 treat_warnings_as_errors = false
+# Vulkan validation layers are a data dep of headless_shell only (gn path: no non-data path) and a
+# debug tool: 248 objects, 1580 core-s in F0. Default true on Linux (dawn_features.gni:177).
+dawn_enable_vulkan_validation_layers = false
