@@ -46,13 +46,17 @@ export type SelectOptions = Mask & {
   budgetTokens?: number;
   weights?: Partial<Record<"lexical" | "semantic" | "structural" | "recency", number>>;
   temperature?: number;
+  /** rrf (default): weighted reciprocal-rank fusion; logit: weighted sum of standardized scores, softmax. */
+  fusion?: "rrf" | "logit";
+  rrfK?: number;
   halfLifeDays?: number;
   candidates?: number;
   now?: number;
   redact?: Record<string, string | undefined>;
 };
 
-const DEFAULT_WEIGHTS = { lexical: 0.3, semantic: 0.5, structural: 0.1, recency: 0.1 };
+// Learned on the research pack (bench/retrieval.ts --tune, bge-m3): RRF lexical 0.2 / semantic 0.8; small structural + recency share.
+const DEFAULT_WEIGHTS = { lexical: 0.2, semantic: 0.7, structural: 0.05, recency: 0.05 };
 
 /** Standardize a head (plays the role of the 1/sqrt(d_k) scaling: keeps heads comparable, softmax unsaturated). */
 function standardize(xs: Map<string, number>): Map<string, number> {
@@ -187,6 +191,8 @@ export class Context {
     const ids = [...pool.keys()];
     if (ids.length === 0) return [];
     if (lex.size) {
+      const lexHits = new Set(lex.keys());
+      heads.__lexHits = new Map([...lexHits].map((k) => [k, 1]));
       const floor = Math.min(...lex.values());
       for (const id of ids) if (!lex.has(id)) lex.set(id, floor - 1);
       heads.lexical = lex;
@@ -216,12 +222,25 @@ export class Context {
       heads.recency = new Map(ids.map((id) => [id, Math.pow(0.5, (now - pool.get(id)!.at) / hl)]));
     }
 
+    const lexHitSet = new Set(heads.__lexHits?.keys() ?? []);
+    delete heads.__lexHits;
     // Concat heads + linear merge in logit space (weights = W^O), then one softmax over candidates.
     const W = w as Record<string, number>;
     const wsum = Object.keys(heads).reduce((a, h) => a + W[h]!, 0) || 1;
     const z = Object.fromEntries(Object.entries(heads).map(([h, m]) => [h, standardize(m)]));
     const logits = new Map(ids.map((id) => [id, Object.keys(z).reduce((a, h) => a + (W[h]! / wsum) * (z[h]!.get(id) ?? 0), 0)]));
-    const attn = softmax(logits, t);
+    let attn = softmax(logits, t);
+    if ((o.fusion ?? "rrf") === "rrf") {
+      // Weighted RRF: each head ranks candidates; score = sum_h w_h / (k + rank_h). Lexical ranks only its real hits.
+      const k0 = o.rrfK ?? 60;
+      const fused = new Map(ids.map((id) => [id, 0]));
+      for (const [h, m] of Object.entries(heads)) {
+        const hits = h === "lexical" ? [...m].filter(([id]) => lexHitSet.has(id)) : [...m];
+        hits.sort((a, b) => b[1] - a[1]).forEach(([id], r) => fused.set(id, fused.get(id)! + (W[h]! / wsum) / (k0 + r + 1)));
+      }
+      const total = [...fused.values()].reduce((a, b) => a + b, 0) || 1;
+      attn = new Map([...fused].map(([id, v]) => [id, v / total]));
+    }
     const probs = Object.fromEntries(Object.entries(heads).map(([h, m]) => [h, softmax(m, t)]));
     const scored: Scored[] = ids.map((id) => {
       const e = pool.get(id)!;

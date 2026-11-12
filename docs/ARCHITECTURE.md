@@ -105,3 +105,12 @@ Bench (`bun packages/research/bench/retrieval.ts [--workers-ai]`, 39 entries, 30
 
 Queries reuse each item's description for all of its fields, so P@1 is low by construction; R@5 is the metric to watch.
 Next: learn head weights on a labeled set, structural head from crates/core (tree-sitter), and a hierarchical summary layer for large n.
+
+Fusion tuning (2026-11-12, `bun packages/research/bench/retrieval.ts --tune [--workers-ai]`): grid over lexical/semantic weights x {rrf, logit}, objective R@5 then MRR.
+
+| embedder | best single head R@5 | tuned (rrf 0.2/0.8) R@5 in-sample | leave-one-item-out R@5 |
+|---|---|---|---|
+| hash512 | 0.533 | 0.567 | 0.467 |
+| bge-m3 | 0.800 (semantic) | 0.867 | 0.800 |
+
+Default fusion is weighted RRF (k=60) with lexical 0.2, semantic 0.7, structural 0.05, recency 0.05. With bge-m3, held-out recall equals the best single head; the pack has only 30 queries, so the weights must be re-tuned once a larger labeled set exists.

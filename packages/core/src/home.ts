@@ -22,7 +22,7 @@ export function layout(home: string): Layout {
 
 export const DEFAULT_CONFIG = {
   model: "anthropic:claude-opus-5-5",
-  context: { k: 8, budgetTokens: 4000, weights: { lexical: 0.3, semantic: 0.5, structural: 0.1, recency: 0.1 } },
+  context: { k: 8, budgetTokens: 4000, weights: { lexical: 0.2, semantic: 0.7, structural: 0.05, recency: 0.05 } },
   heartbeat: { interval: "30m" },
   skills: { staleDays: 30, archiveDays: 90 },
 };

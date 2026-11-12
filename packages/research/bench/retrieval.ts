@@ -12,7 +12,8 @@ export const PACK = join(import.meta.dir, "..", "fixtures", "ai_foundations_to_a
 export const CONFIGS = {
   lexical: { lexical: 1, semantic: 0, structural: 0, recency: 0 },
   semantic: { lexical: 0, semantic: 1, structural: 0, recency: 0 },
-  merged: { lexical: 0.5, semantic: 0.5, structural: 0, recency: 0 },
+  logit: { lexical: 0.5, semantic: 0.5, structural: 0, recency: 0 },
+  rrf: { lexical: 0.5, semantic: 0.5, structural: 0, recency: 0 },
   default: undefined,
 } as const;
 
@@ -38,7 +39,7 @@ export async function bench(embedder: Embedder = hashEmbedder()) {
     let mrr = 0;
     const t = performance.now();
     for (const { q, target } of queries) {
-      const sel = await ctx.select(q, { sources: ["research"], k: 10, budgetTokens: 1e9, weights });
+      const sel = await ctx.select(q, { sources: ["research"], k: 10, budgetTokens: 1e9, weights, fusion: name === "logit" ? "logit" : "rrf" });
       const rank = sel.findIndex((s) => s.id === target);
       if (rank === 0) p1++;
       if (rank >= 0 && rank < 5) r5++;
@@ -63,4 +64,65 @@ if (import.meta.main) {
   console.log(`embedder=${r.embedder} entries=${r.entries} queries=${r.queries} ingest=${r.ingestMs.toFixed(0)}ms`);
   for (const [k, v] of Object.entries(r.results))
     console.log(`${k.padEnd(9)} P@1=${v.p1.toFixed(3)} R@5=${v.r5.toFixed(3)} MRR=${v.mrr.toFixed(3)} ${v.msPerQuery.toFixed(2)}ms/query`);
+}
+
+type Q = { q: string; target: string; item: string };
+type Cfg = { weights: { lexical: number; semantic: number; structural: number; recency: number }; fusion: "rrf" | "logit" };
+
+async function evalCfg(ctx: Context, qs: Q[], c: Cfg) {
+  let r5 = 0;
+  let mrr = 0;
+  for (const { q, target } of qs) {
+    const sel = await ctx.select(q, { sources: ["research"], k: 10, budgetTokens: 1e9, weights: c.weights, fusion: c.fusion });
+    const rank = sel.findIndex((s) => s.id === target);
+    if (rank >= 0 && rank < 5) r5++;
+    if (rank >= 0) mrr += 1 / (rank + 1);
+  }
+  return { r5: r5 / qs.length, mrr: mrr / qs.length };
+}
+
+export const GRID: Cfg[] = (["rrf", "logit"] as const).flatMap((fusion) =>
+  Array.from({ length: 11 }, (_, i) => ({ fusion, weights: { lexical: i / 10, semantic: 1 - i / 10, structural: 0, recency: 0 } })),
+);
+
+/** Learn head weights + fusion by grid search (objective R@5 then MRR). Reports in-sample and leave-one-item-out CV. */
+export async function tune(embedder: Embedder = hashEmbedder()) {
+  const outline = await loadYaml<Outline>(join(PACK, "outline.yaml"));
+  const fields = await loadYaml<Fields>(join(PACK, "fields.yaml"));
+  const ctx = new Context(join(mkdtempSync(join(tmpdir(), "agent-tune-")), "c.sqlite"), embedder);
+  for (const it of outline.items) await ctx.ingest(researchEntries(outline.topic, await Bun.file(join(PACK, "results", `${fileName(it.name)}.json`)).json()));
+  const qs: Q[] = outline.items.flatMap((it) =>
+    fields.required_fields
+      .filter((f) => !["name", "source_url", "category"].includes(f.name))
+      .map((f) => ({ q: `${f.description} ${it.description}`, target: `research:${outline.topic}/${fileName(it.name)}#${f.name}`, item: it.name })),
+  );
+  const best = async (train: Q[]) => {
+    let b: { c: Cfg; r5: number; mrr: number } | undefined;
+    for (const c of GRID) {
+      const m = await evalCfg(ctx, train, c);
+      if (!b || m.r5 > b.r5 || (m.r5 === b.r5 && m.mrr > b.mrr)) b = { c, ...m };
+    }
+    return b!;
+  };
+  const inSample = await best(qs);
+  let cvHits = 0;
+  for (const it of outline.items) {
+    const train = qs.filter((q) => q.item !== it.name);
+    const test = qs.filter((q) => q.item === it.name);
+    const b = await best(train);
+    cvHits += (await evalCfg(ctx, test, b.c)).r5 * test.length;
+  }
+  ctx.close();
+  return { inSample, cvR5: cvHits / qs.length };
+}
+
+if (import.meta.main && Bun.argv.includes("--tune")) {
+  let emb: Embedder = hashEmbedder();
+  if (Bun.argv.includes("--workers-ai")) {
+    const { createWorkersAI } = await import("workers-ai-provider");
+    const { aiEmbedder } = await import("@aphrody/agent-core");
+    emb = aiEmbedder(createWorkersAI({ accountId: Bun.env.CLOUDFLARE_ACCOUNT_ID!, apiKey: Bun.env.CLOUDFLARE_API_TOKEN! }).textEmbedding("@cf/baai/bge-m3"), "workers-ai:bge-m3");
+  }
+  const t = await tune(emb);
+  console.log(`tuned ${t.inSample.c.fusion} lexical=${t.inSample.c.weights.lexical} semantic=${t.inSample.c.weights.semantic} R@5=${t.inSample.r5.toFixed(3)} MRR=${t.inSample.mrr.toFixed(3)} | leave-one-item-out R@5=${t.cvR5.toFixed(3)}`);
 }

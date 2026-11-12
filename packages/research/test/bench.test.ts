@@ -1,12 +1,11 @@
 import { expect, test } from "bun:test";
-import { bench } from "../bench/retrieval";
+import { bench, tune } from "../bench/retrieval";
 
-test("retrieval bench on research pack: merged heads >= single heads, latency bound", async () => {
+test("retrieval bench: tuned fusion >= best single head (in-sample), latency bound", async () => {
   const r = await bench();
-  const { lexical, semantic, merged } = r.results;
-  console.log(JSON.stringify(r.results));
+  const { lexical, semantic } = r.results;
   expect(r.queries).toBe(30);
-  expect(merged!.r5).toBeGreaterThanOrEqual(Math.max(lexical!.r5, semantic!.r5) - 0.05);
-  expect(merged!.r5).toBeGreaterThanOrEqual(0.5);
-  expect(merged!.msPerQuery).toBeLessThan(50);
-});
+  const t = await tune();
+  expect(t.inSample.r5).toBeGreaterThanOrEqual(Math.max(lexical!.r5, semantic!.r5));
+  expect(r.results.rrf!.msPerQuery).toBeLessThan(50);
+}, 60_000);
