@@ -85,7 +85,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     ecosystem: "archlinux",
     upstreamPath: "archlinux/devtools",
     upstreamUrl: "https://gitlab.archlinux.org/archlinux/devtools.git",
-    localRelPath: "third_party/archlinux/devtools",
+    localRelPath: "third_party/devtools",
     description: "Arch Linux clean-chroot package build tools (pkgctl)",
   },
   {
@@ -94,7 +94,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     upstreamPath: "archlinux/mkinitcpio/mkinitcpio",
     upstreamUrl:
       "https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio.git",
-    localRelPath: "third_party/archlinux/mkinitcpio",
+    localRelPath: "third_party/mkinitcpio",
     description: "Modular initramfs image creation utility",
   },
   {
@@ -102,7 +102,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     ecosystem: "archlinux",
     upstreamPath: "archlinux/archinstall",
     upstreamUrl: "https://gitlab.archlinux.org/archlinux/archinstall.git",
-    localRelPath: "third_party/archlinux/archinstall",
+    localRelPath: "third_party/archinstall",
     description: "Automated Arch Linux installer library and profiles",
   },
   {
@@ -110,7 +110,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     ecosystem: "archlinux",
     upstreamPath: "archlinux/archlinux-wsl",
     upstreamUrl: "https://gitlab.archlinux.org/archlinux/archlinux-wsl.git",
-    localRelPath: "third_party/archlinux/archlinux-wsl",
+    localRelPath: "third_party/archlinux-wsl",
     description: "Official Arch Linux WSL2 rootfs image builder",
   },
   {
@@ -118,7 +118,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     ecosystem: "archlinux",
     upstreamPath: "pacman/pacman",
     upstreamUrl: "https://gitlab.archlinux.org/pacman/pacman.git",
-    localRelPath: "third_party/archlinux/pacman",
+    localRelPath: "third_party/pacman",
     description: "Pacman package manager and makepkg build engine",
   },
   {
@@ -127,7 +127,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     upstreamPath: "archlinux/packaging/packages/linux",
     upstreamUrl:
       "https://gitlab.archlinux.org/archlinux/packaging/packages/linux.git",
-    localRelPath: "third_party/archlinux/pkg-linux",
+    localRelPath: "third_party/pkg-linux",
     description: "Arch Linux mainline kernel PKGBUILD",
   },
   {
@@ -136,7 +136,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     upstreamPath: "archlinux/packaging/packages/hyprland",
     upstreamUrl:
       "https://gitlab.archlinux.org/archlinux/packaging/packages/hyprland.git",
-    localRelPath: "third_party/archlinux/pkg-hyprland",
+    localRelPath: "third_party/pkg-hyprland",
     description: "Arch Linux Hyprland Wayland compositor packaging",
   },
   {
@@ -145,7 +145,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     upstreamPath: "archlinux/packaging/packages/cosmic-session",
     upstreamUrl:
       "https://gitlab.archlinux.org/archlinux/packaging/packages/cosmic-session.git",
-    localRelPath: "third_party/archlinux/pkg-cosmic-session",
+    localRelPath: "third_party/pkg-cosmic-session",
     description: "Arch Linux COSMIC desktop session packaging",
   },
   {
@@ -153,7 +153,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     ecosystem: "cachyos",
     upstreamPath: "CachyOS/cachyos-wsl",
     upstreamUrl: "https://github.com/CachyOS/cachyos-wsl.git",
-    localRelPath: "third_party/cachyos/cachyos-wsl",
+    localRelPath: "third_party/cachyos-wsl",
     description: "CachyOS x86-64-v3/v4 optimized WSL2 distribution",
   },
   {
@@ -161,7 +161,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     ecosystem: "cachyos",
     upstreamPath: "CachyOS/kernel-patches",
     upstreamUrl: "https://github.com/CachyOS/kernel-patches.git",
-    localRelPath: "third_party/cachyos/kernel-patches",
+    localRelPath: "third_party/kernel-patches",
     description: "CachyOS BORE/sched-ext Linux kernel patchset",
   },
   {
@@ -169,7 +169,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     ecosystem: "cachyos",
     upstreamPath: "CachyOS/CachyOS-PKGBUILDS",
     upstreamUrl: "https://github.com/CachyOS/CachyOS-PKGBUILDS.git",
-    localRelPath: "third_party/cachyos/CachyOS-PKGBUILDS",
+    localRelPath: "third_party/CachyOS-PKGBUILDS",
     description: "CachyOS optimized PKGBUILD tree (LTO, PGO, v3/v4)",
   },
   {
@@ -177,7 +177,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     ecosystem: "cachyos",
     upstreamPath: "CachyOS/cachyos-hyprland-settings",
     upstreamUrl: "https://github.com/CachyOS/cachyos-hyprland-settings.git",
-    localRelPath: "third_party/cachyos/cachyos-hyprland-settings",
+    localRelPath: "third_party/cachyos-hyprland-settings",
     description: "CachyOS Hyprland configuration & dotfiles",
   },
   {
@@ -185,7 +185,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     ecosystem: "omacom",
     upstreamPath: "omacom/omarchy",
     upstreamUrl: "https://github.com/omacom/omarchy.git",
-    localRelPath: "third_party/omacom/omarchy",
+    localRelPath: "third_party/omarchy",
     description: "Omarchy opinionated Arch + Hyprland developer workstation",
   },
   {
@@ -193,7 +193,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     ecosystem: "omacom",
     upstreamPath: "omacom/try-omarchy-windows",
     upstreamUrl: "https://github.com/omacom/try-omarchy-windows.git",
-    localRelPath: "third_party/omacom/try-omarchy-windows",
+    localRelPath: "third_party/try-omarchy-windows",
     description: "Omarchy Windows WSL2 provisioning & host integration",
   },
   {
@@ -201,7 +201,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     ecosystem: "omacom",
     upstreamPath: "omacom/aether",
     upstreamUrl: "https://github.com/omacom/aether.git",
-    localRelPath: "third_party/omacom/aether",
+    localRelPath: "third_party/aether",
     description: "Omacom Aether theme and desktop shell utilities",
   },
   {
@@ -209,7 +209,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     ecosystem: "omacom",
     upstreamPath: "omacom/omarchy-pkgs",
     upstreamUrl: "https://github.com/omacom/omarchy-pkgs.git",
-    localRelPath: "third_party/omacom/omarchy-pkgs",
+    localRelPath: "third_party/omarchy-pkgs",
     description: "Omarchy custom Arch Linux PKGBUILD repository",
   },
   {
@@ -217,7 +217,7 @@ export const ARCH_CACHY_OMARCHY_UPSTREAMS: ReadonlyArray<UpstreamDistroRepo> = [
     ecosystem: "omacom",
     upstreamPath: "omacom/omarchy-plugin-marketplace",
     upstreamUrl: "https://github.com/omacom/omarchy-plugin-marketplace.git",
-    localRelPath: "third_party/omacom/omarchy-plugin-marketplace",
+    localRelPath: "third_party/omarchy-plugin-marketplace",
     description: "Omarchy plugin index and extension registry",
   },
 ];

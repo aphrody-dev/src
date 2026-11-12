@@ -1,0 +1,12 @@
+{
+  "name": "@aphrody/machine",
+  "version": "0.1.0",
+  "description": "Reproducible Windows workstation: WinGet DSC v3 (niubash, Coreutils), Claude Code shell/MCP setup, aphrody-labs forks, flat third_party",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "check": "bun src/apply-user.ts --check",
+    "apply": "bun src/apply-user.ts",
+    "flatten": "bun src/flatten-third-party.ts"
+  }
+}

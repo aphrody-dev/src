@@ -38,8 +38,8 @@ describe("4-Pillar VCS Governance (Git + Chromium + Kernel + AOSP)", () => {
     const aospXml = readFileSync("C:\\src\\.repo\\manifests\\default.xml", "utf-8");
     const projs = parseAospRepoManifestProjects(aospXml);
     expect(projs.length).toBeGreaterThanOrEqual(100);
-    expect(projs.some((p) => p.path === "third_party/aosp/platform/manifest")).toBe(true);
-    expect(projs.some((p) => p.path === "third_party/aosp/build/kleaf")).toBe(true);
+    expect(projs.some((p) => p.path === "third_party/aosp-manifest")).toBe(true);
+    expect(projs.some((p) => p.path === "third_party/kleaf")).toBe(true);
 
     const maint = readFileSync("C:\\src\\MAINTAINERS", "utf-8");
     const subs = parseKernelMaintainersSubsystems(maint);

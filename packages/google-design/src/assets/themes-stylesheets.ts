@@ -3,7 +3,7 @@
  * 100% Pure Bun v1.4.4 - Zero External Dependencies
  *
  * Includes:
- * - All 23 canonical Omarchy workstation palettes (parsed live from C:\src\third_party\omacom\omarchy\themes\*\colors.toml
+ * - All 23 canonical Omarchy workstation palettes (parsed live from C:\src\third_party\omarchy\themes\*\colors.toml
  *   with an embedded standalone fallback table so compiled gds.exe runs anywhere with zero external files!)
  * - CachyOS Emerald Dark
  * - Aphrody Google M3 Light & Dark (CAM16/HCT)
@@ -720,11 +720,11 @@ function titleCaseSlug(slug: string): string {
 
 /**
  * Load all 27 themes (23 Omarchy + 4 CachyOS/M3/Fluent2).
- * Uses live C:\src\third_party\omacom\omarchy\themes\*\colors.toml when present,
+ * Uses live C:\src\third_party\omarchy\themes\*\colors.toml when present,
  * falling back cleanly to embedded canonical values when standalone.
  */
 export function loadAll27Themes(
-  omarchyDir = "C:\\src\\third_party\\omacom\\omarchy\\themes",
+  omarchyDir = "C:\\src\\third_party\\omarchy\\themes",
 ): SovereignThemePalette[] {
   const fallbackById = new Map(
     CANONICAL_OMARCHY_FALLBACKS.map((t) => [t.id, t]),

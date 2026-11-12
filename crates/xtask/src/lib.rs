@@ -302,6 +302,55 @@ pub fn discover_repos(root: &Path) -> Vec<PathBuf> {
     repos
 }
 
+/// Dépôts tiers par pilier. third_party/ est à plat (modèle Chromium) : la catégorie n'est plus dans le chemin.
+/// Liste issue de la classification par chemin d'avant le flatten du 2026-11-12
+/// (packages/machine/src/flatten-third-party.ts, plan dans var/flatten-third-party.json).
+const LINUX_THIRD_PARTY: &[&str] = &[
+    "CachyOS-PKGBUILDS",
+    "WSL",
+    "aether",
+    "ananicy-rules",
+    "arch-wsl",
+    "archinstall",
+    "archlinux-wsl",
+    "cachy-chroot",
+    "cachyos-hyprland-settings",
+    "cachyos-niri-settings",
+    "cachyos-wsl",
+    "devtools",
+    "herdr",
+    "kernel-patches",
+    "mkinitcpio",
+    "omarchy",
+    "omarchy-pkgs",
+    "omarchy-plugin-marketplace",
+    "omarchy-site",
+    "pacman",
+    "pkg-cosmic-session",
+    "pkg-hyprland",
+    "pkg-linux",
+    "pkg-manage-util",
+    "try-omarchy-windows",
+    "ttfx",
+];
+const AOSP_THIRD_PARTY: &[&str] = &[
+    "android-skills",
+    "aosp-manifest",
+    "design-md",
+    "gemini-skills",
+    "google-skills",
+    "googleworkspace-cli",
+    "jules-skills",
+    "kleaf",
+    "stitch-skills",
+];
+
+fn third_party_in(rel_name: &str, set: &[&str]) -> bool {
+    rel_name
+        .strip_prefix("third_party/")
+        .is_some_and(|n| set.contains(&n))
+}
+
 fn classify_pillar(rel_name: &str) -> &'static str {
     if rel_name.starts_with("third_party/chromium")
         || rel_name == "third_party/depot_tools"
@@ -309,16 +358,11 @@ fn classify_pillar(rel_name: &str) -> &'static str {
     {
         "chromium"
     } else if rel_name == "third_party/linux"
-        || rel_name.starts_with("third_party/archlinux")
-        || rel_name.starts_with("third_party/cachyos")
-        || rel_name.starts_with("third_party/omacom")
+        || third_party_in(rel_name, LINUX_THIRD_PARTY)
         || rel_name == "crates/unix"
     {
         "linux-kernel"
-    } else if rel_name.starts_with("third_party/aosp")
-        || rel_name.starts_with("third_party/google-ecosystem")
-        || rel_name == "apps/aphrody-app"
-    {
+    } else if third_party_in(rel_name, AOSP_THIRD_PARTY) || rel_name == "apps/aphrody-app" {
         "aosp"
     } else {
         "git"
@@ -488,7 +532,7 @@ pub fn render_chromium_deps(locked: &BTreeMap<String, LockedRepo>) -> String {
         .map(|r| r.commit.as_str())
         .unwrap_or("HEAD");
     let aosp_rev = locked
-        .get("third_party/aosp/platform/manifest")
+        .get("third_party/aosp-manifest")
         .map(|r| r.commit.as_str())
         .unwrap_or("HEAD");
 
@@ -628,8 +672,15 @@ pub fn render_kernel_maintainers() -> String {
             &[
                 ".repo/manifests/",
                 "apps/aphrody-app/crates/aphrody-android/",
-                "third_party/aosp/",
-                "third_party/google-ecosystem/",
+                "third_party/android-skills/",
+                "third_party/aosp-manifest/",
+                "third_party/design-md/",
+                "third_party/gemini-skills/",
+                "third_party/google-skills/",
+                "third_party/googleworkspace-cli/",
+                "third_party/jules-skills/",
+                "third_party/kleaf/",
+                "third_party/stitch-skills/",
             ],
         ),
         (
@@ -742,10 +793,33 @@ pub fn render_kernel_maintainers() -> String {
                 "docs/linux-kernel-story/",
                 "docs/patches/",
                 "packages/knowledge-engine/",
-                "third_party/archlinux/",
-                "third_party/cachyos/",
+                "third_party/aether/",
+                "third_party/ananicy-rules/",
+                "third_party/arch-wsl/",
+                "third_party/archinstall/",
+                "third_party/archlinux-wsl/",
+                "third_party/cachy-chroot/",
+                "third_party/cachyos-hyprland-settings/",
+                "third_party/cachyos-niri-settings/",
+                "third_party/CachyOS-PKGBUILDS/",
+                "third_party/cachyos-wsl/",
+                "third_party/devtools/",
+                "third_party/herdr/",
+                "third_party/kernel-patches/",
                 "third_party/linux/",
-                "third_party/omacom/",
+                "third_party/mkinitcpio/",
+                "third_party/omarchy/",
+                "third_party/omarchy-pkgs/",
+                "third_party/omarchy-plugin-marketplace/",
+                "third_party/omarchy-site/",
+                "third_party/pacman/",
+                "third_party/pkg-cosmic-session/",
+                "third_party/pkg-hyprland/",
+                "third_party/pkg-linux/",
+                "third_party/pkg-manage-util/",
+                "third_party/try-omarchy-windows/",
+                "third_party/ttfx/",
+                "third_party/WSL/",
             ],
         ),
         (
@@ -885,7 +959,7 @@ fn write_governance_manifests(root: &Path, locked: &BTreeMap<String, LockedRepo>
         names.sort();
         for n in names {
             series_lines.push(format!(
-                "../../third_party/cachyos/kernel-patches/7.4/sched/{} -p1",
+                "../../third_party/kernel-patches/7.4/sched/{} -p1",
                 n
             ));
         }
@@ -981,7 +1055,7 @@ fn run_lock(root_str: &str, out_path_str: &str, lock_only: bool) {
         .map(|r| r.commit.clone())
         .unwrap_or_default();
     let aosp_commit = locked_repos
-        .get("third_party/aosp/platform/manifest")
+        .get("third_party/aosp-manifest")
         .map(|r| r.commit.clone())
         .unwrap_or_default();
 

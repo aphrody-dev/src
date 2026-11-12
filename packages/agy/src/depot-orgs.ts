@@ -373,15 +373,15 @@ export function syncDepotRepoKeyless(
 
   // Check if already checked out in third_party/google-ecosystem first
   const existingMap: Record<string, string> = {
-    "google/skills": "C:/src/third_party/google-ecosystem/google-skills",
+    "google/skills": "C:/src/third_party/google-skills",
     "google-gemini/gemini-skills":
-      "C:/src/third_party/google-ecosystem/gemini-skills",
+      "C:/src/third_party/gemini-skills",
     "google-labs-code/stitch-skills":
-      "C:/src/third_party/google-ecosystem/stitch-skills",
+      "C:/src/third_party/stitch-skills",
     "google-labs-code/jules-skills":
-      "C:/src/third_party/google-ecosystem/jules-skills",
+      "C:/src/third_party/jules-skills",
     "google-labs-code/design-md":
-      "C:/src/third_party/google-ecosystem/design-md",
+      "C:/src/third_party/design-md",
   };
   if (existingMap[fullName] && existsSync(existingMap[fullName]!)) {
     return {

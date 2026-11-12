@@ -2,5 +2,3 @@
 # Format: <relative-patch-path> -p1
 ../../packages/bun-parity/patches/0001-mime-chromium-types.patch -p1
 ../../packages/bun-parity/patches/0002-scheduler-webapi-decl.patch -p1
-../../third_party/cachyos/kernel-patches/7.4/sched/0001-bore-cachy.patch -p1
-../../third_party/cachyos/kernel-patches/7.4/sched/0001-prjc-cachy.patch -p1

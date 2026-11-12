@@ -78,6 +78,6 @@ access tokens); the RPC sequence and what `apps/rosegriffon/crates/bun-steam` im
 - https://partner.steamgames.com/doc/webapi/ISteamUserAuth
 - https://partner.steamgames.com/doc/api/ISteamUser
 - https://openid.net/specs/openid-authentication-2_0.html
-- `third_party/steam-ecosystem/steam-protobufs/steam/steammessages_auth.steamclient.proto`
-- `third_party/steam-ecosystem/node-steam-session` (README and src)
+- `third_party/steam-protobufs/steam/steammessages_auth.steamclient.proto`
+- `third_party/node-steam-session` (README and src)
 - `apps/rosegriffon/crates/bun-steam/src/depot/auth.rs`, `apps/rosegriffon/crates/bun-steam/src/depot/token_store.rs`

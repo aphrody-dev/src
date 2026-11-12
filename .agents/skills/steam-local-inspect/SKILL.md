@@ -54,7 +54,7 @@ The verified IEVR example (AppID 2799860) is in [`references/layout.md`](referen
 
 ## Sources
 
-- `third_party/steam-ecosystem/steamlocate-rs/src` (library discovery, StateFlag bit offsets)
-- `third_party/steam-ecosystem/steamappinfo/README.md` (appinfo.vdf v39 to v41 layout)
-- `third_party/steam-ecosystem/valvekeyvalue` (binary KeyValues type bytes)
+- `third_party/steamlocate-rs/src` (library discovery, StateFlag bit offsets)
+- `third_party/steamappinfo/README.md` (appinfo.vdf v39 to v41 layout)
+- `third_party/valvekeyvalue` (binary KeyValues type bytes)
 - `apps/rosegriffon/crates/bun-steam/src/install.rs` and `apps/rosegriffon/crates/bun-steam/src/vdf.rs`

@@ -15,12 +15,12 @@ pins are the `third_party/vcs/*` checkouts. This page does not repeat:
 |---|---|---|---|---|---|---|---|---|
 | git | C | GPL-2.0 | 64.3k | 2026-11-11 | v2.56.1 (tag) | distributed, snapshot DAG | reference | none |
 | Git for Windows | C + MSYS2 | GPL-2.0 | 9.5k | 2026-11-12 | v2.56.1.windows.1 / 2026-11-10 | git + POSIX runtime | reference | installed 2.56.0.windows.4 |
-| gitoxide (`gix`) | Rust | Apache-2.0 / MIT | 12.1k | 2026-11-12 | CLI v0.61.0, crate gix 0.90.0 / 2026-10-22 | library + `gix`/`ein` CLI | same on-disk format | `third_party/vcs/gitoxide` d1e064e; workspace `gix = 0.90.0` |
-| jj | Rust | Apache-2.0 | 32.5k | 2026-11-12 | v0.47.1 / 2026-11-05 | change-based, working copy is a commit, oplog | git backend, colocated repos | `third_party/vcs/jj` 406bacf; tools.toml 0.46.0 |
+| gitoxide (`gix`) | Rust | Apache-2.0 / MIT | 12.1k | 2026-11-12 | CLI v0.61.0, crate gix 0.90.0 / 2026-10-22 | library + `gix`/`ein` CLI | same on-disk format | `third_party/gitoxide` d1e064e; workspace `gix = 0.90.0` |
+| jj | Rust | Apache-2.0 | 32.5k | 2026-11-12 | v0.47.1 / 2026-11-05 | change-based, working copy is a commit, oplog | git backend, colocated repos | `third_party/jj` 406bacf; tools.toml 0.46.0 |
 | Sapling | Rust, C++, Python | GPL-2.0 | 7.3k | 2026-11-12 | 0.2.20261103 / 2026-11-04 | stacks, smartlog; server Mononoke | clones git remotes | none |
 | Pijul | Rust | GPL-2.0 | n/a (Nest) | crate 2026-10-30 | pijul 0.15.0 | patch theory, commutative changes | none (import only) | none |
-| Lore (EpicGames) | Rust | MIT | 9.1k | 2026-11-12 | v0.13.0 / 2026-11-06 | centralized, content-addressed, sparse hydration, FUSE, advisory locks | none (own protocol) | `third_party/vcs/lore` 166908c, `aphrody-dev/lore` |
-| Radicle (heartwood) | Rust | MIT / Apache-2.0 | 273 | 2026-11-11 | no GH release; crate radicle 0.25.1 | P2P gossip, git storage, COBs | git remote helper `rad://` | `third_party/vcs/radicle` 8b05332 (upstream origin, no fork) |
+| Lore (EpicGames) | Rust | MIT | 9.1k | 2026-11-12 | v0.13.0 / 2026-11-06 | centralized, content-addressed, sparse hydration, FUSE, advisory locks | none (own protocol) | `third_party/lore` 166908c, `aphrody-dev/lore` |
+| Radicle (heartwood) | Rust | MIT / Apache-2.0 | 273 | 2026-11-11 | no GH release; crate radicle 0.25.1 | P2P gossip, git storage, COBs | git remote helper `rad://` | `third_party/radicle` 8b05332 (upstream origin, no fork) |
 | GitButler (client) | Rust, TS | FSL-1.1 (fair source) | 22.0k | 2026-11-12 | n/a | virtual branches over git | git | none; license excludes forking for a competing product |
 
 ### Git for Windows bundle (installed, `C:\Program Files\Git`)

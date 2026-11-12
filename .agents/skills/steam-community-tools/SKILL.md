@@ -34,7 +34,7 @@ Use the plugin MCP tool `steamdb_link` to produce SteamDB URLs. It only builds l
 requests the site. Hand the link to the user; do not read the page on their behalf. URL patterns
 and their verification: [`references/tools.md`](references/tools.md) (SteamDB). For the related
 tracking data (client and web resources), use the local mirror
-`third_party/steam-ecosystem/steamtracking` (sparse, root files only, no license stated).
+`third_party/steamtracking` (sparse, root files only, no license stated).
 
 ## Workflow: inspect or download depot content
 

@@ -51,7 +51,7 @@ export const SKILL_COLLECTION_PACKS: readonly SkillCollectionPack[] = [
       "Official google/skills catalog (GKE, Cloud Run, BigQuery, Spanner, Vertex AI, AlloyDB, IAM, Firebase) + guarded gcloud CLI & Developer Knowledge.",
     defaultEnabled: false,
     mcpToolsUnlocked: ["google_cloud"],
-    sourceDirs: ["C:/src/third_party/google-ecosystem/google-skills"],
+    sourceDirs: ["C:/src/third_party/google-skills"],
     umbrellaSkillName: "google-cloud-official-catalog",
   },
   {
@@ -61,7 +61,7 @@ export const SKILL_COLLECTION_PACKS: readonly SkillCollectionPack[] = [
       "Official googleworkspace/cli skills for Drive, Docs, Sheets, Gmail, Calendar, Chat, Slides, Tasks, and People via gws.exe.",
     defaultEnabled: false,
     mcpToolsUnlocked: ["google_workspace"],
-    sourceDirs: ["C:/src/third_party/google-ecosystem/googleworkspace-cli"],
+    sourceDirs: ["C:/src/third_party/googleworkspace-cli"],
     umbrellaSkillName: "google-workspace-gws-suite",
   },
   {
@@ -71,7 +71,7 @@ export const SKILL_COLLECTION_PACKS: readonly SkillCollectionPack[] = [
       "Official google-gemini/gemini-skills, Gemini API SDKs, Live 3.8 bidirectional streaming, Omni 1.2 Flash video, and Grounded Google Search.",
     defaultEnabled: false,
     mcpToolsUnlocked: ["google_search", "docs_context"],
-    sourceDirs: ["C:/src/third_party/google-ecosystem/gemini-skills"],
+    sourceDirs: ["C:/src/third_party/gemini-skills"],
     umbrellaSkillName: "gemini-ai-studio-multimodal",
   },
   {
@@ -81,7 +81,7 @@ export const SKILL_COLLECTION_PACKS: readonly SkillCollectionPack[] = [
       "Official android/skills covering Jetpack Compose, Coroutines, Architecture, Gradle, Play Integrity, Perfetto, and Android XR.",
     defaultEnabled: false,
     mcpToolsUnlocked: ["docs_context"],
-    sourceDirs: ["C:/src/third_party/google-ecosystem/android-skills"],
+    sourceDirs: ["C:/src/third_party/android-skills"],
     umbrellaSkillName: "android-official-platform",
   },
   {
@@ -92,9 +92,9 @@ export const SKILL_COLLECTION_PACKS: readonly SkillCollectionPack[] = [
     defaultEnabled: true,
     mcpToolsUnlocked: ["design_figma"],
     sourceDirs: [
-      "C:/src/third_party/google-ecosystem/stitch-skills",
-      "C:/src/third_party/google-ecosystem/jules-skills",
-      "C:/src/third_party/google-ecosystem/design-md",
+      "C:/src/third_party/stitch-skills",
+      "C:/src/third_party/jules-skills",
+      "C:/src/third_party/design-md",
     ],
     umbrellaSkillName: "google-labs-stitch-jules-design",
   },

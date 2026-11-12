@@ -70,9 +70,9 @@ impl Default for SovereignPackageEngine {
 impl SovereignPackageEngine {
     pub fn new() -> Self {
         Self {
-            cachyos_patches_root: PathBuf::from(r"C:\src\third_party\cachyos\kernel-patches"),
-            cachyos_pkgbuilds_root: PathBuf::from(r"C:\src\third_party\cachyos\CachyOS-PKGBUILDS"),
-            omarchy_pkgbuilds_root: PathBuf::from(r"C:\src\third_party\omacom\omarchy-pkgs\pkgbuilds"),
+            cachyos_patches_root: PathBuf::from(r"C:\src\third_party\kernel-patches"),
+            cachyos_pkgbuilds_root: PathBuf::from(r"C:\src\third_party\CachyOS-PKGBUILDS"),
+            omarchy_pkgbuilds_root: PathBuf::from(r"C:\src\third_party\omarchy-pkgs\pkgbuilds"),
             archlinux_root: PathBuf::from(r"C:\src\third_party\archlinux"),
             linux_tree_root: PathBuf::from(r"C:\src\third_party\linux"),
         }

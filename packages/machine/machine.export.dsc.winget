@@ -1,0 +1,1642 @@
+# Created using winget configure export 1.30.300
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.3
+$schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/2023/08/config/document.json
+metadata:
+  winget:
+    processor:
+      identifier: "dscv3"
+resources:
+- name: Microsoft.WinGet/Package_d9bq4va0
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Configuration de Microsoft.PowerShell"
+  properties:
+    id: "Microsoft.PowerShell"
+    source: "winget"
+- name: UserSettingsFile-0
+  type: Microsoft.WinGet/UserSettingsFile
+  properties:
+    settings: {}
+- name: AdminSettings-0
+  type: Microsoft.WinGet/AdminSettings
+  metadata:
+    winget:
+      securityContext: "elevated"
+  properties:
+    settings:
+      LocalManifestFiles: false
+      ProxyCommandLineOptions: false
+      BypassCertificatePinningForMicrosoftStore: false
+      InstallerHashOverride: false
+      LocalArchiveMalwareScanOverride: false
+      ConfigurationProcessorPath: false
+- name: Microsoft.DSC.Transitional/RunCommandOnSet_wa9tq9gr
+  type: Microsoft.DSC.Transitional/RunCommandOnSet
+  metadata:
+    description: "Configuration de Microsoft.Windows.Settings"
+  dependsOn:
+  - Microsoft.WinGet/Package_d9bq4va0
+  properties:
+    arguments:
+    - "-NoProfile"
+    - "-NoLogo"
+    - "-Command"
+    - "if (-not (Get-Module -ListAvailable -Name Microsoft.Windows.Settings)) { Install-Module
+      -Name Microsoft.Windows.Settings -Confirm:$False -Force -AllowPrerelease -AllowClobber
+      }"
+    executable: "pwsh"
+- name: Microsoft.Windows.Settings/WindowsSettings_sexo326t
+  type: Microsoft.Windows.Settings/WindowsSettings
+  metadata:
+    description: "Configuration de Microsoft.Windows.Settings/WindowsSettings"
+    winget:
+      securityContext: "elevated"
+  dependsOn:
+  - Microsoft.DSC.Transitional/RunCommandOnSet_wa9tq9gr
+  properties:
+    SystemColorMode: "Dark"
+    DeveloperMode: true
+    TaskbarAlignment: "Middle"
+    AppColorMode: "Dark"
+- name: winget_Microsoft.PreIndexed.Package
+  type: Microsoft.WinGet/Source
+  metadata:
+    description: "Configuration de winget_Microsoft.PreIndexed.Package"
+    winget:
+      securityContext: "elevated"
+  properties:
+    type: "Microsoft.PreIndexed.Package"
+    trustLevel: "trusted"
+    argument: "https://cdn.winget.microsoft.com/cache"
+    name: "winget"
+- name: winget_7zip.7zip
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer 7zip.7zip"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "26.06"
+    id: "7zip.7zip"
+    source: "winget"
+- name: winget_BlenderFoundation.Blender
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer BlenderFoundation.Blender"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "5.3.0"
+    id: "BlenderFoundation.Blender"
+    source: "winget"
+- name: winget_BrechtSanders.WinLibs.POSIX.UCRT
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer BrechtSanders.WinLibs.POSIX.UCRT"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "16.2.0-14.0.0-r3"
+    id: "BrechtSanders.WinLibs.POSIX.UCRT"
+    source: "winget"
+- name: winget_BurntSushi.ripgrep.MSVC
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer BurntSushi.ripgrep.MSVC"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "15.2.0"
+    id: "BurntSushi.ripgrep.MSVC"
+    source: "winget"
+- name: winget_Byron.dua-cli
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Byron.dua-cli"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "3.0.0"
+    id: "Byron.dua-cli"
+    source: "winget"
+- name: winget_CaddyServer.Caddy
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer CaddyServer.Caddy"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.11.9"
+    id: "CaddyServer.Caddy"
+    source: "winget"
+- name: winget_Casey.Just
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Casey.Just"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.59.0"
+    id: "Casey.Just"
+    source: "winget"
+- name: winget_Cloudflare.cloudflared
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Cloudflare.cloudflared"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2026.10.7"
+    id: "Cloudflare.cloudflared"
+    source: "winget"
+- name: winget_ElectronicArts.EADesktop
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer ElectronicArts.EADesktop"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "13.822.0.6335"
+    id: "ElectronicArts.EADesktop"
+    source: "winget"
+- name: winget_EpicGames.EpicGamesLauncher
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer EpicGames.EpicGamesLauncher"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.113.1"
+    id: "EpicGames.EpicGamesLauncher"
+    source: "winget"
+- name: winget_Figma.Figma
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Figma.Figma"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "126.11.8"
+    id: "Figma.Figma"
+    source: "winget"
+- name: winget_Figma.FigmaAgent
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Figma.FigmaAgent"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "126.10.13"
+    id: "Figma.FigmaAgent"
+    source: "winget"
+- name: winget_GLab.GLab
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer GLab.GLab"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.130.0"
+    id: "GLab.GLab"
+    source: "winget"
+- name: winget_Genivia.ugrep
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Genivia.ugrep"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "7.8.5"
+    id: "Genivia.ugrep"
+    source: "winget"
+- name: winget_Git.Git
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Git.Git"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.56.0.4"
+    id: "Git.Git"
+    source: "winget"
+- name: winget_GitHub.CopilotApp
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer GitHub.CopilotApp"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.3.0"
+    id: "GitHub.CopilotApp"
+    source: "winget"
+- name: winget_GitHub.cli
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer GitHub.cli"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.103.3"
+    id: "GitHub.cli"
+    source: "winget"
+- name: winget_GnuWin32.UnZip
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer GnuWin32.UnZip"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "5.51-1"
+    id: "GnuWin32.UnZip"
+    source: "winget"
+- name: winget_GoLang.Go
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer GoLang.Go"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.27.4"
+    id: "GoLang.Go"
+    source: "winget"
+- name: winget_Google.AndroidCLI
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Google.AndroidCLI"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.1.16717390"
+    id: "Google.AndroidCLI"
+    source: "winget"
+- name: winget_Google.AndroidStudio
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Google.AndroidStudio"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2026.2"
+    id: "Google.AndroidStudio"
+    source: "winget"
+- name: winget_Google.Antigravity
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Google.Antigravity"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.31.2"
+    id: "Google.Antigravity"
+    source: "winget"
+- name: winget_Google.AntigravityIDE
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Google.AntigravityIDE"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.6.0"
+    id: "Google.AntigravityIDE"
+    source: "winget"
+- name: winget_Google.Chrome
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Google.Chrome"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "157.0.8103.51"
+    id: "Google.Chrome"
+    source: "winget"
+- name: winget_Google.CloudSDK
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Google.CloudSDK"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "Unknown"
+    id: "Google.CloudSDK"
+    source: "winget"
+- name: winget_Google.Protobuf
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Google.Protobuf"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "36.2"
+    id: "Google.Protobuf"
+    source: "winget"
+- name: winget_GrafanaLabs.k6
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer GrafanaLabs.k6"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.3.0"
+    id: "GrafanaLabs.k6"
+    source: "winget"
+- name: winget_Gyan.FFmpeg.Shared
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Gyan.FFmpeg.Shared"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "9.0.2"
+    id: "Gyan.FFmpeg.Shared"
+    source: "winget"
+- name: winget_Helix.Helix
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Helix.Helix"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "25.07.1"
+    id: "Helix.Helix"
+    source: "winget"
+- name: winget_ImageMagick.ImageMagick
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer ImageMagick.ImageMagick"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "7.1.2.34"
+    id: "ImageMagick.ImageMagick"
+    source: "winget"
+- name: winget_Insecure.Nmap
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Insecure.Nmap"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "7.80"
+    id: "Insecure.Nmap"
+    source: "winget"
+- name: winget_Intel.IntelDriverAndSupportAssistant
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Intel.IntelDriverAndSupportAssistant"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "26.2.0.7"
+    id: "Intel.IntelDriverAndSupportAssistant"
+    source: "winget"
+- name: winget_Intel.PresentMon.Console
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Intel.PresentMon.Console"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.6.0.0"
+    id: "Intel.PresentMon.Console"
+    source: "winget"
+- name: winget_KhronosGroup.VulkanSDK
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer KhronosGroup.VulkanSDK"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.4.363.0"
+    id: "KhronosGroup.VulkanSDK"
+    source: "winget"
+- name: winget_Kitware.CMake
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Kitware.CMake"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "4.4.4"
+    id: "Kitware.CMake"
+    source: "winget"
+- name: winget_LLVM.LLVM
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer LLVM.LLVM"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "23.1.5"
+    id: "LLVM.LLVM"
+    source: "winget"
+- name: winget_Meta.Zstandard
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Meta.Zstandard"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.5.7"
+    id: "Meta.Zstandard"
+    source: "winget"
+- name: winget_Microsoft.AppInstaller
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.AppInstaller"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.30.300.0"
+    id: "Microsoft.AppInstaller"
+    source: "winget"
+- name: winget_Microsoft.CLRTypesSQLServer.2019
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.CLRTypesSQLServer.2019"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "15.0.2000.5"
+    id: "Microsoft.CLRTypesSQLServer.2019"
+    source: "winget"
+- name: winget_Microsoft.Coreutils
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.Coreutils"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2026.9.3"
+    id: "Microsoft.Coreutils"
+    source: "winget"
+- name: winget_Microsoft.DSC
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.DSC"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "3.2.3.0"
+    id: "Microsoft.DSC"
+    source: "winget"
+- name: winget_Microsoft.DirectX
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.DirectX"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "9.29.1974.0"
+    id: "Microsoft.DirectX"
+    source: "winget"
+- name: winget_Microsoft.DotNet.AspNetCore.10
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.DotNet.AspNetCore.10"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "10.0.15"
+    id: "Microsoft.DotNet.AspNetCore.10"
+    source: "winget"
+- name: winget_Microsoft.DotNet.AspNetCore.8
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.DotNet.AspNetCore.8"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "8.0.34"
+    id: "Microsoft.DotNet.AspNetCore.8"
+    source: "winget"
+- name: winget_Microsoft.DotNet.DesktopRuntime.10
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.DotNet.DesktopRuntime.10"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "10.0.15"
+    id: "Microsoft.DotNet.DesktopRuntime.10"
+    source: "winget"
+- name: winget_Microsoft.DotNet.DesktopRuntime.8
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.DotNet.DesktopRuntime.8"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "8.0.34"
+    id: "Microsoft.DotNet.DesktopRuntime.8"
+    source: "winget"
+- name: winget_Microsoft.DotNet.Native.Runtime
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.DotNet.Native.Runtime"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.2.28604.0"
+    id: "Microsoft.DotNet.Native.Runtime"
+    source: "winget"
+- name: winget_Microsoft.DotNet.Runtime.6
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.DotNet.Runtime.6"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "6.0.36"
+    id: "Microsoft.DotNet.Runtime.6"
+    source: "winget"
+- name: winget_Microsoft.DotNet.Runtime.8
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.DotNet.Runtime.8"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "8.0.34"
+    id: "Microsoft.DotNet.Runtime.8"
+    source: "winget"
+- name: winget_Microsoft.DotNet.SDK.10
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.DotNet.SDK.10"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "10.0.404"
+    id: "Microsoft.DotNet.SDK.10"
+    source: "winget"
+- name: winget_Microsoft.DotNet.SDK.Preview
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.DotNet.SDK.Preview"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "11.0.100-rc.3.26522.148"
+    id: "Microsoft.DotNet.SDK.Preview"
+    source: "winget"
+- name: winget_Microsoft.DotNet.UninstallTool
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.DotNet.UninstallTool"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.7.661902"
+    id: "Microsoft.DotNet.UninstallTool"
+    source: "winget"
+- name: winget_Microsoft.GameInput
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.GameInput"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "4.0.306.0"
+    id: "Microsoft.GameInput"
+    source: "winget"
+- name: winget_Microsoft.Gaming.GDK
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.Gaming.GDK"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2610.0.9661"
+    id: "Microsoft.Gaming.GDK"
+    source: "winget"
+- name: winget_Microsoft.OpenCLGLVulkanCompatibilityPack
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.OpenCLGLVulkanCompatibilityPack"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.2608.3.0"
+    id: "Microsoft.OpenCLGLVulkanCompatibilityPack"
+    source: "winget"
+- name: winget_Microsoft.OpenJDK.25
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.OpenJDK.25"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "25.0.5.21"
+    id: "Microsoft.OpenJDK.25"
+    source: "winget"
+- name: winget_Microsoft.OpenSSH.Preview
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.OpenSSH.Preview"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "10.0.0.0"
+    id: "Microsoft.OpenSSH.Preview"
+    source: "winget"
+- name: winget_Microsoft.PowerShell
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.PowerShell"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "7.6.9.0"
+    id: "Microsoft.PowerShell"
+    source: "winget"
+- name: winget_Microsoft.ServerSpeechPlatformRuntime
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.ServerSpeechPlatformRuntime"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "11.0.7400.345"
+    id: "Microsoft.ServerSpeechPlatformRuntime"
+    source: "winget"
+- name: winget_Microsoft.UI.Xaml.2.8
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.UI.Xaml.2.8"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "8.2511.26001.0"
+    id: "Microsoft.UI.Xaml.2.8"
+    source: "winget"
+- name: winget_Microsoft.VCLibs.14
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.VCLibs.14"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "14.0.33519.0"
+    id: "Microsoft.VCLibs.14"
+    source: "winget"
+- name: winget_Microsoft.VCLibs.Desktop.14
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.VCLibs.Desktop.14"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "14.0.33728.0"
+    id: "Microsoft.VCLibs.Desktop.14"
+    source: "winget"
+- name: winget_Microsoft.VCRedist.2008.x64
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.VCRedist.2008.x64"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "9.0.30729.6161"
+    id: "Microsoft.VCRedist.2008.x64"
+    source: "winget"
+- name: winget_Microsoft.VCRedist.2008.x86
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.VCRedist.2008.x86"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "9.0.30729.6161"
+    id: "Microsoft.VCRedist.2008.x86"
+    source: "winget"
+- name: winget_Microsoft.VCRedist.2010.x64
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.VCRedist.2010.x64"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "10.0.40219"
+    id: "Microsoft.VCRedist.2010.x64"
+    source: "winget"
+- name: winget_Microsoft.VCRedist.2010.x86
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.VCRedist.2010.x86"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "10.0.40219"
+    id: "Microsoft.VCRedist.2010.x86"
+    source: "winget"
+- name: winget_Microsoft.VCRedist.2012.x64
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.VCRedist.2012.x64"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "11.0.61030.0"
+    id: "Microsoft.VCRedist.2012.x64"
+    source: "winget"
+- name: winget_Microsoft.VCRedist.2012.x86
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.VCRedist.2012.x86"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "11.0.61030.0"
+    id: "Microsoft.VCRedist.2012.x86"
+    source: "winget"
+- name: winget_Microsoft.VCRedist.2013.x64
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.VCRedist.2013.x64"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "12.0.40664.0"
+    id: "Microsoft.VCRedist.2013.x64"
+    source: "winget"
+- name: winget_Microsoft.VCRedist.2013.x86
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.VCRedist.2013.x86"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "12.0.40664.0"
+    id: "Microsoft.VCRedist.2013.x86"
+    source: "winget"
+- name: winget_Microsoft.VCRedist.2015+.x64
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.VCRedist.2015+.x64"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "14.52.37029.0"
+    id: "Microsoft.VCRedist.2015+.x64"
+    source: "winget"
+- name: winget_Microsoft.VCRedist.2015+.x86
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.VCRedist.2015+.x86"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "14.52.37029.0"
+    id: "Microsoft.VCRedist.2015+.x86"
+    source: "winget"
+- name: winget_Microsoft.VSTOR
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.VSTOR"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "10.0.60917"
+    id: "Microsoft.VSTOR"
+    source: "winget"
+- name: winget_Microsoft.VisualStudio.2022.BuildTools
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.VisualStudio.2022.BuildTools"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "17.14.38"
+    id: "Microsoft.VisualStudio.2022.BuildTools"
+    source: "winget"
+- name: winget_Microsoft.VisualStudio.BuildTools
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.VisualStudio.BuildTools"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "18.12.0"
+    id: "Microsoft.VisualStudio.BuildTools"
+    source: "winget"
+- name: winget_Microsoft.VisualStudio.Community
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.VisualStudio.Community"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "18.9.0"
+    id: "Microsoft.VisualStudio.Community"
+    source: "winget"
+- name: winget_Microsoft.WSL
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.WSL"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "3.0.5.0"
+    id: "Microsoft.WSL"
+    source: "winget"
+- name: winget_Microsoft.WebDeploy
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.WebDeploy"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "10.0.9419"
+    id: "Microsoft.WebDeploy"
+    source: "winget"
+- name: winget_Microsoft.WinDbg
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.WinDbg"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.2611.4001.0"
+    id: "Microsoft.WinDbg"
+    source: "winget"
+- name: winget_Microsoft.WindowsApp
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.WindowsApp"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.0.1489.0"
+    id: "Microsoft.WindowsApp"
+    source: "winget"
+- name: winget_Microsoft.WindowsAppRuntime.1.1
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.WindowsAppRuntime.1.1"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.1.5"
+    id: "Microsoft.WindowsAppRuntime.1.1"
+    source: "winget"
+- name: winget_Microsoft.WindowsAppRuntime.1.2
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.WindowsAppRuntime.1.2"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.2.5"
+    id: "Microsoft.WindowsAppRuntime.1.2"
+    source: "winget"
+- name: winget_Microsoft.WindowsAppRuntime.1.4
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.WindowsAppRuntime.1.4"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.4.7"
+    id: "Microsoft.WindowsAppRuntime.1.4"
+    source: "winget"
+- name: winget_Microsoft.WindowsAppRuntime.1.5
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.WindowsAppRuntime.1.5"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.5.9"
+    id: "Microsoft.WindowsAppRuntime.1.5"
+    source: "winget"
+- name: winget_Microsoft.WindowsAppRuntime.1.6
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.WindowsAppRuntime.1.6"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.6.9"
+    id: "Microsoft.WindowsAppRuntime.1.6"
+    source: "winget"
+- name: winget_Microsoft.WindowsAppRuntime.1.7
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.WindowsAppRuntime.1.7"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.7.9"
+    id: "Microsoft.WindowsAppRuntime.1.7"
+    source: "winget"
+- name: winget_Microsoft.WindowsAppRuntime.1.8
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.WindowsAppRuntime.1.8"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "> 1.8.10"
+    id: "Microsoft.WindowsAppRuntime.1.8"
+    source: "winget"
+- name: winget_Microsoft.WindowsAppRuntime.2
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.WindowsAppRuntime.2"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.6.5.0"
+    id: "Microsoft.WindowsAppRuntime.2"
+    source: "winget"
+- name: winget_Microsoft.WindowsSDK.10.0.26100
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.WindowsSDK.10.0.26100"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "> 10.0.26100.7705"
+    id: "Microsoft.WindowsSDK.10.0.26100"
+    source: "winget"
+- name: winget_Microsoft.WindowsTerminal
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.WindowsTerminal"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.25.3131.0"
+    id: "Microsoft.WindowsTerminal"
+    source: "winget"
+- name: winget_Microsoft.WindowsWDK.10.0.28000
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Microsoft.WindowsWDK.10.0.28000"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "10.1.28000.2526"
+    id: "Microsoft.WindowsWDK.10.0.28000"
+    source: "winget"
+- name: winget_MikeFarah.yq
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer MikeFarah.yq"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "4.54.3"
+    id: "MikeFarah.yq"
+    source: "winget"
+- name: winget_Mozilla.sccache
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Mozilla.sccache"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.19.0"
+    id: "Mozilla.sccache"
+    source: "winget"
+- name: winget_NSIS.NSIS
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer NSIS.NSIS"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "3.13"
+    id: "NSIS.NSIS"
+    source: "winget"
+- name: winget_Ninja-build.Ninja
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Ninja-build.Ninja"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.13.2"
+    id: "Ninja-build.Ninja"
+    source: "winget"
+- name: winget_Nushell.Nushell
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Nushell.Nushell"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.117.0"
+    id: "Nushell.Nushell"
+    source: "winget"
+- name: winget_Nvidia.CUDA
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Nvidia.CUDA"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "13.5"
+    id: "Nvidia.CUDA"
+    source: "winget"
+- name: winget_Nvidia.Nsight.Compute
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Nvidia.Nsight.Compute"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2026.4.0"
+    id: "Nvidia.Nsight.Compute"
+    source: "winget"
+- name: winget_Nvidia.PhysX
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Nvidia.PhysX"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "9.26.0904"
+    id: "Nvidia.PhysX"
+    source: "winget"
+- name: winget_OpenJS.NodeJS.LTS
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer OpenJS.NodeJS.LTS"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "26.13.1"
+    id: "OpenJS.NodeJS.LTS"
+    source: "winget"
+- name: winget_Oven-sh.Bun
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Oven-sh.Bun"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.4.4"
+    id: "Oven-sh.Bun"
+    source: "winget"
+- name: winget_Python.Launcher
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Python.Launcher"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "3.15.2"
+    id: "Python.Launcher"
+    source: "winget"
+- name: winget_Python.Python.3.14
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Python.Python.3.14"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "3.14.10"
+    id: "Python.Python.3.14"
+    source: "winget"
+- name: winget_Rclone.Rclone
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Rclone.Rclone"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.76.0"
+    id: "Rclone.Rclone"
+    source: "winget"
+- name: winget_Rizin.Cutter
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Rizin.Cutter"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.5.0"
+    id: "Rizin.Cutter"
+    source: "winget"
+- name: winget_Rizin.Rizin
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Rizin.Rizin"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "v0.9.1"
+    id: "Rizin.Rizin"
+    source: "winget"
+- name: winget_Rustlang.Rustup
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Rustlang.Rustup"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.29.3"
+    id: "Rustlang.Rustup"
+    source: "winget"
+- name: winget_SSHFS-Win.SSHFS-Win
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer SSHFS-Win.SSHFS-Win"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "3.5.20357"
+    id: "SSHFS-Win.SSHFS-Win"
+    source: "winget"
+- name: winget_ShiningLight.OpenSSL.Dev
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer ShiningLight.OpenSSL.Dev"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "4.1.0"
+    id: "ShiningLight.OpenSSL.Dev"
+    source: "winget"
+- name: winget_SoftwareFreedomConservancy.QEMU
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer SoftwareFreedomConservancy.QEMU"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "11.1.0"
+    id: "SoftwareFreedomConservancy.QEMU"
+    source: "winget"
+- name: winget_Stripe.StripeCli
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Stripe.StripeCli"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.55.1"
+    id: "Stripe.StripeCli"
+    source: "winget"
+- name: winget_Unixwin.Niubash
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Unixwin.Niubash"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.5.0"
+    id: "Unixwin.Niubash"
+    source: "winget"
+- name: winget_Valve.Steam
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Valve.Steam"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.10.91.91"
+    id: "Valve.Steam"
+    source: "winget"
+- name: winget_ViGEm.ViGEmBus
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer ViGEm.ViGEmBus"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.22.0"
+    id: "ViGEm.ViGEmBus"
+    source: "winget"
+- name: winget_VirusTotal.YARA
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer VirusTotal.YARA"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "4.6.0"
+    id: "VirusTotal.YARA"
+    source: "winget"
+- name: winget_WerWolv.ImHex
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer WerWolv.ImHex"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.38.1"
+    id: "WerWolv.ImHex"
+    source: "winget"
+- name: winget_WinFlexBison.win_flex_bison
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer WinFlexBison.win_flex_bison"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.5.25"
+    id: "WinFlexBison.win_flex_bison"
+    source: "winget"
+- name: winget_WinFsp.WinFsp
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer WinFsp.WinFsp"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.1.25156"
+    id: "WinFsp.WinFsp"
+    source: "winget"
+- name: winget_WireGuard.WireGuard
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer WireGuard.WireGuard"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.1.1"
+    id: "WireGuard.WireGuard"
+    source: "winget"
+- name: winget_XAMPPRocky.Tokei
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer XAMPPRocky.Tokei"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "12.1.2"
+    id: "XAMPPRocky.Tokei"
+    source: "winget"
+- name: winget_Zellij.Zellij
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer Zellij.Zellij"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.4.11"
+    id: "Zellij.Zellij"
+    source: "winget"
+- name: winget_ajeetdsouza.zoxide
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer ajeetdsouza.zoxide"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.10.0"
+    id: "ajeetdsouza.zoxide"
+    source: "winget"
+- name: winget_arndawg.tmux-windows
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer arndawg.tmux-windows"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "3.6a-win32.7"
+    id: "arndawg.tmux-windows"
+    source: "winget"
+- name: winget_astral-sh.uv
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer astral-sh.uv"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.13.7"
+    id: "astral-sh.uv"
+    source: "winget"
+- name: winget_bootandy.dust
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer bootandy.dust"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.2.7"
+    id: "bootandy.dust"
+    source: "winget"
+- name: winget_chmln.sd
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer chmln.sd"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.1.0"
+    id: "chmln.sd"
+    source: "winget"
+- name: winget_dandavison.delta
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer dandavison.delta"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.20.1"
+    id: "dandavison.delta"
+    source: "winget"
+- name: winget_ducaale.xh
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer ducaale.xh"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.26.2"
+    id: "ducaale.xh"
+    source: "winget"
+- name: winget_eza-community.eza
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer eza-community.eza"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.23.5"
+    id: "eza-community.eza"
+    source: "winget"
+- name: winget_ezwinports.make
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer ezwinports.make"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "4.4.1"
+    id: "ezwinports.make"
+    source: "winget"
+- name: winget_gerardog.gsudo
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer gerardog.gsudo"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.6.1"
+    id: "gerardog.gsudo"
+    source: "winget"
+- name: winget_gstreamerproject.gstreamer
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer gstreamerproject.gstreamer"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.28.8"
+    id: "gstreamerproject.gstreamer"
+    source: "winget"
+- name: winget_hasherezade.PE-bear
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer hasherezade.PE-bear"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.7.2"
+    id: "hasherezade.PE-bear"
+    source: "winget"
+- name: winget_horsicq.DIE-engine
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer horsicq.DIE-engine"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "4.0.0"
+    id: "horsicq.DIE-engine"
+    source: "winget"
+- name: winget_icsharpcode.ILSpy
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer icsharpcode.ILSpy"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "11.0.0.9375"
+    id: "icsharpcode.ILSpy"
+    source: "winget"
+- name: winget_jj-vcs.jj
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer jj-vcs.jj"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.46.0"
+    id: "jj-vcs.jj"
+    source: "winget"
+- name: winget_jqlang.jq
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer jqlang.jq"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.8.2"
+    id: "jqlang.jq"
+    source: "winget"
+- name: winget_junegunn.fzf
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer junegunn.fzf"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.75.0"
+    id: "junegunn.fzf"
+    source: "winget"
+- name: winget_marlocarlo.psmux
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer marlocarlo.psmux"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "3.4.0"
+    id: "marlocarlo.psmux"
+    source: "winget"
+- name: winget_max-sixty.worktrunk
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer max-sixty.worktrunk"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "v0.81.0"
+    id: "max-sixty.worktrunk"
+    source: "winget"
+- name: winget_nektos.act
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer nektos.act"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.2.97"
+    id: "nektos.act"
+    source: "winget"
+- name: winget_pkgconf.pkgconf
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer pkgconf.pkgconf"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "3.0.10"
+    id: "pkgconf.pkgconf"
+    source: "winget"
+- name: winget_rsteube.Carapace
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer rsteube.Carapace"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.8.2"
+    id: "rsteube.Carapace"
+    source: "winget"
+- name: winget_sharkdp.bat
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer sharkdp.bat"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.26.1"
+    id: "sharkdp.bat"
+    source: "winget"
+- name: winget_sharkdp.fd
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer sharkdp.fd"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "10.5.0"
+    id: "sharkdp.fd"
+    source: "winget"
+- name: winget_sharkdp.hyperfine
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer sharkdp.hyperfine"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.0.0"
+    id: "sharkdp.hyperfine"
+    source: "winget"
+- name: winget_sxyazi.yazi
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer sxyazi.yazi"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "26.9.1"
+    id: "sxyazi.yazi"
+    source: "winget"
+- name: winget_uutils.coreutils
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer uutils.coreutils"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.12.0"
+    id: "uutils.coreutils"
+    source: "winget"
+- name: winget_uutils.diffutils
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer uutils.diffutils"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.5.0"
+    id: "uutils.diffutils"
+    source: "winget"
+- name: winget_voidtools.Everything
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer voidtools.Everything"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.4.1.1032"
+    id: "voidtools.Everything"
+    source: "winget"
+- name: winget_voidtools.Everything.Cli
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer voidtools.Everything.Cli"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "1.1.1.39"
+    id: "voidtools.Everything.Cli"
+    source: "winget"
+- name: winget_watchexec.watchexec
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer watchexec.watchexec"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2.7.0"
+    id: "watchexec.watchexec"
+    source: "winget"
+- name: winget_x64dbg.x64dbg
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer x64dbg.x64dbg"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "2026.05.27"
+    id: "x64dbg.x64dbg"
+    source: "winget"
+- name: winget_zig.zig
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer zig.zig"
+  dependsOn:
+  - winget_Microsoft.PreIndexed.Package
+  properties:
+    version: "0.17.1"
+    id: "zig.zig"
+    source: "winget"
+- name: msstore_Microsoft.Rest
+  type: Microsoft.WinGet/Source
+  metadata:
+    description: "Configuration de msstore_Microsoft.Rest"
+    winget:
+      securityContext: "elevated"
+  properties:
+    type: "Microsoft.Rest"
+    trustLevel: "trusted"
+    argument: "https://storeedgefd.dsx.mp.microsoft.com/v9.0"
+    name: "msstore"
+- name: msstore_XP8CBJ40XLBWKX
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer XP8CBJ40XLBWKX"
+  dependsOn:
+  - msstore_Microsoft.Rest
+  properties:
+    version: "4.98.0"
+    id: "XP8CBJ40XLBWKX"
+    source: "msstore"
+- name: msstore_XP8CLZL93F5Z4P
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Installer XP8CLZL93F5Z4P"
+  dependsOn:
+  - msstore_Microsoft.Rest
+  properties:
+    version: "11.0.9.585"
+    id: "XP8CLZL93F5Z4P"
+    source: "msstore"

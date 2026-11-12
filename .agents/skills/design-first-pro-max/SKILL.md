@@ -115,9 +115,9 @@ All four scores — Performance, Accessibility, Best Practices, SEO — plus `gd
 
 ## 3. Grounded Upstream References in `C:\src`
 - [`C:\src\packages\google-design`](file:///C:/src/packages/google-design): `@aphrody/google-design` source, token compiler, binary encoders, UI gate, and `gds` CLI.
-- [`C:\src\third_party\design-ecosystem\impeccable`](file:///C:/src/third_party/design-ecosystem/impeccable): Deterministic UI anti-pattern rules and craft floor (`craft-floor.md`).
-- [`C:\src\third_party\design-ecosystem\humanizer`](file:///C:/src/third_party/design-ecosystem/humanizer): Empirical catalog of 26 AI prose tells and neutral rewriting rules.
-- [`C:\src\third_party\design-ecosystem\ui-ux-pro-max-skill`](file:///C:/src/third_party/design-ecosystem/ui-ux-pro-max-skill): Pre-delivery UX, contrast, touch-target, and responsive checklists.
-- [`C:\src\third_party\design-ecosystem\threejs-skills`](file:///C:/src/third_party/design-ecosystem/threejs-skills): Three.js r186, WebGPU, TSL shaders, PBR lighting, and glTF 2.0 pipelines.
-- [`C:\src\third_party\google-ecosystem\design-md`](file:///C:/src/third_party/google-ecosystem/design-md) & [`C:\src\third_party\design-ecosystem\awesome-design-md`](file:///C:/src/third_party/design-ecosystem/awesome-design-md): Official `DESIGN.md` token/prose schema and real-world design system analyses.
-- [`C:\src\third_party\omacom\omarchy\themes`](file:///C:/src/third_party/omacom/omarchy/themes): Canonical workstation color palettes integrated into `gds`.
+- [`C:\src\third_party\impeccable`](file:///C:/src/third_party/impeccable): Deterministic UI anti-pattern rules and craft floor (`craft-floor.md`).
+- [`C:\src\third_party\humanizer`](file:///C:/src/third_party/humanizer): Empirical catalog of 26 AI prose tells and neutral rewriting rules.
+- [`C:\src\third_party\ui-ux-pro-max-skill`](file:///C:/src/third_party/ui-ux-pro-max-skill): Pre-delivery UX, contrast, touch-target, and responsive checklists.
+- [`C:\src\third_party\threejs-skills`](file:///C:/src/third_party/threejs-skills): Three.js r186, WebGPU, TSL shaders, PBR lighting, and glTF 2.0 pipelines.
+- [`C:\src\third_party\design-md`](file:///C:/src/third_party/design-md) & [`C:\src\third_party\awesome-design-md`](file:///C:/src/third_party/awesome-design-md): Official `DESIGN.md` token/prose schema and real-world design system analyses.
+- [`C:\src\third_party\omarchy\themes`](file:///C:/src/third_party/omarchy/themes): Canonical workstation color palettes integrated into `gds`.

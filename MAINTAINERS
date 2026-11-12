@@ -24,8 +24,15 @@ T:	git https://android.googlesource.com/kernel/build.git
 T:	git https://github.com/aphrody-dev/aphrody-app.git
 F:	.repo/manifests/
 F:	apps/aphrody-app/crates/aphrody-android/
-F:	third_party/aosp/
-F:	third_party/google-ecosystem/
+F:	third_party/android-skills/
+F:	third_party/aosp-manifest/
+F:	third_party/design-md/
+F:	third_party/gemini-skills/
+F:	third_party/google-skills/
+F:	third_party/googleworkspace-cli/
+F:	third_party/jules-skills/
+F:	third_party/kleaf/
+F:	third_party/stitch-skills/
 
 APHRODY.COM WEB & DESKTOP PLATFORM
 M:	Aphrody Engineering <contact@aphrody.com>
@@ -126,10 +133,33 @@ F:	crates/unix-uutils/
 F:	docs/linux-kernel-story/
 F:	docs/patches/
 F:	packages/knowledge-engine/
-F:	third_party/archlinux/
-F:	third_party/cachyos/
+F:	third_party/aether/
+F:	third_party/ananicy-rules/
+F:	third_party/arch-wsl/
+F:	third_party/archinstall/
+F:	third_party/archlinux-wsl/
+F:	third_party/cachy-chroot/
+F:	third_party/cachyos-hyprland-settings/
+F:	third_party/cachyos-niri-settings/
+F:	third_party/CachyOS-PKGBUILDS/
+F:	third_party/cachyos-wsl/
+F:	third_party/devtools/
+F:	third_party/herdr/
+F:	third_party/kernel-patches/
 F:	third_party/linux/
-F:	third_party/omacom/
+F:	third_party/mkinitcpio/
+F:	third_party/omarchy/
+F:	third_party/omarchy-pkgs/
+F:	third_party/omarchy-plugin-marketplace/
+F:	third_party/omarchy-site/
+F:	third_party/pacman/
+F:	third_party/pkg-cosmic-session/
+F:	third_party/pkg-hyprland/
+F:	third_party/pkg-linux/
+F:	third_party/pkg-manage-util/
+F:	third_party/try-omarchy-windows/
+F:	third_party/ttfx/
+F:	third_party/WSL/
 
 MONOREPO VCS ORCHESTRATION, TRI-FORGE & ARCHITECTURE GATE
 M:	Aphrody Engineering <contact@aphrody.com>

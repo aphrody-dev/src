@@ -273,8 +273,8 @@ export function auditFourPillars(srcRoot: string = "C:\\src"): FourPillarAuditRe
     const projs = parseAospRepoManifestProjects(readFileSync(aospManifestPath, "utf-8"));
     aospDetails.push(`.repo/manifests/default.xml active (${projs.length} projects)`);
   }
-  if (existsSync(aospPlatformDir)) aospDetails.push("third_party/aosp/platform/manifest cloned");
-  if (existsSync(aospKleafDir)) aospDetails.push("third_party/aosp/build/kleaf GKI toolchain cloned");
+  if (existsSync(aospPlatformDir)) aospDetails.push("third_party/aosp-manifest cloned");
+  if (existsSync(aospKleafDir)) aospDetails.push("third_party/kleaf GKI toolchain cloned");
   const aospHealthy =
     existsSync(aospManifestPath) &&
     existsSync(aospPlatformDir) &&

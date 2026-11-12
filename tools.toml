@@ -435,6 +435,38 @@ assets.linux-aarch64 = "ollama-linux-arm64.tar.zst"
 assets.macos-x86_64 = "ollama-darwin.tgz"
 assets.macos-aarch64 = "ollama-darwin.tgz"
 
+# Shell : niubash remplace Git Bash et pwsh (bash 5.3 natif Rust, git MSVC, sans MSYS).
+# Installation de référence : configuration/shell.dsc.winget (winget configure) ; cette entrée
+# épingle la même version et vérifie le binaire sur le PATH. Preuves :
+# C:\Users\aphro\nt\docs\research\shell-replacement.md (test Claude Code de bout en bout, imports PE).
+# `bin` n'est pas un gabarit {version} : à mettre à jour avec `version`.
+[[tool]]
+name = "niubash"
+version = "1.5.0"
+bin = ["niubash-v1.5.0-win-x64/niu"]
+verify = ["niu", "--version"]
+source = "github"
+repo = "unixwin/niubash"
+layout = "tree"
+checksum = "SHA256SUMS"
+assets.windows-x86_64 = "niubash-v{version}-win-x64.zip"
+unsupported = ["linux-x86_64", "linux-aarch64", "macos-x86_64", "macos-aarch64"] # Unix : bash du système ; niubash remplace Git Bash sous Windows
+
+# Coreutils for Windows : build Microsoft de uutils coreutils + findutils + grep (Learn :
+# learn.microsoft.com/windows/core-utils/overview). Pas de fichier de sommes publié : SHA256
+# épinglés ici (calculés le 2026-11-12 sur les zips de la release v2026.9.3).
+[[tool]]
+name = "ms-coreutils"
+version = "2026.9.3"
+bin = ["coreutils-2026.9.3-x64/coreutils"]
+verify = ["coreutils-manager", "--version"]
+source = "github"
+repo = "microsoft/coreutils"
+layout = "tree"
+assets.windows-x86_64 = "coreutils-{version}-x64.zip"
+sha256.windows-x86_64 = "e01a35c1856991e313564f02b540c6079274f0ecb3be22de764edd5341eabfaa"
+unsupported = ["linux-x86_64", "linux-aarch64", "macos-x86_64", "macos-aarch64"] # release v2026.9.3 : x64 et arm64 Windows uniquement
+
 # ---------------------------------------------------------------------------------------------
 # Workstation bootstrap (ay up --bootstrap), absorbed from install.ps1 / install.sh.
 # Files are created only when missing and never overwritten; `ay up --check` reports drift.

@@ -39,7 +39,7 @@ Install and audit these from one manifest with `unix-distro userland status|inst
 ## 3. WSL2 distribution
 
 `crates/unix` generates an Arch Linux based WSL2 distribution (CachyOS kernel patches from
-`third_party/cachyos/kernel-patches/<series>/`, Omarchy themes from `third_party/omacom/omarchy/themes/`).
+`third_party/kernel-patches/<series>/`, Omarchy themes from `third_party/omarchy/themes/`).
 Generated configuration follows the documented keys only:
 
 - `.wslconfig` `[wsl2]`: `networkingMode` (`nat`, `mirrored`, ...), `dnsTunneling`, `autoProxy`,
@@ -85,7 +85,7 @@ is the port
 **No regression, proven by tests:**
 
 - **Baseline:** wlcs (Canonical's Wayland Conformance Test Suite) runs against smithay's `anvil` on
-  Linux, using `third_party/wayland-2026/smithay/compile_wlcs.sh` and `wlcs_anvil/`.
+  Linux, using `third_party/smithay/compile_wlcs.sh` and `wlcs_anvil/`.
 - **Linux port:** wlcs runs against the ported compositor on Linux. It must match the baseline pass list.
 - **Windows and web:** the same protocol scenarios are replayed over the Windows and web transports
   through a wlcs-equivalent harness. wlcs itself loads compositors as Linux shared objects, so it

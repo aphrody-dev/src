@@ -57,13 +57,13 @@ DNS, cache key, trigger domain, and prefill rules: [`references/lancache.md`](re
 
 ## Sources
 
-- `third_party/steam-ecosystem/steam-protobufs/steam/content_manifest.proto`
-- `third_party/steam-ecosystem/steam-protobufs/steam/steammessages_contentsystem.steamclient.proto`
-- `third_party/steam-ecosystem/steam-protobufs/steam/steammessages_cloud.steamclient.proto`
-- `third_party/steam-ecosystem/steamkit/SteamKit2/SteamKit2/Types/DepotManifest.cs`
-- `third_party/steam-ecosystem/steamkit/SteamKit2/SteamKit2/Steam/CDN/Client.cs`, `DepotChunk.cs`, `ClientLancache.cs`
-- `third_party/steam-ecosystem/lancache-monolithic/overlay/`, `third_party/steam-ecosystem/lancache-dns/Dockerfile`
-- `third_party/steam-ecosystem/steam-lancache-prefill/SteamPrefill/Settings/AppConfig.cs`
+- `third_party/steam-protobufs/steam/content_manifest.proto`
+- `third_party/steam-protobufs/steam/steammessages_contentsystem.steamclient.proto`
+- `third_party/steam-protobufs/steam/steammessages_cloud.steamclient.proto`
+- `third_party/steamkit/SteamKit2/SteamKit2/Types/DepotManifest.cs`
+- `third_party/steamkit/SteamKit2/SteamKit2/Steam/CDN/Client.cs`, `DepotChunk.cs`, `ClientLancache.cs`
+- `third_party/lancache-monolithic/overlay/`, `third_party/lancache-dns/Dockerfile`
+- `third_party/steam-lancache-prefill/SteamPrefill/Settings/AppConfig.cs`
 - `apps/rosegriffon/crates/bun-steam/UPSTREAM.md`, `apps/rosegriffon/crates/bun-steam/src/depot/`
 - https://partner.steamgames.com/doc/sdk/uploading
 - https://partner.steamgames.com/doc/store/application/depots

@@ -3,8 +3,8 @@
  * 100% Pure Bun v1.4.4 - Zero External Dependencies
  *
  * Grounded empirically in:
- * - C:\src\third_party\design-ecosystem\humanizer (blader/humanizer 26 AI prose tells)
- * - C:\src\third_party\design-ecosystem\impeccable (pbakaus/impeccable 62 UI anti-patterns & craft floor)
+ * - C:\src\third_party\humanizer (blader/humanizer 26 AI prose tells)
+ * - C:\src\third_party\impeccable (pbakaus/impeccable 62 UI anti-patterns & craft floor)
  */
 
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";

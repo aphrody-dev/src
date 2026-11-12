@@ -1,10 +1,11 @@
 # Master Workspace Justfile for the monorepo root
-# Cross-platform: POSIX sh on Linux/macOS/WSL2/containers, PowerShell 7 on Windows.
+# Cross-platform: POSIX sh on Linux/macOS/WSL2/containers, niubash (native Rust bash, no MSYS) on Windows.
 # Paths use forward slashes, which every supported shell and toolchain accepts.
 # Every value below can be overridden from the environment or `just var=value <recipe>`.
+# Windows shell: niubash 1.5.0 (configuration/shell.dsc.winget); `just doctor` output identical to pwsh (2026-11-12).
 
 set shell := ["sh", "-cu"]
-set windows-shell := ["pwsh", "-NoLogo", "-NoProfile", "-Command"]
+set windows-shell := ["niu", "-cu"]
 set dotenv-load := false
 
 root := env("SRC_ROOT", justfile_directory())
@@ -169,8 +170,8 @@ nix-shell:
 
 # Refresh the local offline docs mirrors (Docker, Kubernetes, Nix, Arch/Alpine images)
 docs-sync:
-    git -C "{{root}}/third_party/docs-ecosystem/docker-docs" pull --depth 1
-    git -C "{{root}}/third_party/docs-ecosystem/kubernetes-website" pull --depth 1
-    git -C "{{root}}/third_party/docs-ecosystem/nix-dev" pull --depth 1
-    git -C "{{root}}/third_party/docs-ecosystem/archlinux-docker" pull --depth 1
-    git -C "{{root}}/third_party/docs-ecosystem/docker-alpine" pull --depth 1
+    git -C "{{root}}/third_party/docker-docs" pull --depth 1
+    git -C "{{root}}/third_party/kubernetes-website" pull --depth 1
+    git -C "{{root}}/third_party/nix-dev" pull --depth 1
+    git -C "{{root}}/third_party/archlinux-docker" pull --depth 1
+    git -C "{{root}}/third_party/docker-alpine" pull --depth 1

@@ -29,7 +29,7 @@ C:\src\crates\unix\
 ## Crate `aphrody-omarchy` (`crates/unix-omarchy`)
 
 1. **Aether-in-Rust Theme Compiler (`themes.rs`)**:
-   - Parses upstream Omarchy `colors.toml` palettes from `C:\src\third_party\omacom\omarchy\themes\*\colors.toml` and embeds all 23 canonical Omarchy themes plus 2 sovereign presets (`aphrody-m3-dark`, `cachyos-emerald`) for standalone zero-dependency execution.
+   - Parses upstream Omarchy `colors.toml` palettes from `C:\src\third_party\omarchy\themes\*\colors.toml` and embeds all 23 canonical Omarchy themes plus 2 sovereign presets (`aphrody-m3-dark`, `cachyos-emerald`) for standalone zero-dependency execution.
    - Compiles any `ColorsToml` simultaneously into 6 target formats:
      1. `hyprland-colors.conf` (`col.active_border`, `col.inactive_border`, shadow, `groupbar`)
      2. `cosmic-theme.ron` (COSMIC Desktop RON theme)
@@ -39,7 +39,7 @@ C:\src\crates\unix\
      6. `theme.css` (CSS Custom Properties for Web/TUI preview)
 2. **Plugin & Marketplace Engine (`plugins.rs`)**:
    - Catalogs all 16 built-in Omarchy shell plugins (`agents`, `background`, `bar`, `clipboard`, `dev-gallery`, `dock`, `emojis`, `image-picker`, `lock`, `menu`, `notifications`, `osd`, `panels`, `polkit`, `reminders`, `services`).
-   - Streams `C:\src\third_party\omacom\omarchy-plugin-marketplace\registry.json` (6,443 community sources) with sub-second filtering and scaffolds new Quickshell plugins (`manifest.json` + QML entry point).
+   - Streams `C:\src\third_party\omarchy-plugin-marketplace\registry.json` (6,443 community sources) with sub-second filtering and scaffolds new Quickshell plugins (`manifest.json` + QML entry point).
 3. **Arch GitLab + CachyOS + Omarchy Package & Patch Engine (`packages.rs`)**:
    - Synthesizes unified repository manifests across `[cachyos-v3]`, `[cachyos-core-v3]`, `[cachyos-extra-v3]`, `[omarchy]`, and Arch `[core]`/`[extra]`/`[multilib]`.
    - Verifies and emits the Linux `7.4` kernel patch series (`0001-bore-cachy.patch`, `0001-prjc-cachy.patch`, `dkms-clang.patch`, `nvidia/0005-Fix-build-on-Linux-7.4.patch`, `0001-aufs-7.4-merge-v20260914.patch`, `0001-acpi-call.patch`) alongside the WSL2 `/dev/dxg` + `hv_sock` + `virtio_fs` + `/dev/ntsync` kconfig fragment.

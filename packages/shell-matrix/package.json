@@ -1,0 +1,10 @@
+{
+  "name": "@aphrody/shell-matrix",
+  "version": "0.1.0",
+  "description": "Conformance matrix for sh/bash candidates replacing Git Bash/MSYS2 (Claude Code invocation, POSIX, bash, Windows paths)",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "shell-matrix": "./src/cli.ts"
+  }
+}

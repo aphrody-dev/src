@@ -23,7 +23,7 @@ Survey 2026-11-12 of active Rust repos in `microsoft`, `Azure`, `hyperlight-dev`
 | pdb-rs                                          | 0.1k, 10-30        | PDB parsing                               | r2b (`apps/r2b`)                                           |
 | elfcore, avml                                   | 0.1k / 1.1k        | process and memory dumps                  | r2b                                                        |
 | rust-symcrypt                                   | 0.1k, 10-28        | SymCrypt wrappers                         | TLS layer alternative to aws-lc-rs on Windows              |
-| webui                                           | 0.1k, 11-12        | SSR without JS on the server              | already in `third_party/microsoft/webui`                   |
+| webui                                           | 0.1k, 11-12        | SSR without JS on the server              | already in `third_party/webui`                   |
 | rust-guidelines, RustTraining                   | 0.2k / 15k         | style and training                        | referenced by docs/ECOSYSTEM_CHOICES.md                    |
 | azure-sdk-for-rust, mssql-rs, service-fabric-rs | -                  | Azure only                                | not needed                                                 |
 
