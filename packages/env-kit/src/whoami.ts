@@ -122,54 +122,172 @@ async function hostinger(env: Env): Promise<Identity> {
     : { provider: "hostinger", status: "invalid" };
 }
 
-function claude(): Identity {
-  const out = run("claude", ["auth", "status"]);
-  if (!out) return { provider: "claude", status: "invalid" };
+function claudeStatus(env: Env): Record<string, string | boolean> | null {
+  const r = spawnSync("claude", ["auth", "status"], {
+    encoding: "utf8",
+    timeout: 20_000,
+    env: env as NodeJS.ProcessEnv,
+  });
   try {
-    const s = JSON.parse(out) as {
-      loggedIn?: boolean;
-      authMethod?: string;
-      email?: string;
-      orgName?: string;
-    };
-    return s.loggedIn
-      ? {
-          provider: "claude",
-          status: "ok",
-          identity: s.email ?? s.orgName ?? "logged in",
-          detail: s.authMethod,
-        }
-      : { provider: "claude", status: "invalid" };
+    return r.status === 0 ? JSON.parse(r.stdout) : null;
   } catch {
-    return { provider: "claude", status: "invalid" };
+    return null;
+  }
+}
+
+/** Both Claude identities: the claude.ai account (OAuth) and whether an API key overrides it. */
+function claude(env: Env): Identity[] {
+  const { ANTHROPIC_API_KEY, ...rest } = env;
+  const oauth = claudeStatus(rest);
+  const out: Identity[] = [
+    oauth?.loggedIn && oauth.authMethod === "claude.ai"
+      ? {
+          provider: "claude.ai",
+          status: "ok",
+          identity: String(oauth.email),
+          detail: `${oauth.subscriptionType} until ${String(oauth.loginExpiresAt).slice(0, 10)}`,
+        }
+      : { provider: "claude.ai", status: "invalid" },
+  ];
+  if (ANTHROPIC_API_KEY) {
+    const k = claudeStatus(env);
+    out.push({
+      provider: "claude-api",
+      status: k?.loggedIn ? "ok" : "invalid",
+      identity: "ANTHROPIC_API_KEY",
+      detail:
+        "overrides claude.ai in claude CLI sessions (connectors disabled)",
+    });
+  }
+  return out;
+}
+
+const bearer = (
+  provider: string,
+  url: string,
+  token: string | undefined,
+  pick: (b: any) => string | undefined,
+  header = "Authorization",
+  prefix = "Bearer ",
+) =>
+  token
+    ? json(url, {
+        headers: { [header]: `${prefix}${token}`, "User-Agent": "env-kit" },
+      }).then((r): Identity =>
+        r.ok
+          ? { provider, status: "ok", identity: pick(r.body) ?? "token active" }
+          : { provider, status: "invalid" },
+      )
+    : Promise.resolve<Identity>({ provider, status: "unset" });
+
+function windows(): Identity {
+  const user = run("whoami", []);
+  const reg = run("reg", [
+    "query",
+    "HKCU\\Software\\Microsoft\\IdentityCRL\\UserExtendedProperties",
+  ]);
+  const msa = [...(reg ?? "").matchAll(/\\([^\\\s]+@[^\\\s]+)/g)].map(
+    (m) => m[1],
+  );
+  return user
+    ? {
+        provider: "windows",
+        status: "ok",
+        identity: user,
+        detail: msa.length
+          ? `Microsoft account ${msa.join(", ")}`
+          : "local account",
+      }
+    : { provider: "windows", status: "invalid" };
+}
+
+function gcloud(): Identity {
+  const all = run("gcloud", ["auth", "list", "--format=value(account,status)"]);
+  if (!all) return { provider: "gcloud", status: "invalid" };
+  const rows = all.split("\n").map((l) => l.trim().split(/\s+/));
+  const active = rows.find((r) => r[1] === "*" || r[1] === "ACTIVE")?.[0];
+  return {
+    provider: "gcloud",
+    status: "ok",
+    identity: active ?? rows[0]?.[0],
+    detail: `${rows.length} accounts: ${rows.map((r) => r[0]).join(", ")}`,
+  };
+}
+
+function steam(env: Env): Identity {
+  try {
+    const dir = env.STEAM_DIR ?? "C:/Program Files (x86)/Steam";
+    const vdf = require("node:fs").readFileSync(
+      `${dir}/config/loginusers.vdf`,
+      "utf8",
+    ) as string;
+    const names = [...vdf.matchAll(/"AccountName"\s*"([^"]+)"/g)].map(
+      (m) => m[1],
+    );
+    return names.length
+      ? {
+          provider: "steam",
+          status: "ok",
+          identity: names.join(", "),
+          detail: "local client",
+        }
+      : { provider: "steam", status: "unset" };
+  } catch {
+    return { provider: "steam", status: "unset" };
   }
 }
 
 /** Every identity probe, run concurrently. */
 export async function whoami(env: Env = process.env): Promise<Identity[]> {
-  const win = run("whoami", ["/upn"]) ?? run("whoami", []);
-  return Promise.all([
-    Promise.resolve(cli("windows", win)),
+  const gh = run("gh", ["api", "user", "-q", `.login + " " + (.email // "")`]);
+  const results = await Promise.all([
+    Promise.resolve(windows()),
     Promise.resolve(
       cli("git", run("git", ["config", "--global", "user.email"])),
     ),
-    Promise.resolve(cli("github", run("gh", ["api", "user", "-q", ".login"]))),
-    Promise.resolve(
-      cli(
-        "gcloud",
-        run("gcloud", [
-          "auth",
-          "list",
-          "--filter=status:ACTIVE",
-          "--format=value(account)",
-        ]),
-      ),
-    ),
+    Promise.resolve(cli("github", gh)),
+    Promise.resolve(gcloud()),
     cloudflare(env),
     ovhMe(env),
     hostinger(env),
-    Promise.resolve(claude()),
+    bearer(
+      "vercel",
+      "https://api.vercel.com/v2/user",
+      env.VERCEL_TOKEN,
+      (b) => b?.user && `${b.user.username} <${b.user.email}>`,
+    ),
+    bearer(
+      "neon",
+      "https://console.neon.tech/api/v2/users/me",
+      env.NEON_API_KEY,
+      (b) => b?.email,
+    ),
+    bearer(
+      "npm",
+      "https://registry.npmjs.org/-/whoami",
+      env.NPM_TOKEN,
+      (b) => b?.username,
+    ),
+    bearer(
+      "crates.io",
+      "https://crates.io/api/v1/me",
+      env.CARGO_REGISTRY_TOKEN,
+      (b) => b?.user && `${b.user.login} <${b.user.email ?? ""}>`,
+      "Authorization",
+      "",
+    ),
+    bearer(
+      "supabase",
+      "https://api.supabase.com/v1/projects",
+      env.SUPABASE_ACCESS_TOKEN,
+      (b) =>
+        Array.isArray(b)
+          ? b.map((p: { name: string }) => p.name).join(", ")
+          : undefined,
+    ),
+    Promise.resolve(steam(env)),
   ]);
+  return [...results, ...claude(env)];
 }
 
 export function formatIdentities(ids: readonly Identity[]): string {
