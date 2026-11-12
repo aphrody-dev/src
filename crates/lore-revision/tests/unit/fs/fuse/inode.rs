@@ -557,7 +557,7 @@ fn live_collision_with_different_identity_rehashes() {
             ino: wanted,
             parent: 77,
             name_hash: hash_string("other"),
-            name: Name::from_slice(b"other"),
+            name: Name::from_slice_copy(b"other"),
             kind: dir(),
             nlookup: 1,
             mtime: 0,

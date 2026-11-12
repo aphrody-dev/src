@@ -23,7 +23,7 @@ fn file_entry(size: u64) -> InodeEntry {
         ino: 7,
         parent: 1,
         name_hash: 0,
-        name: lore_revision::fs::fuse::inode::Name::from_slice(b"f"),
+        name: lore_revision::fs::fuse::inode::Name::from_slice_copy(b"f"),
         kind: InodeKind::File {
             address: Address::default(),
             size,
