@@ -1,3 +1,4 @@
+import { loadCore } from "@aphrody/core";
 import { SRC_ROOT, srcPath } from "../src/root.ts";
 import { describe, it, expect } from "bun:test";
 import {
@@ -32,7 +33,8 @@ describe("Depot Native Rust FFI Bridge (depot_ffi.dll)", () => {
     expect(recipes.recipes.some((r: any) => r.name === "ingest")).toBe(true);
   });
 
-  it("calls ffiTreeSitterSymbols to extract AST symbols", () => {
+  // Served by @aphrody/core (aphrody_core_capi), skipped where that library is not built.
+  it.skipIf(!loadCore())("calls ffiTreeSitterSymbols to extract AST symbols", () => {
     const code = "pub struct SovereignEngine;\npub fn run_engine() {}\n";
     const ast = ffiTreeSitterSymbols("engine.rs", code);
     expect(ast).not.toBeNull();
