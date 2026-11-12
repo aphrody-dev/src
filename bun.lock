@@ -42,6 +42,13 @@
         "zod": "^4.6.7",
       },
     },
+    "packages/relay": {
+      "name": "@aphrody/agent-relay",
+      "version": "0.1.0",
+      "bin": {
+        "relay": "./src/cli.ts",
+      },
+    },
     "packages/research": {
       "name": "@aphrody/agent-research",
       "version": "0.1.0",
@@ -82,6 +89,8 @@
     "@aphrody/agent-gateway": ["@aphrody/agent-gateway@workspace:packages/gateway"],
 
     "@aphrody/agent-mcp": ["@aphrody/agent-mcp@workspace:packages/mcp"],
+
+    "@aphrody/agent-relay": ["@aphrody/agent-relay@workspace:packages/relay"],
 
     "@aphrody/agent-research": ["@aphrody/agent-research@workspace:packages/research"],
 

@@ -1,0 +1,9 @@
+{
+  "name": "@aphrody/agent-relay",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "relay": "./src/cli.ts"
+  }
+}
