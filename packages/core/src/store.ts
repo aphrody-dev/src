@@ -14,6 +14,9 @@ CREATE TABLE IF NOT EXISTS refs (path TEXT NOT NULL, callee TEXT NOT NULL, scope
 CREATE TABLE IF NOT EXISTS imports (path TEXT NOT NULL, module TEXT NOT NULL, names TEXT, line INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT);
 CREATE INDEX IF NOT EXISTS symbols_name ON symbols(name);
+CREATE INDEX IF NOT EXISTS symbols_path ON symbols(path);
+CREATE INDEX IF NOT EXISTS refs_path ON refs(path);
+CREATE INDEX IF NOT EXISTS imports_path ON imports(path);
 CREATE INDEX IF NOT EXISTS refs_callee ON refs(callee);
 CREATE INDEX IF NOT EXISTS imports_module ON imports(module);
 CREATE INDEX IF NOT EXISTS files_feature ON files(layer, feature);
