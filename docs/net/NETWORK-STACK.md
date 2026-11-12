@@ -31,9 +31,9 @@ Gap 1: we stop at h2; Chrome is already on h3 (QUIC). Gap 2: our cipher choice c
 
 - `crates/net` (lib `aphrody_net`, bin `net`, cdylib for bun:ffi). One `Trace` type: `dns_ms, connect_ms, tls_ms, ttfb_ms, total_ms, alpn, tls_version, cipher, cert_chain_len, status, alt_svc, server, addrs, peer`.
 - Slice 1 (done): system DNS, TCP, rustls (ring provider) with `rustls-platform-verifier`, ALPN `h2,http/1.1` (Chromium's TCP order), h2 through the `h2` crate, HTTP/1.1 fallback, C ABI `aphrody_net_probe_json` / `aphrody_net_free`.
-- Slice 2: hickory-resolver with DoH, using the same providers as Chromium's secure-DNS auto-upgrade table; report the `dns_path` (system | doh | dot).
-- Slice 3: h3 via quinn + h3, triggered by Alt-Svc as Chromium does; ECH once rustls exposes it in the pinned version (to verify on docs.rs).
-- Slice 4: WebSocket (tokio-tungstenite) with the same Trace, plus a cipher-suite order aligned with BoringSSL.
+- Slice 2 (done): `--doh` = hickory-resolver 0.26.3 DoH to dns.google (`dns_path`). Measured on prd: 45.6 ms cold vs 2 ms system.
+- Slice 3 (done): `--h3` = quinn 0.11.12 + h3 0.0.8; QUIC handshake reported as `tls_ms` (20.3 ms on prd), h3 200 from gemini. ECH: to verify in rustls docs.
+- Slice 4 (done, not tested live): `net ws <wss-url>` = tokio-tungstenite 0.30 upgrade timing. Cipher order = AES-128-GCM, AES-256-GCM, ChaCha20 (TLS 1.3) then ECDHE AEAD (TLS 1.2); gemini now negotiates TLS13_AES_128_GCM_SHA256. Equivalence with BoringSSL is to verify.
 - Parity tests: `packages/net/test/gemini.e2e-auth.test.ts` compares Chrome (CDP) and `net probe` on the same URL.
 
 ## Test targets
