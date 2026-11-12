@@ -1,19 +1,22 @@
 # Roadmap
 
 Done (2026-11-12)
-- P0 architecture, mapping, ADR, legacy inventory (`docs/ARCHITECTURE.md`, `docs/LEGACY-INVENTORY.md`).
-- P1 flat bun + cargo + uv workspace, identity.toml, MIT/Apache, CI windows-latest + ubuntu, native job on prd; submodule `agent/` in src.
-- P2 legacy packages agy, ai-os, ai-triad, brain, knowledge-engine, pi-opencode moved to `legacy/`, deleted from src, src references fixed.
-- P3 `packages/core`: AI SDK loop, tools (fs, shell, memory, skill), SQLite FTS memory, SKILL.md creation; e2e test green on Windows.
+- P0 architecture, mapping, ADR, legacy inventory.
+- P1 bun + cargo + uv workspace, identity.toml, MIT/Apache, CI (windows-latest, ubuntu, native on prd); submodule `agent/` in src.
+- P2 legacy imported; 4 MCP servers -> `packages/mcp`, 2 councils -> `core/council.ts`, 3 redactors -> `core/secrets.ts`; ai-triad, brain, pi-opencode deleted.
+- P3 `packages/core`: AI SDK loop, tools, SQLite FTS memory, SKILL.md creation; real run on Windows with Workers AI `@cf/openai/gpt-oss-120b` (read/write/memory/skill, 5 steps).
+- Scheduler + HEARTBEAT.md heartbeat (`agent schedule`, `agent heartbeat`); Hermes skill linter, usage, stale/archive curation, `skill_view`.
+- TUI on `@earendil-works/pi-tui` (`agent tui`), multi-turn sessions.
+- Deep research: `agent research <outline.yaml>` (one subagent per item, batch_size, results/<item>.json, TS validator = port of validate_json.py kept in `python/research_ref`, results fed to memory). Real item passes both validators.
 
 Next
-1. Dissolve the rest of legacy (ai-os, knowledge-engine, agy): research/fact-check -> tools/research, sentinel, desktop-use.
-2. Port Hermes skill lint/provenance/usage and learning graph; session compaction.
-3. Scheduler/heartbeat (OpenClaw) on Workflow + Cloudflare Agents schedule, local timer on Windows.
-4. Gateway + channels via Chat SDK; port OpenClaw channel config.
-5. TUI from pi; web UI with AI SDK UI + AG-UI; A2A and ACP endpoints.
-6. Sandbox: AppContainer via windows-rs, Vercel/CF Sandbox remote.
-7. Inference: llama.cpp + ONNX Runtime/DirectML crates (forks), weights store (HF hub -> blake3 CAS -> R2).
-8. pyo3 bridge with our cpython/uv fork; tree-sitter tools via src crates/core (branch core/common-lib).
-9. Remaining src AI code: apps/aphrody, apps/yolo, bunos AI parts.
-10. Desktop and mobile surfaces; Linux 7.x packaging; runtime-adapter deploy (branch hosting/portable).
+1. Dissolve the rest of legacy (ai-os, knowledge-engine, agy): research/fact-check/context7 -> `packages/research`, sentinel, desktop-use; then delete `legacy/`.
+2. Merge Windows-native patches from aphrody-labs/{openclaw,hermes-agent} branch `windows-native` (C:\src\docs\agents\WINDOWS-NATIVE-PORT.md, commit 16eea3d) into gateway/sandbox ports.
+3. Research: index results in a vector store (local ONNX embeddings), cross-item synthesis report, resume of partial runs.
+4. Durable scheduler on Vercel Workflow / Cloudflare Agents schedule; Windows service for the heartbeat.
+5. Gateway + channels via Chat SDK (OpenClaw channel config).
+6. Web UI (AI SDK UI + AG-UI); A2A and ACP endpoints; MCP over HTTP.
+7. Sandbox: AppContainer via windows-rs; Vercel/CF Sandbox remote.
+8. Inference: llama.cpp + ONNX Runtime/DirectML crates (forks), weights store (HF hub -> blake3 CAS -> R2); `local:` provider against prd llama-server through the mesh.
+9. pyo3 bridge (our cpython/uv); tree-sitter tools via src crates/core (branch core/common-lib).
+10. Remaining src AI code: apps/aphrody, apps/yolo, bunos; desktop/mobile; Linux 7.x packaging; runtime-adapter deploy (branch hosting/portable).

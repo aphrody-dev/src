@@ -1,0 +1,1 @@
+{"name":"@aphrody/agent-research","version":"0.1.0","type":"module","private":true,"exports":{".":"./src/index.ts"},"dependencies":{"@aphrody/agent-core":"workspace:*","ai":"^7.0.170","zod":"^4.6.7"}}

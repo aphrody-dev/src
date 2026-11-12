@@ -14,6 +14,7 @@
       "dependencies": {
         "@ai-sdk/anthropic": "^4.0.102",
         "@ai-sdk/openai-compatible": "^3.0.90",
+        "@aphrody/agent-research": "workspace:*",
         "@aphrody/agent-tui": "workspace:*",
         "ai": "^7.0.170",
         "workers-ai-provider": "^4.0.1",
@@ -29,6 +30,15 @@
       "dependencies": {
         "@aphrody/agent-core": "workspace:*",
         "@modelcontextprotocol/sdk": "^1.32.2",
+        "zod": "^4.6.7",
+      },
+    },
+    "packages/research": {
+      "name": "@aphrody/agent-research",
+      "version": "0.1.0",
+      "dependencies": {
+        "@aphrody/agent-core": "workspace:*",
+        "ai": "^7.0.170",
         "zod": "^4.6.7",
       },
     },
@@ -58,6 +68,8 @@
     "@aphrody/agent-core": ["@aphrody/agent-core@workspace:packages/core"],
 
     "@aphrody/agent-mcp": ["@aphrody/agent-mcp@workspace:packages/mcp"],
+
+    "@aphrody/agent-research": ["@aphrody/agent-research@workspace:packages/research"],
 
     "@aphrody/agent-tui": ["@aphrody/agent-tui@workspace:packages/tui"],
 

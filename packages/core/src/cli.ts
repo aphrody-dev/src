@@ -20,13 +20,16 @@ const { positionals, values } = parseArgs({
     every: { type: "string" },
     interval: { type: "string" },
     once: { type: "boolean" },
+    validate: { type: "boolean" },
+    batch: { type: "string" },
+    "no-web": { type: "boolean" },
   },
 });
 const home = values.home ?? Bun.env.AGENT_HOME ?? join(homedir(), ".agent");
 const [cmd, sub, ...rest] = positionals;
 const usage = () => {
   console.error(
-    "usage: agent run <task> | schedule add <name> <task> --every 1h | schedule list | heartbeat [--once] | skills lint|curate | tui",
+    "usage: agent run <task> | schedule add <name> <task> --every 1h | schedule list | heartbeat [--once] | skills lint|curate | research <outline.yaml> [--validate] | tui",
   );
   process.exit(2);
 };
@@ -84,6 +87,25 @@ switch (cmd) {
     } else if (sub === "curate") console.log(JSON.stringify(await skills.curate()));
     else usage();
     break;
+  }
+  case "research": {
+    if (!sub) usage();
+    const r = await import("@aphrody/agent-research");
+    if (values.validate) {
+      const v = await r.validateDir(sub!);
+      for (const x of v) console.log(`${x.ok ? "PASS" : "FAIL"} ${x.file} ${x.errors.join("; ")}`);
+      process.exit(v.every((x) => x.ok) ? 0 : 1);
+    }
+    const out = await r.research({
+      outlinePath: sub!,
+      model: resolveModel(values.model),
+      home,
+      batchSize: values.batch ? Number(values.batch) : undefined,
+      web: !values["no-web"],
+      onItem: (e) => console.log(`${e.ok ? "PASS" : "FAIL"} ${e.item} -> ${e.path} ${e.errors.join("; ")}`),
+    });
+    console.error(`[research] ${out.topic}: ${out.passed}/${out.results.length} passed, results in ${out.outDir}`);
+    process.exit(out.passed === out.results.length ? 0 : 1);
   }
   case "tui": {
     const { startTui } = await import("@aphrody/agent-tui");
