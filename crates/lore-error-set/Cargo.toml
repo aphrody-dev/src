@@ -11,6 +11,7 @@ default = ["track-locations"]
 track-locations = []
 
 [lib]
+name = "lore_error_set"
 test = false
 
 [dependencies]

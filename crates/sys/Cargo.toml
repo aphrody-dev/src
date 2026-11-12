@@ -30,3 +30,6 @@ windows = { version = "0.62", features = ["Win32_Graphics_Dxgi", "Win32_Graphics
 
 [target.'cfg(target_os = "linux")'.dependencies]
 rustix = { version = "1", default-features = false, features = ["std", "fs", "system"] }
+
+[lib]
+name = "sys"

@@ -7,6 +7,7 @@ edition = "2021"
 description = "Proc-macro crate for lore-error-set"
 
 [lib]
+name = "lore_error_set_macro"
 proc-macro = true
 
 [dependencies]

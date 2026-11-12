@@ -55,3 +55,6 @@ test-util = []
 
 [lints]
 workspace = true
+
+[lib]
+name = "lore_aws"
