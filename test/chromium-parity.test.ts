@@ -274,8 +274,8 @@ describe("Chromium vs Bun Parity Suite", () => {
   describe("8. 10-Domain Recon Scanner & Auto-Patcher", () => {
     test("runFullParityScan completes and computes matrix", async () => {
       const matrix = await runFullParityScan({
-        chromiumPath: "C:/src/chromium/src",
-        bunPath: "C:/src/bun",
+        chromiumPath: "C:/src/third_party/chromium/src",
+        bunPath: "C:/src/third_party/bun",
       });
 
       expect(matrix.totalFeaturesScanned).toBeGreaterThan(30);

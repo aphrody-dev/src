@@ -10,7 +10,7 @@ import type { DomainReport, ParityItem, ScanOptions } from "../types.ts";
 export async function scanDnsDomain(
   options: ScanOptions,
 ): Promise<DomainReport> {
-  const chromiumPath = options.chromiumPath ?? "C:/src/chromium/src";
+  const chromiumPath = options.chromiumPath ?? "C:/src/third_party/chromium/src";
   const dohFile = join(chromiumPath, "net/dns/public/doh_provider_entry.cc");
 
   let dohProviderCount = 0;

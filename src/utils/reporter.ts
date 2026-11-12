@@ -134,15 +134,15 @@ export function generateMarkdownReport(matrix: ParityMatrix): string {
   );
   lines.push("```bash");
   lines.push(
-    "bun --preload C:/src/bun-parity/dist/chromium-parity-preload.ts your-script.ts",
+    "bun --preload C:/src/packages/bun-parity/dist/chromium-parity-preload.ts your-script.ts",
   );
   lines.push("```");
   lines.push("Or in code:");
   lines.push("```ts");
-  lines.push('import "C:/src/bun-parity/dist/chromium-parity-preload.ts";');
+  lines.push('import "C:/src/packages/bun-parity/dist/chromium-parity-preload.ts";');
   lines.push("```");
   lines.push("");
-  lines.push("### Artifact 2: Rust Crate Patch Queue for C:\\src\\bun");
+  lines.push("### Artifact 2: Rust Crate Patch Queue for C:\\src\\third_party\\bun");
   lines.push("Clean unified git patches ready for upstream compilation:");
   lines.push(
     "- `patches/0001-mime-chromium-types.patch`: Augments Bun's internal MIME lookup table with `.wgsl`, `.jxl`, `.bunaot`, `.opus`.",
@@ -157,7 +157,7 @@ export function generateMarkdownReport(matrix: ParityMatrix): string {
   lines.push("Verification command:");
   lines.push("```bash");
   lines.push(
-    "git -C C:\\src\\bun apply --check C:\\src\\bun-parity\\patches\\0001-mime-chromium-types.patch",
+    "git -C C:\\src\\third_party\\bun apply --check C:\\src\\packages\\bun-parity\\patches\\0001-mime-chromium-types.patch",
   );
   lines.push("```");
 

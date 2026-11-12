@@ -6,7 +6,7 @@
  */
 
 // @bun
-// ../../packages/bun-parity/src/polyfills/scheduler.ts
+// src/polyfills/scheduler.ts
 class TaskPriorityChangeEvent extends Event {
   previousPriority;
   constructor(type, init) {
@@ -205,7 +205,7 @@ function installScheduler(target = globalThis) {
   return target.scheduler;
 }
 
-// ../../packages/bun-parity/src/polyfills/locks.ts
+// src/polyfills/locks.ts
 class LockManager {
   _reqId = 0;
   _held = new Map;
@@ -386,7 +386,7 @@ function installLocks(target = globalThis) {
   return target.navigator.locks;
 }
 
-// ../../packages/bun-parity/src/polyfills/trusted-types.ts
+// src/polyfills/trusted-types.ts
 var SECRET_TOKEN = Symbol("TrustedTypeToken");
 
 class TrustedHTML {
@@ -587,7 +587,7 @@ function installTrustedTypes(target = globalThis) {
   return target.trustedTypes;
 }
 
-// ../../packages/bun-parity/src/polyfills/cache-storage.ts
+// src/polyfills/cache-storage.ts
 import { Database } from "bun:sqlite";
 function normalizeRequestUrl(input) {
   if (typeof input === "string") {
@@ -834,7 +834,7 @@ function installCaches(target = globalThis) {
   return target.caches;
 }
 
-// ../../packages/bun-parity/src/polyfills/compression.ts
+// src/polyfills/compression.ts
 var NativeCompressionStream = globalThis.CompressionStream;
 var NativeDecompressionStream = globalThis.DecompressionStream;
 function normalizeFormat(format) {
@@ -910,7 +910,7 @@ function installCompression(target = globalThis) {
   }
 }
 
-// ../../packages/bun-parity/src/polyfills/mime.ts
+// src/polyfills/mime.ts
 var CHROMIUM_MIME_MAP = {
   wgsl: "text/wgsl",
   jxl: "image/jxl",
@@ -1021,7 +1021,7 @@ function installMime(target = globalThis) {
   }
 }
 
-// ../../packages/bun-parity/src/polyfills/doh.ts
+// src/polyfills/doh.ts
 var DNS_RECORD_TYPE_MAP = {
   A: 1,
   NS: 2,
@@ -1191,7 +1191,7 @@ function installDns(target = globalThis) {
   }
 }
 
-// ../../packages/bun-parity/src/polyfills/index.ts
+// src/polyfills/index.ts
 function installAllChromiumPolyfills(target = globalThis) {
   const scheduler = installScheduler(target);
   const locks = installLocks(target);
@@ -1217,7 +1217,7 @@ function installAllChromiumPolyfills(target = globalThis) {
   };
 }
 
-// ../../packages/bun-parity/src/preload-entry.ts
+// src/preload-entry.ts
 var installedParity = installAllChromiumPolyfills(globalThis);
 export {
   BunChromiumDNS,

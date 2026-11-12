@@ -10,7 +10,7 @@ import type { DomainReport, ParityItem, ScanOptions } from "../types.ts";
 export async function scanCssDomain(
   options: ScanOptions,
 ): Promise<DomainReport> {
-  const chromiumPath = options.chromiumPath ?? "C:/src/chromium/src";
+  const chromiumPath = options.chromiumPath ?? "C:/src/third_party/chromium/src";
   const cssPropsFile = join(
     chromiumPath,
     "third_party/blink/renderer/core/css/css_properties.json5",

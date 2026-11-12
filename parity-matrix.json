@@ -1,8 +1,8 @@
 {
   "scannedAt": "2026-11-11T07:00:25.810Z",
   "bunVersion": "1.4.4",
-  "chromiumPath": "C:/src/chromium/src",
-  "bunPath": "C:/src/bun",
+  "chromiumPath": "C:/src/third_party/chromium/src",
+  "bunPath": "C:/src/third_party/bun",
   "overallNativeScore": 71,
   "overallPatchedScore": 100,
   "totalFeaturesScanned": 58,

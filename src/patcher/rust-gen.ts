@@ -1,5 +1,5 @@
 /**
- * Artifact 2 Generator: Automated Git/Rust Patch Queue for C:\src\bun
+ * Artifact 2 Generator: Automated Git/Rust Patch Queue for C:\src\third_party\bun
  * Synthesizes patches/*.patch and RUST_INTEGRATION_SPEC.md
  */
 
@@ -19,7 +19,7 @@ export async function generateRustPatches(
 ): Promise<{ patches: string[]; integrationSpecPath: string }> {
   const rootDir = join(import.meta.dir, "../..");
   const patchesDir = options.patchesDir ?? join(rootDir, "patches");
-  const bunRepoPath = "C:/src/bun";
+  const bunRepoPath = "C:/src/third_party/bun";
 
   if (!existsSync(patchesDir)) {
     mkdirSync(patchesDir, { recursive: true });
@@ -40,7 +40,7 @@ export async function generateRustPatches(
 
     try {
       const diff1 = execSync(
-        "git -C C:/src/bun diff src/http_types/mime_type_list.txt",
+        "git -C C:/src/third_party/bun diff src/http_types/mime_type_list.txt",
         {
           encoding: "utf-8",
         },
@@ -50,16 +50,16 @@ export async function generateRustPatches(
 
       // Revert repository state
       execSync(
-        "git -C C:/src/bun checkout -- src/http_types/mime_type_list.txt",
+        "git -C C:/src/third_party/bun checkout -- src/http_types/mime_type_list.txt",
       );
 
       // Verify patch with git apply --check
       execSync(
-        `git -C C:/src/bun apply --check "${patch1Path.replace(/\\/g, "/")}"`,
+        `git -C C:/src/third_party/bun apply --check "${patch1Path.replace(/\\/g, "/")}"`,
       );
     } catch (err: any) {
       execSync(
-        "git -C C:/src/bun checkout -- src/http_types/mime_type_list.txt",
+        "git -C C:/src/third_party/bun checkout -- src/http_types/mime_type_list.txt",
       );
       throw new Error(
         `Failed generating or validating 0001-mime-chromium-types.patch: ${err.message}`,
@@ -112,7 +112,7 @@ index 0000000000..1122334455
   const specContent = `# Chromium Upstream vs Bun Full-Stack Rust Integration Spec
 
 ## Overview
-This specification details the architectural blueprint for natively integrating the missing Chromium Web Platform APIs directly into the Full-Rust Bun engine (\`C:\\src\\bun\`), moving from preload polyfills to zero-overhead native Rust built-ins.
+This specification details the architectural blueprint for natively integrating the missing Chromium Web Platform APIs directly into the Full-Rust Bun engine (\`C:\\src\\third_party\\bun\`), moving from preload polyfills to zero-overhead native Rust built-ins.
 
 ---
 

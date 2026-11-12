@@ -12,7 +12,7 @@ export async function runFullAutoPatch(
   // 1. Generate Runtime Preload Patch (Artifact 1)
   const preloadResult = await generatePreloadPatch(options);
 
-  // 2. Generate Git/Rust Patch Queue for C:\src\bun (Artifact 2)
+  // 2. Generate Git/Rust Patch Queue for C:\src\third_party\bun (Artifact 2)
   const rustResult = await generateRustPatches(options);
 
   return {

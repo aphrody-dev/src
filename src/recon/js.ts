@@ -10,7 +10,7 @@ import type { DomainReport, ParityItem, ScanOptions } from "../types.ts";
 export async function scanJsDomain(
   options: ScanOptions,
 ): Promise<DomainReport> {
-  const chromiumPath = options.chromiumPath ?? "C:/src/chromium/src";
+  const chromiumPath = options.chromiumPath ?? "C:/src/third_party/chromium/src";
   const flagsFile = join(chromiumPath, "v8/src/flags/flag-definitions.h");
 
   let v8FlagCount = 0;

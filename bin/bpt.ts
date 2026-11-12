@@ -29,8 +29,8 @@ async function main() {
     case "scan": {
       const isJson = args.includes("--json");
       const matrix = await runFullParityScan({
-        chromiumPath: "C:/src/chromium/src",
-        bunPath: "C:/src/bun",
+        chromiumPath: "C:/src/third_party/chromium/src",
+        bunPath: "C:/src/third_party/bun",
       });
 
       if (isJson) {
@@ -57,12 +57,12 @@ async function main() {
       for (const p of patchResult.patchesGenerated) {
         console.log(`[Artifact 2] Generated Git/Rust Patch: ${p}`);
       }
-      console.log("[Verification] git -C C:\\src\\bun apply --check PASSED cleanly.");
+      console.log("[Verification] git -C C:\\src\\third_party\\bun apply --check PASSED cleanly.");
 
       // Run post-patch scan to update reports
       const matrix = await runFullParityScan({
-        chromiumPath: "C:/src/chromium/src",
-        bunPath: "C:/src/bun",
+        chromiumPath: "C:/src/third_party/chromium/src",
+        bunPath: "C:/src/third_party/bun",
       });
       const mdPath = join(rootDir, "PARITY_REPORT.md");
       const jsonPath = join(rootDir, "parity-matrix.json");
@@ -74,8 +74,8 @@ async function main() {
 
     case "report": {
       const matrix = await runFullParityScan({
-        chromiumPath: "C:/src/chromium/src",
-        bunPath: "C:/src/bun",
+        chromiumPath: "C:/src/third_party/chromium/src",
+        bunPath: "C:/src/third_party/bun",
       });
       const mdPath = join(rootDir, "PARITY_REPORT.md");
       const jsonPath = join(rootDir, "parity-matrix.json");
@@ -110,8 +110,8 @@ USAGE:
   bpt [command] [options]
 
 COMMANDS:
-  scan         Scan real Chromium upstream (C:\\src\\chromium\\src) vs Bun across 10 domains
-  patch        Synthesize runtime preload patch and Rust patch queue for C:\\src\\bun
+  scan         Scan real Chromium upstream (C:\\src\\third_party\\chromium\\src) vs Bun across 10 domains
+  patch        Synthesize runtime preload patch and Rust patch queue for C:\\src\\third_party\\bun
   report       Generate full PARITY_REPORT.md and parity-matrix.json
   test         Execute test suite for all polyfilled and patched web APIs
   help         Display this help message

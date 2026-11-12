@@ -5,8 +5,8 @@
 ## Executive Summary
 
 - **Bun Version**: `v1.4.4`
-- **Chromium Upstream Source**: `C:/src/chromium/src`
-- **Bun Upstream Source**: `C:/src/bun`
+- **Chromium Upstream Source**: `C:/src/third_party/chromium/src`
+- **Bun Upstream Source**: `C:/src/third_party/bun`
 - **Native Compliance Score**: **71%** (41 / 58 features)
 - **Effective Compliance Score (After Auto-Patch)**: **100%** (58 / 58 features)
 
@@ -152,14 +152,14 @@
 ### Artifact 1: Standalone Runtime Preload Patch
 To execute any Bun application or script with 100% Chromium Web Platform parity:
 ```bash
-bun --preload C:/src/bun-parity/dist/chromium-parity-preload.ts your-script.ts
+bun --preload C:/src/packages/bun-parity/dist/chromium-parity-preload.ts your-script.ts
 ```
 Or in code:
 ```ts
-import "C:/src/bun-parity/dist/chromium-parity-preload.ts";
+import "C:/src/packages/bun-parity/dist/chromium-parity-preload.ts";
 ```
 
-### Artifact 2: Rust Crate Patch Queue for C:\src\bun
+### Artifact 2: Rust Crate Patch Queue for C:\src\third_party\bun
 Clean unified git patches ready for upstream compilation:
 - `patches/0001-mime-chromium-types.patch`: Augments Bun's internal MIME lookup table with `.wgsl`, `.jxl`, `.bunaot`, `.opus`.
 - `patches/0002-scheduler-webapi-decl.patch`: Registers Prioritized Task Scheduling WebIDL builtins.
@@ -167,5 +167,5 @@ Clean unified git patches ready for upstream compilation:
 
 Verification command:
 ```bash
-git -C C:\src\bun apply --check C:\src\bun-parity\patches\0001-mime-chromium-types.patch
+git -C C:\src\third_party\bun apply --check C:\src\packages\bun-parity\patches\0001-mime-chromium-types.patch
 ```
