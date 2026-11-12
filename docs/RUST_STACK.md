@@ -19,6 +19,7 @@ per layer, and prove perfect compatibility against the upstream project's own te
 | Build | ninja, gn, make, cmake | n2 (aphrody-dev/n2), gn kept, cargo | ninja tests, Chromium build parity |
 | depot_tools | gclient, git-cl, vpython | `ay gclient`, gix, uv (docs/DEPOT_TOOLS_RUST.md) | `gclient revinfo` identical output |
 | Git | git | gitoxide, jj (aphrody-dev forks) | git `t/` suite subset used by us |
+| Binary-asset VCS | Perforce, Git LFS | Lore (EpicGames/lore, MIT, aphrody-dev fork): centralized, content-addressed, sparse hydration, FUSE | Lore integration tests; Steam game and Chromium asset repos on fr1 |
 | SSH | OpenSSH | russh, russh-sftp (`ay ssh`, aphrody-dev forks) | OpenSSH `regress/` |
 | TLS / crypto | OpenSSL, BoringSSL | rustls + aws-lc-rs/ring, rustls-openssl-compat (libssl ABI) | BoGo, tlsfuzzer |
 | VPN | WireGuard | boringtun (aphrody-dev fork) | wireguard-go interop |
