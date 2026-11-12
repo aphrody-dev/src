@@ -28,3 +28,10 @@ Lines = .ts/.rs/.py/.zig. Imported with `git archive HEAD packages/<name>` into 
 - Redactors x3 -> `packages/core/src/secrets.ts`. Copies left inside ai-os/env.ts, nexus/security.ts and knowledge-engine/env go when those packages are dissolved.
 - brain -> core memory; pi-opencode (pi tools, provider) -> core tools + model.ts. Both removed.
 - Remaining legacy: ai-os, knowledge-engine, agy (23 639 lines). Their entry points still import the removed files and do not run; legacy is not built.
+
+## Dissolved (2026-11-12, legacy/ deleted)
+
+- knowledge-engine: context7 client -> research/context7.ts (docs_search, docs_fetch tools); fact-check -> research/factcheck.ts; deep research -> research pipeline; MCP -> packages/mcp; redactor -> core/secrets.ts.
+- ai-os: providers/federation -> core/model.ts; brain-memory -> core/memory.ts; skills-hub -> core/skills hub; protocols a2a/acp -> gateway (roadmap); triad -> core/council.ts.
+- Dropped (no consumer, or replaced by vendor SDKs): ai-os extractor, system1 trainer/decisional engine, sentinel, posix/nix/wasm-webgpu, bun:ffi desktop bus (windows-rs crate planned), benchmark arena, rosegriffon ops; knowledge-engine docs/skills generators, kernel crawler, agy session auditor; agy (Antigravity CLI glue, gemma lab, notebook, finops, web app, rust-desktop).
+- Source remains in git history: aphrody-labs/src@5525822 packages/*, aphrody-labs/agent@efa63bb legacy/*.

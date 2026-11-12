@@ -7,6 +7,7 @@ import { generateText, isStepCount, type LanguageModel, tool } from "ai";
 import { mkdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { z } from "zod";
+import { context7Tools } from "./context7";
 
 export type Item = { name: string; category?: string; source_url?: string; description?: string; [k: string]: unknown };
 export type Outline = {
@@ -101,7 +102,7 @@ async function researchItem(o: ResearchOptions, outline: Outline, fields: Fields
 Use fetch_url on the source URL and primary references, then write dense research notes with citations.`,
       prompt: `Item:
 ${JSON.stringify(item, null, 2)}`,
-      tools: { fetch_url: fetchUrl },
+      tools: { fetch_url: fetchUrl, ...context7Tools },
       stopWhen: isStepCount(o.maxSteps ?? 8),
     });
     notes = g.text;
@@ -196,3 +197,7 @@ export async function validateDir(outlinePath: string, fieldsPath?: string) {
   }
   return out;
 }
+
+export { CONTEXT7_BASE, context7Tools, getLibraryDocs, searchLibraries } from "./context7";
+export { factCheck, factCheckReport, type Verdict } from "./factcheck";
+export { fetchUrl };

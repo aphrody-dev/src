@@ -7,10 +7,10 @@ Done (2026-11-12)
 - P3 `packages/core`: AI SDK loop, tools, SQLite FTS memory, SKILL.md creation; real run on Windows with Workers AI `@cf/openai/gpt-oss-120b` (read/write/memory/skill, 5 steps).
 - Scheduler + HEARTBEAT.md heartbeat (`agent schedule`, `agent heartbeat`); Hermes skill linter, usage, stale/archive curation, `skill_view`.
 - TUI on `@earendil-works/pi-tui` (`agent tui`), multi-turn sessions.
+- legacy/ dissolved and deleted (context7 + fact-check tools in research).
 - Deep research: `agent research <outline.yaml>` (one subagent per item, batch_size, results/<item>.json, TS validator = port of validate_json.py kept in `python/research_ref`, results fed to memory). Real item passes both validators.
 
 Next
-1. Dissolve the rest of legacy (ai-os, knowledge-engine, agy): research/fact-check/context7 -> `packages/research`, sentinel, desktop-use; then delete `legacy/`.
 2. Merge Windows-native patches from aphrody-labs/{openclaw,hermes-agent} branch `windows-native` (C:\src\docs\agents\WINDOWS-NATIVE-PORT.md, commit 16eea3d) into gateway/sandbox ports.
 3. Research: index results in a vector store (local ONNX embeddings), cross-item synthesis report, resume of partial runs.
 4. Durable scheduler on Vercel Workflow / Cloudflare Agents schedule; Windows service for the heartbeat.
