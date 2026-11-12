@@ -156,3 +156,64 @@ expect = ["avatar", "prompt", "model-response", "h2|h3", "TLS 1.3", "alt-svc h3"
 url = "https://www.google.com/"
 tag = "e2e:auth"
 expect = ["avatar", "h2|h3", "TLS 1.3"]
+# =============================================================================
+# Hosting placement (docs/infra/HOSTING-POLICY.md). One table per deployable app.
+# `bun scripts/deploy-target.ts <app> <cf|vercel|vps>` renders the host config from here.
+#   target      = current production host; every app must also render for the others
+#   commercial  = true forbids Vercel Hobby (non-commercial personal use only)
+#   cf_tool     = "wrangler" when the project already ships a wrangler config (keep it), else "cf"
+#   storage/kv/sql per target: r2:<BINDING> | s3 | fs:<dir> ; cf:<BINDING> | redis ; d1:<BINDING> | url
+#   Secrets (S3_*, REDIS_URL, DATABASE_URL, CRON_SECRET) live in Workers secrets / Vercel env / systemd EnvironmentFile, never here.
+# =============================================================================
+
+[hosting.aphrody]
+service = "aphrody"
+target = "cf"
+commercial = true # ads.txt + sellers.json (AdSense)
+cf_tool = "wrangler"
+cf_config = "apps/aphrody/wrangler.toml"
+vps_exec = "bun run server.ts"
+origin_path = ["/api/*", "/g/*", "/search"]
+
+[hosting.aphrody-app]
+target = "cf"
+commercial = true
+cf_tool = "wrangler"
+cf_config = "apps/aphrody-app/wrangler.toml"
+domains = ["aphrody.app"]
+path = "C:/src/apps/aphrody-app"
+port = 3010
+
+[hosting.downloads]
+path = "C:/src/apps/r2-site"
+target = "cf"
+commercial = false
+domains = ["downloads.aphrody.com"]
+port = 8797
+cf_entry = "src/entry.cf.ts"
+worker_name = "downloads-portable"
+vps_exec = "bun run src/entry.vps.ts"
+cf = { STORAGE = "r2:BUCKET", r2_bucket = "aphrody-dist" }
+vps = { STORAGE = "s3", S3_BUCKET = "aphrody-dist" }
+vercel = { STORAGE = "s3", S3_BUCKET = "aphrody-dist" }
+vars = { PREFIX = "aphrody", SERVICE = "aphrody-downloads", SPA = "0" }
+
+[hosting.cdn]
+path = "C:/src/apps/r2-site"
+target = "cf"
+commercial = false
+domains = ["cdn.aphrody.com"]
+port = 8796
+cf_entry = "src/entry.cf.ts"
+worker_name = "cdn-portable"
+vps_exec = "bun run src/entry.vps.ts"
+cf = { STORAGE = "r2:BUCKET", r2_bucket = "aphrody-assets" }
+vps = { STORAGE = "s3", S3_BUCKET = "aphrody-assets" }
+vercel = { STORAGE = "s3", S3_BUCKET = "aphrody-assets" }
+vars = { PREFIX = "", SERVICE = "aphrody-cdn", SPA = "0" }
+
+[hosting.yolo]
+service = "yolo"
+target = "vps"
+commercial = false
+vps_exec = "bun run server.ts"
