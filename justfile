@@ -248,3 +248,27 @@ lab-factory-fetch version:
 # Smallest aphrody binary: profile min + rebuilt std with immediate-abort.
 lab-min:
     cargo build --profile min -p aphrody-labs-cli -Zbuild-std=std,panic_abort --target x86_64-pc-windows-msvc
+
+# Layered dependency gate (Chromium checkdeps analogue): DEPS.rules per directory, see docs/ARCHITECTURE.md
+checkdeps *flags:
+    bun "{{root}}/scripts/checkdeps.ts" --root "{{root}}" {{flags}}
+
+# Units changed since ref plus transitive dependents (task graph filter, turbo `--filter=...[ref]` analogue)
+affected ref="origin/main":
+    bun "{{root}}/scripts/checkdeps.ts" --root "{{root}}" --affected "{{ref}}"
+
+# Test only affected units: cargo -p for crates, bun test for packages. Cargo cache: local sccache (R2 remote cache: TICKET taskgraph-001)
+test-affected ref="origin/main":
+    #!/usr/bin/env sh
+    set -eu
+    out=$(bun "{{root}}/scripts/checkdeps.ts" --root "{{root}}" --affected "{{ref}}")
+    pkgs=$(printf '%s\n' "$out" | awk -F'\t' '$1=="cargo" && $3 ~ /^crates\// {printf "-p %s ", $2}')
+    bunp=$(printf '%s\n' "$out" | awk -F'\t' '$1=="bun" && $3 ~ /^packages\// {printf "%s/%s ", "{{root}}", $3}')
+    [ -z "$pkgs" ] || cargo test $pkgs
+    [ -z "$bunp" ] || bun test $bunp
+
+# Pre-push gate: format, layered deps, architecture rules
+check:
+    bun fmt --check
+    just checkdeps
+    ay arch check --root "{{root}}"

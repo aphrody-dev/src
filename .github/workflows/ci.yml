@@ -26,6 +26,8 @@ jobs:
         run: |
           cargo build -p aphrody
           cargo test -p aphrody -p depot-gclient -p depot-cas -p depot-cipd -p aphrody-up -p aphrody-rt -p archguard
+      - name: Layered dependency gate (checkdeps)
+        run: bun scripts/checkdeps.ts
       - name: Architecture gate
         run: target/debug/ay arch check --strict
       - name: Go deploy engine
