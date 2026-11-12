@@ -44,6 +44,8 @@ pub struct PlanItem {
     /// The depot_tools git cache mirror for `url`, when it exists.
     pub mirror: Option<PathBuf>,
     pub action: Action,
+    /// Fetch into `mirror` before checking out (`PlanOptions::populate_cache`).
+    pub populate: bool,
     /// The object, for `Action::Gcs`.
     pub gcs: Option<crate::gcs::GcsObject>,
 }
@@ -72,6 +74,9 @@ pub struct PlanOptions {
     pub only: Vec<String>,
     /// Include the solutions themselves.
     pub include_solutions: bool,
+    /// Fetch pinned revisions into the shared git cache first (`git cache populate`), so
+    /// every checkout of the same URL reuses one copy of the objects.
+    pub populate_cache: bool,
 }
 
 fn selected(name: &str, only: &[String]) -> bool {
@@ -119,6 +124,7 @@ pub fn plan(client: &Client, opts: &PlanOptions) -> Vec<PlanItem> {
             current,
             mirror,
             action,
+            populate: false,
             gcs: None,
         };
         match &n.kind {
@@ -155,7 +161,11 @@ pub fn plan(client: &Client, opts: &PlanOptions) -> Vec<PlanItem> {
                     .cache_dir
                     .as_ref()
                     .map(|c| c.join(cache_dir_name(&url)))
-                    .filter(|m| m.join("objects").is_dir() || m.join(".git/objects").is_dir());
+                    .filter(|m| {
+                        opts.populate_cache
+                            || m.join("objects").is_dir()
+                            || m.join(".git/objects").is_dir()
+                    });
                 let action;
                 let mut current = None;
                 if !path.join(".git").exists() {
@@ -182,7 +192,14 @@ pub fn plan(client: &Client, opts: &PlanOptions) -> Vec<PlanItem> {
                 } else {
                     action = Action::Blocked("cannot open the git repository".into());
                 }
-                out.push(item(action, url, rev, current, mirror));
+                let populate = opts.populate_cache
+                    && mirror.is_some()
+                    && rev.is_some()
+                    && matches!(action, Action::Clone | Action::Fetch);
+                out.push(PlanItem {
+                    populate,
+                    ..item(action, url, rev, current, mirror)
+                });
             }
         }
     }
@@ -303,6 +320,12 @@ fn sync_one(item: &PlanItem) -> Result<String> {
         return crate::gcs::sync_object(obj, &item.path, cas());
     }
     let fresh = item.action == Action::Clone;
+    let mut populated = false;
+    if item.populate
+        && let (Some(m), Some(rev)) = (&item.mirror, &item.revision)
+    {
+        populated = populate_mirror(m, &item.url, rev)?;
+    }
     if fresh && item.revision.is_none() {
         // A solution or branch-tracking dep: a regular clone of the default branch.
         let interrupt = AtomicBool::new(false);
@@ -347,7 +370,12 @@ fn sync_one(item: &PlanItem) -> Result<String> {
         return Err(Error::new("local changes; commit or discard them first"));
     }
     checkout(&repo, id, fresh)?;
-    Ok(format!("{}{}", if fetched { "fetched, " } else { "" }, id))
+    Ok(format!(
+        "{}{}{}",
+        if populated { "cache populated, " } else { "" },
+        if fetched { "fetched, " } else { "" },
+        id
+    ))
 }
 
 fn mirror_objects(mirror: &Path) -> String {
@@ -425,11 +453,48 @@ fn resolve(repo: &gix::Repository, rev: &str) -> Option<gix::ObjectId> {
     None
 }
 
+/// `git cache populate` for one pinned revision: create the bare mirror with the
+/// layout `git_cache.Mirror` uses (origin, `+refs/heads/*:refs/heads/*`) when missing, then
+/// fetch only the pin, kept alive by `refs/ay/pins/<id>`. Upstream `git cache populate`
+/// can run on the same mirror afterwards. Returns whether anything was fetched.
+fn populate_mirror(mirror: &Path, url: &str, rev: &str) -> Result<bool> {
+    if !mirror.join("objects").is_dir() {
+        std::fs::create_dir_all(mirror)?;
+        let repo = gix::init_bare(mirror).map_err(gerr)?;
+        let config = repo.git_dir().join("config");
+        let mut text = std::fs::read_to_string(&config).unwrap_or_default();
+        text.push_str(&format!(
+            "[remote \"origin\"]
+	url = {url}
+	fetch = +refs/heads/*:refs/heads/*
+"
+        ));
+        std::fs::write(&config, text)?;
+    }
+    let repo = gix::open(mirror).map_err(gerr)?;
+    let pinned = gix::ObjectId::from_hex(rev.as_bytes()).ok();
+    if pinned.is_some_and(|id| repo.find_object(id).is_ok()) {
+        return Ok(false);
+    }
+    let dest = match pinned {
+        Some(id) => format!("refs/ay/pins/{id}"),
+        None => "refs/heads/*".to_string(),
+    };
+    fetch_into(&repo, url, rev, &dest)?;
+    Ok(true)
+}
+
 fn fetch(repo: &gix::Repository, url: &str, rev: &str) -> Result<()> {
+    fetch_into(repo, url, rev, "refs/ay/pinned")
+}
+
+fn fetch_into(repo: &gix::Repository, url: &str, rev: &str, pin_ref: &str) -> Result<()> {
     use gix::remote::Direction;
     // Gerrit and GitHub serve any reachable commit by id, so a pinned dep fetches just that.
     let specs = if gix::ObjectId::from_hex(rev.as_bytes()).is_ok() {
-        vec![format!("+{rev}:refs/ay/pinned")]
+        vec![format!("+{rev}:{pin_ref}")]
+    } else if pin_ref.ends_with("/*") {
+        vec![format!("+refs/heads/*:{pin_ref}")]
     } else {
         vec!["+refs/heads/*:refs/remotes/origin/*".to_string()]
     };

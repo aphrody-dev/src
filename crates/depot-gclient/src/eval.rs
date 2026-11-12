@@ -89,8 +89,11 @@ pub fn eval_expr(src: &Source<'_>, node: &Expr, vars: Option<&Dict>) -> Result<V
             let raw = s.value.to_str();
             match vars {
                 None => Ok(Value::Str(raw.to_string())),
-                Some(vars) => expand_vars(raw, vars).map(Value::Str).map_err(|e| {
-                    match e.missing_key() {
+                Some(vars) => {
+                    expand_vars(raw, vars)
+                        .map(Value::Str)
+                        .map_err(|e| {
+                            match e.missing_key() {
                         Some(k) => src.err(
                             node,
                             format!(
@@ -99,7 +102,8 @@ pub fn eval_expr(src: &Source<'_>, node: &Expr, vars: Option<&Dict>) -> Result<V
                         ),
                         None => src.err(node, e),
                     }
-                }),
+                        })
+                }
             }
         }
         Expr::BooleanLiteral(b) => Ok(Value::Bool(b.value)),

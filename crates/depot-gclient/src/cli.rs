@@ -80,6 +80,10 @@ enum Cmd {
         /// Run `cipd ensure` for CIPD packages with the official client
         #[arg(long)]
         cipd: bool,
+        /// Fetch pins into the shared git cache first (`git cache populate`); checkouts then
+        /// borrow the objects through alternates
+        #[arg(long)]
+        populate_cache: bool,
         /// Show up-to-date entries too
         #[arg(short, long)]
         verbose: bool,
@@ -360,6 +364,7 @@ fn gclient(cmd: Cmd) -> Result<i32> {
             only,
             with_solutions,
             cipd,
+            populate_cache,
             verbose,
         } => {
             let c = load(&tree, Vec::new())?;
@@ -368,6 +373,7 @@ fn gclient(cmd: Cmd) -> Result<i32> {
                 &PlanOptions {
                     only,
                     include_solutions: with_solutions,
+                    populate_cache,
                 },
             );
             let shown: Vec<_> = plan
@@ -465,6 +471,7 @@ fn fetch_cmd(f: Fetch) -> Result<i32> {
         &PlanOptions {
             include_solutions: true,
             only: c.solutions().map(|s| s.name.clone()).collect(),
+            populate_cache: false,
         },
     );
     let done = sync::execute(&plan, f.jobs, &|l| println!("{l}"));

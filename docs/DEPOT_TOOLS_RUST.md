@@ -51,7 +51,7 @@ mostly detected (`ay git info`, `packages/forge/src/pillars.ts`) or probed for v
 | `fetch` (`fetch.py`, `fetch_configs/`) | Python | 370 + 1,740 | `fetch chromium`, `fetch v8`, `fetch --nohooks android` | none | `ay fetch` (`depot_gclient::fetch`, configs as data) | done for all 43 configs |
 | `git cl` (`git_cl.py`) | Python | 9,254 | upload, status, land, try, issue, format, presubmit | none | `ay cl` on `jj gerrit upload` + Gerrit REST (ureq) | not started |
 | `git-map`, `git-map-branches`, `git-new-branch`, `git-rebase-update`, `git-squash-branch`, `git-reparent-branch`, `git-rename-branch`, `git-hyper-blame`, `git-number`, `git-upstream-diff`, `git-freeze`/`thaw`, `git-mark-merge-base`, `git-retry`, `git-footers` (`git_common.py`) | Python | 187, 112, 642, 291, 120, 69, 434, 323, 83, 47, 82, 213, 286 + 1,897 | Branch stacks on `origin/main`, rebasing stacks, blame across reverts | none | jj covers stacks natively (`jj log`, `jj rebase -d main`, `jj squash`, `jj bookmark rename`); `jj file annotate` for blame | use jj, nothing to write |
-| `git_cache.py` | Python | 1,701 | Shared bare mirrors in `%LOCALAPPDATA%\depot_tools\git_cache` | read by `ay gclient sync` | `depot_gclient::sync::cache_dir_name` + `objects/info/alternates` | read side done; `populate` (updating mirrors) not written |
+| `git_cache.py` | Python | 1,701 | Shared bare mirrors in `%LOCALAPPDATA%\depot_tools\git_cache` | read by `ay gclient sync` | `depot_gclient::sync::cache_dir_name` + `objects/info/alternates` | done: read side and `--populate-cache` |
 | `cipd` (`cipd`, `cipd.bat`, `cipd_manifest.txt`) | bash/bat + Go binary | 295 + 98 | Binary packages: gn, clang, Siso, Python, test data | detection only | Official Go client via `ay cipd` | wrapped, stays upstream |
 | `vpython3` | sh/bat + Go binary (uv inside) | 62 + 13 | Hermetic Python for hooks and scripts (`vpython.toml` + `.uv.lock`) | none | `ay vpy` (`crates/depot-vpython`) on system uv | done; Chromium-index locks delegate upstream |
 | `gn.py` | Python | 145 | Locate the checkout's gn | none | `ay gn` (`depot_core::build_tools`) | done |
@@ -226,7 +226,7 @@ depot_tools' bundled 3.11 interpreter, for the upstream comparison tests.
    `refs/for/main` with a `Change-Id` footer.
 2. `ay gclient runhooks`: hooks are listed with their condition; running them needs `vpython3` ->
    `ay vpy` mapping and the hook cwd semantics.
-3. GCS downloads (`dep_type: gcs`, 48 objects in chromium) and `git cache populate`.
+3. Done: GCS downloads (`depot_gclient::gcs`) and `ay gclient sync --populate-cache` (pins fetched into the shared bare mirror with the `git_cache.Mirror` layout, kept by `refs/ay/pins/<id>`; checkouts borrow objects through alternates, jsoncpp: 80 KB `.git`). Existing mirrors can carry stale commit-graphs (jsoncpp did); delete and repopulate such a mirror.
 4. `ay gclient flatten`, `--snapshot`/`--actual` revinfo.
 5. Workspace gix 0.61 -> 0.90, then the remaining rows of the Git for Windows table.
 6. A full `ay gclient sync --apply` of chromium (49 fetches, about an hour of transfer) once the
