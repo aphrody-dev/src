@@ -66,7 +66,7 @@ T:	git https://github.com/aphrody-dev/depot.git
 F:	DEPS
 F:	crates/depot-cli/
 F:	crates/depot-core/
-F:	crates/depot-ffi/
+F:	crates/ffi/
 F:	crates/depot-forge/
 F:	crates/depot-graph/
 F:	crates/depot-ingest/
