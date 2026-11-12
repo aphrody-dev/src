@@ -48,3 +48,6 @@
 ## Non présents (clone sparse)
 
 llvm-project est en sparse checkout (`lld`, `llvm/lib/{LTO,Passes,Support,Target,TargetParser}`) : clang, lldb, mlir, compiler-rt, libc, libcxx, flang, bolt, polly, openmp, offload sont **absents** du disque ; `git sparse-checkout add <dir>` pour les matérialiser. Polygeist écarté (dernier push 2025-06-19, inactif).
+
+## Metal / WGSL (ajout 2026-11-12)
+Pas de backend LLVM : LLVM -> SPIR-V, puis SPIRV-Cross (MSL) ou naga (third_party/wgpu, WGSL/MSL) ; Tint via third_party/dawn. llvm-project passé en checkout complet (clang, mlir, flang, libc, libcxx, bolt, polly, openmp, offload, compiler-rt, lldb).

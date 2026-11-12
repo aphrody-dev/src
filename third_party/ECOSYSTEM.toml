@@ -1106,3 +1106,19 @@ kind = "firmware"
 used_by = ["docs/compat/TARGETS.md (BIOS/coreboot, clang toolchain)"]
 status = "reference"
 
+
+[entry.SPIRV-Cross]
+path = "third_party/SPIRV-Cross"
+url = "https://github.com/KhronosGroup/SPIRV-Cross"
+sha = "57e4efcc84112abcd426dc5ec248b5339bee04f2"
+kind = "gpu"
+used_by = ["docs/compat/TARGETS.md (SPIR-V -> MSL/HLSL/GLSL: Metal path)"]
+status = "reference"
+
+[entry.wgpu]
+path = "third_party/wgpu"
+url = "https://github.com/gfx-rs/wgpu.git"
+sha = "101edc8f3afa5bf41bc3ab4ca801f3e67c22d499"
+kind = "gpu"
+used_by = ["docs/compat/TARGETS.md (naga: SPIR-V <-> WGSL/MSL)", "agent (WebGPU runtime)"]
+status = "reference"
