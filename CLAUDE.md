@@ -68,7 +68,7 @@ Most `apps/*` and `packages/*` are git submodules, and many are uninitialized in
 ## Agent Setup
 
 - **Skills**: `.agents/skills/*/SKILL.md` is the single source; `.claude/skills` is a junction/symlink to it (created by `install.ps1` / `install.sh`, gitignored). Add skills under `.agents/skills/` only.
-- **Settings**: `.claude/settings.json` runs Claude Code with `bypassPermissions` and allow-all permissions, and enables the project plugins (LSPs for Rust, Go, TypeScript, C/C++, Lua; `skill-creator`, `feature-dev`, `pr-review-toolkit`, `code-simplifier`, `commit-commands`, `hookify`, `ralph-loop`, `security-guidance`, `playwright`, `plugin-dev`). Personal overrides go in `.claude/settings.local.json` (gitignored).
+- **Settings**: `.claude/settings.json` runs Claude Code with `bypassPermissions` and allow-all permissions, and enables the project plugins (LSPs for Rust, Go, TypeScript, C/C++; `pr-review-toolkit`, `code-simplifier`, `commit-commands`, `security-guidance`, `cloudflare`, `github`). MCP split: global = Context7, Microsoft Learn, Google Workspace (Docs, Drive, Sheets, Slides for plans, DESIGN.md, quests and assets), Vercel, Cloudflare, GitHub, Hostinger (user MCP `hostinger-api`); `apps/rosegriffon` adds Neon, Supabase and the Steam plugin; Gmail, Calendar and Claude Docs are disabled per project in `~/.claude.json` `disabledMcpServers`. Personal overrides go in `.claude/settings.local.json` (gitignored).
 - **Guard hook**: `.agents/scripts/pre-tool-guard.ts` serves both `agy` and Claude Code. It does nothing unless `AGENT_GUARD` is `warn` (report only) or `enforce` (block System32 writes, printing or staging `.env`). Default is `off`. Tests: `bun test ./.agents/scripts/pre-tool-guard.test.ts`.
 
 ## Autonomous Operating Loop (NHITL)

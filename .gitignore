@@ -40,7 +40,6 @@ graphify-out/
 !/.gitignore
 !/.gitattributes
 !/.gitmodules
-!/.mcp.json
 !/.graphifyignore
 !/.env.example
 !/DEPS

@@ -2,24 +2,27 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "defaultMode": "bypassPermissions",
-    "allow": ["Bash", "PowerShell", "Read", "Edit", "Write", "NotebookEdit", "WebFetch", "WebSearch", "mcp__*"]
+    "allow": [
+      "Bash",
+      "PowerShell",
+      "Read",
+      "Edit",
+      "Write",
+      "NotebookEdit",
+      "WebFetch",
+      "WebSearch",
+      "mcp__*"
+    ]
   },
   "enabledPlugins": {
     "rust-analyzer-lsp@anthropic-plugin-directory": true,
     "gopls-lsp@anthropic-plugin-directory": true,
     "typescript-lsp@anthropic-plugin-directory": true,
     "clangd-lsp@anthropic-plugin-directory": true,
-    "lua-lsp@anthropic-plugin-directory": true,
-    "skill-creator@anthropic-plugin-directory": true,
-    "feature-dev@anthropic-plugin-directory": true,
     "pr-review-toolkit@anthropic-plugin-directory": true,
     "code-simplifier@anthropic-plugin-directory": true,
     "commit-commands@anthropic-plugin-directory": true,
-    "hookify@anthropic-plugin-directory": true,
-    "ralph-loop@anthropic-plugin-directory": true,
     "security-guidance@anthropic-plugin-directory": true,
-    "playwright@anthropic-plugin-directory": true,
-    "plugin-dev@anthropic-plugin-directory": true,
     "cloudflare@anthropic-plugin-directory": true,
     "github@claude-plugins-official": true
   },
