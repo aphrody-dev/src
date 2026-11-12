@@ -1,0 +1,489 @@
+# Toolchain manifest for `ay up` (crates/up). One [[tool]] per tool:
+#   version   pinned version; `lock = "<key>"` takes it from src.lock.json `toolchains.<key>` instead
+#   bin       executables it provides (first one is probed); for layout = "tree", paths in the archive
+#   verify    argv printing the version (default: <bin> --version)
+#   source    github | url | bun | installer
+#   assets.*  per platform: windows-x86_64, linux-x86_64, linux-aarch64, macos-x86_64, macos-aarch64
+#   checksum  published sha256 file (release asset name or URL; {version}, {asset}, {url});
+#             sha256.* pins hashes per platform when the upstream publishes them elsewhere
+# Everything installs under the user's home: settings.bin_dir, settings.tools_dir, Bun's global
+# directory, or rustup's ~/.cargo. Never a system directory. See docs/INSTALL_UPDATE.md.
+
+[settings]
+bin_dir = "~/.local/bin"
+tools_dir = "~/.local/share/ay/tools"
+
+# The monorepo CLI itself, released by dist (dist-workspace.toml, .github/workflows/release.yml).
+# `ay self-update` uses axoupdater for the same releases.
+[[tool]]
+name = "ay"
+version = "0.2.0"
+bin = ["ay"]
+source = "github"
+repo = "aphrody-dev/src"
+tag = "v{version}"
+checksum = "{asset}.sha256"
+assets.windows-x86_64 = "aphrody-x86_64-pc-windows-msvc.zip"
+assets.linux-x86_64 = "aphrody-x86_64-unknown-linux-musl.tar.xz"
+assets.linux-aarch64 = "aphrody-aarch64-unknown-linux-musl.tar.xz"
+assets.macos-x86_64 = "aphrody-x86_64-apple-darwin.tar.xz"
+assets.macos-aarch64 = "aphrody-aarch64-apple-darwin.tar.xz"
+
+[[tool]]
+name = "bun"
+version = "1.4.4"
+lock = "bun"
+bin = ["bun"]
+source = "github"
+repo = "oven-sh/bun"
+tag = "bun-v{version}"
+checksum = "SHASUMS256.txt"
+assets.windows-x86_64 = "bun-windows-x64.zip"
+assets.linux-x86_64 = "bun-linux-x64-musl.zip"
+assets.linux-aarch64 = "bun-linux-aarch64-musl.zip"
+assets.macos-x86_64 = "bun-darwin-x64.zip"
+assets.macos-aarch64 = "bun-darwin-aarch64.zip"
+
+# rustup-init from the versioned archive; an existing rustup updates itself.
+[[tool]]
+name = "rustup"
+version = "1.29.2"
+bin = ["rustup"]
+source = "installer"
+checksum = "{url}.sha256"
+args = ["-y", "--no-modify-path", "--default-toolchain", "none"]
+update = ["rustup", "self", "update"]
+assets.windows-x86_64 = "https://static.rust-lang.org/rustup/archive/{version}/x86_64-pc-windows-msvc/rustup-init.exe"
+assets.linux-x86_64 = "https://static.rust-lang.org/rustup/archive/{version}/x86_64-unknown-linux-musl/rustup-init"
+assets.linux-aarch64 = "https://static.rust-lang.org/rustup/archive/{version}/aarch64-unknown-linux-musl/rustup-init"
+assets.macos-x86_64 = "https://static.rust-lang.org/rustup/archive/{version}/x86_64-apple-darwin/rustup-init"
+assets.macos-aarch64 = "https://static.rust-lang.org/rustup/archive/{version}/aarch64-apple-darwin/rustup-init"
+note = "toolchains themselves are pinned by rust-toolchain files, not here"
+
+[[tool]]
+name = "gh"
+version = "2.102.0"
+bin = ["gh"]
+source = "github"
+repo = "cli/cli"
+checksum = "gh_{version}_checksums.txt"
+assets.windows-x86_64 = "gh_{version}_windows_amd64.zip"
+assets.linux-x86_64 = "gh_{version}_linux_amd64.tar.gz"
+assets.linux-aarch64 = "gh_{version}_linux_arm64.tar.gz"
+assets.macos-x86_64 = "gh_{version}_macOS_amd64.zip"
+assets.macos-aarch64 = "gh_{version}_macOS_arm64.zip"
+
+[[tool]]
+name = "wrangler"
+version = "4.157.0"
+bin = ["wrangler"]
+source = "bun"
+package = "wrangler"
+
+# Official archives; whole SDK tree unpacked under tools_dir, bin/gcloud linked into bin_dir.
+[[tool]]
+name = "gcloud"
+version = "588.0.0"
+bin = ["bin/gcloud"]
+verify = ["gcloud", "version"]
+source = "url"
+layout = "tree"
+assets.windows-x86_64 = "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-{version}-windows-x86_64.zip"
+assets.linux-x86_64 = "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-{version}-linux-x86_64.tar.gz"
+assets.linux-aarch64 = "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-{version}-linux-arm.tar.gz"
+assets.macos-x86_64 = "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-{version}-darwin-x86_64.tar.gz"
+assets.macos-aarch64 = "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-{version}-darwin-arm.tar.gz"
+note = "needs a Python 3 on PATH; Google publishes no per-archive checksum file"
+
+[[tool]]
+name = "ovhcloud"
+version = "0.16.0"
+bin = ["ovhcloud"]
+verify = ["ovhcloud", "version"]
+source = "github"
+repo = "ovh/ovhcloud-cli"
+checksum = "ovhcloud-cli_{version}_checksums.txt"
+assets.windows-x86_64 = "ovhcloud-cli_Windows_x86_64.zip"
+assets.linux-x86_64 = "ovhcloud-cli_Linux_x86_64.tar.gz"
+assets.linux-aarch64 = "ovhcloud-cli_Linux_arm64.tar.gz"
+assets.macos-x86_64 = "ovhcloud-cli_Darwin_x86_64.tar.gz"
+assets.macos-aarch64 = "ovhcloud-cli_Darwin_arm64.tar.gz"
+
+# MCP server for the Hostinger API (usa node); probed through its package.json.
+[[tool]]
+name = "hostinger-api-mcp"
+version = "3.38.3"
+bin = ["hostinger-api-mcp"]
+source = "bun"
+package = "hostinger-api-mcp"
+
+# uutils multicall binary (`coreutils ls`, ...). No checksums are published.
+[[tool]]
+name = "coreutils"
+version = "0.12.0"
+bin = ["coreutils"]
+source = "github"
+repo = "uutils/coreutils"
+tag = "{version}"
+assets.windows-x86_64 = "coreutils-{version}-x86_64-pc-windows-msvc.zip"
+assets.linux-x86_64 = "coreutils-{version}-x86_64-unknown-linux-musl.tar.gz"
+assets.linux-aarch64 = "coreutils-{version}-aarch64-unknown-linux-musl.tar.gz"
+assets.macos-x86_64 = "coreutils-{version}-x86_64-apple-darwin.tar.gz"
+assets.macos-aarch64 = "coreutils-{version}-aarch64-apple-darwin.tar.gz"
+
+[[tool]]
+name = "ripgrep"
+version = "15.2.0"
+bin = ["rg"]
+source = "github"
+repo = "BurntSushi/ripgrep"
+tag = "{version}"
+checksum = "{asset}.sha256"
+assets.windows-x86_64 = "ripgrep-{version}-x86_64-pc-windows-msvc.zip"
+assets.linux-x86_64 = "ripgrep-{version}-x86_64-unknown-linux-musl.tar.gz"
+assets.linux-aarch64 = "ripgrep-{version}-aarch64-unknown-linux-musl.tar.gz"
+assets.macos-x86_64 = "ripgrep-{version}-x86_64-apple-darwin.tar.gz"
+assets.macos-aarch64 = "ripgrep-{version}-aarch64-apple-darwin.tar.gz"
+
+[[tool]]
+name = "just"
+version = "1.58.0"
+lock = "just"
+bin = ["just"]
+source = "github"
+repo = "casey/just"
+tag = "{version}"
+checksum = "SHA256SUMS"
+assets.windows-x86_64 = "just-{version}-x86_64-pc-windows-msvc.zip"
+assets.linux-x86_64 = "just-{version}-x86_64-unknown-linux-musl.tar.gz"
+assets.linux-aarch64 = "just-{version}-aarch64-unknown-linux-musl.tar.gz"
+assets.macos-x86_64 = "just-{version}-x86_64-apple-darwin.tar.gz"
+assets.macos-aarch64 = "just-{version}-aarch64-apple-darwin.tar.gz"
+
+# ziglang.org archives; hashes pinned from https://ziglang.org/download/index.json.
+# zig finds its lib/ next to the executable, so the whole tree is kept.
+[[tool]]
+name = "zig"
+version = "0.17.0"
+lock = "zig"
+bin = ["zig"]
+verify = ["zig", "version"]
+source = "url"
+layout = "tree"
+assets.windows-x86_64 = "https://ziglang.org/download/{version}/zig-x86_64-windows-{version}.zip"
+assets.linux-x86_64 = "https://ziglang.org/download/{version}/zig-x86_64-linux-{version}.tar.xz"
+assets.linux-aarch64 = "https://ziglang.org/download/{version}/zig-aarch64-linux-{version}.tar.xz"
+assets.macos-x86_64 = "https://ziglang.org/download/{version}/zig-x86_64-macos-{version}.tar.xz"
+assets.macos-aarch64 = "https://ziglang.org/download/{version}/zig-aarch64-macos-{version}.tar.xz"
+sha256.windows-x86_64 = "b5663f69581dcf391293fbf16c06cb80d81d806545ce618b4d0bab7f0eb8c428"
+sha256.linux-x86_64 = "1cbe9df9f27e6b78d14ccbca43b6703a404ef79ef1c463de901d7f088d4e2026"
+sha256.linux-aarch64 = "9e8d11661d4ae3bd57702a3832781e23ad151dde5798e16a5ccd503f65234ff8"
+sha256.macos-x86_64 = "4f9a1c5269aa17ebda5e6d3c2b89d6cbf36f7d2b22a0306e9ab98f25f95529c6"
+sha256.macos-aarch64 = "b607e9b9234790a008116ae5bdb71c6243b84b9fb42a53a9e70fde41c06c536a"
+
+# Upstream ships aarch64 Linux as a glibc build only (fine on the Ubuntu hosts).
+[[tool]]
+name = "cargo-zigbuild"
+version = "0.24.1"
+bin = ["cargo-zigbuild"]
+source = "github"
+repo = "rust-cross/cargo-zigbuild"
+checksum = "{asset}.sha256"
+assets.windows-x86_64 = "cargo-zigbuild-x86_64-pc-windows-msvc.zip"
+assets.linux-x86_64 = "cargo-zigbuild-x86_64-unknown-linux-musl.tar.xz"
+assets.linux-aarch64 = "cargo-zigbuild-aarch64-unknown-linux-gnu.tar.xz"
+assets.macos-x86_64 = "cargo-zigbuild-x86_64-apple-darwin.tar.xz"
+assets.macos-aarch64 = "cargo-zigbuild-aarch64-apple-darwin.tar.xz"
+
+# axodotdev dist, the release tool for `ay` (dist-workspace.toml).
+[[tool]]
+name = "dist"
+version = "0.34.0"
+bin = ["dist"]
+source = "github"
+repo = "axodotdev/cargo-dist"
+checksum = "{asset}.sha256"
+assets.windows-x86_64 = "cargo-dist-x86_64-pc-windows-msvc.zip"
+assets.linux-x86_64 = "cargo-dist-x86_64-unknown-linux-musl.tar.xz"
+assets.linux-aarch64 = "cargo-dist-aarch64-unknown-linux-musl.tar.xz"
+assets.macos-x86_64 = "cargo-dist-x86_64-apple-darwin.tar.xz"
+assets.macos-aarch64 = "cargo-dist-aarch64-apple-darwin.tar.xz"
+
+# ---------------------------------------------------------------------------------------------
+# CLI tools from docs/WORKSTATION_INVENTORY.md 5.2 and the install.ps1 / install.sh tool list.
+# `source = "ubi"`: the ubi crate picks the release asset for the OS/arch at the pinned tag.
+# ubi does not verify checksums; tools that need a verified download use `source = "github"`.
+# Pins match what is installed on the workstation so `ay up` adds no second copy.
+# ---------------------------------------------------------------------------------------------
+
+[[tool]]
+name = "fd"
+version = "10.5.0"
+bin = ["fd"]
+source = "ubi"
+repo = "sharkdp/fd"
+matching.windows = "msvc"
+
+[[tool]]
+name = "dust"
+version = "1.2.5"
+bin = ["dust"]
+source = "ubi"
+repo = "bootandy/dust"
+matching.windows = "msvc"
+
+[[tool]]
+name = "bat"
+version = "0.26.1"
+bin = ["bat"]
+source = "ubi"
+repo = "sharkdp/bat"
+matching.windows = "msvc"
+
+[[tool]]
+name = "delta"
+version = "0.20.1"
+bin = ["delta"]
+source = "ubi"
+repo = "dandavison/delta"
+tag = "{version}"
+
+[[tool]]
+name = "sd"
+version = "1.0.0"
+bin = ["sd"]
+source = "ubi"
+repo = "chmln/sd"
+matching.windows = "msvc"
+
+[[tool]]
+name = "hyperfine"
+version = "1.20.0"
+bin = ["hyperfine"]
+source = "ubi"
+repo = "sharkdp/hyperfine"
+matching.windows = "msvc"
+
+# 12.1.2 is the last release with prebuilt binaries (no aarch64 assets).
+[[tool]]
+name = "tokei"
+version = "12.1.2"
+bin = ["tokei"]
+source = "ubi"
+repo = "XAMPPRocky/tokei"
+
+[[tool]]
+name = "watchexec"
+version = "2.7.0"
+bin = ["watchexec"]
+source = "ubi"
+repo = "watchexec/watchexec"
+
+[[tool]]
+name = "zoxide"
+version = "0.10.0"
+bin = ["zoxide"]
+source = "ubi"
+repo = "ajeetdsouza/zoxide"
+
+# Windows builds are gnu only upstream.
+[[tool]]
+name = "eza"
+version = "0.23.5"
+bin = ["eza"]
+source = "ubi"
+repo = "eza-community/eza"
+
+[[tool]]
+name = "xh"
+version = "0.26.3"
+bin = ["xh"]
+source = "ubi"
+repo = "ducaale/xh"
+
+[[tool]]
+name = "yq"
+version = "4.54.3"
+bin = ["yq"]
+source = "ubi"
+repo = "mikefarah/yq"
+
+[[tool]]
+name = "jj"
+version = "0.46.0"
+lock = "jj"
+bin = ["jj"]
+source = "ubi"
+repo = "jj-vcs/jj"
+
+[[tool]]
+name = "sccache"
+version = "0.18.0"
+lock = "sccache"
+bin = ["sccache"]
+source = "ubi"
+repo = "mozilla/sccache"
+note = "as rustc-wrapper it crashes some local installs: build `ay` with RUSTC_WRAPPER empty"
+
+[[tool]]
+name = "uv"
+version = "0.13.7"
+bin = ["uv"]
+source = "ubi"
+repo = "astral-sh/uv"
+tag = "{version}"
+
+[[tool]]
+name = "caddy"
+version = "2.11.9"
+bin = ["caddy"]
+verify = ["caddy", "version"]
+source = "ubi"
+repo = "caddyserver/caddy"
+
+[[tool]]
+name = "cloudflared"
+version = "2026.10.7"
+bin = ["cloudflared"]
+source = "ubi"
+repo = "cloudflare/cloudflared"
+tag = "{version}"
+
+[[tool]]
+name = "rclone"
+version = "1.75.1"
+bin = ["rclone"]
+verify = ["rclone", "version"]
+source = "ubi"
+repo = "rclone/rclone"
+
+[[tool]]
+name = "cargo-binstall"
+version = "1.26.2"
+bin = ["cargo-binstall"]
+verify = ["cargo-binstall", "-V"]
+source = "ubi"
+repo = "cargo-bins/cargo-binstall"
+
+[[tool]]
+name = "cargo-nextest"
+version = "0.9.151"
+bin = ["cargo-nextest"]
+source = "ubi"
+repo = "nextest-rs/nextest"
+tag = "cargo-nextest-{version}"
+
+[[tool]]
+name = "gitoxide"
+version = "0.61.0"
+lock = "gix"
+bin = ["gix"]
+source = "ubi"
+repo = "GitoxideLabs/gitoxide"
+matching.windows = "max-pure"
+matching.linux = "max-pure"
+matching.macos = "max-pure"
+
+# ---------------------------------------------------------------------------------------------
+# Workstation bootstrap (ay up --bootstrap), absorbed from install.ps1 / install.sh.
+# Files are created only when missing and never overwritten; `ay up --check` reports drift.
+# ---------------------------------------------------------------------------------------------
+
+[[file]]
+name = "cargo-config"
+os = "windows"
+path = "~/.cargo/config.toml"
+content = """
+# Canonical Cargo configuration (written by ay up --bootstrap when missing)
+[build]
+rustc-wrapper = "sccache"
+
+[alias]
+ay = "run --manifest-path {repo}/Cargo.toml -p aphrody --bin ay --release --"
+nt = "nextest run"
+b = "build"
+c = "check"
+t = "test"
+
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-cpu=native"]
+
+[net]
+git-fetch-with-cli = true
+"""
+
+[[file]]
+name = "cargo-config"
+os = "unix"
+path = "~/.cargo/config.toml"
+content = """
+# Canonical Cargo configuration (written by ay up --bootstrap when missing)
+[build]
+rustc-wrapper = "sccache"
+
+[alias]
+ay = "run --manifest-path {repo}/Cargo.toml -p aphrody --bin ay --release --"
+nt = "nextest run"
+b = "build"
+c = "check"
+t = "test"
+
+[target.x86_64-unknown-linux-gnu]
+rustflags = ["-C", "target-cpu=native"]
+
+[net]
+git-fetch-with-cli = true
+"""
+
+[[file]]
+name = "jj-config"
+path = "{config}/jj/config.toml"
+content = """
+[user]
+name = "aphrody-dev"
+email = "contact@aphrody.com"
+
+[ui]
+default-command = "log"
+diff-editor = ":builtin"
+paginate = "never"
+
+[snapshot]
+max-new-file-size = "1MiB"
+auto-track = "all()"
+
+[git]
+auto-local-bookmark = true
+abandon-unreachable-commits = true
+
+[revset-aliases]
+"stack()" = "ancestors(@, 10) & mutable()"
+"wip()" = "mutable() & ~empty()"
+"review()" = "heads(mutable())"
+"""
+
+# .agents/skills is the single source; Claude Code reads .claude/skills.
+[[link]]
+name = "claude-skills"
+path = "{repo}/.claude/skills"
+target = "{repo}/.agents/skills"
+
+[[step]]
+name = "src-deploy"
+when = "{repo}/infra/go.mod"
+cwd = "{repo}/infra"
+run = ["go", "build", "-o", "{bin}/src-deploy{exe}", "./cmd/src-deploy"]
+creates = "{bin}/src-deploy{exe}"
+
+[[step]]
+name = "triad"
+when = "{repo}/packages/ai-triad/src/cli.ts"
+run = ["bun", "build", "--compile", "{repo}/packages/ai-triad/src/cli.ts", "--outfile", "{bin}/triad{exe}"]
+creates = "{bin}/triad{exe}"
+
+# frg as an AOT binary instead of the former frg.cmd / bash shim.
+[[step]]
+name = "frg"
+when = "{repo}/packages/forge/src/cli.ts"
+run = ["bun", "build", "--compile", "{repo}/packages/forge/src/cli.ts", "--outfile", "{bin}/frg{exe}"]
+creates = "{bin}/frg{exe}"

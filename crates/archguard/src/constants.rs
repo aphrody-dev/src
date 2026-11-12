@@ -38,6 +38,7 @@ pub const ALLOWED_ROOT_PHYSICAL_DIRS: &[&str] = &[
     ".coordkit-bus",
     ".gemini",
     ".git",
+    ".github",
     ".jj",
     ".repo",
     ".cache",

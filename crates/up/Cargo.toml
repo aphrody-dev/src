@@ -1,0 +1,42 @@
+[package]
+name = "aphrody-up"
+description = "Toolchain installer and updater behind `ay up`: tools.toml manifest, GitHub release and URL sources, sha256 checks, provider setup"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+publish = false
+
+[lib]
+name = "up"
+path = "src/lib.rs"
+
+[dependencies]
+clap.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+toml.workspace = true
+# ureq 3: rustls on ring, no OpenSSL or cmake; same build on MSVC and static musl.
+ureq = "3"
+dotenvy = "0.15.7"
+sha2 = "0.11"
+flate2 = "1.1"
+tar = "0.4.46"
+# Pure-Rust xz (lzma-rust2), no liblzma C build.
+lzma-rust2 = { version = "0.25", default-features = false, features = ["std", "xz"] }
+zip = { version = "9", default-features = false, features = ["deflate"] }
+# GitHub release asset picker for tools without pinned assets (`source = "ubi"`); async, so a
+# current-thread tokio runtime drives it.
+ubi = "0.13"
+tokio = { version = "1", features = ["rt"] }
+
+# .claude/skills -> .agents/skills style directory links without admin rights.
+[target.'cfg(windows)'.dependencies]
+junction = "1"
+
+[dev-dependencies]
+tempfile = "3"
+lzma-rust2 = { version = "0.25", default-features = false, features = ["std", "xz", "encoder"] }
+
+[lints.rust]
+unsafe_code = "forbid"

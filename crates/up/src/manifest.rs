@@ -1,0 +1,463 @@
+//! `tools.toml`: the declarative list of tools `ay up` keeps installed.
+//!
+//! Each `[[tool]]` names a version, the executables it provides, how to read the installed
+//! version back, and one install source. Asset names and URLs are templates over `{version}`;
+//! the platform key (`windows-x86_64`, `linux-aarch64`, ...) selects the asset.
+
+use serde::Deserialize;
+use std::collections::BTreeMap;
+use std::path::{Path, PathBuf};
+
+/// The manifest shipped inside the binary, used when no repository checkout is around
+/// (hosts run `ay up` without the monorepo).
+pub const EMBEDDED: &str = include_str!("../../../tools.toml");
+
+#[derive(Debug, Clone, Deserialize, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct Manifest {
+    #[serde(default)]
+    pub settings: Settings,
+    #[serde(default, rename = "tool")]
+    pub tools: Vec<Tool>,
+    /// Config files created when missing (never overwritten).
+    #[serde(default, rename = "file")]
+    pub files: Vec<crate::bootstrap::FileSpec>,
+    /// Directory links (junctions on Windows, symlinks elsewhere).
+    #[serde(default, rename = "link")]
+    pub links: Vec<crate::bootstrap::LinkSpec>,
+    /// Commands run by `ay up --bootstrap` when their output is missing.
+    #[serde(default, rename = "step")]
+    pub steps: Vec<crate::bootstrap::StepSpec>,
+}
+
+#[derive(Debug, Clone, Deserialize, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct Settings {
+    /// Where executables land. `~` expands to the home directory. `AY_BIN_DIR` overrides.
+    #[serde(default = "default_bin_dir")]
+    pub bin_dir: String,
+    /// Where `layout = "tree"` tools are unpacked, one directory per tool and version.
+    #[serde(default = "default_tools_dir")]
+    pub tools_dir: String,
+}
+
+impl Default for Settings {
+    fn default() -> Self {
+        Settings {
+            bin_dir: default_bin_dir(),
+            tools_dir: default_tools_dir(),
+        }
+    }
+}
+
+fn default_bin_dir() -> String {
+    "~/.local/bin".into()
+}
+
+fn default_tools_dir() -> String {
+    "~/.local/share/ay/tools".into()
+}
+
+#[derive(Debug, Clone, Copy, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum SourceKind {
+    /// A GitHub release asset: `https://github.com/{repo}/releases/download/{tag}/{asset}`.
+    Github,
+    /// A direct download URL per platform.
+    Url,
+    /// A global Bun package: `bun add -g {package}@{version}`.
+    Bun,
+    /// A downloaded installer executable run with `args` (rustup-init).
+    Installer,
+    /// A GitHub release picked by the `ubi` crate (OS/arch matching, no pinned asset names,
+    /// no checksum verification).
+    Ubi,
+}
+
+#[derive(Debug, Clone, Copy, Default, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum Layout {
+    /// Copy the named executables out of the archive into `bin_dir`.
+    #[default]
+    Bin,
+    /// Unpack the whole archive into `tools_dir/<name>/<version>` and link `bin` entries.
+    Tree,
+}
+
+#[derive(Debug, Clone, Deserialize, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct Tool {
+    pub name: String,
+    /// Pinned version (no leading `v`).
+    pub version: String,
+    /// Key under `toolchains` in `src.lock.json` whose version overrides `version`.
+    #[serde(default)]
+    pub lock: Option<String>,
+    /// Executables the tool provides; the first is probed. For `layout = "tree"` these are
+    /// paths relative to the unpacked root (`bin/gcloud`).
+    pub bin: Vec<String>,
+    /// argv that prints the version. Defaults to `[<bin[0]>, "--version"]`.
+    #[serde(default)]
+    pub verify: Option<Vec<String>>,
+    pub source: SourceKind,
+    #[serde(default)]
+    pub layout: Layout,
+    /// `owner/name` for `source = "github"`.
+    #[serde(default)]
+    pub repo: Option<String>,
+    /// Release tag template, default `v{version}`.
+    #[serde(default)]
+    pub tag: Option<String>,
+    /// npm package name for `source = "bun"`.
+    #[serde(default)]
+    pub package: Option<String>,
+    /// Asset name (github) or URL (url, installer) per platform key.
+    #[serde(default)]
+    pub assets: BTreeMap<String, String>,
+    /// Published checksum file: a release asset name, or a URL. Templates: `{version}`,
+    /// `{asset}` (file name) and `{url}` (full download URL).
+    #[serde(default)]
+    pub checksum: Option<String>,
+    /// Pinned sha256 per platform key, for sources that publish them out of band.
+    #[serde(default)]
+    pub sha256: BTreeMap<String, String>,
+    /// Installer arguments for `source = "installer"`.
+    #[serde(default)]
+    pub args: Vec<String>,
+    /// argv that updates an existing install in place (`rustup self update`).
+    #[serde(default)]
+    pub update: Option<Vec<String>>,
+    /// For `source = "ubi"`, per OS (`windows`, `linux`, `macos`): substring that breaks ties
+    /// between several assets for the platform (`msvc`, `musl`, `max-pure`).
+    #[serde(default)]
+    pub matching: BTreeMap<String, String>,
+    /// Free-form note shown by `ay up --list`.
+    #[serde(default)]
+    pub note: Option<String>,
+}
+
+impl Tool {
+    pub fn verify_argv(&self) -> Vec<String> {
+        self.verify
+            .clone()
+            .unwrap_or_else(|| vec![self.probe_name().to_string(), "--version".into()])
+    }
+
+    /// Bare command name of the primary executable (`bin/gcloud` -> `gcloud`).
+    pub fn probe_name(&self) -> &str {
+        let first = self.bin.first().map(String::as_str).unwrap_or(&self.name);
+        first.rsplit('/').next().unwrap_or(first)
+    }
+
+    pub fn tag(&self) -> String {
+        expand(self.tag.as_deref().unwrap_or("v{version}"), &self.version)
+    }
+
+    /// The asset name or URL for `platform`, with `{version}` expanded.
+    pub fn asset(&self, platform: &str) -> Option<String> {
+        self.assets.get(platform).map(|a| expand(a, &self.version))
+    }
+
+    /// Full download URL for `platform`.
+    pub fn download_url(&self, platform: &str) -> Option<String> {
+        let asset = self.asset(platform)?;
+        match self.source {
+            SourceKind::Github => {
+                let repo = self.repo.as_deref()?;
+                Some(format!(
+                    "https://github.com/{repo}/releases/download/{}/{asset}",
+                    self.tag()
+                ))
+            }
+            SourceKind::Url | SourceKind::Installer => Some(asset),
+            SourceKind::Bun | SourceKind::Ubi => None,
+        }
+    }
+
+    pub fn supports(&self, platform: &str) -> bool {
+        matches!(self.source, SourceKind::Bun | SourceKind::Ubi)
+            || self.assets.contains_key(platform)
+    }
+}
+
+/// Expand `{version}` in a template.
+pub fn expand(template: &str, version: &str) -> String {
+    template.replace("{version}", version)
+}
+
+/// Platform key of the running binary: `<os>-<arch>` with `macos`, `linux`, `windows`.
+pub fn current_platform() -> String {
+    format!("{}-{}", std::env::consts::OS, std::env::consts::ARCH)
+}
+
+/// Expand a leading `~` to the home directory.
+pub fn expand_home(path: &str) -> PathBuf {
+    match path.strip_prefix('~') {
+        Some(rest) => rest
+            .split(['/', '\\'])
+            .filter(|c| !c.is_empty())
+            .fold(home_dir(), |p, c| p.join(c)),
+        None => PathBuf::from(path),
+    }
+}
+
+pub fn home_dir() -> PathBuf {
+    let var = if cfg!(windows) { "USERPROFILE" } else { "HOME" };
+    std::env::var_os(var)
+        .filter(|v| !v.is_empty())
+        .map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from("."))
+}
+
+impl Manifest {
+    pub fn parse(text: &str) -> Result<Manifest, String> {
+        let manifest: Manifest = toml::from_str(text).map_err(|e| format!("tools.toml: {e}"))?;
+        manifest.validate()?;
+        Ok(manifest)
+    }
+
+    fn validate(&self) -> Result<(), String> {
+        let mut seen = std::collections::BTreeSet::new();
+        for t in &self.tools {
+            if !seen.insert(t.name.as_str()) {
+                return Err(format!("tools.toml: duplicate tool `{}`", t.name));
+            }
+            if t.bin.is_empty() {
+                return Err(format!("tools.toml: `{}` lists no bin", t.name));
+            }
+            let missing = match t.source {
+                SourceKind::Github | SourceKind::Ubi if t.repo.is_none() => Some("repo"),
+                SourceKind::Bun if t.package.is_none() => Some("package"),
+                SourceKind::Github | SourceKind::Url | SourceKind::Installer
+                    if t.assets.is_empty() =>
+                {
+                    Some("assets")
+                }
+                _ => None,
+            };
+            if let Some(field) = missing {
+                return Err(format!(
+                    "tools.toml: `{}` (source {:?}) needs `{field}`",
+                    t.name, t.source
+                ));
+            }
+        }
+        Ok(())
+    }
+
+    /// Replace versions with the `src.lock.json` toolchain pins for tools that declare `lock`.
+    pub fn apply_lock(&mut self, lock_json: &str) {
+        let Ok(lock) = serde_json::from_str::<serde_json::Value>(lock_json) else {
+            return;
+        };
+        for t in &mut self.tools {
+            let Some(key) = &t.lock else { continue };
+            let pinned = lock
+                .get("toolchains")
+                .and_then(|tc| tc.get(key))
+                .and_then(|v| v.as_str());
+            if let Some(v) = pinned.and_then(crate::version::extract) {
+                t.version = v;
+            }
+        }
+    }
+
+    pub fn bin_dir(&self) -> PathBuf {
+        match std::env::var_os("AY_BIN_DIR").filter(|v| !v.is_empty()) {
+            Some(dir) => PathBuf::from(dir),
+            None => expand_home(&self.settings.bin_dir),
+        }
+    }
+
+    pub fn tools_dir(&self) -> PathBuf {
+        expand_home(&self.settings.tools_dir)
+    }
+}
+
+/// Where the manifest came from, for reporting.
+#[derive(Debug, Clone, PartialEq)]
+pub enum Origin {
+    File(PathBuf),
+    Embedded,
+}
+
+impl std::fmt::Display for Origin {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Origin::File(p) => write!(f, "{}", p.display()),
+            Origin::Embedded => write!(f, "embedded tools.toml"),
+        }
+    }
+}
+
+/// Load order: `explicit`, `$AY_TOOLS_MANIFEST`, `<root>/tools.toml`, the embedded copy.
+/// `src.lock.json` pins are applied when `root` holds one.
+pub fn load(explicit: Option<&Path>, root: Option<&Path>) -> Result<(Manifest, Origin), String> {
+    let env_path = std::env::var_os("AY_TOOLS_MANIFEST")
+        .filter(|v| !v.is_empty())
+        .map(PathBuf::from);
+    let root_path = root.map(|r| r.join("tools.toml")).filter(|p| p.is_file());
+    let chosen = explicit.map(Path::to_path_buf).or(env_path).or(root_path);
+    let (mut manifest, origin) = match chosen {
+        Some(path) => {
+            let text =
+                std::fs::read_to_string(&path).map_err(|e| format!("{}: {e}", path.display()))?;
+            (Manifest::parse(&text)?, Origin::File(path))
+        }
+        None => (Manifest::parse(EMBEDDED)?, Origin::Embedded),
+    };
+    if let Some(lock) = root
+        .map(|r| r.join("src.lock.json"))
+        .and_then(|p| std::fs::read_to_string(p).ok())
+    {
+        manifest.apply_lock(&lock);
+    }
+    Ok((manifest, origin))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const SAMPLE: &str = r#"
+[[tool]]
+name = "just"
+version = "1.0.0"
+lock = "just"
+bin = ["just"]
+source = "github"
+repo = "casey/just"
+tag = "{version}"
+checksum = "SHA256SUMS"
+assets.linux-x86_64 = "just-{version}-x86_64-unknown-linux-musl.tar.gz"
+
+[[tool]]
+name = "wrangler"
+version = "4.0.0"
+bin = ["wrangler"]
+source = "bun"
+package = "wrangler"
+"#;
+
+    #[test]
+    fn embedded_manifest_parses_and_covers_every_platform() {
+        let m = Manifest::parse(EMBEDDED).expect("embedded tools.toml");
+        let names: Vec<&str> = m.tools.iter().map(|t| t.name.as_str()).collect();
+        for want in [
+            "ay",
+            "bun",
+            "rustup",
+            "gh",
+            "wrangler",
+            "gcloud",
+            "ovhcloud",
+            "hostinger-api-mcp",
+            "coreutils",
+            "ripgrep",
+            "just",
+            "zig",
+            "cargo-zigbuild",
+            "dist",
+            // docs/WORKSTATION_INVENTORY.md 5.2 and the install.ps1 tool list
+            "fd",
+            "dust",
+            "bat",
+            "delta",
+            "sd",
+            "hyperfine",
+            "tokei",
+            "watchexec",
+            "zoxide",
+            "eza",
+            "xh",
+            "yq",
+            "jj",
+            "sccache",
+            "uv",
+            "caddy",
+            "cloudflared",
+            "rclone",
+            "cargo-binstall",
+            "cargo-nextest",
+            "gitoxide",
+        ] {
+            assert!(names.contains(&want), "missing {want}");
+        }
+        assert!(
+            m.tools
+                .iter()
+                .filter(|t| t.source == SourceKind::Ubi)
+                .all(|t| t.repo.is_some())
+        );
+        let files: Vec<&str> = m.files.iter().map(|f| f.name.as_str()).collect();
+        assert!(files.contains(&"cargo-config") && files.contains(&"jj-config"));
+        assert_eq!(m.links.len(), 1);
+        let steps: Vec<&str> = m.steps.iter().map(|s| s.name.as_str()).collect();
+        assert_eq!(steps, vec!["src-deploy", "triad", "frg"]);
+        for t in m
+            .tools
+            .iter()
+            .filter(|t| !matches!(t.source, SourceKind::Bun | SourceKind::Ubi))
+        {
+            for p in [
+                "windows-x86_64",
+                "linux-x86_64",
+                "linux-aarch64",
+                "macos-x86_64",
+                "macos-aarch64",
+            ] {
+                assert!(
+                    t.download_url(p).is_some(),
+                    "{} has no asset for {p}",
+                    t.name
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn templates_expand() {
+        let m = Manifest::parse(SAMPLE).unwrap();
+        let just = &m.tools[0];
+        assert_eq!(just.tag(), "1.0.0");
+        assert_eq!(
+            just.download_url("linux-x86_64").as_deref(),
+            Some(
+                "https://github.com/casey/just/releases/download/1.0.0/just-1.0.0-x86_64-unknown-linux-musl.tar.gz"
+            )
+        );
+        assert!(!just.supports("windows-x86_64"));
+        assert!(m.tools[1].supports("windows-x86_64"));
+        assert_eq!(m.tools[1].verify_argv(), vec!["wrangler", "--version"]);
+    }
+
+    #[test]
+    fn lock_pins_override_versions() {
+        let mut m = Manifest::parse(SAMPLE).unwrap();
+        m.apply_lock(r#"{"toolchains": {"just": "just 1.58.0", "wrangler": "9.9.9"}}"#);
+        assert_eq!(m.tools[0].version, "1.58.0");
+        assert_eq!(
+            m.tools[1].version, "4.0.0",
+            "no lock key, version unchanged"
+        );
+    }
+
+    #[test]
+    fn rejects_incomplete_tools() {
+        let bad = "[[tool]]\nname = \"x\"\nversion = \"1\"\nbin = [\"x\"]\nsource = \"github\"\n";
+        assert!(Manifest::parse(bad).unwrap_err().contains("repo"));
+        let dup = format!(
+            "{SAMPLE}\n[[tool]]\nname = \"just\"\nversion = \"1\"\nbin = [\"j\"]\nsource = \"bun\"\npackage = \"j\"\n"
+        );
+        assert!(Manifest::parse(&dup).unwrap_err().contains("duplicate"));
+    }
+
+    #[test]
+    fn home_expansion() {
+        assert_eq!(expand_home("/opt/bin"), PathBuf::from("/opt/bin"));
+        assert_eq!(
+            expand_home("~/.local/bin"),
+            home_dir().join(".local").join("bin")
+        );
+    }
+}

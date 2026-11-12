@@ -19,6 +19,8 @@ graphify-out/
 # Allowlist: the root repo is the manifest of the monorepo (units are submodules, upstreams are pinned in src.lock.json)
 /*
 !/.agents/
+# dist-generated release workflow (dist-workspace.toml)
+!/.github/
 # Repo-wide cargo build settings only; credentials stay in $CARGO_HOME, never here.
 !/.cargo/
 /.cargo/*
@@ -63,6 +65,8 @@ graphify-out/
 !/deploy.sh
 !/deploy.toml
 !/src.lock.json
+!/tools.toml
+!/dist-workspace.toml
 !/.gitlab-ci.yml
 !/cloudbuild.yaml
 

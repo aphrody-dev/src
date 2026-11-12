@@ -1,0 +1,30 @@
+# dist (axodotdev cargo-dist) release config for the `ay` CLI (package `aphrody`, crates/ay).
+# Only `aphrody` opts in (`[package.metadata.dist] dist = true`); `dist = false` below keeps
+# every other binary crate out. Regenerate the workflow with `dist generate` after
+# editing; tag `v<workspace version>` to release. See docs/INSTALL_UPDATE.md.
+[workspace]
+members = ["cargo:."]
+
+[dist]
+# Opt-in only: members are skipped unless they set `[package.metadata.dist] dist = true`.
+dist = false
+cargo-dist-version = "0.34.0"
+ci = "github"
+installers = ["shell", "powershell"]
+targets = [
+  "x86_64-pc-windows-msvc",
+  "x86_64-unknown-linux-musl",
+  "aarch64-unknown-linux-musl",
+  "x86_64-apple-darwin",
+  "aarch64-apple-darwin",
+]
+# Same directory `ay up` manages, on every OS (never a system directory).
+install-path = "~/.local/bin"
+# `ay self-update` embeds axoupdater; no separate aphrody-update binary.
+install-updater = false
+# Release notes and artifacts on aphrody-dev/src GitHub Releases.
+hosting = "github"
+pr-run-mode = "plan"
+# release.yml carries one manual patch (checkout token for private submodules); re-apply it
+# after `dist generate`.
+allow-dirty = ["ci"]

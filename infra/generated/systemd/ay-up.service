@@ -1,0 +1,20 @@
+# ay toolchain refresh (user unit). Installed per host user (ubuntu on fr1/fr2, root on usa) in
+# ~/.config/systemd/user/, with `loginctl enable-linger <user>` so it runs without a session.
+# Not deployed automatically; see docs/INSTALL_UPDATE.md.
+[Unit]
+Description=ay: update ay itself, then install or update the tools.toml toolchain
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Optional GH_TOKEN (private aphrody-dev/src releases) and AY_* overrides, mode 0600.
+EnvironmentFile=-%h/.config/ay/env
+# A newer ay carries newer tool pins (embedded tools.toml), so update it first; a failed
+# self-update must not block the toolchain pass.
+ExecStartPre=-%h/.local/bin/ay self-update
+ExecStart=%h/.local/bin/ay up
+Nice=10
+IOSchedulingClass=idle
+NoNewPrivileges=yes
+TimeoutStartSec=30min

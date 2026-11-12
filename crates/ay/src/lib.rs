@@ -8,7 +8,9 @@ use std::path::PathBuf;
 use std::process::Command;
 
 pub mod build;
+pub mod chromium;
 mod exec;
+pub mod self_update;
 
 /// Arguments forwarded verbatim to the command's own parser (including `--help`).
 #[derive(clap::Args, Debug, PartialEq)]
@@ -59,10 +61,32 @@ pub enum Cmd {
     /// Pure-Rust SSH (russh): exec <host|all|a,b> -- cmd, cp, hosts, check
     #[command(disable_help_flag = true)]
     Ssh(Rest),
+    /// gclient in Rust: revinfo, getdep, setdep, sync (gitoxide), hooks, root
+    #[command(disable_help_flag = true)]
+    Gclient(Rest),
+    /// Write .gclient for a depot_tools fetch config (chromium, v8, webrtc, ...) and sync it
+    #[command(disable_help_flag = true)]
+    Fetch(Rest),
+    /// vpython on uv: run Python in a vpython.toml / PEP 723 environment
+    #[command(disable_help_flag = true)]
+    Vpy(Rest),
+    /// Official CIPD client from depot_tools
+    #[command(disable_help_flag = true)]
+    Cipd(Rest),
+    /// autoninja logic: n2 or ninja locally, upstream autoninja for Siso output directories
+    #[command(disable_help_flag = true)]
+    Ninja(Rest),
+    /// The checkout's gn binary (buildtools/<platform>/gn)
+    #[command(disable_help_flag = true)]
+    Gn(Rest),
     /// Build the workspace for a cross-compilation preset (--list shows toolchain status)
     Build(build::BuildArgs),
     /// Machine profile: OS, firmware/SMBIOS, CPUID, PCI, GPUs, disks, virtualization, toolchains
     Sys(SysArgs),
+    /// Install and update the toolchain from tools.toml: --check, --list, --setup
+    Up(up::UpArgs),
+    /// Update `ay` itself from the dist GitHub Releases (axoupdater)
+    SelfUpdate(self_update::SelfUpdateArgs),
 }
 
 #[derive(clap::Args, Debug, PartialEq, Default)]
@@ -90,8 +114,11 @@ pub enum Route {
     Bench(Vec<String>),
     External(&'static str, Vec<String>),
     Ssh(Vec<String>),
+    Chromium(chromium::Tool, Vec<String>),
     Build(build::BuildArgs),
     Sys(SysArgs),
+    Up(up::UpArgs),
+    SelfUpdate(self_update::SelfUpdateArgs),
 }
 
 fn prefixed(head: &[&str], rest: &[String]) -> Vec<String> {
@@ -130,8 +157,16 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Bench(r) => Route::Bench(r.args),
         Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
         Cmd::Ssh(r) => Route::Ssh(r.args),
+        Cmd::Gclient(r) => Route::Chromium(chromium::Tool::Gclient, r.args),
+        Cmd::Fetch(r) => Route::Chromium(chromium::Tool::Fetch, r.args),
+        Cmd::Vpy(r) => Route::Chromium(chromium::Tool::Vpy, r.args),
+        Cmd::Cipd(r) => Route::Chromium(chromium::Tool::Cipd, r.args),
+        Cmd::Ninja(r) => Route::Chromium(chromium::Tool::Ninja, r.args),
+        Cmd::Gn(r) => Route::Chromium(chromium::Tool::Gn, r.args),
         Cmd::Build(b) => Route::Build(b),
         Cmd::Sys(s) => Route::Sys(s),
+        Cmd::Up(u) => Route::Up(u),
+        Cmd::SelfUpdate(a) => Route::SelfUpdate(a),
     }
 }
 
@@ -159,8 +194,11 @@ fn run_route(route: Route) -> i32 {
         Route::Bench(args) => run_bench(&args),
         Route::External(program, args) => exec::run_external(program, &args),
         Route::Ssh(args) => remote::run("ay ssh", &args, &repo_root()),
+        Route::Chromium(tool, args) => chromium::run(tool, &args),
         Route::Build(args) => build::run(args),
         Route::Sys(args) => run_sys(args),
+        Route::Up(args) => up::run(args),
+        Route::SelfUpdate(args) => self_update::run(args),
     }
 }
 
@@ -262,6 +300,17 @@ mod tests {
     }
 
     #[test]
+    fn chromium_tools() {
+        use chromium::Tool;
+        assert_eq!(parse("gclient revinfo --deps all"), Route::Chromium(Tool::Gclient, v(&["revinfo", "--deps", "all"])));
+        assert_eq!(parse("fetch --list"), Route::Chromium(Tool::Fetch, v(&["--list"])));
+        assert_eq!(parse("vpy -c pass"), Route::Chromium(Tool::Vpy, v(&["-c", "pass"])));
+        assert_eq!(parse("ninja -C out/x chrome"), Route::Chromium(Tool::Ninja, v(&["-C", "out/x", "chrome"])));
+        assert_eq!(parse("cipd version"), Route::Chromium(Tool::Cipd, v(&["version"])));
+        assert_eq!(parse("gn gen out/x"), Route::Chromium(Tool::Gn, v(&["gen", "out/x"])));
+    }
+
+    #[test]
     fn ssh_forwards_everything() {
         assert_eq!(parse("ssh exec all -- uname -srm"), Route::Ssh(v(&["exec", "all", "--", "uname", "-srm"])));
         assert_eq!(parse("ssh --help"), Route::Ssh(v(&["--help"])));
@@ -283,6 +332,23 @@ mod tests {
     fn sys_flags() {
         assert_eq!(parse("sys --json --no-tools"), Route::Sys(SysArgs { json: true, ids: false, no_tools: true }));
         assert_eq!(parse("sys"), Route::Sys(SysArgs::default()));
+    }
+
+    #[test]
+    fn up_and_self_update_flags() {
+        let Route::Up(u) = parse("up --check just ripgrep") else { panic!("not up") };
+        assert!(u.check && !u.list && !u.setup);
+        assert_eq!(u.tools, v(&["just", "ripgrep"]));
+        assert_eq!(parse("up"), Route::Up(up::UpArgs::default()));
+        let Route::Up(u) = parse("up --setup") else { panic!("not up") };
+        assert!(u.setup);
+        assert_eq!(run(&v(&["up", "--check", "--list"])), 2, "conflicting flags");
+        assert_eq!(run(&v(&["up", "--list", "--manifest", "no/such/tools.toml"])), 2);
+        assert_eq!(parse("self-update --check"), Route::SelfUpdate(self_update::SelfUpdateArgs { check: true, version: None }));
+        assert_eq!(
+            parse("self-update --version 0.3.0"),
+            Route::SelfUpdate(self_update::SelfUpdateArgs { check: false, version: Some("0.3.0".into()) })
+        );
     }
 
     #[test]

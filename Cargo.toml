@@ -140,6 +140,10 @@ codegen-units = 1
 panic = "abort"
 strip = "symbols"
 
+# Profile dist (dist-workspace.toml) builds release artifacts with; same settings as release.
+[profile.dist]
+inherits = "release"
+
 # Per-package overrides carried over from the members manifests.
 [profile.dev.package.ring3-agent]
 opt-level = 1

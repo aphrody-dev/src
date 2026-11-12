@@ -6,6 +6,11 @@ license.workspace = true
 authors.workspace = true
 description = "ay: one multicall CLI for the Aphrody monorepo (arch gate, lock, git, ingest, graph, deploy, bench, build)"
 publish = false
+repository = "https://github.com/aphrody-dev/src"
+
+# Released with dist (dist-workspace.toml); the only dist package in the workspace.
+[package.metadata.dist]
+dist = true
 
 [[bin]]
 name = "ay"
@@ -19,10 +24,16 @@ path = "src/lib.rs"
 archguard.workspace = true
 clap.workspace = true
 depot-cli.workspace = true
+depot-core.workspace = true
+depot-gclient = { path = "../depot-gclient" }
+depot-vpython = { path = "../depot-vpython" }
 remote = { package = "aphrody-remote", path = "../remote" }
 serde_json.workspace = true
 sys = { path = "../sys" }
 xtk.workspace = true
+up = { package = "aphrody-up", path = "../up" }
+# `ay self-update` against the dist releases (blocking API, no async runtime in ay itself).
+axoupdater = { version = "0.10", features = ["blocking"] }
 
 # The benchmark suite measures Win32 APIs; `ay bench` reports unsupported elsewhere.
 [target.'cfg(windows)'.dependencies]
