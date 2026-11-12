@@ -1,7 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "AGENT_GUARD": "off"
+  },
   "permissions": {
-    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash",
       "PowerShell",
@@ -10,24 +12,9 @@
       "Write",
       "NotebookEdit",
       "WebFetch",
-      "WebSearch",
-      "mcp__*"
-    ]
-  },
-  "enabledPlugins": {
-    "rust-analyzer-lsp@anthropic-plugin-directory": true,
-    "gopls-lsp@anthropic-plugin-directory": true,
-    "typescript-lsp@anthropic-plugin-directory": true,
-    "clangd-lsp@anthropic-plugin-directory": true,
-    "pr-review-toolkit@anthropic-plugin-directory": true,
-    "code-simplifier@anthropic-plugin-directory": true,
-    "commit-commands@anthropic-plugin-directory": true,
-    "security-guidance@anthropic-plugin-directory": true,
-    "cloudflare@anthropic-plugin-directory": true,
-    "github@claude-plugins-official": true
-  },
-  "env": {
-    "AGENT_GUARD": "off"
+      "WebSearch"
+    ],
+    "defaultMode": "bypassPermissions"
   },
   "hooks": {
     "PreToolUse": [
@@ -42,5 +29,15 @@
         ]
       }
     ]
+  },
+  "enabledPlugins": {
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "clangd-lsp@claude-plugins-official": true,
+    "pr-review-toolkit@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true
   }
 }
