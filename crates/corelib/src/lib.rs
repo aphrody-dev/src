@@ -10,6 +10,7 @@ pub mod re;
 pub mod emulation;
 pub mod wasm;
 pub mod epic;
+pub mod web;
 
 pub use error::{CorelibError, Result};
 pub use gpu::{GpuOptions, GpuPowerPreference, GpuReport, RowLayout};
@@ -24,6 +25,11 @@ pub use wasm::{WasmBrowserConfig, WasmBufferPayload, WasmEngineTelemetry};
 pub use epic::{
     ArcSysCelMaterial, BevyMigratedEntity, BevySceneBundle, BevyTransform, EgsManifestHeader,
     PakInfo, UAssetSummary, EGS_MANIFEST_MAGIC, PACKAGE_FILE_TAG, PAK_FILE_MAGIC,
+};
+pub use web::{
+    AdblockCheckResult, BOQ_XSSI_PREFIX, SovereignAdblockEngine, aphrody_adblock_eval,
+    aphrody_boq_parse, aphrody_chromium_buf_free, boq_encode_f_req, boq_extract_chunks,
+    boq_first_envelope, boq_parse_envelopes, boq_strip_xssi,
 };
 
 #[cfg(test)]

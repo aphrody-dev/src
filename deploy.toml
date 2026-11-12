@@ -123,3 +123,14 @@ domains = ["r3d.internal.aphrody.com"]
 port = 8080
 blue_port = 18080
 green_port = 28080
+
+[services.yolo]
+path = "C:/src/apps/yolo"
+runtime = "bun-fullstack"
+region = "eu-fr"
+nodes = ["fr1", "fr2"]
+domains = ["yolo.aphrody.com", "yolo.aphrody.app"]
+port = 3092
+blue_port = 13092
+green_port = 23092
+verify_gate = "wck check C:/src/apps/yolo"

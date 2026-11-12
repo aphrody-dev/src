@@ -38,7 +38,7 @@ To eliminate AI-generated mediocrity and maintain sovereign software taste:
   - Zero pictographic emoji characters (`\p{Extended_Pictographic}`) in UI labels, buttons, navigation menus, metadata, or documentation.
   - Use vector SVG icons (e.g. Material Design Icons, Lucide) exclusively.
 - **Strictly Zero Marketing Puffery (`ARCH-010`)**:
-  - Strictly zero empty AI tropes ("revolutionary", "unleash", "delve", "seamless", "game-changer", "magic claims").
+  - Strictly zero empty marketing tropes ("revolutionary", "unleash", "delve", "seamless", "game-changer", or unverified wrapper claims).
   - Every UI claim must be backed by real, deterministic endpoints (`/api/...`, `/ok`).
 - **Strictly Zero Unrequested SaaS Decoration**:
   - No decorative purple/neon mesh gradients.
