@@ -1,7 +1,8 @@
 # =============================================================================
 # Multi-cloud and self-hosted deployment manifest. Node roles (2026-11-12, owner decision):
-#   usa (ssh prd) = all production, fr1 (ssh vps) = builds and heavy storage,
-#   fr2 (ssh cdn) = assets, CDN, cron jobs, cloud/VPS sync. See docs/INFRA_MATRIX.md.
+#   usa (ssh prd) = all production, every public DNS record points here;
+#   fr1 (ssh vps) = builds only (Chromium, AOSP, kernel, wasm, Steam games);
+#   fr2 (ssh cdn) = CDN edge and test machine (to be wiped and reinstalled). See docs/INFRA_MATRIX.md.
 # Engine: `src-deploy` / `dpl` (Go 1.27 + Zig CGO + Rust + Bun v1.4.4 FFI)
 # =============================================================================
 
@@ -25,7 +26,7 @@ provider = "ovhcloud"
 public_ip = "51.77.147.152"
 mesh_ip = "10.200.77.1"
 region = "eu-fr"
-role = "build-and-heavy-storage"
+role = "build"
 ssh_alias = "vps"
 ssh_user = "ubuntu"
 
@@ -34,7 +35,7 @@ provider = "ovhcloud"
 public_ip = "51.255.162.6"
 mesh_ip = "10.200.77.3"
 region = "eu-fr"
-role = "cdn-assets-cron-cloud-sync"
+role = "cdn-edge-and-test"
 ssh_alias = "cdn"
 ssh_user = "ubuntu"
 

@@ -18,3 +18,7 @@
 	path = crates/rust-stack
 	url = https://github.com/aphrody-dev/rust-stack.git
 	branch = main
+[submodule "apps/r2b"]
+	path = apps/r2b
+	url = https://github.com/aphrody-labs/r2b.git
+	branch = main
