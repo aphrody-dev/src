@@ -488,4 +488,66 @@ export function upsertEnvFileKey(
   writeFileSync(envPath, updated.join("\n"), "utf8");
 }
 
+/** Keys that describe a shell or process, never a credential or service setting. */
+const MERGE_IGNORED_KEYS = new Set([
+  "PATH",
+  "HOME",
+  "USER",
+  "SHELL",
+  "PWD",
+  "OLDPWD",
+  "TERM",
+  "LANG",
+  "LC_ALL",
+  "EDITOR",
+  "VISUAL",
+  "PS1",
+  "HISTSIZE",
+  "HISTFILESIZE",
+  "HISTCONTROL",
+  "IFS",
+  "XDG_RUNTIME_DIR",
+  "PORT",
+  "HOST",
+  "BUN_INSTALL",
+  "CARGO_HOME",
+  "RUSTUP_HOME",
+  "APHRODY_HOST_ID",
+]);
+
+export interface EnvMergePlan {
+  /** Keys absent locally; written as-is. */
+  added: Record<string, string>;
+  /** Keys present locally with a different value; written as `<KEY>__<SOURCE>`, local value kept. */
+  conflicts: Record<string, string>;
+  /** Keys already present with the same value. */
+  same: string[];
+}
+
+/**
+ * Plans merging `incoming` (from host `source`) into `local` without ever losing a value:
+ * new keys are added, identical keys skipped, differing keys stored under `<KEY>__<SOURCE>`.
+ */
+export function planEnvMerge(
+  local: Readonly<Record<string, string>>,
+  incoming: Readonly<Record<string, string>>,
+  source: string,
+): EnvMergePlan {
+  const tag = source.toUpperCase().replace(/[^A-Z0-9]+/g, "_");
+  const plan: EnvMergePlan = { added: {}, conflicts: {}, same: [] };
+  for (const [key, value] of Object.entries(incoming)) {
+    if (value === "" || MERGE_IGNORED_KEYS.has(key) || key.includes("__"))
+      continue;
+    const current = local[key];
+    if (current === undefined || current === "") {
+      plan.added[key] = value;
+    } else if (current === value || local[`${key}__${tag}`] === value) {
+      plan.same.push(key);
+    } else {
+      plan.conflicts[`${key}__${tag}`] = value;
+    }
+  }
+  return plan;
+}
+
 export * from "./accounts";

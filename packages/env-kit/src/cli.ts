@@ -18,6 +18,8 @@ import {
   exportForVercelEnv,
   loadMonorepoEnv,
   maskValue,
+  parseDotEnv,
+  planEnvMerge,
   upsertEnvFileKey,
 } from "./index";
 
@@ -229,6 +231,71 @@ function setCredentialEverywhere(
   );
 }
 
+/** Credential-like names pulled from the Windows user environment by `merge --from-windows`. */
+const WINDOWS_CREDENTIAL_KEY =
+  /(TOKEN|SECRET|KEY|PASSWORD|PASS|_ID|ACCOUNT|ENDPOINT|DSN|DATABASE_URL|WEBHOOK)/;
+
+function readWindowsUserEnv(): Record<string, string> {
+  const res = spawnSync(
+    "powershell.exe",
+    [
+      "-NoProfile",
+      "-NonInteractive",
+      "-Command",
+      "[Environment]::GetEnvironmentVariables('User') | ConvertTo-Json -Compress",
+    ],
+    { encoding: "utf8" },
+  );
+  if (res.status !== 0 || !res.stdout) return {};
+  const all = JSON.parse(res.stdout) as Record<string, string>;
+  return Object.fromEntries(
+    Object.entries(all).filter(
+      ([k, v]) =>
+        typeof v === "string" &&
+        WINDOWS_CREDENTIAL_KEY.test(k) &&
+        !/[\\/]/.test(v.slice(0, 3)),
+    ),
+  );
+}
+
+/**
+ * `env-kit merge --source <name> [--from-windows] [--dry-run]`: merge dotenv text from stdin
+ * (or the Windows user environment) into `.env`. Prints key names only, never values.
+ */
+async function runMerge(
+  envPath: string,
+  args: readonly string[],
+): Promise<number> {
+  const at = args.indexOf("--source");
+  const fromWindows = args.includes("--from-windows");
+  const source = at >= 0 ? args[at + 1] : fromWindows ? "windows" : undefined;
+  if (!source) {
+    console.error(
+      "Usage: env-kit merge --source <host> [--dry-run] < file.env | env-kit merge --from-windows",
+    );
+    return 1;
+  }
+  const incoming = fromWindows
+    ? readWindowsUserEnv()
+    : parseDotEnv(await Bun.stdin.text());
+  const local = existsSync(envPath)
+    ? parseDotEnv(readFileSync(envPath, "utf8"))
+    : {};
+  const plan = planEnvMerge(local, incoming, source);
+  const writes = { ...plan.added, ...plan.conflicts };
+  if (!args.includes("--dry-run")) {
+    for (const [k, v] of Object.entries(writes))
+      upsertEnvFileKey(envPath, k, v);
+    if (Object.keys(writes).length > 0) lockWindowsEnvAcl(envPath);
+  }
+  console.log(
+    `[env-kit] merge ${source}: ${Object.keys(plan.added).length} added, ${Object.keys(plan.conflicts).length} conflicts kept as <KEY>__${source.toUpperCase()}, ${plan.same.length} identical`,
+  );
+  for (const k of Object.keys(plan.added).sort()) console.log(`  + ${k}`);
+  for (const k of Object.keys(plan.conflicts).sort()) console.log(`  ~ ${k}`);
+  return 0;
+}
+
 function printHelp(): void {
   console.log(`env-kit — Sovereign Multi-Language Environment & Secret Manager
 
@@ -239,7 +306,9 @@ Usage:
   env-kit accounts switch <principal>  Activate gcloud configuration for <ai|owner|org|sa>
   env-kit accounts iam-bindings        Print idempotent GCP IAM policy bindings for project aphrody (#468000409790)
   env-kit set <KEY> <VALUE>            Set key in C:/src/.env + Windows User Env + sync editors
-  env-kit nuget-set-key <API_KEY>      Set NUGET_API_KEY and register with dotnet nuget config
+  env-kit merge --source <host>        Merge dotenv from stdin into .env (new keys added, differing as KEY__HOST)
+  env-kit merge --from-windows         Merge credential-like Windows user env vars into .env
+  env-kit nuget-set-key <API_KEY>     Set NUGET_API_KEY and register with dotnet nuget config
   env-kit sync-editors                 Re-wire OpenCode, Zed, and Pi provider/MCP configs
   env-kit sync-gh                      Sync current 'gh auth token' into GITHUB_TOKEN & GH_TOKEN
   env-kit dev-vars <projectDir>        Write gitignored .dev.vars for Cloudflare wrangler dev
@@ -335,6 +404,10 @@ export async function main(
     return 0;
   }
 
+  if (cmd === "merge") {
+    return runMerge(envPath, argv.slice(1));
+  }
+
   if (cmd === "nuget-set-key") {
     const apiKey = argv[1];
     if (!apiKey) {
@@ -417,7 +490,7 @@ export async function main(
 }
 
 if (import.meta.main) {
-  main().then((code) => {
-    process.exit(code);
-  });
+  // Top-level await keeps the loop alive while Bun.stdin is read; exitCode (not exit())
+  // avoids truncating piped stdout on Windows.
+  process.exitCode = await main();
 }
