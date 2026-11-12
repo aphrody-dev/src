@@ -1,0 +1,26 @@
+[package]
+name = "aphrody-net"
+description = "Unified network probe: DNS, TCP, TLS (rustls + platform verifier), ALPN, HTTP/1.1 and HTTP/2 with per-phase timings."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[lib]
+name = "aphrody_net"
+crate-type = ["rlib", "cdylib"]
+
+[[bin]]
+name = "net"
+path = "src/main.rs"
+
+[dependencies]
+tokio = { version = "1.54", features = ["rt", "net", "time", "io-util", "macros"] }
+rustls = { version = "0.23.46", default-features = false, features = ["ring", "std", "tls12", "logging"] }
+tokio-rustls = { version = "0.26.6", default-features = false, features = ["ring"] }
+rustls-platform-verifier = "0.7.1"
+h2 = "0.4.20"
+http = "1.5"
+bytes = "1.12"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

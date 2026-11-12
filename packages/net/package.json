@@ -1,0 +1,12 @@
+{
+  "name": "@aphrody/net",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "module": "src/probe.ts",
+  "scripts": {
+    "probe": "bun src/probe.ts",
+    "test": "bun test",
+    "test:e2e-auth": "bun test test/gemini.e2e-auth.test.ts"
+  }
+}

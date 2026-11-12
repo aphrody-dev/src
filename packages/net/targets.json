@@ -1,0 +1,14 @@
+{
+  "$comment": "Generated view of [test_targets] in deploy.toml; keep in sync. No secrets here.",
+  "gemini": {
+    "url": "https://gemini.google.com/app",
+    "avatar_selector": "a[aria-label*='Google Account'], a[href*='accounts.google.com/SignOutOptions']",
+    "prompt_selector": "rich-textarea .ql-editor, div[contenteditable='true'][role='textbox']",
+    "response_selector": "model-response message-content",
+    "prompt": "Reply with the single word: pong"
+  },
+  "google": {
+    "url": "https://www.google.com/",
+    "avatar_selector": "a[aria-label*='Google Account'], a[href*='SignOutOptions']"
+  }
+}
