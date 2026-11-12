@@ -1,4 +1,4 @@
-//! Pure-Rust Gitoxide (`gix` v0.61) zero-subprocess repository engine.
+//! Pure-Rust Gitoxide (`gix` 0.90) zero-subprocess repository engine.
 //!
 //! Opens repositories natively in-process without spawning `git.exe`, providing:
 //! - Instant repository discovery (`gix::discover`)
@@ -7,9 +7,9 @@
 //! - Commit log DAG walk (`rev_walk`) with author, timestamp, and summary
 //! - Tracked Git tree / blob enumeration directly from the Object Database (ODB)
 
+use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
-use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GixCommitSummary {
@@ -56,7 +56,7 @@ impl GixEngine {
 
         let git_dir = repo.git_dir().to_path_buf();
         let workdir_path: PathBuf = repo
-            .work_dir()
+            .workdir()
             .map(|p| p.to_path_buf())
             .unwrap_or_else(|| git_dir.clone());
         let is_bare = repo.is_bare();
@@ -77,7 +77,7 @@ impl GixEngine {
                 }
             });
 
-        let head_commit_obj = head.peel_to_commit_in_place().ok();
+        let head_commit_obj = head.peel_to_commit().ok();
         let head_commit = head_commit_obj.as_ref().map(|c| c.id.to_string());
         let head_subject = head_commit_obj.as_ref().and_then(|c| {
             c.message_raw_sloppy()
@@ -91,7 +91,7 @@ impl GixEngine {
         let mut remotes = BTreeMap::new();
         for name_bstr in repo.remote_names() {
             let name_str = name_bstr.to_string();
-            if let Ok(rem) = repo.find_remote(name_bstr.as_ref())
+            if let Ok(rem) = repo.find_remote(name_str.as_str())
                 && let Some(url) = rem.url(gix::remote::Direction::Fetch)
             {
                 remotes.insert(name_str, url.to_bstring().to_string());
@@ -119,7 +119,7 @@ impl GixEngine {
                         Ok(act) => (
                             act.name.to_string(),
                             act.email.to_string(),
-                            act.time.seconds,
+                            act.time().map(|t| t.seconds).unwrap_or(0),
                         ),
                         Err(_) => ("unknown".to_string(), String::new(), 0),
                     };
@@ -172,7 +172,7 @@ impl GixEngine {
             .map_err(|e| format!("gix::discover failed for {}: {}", path.display(), e))?;
         let mut head = repo.head().map_err(|e| e.to_string())?;
         let commit = head
-            .peel_to_commit_in_place()
+            .peel_to_commit()
             .map_err(|e| format!("HEAD has no commit: {}", e))?;
         let tree = commit.tree().map_err(|e| e.to_string())?;
 
@@ -185,7 +185,7 @@ impl GixEngine {
     pub fn read_head_blob_utf8(path: &Path, rel_path: &str) -> Result<String, String> {
         let repo = gix::discover(path).map_err(|e| e.to_string())?;
         let mut head = repo.head().map_err(|e| e.to_string())?;
-        let commit = head.peel_to_commit_in_place().map_err(|e| e.to_string())?;
+        let commit = head.peel_to_commit().map_err(|e| e.to_string())?;
         let mut tree = commit.tree().map_err(|e| e.to_string())?;
         let clean_rel = rel_path.trim_start_matches('/').replace('\\', "/");
         let entry = tree

@@ -1,8 +1,8 @@
+use regex::Regex;
+use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::Path;
-use regex::Regex;
-use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct DepsPin {
@@ -243,17 +243,19 @@ impl EcosystemManifests {
             .map(|c| Self::parse_chromium_deps(&c).len())
             .unwrap_or(0);
 
-        let aosp_project_count = fs::read_to_string(root.join(".repo").join("manifests").join("default.xml"))
-            .map(|c| Self::parse_aosp_manifest(&c).len())
-            .unwrap_or(0);
+        let aosp_project_count =
+            fs::read_to_string(root.join(".repo").join("manifests").join("default.xml"))
+                .map(|c| Self::parse_aosp_manifest(&c).len())
+                .unwrap_or(0);
 
         let kernel_subsystem_count = fs::read_to_string(root.join("MAINTAINERS"))
             .map(|c| Self::parse_kernel_maintainers(&c).len())
             .unwrap_or(0);
 
-        let patch_series_count = fs::read_to_string(root.join("docs").join("patches").join("series"))
-            .map(|c| Self::parse_patch_series(&c).len())
-            .unwrap_or(0);
+        let patch_series_count =
+            fs::read_to_string(root.join("docs").join("patches").join("series"))
+                .map(|c| Self::parse_patch_series(&c).len())
+                .unwrap_or(0);
 
         EcosystemGovernanceStatus {
             deps_pin_count,

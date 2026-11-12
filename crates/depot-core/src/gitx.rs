@@ -14,7 +14,9 @@ fn open(path: &Path) -> Result<gix::Repository, String> {
 /// `git rev-parse <spec>`.
 pub fn rev_parse(path: &Path, spec: &str) -> Result<String, String> {
     let repo = open(path)?;
-    repo.rev_parse_single(spec).map(|id| id.to_string()).map_err(|e| format!("{spec}: {e}"))
+    repo.rev_parse_single(spec)
+        .map(|id| id.to_string())
+        .map_err(|e| format!("{spec}: {e}"))
 }
 
 /// `git rev-parse --abbrev-ref HEAD` (`HEAD` when detached) / `git branch --show-current`
@@ -38,7 +40,11 @@ pub fn remotes(path: &Path) -> Result<Vec<(String, String)>, String> {
         .sections_by_name("remote")
         .into_iter()
         .flatten()
-        .filter_map(|s| s.header().subsection_name().map(|n| n.to_str_lossy().into_owned()))
+        .filter_map(|s| {
+            s.header()
+                .subsection_name()
+                .map(|n| n.to_str_lossy().into_owned())
+        })
         .collect();
     names.sort();
     names.dedup();
@@ -53,7 +59,10 @@ pub fn remotes(path: &Path) -> Result<Vec<(String, String)>, String> {
 
 /// `git remote get-url <name>`.
 pub fn remote_url(path: &Path, name: &str) -> Result<Option<String>, String> {
-    Ok(remotes(path)?.into_iter().find(|(n, _)| n == name).map(|(_, u)| u))
+    Ok(remotes(path)?
+        .into_iter()
+        .find(|(n, _)| n == name)
+        .map(|(_, u)| u))
 }
 
 fn ancestors(repo: &gix::Repository, tip: gix::ObjectId) -> Result<HashSet<gix::ObjectId>, String> {
@@ -67,8 +76,14 @@ fn ancestors(repo: &gix::Repository, tip: gix::ObjectId) -> Result<HashSet<gix::
 /// `git rev-list --left-right --count <left>...<right>`: (only in left, only in right).
 pub fn left_right_count(path: &Path, left: &str, right: &str) -> Result<(usize, usize), String> {
     let repo = open(path)?;
-    let l = repo.rev_parse_single(left).map_err(|e| format!("{left}: {e}"))?.detach();
-    let r = repo.rev_parse_single(right).map_err(|e| format!("{right}: {e}"))?.detach();
+    let l = repo
+        .rev_parse_single(left)
+        .map_err(|e| format!("{left}: {e}"))?
+        .detach();
+    let r = repo
+        .rev_parse_single(right)
+        .map_err(|e| format!("{right}: {e}"))?
+        .detach();
     let (ls, rs) = (ancestors(&repo, l)?, ancestors(&repo, r)?);
     Ok((ls.difference(&rs).count(), rs.difference(&ls).count()))
 }
@@ -85,17 +100,41 @@ pub struct LogEntry {
 /// `git log -n <limit> <rev>`, first-parent order by commit time.
 pub fn log(path: &Path, rev: &str, limit: usize) -> Result<Vec<LogEntry>, String> {
     let repo = open(path)?;
-    let tip = repo.rev_parse_single(rev).map_err(|e| format!("{rev}: {e}"))?.detach();
+    let tip = repo
+        .rev_parse_single(rev)
+        .map_err(|e| format!("{rev}: {e}"))?
+        .detach();
     let mut out = Vec::new();
-    for info in repo.rev_walk([tip]).all().map_err(|e| e.to_string())?.take(limit) {
+    for info in repo
+        .rev_walk([tip])
+        .all()
+        .map_err(|e| e.to_string())?
+        .take(limit)
+    {
         let info = info.map_err(|e| e.to_string())?;
-        let commit = repo.find_object(info.id).map_err(|e| e.to_string())?.into_commit();
+        let commit = repo
+            .find_object(info.id)
+            .map_err(|e| e.to_string())?
+            .into_commit();
         let c = commit.decode().map_err(|e| e.to_string())?;
         out.push(LogEntry {
             id: info.id.to_string(),
-            author: c.author.name.to_str_lossy().into_owned(),
-            time: c.committer.time.seconds,
-            subject: c.message.lines().next().map(|l| l.to_str_lossy().into_owned()).unwrap_or_default(),
+            author: c
+                .author()
+                .map(|a| a.name.to_str_lossy().into_owned())
+                .unwrap_or_default(),
+            time: c
+                .committer()
+                .ok()
+                .and_then(|s| s.time().ok())
+                .map(|t| t.seconds)
+                .unwrap_or(0),
+            subject: c
+                .message
+                .lines()
+                .next()
+                .map(|l| l.to_str_lossy().into_owned())
+                .unwrap_or_default(),
         });
     }
     Ok(out)
@@ -104,13 +143,16 @@ pub fn log(path: &Path, rev: &str, limit: usize) -> Result<Vec<LogEntry>, String
 /// `git config --get <section.key>` (also `section.subsection.key`).
 pub fn config_get(path: &Path, key: &str) -> Result<Option<String>, String> {
     let repo = open(path)?;
-    Ok(repo.config_snapshot().string(key).map(|v| v.to_str_lossy().into_owned()))
+    Ok(repo
+        .config_snapshot()
+        .string(key)
+        .map(|v| v.to_str_lossy().into_owned()))
 }
 
 /// `git status --porcelain` for tracked files: `( M|D|T, path)` between index and worktree.
-/// Untracked files and index-vs-HEAD changes are not reported (gix 0.61 limitation).
+/// Untracked files and index-vs-HEAD changes are not reported (not needed by callers).
 pub fn status_tracked(path: &Path) -> Result<Vec<(char, String)>, String> {
-    use gix::status::index_worktree::iter::Item;
+    use gix::status::index_worktree::Item;
     let repo = open(path)?;
     let iter = repo
         .status(gix::progress::Discard)
@@ -121,13 +163,16 @@ pub fn status_tracked(path: &Path) -> Result<Vec<(char, String)>, String> {
     let mut out = Vec::new();
     for item in iter {
         let item = item.map_err(|e| e.to_string())?;
-        if let Item::Modification { rela_path, status, .. } = &item {
+        if let Item::Modification {
+            rela_path, status, ..
+        } = &item
+        {
             use gix::status::plumbing::index_as_worktree::{Change, EntryStatus};
             let code = match status {
                 EntryStatus::Change(Change::Removed) => 'D',
-                EntryStatus::Change(Change::Type) => 'T',
+                EntryStatus::Change(Change::Type { .. }) => 'T',
                 EntryStatus::Change(_) => 'M',
-                EntryStatus::Conflict(_) => 'U',
+                EntryStatus::Conflict { .. } => 'U',
                 _ => continue,
             };
             out.push((code, rela_path.to_str_lossy().into_owned()));
@@ -156,7 +201,10 @@ pub fn run(args: &[String]) -> Option<i32> {
             Err(e) => print_err(e),
         },
         ("rev-parse", [flag, spec]) if flag.starts_with("--short") => {
-            let n: usize = flag.strip_prefix("--short=").and_then(|v| v.parse().ok()).unwrap_or(7);
+            let n: usize = flag
+                .strip_prefix("--short=")
+                .and_then(|v| v.parse().ok())
+                .unwrap_or(7);
             match rev_parse(&cwd, spec) {
                 Ok(id) => {
                     println!("{}", &id[..n.min(id.len())]);
@@ -233,9 +281,15 @@ pub fn run(args: &[String]) -> Option<i32> {
             let mut n = 10usize;
             let mut rev = "HEAD";
             for f in flags {
-                if let Some(v) = f.strip_prefix("-n").or_else(|| f.strip_prefix("--max-count=")) {
+                if let Some(v) = f
+                    .strip_prefix("-n")
+                    .or_else(|| f.strip_prefix("--max-count="))
+                {
                     n = v.parse().unwrap_or(n);
-                } else if let Some(v) = f.strip_prefix('-').filter(|v| v.chars().all(|c| c.is_ascii_digit()) && !v.is_empty()) {
+                } else if let Some(v) = f
+                    .strip_prefix('-')
+                    .filter(|v| v.chars().all(|c| c.is_ascii_digit()) && !v.is_empty())
+                {
                     n = v.parse().unwrap_or(n);
                 } else if f.starts_with('-') {
                     return None; // a format we do not reproduce: let the caller say so

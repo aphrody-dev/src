@@ -414,7 +414,9 @@ pub fn update_gitlink(repo_dir: &Path, path: &str, revision: &str) -> Result<boo
     let mut index =
         gix::index::File::at(&index_path, repo.object_hash(), false, Default::default())
             .map_err(|e| Error::new(format!("{}: {e}", index_path.display())))?;
-    let Some(entry) = index.entry_mut_by_path_and_stage(path.into(), 0) else {
+    let Some(entry) =
+        index.entry_mut_by_path_and_stage(path.into(), gix::index::entry::Stage::Unconflicted)
+    else {
         return Ok(false);
     };
     if entry.mode != gix::index::entry::Mode::COMMIT {

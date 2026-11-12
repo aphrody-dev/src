@@ -1,5 +1,5 @@
-pub mod build_tools;
 pub mod artifacts;
+pub mod build_tools;
 pub mod depot_tools;
 pub mod ecosystems;
 pub mod fork;
@@ -15,7 +15,9 @@ pub mod sys;
 pub mod vault;
 pub mod worktree;
 
-pub use artifacts::{Artifact, ArtifactBinaryHeader, ArtifactEntry, ArtifactManifest, ArtifactReport};
+pub use artifacts::{
+    Artifact, ArtifactBinaryHeader, ArtifactEntry, ArtifactManifest, ArtifactReport,
+};
 pub use depot_tools::{DepotTools, DepotToolsInfo};
 pub use ecosystems::{
     AospProjectEntry, DepsPin, EcosystemGovernanceStatus, EcosystemManifests,
@@ -146,7 +148,8 @@ mod tests {
         let maint = "LINUX KERNEL SUBSYSTEM\nM:\tTest <contact@aphrody.com>\nS:\tSupported\nT:\tgit https://git.kernel.org/\nF:\tthird_party/linux/\n";
         let subs = EcosystemManifests::parse_kernel_maintainers(maint);
         assert_eq!(subs.len(), 1);
-        let hits = EcosystemManifests::lookup_maintainers_for_path(&subs, "third_party/linux/Makefile");
+        let hits =
+            EcosystemManifests::lookup_maintainers_for_path(&subs, "third_party/linux/Makefile");
         assert_eq!(hits.len(), 1);
     }
 
@@ -167,8 +170,14 @@ lint:
     cargo clippy
 "#;
         let spec = JustEngine::parse_str("justfile", jf);
-        assert_eq!(spec.settings.get("shell").map(|s| s.as_str()), Some("[\"pwsh\", \"-NoLogo\", \"-Command\"]"));
-        assert_eq!(spec.variables.get("RUST_LOG").map(|s| s.as_str()), Some("\"info\""));
+        assert_eq!(
+            spec.settings.get("shell").map(|s| s.as_str()),
+            Some("[\"pwsh\", \"-NoLogo\", \"-Command\"]")
+        );
+        assert_eq!(
+            spec.variables.get("RUST_LOG").map(|s| s.as_str()),
+            Some("\"info\"")
+        );
         assert_eq!(spec.aliases.get("b").map(|s| s.as_str()), Some("build"));
         assert_eq!(spec.recipes.len(), 2);
         assert_eq!(spec.recipes[0].name, "build");

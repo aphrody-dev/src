@@ -1,6 +1,6 @@
+use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
 use std::process::Command;
-use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SlimOptions {
@@ -106,7 +106,11 @@ impl GitSlim {
         let net = options.network_tuning;
         let config_pairs = [
             (options.enable_fsmonitor, "core.fsmonitor", "true"),
-            (options.enable_untracked_cache, "core.untrackedCache", "true"),
+            (
+                options.enable_untracked_cache,
+                "core.untrackedCache",
+                "true",
+            ),
             (options.enable_many_files, "feature.manyFiles", "true"),
             (options.index_version_4, "index.version", "4"),
             (options.write_commit_graph, "fetch.writeCommitGraph", "true"),
@@ -163,7 +167,10 @@ impl GitSlim {
         applied.extend(Self::apply_config(repo_path, options));
 
         if options.prune_unreachable {
-            for args in [&["reflog", "expire", "--expire=now", "--all"][..], &["prune", "--expire=now"][..]] {
+            for args in [
+                &["reflog", "expire", "--expire=now", "--all"][..],
+                &["prune", "--expire=now"][..],
+            ] {
                 let ok = Command::new("git")
                     .current_dir(repo_path)
                     .args(args)

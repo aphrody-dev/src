@@ -2,9 +2,10 @@
 pub mod windows {
     use std::path::Path;
     use windows_sys::Win32::Foundation::INVALID_HANDLE_VALUE;
+    use windows_sys::Win32::Storage::FileSystem::CreateHardLinkW;
     use windows_sys::Win32::System::Console::{
-        GetConsoleMode, GetStdHandle, SetConsoleMode, ENABLE_VIRTUAL_TERMINAL_PROCESSING,
-        STD_ERROR_HANDLE, STD_OUTPUT_HANDLE,
+        ENABLE_VIRTUAL_TERMINAL_PROCESSING, GetConsoleMode, GetStdHandle, STD_ERROR_HANDLE,
+        STD_OUTPUT_HANDLE, SetConsoleMode,
     };
     use windows_sys::Win32::System::Performance::{
         QueryPerformanceCounter, QueryPerformanceFrequency,
@@ -12,7 +13,6 @@ pub mod windows {
     use windows_sys::Win32::System::SystemInformation::{
         GetSystemInfo, GlobalMemoryStatusEx, MEMORYSTATUSEX, SYSTEM_INFO,
     };
-    use windows_sys::Win32::Storage::FileSystem::CreateHardLinkW;
 
     /// Enables Virtual Terminal (VT) ANSI escape sequence processing on Windows stdout and stderr.
     pub fn enable_vt_processing() -> bool {

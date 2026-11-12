@@ -5,11 +5,11 @@
 //! recipe-to-recipe dependency edges so `just` tasks become first-class nodes in `depot-graph`
 //! (`graphify`) and can be inspected or executed directly via `depot just`.
 
+use regex::Regex;
+use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 use std::process::Command;
-use regex::Regex;
-use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct JustParam {
@@ -95,7 +95,9 @@ impl JustEngine {
             Regex::new(r"^alias\s+([A-Za-z_][A-Za-z0-9_-]*)\s*:=\s*([A-Za-z_][A-Za-z0-9_-]*)$")
                 .unwrap();
         let import_re = Regex::new(r#"^import\??\s+['"]?([^'"]+)['"]?$"#).unwrap();
-        let mod_re = Regex::new(r#"^mod\??\s+([A-Za-z_][A-Za-z0-9_-]*)(?:\s+['"]?([^'"]+)['"]?)?$"#).unwrap();
+        let mod_re =
+            Regex::new(r#"^mod\??\s+([A-Za-z_][A-Za-z0-9_-]*)(?:\s+['"]?([^'"]+)['"]?)?$"#)
+                .unwrap();
         let attr_re = Regex::new(r"^\[([^\]]+)\]$").unwrap();
 
         let mut settings = BTreeMap::new();
@@ -117,7 +119,9 @@ impl JustEngine {
             if (trimmed_end.starts_with(' ') || trimmed_end.starts_with('\t'))
                 && let Some(r_idx) = current_recipe_idx
             {
-                recipes[r_idx].body_lines.push(trimmed_end.trim().to_string());
+                recipes[r_idx]
+                    .body_lines
+                    .push(trimmed_end.trim().to_string());
                 continue;
             }
 
@@ -189,11 +193,17 @@ impl JustEngine {
 
             // Recipe matching: name [params]: [deps]
             // Skip variable assignments (which contain :=)
-            if !trimmed.contains(":=") && let Some((left, raw_deps)) = trimmed.split_once(':') {
+            if !trimmed.contains(":=")
+                && let Some((left, raw_deps)) = trimmed.split_once(':')
+            {
                 let left_clean = left.trim().strip_prefix('@').unwrap_or(left.trim());
                 let mut parts = left_clean.split_whitespace();
                 if let Some(name) = parts.next()
-                    && (name.chars().next().map(|c| c.is_alphabetic() || c == '_').unwrap_or(false))
+                    && (name
+                        .chars()
+                        .next()
+                        .map(|c| c.is_alphabetic() || c == '_')
+                        .unwrap_or(false))
                 {
                     let raw_params = left_clean[name.len()..].trim();
                     let params = Self::parse_params(raw_params);
@@ -215,9 +225,8 @@ impl JustEngine {
                             .and_then(|s| s.strip_suffix(')'))
                         {
                             group = Some(inner.trim_matches(|c| c == '\'' || c == '"').to_string());
-                        } else if let Some(inner) = attr
-                            .strip_prefix("doc(")
-                            .and_then(|s| s.strip_suffix(')'))
+                        } else if let Some(inner) =
+                            attr.strip_prefix("doc(").and_then(|s| s.strip_suffix(')'))
                         {
                             doc = Some(inner.trim_matches(|c| c == '\'' || c == '"').to_string());
                         }
@@ -258,7 +267,10 @@ impl JustEngine {
     pub fn parse_file(path: &Path) -> Result<JustfileSpec, String> {
         let content = std::fs::read_to_string(path)
             .map_err(|e| format!("Failed reading {}: {}", path.display(), e))?;
-        Ok(Self::parse_str(&crate::path::normalize_posix(path), &content))
+        Ok(Self::parse_str(
+            &crate::path::normalize_posix(path),
+            &content,
+        ))
     }
 
     /// Execute `just` with the given arguments inside `working_dir`.
@@ -340,7 +352,13 @@ impl JustEngine {
         }
         let tok = current.trim();
         if !tok.is_empty() && tok != "&&" {
-            deps.push(tok.split_whitespace().next().unwrap_or(tok).trim_start_matches('@').to_string());
+            deps.push(
+                tok.split_whitespace()
+                    .next()
+                    .unwrap_or(tok)
+                    .trim_start_matches('@')
+                    .to_string(),
+            );
         }
         deps
     }

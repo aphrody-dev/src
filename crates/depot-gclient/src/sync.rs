@@ -93,7 +93,7 @@ fn head_of(path: &Path) -> Option<(gix::Repository, Option<String>)> {
     let repo = gix::open(path).ok()?;
     // A path inside a parent checkout resolves to its own `.git` only when that exists.
     if repo
-        .work_dir()
+        .workdir()
         .map(|w| w != path && w.canonicalize().ok() != path.canonicalize().ok())
         .unwrap_or(true)
     {
@@ -511,26 +511,6 @@ fn fetch_into(repo: &gix::Repository, url: &str, rev: &str, pin_ref: &str) -> Re
         .map_err(gerr)?
         .receive(gix::progress::Discard, &interrupt)
         .map_err(gerr)?;
-    terminate_loose_refs(&repo.git_dir().join("refs"))?;
-    Ok(())
-}
-
-/// gix 0.61 writes loose refs without the trailing newline that `git fsck` expects.
-fn terminate_loose_refs(dir: &Path) -> Result<()> {
-    let Ok(entries) = std::fs::read_dir(dir) else {
-        return Ok(());
-    };
-    for e in entries.flatten() {
-        let p = e.path();
-        if p.is_dir() {
-            terminate_loose_refs(&p)?;
-        } else if let Ok(text) = std::fs::read_to_string(&p)
-            && !text.is_empty()
-            && !text.ends_with('\n')
-        {
-            std::fs::write(&p, format!("{text}\n"))?;
-        }
-    }
     Ok(())
 }
 
@@ -539,7 +519,7 @@ fn terminate_loose_refs(dir: &Path) -> Result<()> {
 fn checkout(repo: &gix::Repository, id: gix::ObjectId, fresh: bool) -> Result<()> {
     use gix::refs::transaction::{Change, LogChange, PreviousValue, RefEdit, RefLog};
     let workdir = repo
-        .work_dir()
+        .workdir()
         .ok_or_else(|| Error::new("bare repository"))?
         .to_path_buf();
     let tree = repo
@@ -551,8 +531,8 @@ fn checkout(repo: &gix::Repository, id: gix::ObjectId, fresh: bool) -> Result<()
     let mut index = repo.index_from_tree(&tree).map_err(gerr)?;
 
     if !fresh && let Ok(old) = repo.open_index() {
-        // Remove what the new tree drops or changes. gix 0.61 overwrites existing files without
-        // truncating them, so a file that shrinks would keep its old tail.
+        // Remove what the new tree drops or changes: checkout writes the new index but does not
+        // delete files the old index tracked.
         let new_entries: std::collections::HashMap<
             Vec<u8>,
             (gix::ObjectId, gix::index::entry::Mode),
@@ -573,13 +553,14 @@ fn checkout(repo: &gix::Repository, id: gix::ObjectId, fresh: bool) -> Result<()
         }
     }
 
-    let opts = gix::worktree::state::checkout::Options {
-        fs: gix::fs::Capabilities::probe(repo.git_dir()),
-        destination_is_initially_empty: false,
-        overwrite_existing: true,
-        thread_limit: Some(1),
-        ..Default::default()
-    };
+    // The repository config drives filters and capabilities (core.autocrlf, symlinks), as
+    // `git checkout` would.
+    let mut opts = repo
+        .checkout_options(gix::worktree::stack::state::attributes::Source::IdMapping)
+        .map_err(gerr)?;
+    opts.destination_is_initially_empty = false;
+    opts.overwrite_existing = true;
+    opts.thread_limit = Some(1);
     let interrupt = AtomicBool::new(false);
     let objects = repo.objects.clone().into_arc().map_err(gerr)?;
     gix::worktree::state::checkout(
@@ -601,20 +582,12 @@ fn checkout(repo: &gix::Repository, id: gix::ObjectId, fresh: bool) -> Result<()
                 message: "ay gclient sync".into(),
             },
             expected: PreviousValue::Any,
-            new: gix::refs::Target::Peeled(id),
+            new: gix::refs::Target::Object(id),
         },
         name: "HEAD".try_into().map_err(gerr)?,
         deref: false,
     })
     .map_err(gerr)?;
-    // gix 0.61 writes a detached HEAD without the trailing newline git expects (fsck warns
-    // `refMissingNewline`).
-    let head = repo.git_dir().join("HEAD");
-    if let Ok(text) = std::fs::read_to_string(&head)
-        && !text.ends_with('\n')
-    {
-        std::fs::write(&head, format!("{text}\n"))?;
-    }
     Ok(())
 }
 

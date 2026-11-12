@@ -10,7 +10,9 @@ use std::process::Command;
 /// The source root of an output directory: the nearest ancestor holding `.gn`.
 pub fn source_root(dir: &Path) -> Option<PathBuf> {
     let dir = dir.canonicalize().ok()?;
-    dir.ancestors().find(|d| d.join(".gn").is_file()).map(Path::to_path_buf)
+    dir.ancestors()
+        .find(|d| d.join(".gn").is_file())
+        .map(Path::to_path_buf)
 }
 
 /// `use_siso` / `use_remoteexec` as written in `args.gn` (`None` when unset).
@@ -39,13 +41,16 @@ pub fn use_siso(output_dir: &Path) -> bool {
     if let Some(v) = gn_bool(&args, "use_siso") {
         return v;
     }
-    let Some(root) = source_root(output_dir) else { return false };
+    let Some(root) = source_root(output_dir) else {
+        return false;
+    };
     if !root.join("build/config/siso/.sisoenv").exists() {
         return false;
     }
     let dot_gn = std::fs::read_to_string(root.join(".gn")).unwrap_or_default();
     let default = gn_bool(&dot_gn, "use_siso") == Some(true)
-        || std::fs::read_to_string(root.join("build/config/gclient_args.gni")).is_ok_and(|s| s.contains("build_with_chromium = true"))
+        || std::fs::read_to_string(root.join("build/config/gclient_args.gni"))
+            .is_ok_and(|s| s.contains("build_with_chromium = true"))
         || output_dir.join(".siso_deps").exists();
     default && !output_dir.join(".ninja_deps").exists()
 }
@@ -55,11 +60,16 @@ pub fn ninja_program() -> PathBuf {
     if let Some(p) = std::env::var_os("AY_NINJA") {
         return PathBuf::from(p);
     }
-    find_in_path("n2").unwrap_or_else(|| find_in_path("ninja").unwrap_or_else(|| PathBuf::from("ninja")))
+    find_in_path("n2")
+        .unwrap_or_else(|| find_in_path("ninja").unwrap_or_else(|| PathBuf::from("ninja")))
 }
 
 pub fn find_in_path(name: &str) -> Option<PathBuf> {
-    let exts: &[&str] = if cfg!(windows) { &[".exe", ".cmd", ".bat", ""] } else { &[""] };
+    let exts: &[&str] = if cfg!(windows) {
+        &[".exe", ".cmd", ".bat", ""]
+    } else {
+        &[""]
+    };
     std::env::split_paths(&std::env::var_os("PATH")?)
         .flat_map(|d| exts.iter().map(move |e| d.join(format!("{name}{e}"))))
         .find(|p| p.is_file())
@@ -70,7 +80,10 @@ pub fn output_dir(args: &[String]) -> PathBuf {
     let mut it = args.iter();
     while let Some(a) = it.next() {
         if a == "-C" {
-            return it.next().map(PathBuf::from).unwrap_or_else(|| PathBuf::from("."));
+            return it
+                .next()
+                .map(PathBuf::from)
+                .unwrap_or_else(|| PathBuf::from("."));
         }
         if let Some(d) = a.strip_prefix("-C") {
             return PathBuf::from(d);
@@ -106,7 +119,11 @@ fn platform_dir() -> &'static str {
     if cfg!(windows) {
         "win"
     } else if cfg!(target_os = "macos") {
-        if cfg!(target_arch = "aarch64") { "mac_arm64" } else { "mac" }
+        if cfg!(target_arch = "aarch64") {
+            "mac_arm64"
+        } else {
+            "mac"
+        }
     } else if cfg!(target_arch = "aarch64") {
         "linux64-arm64"
     } else {
@@ -120,9 +137,13 @@ pub fn gn_path(start: &Path) -> Option<PathBuf> {
     let root = source_root(start)?;
     let exe = std::env::consts::EXE_SUFFIX;
     let bt = root.join("buildtools").join(platform_dir());
-    [bt.join("gn").join(format!("gn{exe}")), bt.join(format!("gn{exe}")), root.join("third_party/gn").join(format!("gn{exe}"))]
-        .into_iter()
-        .find(|p| p.is_file())
+    [
+        bt.join("gn").join(format!("gn{exe}")),
+        bt.join(format!("gn{exe}")),
+        root.join("third_party/gn").join(format!("gn{exe}")),
+    ]
+    .into_iter()
+    .find(|p| p.is_file())
 }
 
 /// `ay gn <args>`: the checkout's CIPD-managed gn binary.
@@ -131,7 +152,11 @@ pub fn run_gn(args: &[String]) -> i32 {
     match gn_path(&cwd) {
         Some(gn) => status(Command::new(gn).args(args)),
         None => {
-            eprintln!("ay gn: no gn binary under buildtools/{} of a source root (.gn) above {}", platform_dir(), cwd.display());
+            eprintln!(
+                "ay gn: no gn binary under buildtools/{} of a source root (.gn) above {}",
+                platform_dir(),
+                cwd.display()
+            );
             1
         }
     }
@@ -146,7 +171,10 @@ mod tests {
         let a = "is_debug = false\nuse_siso = true # comment\n# use_siso = false\n";
         assert_eq!(gn_bool(a, "use_siso"), Some(true));
         assert_eq!(gn_bool(a, "use_remoteexec"), None);
-        assert_eq!(output_dir(&["-C".into(), "out/x".into(), "chrome".into()]), PathBuf::from("out/x"));
+        assert_eq!(
+            output_dir(&["-C".into(), "out/x".into(), "chrome".into()]),
+            PathBuf::from("out/x")
+        );
         assert_eq!(output_dir(&["-Cout/y".into()]), PathBuf::from("out/y"));
     }
 
@@ -156,7 +184,10 @@ mod tests {
         if !src.join(".gn").is_file() {
             return eprintln!("skip: no chromium checkout");
         }
-        assert_eq!(source_root(&src.join("base")).unwrap(), src.canonicalize().unwrap());
+        assert_eq!(
+            source_root(&src.join("base")).unwrap(),
+            src.canonicalize().unwrap()
+        );
         // buildtools/<platform>/gn comes from CIPD; it exists after a gclient sync.
         if let Some(gn) = gn_path(&src) {
             assert!(gn.starts_with(src.canonicalize().unwrap()));

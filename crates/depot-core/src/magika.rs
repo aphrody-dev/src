@@ -304,7 +304,9 @@ pub fn detect_content(path: &Path, sample: &[u8]) -> ContentSignature {
         ContentCategory::Shell => ("application/x-sh", false, 0.95),
         ContentCategory::LlvmIr => ("text/x-llvm-ir", false, 0.90),
         ContentCategory::UnrealAsset => ("application/x-unreal-asset", true, 0.90),
-        ContentCategory::PeExecutable => ("application/vnd.microsoft.portable-executable", true, 0.95),
+        ContentCategory::PeExecutable => {
+            ("application/vnd.microsoft.portable-executable", true, 0.95)
+        }
         ContentCategory::ElfExecutable => ("application/x-executable", true, 0.95),
         ContentCategory::MachOExecutable => ("application/x-mach-binary", true, 0.95),
         ContentCategory::WebAssembly => ("application/wasm", true, 0.95),

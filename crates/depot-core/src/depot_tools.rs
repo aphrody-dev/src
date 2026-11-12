@@ -28,10 +28,15 @@ fn candidates() -> Vec<PathBuf> {
     if let Some(p) = std::env::var_os("DEPOT_TOOLS_PATH") {
         out.push(PathBuf::from(p));
     }
-    let src_root = std::env::var_os("SRC_ROOT").filter(|v| !v.is_empty()).map(PathBuf::from).or_else(|| {
-        let cwd = std::env::current_dir().ok()?;
-        cwd.ancestors().find(|d| d.join("src.lock.json").is_file()).map(Path::to_path_buf)
-    });
+    let src_root = std::env::var_os("SRC_ROOT")
+        .filter(|v| !v.is_empty())
+        .map(PathBuf::from)
+        .or_else(|| {
+            let cwd = std::env::current_dir().ok()?;
+            cwd.ancestors()
+                .find(|d| d.join("src.lock.json").is_file())
+                .map(Path::to_path_buf)
+        });
     if let Some(r) = src_root {
         out.push(r.join("third_party").join("depot_tools"));
     }
@@ -48,12 +53,18 @@ fn candidates() -> Vec<PathBuf> {
 impl DepotTools {
     /// The depot_tools checkout to use, if any.
     pub fn root() -> Option<PathBuf> {
-        candidates().into_iter().find(|p| p.join("gclient.py").is_file())
+        candidates()
+            .into_iter()
+            .find(|p| p.join("gclient.py").is_file())
     }
 
     pub fn detect() -> DepotToolsInfo {
         let root_path = Self::root();
-        let has = |names: &[&str]| root_path.as_ref().is_some_and(|r| names.iter().any(|n| r.join(n).exists()));
+        let has = |names: &[&str]| {
+            root_path
+                .as_ref()
+                .is_some_and(|r| names.iter().any(|n| r.join(n).exists()))
+        };
         DepotToolsInfo {
             gclient_found: has(&["gclient.bat", "gclient"]),
             repo_found: has(&["repo", "repo_launcher"]),
@@ -69,14 +80,23 @@ impl DepotTools {
     /// The wrapper script for `tool` inside depot_tools (`<tool>.bat` on Windows).
     pub fn wrapper(tool: &str) -> Option<PathBuf> {
         let root = Self::root()?;
-        let names: &[String] = if cfg!(windows) { &[format!("{tool}.bat"), tool.to_string()] } else { &[tool.to_string()] };
+        let names: &[String] = if cfg!(windows) {
+            &[format!("{tool}.bat"), tool.to_string()]
+        } else {
+            &[tool.to_string()]
+        };
         names.iter().map(|n| root.join(n)).find(|p| p.is_file())
     }
 
     /// Run a depot_tools entry point by full path with inherited stdio; returns its exit code.
     pub fn run_passthrough(tool: &str, args: &[String]) -> Result<i32, String> {
-        let wrapper = Self::wrapper(tool).ok_or_else(|| format!("{tool}: depot_tools not found (set DEPOT_TOOLS_PATH)"))?;
-        let mut cmd = if cfg!(windows) && wrapper.extension().is_some_and(|e| e.eq_ignore_ascii_case("bat")) {
+        let wrapper = Self::wrapper(tool)
+            .ok_or_else(|| format!("{tool}: depot_tools not found (set DEPOT_TOOLS_PATH)"))?;
+        let mut cmd = if cfg!(windows)
+            && wrapper
+                .extension()
+                .is_some_and(|e| e.eq_ignore_ascii_case("bat"))
+        {
             let mut c = Command::new("cmd");
             c.arg("/C").arg(&wrapper);
             c
@@ -85,7 +105,9 @@ impl DepotTools {
         };
         // depot_tools wrappers must not update themselves under us.
         cmd.args(args).env("DEPOT_TOOLS_UPDATE", "0");
-        let status = cmd.status().map_err(|e| format!("Failed to execute {}: {e}", wrapper.display()))?;
+        let status = cmd
+            .status()
+            .map_err(|e| format!("Failed to execute {}: {e}", wrapper.display()))?;
         Ok(status.code().unwrap_or(1))
     }
 }

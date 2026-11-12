@@ -1,15 +1,15 @@
+use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::{BufReader, Read};
 use std::path::{Path, PathBuf};
-use serde::{Deserialize, Serialize};
 use zerocopy::{FromBytes, Immutable, IntoBytes, KnownLayout};
 
 /// Binary header framing for Blake3 artifact caches and manifests using Google's zerocopy.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, FromBytes, IntoBytes, KnownLayout, Immutable)]
 #[repr(C)]
 pub struct ArtifactBinaryHeader {
-    pub magic: [u8; 8],        // b"DEPOTART"
-    pub version: u32,          // 1
+    pub magic: [u8; 8], // b"DEPOTART"
+    pub version: u32,   // 1
     pub entry_count: u32,
     pub blake3_digest: [u8; 32],
     pub total_bytes: u64,
@@ -71,7 +71,8 @@ pub struct Artifact;
 
 impl Artifact {
     pub fn compute_blake3(path: &Path) -> Result<(String, u64), String> {
-        let file = File::open(path).map_err(|e| format!("Cannot open {}: {}", path.display(), e))?;
+        let file =
+            File::open(path).map_err(|e| format!("Cannot open {}: {}", path.display(), e))?;
         let metadata = file.metadata().map_err(|e| e.to_string())?;
         let mut reader = BufReader::new(file);
         let mut hasher = blake3::Hasher::new();
@@ -98,8 +99,13 @@ impl Artifact {
     pub fn save_manifest(manifest: &ArtifactManifest, manifest_path: &Path) -> Result<(), String> {
         let content = toml::to_string_pretty(manifest)
             .map_err(|e| format!("Failed to serialize TOML: {}", e))?;
-        std::fs::write(manifest_path, content)
-            .map_err(|e| format!("Failed to write manifest {}: {}", manifest_path.display(), e))
+        std::fs::write(manifest_path, content).map_err(|e| {
+            format!(
+                "Failed to write manifest {}: {}",
+                manifest_path.display(),
+                e
+            )
+        })
     }
 
     pub fn verify(manifest: &ArtifactManifest, base_dir: &Path) -> ArtifactReport {

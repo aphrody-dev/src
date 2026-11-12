@@ -1,5 +1,5 @@
-use std::path::Path;
 use ignore::WalkBuilder;
+use std::path::Path;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IgnoreTemplate {

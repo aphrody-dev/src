@@ -1,6 +1,6 @@
+use serde::{Deserialize, Serialize};
 use std::path::Path;
 use std::process::Command;
-use serde::{Deserialize, Serialize};
 
 use crate::gitx;
 
@@ -28,13 +28,26 @@ impl ForkManager {
     pub fn get_status(repo_path: &Path) -> Result<ForkStatus, String> {
         let current_branch = gitx::current_branch(repo_path)?.unwrap_or_else(|| "HEAD".into());
         let remotes = gitx::remotes(repo_path)?;
-        let url_of = |n: &str| remotes.iter().find(|(name, _)| name == n).map(|(_, u)| u.clone());
+        let url_of = |n: &str| {
+            remotes
+                .iter()
+                .find(|(name, _)| name == n)
+                .map(|(_, u)| u.clone())
+        };
         let (origin_url, upstream_url) = (url_of("origin"), url_of("upstream"));
 
         // Ahead / behind against upstream if configured, else origin.
-        let target_remote = if upstream_url.is_some() { "upstream" } else { "origin" };
-        let (behind, ahead) =
-            gitx::left_right_count(repo_path, &format!("{target_remote}/{current_branch}"), "HEAD").unwrap_or((0, 0));
+        let target_remote = if upstream_url.is_some() {
+            "upstream"
+        } else {
+            "origin"
+        };
+        let (behind, ahead) = gitx::left_right_count(
+            repo_path,
+            &format!("{target_remote}/{current_branch}"),
+            "HEAD",
+        )
+        .unwrap_or((0, 0));
         let (ahead_count, behind_count) = (ahead as u32, behind as u32);
 
         Ok(ForkStatus {

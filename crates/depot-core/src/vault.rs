@@ -11,10 +11,7 @@ impl VaultEnv {
     /// Load key/value pairs from `C:\src\.env` (if present) merged with process environment variables.
     pub fn load_merged() -> HashMap<String, String> {
         let mut map = HashMap::new();
-        for candidate in [
-            PathBuf::from(r"C:\src\.env"),
-            PathBuf::from(".env"),
-        ] {
+        for candidate in [PathBuf::from(r"C:\src\.env"), PathBuf::from(".env")] {
             if candidate.is_file() {
                 Self::load_file_into(&candidate, &mut map);
                 break;
@@ -52,10 +49,7 @@ impl VaultEnv {
             let stripped = trimmed.strip_prefix("export ").unwrap_or(trimmed);
             if let Some((k, v)) = stripped.split_once('=') {
                 let key = k.trim().to_string();
-                let val = v
-                    .trim()
-                    .trim_matches(|c| c == '"' || c == '\'')
-                    .to_string();
+                let val = v.trim().trim_matches(|c| c == '"' || c == '\'').to_string();
                 if !key.is_empty() && !val.is_empty() {
                     out.insert(key, val);
                 }
