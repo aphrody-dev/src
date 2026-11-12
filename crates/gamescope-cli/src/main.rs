@@ -412,10 +412,17 @@ fn cmd_serve_web(args: &[String]) {
         .map(|p| p.to_path_buf())
         .unwrap_or_else(|| PathBuf::from("."));
     let web_dir = workspace_root.join("web");
-    let wasm_dir = workspace_root
-        .join("target")
-        .join("wasm32-unknown-unknown")
-        .join("release");
+    // The unit builds inside the C:/src root workspace, so the wasm artifact lands in
+    // the root target dir (or $CARGO_TARGET_DIR). Fall back to the unit-local target dir.
+    let wasm_rel = PathBuf::from("wasm32-unknown-unknown").join("release");
+    let wasm_dir = std::env::var_os("CARGO_TARGET_DIR")
+        .map(PathBuf::from)
+        .into_iter()
+        .chain(workspace_root.parent().and_then(|p| p.parent()).map(|r| r.join("target")))
+        .chain(std::iter::once(workspace_root.join("target")))
+        .map(|t| t.join(&wasm_rel))
+        .find(|d| d.join("gamescope_web_wasm.wasm").is_file())
+        .unwrap_or_else(|| web_dir.clone());
 
     let addr = format!("127.0.0.1:{port}");
     let listener = TcpListener::bind(&addr).expect("Failed to bind gamescope-rs WebGPU HTTP socket");
