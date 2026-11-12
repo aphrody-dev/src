@@ -7,6 +7,10 @@ members = [
   "tools/archguard",
   "crates/corelib",
   "crates/aphrody-design-*",
+  "crates/bench",
+  "crates/ring3-agent",
+  "crates/rust-stack",
+  "crates/xtask",
 ]
 # Submodule units keep their own manifests until they join (docs/CONSOLIDATION_PLAN.md).
 exclude = [
@@ -14,14 +18,10 @@ exclude = [
   "apps",
   "packages",
   "infra",
-  "crates/bench",
   "crates/depot",
   "crates/gamescope-rs",
-  "crates/ring3-agent",
-  "crates/rust-stack",
   "crates/unix",
   "crates/wayland",
-  "crates/xtask",
 ]
 
 [workspace.package]
@@ -59,3 +59,10 @@ lto = "fat"
 codegen-units = 1
 panic = "abort"
 strip = "symbols"
+
+# Per-package overrides carried over from the members manifests.
+[profile.dev.package.ring3-agent]
+opt-level = 1
+
+[profile.dev.package.rust-stack]
+opt-level = 1
