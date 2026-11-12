@@ -58,3 +58,30 @@ fn reads_only_the_workspace_package_table() {
     );
     fs::remove_dir_all(&dir).unwrap();
 }
+
+#[test]
+fn unit_directory_without_manifest_checks_member_crates() {
+    use archguard::rules::crates::check_crates_domain;
+    let dir = std::env::temp_dir().join(format!("archguard-unit-{}", std::process::id()));
+    let member = dir.join("crates").join("unit").join("crates").join("unit-core");
+    fs::create_dir_all(member.join("src")).unwrap();
+    fs::write(dir.join("Cargo.toml"), "[workspace.package]\nedition = \"2024\"\n").unwrap();
+    fs::write(member.join("src").join("lib.rs"), "").unwrap();
+    fs::write(member.join("Cargo.toml"), "[package]\nname = \"unit-core\"\nedition.workspace = true\n").unwrap();
+
+    let mut findings = Vec::new();
+    check_crates_domain(&dir, &mut findings);
+    assert!(findings.iter().all(|f| f.rule_id != "ARCH-002"), "{findings:?}");
+
+    fs::write(member.join("Cargo.toml"), "[package]\nname = \"unit-core\"\nedition = \"2021\"\n").unwrap();
+    findings.clear();
+    check_crates_domain(&dir, &mut findings);
+    assert!(findings.iter().any(|f| f.rule_id == "ARCH-002" && f.path.ends_with("unit-core/Cargo.toml")), "{findings:?}");
+
+    fs::remove_dir_all(member.join("src")).unwrap();
+    fs::remove_file(member.join("Cargo.toml")).unwrap();
+    findings.clear();
+    check_crates_domain(&dir, &mut findings);
+    assert!(findings.iter().any(|f| f.message.contains("Missing `Cargo.toml`")), "{findings:?}");
+    fs::remove_dir_all(&dir).unwrap();
+}

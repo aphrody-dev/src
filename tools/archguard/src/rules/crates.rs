@@ -43,9 +43,18 @@ pub fn check_crates_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
             });
         }
 
-        // ARCH-002: Cargo.toml check
+        // ARCH-002: Cargo.toml check. A unit directory (a submodule whose crates are
+        // members of the root workspace) has no manifest of its own; its member
+        // manifests live under `crates/*/Cargo.toml` and are checked one by one.
         let cargo_toml = crate_path.join("Cargo.toml");
-        if !cargo_toml.is_file() {
+        let unit_members = unit_member_manifests(&crate_path);
+        if cargo_toml.is_file() {
+            check_manifest_edition(root, crate_name, &cargo_toml, findings);
+        } else if !unit_members.is_empty() {
+            for member in &unit_members {
+                check_manifest_edition(root, crate_name, member, findings);
+            }
+        } else {
             findings.push(ArchFinding {
                 rule_id: "ARCH-002".into(),
                 category: "crate-manifest-edition".into(),
@@ -58,28 +67,6 @@ pub fn check_crates_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                     normalize_rel(root, &crate_path)
                 ),
             });
-        } else if let Ok(content) = fs::read_to_string(&cargo_toml) {
-            let is_virtual_workspace =
-                content.contains("[workspace]") && !content.contains("[package]");
-            if !is_virtual_workspace {
-                // Check edition = "2024"
-                let has_edition_2024 = content.lines().any(|l| {
-                    let trimmed = l.trim().replace(' ', "");
-                    trimmed == "edition=\"2024\"" || trimmed == "edition='2024'"
-                }) || (manifest_inherits(&content, "edition")
-                    && workspace_package_value(root, "edition").as_deref() == Some("2024"));
-                if !has_edition_2024 {
-                    findings.push(ArchFinding {
-                        rule_id: "ARCH-002".into(),
-                        category: "crate-manifest-edition".into(),
-                        severity: Severity::Warning,
-                        path: normalize_rel(root, &cargo_toml),
-                        line: None,
-                        message: format!("Crate `{crate_name}` does not declare `edition = \"2024\"`"),
-                        remediation: "Upgrade crate manifest to `edition = \"2024\"` in `Cargo.toml`.".into(),
-                    });
-                }
-            }
         }
 
         // Traverse crate files for forbidden files & forbidden extensions
@@ -141,6 +128,47 @@ pub fn check_crates_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                 ),
             });
         }
+    }
+}
+
+/// Member manifests of a unit directory: `<unit>/crates/*/Cargo.toml`, sorted.
+fn unit_member_manifests(unit: &Path) -> Vec<std::path::PathBuf> {
+    let Ok(entries) = fs::read_dir(unit.join("crates")) else {
+        return Vec::new();
+    };
+    let mut out: Vec<_> = entries
+        .flatten()
+        .map(|e| e.path().join("Cargo.toml"))
+        .filter(|p| p.is_file())
+        .collect();
+    out.sort();
+    out
+}
+
+/// ARCH-002: a package manifest must declare (or inherit) `edition = "2024"`.
+fn check_manifest_edition(root: &Path, crate_name: &str, cargo_toml: &Path, findings: &mut Vec<ArchFinding>) {
+    let Ok(content) = fs::read_to_string(cargo_toml) else {
+        return;
+    };
+    let is_virtual_workspace = content.contains("[workspace]") && !content.contains("[package]");
+    if is_virtual_workspace {
+        return;
+    }
+    let has_edition_2024 = content.lines().any(|l| {
+        let trimmed = l.trim().replace(' ', "");
+        trimmed == "edition=\"2024\"" || trimmed == "edition='2024'"
+    }) || (manifest_inherits(&content, "edition")
+        && workspace_package_value(root, "edition").as_deref() == Some("2024"));
+    if !has_edition_2024 {
+        findings.push(ArchFinding {
+            rule_id: "ARCH-002".into(),
+            category: "crate-manifest-edition".into(),
+            severity: Severity::Warning,
+            path: normalize_rel(root, cargo_toml),
+            line: None,
+            message: format!("Crate `{crate_name}` does not declare `edition = \"2024\"`"),
+            remediation: "Upgrade crate manifest to `edition = \"2024\"` in `Cargo.toml`.".into(),
+        });
     }
 }
 

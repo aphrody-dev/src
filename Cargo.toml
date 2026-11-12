@@ -1,6 +1,7 @@
-# Root Cargo workspace for the first-party Rust crates that live in this repository.
-# Units still kept as their own git submodules (crates/depot, crates/xtask, crates/unix, ...)
-# join one at a time; see docs/CONSOLIDATION_PLAN.md.
+# Root Cargo workspace for every first-party Rust crate in this repository.
+# Crates that live in git submodules (crates/depot, crates/xtask, ...) are members too;
+# their submodules keep the sources, this manifest owns dependencies, profiles and the lock.
+# See docs/CONSOLIDATION_PLAN.md.
 [workspace]
 resolver = "3"
 members = [
@@ -11,15 +12,15 @@ members = [
   "crates/ring3-agent",
   "crates/rust-stack",
   "crates/xtask",
+  "crates/depot/crates/*",
+  "crates/gamescope-rs/crates/*",
 ]
-# Submodule units keep their own manifests until they join (docs/CONSOLIDATION_PLAN.md).
+# crates/unix and crates/wayland keep their own workspaces until they are restructured and join.
 exclude = [
   "third_party",
   "apps",
   "packages",
   "infra",
-  "crates/depot",
-  "crates/gamescope-rs",
   "crates/unix",
   "crates/wayland",
 ]
@@ -28,23 +29,80 @@ exclude = [
 version = "0.2.0"
 edition = "2024"
 rust-version = "1.85"
+license = "MIT OR Apache-2.0"
 
 [workspace.dependencies]
+# First-party crates
 aphrody-design-shared = { path = "crates/aphrody-design-shared" }
 aphrody-design-tokens = { path = "crates/aphrody-design-tokens" }
+depot-core = { path = "crates/depot/crates/depot-core" }
+depot-treesitter = { path = "crates/depot/crates/depot-treesitter" }
+depot-re = { path = "crates/depot/crates/depot-re" }
+depot-migrate = { path = "crates/depot/crates/depot-migrate" }
+depot-forge = { path = "crates/depot/crates/depot-forge" }
+depot-ingest = { path = "crates/depot/crates/depot-ingest" }
+depot-graph = { path = "crates/depot/crates/depot-graph" }
+gamescope-core = { path = "crates/gamescope-rs/crates/gamescope-core" }
+gamescope-wgsl = { path = "crates/gamescope-rs/crates/gamescope-wgsl" }
 
+# crates.io
+argh = "0.1.13"
 base64 = "0.22.1"
 bevy = { version = "0.18", default-features = false }
+blake3 = { version = "1.6.1", features = ["mmap", "rayon"] }
+bytemuck = { version = "1.22", features = ["derive"] }
 clap = { version = "4.5", features = ["derive"] }
+console_error_panic_hook = "0.1.7"
 egui = { version = "0.31", default-features = false }
+gix = { version = "0.61.0", default-features = false, features = ["default"] }
+globset = "0.4.15"
+goblin = "0.10.7"
+iced-x86 = { version = "1.21.0", features = ["std", "decoder", "intel", "fast_fmt", "instr_info"] }
+ignore = "0.4.23"
 image = { version = "0.25", default-features = false }
+js-sys = "0.3.107"
 lightningcss = { version = "=1.0.0-alpha.72", default-features = false }
+pollster = "0.4"
 quick-xml = "0.37"
+rayon = "1.10.0"
+regex = "1.11.1"
+ropey = "1.6.1"
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.140"
+streaming-iterator = "0.1.9"
 taffy = "0.15"
 thiserror = "2.0"
 toml = "0.8.20"
+tree-sitter = "0.24.7"
+tree-sitter-language = "0.1.9"
+tree-sitter-rust = "0.23.3"
+tree-sitter-typescript = "0.23.2"
+tree-sitter-javascript = "0.23.1"
+tree-sitter-python = "0.23.6"
+tree-sitter-go = "0.23.4"
+tree-sitter-c = "0.23.4"
+tree-sitter-cpp = "0.23.4"
+tree-sitter-json = "0.24.8"
+tree-sitter-bash = "0.23.3"
+tree-sitter-html = "0.23.2"
+tree-sitter-css = "0.23.2"
+tree-sitter-lua = "0.2.0"
+ureq = { version = "2.12.1", default-features = false, features = ["tls", "json"] }
+walkdir = "2.5.0"
+wasm-bindgen = "0.2.130"
+wasm-bindgen-futures = "0.4.80"
+web-sys = "0.3.107"
+wgpu = "30.0"
+winit = "0.30.8"
+windows-sys = { version = "0.59.0", features = [
+  "Win32_Foundation",
+  "Win32_System_Console",
+  "Win32_System_SystemInformation",
+  "Win32_Storage_FileSystem",
+  "Win32_System_Performance",
+  "Win32_Security",
+] }
+zerocopy = { version = "0.8.20", features = ["derive"] }
 
 [profile.dev]
 opt-level = 0
