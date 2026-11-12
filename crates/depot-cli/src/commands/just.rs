@@ -1,5 +1,4 @@
 use std::path::PathBuf;
-use std::process::Command;
 use depot_core::{JustEngine, StyleExt};
 
 pub fn run_just_list(dir: PathBuf, json_output: bool) -> Result<(), String> {
@@ -48,29 +47,6 @@ pub fn run_just_list(dir: PathBuf, json_output: bool) -> Result<(), String> {
         if !doc_str.is_empty() {
             println!("      {}", doc_str);
         }
-    }
-
-    Ok(())
-}
-
-#[allow(dead_code)]
-pub fn run_just_exec(dir: PathBuf, recipe_args: Vec<String>) -> Result<(), String> {
-    println!(
-        "{} Executing just recipe: {}...",
-        "->".cyan().bold(),
-        recipe_args.join(" ").yellow()
-    );
-
-    let mut cmd = Command::new("just");
-    cmd.current_dir(&dir);
-    cmd.args(&recipe_args);
-
-    let status = cmd
-        .status()
-        .map_err(|e| format!("Failed to execute 'just' command: {}", e))?;
-
-    if !status.success() {
-        return Err(format!("Recipe exited with status: {}", status));
     }
 
     Ok(())

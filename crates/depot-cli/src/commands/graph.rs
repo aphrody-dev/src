@@ -54,21 +54,6 @@ pub fn run_graph_query_advanced(
     Ok(())
 }
 
-#[allow(dead_code)]
-pub fn run_graph_query(
-    root_dir: PathBuf,
-    term: String,
-    dfs: bool,
-    budget: Option<usize>,
-) -> Result<(), String> {
-    let opts = QueryOptions {
-        dfs,
-        max_tokens: budget.unwrap_or(2000),
-        max_depth: 3,
-    };
-    run_graph_query_advanced(root_dir, term, opts)
-}
-
 pub fn run_graph_path(root_dir: PathBuf, start: String, end: String) -> Result<(), String> {
     let graph = load_or_build_graph(&root_dir)?;
     let result = GraphQuery::path(&graph, &start, &end)?;

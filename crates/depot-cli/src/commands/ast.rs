@@ -2,15 +2,6 @@ use std::path::PathBuf;
 use depot_core::StyleExt;
 use depot_treesitter::TreeSitterEngine;
 
-#[allow(dead_code)]
-pub fn run_ast(file: PathBuf, query: Option<String>, json: bool) -> Result<(), String> {
-    if let Some(q) = query {
-        run_ast_query(file, q)
-    } else {
-        run_ast_parse(file, json)
-    }
-}
-
 pub fn run_ast_parse(file_path: PathBuf, json_output: bool) -> Result<(), String> {
     let content = std::fs::read_to_string(&file_path)
         .map_err(|e| format!("Failed to read {}: {}", file_path.display(), e))?;
