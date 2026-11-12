@@ -307,7 +307,7 @@ export function getWasmModule(): {
 export function benchmarkCategoryA(): BenchmarkRecord[] {
   const records: BenchmarkRecord[] = [];
   const chromiumNodePath =
-    "C:\\src\\chromium\\src\\third_party\\node\\win\\node.exe";
+    "C:\\src\\third_party\\chromium\\src\\third_party\\node\\win\\node.exe";
   const hasChromiumNode = existsSync(chromiumNodePath);
   const nodeBinary = hasChromiumNode ? chromiumNodePath : "node";
 

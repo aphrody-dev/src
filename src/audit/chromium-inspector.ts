@@ -41,8 +41,8 @@ export interface ChromiumInspectionResult {
   };
 }
 
-const CHROMIUM_ROOT = "C:\\src\\chromium\\src";
-const DEPOT_TOOLS_ROOT = "C:\\src\\depot_tools";
+const CHROMIUM_ROOT = "C:\\src\\third_party\\chromium\\src";
+const DEPOT_TOOLS_ROOT = "C:\\src\\third_party\\depot_tools";
 
 export function probeExecutable(
   command: string,

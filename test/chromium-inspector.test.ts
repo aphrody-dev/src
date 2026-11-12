@@ -4,8 +4,8 @@ import { existsSync } from "node:fs";
 
 describe("Chromium & depot_tools Sovereign Inspection", () => {
   it("should confirm Chromium root and depot_tools presence on disk", () => {
-    expect(existsSync("C:\\src\\chromium\\src")).toBe(true);
-    expect(existsSync("C:\\src\\depot_tools")).toBe(true);
+    expect(existsSync("C:\\src\\third_party\\chromium\\src")).toBe(true);
+    expect(existsSync("C:\\src\\third_party\\depot_tools")).toBe(true);
   });
 
   it("should detect all key Chromium native subsystems", () => {

@@ -18,7 +18,7 @@ export async function benchmarkCategoryB(): Promise<BenchmarkRecord[]> {
 
   // 1. Directory Walk Benchmark (Bun.Glob vs Node fs.readdir recursive vs PowerShell)
   {
-    const targetDir = "C:\\src\\chromium\\src\\ui\\color";
+    const targetDir = "C:\\src\\third_party\\chromium\\src\\ui\\color";
     const iterations = 5;
 
     // Bun.Glob
@@ -98,7 +98,7 @@ export async function benchmarkCategoryB(): Promise<BenchmarkRecord[]> {
 
   // 2. File I/O Stat & Read (Bun.file vs Node.fs vs uutils stat)
   {
-    const sampleFilePath = "C:\\src\\chromium\\src\\ui\\color\\color_id.h";
+    const sampleFilePath = "C:\\src\\third_party\\chromium\\src\\ui\\color\\color_id.h";
     const iterations = 500;
 
     // Bun.file

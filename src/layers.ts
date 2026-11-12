@@ -27,7 +27,7 @@ export const SOVEREIGN_LAYERS: Record<SovereignLayerId, SovereignLayer> = {
     codename: "linux_kernel",
     description:
       "High-performance kernel scheduler, zero-copy splice/sendfile, io_uring, epoll, namespaces, and low-level memory mappings.",
-    canonicalSource: "git.kernel.org / C:\\src\\linux (Linux 7.4-rc2)",
+    canonicalSource: "git.kernel.org / C:\\src\\third_party\\linux (Linux 7.4-rc2)",
     roleInStack:
       "Kernel execution foundation providing high-throughput I/O primitives, driver interfaces, and memory virtualization.",
   },
@@ -49,7 +49,7 @@ export const SOVEREIGN_LAYERS: Record<SovereignLayerId, SovereignLayer> = {
     description:
       "Undefeated native C++/SIMD/GPU subsystems: Dawn (WebGPU D3D12/Vulkan), Skia 2D rendering, Blink LayoutNG, V8 Heavy JIT, CC Compositor, Material 3 Color Pipeline, and Siso/GN/Autoninja build engines.",
     canonicalSource:
-      "chromium.org / C:\\src\\chromium\\src + C:\\src\\depot_tools",
+      "chromium.org / C:\\src\\third_party\\chromium\\src + C:\\src\\third_party\\depot_tools",
     roleInStack:
       "GPU accelerated rasterization, WebGPU hardware compute, high-complexity typography/rendering, and parallel native build orchestration.",
   },

@@ -431,14 +431,14 @@
         {
           "name": "Google GN Metaninja (v2614 (ed7fee04cb30))",
           "details": {
-            "path": "C:\\src\\chromium\\src\\buildtools\\win\\gn.exe",
+            "path": "C:\\src\\third_party\\chromium\\src\\buildtools\\win\\gn.exe",
             "version": "2614 (ed7fee04cb30)"
           }
         },
         {
           "name": "Kitware Ninja Jobserver (v1.13.2.git.kitware.jobserver-pipe-1)",
           "details": {
-            "path": "C:\\src\\depot_tools\\ninja.bat",
+            "path": "C:\\src\\third_party\\depot_tools\\ninja.bat",
             "version": "1.13.2.git.kitware.jobserver-pipe-1"
           }
         }

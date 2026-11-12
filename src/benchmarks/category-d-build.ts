@@ -7,7 +7,7 @@ export async function benchmarkCategoryD(): Promise<BenchmarkRecord[]> {
   const webuiDir = join(import.meta.dir, "..", "webui_poc");
   const entrypoint = join(webuiDir, "index.ts");
   const chromiumNodePath =
-    "C:\\src\\chromium\\src\\third_party\\node\\win\\node.exe";
+    "C:\\src\\third_party\\chromium\\src\\third_party\\node\\win\\node.exe";
   const hasChromiumNode = existsSync(chromiumNodePath);
 
   // 1. WebUI Component Bundling: Bun.build (Full Minify + Sourcemap) vs Simulated Node/Rollup
@@ -108,9 +108,9 @@ export async function benchmarkCategoryD(): Promise<BenchmarkRecord[]> {
 
   // 3. Native Build Orchestration Probing (Chromium Siso, GN, Autoninja)
   {
-    const gnPath = "C:\\src\\chromium\\src\\buildtools\\win\\gn.exe";
-    const ninjaPath = "C:\\src\\depot_tools\\ninja.bat";
-    const sisoBatPath = "C:\\src\\depot_tools\\siso.bat";
+    const gnPath = "C:\\src\\third_party\\chromium\\src\\buildtools\\win\\gn.exe";
+    const ninjaPath = "C:\\src\\third_party\\depot_tools\\ninja.bat";
+    const sisoBatPath = "C:\\src\\third_party\\depot_tools\\siso.bat";
 
     let gnVersion = "unknown";
     if (existsSync(gnPath)) {
