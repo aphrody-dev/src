@@ -16,6 +16,22 @@ export function resolveModel(spec = Bun.env.AGENT_MODEL ?? "anthropic:claude-opu
       return createOpenAICompatible({ name: "local", baseURL: Bun.env.AGENT_BASE_URL ?? "http://127.0.0.1:8080/v1" }).chatModel(id);
     case "workers-ai": // Cloudflare Workers AI via the official AI SDK provider (REST mode)
       return createWorkersAI({ accountId: Bun.env.CLOUDFLARE_ACCOUNT_ID!, apiKey: Bun.env.CLOUDFLARE_API_TOKEN! })(id as never);
+    case "echo": {
+      // deterministic test model: replies "<id>: <last user text>"
+      const { MockLanguageModelV4 } = require("ai/test") as typeof import("ai/test");
+      return new MockLanguageModelV4({
+        doGenerate: async (opts) => {
+          const last = [...opts.prompt].reverse().find((m) => m.role === "user");
+          const text = last && Array.isArray(last.content) ? last.content.map((p) => ("text" in p ? p.text : "")).join("") : "";
+          return {
+            content: [{ type: "text", text: `${id}: ${text}` }],
+            finishReason: { unified: "stop", raw: undefined },
+            usage: { inputTokens: { total: 1, noCache: 1, cacheRead: 0, cacheWrite: 0 }, outputTokens: { total: 1, text: 1, reasoning: 0 } },
+            warnings: [],
+          };
+        },
+      });
+    }
     case "gateway": // Vercel AI Gateway model id, e.g. gateway:anthropic/claude-opus-5-5
       return id;
     default:
