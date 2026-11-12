@@ -41,6 +41,6 @@ Constraint: reuse existing Rust projects (docs/RUST_STACK.md), never rewrite fro
 ## Phases
 
 1. Done: `ay rt ls|install|use|run|pm|torch` (crates/rt). Bun downloads are checked against the GitHub asset digest (the canary SHASUMS256.txt lags behind its binaries), then SHASUMS256.txt.
-2. RustPython and Monty engines from aphrody-dev forks; CPython conformance via `test/` subsets.
+2. RustPython: `ay rt install python --engine rustpython` builds aphrody-dev/RustPython (3.15.0 alpha, no CPython). Next: Monty; CPython conformance via `test/` subsets.
 3. `ay` as `python`/`bun` multicall names through the shim layer of `ay up` (crates/up/src/shim.rs).
 4. Bun fork crates without JSC (docs/AY_ON_BUN.md phases) replace the Bun binary for install and run.

@@ -143,6 +143,9 @@ fn android_clang(arch: &str) -> Option<PathBuf> {
     clang.is_file().then_some(clang)
 }
 
+/// Marker in `NativeStatus::env`: run `cargo zigbuild` instead of `cargo build`.
+const ZIGBUILD: &str = "AY_CARGO_ZIGBUILD";
+
 pub fn native_status(preset: &Preset) -> NativeStatus {
     let key = env_key(preset.triple);
     let linker_var = format!("CARGO_TARGET_{key}_LINKER");
@@ -173,6 +176,13 @@ pub fn native_status(preset: &Preset) -> NativeStatus {
                 }
             } else if native_host && which("musl-gcc").is_some() {
                 NativeStatus { ok: true, detail: "musl-gcc".into(), env: Vec::new() }
+            } else if let (Some(zb), Some(_)) = (which("cargo-zigbuild"), which("zig")) {
+                // zig cc links musl and compiles the C crates for any target (tools.toml ships both).
+                NativeStatus {
+                    ok: true,
+                    detail: format!("cargo-zigbuild ({})", zb.display()),
+                    env: vec![(ZIGBUILD.into(), "1".into())],
+                }
             } else {
                 NativeStatus {
                     ok: false,
@@ -306,7 +316,11 @@ pub fn run(args: BuildArgs) -> i32 {
             eprintln!("ay build: warning: {} ({}): {}", p.name, p.triple, native.detail);
         }
         let mut cmd = Command::new("cargo");
-        cmd.args(cargo_args(p, args.release, &args.cargo_args)).current_dir(crate::repo_root());
+        let mut cargo = cargo_args(p, args.release, &args.cargo_args);
+        if native.env.iter().any(|(k, _)| k == ZIGBUILD) {
+            cargo[0] = "zigbuild".into();
+        }
+        cmd.args(cargo).current_dir(crate::repo_root());
         cmd.envs(native.env.iter().map(|(k, v)| (k.as_str(), v.as_os_str())));
         if p.triple.starts_with("wasm32") {
             // sccache fails on the long web-sys command line (os error 206 on Windows).

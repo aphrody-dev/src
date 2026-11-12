@@ -44,7 +44,7 @@ CPU baseline: x86-64-v2 and armv8.0 for portability, with `is_x86_feature_detect
 
 ## Phases
 
-1. `ay build` uses cargo-zigbuild for musl, macOS and riscv64 (removes the missing-linker gap);
+1. Done for musl: `ay build` falls back to cargo-zigbuild when no musl gcc is found (static x86_64 musl `ay` built on Windows runs on fr1). Next: macOS and riscv64;
    add the tier 2 targets to `ay build --list`.
 2. Features split `ay` into a core with no C dependencies (rustix, ureq on rustls with ring, pure-Rust
    xz and zstd) and optional C-backed parts (tree-sitter grammars), so wasm32-wasip2 and libc-free
