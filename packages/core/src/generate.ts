@@ -33,7 +33,7 @@ export const PILLARS: Pillar[] = [
   {
     skill: "llvm-toolchain",
     title: "Toolchain LLVM partagée (clang/lld/rustc) dans src",
-    needles: ["llvm", "clang", "lld", "inkwell", "cc::Build"],
+    needles: ["cc::Build", "inkwell", "llvm_sys", "clang_sys", "bindgen::Builder"],
     sources: [
       { url: "https://llvm.org/docs/ (LLVM 24.0.0git)", verified: false },
       { url: "https://llvm.org/docs/LinkTimeOptimization.html", verified: true },

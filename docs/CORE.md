@@ -21,5 +21,5 @@ Trois piliers, une seule implémentation par fonction.
 ## Migré / supprimé
 - `crates/depot-treesitter` -> `crates/core` (renommé, tous les dépendants repointés).
 - `depot_treesitter_symbols_json` retiré de `crates/ffi` ; `packages/forge` passe par `@aphrody/core.parse`.
-- `packages/knowledge-engine/src/ffi/blake3.ts` (rust_stack_ffi Windows-only, repli BLAKE2b étiqueté « blake3 ») supprimé -> `src/hash.ts` sur `@aphrody/core.contentHash` (algorithme réel rapporté).
+- `packages/knowledge-engine/src/ffi/blake3.ts` supprimé avec le paquet (déplacé dans `agent/`) ; note de migration vers `contentHash` dans `agent/docs/NOTE-core-hash.md`.
 - Restent hors périmètre : `depot-graph` (graphe/MCP, dépend de `depot-core`), `crates/ffi` pour les autres `depot_*`, `rust_stack_ffi` (`rs_*`, Go/infra).
