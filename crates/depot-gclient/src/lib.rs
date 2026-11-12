@@ -8,6 +8,7 @@
 //! - [`sync`]: sync planner and gix executor.
 //! - [`cli`]: `ay gclient` and `ay fetch`.
 
+pub mod cl;
 pub mod cli;
 pub mod condition;
 pub mod deps;

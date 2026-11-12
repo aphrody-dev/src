@@ -16,6 +16,7 @@ clap.workspace = true
 depot-core.workspace = true
 depot-cas.workspace = true
 ureq = "3"
+serde_json.workspace = true
 tar = "0.4.46"
 flate2 = "1.1"
 lzma-rust2 = { version = "0.25", default-features = false, features = ["std", "xz"] }

@@ -49,7 +49,7 @@ mostly detected (`ay git info`, `packages/forge/src/pillars.ts`) or probed for v
 | `gclient` (`gclient.py`, `gclient_scm.py`, `gclient_utils.py`, `gclient_paths.py`) | Python | 6,393 + 2,952 + 1,734 + 252 | `sync`, `runhooks`, `revinfo`, `getdep`/`setdep` (rollers), `flatten`, `config` | `ay git gclient` passthrough; `xtk` writes a gclient-compatible root `DEPS` | `ay gclient` (`crates/depot-gclient`) | revinfo, getdep, setdep, sync, hooks listing, root: done |
 | `gclient_eval.py` (DEPS / `.gclient`) | Python | 1,227 | Safe DEPS evaluation, conditions, setdep edits | none | `depot_gclient::{eval, condition, deps, edit}` on Ruff's parser | done, byte-identical to upstream |
 | `fetch` (`fetch.py`, `fetch_configs/`) | Python | 370 + 1,740 | `fetch chromium`, `fetch v8`, `fetch --nohooks android` | none | `ay fetch` (`depot_gclient::fetch`, configs as data) | done for all 43 configs |
-| `git cl` (`git_cl.py`) | Python | 9,254 | upload, status, land, try, issue, format, presubmit | none | `ay cl` on `jj gerrit upload` + Gerrit REST (ureq) | not started |
+| `git cl` (`git_cl.py`) | Python | 9,254 | upload, status, land, try, issue, format, presubmit | none | `ay cl` (`depot_gclient::cl`): `upload` maps `-r`, `--cc`, `-t`, `-d`/`--cq-dry-run`, `-c`/`--use-commit-queue`, `--wip`, `--topic`, `--hashtag`, `-b` onto `jj gerrit upload`; `status`/`issue` query Gerrit REST with `.gitcookies` | upload, status, issue: done; land/try/format/presubmit: upstream |
 | `git-map`, `git-map-branches`, `git-new-branch`, `git-rebase-update`, `git-squash-branch`, `git-reparent-branch`, `git-rename-branch`, `git-hyper-blame`, `git-number`, `git-upstream-diff`, `git-freeze`/`thaw`, `git-mark-merge-base`, `git-retry`, `git-footers` (`git_common.py`) | Python | 187, 112, 642, 291, 120, 69, 434, 323, 83, 47, 82, 213, 286 + 1,897 | Branch stacks on `origin/main`, rebasing stacks, blame across reverts | none | jj covers stacks natively (`jj log`, `jj rebase -d main`, `jj squash`, `jj bookmark rename`); `jj file annotate` for blame | use jj, nothing to write |
 | `git_cache.py` | Python | 1,701 | Shared bare mirrors in `%LOCALAPPDATA%\depot_tools\git_cache` | read by `ay gclient sync` | `depot_gclient::sync::cache_dir_name` + `objects/info/alternates` | done: read side and `--populate-cache` |
 | `cipd` (`cipd`, `cipd.bat`, `cipd_manifest.txt`) | bash/bat + Go binary | 295 + 98 | Binary packages: gn, clang, Siso, Python, test data | detection only | Official Go client via `ay cipd` | wrapped, stays upstream |
@@ -221,9 +221,7 @@ depot_tools' bundled 3.11 interpreter, for the upstream comparison tests.
 
 ## Remaining
 
-1. `ay cl status|upload`: Gerrit REST (`/changes/?q=owner:self+status:open`, credentials from
-   `.gitcookies` or the keyring, never printed) and `jj gerrit upload` for pushing to
-   `refs/for/main` with a `Change-Id` footer.
+1. Done: `ay cl upload|status|issue` (see the `git cl` row). `land` stays a CQ+2 upload; `try` and `presubmit` stay upstream.
 2. Done: `ay gclient runhooks [--hook name] [-n]` runs enabled hooks in gclient order with the upstream header and exit code 2 on failure; `vpython3` goes to `ay vpy` (`--upstream-vpython` to keep vpython3), `python3` to `uv run --no-project python`. Checked on chromium: 17 hooks, `landmines`, `lastchange`, `vpython3_common` run clean.
 3. Done: GCS downloads (`depot_gclient::gcs`) and `ay gclient sync --populate-cache` (pins fetched into the shared bare mirror with the `git_cache.Mirror` layout, kept by `refs/ay/pins/<id>`; checkouts borrow objects through alternates, jsoncpp: 80 KB `.git`). Existing mirrors can carry stale commit-graphs (jsoncpp did); delete and repopulate such a mirror.
 4. `ay gclient flatten`, `--snapshot`/`--actual` revinfo.
