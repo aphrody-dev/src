@@ -175,3 +175,15 @@ docs-sync:
     git -C "{{root}}/third_party/nix-dev" pull --depth 1
     git -C "{{root}}/third_party/archlinux-docker" pull --depth 1
     git -C "{{root}}/third_party/docker-alpine" pull --depth 1
+
+# Index src (+ third_party/vendor with --all) via @aphrody/core into var/index/core.db
+index *args:
+    bun packages/core/src/cli.ts index "{{root}}" {{args}}
+
+# Generate skills + docs/reference from the index
+index-gen:
+    bun packages/core/src/cli.ts gen "{{root}}"
+
+# Regenerate the core C header (cbindgen)
+core-header:
+    cbindgen --config crates/core-capi/cbindgen.toml crates/core-capi -o crates/core-capi/include/aphrody_core.h

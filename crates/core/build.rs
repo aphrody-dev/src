@@ -54,7 +54,7 @@ fn main() {
 
 fn grammar_repos(src_root: &Path, manifest: &Path) -> Vec<PathBuf> {
     if let Ok(text) = std::fs::read_to_string(manifest) {
-        let value: toml::Value = match text.parse() {
+        let value = match toml::from_str::<toml::Table>(&text).map(toml::Value::Table) {
             Ok(v) => v,
             Err(e) => {
                 println!("cargo:warning={} unreadable: {e}", manifest.display());
@@ -107,7 +107,7 @@ struct GrammarSrc {
 fn grammars_in(repo: &Path) -> Vec<GrammarSrc> {
     let meta = repo.join("tree-sitter.json");
     println!("cargo:rerun-if-changed={}", meta.display());
-    let Ok(text) = std::fs::read_to_string(&meta) else { return Vec::new() };
+    let Ok(text) = std::fs::read_to_string(&meta) else { return legacy_grammar(repo).into_iter().collect() };
     let Ok(json) = serde_json::from_str::<serde_json::Value>(&text) else { return Vec::new() };
     let strs = |v: Option<&serde_json::Value>| -> Vec<String> {
         match v {
@@ -124,7 +124,7 @@ fn grammars_in(repo: &Path) -> Vec<GrammarSrc> {
             let name = g["name"].as_str()?.to_string();
             let dir = repo.join(g["path"].as_str().unwrap_or("."));
             let src = dir.join("src");
-            if !src.join("parser.c").is_file() {
+            if !ensure_parser(&dir) {
                 return None;
             }
             let tags = strs(g.get("tags"))
@@ -146,6 +146,20 @@ fn grammars_in(repo: &Path) -> Vec<GrammarSrc> {
 fn compile(g: &GrammarSrc) -> Result<(), String> {
     if g.src.join("scanner.cc").is_file() {
         return Err("C++ scanner (scanner.cc) unsupported".into());
+    }
+    // tree-sitter.json may declare a dialect whose entry point lives in another parser.c.
+    let parser = std::fs::read_to_string(g.src.join("parser.c")).map_err(|e| e.to_string())?;
+    if !parser.contains(&format!("tree_sitter_{}(", g.ident)) {
+        return Err(format!("src/parser.c does not define tree_sitter_{}", g.ident));
+    }
+    // Runtime tree-sitter 0.27 loads ABI >= 13 (tree_sitter::MIN_COMPATIBLE_LANGUAGE_VERSION).
+    let abi = parser
+        .lines()
+        .find_map(|l| l.strip_prefix("#define LANGUAGE_VERSION "))
+        .and_then(|v| v.trim().parse::<u32>().ok())
+        .unwrap_or(0);
+    if abi < 13 {
+        return Err(format!("ABI {abi} < 13, regenerate with `tree-sitter generate`"));
     }
     let mut b = cc::Build::new();
     b.include(&g.src).warnings(false).cargo_warnings(false).file(g.src.join("parser.c"));
@@ -172,4 +186,36 @@ fn emit(g: &GrammarSrc, decls: &mut String, code: &mut String) {
         "    Grammar {{ name: {:?}, file_types: &{:?}, raw: aphrody_grammar_{}, tags: {tags} }},",
         g.name, g.file_types, g.ident
     );
+}
+
+/// Grammars predating `tree-sitter.json` (ABI <= 14 era): name from the directory
+/// (`tree-sitter-<name>`), committed `src/parser.c`, file types left empty (match by name).
+fn legacy_grammar(repo: &Path) -> Option<GrammarSrc> {
+    let src = repo.join("src");
+    if !ensure_parser(repo) {
+        return None;
+    }
+    let name = repo.file_name()?.to_str()?.strip_prefix("tree-sitter-")?.to_string();
+    let tags = Some(repo.join("queries/tags.scm")).filter(|p| p.is_file());
+    Some(GrammarSrc { ident: name.replace(['-', '.'], "_"), name, src, file_types: Vec::new(), tags })
+}
+
+/// Grammars shipped without a generated `src/parser.c` (e.g. sql, swift) are generated in place
+/// with the tree-sitter CLI (`TREE_SITTER_CLI` or `tree-sitter` on PATH) when `grammar.js` exists.
+fn ensure_parser(dir: &Path) -> bool {
+    if dir.join("src/parser.c").is_file() {
+        return true;
+    }
+    if !dir.join("grammar.js").is_file() {
+        return false;
+    }
+    println!("cargo:rerun-if-env-changed=TREE_SITTER_CLI");
+    let cli = std::env::var("TREE_SITTER_CLI").unwrap_or_else(|_| "tree-sitter".into());
+    match std::process::Command::new(&cli).arg("generate").current_dir(dir).status() {
+        Ok(s) if s.success() => dir.join("src/parser.c").is_file(),
+        other => {
+            println!("cargo:warning={}: `{cli} generate` failed: {other:?}", dir.display());
+            false
+        }
+    }
 }

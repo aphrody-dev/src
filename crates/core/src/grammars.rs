@@ -31,7 +31,10 @@ impl Grammar {
     pub fn for_path(path: &Path) -> Option<&'static Grammar> {
         let file = path.file_name()?.to_str()?;
         let ext = path.extension().and_then(|e| e.to_str()).unwrap_or("");
-        GRAMMARS.iter().find(|g| g.file_types.iter().any(|t| *t == file || t.eq_ignore_ascii_case(ext)))
+        GRAMMARS.iter().find(|g| {
+            g.file_types.iter().any(|t| *t == file || t.eq_ignore_ascii_case(ext))
+                || (g.file_types.is_empty() && g.name.eq_ignore_ascii_case(ext))
+        })
     }
 
     /// Parse and extract definitions/references through `tags.scm` (structure-only when absent).
@@ -59,7 +62,7 @@ impl Grammar {
         while let Some(m) = it.next() {
             let mut name = None;
             let mut role = None;
-            for c in m.captures {
+            for c in m.captures() {
                 let cap = names[c.index as usize];
                 if cap == "name" {
                     name = c.node.utf8_text(content.as_bytes()).ok().map(|s| (s.to_string(), c.node));
