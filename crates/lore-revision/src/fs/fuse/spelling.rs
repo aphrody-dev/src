@@ -56,7 +56,7 @@ impl SpellingRecord {
         spellings.negative |= !positive;
         if !spellings.overflowed && !spellings.seen.iter().any(|seen| **seen == *name) {
             if spellings.seen.len() < SPELLING_BOUND {
-                spellings.seen.push(Name::from_slice(name));
+                spellings.seen.push(Name::from_slice_copy(name));
             } else {
                 spellings.overflowed = true;
             }

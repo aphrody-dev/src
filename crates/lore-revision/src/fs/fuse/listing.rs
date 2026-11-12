@@ -570,7 +570,7 @@ impl Listing {
             let view_excluded = view_excluded && !holds_local(&node);
             let packed_filter_state = (filter_states_to_u8(child_state), view_line(child_state));
 
-            let name: SmallVec<u8, 256> = SmallVec::from_slice(name_lock.as_bytes());
+            let name: SmallVec<u8, 256> = SmallVec::from_slice_copy(name_lock.as_bytes());
             drop(name_lock);
 
             if !is_representable(&name) {

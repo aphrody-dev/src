@@ -135,7 +135,6 @@ deps = {
   'third_party/forgecode': 'https://github.com/tailcallhq/forgecode.git@a22b49288856d5b3f3ca57e8532683d54a662c8c',
   'third_party/fx': 'https://github.com/aphrody-labs/fx.git@7f24144a662b78092aec18be2830742a65f4c698',
   'third_party/gash': 'https://github.com/aphrody-labs/gash.git@e9e2099452c35f080cd38d9a92196bae36dc5235',
-  'third_party/gcc': 'https://gcc.gnu.org/git/gcc.git@3c632b99e2192ac7cd65a95a1cb049cc48ea350e',
   'third_party/gemini-cli': 'https://github.com/aphrody-dev/gemini-cli.git@e5d88fb2c036ce7e0c27131469cd963221b9d9e7',
   'third_party/gemini-skills': 'https://github.com/google-gemini/gemini-skills.git@0f596dbdcbde186e3d418d1279f7f499fe9afbf5',
   'third_party/git': 'https://github.com/aphrody-labs/git.git@a6974a1ce8de729b4804b7c4884c0d9dee0b5824',

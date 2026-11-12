@@ -730,7 +730,7 @@ fn readv_entry(file: &File, iovecs: &OwnedIovecs, offset: u64) -> squeue::Entry 
     // the payload does not move its heap allocation
     opcode::Readv::new(
         types::Fd(file.as_raw_fd()),
-        iovecs.0.as_ptr(),
+        iovecs.0.as_ptr().cast(),
         iovecs.0.len() as u32,
     )
     .offset(offset)
@@ -742,7 +742,7 @@ fn writev_entry(file: &File, iovecs: &OwnedIovecs, offset: u64) -> squeue::Entry
     // Safety: as in `readv_entry`, with `StableBufList` providing the segment stability
     opcode::Writev::new(
         types::Fd(file.as_raw_fd()),
-        iovecs.0.as_ptr(),
+        iovecs.0.as_ptr().cast(),
         iovecs.0.len() as u32,
     )
     .offset(offset)

@@ -801,7 +801,7 @@ pub struct Name(SmallVec<u8, 64>);
 
 impl Name {
     pub fn new(bytes: &[u8]) -> Self {
-        Self(SmallVec::from_slice(bytes))
+        Self(SmallVec::from_slice_copy(bytes))
     }
 
     pub fn as_bytes(&self) -> &[u8] {

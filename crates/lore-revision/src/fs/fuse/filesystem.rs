@@ -1706,7 +1706,7 @@ impl FuseFilesystem {
                 return Ok(Some(NamedChild {
                     entry,
                     node: listing.node_ids[index],
-                    spelled: Name::from_slice(listing.name(index)),
+                    spelled: Name::from_slice_copy(listing.name(index)),
                 }));
             }
             Hit::Miss => return Ok(None),
@@ -2517,7 +2517,7 @@ impl FuseFilesystem {
         // Read again to copy: a rename since the first read leaves the name asked for absent.
         let name = block.read_node_and_name(index, |node, name| match name {
             Ok(name) if holds_name(node, dir, name_hash) && fold_eq(name, requested) => {
-                Ok(Some(Name::from_slice(name.as_bytes())))
+                Ok(Some(Name::from_slice_copy(name.as_bytes())))
             }
             Ok(_) => Ok(None),
             Err(error) => Err(error),
@@ -3757,7 +3757,7 @@ pub(crate) fn unnamed(requested: &str, error: &NodeNameError) -> Errno {
 /// `held`, a node's name, where it folds to `name` and can be an entry.
 fn spelled_as(held: Option<&str>, name: &str) -> Option<Name> {
     held.filter(|held| fold_eq(held, name) && is_representable(held.as_bytes()))
-        .map(|held| Name::from_slice(held.as_bytes()))
+        .map(|held| Name::from_slice_copy(held.as_bytes()))
 }
 
 pub(crate) fn holds_name(node: &Node, dir: NodeID, name_hash: u64) -> bool {

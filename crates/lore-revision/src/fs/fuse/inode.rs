@@ -438,7 +438,7 @@ impl InodeTable {
             ino: n,
             parent,
             name_hash,
-            name: Name::from_slice(name.as_bytes()),
+            name: Name::from_slice_copy(name.as_bytes()),
             kind,
             nlookup: 1,
             mtime,
@@ -503,7 +503,7 @@ impl InodeTable {
             self.unindex_child(entry.parent, entry.name_hash, ino);
             entry.parent = parent;
             entry.name_hash = name_hash;
-            entry.name = Name::from_slice(name.as_bytes());
+            entry.name = Name::from_slice_copy(name.as_bytes());
             // Inner lock of the `by_ino` -> `children` order.
             #[allow(clippy::disallowed_methods)]
             let mut inos = self.children.entry((parent, name_hash)).or_default();

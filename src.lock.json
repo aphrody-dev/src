@@ -1538,29 +1538,18 @@
             },
             "sparse_paths": null
         },
-        "third_party/gcc": {
-            "path": "C:\\src\\third_party\\gcc",
-            "url": "https://gcc.gnu.org/git/gcc.git",
-            "commit": "3c632b99e2192ac7cd65a95a1cb049cc48ea350e",
-            "branch": "detached",
+        "third_party/zen-browser-desktop": {
+            "path": "C:\\src\\third_party\\zen-browser-desktop",
+            "url": "https://github.com/zen-browser/desktop.git",
+            "commit": "0057b295aee4a1ff00e0bd24e1150b7bc1a28503",
+            "branch": "dev",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://gcc.gnu.org/git/gcc.git"
+                "aphrody": "https://github.com/aphrody-labs/desktop.git",
+                "origin": "https://github.com/zen-browser/desktop.git"
             },
-            "sparse_paths": [
-                "/gcc/common.opt",
-                "/gcc/gcc.cc",
-                "/gcc/doc/invoke.texi",
-                "/gcc/config/gnu-user.h",
-                "/gcc/config/linux.h",
-                "/gcc/config/i386/linux64.h",
-                "/gcc/config/i386/gnu-user64.h",
-                "/gcc/BASE-VER",
-                "/gcc/collect2.cc",
-                "/gcc/configure.ac",
-                "/gcc/config/linux.cc"
-            ]
+            "sparse_paths": null
         },
         "third_party/gemini-cli": {
             "path": "C:\\src\\third_party\\gemini-cli",
@@ -5956,19 +5945,6 @@
                 "/crates/sum_tree/",
                 "/crates/util/"
             ]
-        },
-        "third_party/zen-browser-desktop": {
-            "path": "C:\\src\\third_party\\zen-browser-desktop",
-            "url": "https://github.com/zen-browser/desktop.git",
-            "commit": "0057b295aee4a1ff00e0bd24e1150b7bc1a28503",
-            "branch": "dev",
-            "engine": "git",
-            "pillar": "git",
-            "remotes": {
-                "aphrody": "https://github.com/aphrody-labs/desktop.git",
-                "origin": "https://github.com/zen-browser/desktop.git"
-            },
-            "sparse_paths": null
         }
     }
 }
