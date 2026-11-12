@@ -194,6 +194,51 @@ export const TOOLS: Tool[] = [
     run: (a) => notebookAsk(String(a.notebook), String(a.prompt)),
   },
   {
+    name: "workspace_api",
+    description:
+      "Direct Google Workspace API call through gws (googleworkspace/cli, Discovery-based): drive, sheets, docs, slides, gmail, calendar… e.g. service=calendar, path=['events','list'], params={calendarId:'primary'}. Auth: gws auth login, or GOOGLE_WORKSPACE_CLI_TOKEN.",
+    inputSchema: obj(
+      {
+        service: str("drive | sheets | docs | slides | gmail | calendar | …"),
+        path: {
+          type: "array",
+          items: { type: "string" },
+          description: "resource [sub-resource] method",
+        },
+        params: { type: "object", description: "URL/query parameters" },
+        body: { type: "object", description: "Request body (POST/PATCH/PUT)" },
+      },
+      ["service", "path"],
+    ),
+    readOnly: false,
+    run: async (a) => {
+      const argv = [
+        "gws",
+        String(a.service),
+        ...(a.path as string[]).map(String),
+        ...(a.params ? ["--params", JSON.stringify(a.params)] : []),
+        ...(a.body ? ["--json", JSON.stringify(a.body)] : []),
+      ];
+      if (
+        !/^[a-z0-9]+$/.test(String(a.service)) ||
+        (a.path as string[]).some((p) => !/^[A-Za-z0-9_.]+$/.test(p))
+      )
+        throw new Error("service/path invalides");
+      const p = Bun.spawn(argv, { stdout: "pipe", stderr: "pipe" });
+      const [out, err, code] = await Promise.all([
+        new Response(p.stdout).text(),
+        new Response(p.stderr).text(),
+        p.exited,
+      ]);
+      if (code !== 0) throw new Error(`gws : ${(err || out).slice(0, 400)}`);
+      try {
+        return JSON.parse(out);
+      } catch {
+        return out;
+      }
+    },
+  },
+  {
     name: "figma_ask",
     description:
       "Figma through Claude Code's Figma remote MCP (https://mcp.figma.com/mcp, OAuth done once in /mcp): design context, variables, Code Connect, canvas writes. Only Figma tools are allowed.",
