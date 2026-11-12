@@ -1,0 +1,14 @@
+[Unit]
+Description=Agent relay broker bunos-coordination (migrated from fr1 2026-11-12)
+After=network-online.target
+[Service]
+User=ubuntu
+Group=ubuntu
+Environment=HOME=/srv/agent-relay/home
+WorkingDirectory=/home/ubuntu/tools/agent-coordination
+ExecStart=/home/ubuntu/.agentworkforce/relay/bin/agent-relay-broker init --instance-name bunos-coordination --channels general --persist --api-port 3889 --state-dir /home/ubuntu/tools/agent-coordination/state
+Restart=always
+RestartSec=10
+Slice=fleet-apps.slice
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,9 @@
+[Unit]
+Description=Fleet config/app-state backup to R2
+After=network-online.target
+[Service]
+Type=oneshot
+User=ubuntu
+Nice=19
+IOSchedulingClass=idle
+ExecStart=/usr/local/bin/fleet-backup.sh

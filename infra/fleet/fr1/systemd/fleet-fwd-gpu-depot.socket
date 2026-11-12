@@ -1,0 +1,7 @@
+[Unit]
+Description=Compat forward 10.200.77.1:8182 -> prd 10.200.77.5:8182 (gpu-depot moved to prd 2026-11-12)
+[Socket]
+ListenStream=10.200.77.1:8182
+FreeBind=true
+[Install]
+WantedBy=sockets.target

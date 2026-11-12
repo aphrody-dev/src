@@ -1,0 +1,7 @@
+[Unit]
+Description=Fleet health check every 2 min
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=2min
+[Install]
+WantedBy=timers.target

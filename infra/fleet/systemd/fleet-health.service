@@ -1,0 +1,5 @@
+[Unit]
+Description=Fleet cross-node health check
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/fleet-health.sh

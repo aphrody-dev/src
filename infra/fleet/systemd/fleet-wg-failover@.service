@@ -1,0 +1,6 @@
+[Unit]
+Description=WireGuard direct/hub failover %I
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/fleet/wg-failover-%i.env
+ExecStart=/usr/local/bin/fleet-wg-failover.sh ${IFACE} ${PEER} ${IP}

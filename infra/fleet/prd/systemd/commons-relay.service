@@ -1,0 +1,15 @@
+[Unit]
+Description=Commons relay (migrated from fr1 2026-11-12)
+After=network-online.target wg-quick@vps.service
+Wants=network-online.target
+[Service]
+User=ubuntu
+Group=ubuntu
+Environment=HOME=/srv/commons-relay/home
+ExecStart=/bin/sh -c "exec /srv/commons-relay/bin/commons relay serve --host 10.200.77.5 --port 8766 --db /srv/commons-relay/state/relay.db --token \"$$(cat /srv/commons-relay/state/relay-token)\""
+Restart=always
+RestartSec=5
+Slice=fleet-apps.slice
+NoNewPrivileges=true
+[Install]
+WantedBy=multi-user.target

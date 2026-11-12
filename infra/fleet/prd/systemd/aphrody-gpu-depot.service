@@ -1,0 +1,16 @@
+[Unit]
+Description=Aphrody private pinned model depot (migrated from fr1 2026-11-12)
+After=network-online.target wg-quick@vps.service
+Wants=network-online.target
+[Service]
+Type=simple
+Environment=APHRODY_SETUP_NO_UPDATE=1
+Environment=HOME=/srv/aphrody-gpu-depot/home
+ExecStart=/usr/local/bin/bun /srv/aphrody-gpu-depot/lib/gpu-fleet/product.mjs admin flotte depot /srv/aphrody-gpu-depot/models/gpu-fleet/d36bdd3855c82a6a1a23f7c459b749f5724ae75d /srv/aphrody-gpu-depot/private/gpu-fleet/depot.token 10.200.77.5
+Restart=always
+RestartSec=10
+Slice=fleet-apps.slice
+NoNewPrivileges=true
+UMask=0077
+[Install]
+WantedBy=multi-user.target

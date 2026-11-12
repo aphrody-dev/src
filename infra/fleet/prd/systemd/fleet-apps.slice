@@ -1,0 +1,10 @@
+[Unit]
+Description=Fleet migrated app services (commons, gpu-depot, agent-relay)
+[Slice]
+CPUWeight=50
+IOWeight=50
+MemoryHigh=6G
+MemoryMax=8G
+TasksMax=4096
+ManagedOOMMemoryPressure=kill
+ManagedOOMMemoryPressureLimit=80%
