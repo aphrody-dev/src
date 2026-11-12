@@ -1,5 +1,6 @@
 use crate::auth::ForgeAuth;
 use crate::error::ForgeError;
+use crate::http::{self, CheckStatus, ReadBody, Request};
 use crate::models::{GitLabIssue, GitLabMergeRequest, GitLabPipeline, GitLabProject};
 
 pub struct GitLabClient {
@@ -34,12 +35,12 @@ impl GitLabClient {
         &self.auth
     }
 
-    fn prepare_request(&self, req: ureq::Request) -> ureq::Request {
+    fn prepare_request<B>(&self, req: Request<B>) -> Request<B> {
         let mut r = req
-            .set("User-Agent", "depot-forge/0.2.0")
-            .set("Accept", "application/json");
+            .header("User-Agent", "depot-forge/0.2.0")
+            .header("Accept", "application/json");
         if let Some(tok) = self.auth.token() {
-            r = r.set("PRIVATE-TOKEN", tok);
+            r = r.header("PRIVATE-TOKEN", tok);
         }
         r
     }
@@ -51,10 +52,7 @@ impl GitLabClient {
     pub fn get_project(&self, project: &str) -> Result<GitLabProject, ForgeError> {
         let enc = Self::encode_path(project);
         let url = format!("{}/api/v4/projects/{}", self.base_url, enc);
-        let resp = self
-            .prepare_request(ureq::get(&url))
-            .call()
-            .map_err(|e| map_ureq_error(e, &url))?;
+        let resp = self.prepare_request(http::get(&url)).call().check(&url)?;
 
         resp.into_json()
             .map_err(|e| ForgeError::Json(e.to_string()))
@@ -66,10 +64,7 @@ impl GitLabClient {
             "{}/api/v4/groups/{}/projects?per_page=100&include_subgroups=true",
             self.base_url, enc
         );
-        let resp = self
-            .prepare_request(ureq::get(&url))
-            .call()
-            .map_err(|e| map_ureq_error(e, &url))?;
+        let resp = self.prepare_request(http::get(&url)).call().check(&url)?;
 
         resp.into_json()
             .map_err(|e| ForgeError::Json(e.to_string()))
@@ -86,10 +81,7 @@ impl GitLabClient {
             "{}/api/v4/projects/{}/merge_requests?state={}&per_page=50",
             self.base_url, enc, st
         );
-        let resp = self
-            .prepare_request(ureq::get(&url))
-            .call()
-            .map_err(|e| map_ureq_error(e, &url))?;
+        let resp = self.prepare_request(http::get(&url)).call().check(&url)?;
 
         resp.into_json()
             .map_err(|e| ForgeError::Json(e.to_string()))
@@ -101,10 +93,7 @@ impl GitLabClient {
             "{}/api/v4/projects/{}/issues?state=opened&per_page=50",
             self.base_url, enc
         );
-        let resp = self
-            .prepare_request(ureq::get(&url))
-            .call()
-            .map_err(|e| map_ureq_error(e, &url))?;
+        let resp = self.prepare_request(http::get(&url)).call().check(&url)?;
 
         resp.into_json()
             .map_err(|e| ForgeError::Json(e.to_string()))
@@ -122,10 +111,7 @@ impl GitLabClient {
             enc,
             limit.min(100)
         );
-        let resp = self
-            .prepare_request(ureq::get(&url))
-            .call()
-            .map_err(|e| map_ureq_error(e, &url))?;
+        let resp = self.prepare_request(http::get(&url)).call().check(&url)?;
 
         resp.into_json()
             .map_err(|e| ForgeError::Json(e.to_string()))
@@ -143,22 +129,9 @@ impl GitLabClient {
             "{}/api/v4/projects/{}/repository/files/{}/raw?ref={}",
             self.base_url, enc_project, enc_path, r#ref
         );
-        let resp = self
-            .prepare_request(ureq::get(&url))
-            .call()
-            .map_err(|e| map_ureq_error(e, &url))?;
+        let resp = self.prepare_request(http::get(&url)).call().check(&url)?;
 
         resp.into_string()
             .map_err(|e| ForgeError::Network(e.to_string()))
-    }
-}
-
-fn map_ureq_error(err: ureq::Error, url: &str) -> ForgeError {
-    match err {
-        ureq::Error::Status(code, resp) => {
-            let msg = resp.into_string().unwrap_or_else(|_| "Unknown HTTP error".to_string());
-            ForgeError::Http(code, format!("URL: {} -> {}", url, msg))
-        }
-        ureq::Error::Transport(t) => ForgeError::Network(format!("URL: {} -> {}", url, t)),
     }
 }

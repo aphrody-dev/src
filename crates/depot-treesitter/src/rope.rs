@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //! Helix Editor transactional Rope editing engine (`helix-core` pattern).
-//! Uses `ropey::Rope` for zero-copy, byte-accurate, transactional span replacement.
+//! Uses the byte-indexed `ropey` 2 `Rope` for zero-copy, byte-accurate, transactional span replacement.
 //! Non-overlapping `(start_byte, end_byte, replacement)` edits are applied in reverse byte order
 //! so all Tree-Sitter AST byte offsets remain valid in a single O(k log N) pass.
 
-use ropey::Rope;
+use ropey::{LineType, Rope};
 
 /// Applies non-overlapping `(start_byte, end_byte, replacement)` edits in reverse byte order.
 /// Tree-sitter byte offsets remain valid without invalidation cascades.
@@ -18,13 +18,16 @@ pub fn apply_helix_rope_edits(source: &str, mut edits: Vec<(usize, usize, String
     let mut last_start = usize::MAX;
 
     for (start_byte, end_byte, replacement) in edits {
-        if end_byte > last_start || start_byte > end_byte || end_byte > rope.len_bytes() {
+        if end_byte > last_start
+            || start_byte > end_byte
+            || end_byte > rope.len()
+            || !source.is_char_boundary(start_byte)
+            || !source.is_char_boundary(end_byte)
+        {
             continue;
         }
-        let start_char = rope.byte_to_char(start_byte);
-        let end_char = rope.byte_to_char(end_byte);
-        rope.remove(start_char..end_char);
-        rope.insert(start_char, &replacement);
+        rope.remove(start_byte..end_byte);
+        rope.insert(start_byte, &replacement);
         last_start = start_byte;
     }
     rope.to_string()
@@ -49,26 +52,34 @@ impl RopeSession {
     }
 
     pub fn len_lines(&self) -> usize {
-        self.rope.len_lines()
+        self.rope.len_lines(LineType::LF_CR)
     }
 
     pub fn len_bytes(&self) -> usize {
-        self.rope.len_bytes()
+        self.rope.len()
     }
 
     /// Stage a byte-span replacement `[start_byte, end_byte) -> replacement`.
-    pub fn stage_replace(&mut self, start_byte: usize, end_byte: usize, replacement: impl Into<String>) {
-        self.staged_edits.push((start_byte, end_byte, replacement.into()));
+    pub fn stage_replace(
+        &mut self,
+        start_byte: usize,
+        end_byte: usize,
+        replacement: impl Into<String>,
+    ) {
+        self.staged_edits
+            .push((start_byte, end_byte, replacement.into()));
     }
 
     /// Stage an insertion at `byte_offset`.
     pub fn stage_insert(&mut self, byte_offset: usize, text: impl Into<String>) {
-        self.staged_edits.push((byte_offset, byte_offset, text.into()));
+        self.staged_edits
+            .push((byte_offset, byte_offset, text.into()));
     }
 
     /// Stage a deletion of `[start_byte, end_byte)`.
     pub fn stage_delete(&mut self, start_byte: usize, end_byte: usize) {
-        self.staged_edits.push((start_byte, end_byte, String::new()));
+        self.staged_edits
+            .push((start_byte, end_byte, String::new()));
     }
 
     /// Commits all staged edits in reverse byte order and returns the resulting string.
@@ -86,10 +97,7 @@ mod tests {
     #[test]
     fn test_apply_helix_rope_edits() {
         let src = "fn old_func() { let x = 10; }";
-        let edits = vec![
-            (3, 11, "new_func".to_string()),
-            (24, 26, "42".to_string()),
-        ];
+        let edits = vec![(3, 11, "new_func".to_string()), (24, 26, "42".to_string())];
         let result = apply_helix_rope_edits(src, edits);
         assert_eq!(result, "fn new_func() { let x = 42; }");
     }

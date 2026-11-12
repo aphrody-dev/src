@@ -16,6 +16,8 @@ feature-unification = true
 
 [resolver]
 feature-unification = "workspace"
+# Dependencies track the newest upstream; do not hold crates back to the rust-version floor.
+incompatible-rust-versions = "allow"
 
 [target.x86_64-pc-windows-msvc]
 # rust-lld ships with the toolchain (lib/rustlib/<host>/bin) and links the

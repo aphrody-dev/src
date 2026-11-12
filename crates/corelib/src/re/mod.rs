@@ -4,9 +4,9 @@
 //! Consolidates CRIWARE CPK/AFS archive decoders, CRILAYLA decompression,
 //! @UTF relational schema parsers, and AOB memory signature scanners.
 
-use std::collections::HashMap;
-use serde::{Deserialize, Serialize};
 use crate::error::{CorelibError, Result};
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 pub const CRI_VIOLA_FIXED_KEY: u64 = 0x00000215F0945446;
 
@@ -52,7 +52,9 @@ pub fn sniff_format(bytes: &[u8]) -> BinaryFormat {
         BinaryFormat::MachOExecutable
     } else if bytes.starts_with(&[0xC1, 0x83, 0x2A, 0x9E]) {
         BinaryFormat::UnrealAssetPackage
-    } else if bytes.starts_with(&[0x27, 0xC0, 0x83, 0x0B]) || bytes.starts_with(&[0x26, 0xC0, 0x83, 0x0B]) {
+    } else if bytes.starts_with(&[0x27, 0xC0, 0x83, 0x0B])
+        || bytes.starts_with(&[0x26, 0xC0, 0x83, 0x0B])
+    {
         BinaryFormat::EgsManifest
     } else {
         // Check for trailing Unreal .pak magic (FPakInfo)
@@ -78,7 +80,11 @@ pub fn compute_sha256(bytes: &[u8]) -> String {
     use sha2::{Digest, Sha256};
     let mut hasher = Sha256::new();
     hasher.update(bytes);
-    format!("{:x}", hasher.finalize())
+    hasher
+        .finalize()
+        .iter()
+        .map(|b| format!("{b:02x}"))
+        .collect()
 }
 
 /// Decrypt XOR-scrambled CRI block using Viola/Level-5 fixed key
@@ -151,12 +157,14 @@ impl UtfTable {
         #[cfg(feature = "re")]
         let string_offset = BigEndian::read_u32(&bytes[12..16]) as usize + 8;
         #[cfg(not(feature = "re"))]
-        let string_offset = u32::from_be_bytes([bytes[12], bytes[13], bytes[14], bytes[15]]) as usize + 8;
+        let string_offset =
+            u32::from_be_bytes([bytes[12], bytes[13], bytes[14], bytes[15]]) as usize + 8;
 
         #[cfg(feature = "re")]
         let table_name_offset = BigEndian::read_u32(&bytes[20..24]) as usize;
         #[cfg(not(feature = "re"))]
-        let table_name_offset = u32::from_be_bytes([bytes[20], bytes[21], bytes[22], bytes[23]]) as usize;
+        let table_name_offset =
+            u32::from_be_bytes([bytes[20], bytes[21], bytes[22], bytes[23]]) as usize;
 
         #[cfg(feature = "re")]
         let num_columns = BigEndian::read_u16(&bytes[24..26]) as usize;
@@ -229,8 +237,9 @@ impl AobPattern {
             if token == "?" || token == "??" {
                 bytes.push(None);
             } else {
-                let byte = u8::from_str_radix(token, 16)
-                    .map_err(|e| CorelibError::Re(format!("Invalid hex byte in pattern '{token}': {e}")))?;
+                let byte = u8::from_str_radix(token, 16).map_err(|e| {
+                    CorelibError::Re(format!("Invalid hex byte in pattern '{token}': {e}"))
+                })?;
                 bytes.push(Some(byte));
             }
         }

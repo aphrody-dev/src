@@ -2,6 +2,7 @@ pub mod auth;
 pub mod error;
 pub mod github;
 pub mod gitlab;
+mod http;
 pub mod models;
 
 pub use auth::ForgeAuth;

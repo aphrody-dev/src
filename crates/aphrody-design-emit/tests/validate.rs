@@ -2,12 +2,12 @@
 //! Every preset x target output is parsed by a real parser for its format and checked for
 //! structure, and the main on-color pairs of every preset meet WCAG 2.2 AA in both modes.
 
-use std::collections::{BTreeMap, BTreeSet};
 use aphrody_design_emit::contrast::{AA_TEXT, failures, ratio};
 use aphrody_design_emit::{
     EmittedFile, Target, Theme, ThemeSource, YoloThemePreset, chrome, compose, emit, emit_files,
     fluent, omarchy, winui,
 };
+use std::collections::{BTreeMap, BTreeSet};
 
 fn sources() -> Vec<ThemeSource> {
     let mut out: Vec<ThemeSource> = YoloThemePreset::ALL
@@ -363,7 +363,10 @@ fn asset_catalog_colorsets_are_valid() {
             }
             assert!(swift.contents.contains(&format!("Color(\"{name}\")")));
         }
-        assert_eq!(names.len(), aphrody_design_tokens::role::Role::ALL.len() + 4);
+        assert_eq!(
+            names.len(),
+            aphrody_design_tokens::role::Role::ALL.len() + 4
+        );
         assert!(swift.contents.contains("NSAppearance.Name.darkAqua"));
         assert_eq!(
             swift.contents.matches('{').count(),
@@ -384,8 +387,8 @@ struct Dict {
 }
 
 fn parse_xaml(label: &str, text: &str) -> (Dict, BTreeMap<String, Dict>) {
-    use quick_xml::Reader;
     use quick_xml::events::Event;
+    use quick_xml::{Reader, XmlVersion};
     let mut reader = Reader::from_str(text);
     let mut root = Dict::default();
     let mut themes: BTreeMap<String, Dict> = BTreeMap::new();
@@ -404,13 +407,15 @@ fn parse_xaml(label: &str, text: &str) -> (Dict, BTreeMap<String, Dict>) {
                     Event::Empty(e) => (e.clone(), true),
                     _ => unreachable!(),
                 };
-                let name = String::from_utf8(e.name().as_ref().to_vec()).unwrap();
+                let name = e.name().as_ref().to_owned();
                 let mut attrs = BTreeMap::new();
                 for a in e.attributes() {
                     let a = a.unwrap_or_else(|err| panic!("{label}: attribute error: {err}"));
                     attrs.insert(
-                        String::from_utf8(a.key.as_ref().to_vec()).unwrap(),
-                        a.unescape_value().unwrap().into_owned(),
+                        a.key.as_ref().to_owned(),
+                        a.normalized_value(XmlVersion::Implicit1_0)
+                            .unwrap()
+                            .into_owned(),
                     );
                 }
                 if !root_seen {
@@ -457,7 +462,7 @@ fn parse_xaml(label: &str, text: &str) -> (Dict, BTreeMap<String, Dict>) {
             }
             Event::Text(t) => {
                 if let Some(key) = pending_color.take() {
-                    let value = t.unescape().unwrap().trim().to_owned();
+                    let value = t.xml10_content().trim().to_owned();
                     let dict = match &current_theme {
                         Some(k) => themes.get_mut(k).unwrap(),
                         None => &mut root,
@@ -475,7 +480,7 @@ fn parse_xaml(label: &str, text: &str) -> (Dict, BTreeMap<String, Dict>) {
                 }
             }
             Event::End(e) => {
-                let name = String::from_utf8(e.name().as_ref().to_vec()).unwrap();
+                let name = e.name().as_ref().to_owned();
                 let open = stack.pop();
                 assert_eq!(
                     open.as_deref(),
@@ -788,9 +793,11 @@ fn omarchy_directories_are_complete() {
             assert!(get("hyprland_active_border").ends_with("deg"));
         }
     }
-    let sub: toml::Table = aphrody_design_emit::emit_omarchy_subtheme(aphrody_design_emit::OmarchySubTheme::TokyoNight)
-        .parse()
-        .unwrap();
+    let sub: toml::Table = aphrody_design_emit::emit_omarchy_subtheme(
+        aphrody_design_emit::OmarchySubTheme::TokyoNight,
+    )
+    .parse()
+    .unwrap();
     assert_eq!(sub["accent"].as_str(), Some("#7aa2f7"));
 }
 

@@ -35,7 +35,7 @@ impl Spec {
 
 /// Parse a `vpython.toml` body.
 pub fn parse_toml(text: &str, source: &Path) -> Result<Spec, String> {
-    let v: toml::Value = text
+    let v: toml::Table = text
         .parse()
         .map_err(|e| format!("{}: {e}", source.display()))?;
     let requires_python = v

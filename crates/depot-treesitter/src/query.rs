@@ -22,8 +22,8 @@ impl QueryRunner {
         query_str: &str,
     ) -> Result<Vec<QueryCaptureItem>, String> {
         let ts_lang = lang.tree_sitter_language();
-        let query = Query::new(&ts_lang, query_str)
-            .map_err(|e| format!("Query compile error: {}", e))?;
+        let query =
+            Query::new(&ts_lang, query_str).map_err(|e| format!("Query compile error: {}", e))?;
 
         let mut parser = Parser::new();
         parser
@@ -41,7 +41,7 @@ impl QueryRunner {
         let capture_names = query.capture_names();
 
         while let Some(m) = matches.next() {
-            for capture in m.captures {
+            for capture in m.captures() {
                 let name = capture_names
                     .get(capture.index as usize)
                     .copied()

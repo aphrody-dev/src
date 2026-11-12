@@ -10,7 +10,7 @@ publish = false
 [dependencies]
 blake3.workspace = true
 # Same chunker and parameters as EpicGames/lore (lore-storage/src/chunker.rs).
-fastcdc = "3.2.1"
+fastcdc = "5.0"
 sha2 = "0.11"
 zstd = "0.14"
 

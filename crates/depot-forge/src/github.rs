@@ -1,9 +1,8 @@
-use serde_json::json;
 use crate::auth::ForgeAuth;
 use crate::error::ForgeError;
-use crate::models::{
-    GitHubCommit, GitHubIssue, GitHubPullRequest, GitHubRepo, GitHubWorkflowRun,
-};
+use crate::http::{self, CheckStatus, ReadBody, Request};
+use crate::models::{GitHubCommit, GitHubIssue, GitHubPullRequest, GitHubRepo, GitHubWorkflowRun};
+use serde_json::json;
 
 pub struct GitHubClient {
     auth: ForgeAuth,
@@ -34,23 +33,20 @@ impl GitHubClient {
         &self.auth
     }
 
-    fn prepare_request(&self, req: ureq::Request) -> ureq::Request {
+    fn prepare_request<B>(&self, req: Request<B>) -> Request<B> {
         let mut r = req
-            .set("User-Agent", "depot-forge/0.2.0")
-            .set("Accept", "application/vnd.github+json")
-            .set("X-GitHub-Api-Version", "2022-11-28");
+            .header("User-Agent", "depot-forge/0.2.0")
+            .header("Accept", "application/vnd.github+json")
+            .header("X-GitHub-Api-Version", "2022-11-28");
         if let Some(tok) = self.auth.token() {
-            r = r.set("Authorization", &format!("Bearer {}", tok));
+            r = r.header("Authorization", &format!("Bearer {}", tok));
         }
         r
     }
 
     pub fn get_repo(&self, owner: &str, repo: &str) -> Result<GitHubRepo, ForgeError> {
         let url = format!("{}/repos/{}/{}", self.base_url, owner, repo);
-        let resp = self
-            .prepare_request(ureq::get(&url))
-            .call()
-            .map_err(|e| map_ureq_error(e, &url))?;
+        let resp = self.prepare_request(http::get(&url)).call().check(&url)?;
 
         resp.into_json::<GitHubRepo>()
             .map_err(|e| ForgeError::Json(e.to_string()))
@@ -71,10 +67,7 @@ impl GitHubClient {
                 "{}/orgs/{}/repos?per_page={}&page={}&sort=pushed&direction=desc",
                 self.base_url, org, per_page, page
             );
-            let resp = self
-                .prepare_request(ureq::get(&url))
-                .call()
-                .map_err(|e| map_ureq_error(e, &url))?;
+            let resp = self.prepare_request(http::get(&url)).call().check(&url)?;
 
             let batch: Vec<GitHubRepo> = resp
                 .into_json()
@@ -112,10 +105,7 @@ impl GitHubClient {
             "{}/repos/{}/{}/pulls?state={}&per_page=50",
             self.base_url, owner, repo, st
         );
-        let resp = self
-            .prepare_request(ureq::get(&url))
-            .call()
-            .map_err(|e| map_ureq_error(e, &url))?;
+        let resp = self.prepare_request(http::get(&url)).call().check(&url)?;
 
         resp.into_json()
             .map_err(|e| ForgeError::Json(e.to_string()))
@@ -127,11 +117,11 @@ impl GitHubClient {
         repo: &str,
         number: u64,
     ) -> Result<GitHubPullRequest, ForgeError> {
-        let url = format!("{}/repos/{}/{}/pulls/{}", self.base_url, owner, repo, number);
-        let resp = self
-            .prepare_request(ureq::get(&url))
-            .call()
-            .map_err(|e| map_ureq_error(e, &url))?;
+        let url = format!(
+            "{}/repos/{}/{}/pulls/{}",
+            self.base_url, owner, repo, number
+        );
+        let resp = self.prepare_request(http::get(&url)).call().check(&url)?;
 
         resp.into_json()
             .map_err(|e| ForgeError::Json(e.to_string()))
@@ -148,10 +138,7 @@ impl GitHubClient {
             "{}/repos/{}/{}/issues?state={}&per_page=50",
             self.base_url, owner, repo, st
         );
-        let resp = self
-            .prepare_request(ureq::get(&url))
-            .call()
-            .map_err(|e| map_ureq_error(e, &url))?;
+        let resp = self.prepare_request(http::get(&url)).call().check(&url)?;
 
         resp.into_json()
             .map_err(|e| ForgeError::Json(e.to_string()))
@@ -175,10 +162,7 @@ impl GitHubClient {
             url.push_str(&format!("&sha={}", b));
         }
 
-        let resp = self
-            .prepare_request(ureq::get(&url))
-            .call()
-            .map_err(|e| map_ureq_error(e, &url))?;
+        let resp = self.prepare_request(http::get(&url)).call().check(&url)?;
 
         resp.into_json()
             .map_err(|e| ForgeError::Json(e.to_string()))
@@ -197,10 +181,7 @@ impl GitHubClient {
             repo,
             limit.min(100)
         );
-        let resp = self
-            .prepare_request(ureq::get(&url))
-            .call()
-            .map_err(|e| map_ureq_error(e, &url))?;
+        let resp = self.prepare_request(http::get(&url)).call().check(&url)?;
 
         #[derive(serde::Deserialize)]
         struct WorkflowRunsResp {
@@ -228,12 +209,12 @@ impl GitHubClient {
             r#ref,
             path.trim_start_matches('/')
         );
-        let mut req = ureq::get(&raw_url).set("User-Agent", "depot-forge/0.2.0");
+        let mut req = http::get(&raw_url).header("User-Agent", "depot-forge/0.2.0");
         if let Some(tok) = self.auth.token() {
-            req = req.set("Authorization", &format!("Bearer {}", tok));
+            req = req.header("Authorization", &format!("Bearer {}", tok));
         }
 
-        let resp = req.call().map_err(|e| map_ureq_error(e, &raw_url))?;
+        let resp = req.call().check(&raw_url)?;
         resp.into_string()
             .map_err(|e| ForgeError::Network(e.to_string()))
     }
@@ -256,21 +237,11 @@ impl GitHubClient {
         });
 
         let resp = self
-            .prepare_request(ureq::post(&url))
+            .prepare_request(http::post(&url))
             .send_json(payload)
-            .map_err(|e| map_ureq_error(e, &url))?;
+            .check(&url)?;
 
         resp.into_json()
             .map_err(|e| ForgeError::Json(e.to_string()))
-    }
-}
-
-fn map_ureq_error(err: ureq::Error, url: &str) -> ForgeError {
-    match err {
-        ureq::Error::Status(code, resp) => {
-            let msg = resp.into_string().unwrap_or_else(|_| "Unknown HTTP error".to_string());
-            ForgeError::Http(code, format!("URL: {} -> {}", url, msg))
-        }
-        ureq::Error::Transport(t) => ForgeError::Network(format!("URL: {} -> {}", url, t)),
     }
 }

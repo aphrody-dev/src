@@ -168,9 +168,9 @@ impl Store {
         let reader = BufReader::with_capacity(1 << 20, File::open(path)?);
         let chunker = fastcdc::v2020::StreamCDC::with_level(
             reader,
-            FRAGMENT_MIN,
-            FRAGMENT_AVG,
-            FRAGMENT_MAX,
+            FRAGMENT_MIN as usize,
+            FRAGMENT_AVG as usize,
+            FRAGMENT_MAX as usize,
             fastcdc::v2020::Normalization::Level1,
         );
         let mut sha = Sha256::new();
@@ -305,9 +305,9 @@ mod tests {
         let (m, _) = store.ingest(&file).unwrap();
         let whole: Vec<u32> = fastcdc::v2020::FastCDC::with_level(
             &data,
-            FRAGMENT_MIN,
-            FRAGMENT_AVG,
-            FRAGMENT_MAX,
+            FRAGMENT_MIN as usize,
+            FRAGMENT_AVG as usize,
+            FRAGMENT_MAX as usize,
             fastcdc::v2020::Normalization::Level1,
         )
         .map(|c| c.length as u32)
