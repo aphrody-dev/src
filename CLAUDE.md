@@ -11,7 +11,7 @@ The canonical cross-agent contract is [`AGENTS.md`](./AGENTS.md) plus [`.agents/
 - Root directories are whitelisted in `tools/archguard/src/constants.rs` (`ALLOWED_ROOT_PHYSICAL_DIRS`, mirrored in `archguard.rules.json`). A new root dir fails `archguard check --strict` until it is added there. The root `.gitignore` is an allowlist: new tracked root files need a `!/name` entry.
 - No `postinstall`/`preinstall` scripts, no `binding.gyp`; prefer Bun built-ins (`bun:sqlite`, `Bun.SQL`, `bun:ffi`, `bun build --compile`) over npm dependencies.
 - UI work follows the Design-First Gate: PRD (_Cahier des charges_) + `DESIGN.md` before code, then `gds verify` and `wck` 100/100.
-- Zero emojis in code, Markdown, UI text, and commits. Only `.env.example` is committed; the real `.env` is not.
+- Zero emojis in code, Markdown, UI text, and commits. No `Co-Authored-By`, "Generated with", or other AI attribution in commits, PRs, or tags. Only `.env.example` is committed; the real `.env` is not.
 
 ## Commands
 
