@@ -3,13 +3,20 @@
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "bin": { "agent": "./src/cli.ts" },
-  "exports": { ".": "./src/index.ts" },
-  "scripts": { "test": "bun test" },
+  "bin": {
+    "agent": "./src/cli.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.102",
     "@ai-sdk/openai-compatible": "^3.0.90",
     "ai": "^7.0.170",
+    "workers-ai-provider": "^4.0.1",
     "zod": "^4.6.7"
   }
 }
