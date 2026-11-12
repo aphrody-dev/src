@@ -29,6 +29,7 @@ aliases.
 | `ay deploy` | `src-deploy` (Go engine, invoked by `ay`) | deploy |
 | `ay bench` | `stack-bench` | benchmarks |
 | `ay sys` | (new) | OS, firmware, hardware and software profile |
+| `ay ssh exec/cp/hosts/check` | `ssh`, `scp` (OpenSSH client) | pure-Rust SSH (crate `aphrody-remote`, russh): exec on `usa`/`fr1`/`fr2` or `all`, SFTP copy, fleet health |
 | `ay web check` | `wck` | web quality gate |
 | `ay design` | `gds` | design system |
 | `ay forge` | `frg` | forge |

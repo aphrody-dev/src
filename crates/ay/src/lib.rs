@@ -1,6 +1,6 @@
 //! `ay`: the monorepo's multicall CLI. Each command forwards its arguments to the library
-//! that owns the logic (archguard, xtk, depot-cli, stack-bench) or to an external engine
-//! (`src-deploy`, `gamescope-rs`). See docs/NAMING.md for the command table.
+//! that owns the logic (archguard, xtk, depot-cli, aphrody-remote, stack-bench) or to an
+//! external engine (`src-deploy`, `gamescope-rs`). See docs/NAMING.md for the command table.
 //! `ay build` drives cargo itself (see [`build`]).
 
 use clap::{Parser, Subcommand};
@@ -56,6 +56,9 @@ pub enum Cmd {
     /// Gamescope mode (runs the `gamescope-rs` binary)
     #[command(disable_help_flag = true)]
     Scope(Rest),
+    /// Pure-Rust SSH (russh): exec <host|all|a,b> -- cmd, cp, hosts, check
+    #[command(disable_help_flag = true)]
+    Ssh(Rest),
     /// Build the workspace for a cross-compilation preset (--list shows toolchain status)
     Build(build::BuildArgs),
     /// Machine profile: OS, firmware/SMBIOS, CPUID, PCI, GPUs, disks, virtualization, toolchains
@@ -86,6 +89,7 @@ pub enum Route {
     Depot(&'static str, Vec<String>),
     Bench(Vec<String>),
     External(&'static str, Vec<String>),
+    Ssh(Vec<String>),
     Build(build::BuildArgs),
     Sys(SysArgs),
 }
@@ -125,6 +129,7 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Deploy(r) => Route::External("src-deploy", r.args),
         Cmd::Bench(r) => Route::Bench(r.args),
         Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
+        Cmd::Ssh(r) => Route::Ssh(r.args),
         Cmd::Build(b) => Route::Build(b),
         Cmd::Sys(s) => Route::Sys(s),
     }
@@ -153,6 +158,7 @@ fn run_route(route: Route) -> i32 {
         Route::Depot(name, args) => depot_cli::run(name, &args),
         Route::Bench(args) => run_bench(&args),
         Route::External(program, args) => exec::run_external(program, &args),
+        Route::Ssh(args) => remote::run("ay ssh", &args, &repo_root()),
         Route::Build(args) => build::run(args),
         Route::Sys(args) => run_sys(args),
     }
@@ -253,6 +259,13 @@ mod tests {
     fn external_engines() {
         assert_eq!(parse("deploy up --all"), Route::External("src-deploy", v(&["up", "--all"])));
         assert_eq!(parse("scope serve-web"), Route::External("gamescope-rs", v(&["serve-web"])));
+    }
+
+    #[test]
+    fn ssh_forwards_everything() {
+        assert_eq!(parse("ssh exec all -- uname -srm"), Route::Ssh(v(&["exec", "all", "--", "uname", "-srm"])));
+        assert_eq!(parse("ssh --help"), Route::Ssh(v(&["--help"])));
+        assert_eq!(parse("ssh cp a prd:/tmp/"), Route::Ssh(v(&["cp", "a", "prd:/tmp/"])));
     }
 
     #[test]

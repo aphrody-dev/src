@@ -19,6 +19,7 @@ path = "src/lib.rs"
 archguard.workspace = true
 clap.workspace = true
 depot-cli.workspace = true
+remote = { package = "aphrody-remote", path = "../remote" }
 serde_json.workspace = true
 sys = { path = "../sys" }
 xtk.workspace = true
