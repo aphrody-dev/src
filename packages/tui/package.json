@@ -1,0 +1,16 @@
+{
+  "name": "@aphrody/agent-tui",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@aphrody/agent-core": "workspace:*",
+    "@earendil-works/pi-tui": "1.5.2"
+  },
+  "devDependencies": {
+    "ai": "^7.0.170"
+  }
+}
