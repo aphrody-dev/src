@@ -57,7 +57,7 @@ Formatage/lint : `bun fmt` / `bun check` couvrent ; Biome inutile.
 | 10 | Aider | 50.0 | 50 092 | Apache-2.0 | v0.86.0 (2025-08-09) | 0 |
 | 11 | Devin-like (SaaS) | 44.4 [NV] | - | propriétaire | - | - |
 
-OpenClaw et Hermes : meilleurs en self-learning/mémoire/skills/scheduling [NV] mais Windows natif moins sûr [NV].
+OpenClaw et Hermes : meilleurs en self-learning/mémoire/skills/scheduling [NV] ; Windows natif vérifié e2e le 2026-11-12 (outil, mémoire, skill, cron), voir docs/agents/WINDOWS-NATIVE-PORT.md.
 
 ## 5. TUI d'agents
 | Rang | TUI | Score | Licence | Release | Commits 90 j | Démarrage local |
@@ -77,7 +77,7 @@ OpenCode 92.0 · Claude Code 86.4 · VS Code 84.4 · Zed 83.8 · Codex 83.8 · G
 ## 7. Recommandation (bun, Rust nightly, LLVM, Windows 11 + VPS Linux, NHITL)
 - Garder : Claude Code (agent principal, mettre à jour 2.1.318 → 2.1.322), OpenCode (TUI multi-modèle, configs env-kit), Codex CLI (Rust, Apache), Helix (édition terminal rapide), tsgo + typescript-language-server, lldb.
 - Installer (léger) : Zed comme éditeur graphique (natif Rust, LSP, ACP/MCP) ; composant `rust-analyzer` sur la nightly épinglée (`rustup component add rust-analyzer`) ; pi CLI si le bridge pi-opencode le requiert ; mettre à jour tsgo vers 7.0.2.
-- Évaluer sur le VPS Linux seulement : OpenClaw ou Hermes Agent pour l'autonomie planifiée/mémoire (NHITL 24/7), pas sur le poste Windows.
+- OpenClaw et Hermes Agent tournent en natif sur le poste Windows (forks aphrody-labs, branche windows-native, shell niubash) ; statut et patchs : docs/agents/WINDOWS-NATIVE-PORT.md.
 - Retirer : Gemini CLI (824 ms au démarrage, 2 versions de retard), `biome.exe` et `oxlint.exe` de ~/.bun/bin (remplacés par bun), ne pas installer Aider ni Roo Code (inactif / archivé), ni Cursor/Windsurf/Fleet/JetBrains (propriétaires, lourds).
 - VS Code : ne pas installer sauf besoin de débogage codelldb graphique ; Zed couvre.
 
