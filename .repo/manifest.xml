@@ -12,10 +12,10 @@
 
   <default remote="aphrody" revision="main" sync-j="8" sync-c="true" />
 
-  <project path="apps/aphrody" name="aphrody" remote="aphrody" revision="278050d3b77734c210a2cda2beca235606f67f48" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="apps/aphrody" name="aphrody" remote="aphrody" revision="38935c35abf9340f2d47a0255f289c920cc5bcd9" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="apps/aphrody-app" name="aphrody-app" remote="aphrody" revision="b378ca34836363366a95cefc79e69b6f1def7684" upstream="main" groups="aosp,pdk,sovereign" />
-  <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="0eb274317ab384e057957fe2d7071dff174a4882" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="apps/shenron" name="shenron" remote="aphrody-labs" revision="e07b40ee99b0292d709edb8df51dd0a798ea0c0a" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="5951254f64879de2661257b18c92783601b0e528" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="apps/shenron" name="shenron" remote="aphrody-labs" revision="358935cfbeb210b9732ba54a06b89beed03ef5b6" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/bench" name="bench" remote="aphrody" revision="a3c7c1168ccbce3fc468d13489284080292bb98a" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/depot" name="depot" remote="aphrody" revision="a448c16a7628b1a2d1f02abf2a99875fa8360b9a" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/gamescope-rs" name="gamescope-rs" remote="aphrody" revision="7a77c8da4678043a7ce71015892c83a04f6d1a9e" upstream="main" groups="monorepo,first-party,sovereign" />
@@ -26,29 +26,29 @@
   <project path="crates/xtask" name="xtask" remote="aphrody" revision="84ace1bd8d3b2b5038b98bc0990eb0ae65a5b992" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="infra" name="infra" remote="aphrody" revision="46f7fee90279a9b605096c4f5cd655b97b4341e3" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="infra/mesh-vn" name="mesh-vn" remote="aphrody" revision="5d850084b702faacd99f4c07d09a4385ee89b8b0" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/ai-os" name="ai-os" remote="aphrody" revision="da1999e304a812fc2eba24b49d3f9a800a2eccd8" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/ai-os" name="ai-os" remote="aphrody" revision="3c5a599ac50f17499dbbe5657e35741cc1e51799" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/ai-triad" name="ai-triad" remote="aphrody" revision="95575713577973f577f157946beb3c4205e774e1" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/brain" name="brain" remote="aphrody" revision="ddff926efb1b1bbb97fc7b70bc2a3653d301194c" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/brain" name="brain" remote="aphrody" revision="c0973f43d69829c0b780b01884b31d9043fd9b13" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/bun-parity" name="bun-parity" remote="aphrody" revision="c80e20e28be618a8551ec3749d692ce35ad16603" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/bun-plugins" name="bun-plugins" remote="aphrody" revision="25fe633ed587dd3f3ca67031061bda0e17c4cf3a" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/chromium-bun" name="chromium-bun" remote="aphrody" revision="ac774946b5ce6b542aeea703ef37e48425c699c5" upstream="main" groups="chromium,browser,sovereign" />
+  <project path="packages/bun-plugins" name="bun-plugins" remote="aphrody" revision="5575e6941f33bb6e50306aa9ac367a9610fa49e3" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/chromium-bun" name="chromium-bun" remote="aphrody" revision="3b36569f97f1cad2c90176beec429196143a3b1c" upstream="main" groups="chromium,browser,sovereign" />
   <project path="packages/env-kit" name="env-kit" remote="aphrody" revision="bfbc5d6e775f93b06aeab20caaefd1acd147003f" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/forge" name="forge" remote="aphrody" revision="ccc59e212dc128399d779453153604c8cbe86eca" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/google-design" name="google-design" remote="aphrody" revision="ce9bd60a97528a030c1746237f7d1405011155cc" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/knowledge-engine" name="knowledge-engine" remote="aphrody" revision="7322c91afd85299e469dafd095a155bb817ad83b" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/google-design" name="google-design" remote="aphrody" revision="d777e76f33dbd4d8a19094908c4a3799e097d404" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/knowledge-engine" name="knowledge-engine" remote="aphrody" revision="4f99a9ebf023dc754232f8851ba63badc539e8fc" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/pi-opencode" name="pi-opencode" remote="aphrody" revision="0941f906af4dc8d4c3e71dfb1ecbad5836af3b42" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/wck" name="wck" remote="aphrody" revision="b4c4ecb8b7bf22a680493e7a4ae35657d4862bad" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="third_party/agent-browser" name="agent-browser" remote="aphrody" revision="d129226078e0fc8ee5dec48fbc96a46df5d0aafd" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/agent-desktop" name="agent-desktop" remote="aphrody" revision="8e8dd7cbefe6d4421a0147aee0aad78dc6ace2b4" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
-  <project path="third_party/ai-ecosystem/antigravity-sdk-python" name="google-antigravity/antigravity-sdk-python" remote="github" revision="75ba22bd00afae2f46393ff31f30c3f0df52982f" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
-  <project path="third_party/ai-ecosystem/cc-switch" name="farion1231/cc-switch" remote="github" revision="efbec38f0e1ecaee2a488d619190b7ec4075238b" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
-  <project path="third_party/ai-ecosystem/cc-switch-cli" name="SaladDay/cc-switch-cli" remote="github" revision="4dfe82f4b8794211375283f1e5e494a390181aa0" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
-  <project path="third_party/ai-ecosystem/claude-code" name="anthropics/claude-code" remote="github" revision="ab49b8966bd80199f493a31dad9396f8743e73a7" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
-  <project path="third_party/ai-ecosystem/cliproxyapi" name="router-for-me/CLIProxyAPI" remote="github" revision="d1ea84f4b338f553d2818091ec9425a4ff742c78" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
-  <project path="third_party/ai-ecosystem/codex" name="openai/codex" remote="github" revision="568c592f9cbe4388aafe9759bf6f3ed1bb0fd5e3" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
-  <project path="third_party/ai-ecosystem/gemini-cli" name="google-gemini/gemini-cli" remote="github" revision="e5d88fb2c036ce7e0c27131469cd963221b9d9e7" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
-  <project path="third_party/ai-ecosystem/omniroute" name="cheaper-inference/OmniRoute" remote="github" revision="de7d72384f5352d5c7ea47459b990ee20f04686f" upstream="release/v3.8.54" groups="monorepo,first-party,sovereign" clone-depth="1" />
-  <project path="third_party/ai-ecosystem/opencodex" name="lidge-jun/opencodex" remote="github" revision="bceee7fe7f4f7820491d36a71f97b2650c844309" upstream="dev" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/ai-ecosystem/antigravity-sdk-python" name="antigravity-sdk-python" remote="aphrody" revision="75ba22bd00afae2f46393ff31f30c3f0df52982f" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/ai-ecosystem/cc-switch" name="cc-switch" remote="aphrody" revision="efbec38f0e1ecaee2a488d619190b7ec4075238b" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/ai-ecosystem/cc-switch-cli" name="cc-switch-cli" remote="aphrody" revision="4dfe82f4b8794211375283f1e5e494a390181aa0" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/ai-ecosystem/claude-code" name="claude-code" remote="aphrody" revision="ab49b8966bd80199f493a31dad9396f8743e73a7" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/ai-ecosystem/cliproxyapi" name="CLIProxyAPI" remote="aphrody" revision="d1ea84f4b338f553d2818091ec9425a4ff742c78" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/ai-ecosystem/codex" name="codex" remote="aphrody" revision="568c592f9cbe4388aafe9759bf6f3ed1bb0fd5e3" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/ai-ecosystem/gemini-cli" name="gemini-cli" remote="aphrody" revision="e5d88fb2c036ce7e0c27131469cd963221b9d9e7" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/ai-ecosystem/omniroute" name="OmniRoute" remote="aphrody" revision="de7d72384f5352d5c7ea47459b990ee20f04686f" upstream="release/v3.8.54" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/ai-ecosystem/opencodex" name="opencodex" remote="aphrody" revision="bceee7fe7f4f7820491d36a71f97b2650c844309" upstream="dev" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/aosp/build/kleaf" name="kernel/build" remote="aosp" revision="1b5e08e214a85267a83df17c09436e7e8952f7d3" upstream="main-kernel" groups="aosp,pdk,sovereign" clone-depth="1" />
   <project path="third_party/aosp/platform/manifest" name="platform/manifest" remote="aosp" revision="1ed30a827f1156dc831083e6cf999d6bd9deae18" upstream="main" groups="aosp,pdk,sovereign" clone-depth="1" />
   <project path="third_party/archlinux/archinstall" name="archlinux/archinstall" remote="archlinux" revision="2c25540ad56b23922b9bbf44320b3154c0ecfd15" upstream="master" groups="kernel,gki,distro,sovereign" clone-depth="1" />
@@ -82,6 +82,11 @@
   <project path="third_party/dioxus-labs/blitz" name="DioxusLabs/blitz" remote="github" revision="e65ec76e1568a69ed83cbb4b94797db088607ec4" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/dioxus-labs/parley" name="linebender/parley" remote="github" revision="36f82852f0516108586e9f5a7b0056e872c1f933" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/dioxus-labs/vello" name="linebender/vello" remote="github" revision="6293f3b74498582752c3734888608030dfd8cc0e" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/docs-ecosystem/archlinux-docker" name="archlinux/archlinux-docker" remote="archlinux" revision="d9f7a01562208910488140c54ffe402c3e7a231e" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/docs-ecosystem/docker-alpine" name="alpinelinux/docker-alpine" remote="github" revision="2c36a79aaaec3582d3b1961c9245b1a8a5a144dc" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/docs-ecosystem/docker-docs" name="docker/docs" remote="github" revision="61cbfdc1e72d0ac62dbac59ceaf7b94dcbe69c80" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/docs-ecosystem/kubernetes-website" name="kubernetes/website" remote="github" revision="4706565788493db5750bda0d57f651823378189a" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/docs-ecosystem/nix-dev" name="NixOS/nix.dev" remote="github" revision="edeead537a0b7b356aaf6dc2767a74acfe6c3805" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/go-ecosystem/caddy" name="caddyserver/caddy" remote="github" revision="f458aa0081f55445b09fae9799d40ed98ed4b3b7" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/go-ecosystem/cloudflare-go" name="cloudflare/cloudflare-go" remote="github" revision="d2f77a066fb7efbdb1572d2b0ac52dc4fa248ffb" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/go-ecosystem/go-containerregistry" name="google/go-containerregistry" remote="github" revision="bc0638f2d1730249dfef1f0230f3143150dc433a" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />

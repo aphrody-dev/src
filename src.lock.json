@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-11-11T13:23:33.3019358+01:00",
+  "generated_at": "2026-11-12T04:52:58.8510529+01:00",
   "hardware": {
     "os": "Windows NT (x86_64)",
     "cpu": "Intel Core i7-13700F (Raptor Lake sm_89)",
@@ -26,7 +26,7 @@
     "zig": "0.17.0"
   },
   "pillars": {
-    "git_superproject_commit": "1a8ab6d96e71ca3af9550d1c07d8dcdaca0fe410",
+    "git_superproject_commit": "7d33be38a2ee4374238113a5585db649b5c82453",
     "chromium_src_commit": "4c7244a405d326e284710231ff609168dceb9044",
     "linux_kernel_commit": "7475ea8b58616b33c04afb976cf0fbaad9dd63fb",
     "aosp_manifest_commit": "1ed30a827f1156dc831083e6cf999d6bd9deae18"
@@ -35,7 +35,7 @@
     "apps/aphrody": {
       "path": "C:\\src\\apps\\aphrody",
       "url": "https://github.com/aphrody-dev/aphrody.git",
-      "commit": "278050d3b77734c210a2cda2beca235606f67f48",
+      "commit": "38935c35abf9340f2d47a0255f289c920cc5bcd9",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -67,7 +67,7 @@
     "apps/rosegriffon": {
       "path": "C:\\src\\apps\\rosegriffon",
       "url": "https://github.com/aphrody-labs/rosegriffon.git",
-      "commit": "0eb274317ab384e057957fe2d7071dff174a4882",
+      "commit": "5951254f64879de2661257b18c92783601b0e528",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -84,7 +84,7 @@
     "apps/shenron": {
       "path": "C:\\src\\apps\\shenron",
       "url": "https://github.com/aphrody-labs/shenron.git",
-      "commit": "e07b40ee99b0292d709edb8df51dd0a798ea0c0a",
+      "commit": "358935cfbeb210b9732ba54a06b89beed03ef5b6",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -256,7 +256,7 @@
     "packages/ai-os": {
       "path": "C:\\src\\packages\\ai-os",
       "url": "https://github.com/aphrody-dev/ai-os.git",
-      "commit": "da1999e304a812fc2eba24b49d3f9a800a2eccd8",
+      "commit": "3c5a599ac50f17499dbbe5657e35741cc1e51799",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -288,7 +288,7 @@
     "packages/brain": {
       "path": "C:\\src\\packages\\brain",
       "url": "https://github.com/aphrody-dev/brain.git",
-      "commit": "ddff926efb1b1bbb97fc7b70bc2a3653d301194c",
+      "commit": "c0973f43d69829c0b780b01884b31d9043fd9b13",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -320,7 +320,7 @@
     "packages/bun-plugins": {
       "path": "C:\\src\\packages\\bun-plugins",
       "url": "https://github.com/aphrody-dev/bun-plugins.git",
-      "commit": "25fe633ed587dd3f3ca67031061bda0e17c4cf3a",
+      "commit": "5575e6941f33bb6e50306aa9ac367a9610fa49e3",
       "branch": "main",
       "engine": "jj",
       "pillar": "git",
@@ -336,7 +336,7 @@
     "packages/chromium-bun": {
       "path": "C:\\src\\packages\\chromium-bun",
       "url": "https://github.com/aphrody-dev/chromium-bun.git",
-      "commit": "ac774946b5ce6b542aeea703ef37e48425c699c5",
+      "commit": "3b36569f97f1cad2c90176beec429196143a3b1c",
       "branch": "main",
       "engine": "git",
       "pillar": "chromium",
@@ -384,7 +384,7 @@
     "packages/google-design": {
       "path": "C:\\src\\packages\\google-design",
       "url": "https://github.com/aphrody-dev/google-design.git",
-      "commit": "ce9bd60a97528a030c1746237f7d1405011155cc",
+      "commit": "d777e76f33dbd4d8a19094908c4a3799e097d404",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -400,7 +400,7 @@
     "packages/knowledge-engine": {
       "path": "C:\\src\\packages\\knowledge-engine",
       "url": "https://github.com/aphrody-dev/knowledge-engine.git",
-      "commit": "7322c91afd85299e469dafd095a155bb817ad83b",
+      "commit": "4f99a9ebf023dc754232f8851ba63badc539e8fc",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -475,109 +475,127 @@
     },
     "third_party/ai-ecosystem/antigravity-sdk-python": {
       "path": "C:\\src\\third_party\\ai-ecosystem\\antigravity-sdk-python",
-      "url": "https://github.com/google-antigravity/antigravity-sdk-python.git",
+      "url": "https://github.com/aphrody-dev/antigravity-sdk-python.git",
+      "upstream_url": "https://github.com/google-antigravity/antigravity-sdk-python.git",
       "commit": "75ba22bd00afae2f46393ff31f30c3f0df52982f",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
       "remotes": {
-        "origin": "https://github.com/google-antigravity/antigravity-sdk-python.git"
+        "origin": "https://github.com/aphrody-dev/antigravity-sdk-python.git",
+        "upstream": "https://github.com/google-antigravity/antigravity-sdk-python.git"
       },
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/cc-switch": {
       "path": "C:\\src\\third_party\\ai-ecosystem\\cc-switch",
-      "url": "https://github.com/farion1231/cc-switch.git",
+      "url": "https://github.com/aphrody-dev/cc-switch.git",
+      "upstream_url": "https://github.com/farion1231/cc-switch.git",
       "commit": "efbec38f0e1ecaee2a488d619190b7ec4075238b",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
       "remotes": {
-        "origin": "https://github.com/farion1231/cc-switch.git"
+        "origin": "https://github.com/aphrody-dev/cc-switch.git",
+        "upstream": "https://github.com/farion1231/cc-switch.git"
       },
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/cc-switch-cli": {
       "path": "C:\\src\\third_party\\ai-ecosystem\\cc-switch-cli",
-      "url": "https://github.com/SaladDay/cc-switch-cli.git",
+      "url": "https://github.com/aphrody-dev/cc-switch-cli.git",
+      "upstream_url": "https://github.com/SaladDay/cc-switch-cli.git",
       "commit": "4dfe82f4b8794211375283f1e5e494a390181aa0",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
       "remotes": {
-        "origin": "https://github.com/SaladDay/cc-switch-cli.git"
+        "origin": "https://github.com/aphrody-dev/cc-switch-cli.git",
+        "upstream": "https://github.com/SaladDay/cc-switch-cli.git"
       },
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/claude-code": {
       "path": "C:\\src\\third_party\\ai-ecosystem\\claude-code",
-      "url": "https://github.com/anthropics/claude-code.git",
+      "url": "https://github.com/aphrody-dev/claude-code.git",
+      "upstream_url": "https://github.com/anthropics/claude-code.git",
       "commit": "ab49b8966bd80199f493a31dad9396f8743e73a7",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
       "remotes": {
-        "origin": "https://github.com/anthropics/claude-code.git"
+        "origin": "https://github.com/aphrody-dev/claude-code.git",
+        "upstream": "https://github.com/anthropics/claude-code.git"
       },
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/cliproxyapi": {
       "path": "C:\\src\\third_party\\ai-ecosystem\\cliproxyapi",
-      "url": "https://github.com/router-for-me/CLIProxyAPI.git",
+      "url": "https://github.com/aphrody-dev/CLIProxyAPI.git",
+      "upstream_url": "https://github.com/router-for-me/CLIProxyAPI.git",
       "commit": "d1ea84f4b338f553d2818091ec9425a4ff742c78",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
       "remotes": {
-        "origin": "https://github.com/router-for-me/CLIProxyAPI.git"
+        "origin": "https://github.com/aphrody-dev/CLIProxyAPI.git",
+        "upstream": "https://github.com/router-for-me/CLIProxyAPI.git"
       },
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/codex": {
       "path": "C:\\src\\third_party\\ai-ecosystem\\codex",
-      "url": "https://github.com/openai/codex.git",
+      "url": "https://github.com/aphrody-dev/codex.git",
+      "upstream_url": "https://github.com/openai/codex.git",
       "commit": "568c592f9cbe4388aafe9759bf6f3ed1bb0fd5e3",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
       "remotes": {
-        "origin": "https://github.com/openai/codex.git"
+        "origin": "https://github.com/aphrody-dev/codex.git",
+        "upstream": "https://github.com/openai/codex.git"
       },
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/gemini-cli": {
       "path": "C:\\src\\third_party\\ai-ecosystem\\gemini-cli",
-      "url": "https://github.com/google-gemini/gemini-cli.git",
+      "url": "https://github.com/aphrody-dev/gemini-cli.git",
+      "upstream_url": "https://github.com/google-gemini/gemini-cli.git",
       "commit": "e5d88fb2c036ce7e0c27131469cd963221b9d9e7",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
       "remotes": {
-        "origin": "https://github.com/google-gemini/gemini-cli.git"
+        "origin": "https://github.com/aphrody-dev/gemini-cli.git",
+        "upstream": "https://github.com/google-gemini/gemini-cli.git"
       },
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/omniroute": {
       "path": "C:\\src\\third_party\\ai-ecosystem\\omniroute",
-      "url": "https://github.com/cheaper-inference/OmniRoute.git",
+      "url": "https://github.com/aphrody-dev/OmniRoute.git",
+      "upstream_url": "https://github.com/cheaper-inference/OmniRoute.git",
       "commit": "de7d72384f5352d5c7ea47459b990ee20f04686f",
       "branch": "release/v3.8.54",
       "engine": "git",
       "pillar": "git",
       "remotes": {
-        "origin": "https://github.com/cheaper-inference/OmniRoute.git"
+        "origin": "https://github.com/aphrody-dev/OmniRoute.git",
+        "upstream": "https://github.com/cheaper-inference/OmniRoute.git"
       },
       "sparse_paths": null
     },
     "third_party/ai-ecosystem/opencodex": {
       "path": "C:\\src\\third_party\\ai-ecosystem\\opencodex",
-      "url": "https://github.com/lidge-jun/opencodex.git",
+      "url": "https://github.com/aphrody-dev/opencodex.git",
+      "upstream_url": "https://github.com/lidge-jun/opencodex.git",
       "commit": "bceee7fe7f4f7820491d36a71f97b2650c844309",
       "branch": "dev",
       "engine": "git",
       "pillar": "git",
       "remotes": {
-        "origin": "https://github.com/lidge-jun/opencodex.git"
+        "origin": "https://github.com/aphrody-dev/opencodex.git",
+        "upstream": "https://github.com/lidge-jun/opencodex.git"
       },
       "sparse_paths": null
     },
@@ -990,6 +1008,86 @@
         "origin": "https://github.com/linebender/vello.git"
       },
       "sparse_paths": null
+    },
+    "third_party/docs-ecosystem/archlinux-docker": {
+      "path": "C:\\src\\third_party\\docs-ecosystem\\archlinux-docker",
+      "url": "https://gitlab.archlinux.org/archlinux/archlinux-docker.git",
+      "commit": "d9f7a01562208910488140c54ffe402c3e7a231e",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://gitlab.archlinux.org/archlinux/archlinux-docker.git"
+      },
+      "sparse_paths": [
+        "/*",
+        "!/*/"
+      ]
+    },
+    "third_party/docs-ecosystem/docker-alpine": {
+      "path": "C:\\src\\third_party\\docs-ecosystem\\docker-alpine",
+      "url": "https://github.com/alpinelinux/docker-alpine.git",
+      "commit": "2c36a79aaaec3582d3b1961c9245b1a8a5a144dc",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/alpinelinux/docker-alpine.git"
+      },
+      "sparse_paths": [
+        "/*",
+        "!/*/"
+      ]
+    },
+    "third_party/docs-ecosystem/docker-docs": {
+      "path": "C:\\src\\third_party\\docs-ecosystem\\docker-docs",
+      "url": "https://github.com/docker/docs.git",
+      "commit": "61cbfdc1e72d0ac62dbac59ceaf7b94dcbe69c80",
+      "branch": "main",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/docker/docs.git"
+      },
+      "sparse_paths": [
+        "/*",
+        "!/*/",
+        "/content/"
+      ]
+    },
+    "third_party/docs-ecosystem/kubernetes-website": {
+      "path": "C:\\src\\third_party\\docs-ecosystem\\kubernetes-website",
+      "url": "https://github.com/kubernetes/website.git",
+      "commit": "4706565788493db5750bda0d57f651823378189a",
+      "branch": "main",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/kubernetes/website.git"
+      },
+      "sparse_paths": [
+        "/*",
+        "!/*/",
+        "/content/",
+        "!/content/*/",
+        "/content/en/"
+      ]
+    },
+    "third_party/docs-ecosystem/nix-dev": {
+      "path": "C:\\src\\third_party\\docs-ecosystem\\nix-dev",
+      "url": "https://github.com/NixOS/nix.dev.git",
+      "commit": "edeead537a0b7b356aaf6dc2767a74acfe6c3805",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/NixOS/nix.dev.git"
+      },
+      "sparse_paths": [
+        "/*",
+        "!/*/",
+        "/source/"
+      ]
     },
     "third_party/go-ecosystem/caddy": {
       "path": "C:\\src\\third_party\\go-ecosystem\\caddy",

@@ -40,15 +40,19 @@ apps/shenron/
 
 ```
 C:\src/
-├── AGENTS.md                  # Sovereign Monorepo Contributor & AI Agent Directives
+├── AGENTS.md                  # Canonical cross-agent contract (section 5: portability & autonomy)
+├── CLAUDE.md                  # Claude Code: commands, architecture, NHITL loop
 ├── GEMINI.md                  # Antigravity & Triad Operating Directives
 ├── .agents/
-│   └── skills/                # Monorepo-wide cross-cutting skills
-│       ├── ai-os-posix-nix-wasm
-│       ├── ai-triad-orchestrator
-│       ├── bun-native-zero-dep
-│       ├── context7-deep-research
-│       └── rust-stack-sovereign
+│   ├── hooks.json             # agy PreToolUse -> scripts/pre-tool-guard.ts
+│   ├── scripts/
+│   │   ├── pre-tool-guard.ts  # Shared guard for agy + Claude Code, AGENT_GUARD=off|warn|enforce
+│   │   └── pre-tool-guard.test.ts
+│   └── skills/                # Single source of truth for all agent skills (17)
+├── .claude/
+│   ├── settings.json          # bypassPermissions, allow-all, PreToolUse -> shared guard
+│   └── skills -> ../.agents/skills   # junction/symlink, created by install.ps1 / install.sh
+├── .gemini/settings.json      # graphify hook-guard for Gemini CLI
 ├── packages/
 │   ├── ai-os/                 # Core AI & Unified Context-Optimized MCP Server
 │   ├── ai-triad/              # Triad Gateway (:4319), Council Consensus & Sync

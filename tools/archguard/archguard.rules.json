@@ -4,6 +4,8 @@
   "sole_ai_owner": "packages/ai-os",
   "allowed_root_physical_dirs": [
     ".agents",
+    ".claude",
+    ".coordkit-bus",
     ".gemini",
     ".git",
     ".jj",

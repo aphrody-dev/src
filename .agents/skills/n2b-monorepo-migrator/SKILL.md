@@ -15,14 +15,14 @@ Activate this skill when auditing or transforming legacy Node/V8/Electron/VSCode
 - In-process CoreCLR 10/11 (`microsoft/node-api-dotnet` Rust + Bun rewrite):
   ```powershell
   n2b dotnet doctor
-  n2b dotnet bindgen --target C:\src\n2b\dotnet\SovereignDotNetDemo\SovereignBridge.cs
+  n2b dotnet bindgen --target C:\src\third_party\n2b\dotnet\SovereignDotNetDemo\SovereignBridge.cs
   n2b dotnet bench
   ```
 - Audit or apply Node/V8/Electron/`node-api-dotnet`/Microsoft-TS -> Bun + Rust migration (never mutates `vendor/` in-place; pass `--out-dir` for vendor sources):
   ```powershell
-  n2b migrate C:\src\n2b\vendor\microsoft\node-api-dotnet --json
+  n2b migrate C:\src\third_party\n2b\vendor\microsoft\node-api-dotnet --json
   ```
 - Analyze `-O3 -mavx2` LLVM IR and generate `bun:ffi` zero-copy C-ABI bindings:
   ```powershell
-  n2b llvm C:\src\n2b\migrations\ue58-sovereign\rust-kernel\src\lib.rs
+  n2b llvm C:\src\third_party\n2b\migrations\ue58-sovereign\rust-kernel\src\lib.rs
   ```

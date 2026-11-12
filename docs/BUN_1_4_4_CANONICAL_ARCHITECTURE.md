@@ -1,6 +1,6 @@
 # Sovereign Guide: Bun v1.4.4 Native Primitives & Monorepo Architecture
 
-> **Source**: `C:\src\bun\docs` (1,412 MDX canonical specification files).  
+> **Source**: `C:\src\third_party\bun\docs` (1,412 MDX canonical specification files).  
 > **Philosophy**: Linus Torvalds (flat data structures, sacred host userspace), Jarred Sumner (Full-Rust vertical speed, zero npm glue, zero `bunx`), Larry Page (10x surface clarity, autonomous ambient execution).
 
 ---

@@ -19,6 +19,9 @@ graphify-out/
 # Allowlist: the root repo is the manifest of the monorepo (units are submodules, upstreams are pinned in src.lock.json)
 /*
 !/.agents/
+!/.claude/
+/.claude/skills
+/.claude/settings.local.json
 !/.repo/
 !/.repo/manifests/
 !/.repo/manifest.xml
@@ -40,6 +43,11 @@ graphify-out/
 !/GEMINI.md
 !/README.md
 !/justfile
+!/Dockerfile
+!/compose.yaml
+!/.dockerignore
+!/flake.nix
+!/flake.lock
 !/package.json
 !/bun.lock
 !/install.ps1

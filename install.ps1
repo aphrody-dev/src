@@ -162,6 +162,14 @@ if (Test-Path "$TargetDir\packages\ai-triad\src\cli.ts") {
     Write-Host "  [OK] Installed triad.exe & synced Codex/AGY/Claude configs" -ForegroundColor Green
 }
 
+# Expose the shared agent skills to Claude Code (.agents/skills is the single source of truth)
+$claudeSkills = "$TargetDir\.claude\skills"
+if ((Test-Path "$TargetDir\.agents\skills") -and -not (Test-Path $claudeSkills)) {
+    New-Item -ItemType Directory -Force "$TargetDir\.claude" | Out-Null
+    New-Item -ItemType Junction -Path $claudeSkills -Target "$TargetDir\.agents\skills" | Out-Null
+    Write-Host "  [OK] Linked .claude\skills -> .agents\skills" -ForegroundColor Green
+}
+
 # Install frg.cmd shim
 $frgShim = @"
 @echo off

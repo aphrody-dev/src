@@ -33,6 +33,8 @@ pub static SEMVER_OR_CALVER_RE: LazyLock<Regex> = LazyLock::new(|| {
 
 pub const ALLOWED_ROOT_PHYSICAL_DIRS: &[&str] = &[
     ".agents",
+    ".claude",
+    ".coordkit-bus",
     ".gemini",
     ".git",
     ".jj",
@@ -85,6 +87,7 @@ pub const SKIP_DIRS: &[&str] = &[
     "graphify-out",
     "var",
     ".cache",
+    ".coordkit-bus",
 ];
 
 pub fn is_reparse_point(path: &Path) -> bool {

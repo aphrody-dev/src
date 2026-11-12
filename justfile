@@ -1,80 +1,88 @@
-# Master Workspace Justfile for C:\src
-# Anchored on Linux Kernel, Git, GNU/POSIX, Chromium depot_tools, Bun v1.4.4 Workspaces, Cargo, and Go 1.27
-set shell := ["powershell", "-NoProfile", "-Command"]
+# Master Workspace Justfile for the monorepo root
+# Cross-platform: POSIX sh on Linux/macOS/WSL2/containers, PowerShell 7 on Windows.
+# Paths use forward slashes, which every supported shell and toolchain accepts.
+# Every value below can be overridden from the environment or `just var=value <recipe>`.
+
+set shell := ["sh", "-cu"]
+set windows-shell := ["pwsh", "-NoLogo", "-NoProfile", "-Command"]
+set dotenv-load := false
+
+root := env("SRC_ROOT", justfile_directory())
+image := env("SRC_IMAGE", "aphrody/monorepo-dev:local")
 
 # Default recipe: list available commands
 default:
     just --list
 
-# Verify all 17 sovereign compiler, VCS, cloud, architecture, and AI CLI toolchains
+# Verify all sovereign compiler, VCS, cloud, architecture, and AI CLI toolchains
 doctor:
     xtk doctor
 
 # Run deterministic monorepo architecture, domain-purity, boundary & hygiene gate
 archguard:
-    archguard check --strict --root "C:\src"
+    archguard check --strict --root "{{root}}"
 
-# Check masked C:\src\.env vault, NTFS ACLs, and multi-editor auth wiring
+# Check masked .env vault and multi-editor auth wiring
 env-doctor:
-    bun run --cwd "C:\src\packages\env-kit" src/cli.ts doctor
+    bun run --cwd "{{root}}/packages/env-kit" src/cli.ts doctor
 
 # System and depot_tools ecosystem overview
 info:
     depot info
 
-# Ingest any codebase under C:\src (usage: just ingest crates/depot, just ingest third_party/chromium)
+# Ingest any codebase (usage: just ingest crates/depot, just ingest third_party/chromium)
 ingest target="crates/depot" format="markdown" max_tokens="20000":
-    depot ingest "C:\src\{{target}}" --format "{{format}}" --max-tokens {{max_tokens}}
+    depot ingest "{{root}}/{{target}}" --format "{{format}}" --max-tokens {{max_tokens}}
 
-# Build AST knowledge graph for any repo (usage: just graph crates/depot)
-graph target="crates/depot":
-    depot graph build "C:\src\{{target}}" --out-dir "C:\src\{{target}}\graphify-out"
+# Build AST knowledge graph for any repo into graphify-out/<name> (usage: just graph third_party/bun/src bun)
+graph target="crates/depot" name="":
+    depot graph build "{{root}}/{{target}}" --out-dir "{{root}}/graphify-out/{{ if name == "" { file_name(target) } else { name } }}"
 
 # Query AST graph symbols across codebases
 graph-query term target="crates/depot":
-    depot graph query "{{term}}" "C:\src\{{target}}"
+    depot graph query "{{term}}" "{{root}}/{{target}}"
 
 # Optimize repository with Git Scalar / blobless optimizations
 slim target="crates/depot":
-    depot slim "C:\src\{{target}}"
+    depot slim "{{root}}/{{target}}"
 
 # List active worktrees for a repo
 worktrees target="crates/depot":
-    depot worktree list "C:\src\{{target}}"
+    depot worktree list "{{root}}/{{target}}"
 
 # Verify content-addressed Blake3 binary artifacts
 artifacts-verify:
-    depot artifacts verify "C:\src\crates\depot\depot-artifacts.toml"
+    depot artifacts verify "{{root}}/crates/depot/depot-artifacts.toml"
 
 # Build all depot release binaries
 build-depot:
-    just -f "C:\src\crates\depot\justfile" build
+    just -f "{{root}}/crates/depot/justfile" build
 
-# Reinstall depot shims into C:\src\third_party\depot_tools
+# Reinstall depot shims into third_party/depot_tools
 install-shims:
-    just -f "C:\src\crates\depot\justfile" install-shims
+    just -f "{{root}}/crates/depot/justfile" install-shims
 
-# Byte-level Git and Scalar optimization across all C:\src repos
+# Byte-level Git and Scalar optimization across all repos
 slim-all:
     xtk slim-all
 
-# Generate deterministic C:\src\src.lock.json + Chromium DEPS + AOSP default.xml + Kernel MAINTAINERS
+# Generate deterministic src.lock.json + Chromium DEPS + AOSP default.xml + Kernel MAINTAINERS
 lock:
     xtk lock
 
-# Synchronize 4-pillar governance manifests (DEPS, .repo/manifests/default.xml, MAINTAINERS, docs/patches/series)
+# Synchronize governance manifests (DEPS, .repo/manifests/default.xml, MAINTAINERS, docs/patches/series)
 manifests:
     xtk manifests
 
-# Run full 4-pillar VCS governance audit (Git + Chromium + Kernel + AOSP + NTFS junctions)
+# Run full 4-pillar VCS governance audit (Git + Chromium + Kernel + AOSP)
 vcs-audit:
     xtk audit-vcs
     depot manifests
     frg pillars
 
-# Run Sovereign Monorepo Architecture & Domain-Purity Gate
+# Run architecture gate without --strict
 arch-check:
-    archguard check
+    archguard check --root "{{root}}"
 
 # Lookup Linux Kernel style MAINTAINERS ownership for a path (usage: just maintainer third_party/linux/Makefile)
 maintainer target="third_party/linux":
@@ -84,47 +92,77 @@ maintainer target="third_party/linux":
 forge cmd="status":
     frg {{cmd}}
 
-# Launch Sovereign Local Forge web dashboard on port 4000
+# Launch Sovereign Local Forge web dashboard
 serve-forge port="4000":
     frg serve --port {{port}}
 
-# Run Vercel & Vercel-Labs submodule sync and head-to-head benchmark arena
+# Run Vercel & Vercel-Labs submodule sync and benchmark arena
 labs cmd="bench":
-    bun run --cwd "C:\src\third_party\labs" src/cli.ts {{cmd}}
+    bun run --cwd "{{root}}/third_party/labs" src/cli.ts {{cmd}}
 
 # Run Unified AI Control Plane & Real-Time Standards Sentinel
 ai-os cmd="watch":
-    bun run --cwd "C:\src\packages\ai-os" src/cli.ts {{cmd}}
+    bun run --cwd "{{root}}/packages/ai-os" src/cli.ts {{cmd}}
 
-# Run Minimalist Pi + OpenCode + Locally Uncensored + Symphony/Ralph harness
+# Run Pi + OpenCode + Locally Uncensored + Symphony/Ralph harness
 pi-opencode cmd="tui":
-    bun run --cwd "C:\src\packages\pi-opencode" src/cli.ts {{cmd}}
+    bun run --cwd "{{root}}/packages/pi-opencode" src/cli.ts {{cmd}}
 
-# Run Unified Codex + AGY + Claude Cross-Auth & Cross-CLI Hub (doctor, tui, serve, sync-configs, council)
+# Run Codex + AGY + Claude Cross-Auth & Cross-CLI Hub (doctor, tui, serve, sync-configs, council)
 triad cmd="doctor":
-    bun run --cwd "C:\src\packages\ai-triad" src/cli.ts {{cmd}}
+    bun run --cwd "{{root}}/packages/ai-triad" src/cli.ts {{cmd}}
 
-# Run Pure-Rust Sovereign Stack (Better-Auth + shadcn-rs + Open-WebUI + OpenCode + OpenAI Gateway)
+# Run Pure-Rust Sovereign Stack
 rust-stack cmd="serve":
     rust-stack {{cmd}}
 
-# One-Click Vercel-Style Self-Hosted & Multi-Cloud Deploy (git clone -> live production)
+# One-click self-hosted & multi-cloud deploy (git clone -> live production)
 deploy target="--all" flags="--dry-run":
     src-deploy up {{target}} {{flags}}
 
-# Generate production HTTP/3 Caddyfile & systemd fleet manifests for fr1, fr2, usa
+# Generate production HTTP/3 Caddyfile & systemd fleet manifests
 deploy-plan:
     src-deploy plan --all
     src-deploy caddyfile
 
-# Format entire Bun v1.4.4 workspace
+# Format entire Bun workspace
 fmt:
     bun fmt
 
-# Run three-way Rust <-> Bun <-> Go FFI, architecture gate & workspace verification tests
+# Run architecture gate, toolchain doctor, and Bun + Cargo + Go suites
 verify-all:
-    archguard check --strict --root "C:\src"
+    archguard check --strict --root "{{root}}"
     xtk doctor
-    bun test "C:\src\packages\env-kit" "C:\src\packages\pi-opencode" "C:\src\packages\ai-triad"
-    cargo test --manifest-path "C:\src\crates\rust-stack\Cargo.toml"
-    Push-Location "C:\src\infra"; go test ./...; Pop-Location
+    bun test "{{root}}/packages/env-kit" "{{root}}/packages/pi-opencode" "{{root}}/packages/ai-triad"
+    bun test "{{root}}/.agents/scripts/pre-tool-guard.test.ts"
+    cargo test --manifest-path "{{root}}/crates/rust-stack/Cargo.toml"
+    cargo test --manifest-path "{{root}}/tools/archguard/Cargo.toml"
+    go -C "{{root}}/infra" test ./...
+
+# Build all container images (Arch dev + Alpine runtime); versions come from build args, see compose.yaml
+docker-build:
+    docker compose -f "{{root}}/compose.yaml" build
+
+# Arch Linux workstation shell with the monorepo mounted at /src
+docker-shell:
+    docker compose -f "{{root}}/compose.yaml" run --rm dev
+
+# Alpine runtime shell (first-party CLIs + Bun only)
+docker-runtime:
+    docker compose -f "{{root}}/compose.yaml" run --rm runtime
+
+# Run any recipe inside the Arch dev container (usage: just docker-run verify-all)
+docker-run recipe="verify-all":
+    docker compose -f "{{root}}/compose.yaml" run --rm dev just {{recipe}}
+
+# Nix alternative to containers: dev shell from flake.nix
+nix-shell:
+    nix develop "{{root}}"
+
+# Refresh the local offline docs mirrors (Docker, Kubernetes, Nix, Arch/Alpine images)
+docs-sync:
+    git -C "{{root}}/third_party/docs-ecosystem/docker-docs" pull --depth 1
+    git -C "{{root}}/third_party/docs-ecosystem/kubernetes-website" pull --depth 1
+    git -C "{{root}}/third_party/docs-ecosystem/nix-dev" pull --depth 1
+    git -C "{{root}}/third_party/docs-ecosystem/archlinux-docker" pull --depth 1
+    git -C "{{root}}/third_party/docs-ecosystem/docker-alpine" pull --depth 1

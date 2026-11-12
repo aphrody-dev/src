@@ -116,6 +116,13 @@ EOF
 chmod +x "${LOCAL_BIN}/frg"
 echo "  [OK] Installed frg to ${LOCAL_BIN}/frg"
 
+# Expose the shared agent skills to Claude Code (.agents/skills is the single source of truth)
+if [[ -d "${SCRIPT_DIR}/.agents/skills" && ! -e "${SCRIPT_DIR}/.claude/skills" ]]; then
+  mkdir -p "${SCRIPT_DIR}/.claude"
+  ln -s ../.agents/skills "${SCRIPT_DIR}/.claude/skills"
+  echo "  [OK] Linked .claude/skills -> .agents/skills"
+fi
+
 echo -e "\nRunning Sovereign Doctor Verification:"
 "${LOCAL_BIN}/xtk" doctor || true
 

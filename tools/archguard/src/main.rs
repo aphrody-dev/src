@@ -12,7 +12,7 @@ struct Cli {
     #[argh(subcommand)]
     sub: Option<SubCmd>,
 
-    /// target monorepo root directory (default: C:\src)
+    /// target monorepo root directory (default: $SRC_ROOT, else nearest src.lock.json ancestor, else C:\src or /src)
     #[argh(option)]
     root: Option<String>,
 
@@ -49,7 +49,7 @@ enum SubCmd {
 /// run full architectural & domain-purity verification across the monorepo
 #[argh(subcommand, name = "check")]
 struct CheckCmd {
-    /// target monorepo root directory (default: C:\src)
+    /// target monorepo root directory (default: $SRC_ROOT, else nearest src.lock.json ancestor, else C:\src or /src)
     #[argh(option)]
     root: Option<String>,
 
@@ -83,7 +83,7 @@ struct RulesCmd {
 /// generate monorepo architecture dependency graph (Mermaid, DOT, or JSON)
 #[argh(subcommand, name = "graph")]
 struct GraphCmd {
-    /// target monorepo root directory (default: C:\src)
+    /// target monorepo root directory (default: $SRC_ROOT, else nearest src.lock.json ancestor, else C:\src or /src)
     #[argh(option)]
     root: Option<String>,
 
@@ -96,7 +96,18 @@ struct GraphCmd {
     output: Option<String>,
 }
 
+/// Resolution order: `$SRC_ROOT`, then the nearest ancestor of the current
+/// directory holding `src.lock.json` (works in any checkout or container), then
+/// the platform default.
 fn default_root() -> PathBuf {
+    if let Some(root) = std::env::var_os("SRC_ROOT").filter(|v| !v.is_empty()) {
+        return PathBuf::from(root);
+    }
+    if let Ok(cwd) = std::env::current_dir() {
+        if let Some(found) = cwd.ancestors().find(|dir| dir.join("src.lock.json").is_file()) {
+            return found.to_path_buf();
+        }
+    }
     if cfg!(windows) {
         PathBuf::from(r"C:\src")
     } else {

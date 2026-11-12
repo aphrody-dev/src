@@ -16,11 +16,12 @@ Compatible with **Google Antigravity (`agy`)**, **OpenAI Codex (`codex`)**, **An
 ## 2. Single AI Product Ownership & Anti-AI-Slop Design-First Gate
 
 - **Single Public AI Product (`packages/ai-os`)**: `@aphrody/ai-os` is our **sole** public AI product and internal AI owner. All other `C:\src` surfaces (`aphrody.com`, `aphrody.app`, `crates/*`, `packages/*`, `infra/*`) are **generalist systems, web, desktop, Linux/WSL2 distro, and creative software** aligned with **Linus Torvalds, Jarred Sumner (Bun), and Larry Page**. Internally, 100% of `C:\src` workflows run NHITL (no human in the loop); externally, zero AI-hype or AI-slop is tolerated.
-- **Mandatory Design-First Gate (`Plan -> PRD -> DESIGN.md -> Assets -> Code -> WCK 100`)**: Before building or modifying any UI, agents MUST generate or update a *Cahier des charges* (PRD), wireframe layout spec, and `DESIGN.md` maquette using `@aphrody/google-design` (`gds`), verified against Modern Web Guidelines, Lighthouse/`wck` 100/100, Material Design 3, Fluent UI 2, `ui-ux-pro-max`, `3d-pro-max`, `impeccable`, `humanizer`, and Figma tokens.
+- **Mandatory Design-First Gate (`Plan -> PRD -> DESIGN.md -> Assets -> Code -> WCK 100`)**: Before building or modifying any UI, agents MUST generate or update a _Cahier des charges_ (PRD), wireframe layout spec, and `DESIGN.md` maquette using `@aphrody/google-design` (`gds`), verified against Modern Web Guidelines, Lighthouse/`wck` 100/100, Material Design 3, Fluent UI 2, `ui-ux-pro-max`, `3d-pro-max`, `impeccable`, `humanizer`, and Figma tokens.
 
 ## 3. Three-Principal Multi-Google & Cloud Identity Matrix (`aphrody` #468000409790)
 
 Managed via `env-kit accounts` with isolated `gcloud` named configurations sharing GCP project `aphrody`:
+
 1. **`yoyo.aphrody@gmail.com` (`ai-yoyo`)**: Dedicated autonomous AI account (Gemini, Spark, Hermes, OpenClaw, Drive `gdrive-yoyo`, NotebookLM).
 2. **`yohanpierre15@gmail.com` (`owner-yohan`)**: Yoyo personal developer & GCP/Git owner account.
 3. **`contact@aphrody.com` (`org-contact`)**: Organization & infrastructure identity across Google Workspace, Cloudflare, GitHub, GitLab, Google Git, OVH, Hostinger, Vercel, Supabase, and `mail.aphrody.com`.
@@ -32,3 +33,11 @@ Managed via `env-kit accounts` with isolated `gcloud` named configurations shari
 - **Tri-Forge Synchronization (`frg`)**: Keep repositories synchronized across **GitHub** (`aphrody-dev`), **GitLab** (`gitlab.com/aphrody-dev` & `git.aphrody.com`), and **Google Git** (GCP `aphrody` Developer Connect / Source Repos).
 - **Domain Purity (`archguard check --strict`)**: `C:\src\crates\*` is strictly pure Rust 2024 / native code (zero `.ts`/`.js`/npm files); `C:\src\packages\*` is strictly `@aphrody/*` Bun v1.4.4 packages (zero root `Cargo.toml`/`go.mod`); enforced deterministically by [`C:\src\tools\archguard`](file:///C:/src/tools/archguard).
 - **Secret Hygiene (`C:\src\.env`) & Zero Emojis**: Never print, log, or commit raw secret values from `C:\src\.env` (only `.env.example` may be committed). Strictly zero emojis in code, assets, Markdown, or commits.
+
+## 5. Portability, Containers & Agent Autonomy
+
+- **Cross-platform**: the same `justfile` runs under POSIX `sh` (Linux, macOS, WSL2, containers) and PowerShell 7 (Windows). Recipes use forward-slash paths rooted at `SRC_ROOT` (default: the justfile directory). `archguard` resolves its root from `--root`, then `$SRC_ROOT`, then the nearest ancestor holding `src.lock.json`.
+- **Containers (never Debian/Ubuntu)**: Alpine for light images, Arch Linux for heavy toolchain images, Nix (`flake.nix`) as the non-container alternative. `Dockerfile` (stages `builder` Alpine, `runtime` Alpine, `dev` Arch) + `compose.yaml` (`dev`, `verify`, `runtime`). Versions are build args overridable from the environment (`.env.example` section 0). `just docker-build`, `just docker-shell`, `just docker-runtime`, `just docker-run <recipe>`, `just nix-shell`. Policy and checklists: `.agents/skills/containers-alpine-arch-k8s/SKILL.md`.
+- **Offline docs**: `third_party/docs-ecosystem/` (Docker, Kubernetes, nix.dev, Arch/Alpine image repos), pinned in `src.lock.json`, refreshed by `just docs-sync`.
+- **Agent autonomy**: agents run unrestricted by default. The shared PreToolUse guard `.agents/scripts/pre-tool-guard.ts` serves both `agy` (`.agents/hooks.json`) and Claude Code (`.claude/settings.json`) and is controlled by `AGENT_GUARD=off|warn|enforce` (default `off`).
+- **Skills**: `.agents/skills/` is the single source of truth. Claude Code reads it through the `.claude/skills` junction created by `install.ps1` (on Unix: `ln -s ../.agents/skills .claude/skills`).
