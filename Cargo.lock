@@ -6921,8 +6921,7 @@ dependencies = [
 [[package]]
 name = "pageant"
 version = "0.2.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e0bc922d9aa8cfcf598de27b3c6122cb2eeda9d6fe71527a22ebcb7f633540ff"
+source = "git+https://github.com/aphrody-dev/russh?branch=aphrody%2Fsntrup761#a9f644259fa57ddb2da0f980e6ae813b829f7ad4"
 dependencies = [
  "base16ct",
  "byteorder",
@@ -7256,9 +7255,9 @@ dependencies = [
 
 [[package]]
 name = "pkcs1"
-version = "0.8.0-rc.4"
+version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "986d2e952779af96ea048f160fd9194e1751b4faea78bcf3ceb456efe008088e"
+checksum = "6250dd7321adbe93d12b750aee0ced159fd13e77f625edcdf1cb6f83cd99f650"
 dependencies = [
  "der",
  "spki",
@@ -7655,7 +7654,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e058c7de0b26af77780c769414d6257830bb240f3c38477dbc2c16e5f54d6d4c"
 dependencies = [
  "libc",
- "rand_chacha",
+ "rand_chacha 0.3.1",
  "rand_core 0.6.4",
 ]
 
@@ -7678,6 +7677,16 @@ checksum = "e6c10a63a0fa32252be49d21e7709d4d4baf8d231c2dbce1eaa8141b9b127d88"
 dependencies = [
  "ppv-lite86",
  "rand_core 0.6.4",
+]
+
+[[package]]
+name = "rand_chacha"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3e6af7f3e25ded52c41df4e0b1af2d047e45896c2f3281792ed68a1c243daedb"
+dependencies = [
+ "ppv-lite86",
+ "rand_core 0.10.1",
 ]
 
 [[package]]
@@ -7997,14 +8006,16 @@ dependencies = [
 
 [[package]]
 name = "rsa"
-version = "0.10.0-rc.18"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "30b2aa4ba0d89f73d1e332df05be0eeab8840351c36ca5654341dfdb57bb3caf"
+checksum = "23e77fd77e0dea28b3011fd62d15445b7de7959333b0276d930e03be0f755699"
 dependencies = [
  "const-oid",
  "crypto-bigint",
+ "crypto-common 0.2.2",
  "crypto-primes",
  "digest 0.11.3",
+ "hmac",
  "pkcs1",
  "pkcs8",
  "rand_core 0.10.1",
@@ -8041,8 +8052,7 @@ dependencies = [
 [[package]]
 name = "russh"
 version = "0.65.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "94be3d86c71b9ed220a675c405e35c7a02565a009bf8da2e9cc13a700320a5c5"
+source = "git+https://github.com/aphrody-dev/russh?branch=aphrody%2Fsntrup761#a9f644259fa57ddb2da0f980e6ae813b829f7ad4"
 dependencies = [
  "aes",
  "bitflags 2.13.2",
@@ -8098,6 +8108,7 @@ dependencies = [
  "sha2 0.11.1",
  "sha3",
  "signature",
+ "sntrup761",
  "spki",
  "ssh-encoding",
  "ssh-key",
@@ -8112,8 +8123,7 @@ dependencies = [
 [[package]]
 name = "russh-cryptovec"
 version = "0.62.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3aec6cb630dbe85d72ffd7bcd95f07e1bd69f9f270ee8adfa1afe443a6331438"
+source = "git+https://github.com/aphrody-dev/russh?branch=aphrody%2Fsntrup761#a9f644259fa57ddb2da0f980e6ae813b829f7ad4"
 dependencies = [
  "log",
  "nix 0.31.3",
@@ -8144,8 +8154,7 @@ dependencies = [
 [[package]]
 name = "russh-util"
 version = "0.52.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "668424a5dde0bcb45b55ba7de8476b93831b4aa2fa6947e145f3b053e22c60b6"
+source = "git+https://github.com/aphrody-dev/russh?branch=aphrody%2Fsntrup761#a9f644259fa57ddb2da0f980e6ae813b829f7ad4"
 dependencies = [
  "chrono",
  "tokio",
@@ -8927,6 +8936,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "sntrup761"
+version = "0.4.0"
+source = "git+https://github.com/aphrody-dev/sntrup761?branch=aphrody%2Fpure-rust#54e3a99495e974586085df0c86583eb7c606854e"
+dependencies = [
+ "rand 0.10.3",
+ "rand_chacha 0.10.0",
+ "sha2 0.11.1",
+ "subtle",
+ "thiserror 2.0.21",
+ "zeroize",
+]
+
+[[package]]
 name = "socket2"
 version = "0.6.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -9036,9 +9058,9 @@ dependencies = [
 
 [[package]]
 name = "ssh-key"
-version = "0.7.0-rc.11"
+version = "0.7.0-rc.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f9a32fae177b74a22aa9c5b01bf7e68b33545be32d9e381e248058d2adc15ce3"
+checksum = "0701b552e6bd8f13a6e07bde25307c32d7daad80a79b65832d110c0416e7b638"
 dependencies = [
  "argon2",
  "bcrypt-pbkdf",

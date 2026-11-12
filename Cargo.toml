@@ -152,3 +152,8 @@ opt-level = 1
 
 [profile.dev.package.rust-stack]
 opt-level = 1
+
+# aphrody-dev forks: russh with sntrup761x25519-sha512 (OpenSSH hybrid PQ kex), pure-Rust sntrup761.
+[patch.crates-io]
+russh = { git = "https://github.com/aphrody-dev/russh", branch = "aphrody/sntrup761" }
+sntrup761 = { git = "https://github.com/aphrody-dev/sntrup761", branch = "aphrody/pure-rust" }
