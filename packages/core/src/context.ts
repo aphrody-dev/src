@@ -33,7 +33,7 @@ export const hashEmbedder = (dim = 512): Embedder => ({
         const h = Number(Bun.hash.wyhash(f) & 0xffffffffn);
         v[h % dim]! += h & 0x80000000 ? -1 : 1;
       }
-      const n = Math.hypot(...v) || 1;
+      const n = Math.sqrt(v.reduce((a, x) => a + x * x, 0)) || 1;
       return v.map((x) => x / n);
     }),
 });
@@ -149,7 +149,7 @@ export class Context {
     const get = this.db.query<{ vec: Uint8Array }, [string, string]>("SELECT vec FROM kv WHERE embedder = ? AND hash = ?");
     const out: (number[] | undefined)[] = hashes.map((h) => {
       const r = get.get(emb.id, h);
-      return r ? Array.from(new Float32Array(r.vec.buffer, r.vec.byteOffset, r.vec.byteLength / 4)) : undefined;
+      return r ? Array.from(new Float32Array(r.vec.slice().buffer)) : undefined;
     });
     const miss = out.flatMap((v, i) => (v ? [] : [i]));
     if (miss.length) {
@@ -169,7 +169,7 @@ export class Context {
   async select(query: string, o: SelectOptions = {}): Promise<Scored[]> {
     const now = o.now ?? Date.now();
     const w = { ...DEFAULT_WEIGHTS, ...o.weights };
-    const t = o.temperature ?? 1;
+    const t = Math.max(o.temperature ?? 1, 1e-6);
     const nCand = o.candidates ?? 200;
     const heads: Record<string, Map<string, number>> = {};
     const pool = new Map<string, Entry>();
@@ -219,7 +219,7 @@ export class Context {
     }
     if (w.recency > 0) {
       const hl = (o.halfLifeDays ?? 14) * 86_400_000;
-      heads.recency = new Map(ids.map((id) => [id, Math.pow(0.5, (now - pool.get(id)!.at) / hl)]));
+      heads.recency = new Map(ids.map((id) => [id, Math.pow(0.5, Math.max(0, now - pool.get(id)!.at) / hl)]));
     }
 
     const lexHitSet = new Set(heads.__lexHits?.keys() ?? []);
@@ -268,12 +268,15 @@ export class Context {
   }
 }
 
-/** Render selected entries as a prompt block (stable order by source then score, for prompt-cache friendliness). */
+/** Strip newlines and '#' so untrusted source/title cannot inject Markdown headers into the prompt. */
+const oneLine = (s: string) => s.replace(/[\r\n#]+/g, " ").replace(/\s+/g, " ").trim();
+
+/** Render selected entries as a prompt block (grouped by source, in score order). */
 export function renderContext(sel: Scored[]): string {
   if (!sel.length) return "";
   const by = new Map<string, Scored[]>();
   for (const s of sel) by.set(s.source, [...(by.get(s.source) ?? []), s]);
   return [...by]
-    .map(([src, xs]) => `## ${src}\n${xs.map((x) => `- ${x.title ? `${x.title}: ` : ""}${x.text.replace(/\s+/g, " ").slice(0, 1200)}`).join("\n")}`)
+    .map(([src, xs]) => `## ${oneLine(String(src)) || "context"}\n${xs.map((x) => `- ${x.title ? `${oneLine(x.title)}: ` : ""}${x.text.replace(/\s+/g, " ").slice(0, 1200)}`).join("\n")}`)
     .join("\n\n");
 }
