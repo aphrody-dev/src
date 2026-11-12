@@ -81,6 +81,41 @@ enum Cmd {
         #[arg(long = "gerrit-url")]
         gerrit_url: Option<String>,
     },
+    /// Submit through the commit queue (`git cl land` on Gerrit = upload with Commit-Queue+2)
+    Land {
+        #[arg(long = "revision")]
+        revision: Option<String>,
+        #[arg(short = 'b', long = "target-branch", alias = "target_branch")]
+        target_branch: Option<String>,
+        #[arg(long)]
+        dry_run: bool,
+    },
+    /// Every other `git cl` command (presubmit, try, try-results, format, owners, ...) runs on
+    /// upstream git_cl.py with uv's Python
+    #[command(external_subcommand)]
+    Upstream(Vec<String>),
+}
+
+/// Run upstream `git_cl.py <args>` from the depot_tools checkout with `uv run`.
+fn upstream_git_cl(args: &[String]) -> Result<i32, String> {
+    let root = depot_core::DepotTools::detect()
+        .root_path
+        .ok_or("depot_tools not found (third_party/depot_tools or DEPOT_TOOLS)")?;
+    let script = root.join("git_cl.py");
+    let mut a: Vec<String> = vec![
+        "run".into(),
+        "--no-project".into(),
+        "-q".into(),
+        "python".into(),
+        script.display().to_string(),
+    ];
+    a.extend(args.iter().cloned());
+    Command::new("uv")
+        .args(&a)
+        .env("DEPOT_TOOLS_UPDATE", "0")
+        .status()
+        .map(|s| s.code().unwrap_or(1))
+        .map_err(|e| format!("uv: {e}"))
 }
 
 /// `https://chromium.googlesource.com/chromium/src.git` ->
@@ -251,12 +286,40 @@ pub fn run_cl(name: &str, args: &[String]) -> i32 {
                 return if e.use_stderr() { 2 } else { 0 };
             }
         };
+    let cmd = match cli.cmd {
+        Cmd::Upstream(args) => {
+            return upstream_git_cl(&args).unwrap_or_else(|e| {
+                eprintln!("{name}: {e}");
+                1
+            });
+        }
+        Cmd::Land {
+            revision,
+            target_branch,
+            dry_run,
+        } => Cmd::Upload {
+            reviewers: Vec::new(),
+            cc: Vec::new(),
+            title: None,
+            cq_dry_run: false,
+            use_commit_queue: true,
+            wip: false,
+            topic: None,
+            hashtags: Vec::new(),
+            target_branch,
+            revision,
+            dry_run,
+            _force: false,
+            _yes: false,
+        },
+        other => other,
+    };
     let cwd = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
     if let Err(e) = ensure_jj(&cwd) {
         eprintln!("{name}: {e}");
         return 2;
     }
-    let result = match cli.cmd {
+    let result = match cmd {
         Cmd::Upload {
             reviewers,
             cc,
@@ -363,6 +426,7 @@ pub fn run_cl(name: &str, args: &[String]) -> i32 {
             }
             Ok(0)
         })(),
+        Cmd::Land { .. } | Cmd::Upstream(_) => unreachable!("rewritten above"),
     };
     match result {
         Ok(code) => code,
