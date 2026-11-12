@@ -193,7 +193,12 @@ fn install_archive(
                 let name = target.file_name().map(|n| n.to_owned()).unwrap_or_default();
                 let dest = bin_dir.join(name);
                 std::fs::create_dir_all(&bin_dir).map_err(|e| e.to_string())?;
-                link(&target, &dest)?;
+                if crate::shim::needed(&target) {
+                    crate::shim::write(&target, &dest)?;
+                } else {
+                    let _ = std::fs::remove_file(crate::shim::shim_file(&dest));
+                    link(&target, &dest)?;
+                }
                 placed.push(format!("{} -> {}", dest.display(), target.display()));
             }
         }

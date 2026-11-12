@@ -18,6 +18,7 @@ pub mod install;
 pub mod manifest;
 pub mod probe;
 pub mod setup;
+pub mod shim;
 pub mod version;
 
 use manifest::{Manifest, Origin};

@@ -134,6 +134,9 @@ pub struct Tool {
     /// Free-form note shown by `ay up --list`.
     #[serde(default)]
     pub note: Option<String>,
+    /// Platform keys upstream publishes no build for (the tool is skipped there).
+    #[serde(default)]
+    pub unsupported: Vec<String>,
 }
 
 impl Tool {
@@ -406,6 +409,9 @@ package = "wrangler"
                 "macos-x86_64",
                 "macos-aarch64",
             ] {
+                if t.unsupported.iter().any(|u| u == p) {
+                    continue;
+                }
                 assert!(
                     t.download_url(p).is_some(),
                     "{} has no asset for {p}",

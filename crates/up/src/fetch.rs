@@ -8,7 +8,8 @@ use sha2::{Digest, Sha256};
 
 const USER_AGENT: &str = concat!("ay-up/", env!("CARGO_PKG_VERSION"));
 /// Largest download accepted (the gcloud SDK archive is about 150 MB).
-const MAX_BODY: u64 = 1 << 30;
+// Ollama ships CUDA and ROCm libraries in its archives (over 1 GiB on Windows).
+const MAX_BODY: u64 = 4 << 30;
 
 /// ureq 3 agent. Its default `redirect_auth_headers = Never` drops `Authorization` when
 /// following a redirect, so API tokens never reach the signed storage hosts.

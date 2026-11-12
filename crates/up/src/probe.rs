@@ -179,6 +179,16 @@ pub fn classify(want: &str, have: Option<&str>, found: bool) -> State {
     }
 }
 
+/// The `<version>` directory that a tree tool's link or shim points into.
+fn tree_version(path: &Path) -> Option<String> {
+    let target = std::fs::read_to_string(crate::shim::shim_file(path))
+        .ok()
+        .and_then(|t| crate::shim::parse(&t))
+        .map(|(t, _)| t)
+        .or_else(|| std::fs::read_link(path).ok())?;
+    target.parent()?.file_name()?.to_str().map(str::to_string)
+}
+
 pub fn probe(tool: &Tool, manifest: &Manifest, platform: &str) -> Probe {
     let bin_dir = manifest.bin_dir();
     // Single-binary tools are real executables; tree and Bun tools may be .cmd launchers.
@@ -191,6 +201,14 @@ pub fn probe(tool: &Tool, manifest: &Manifest, platform: &str) -> Probe {
     let have = match (tool.source, &path) {
         // Bun global packages record their version; some (MCP servers) never exit on --version.
         (SourceKind::Bun, _) => tool.package.as_deref().and_then(bun_package_version),
+        // Tree installs live in `tools_dir/<name>/<version>`: the link or shim target names
+        // the version, also for tools that print a build number or no version at all.
+        (_, Some(p))
+            if tool.layout == Layout::Tree
+                && tree_version(p).as_deref() == Some(tool.version.as_str()) =>
+        {
+            Some(tool.version.clone())
+        }
         (_, Some(_)) => run_capture(&argv, &bin_dir, program)
             .as_deref()
             .and_then(version::extract),

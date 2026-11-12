@@ -1,4 +1,4 @@
-//! Archive handling: `.zip`, `.tar.gz` / `.tgz`, `.tar.xz`, or a bare executable.
+//! Archive handling: `.zip`, `.tar.gz` / `.tgz`, `.tar.xz`, `.tar.zst`, or a bare executable.
 
 use std::io::{Cursor, Read};
 use std::path::{Component, Path, PathBuf};
@@ -8,6 +8,7 @@ pub enum Kind {
     Zip,
     TarGz,
     TarXz,
+    TarZst,
     /// The download is the executable itself.
     Raw,
 }
@@ -20,6 +21,8 @@ pub fn kind_of(name: &str) -> Kind {
         Kind::TarGz
     } else if lower.ends_with(".tar.xz") || lower.ends_with(".txz") {
         Kind::TarXz
+    } else if lower.ends_with(".tar.zst") || lower.ends_with(".tzst") {
+        Kind::TarZst
     } else {
         Kind::Raw
     }
@@ -100,6 +103,11 @@ pub fn entries(name: &str, data: &[u8]) -> Result<Vec<Entry>, String> {
         }
         Kind::TarGz => tar_entries(flate2::read::GzDecoder::new(Cursor::new(data))),
         Kind::TarXz => tar_entries(lzma_rust2::XzReader::new(Cursor::new(data), true)),
+        // Pure-Rust zstd (ruzstd), like the xz path: no C build in `ay`.
+        Kind::TarZst => tar_entries(
+            ruzstd::decoding::StreamingDecoder::new(Cursor::new(data))
+                .map_err(|e| format!("zstd: {e}"))?,
+        ),
         Kind::Raw => Ok(vec![Entry {
             path: PathBuf::from(name),
             data: data.to_vec(),
