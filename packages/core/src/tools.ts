@@ -49,7 +49,15 @@ export function makeTools(ctx: ToolCtx) {
     skill_create: tool({
       description: "Save a reusable procedure as an Agent Skill (SKILL.md) after completing a task.",
       inputSchema: z.object({ name: z.string(), description: z.string(), body: z.string() }),
-      execute: async ({ name, description, body }) => (await ctx.skills.create(name, description, body)).path,
+      execute: async ({ name, description, body }) => {
+        const r = await ctx.skills.create(name, description, body);
+        return [r.path, ...r.warnings.map((w) => `warning ${w.rule}: ${w.message}`)].join("\n");
+      },
+    }),
+    skill_view: tool({
+      description: "Load the full body of an agent skill by name before following it.",
+      inputSchema: z.object({ name: z.string() }),
+      execute: async ({ name }) => (await ctx.skills.view(name))?.body ?? `no skill ${name}`,
     }),
   };
 }
