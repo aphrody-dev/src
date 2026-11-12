@@ -654,4 +654,4 @@ parse_deps = true
 
 # A white list of crate names that are allowed to be parsed. If this is defined,
 # only crates found in this list will ever be parsed.
-include = ["lore-base", "lore-transport", "lore-storage", "lore-revision", "lore-notification"]
+include = ["aphrody-lore-base", "aphrody-lore-transport", "aphrody-lore-storage", "aphrody-lore-revision", "aphrody-lore-notification"]
