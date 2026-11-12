@@ -20,6 +20,8 @@ export type RunOptions = {
   history?: ModelMessage[];
   /** Permission mask: which scopes/sources this run may attend to. */
   mask?: Mask;
+  /** Force a tool call on the first step (weak local models that otherwise claim success without acting). */
+  requireTool?: boolean;
 };
 
 export const INSTRUCTIONS =
@@ -51,6 +53,7 @@ export async function run(o: RunOptions) {
       ...(o.history ? { messages: [...o.history, { role: "user" as const, content: o.task }] } : { prompt: o.task }),
       tools: makeTools({ cwd: o.cwd, memory, skills, allowShell: o.allowShell ?? false }),
       stopWhen: isStepCount(o.maxSteps ?? 16),
+      prepareStep: o.requireTool ? ({ stepNumber }) => (stepNumber === 0 ? { toolChoice: "required" } : {}) : undefined,
       onStepFinish: Bun.env.AGENT_DEBUG
         ? (st) => {
             for (const c of st.content) if (c.type === "tool-result" || c.type === "tool-error") console.error(`[${c.type}] ${c.toolName} ${JSON.stringify("output" in c ? c.output : c.error).slice(0, 300)}`);

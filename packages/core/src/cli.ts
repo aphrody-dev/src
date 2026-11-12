@@ -20,6 +20,7 @@ const { positionals, values } = parseArgs({
     every: { type: "string" },
     interval: { type: "string" },
     once: { type: "boolean" },
+    "require-tool": { type: "boolean" },
     validate: { type: "boolean" },
     batch: { type: "string" },
     "no-web": { type: "boolean" },
@@ -60,6 +61,7 @@ switch (cmd) {
       home,
       cwd: process.cwd(),
       allowShell: values["allow-shell"],
+      requireTool: values["require-tool"] ?? Bun.env.AGENT_REQUIRE_TOOL === "1",
       maxSteps: values["max-steps"] ? Number(values["max-steps"]) : undefined,
     });
     console.log(r.text);
