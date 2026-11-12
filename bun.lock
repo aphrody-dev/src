@@ -60,13 +60,23 @@
     },
     "packages/chromium-bun": {
       "name": "@aphrody/chromium-bun",
-      "version": "1.0.0",
+      "version": "2.1.0",
+      "bin": {
+        "chromium-bun": "./src/cli.ts",
+      },
     },
     "packages/env-kit": {
       "name": "@aphrody/env-kit",
       "version": "1.0.0",
       "bin": {
         "env-kit": "./src/cli.ts",
+      },
+    },
+    "packages/epic-games": {
+      "name": "@aphrody/epic-games",
+      "version": "0.1.0",
+      "bin": {
+        "egs": "src/cli.ts",
       },
     },
     "packages/forge": {
@@ -82,10 +92,6 @@
       "bin": {
         "gds": "./cli.ts",
       },
-    },
-    "packages/kernel-crawler": {
-      "name": "@aphrody/kernel-crawler",
-      "version": "0.1.0",
     },
     "packages/knowledge-engine": {
       "name": "@aphrody/knowledge-engine",
@@ -127,13 +133,13 @@
 
     "@aphrody/env-kit": ["@aphrody/env-kit@workspace:packages/env-kit"],
 
+    "@aphrody/epic-games": ["@aphrody/epic-games@workspace:packages/epic-games"],
+
     "@aphrody/forge": ["@aphrody/forge@workspace:packages/forge"],
 
     "@aphrody/google-design": ["@aphrody/google-design@workspace:packages/google-design"],
 
     "@aphrody/infra-ffi-bridge": ["@aphrody/infra-ffi-bridge@workspace:infra/ffi-bridge"],
-
-    "@aphrody/kernel-crawler": ["@aphrody/kernel-crawler@workspace:packages/kernel-crawler"],
 
     "@aphrody/knowledge-engine": ["@aphrody/knowledge-engine@workspace:packages/knowledge-engine"],
 
