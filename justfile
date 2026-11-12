@@ -270,5 +270,7 @@ test-affected ref="origin/main":
 # Pre-push gate: format, layered deps, architecture rules
 check:
     bun fmt --check
+    cargo fmt --all --check
+    bun check -b
     just checkdeps
     ay arch check --root "{{root}}"

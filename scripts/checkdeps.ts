@@ -7,19 +7,26 @@
 //
 // DEPS.rules syntax, one directive per line, `#` comments:
 //   layer = N        L0 toolchain, L1 base, L2 platform, L3 services, L4 agent, L5 surfaces
-//   +path            allow a dependency on path (prefix match), even same layer or upward
-//   !path            allowed but temporary: reported as a warning (debt to burn down)
+//   +path            re-allow a lower/lateral path that a broader -rule forbids (never upward)
+//   !path            ticketed debt: the only way to keep an upward edge; reported as a warning
 //   -path            forbid, even if the layer order would allow it
+//   use path         declare an edge the manifests cannot show (bun:ffi dlopen, pyo3); own dir only
+// Only [dependencies] and [build-dependencies] count: dev-dependencies (tests, benches) are exempt.
 //
 // Edge policy: lower layer -> allowed; same layer -> allowed (cycles are errors); upper layer
-// -> error unless +/! rule. Unlayered units -> error. Exit code 1 on any error.
+// -> error unless ! rule. Unlayered units -> error. Exit code 1 on any error.
 //
 // Usage: bun scripts/checkdeps.ts [--root DIR] [--json] [--graph] [--affected REF]
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 
 type Rule = { kind: "+" | "!" | "-"; path: string; from: string };
-type Scope = { layer?: number; layerFrom?: string; rules: Rule[] };
+type Scope = {
+  layer?: number;
+  layerFrom?: string;
+  rules: Rule[];
+  uses: string[];
+};
 type Unit = {
   dir: string;
   name: string;
@@ -184,6 +191,7 @@ function scopeFor(dirRel: string): Scope {
     layer: parent?.layer,
     layerFrom: parent?.layerFrom,
     rules: [...(parent?.rules ?? [])],
+    uses: [],
   };
   const f = join(root, dirRel, "DEPS.rules");
   const own =
@@ -205,6 +213,8 @@ function scopeFor(dirRel: string): Scope {
     if (m) {
       s.layer = Number(m[1]);
       s.layerFrom = src;
+    } else if (/^use\s+/.test(line)) {
+      s.uses.push(line.replace(/^use\s+/, "").replace(/\/$/, ""));
     } else if ("+!-".includes(line[0]!)) {
       s.rules.unshift({
         kind: line[0] as Rule["kind"],
@@ -223,6 +233,17 @@ const matchRule = (s: Scope, target: string) =>
 
 // 4. Check edges.
 const findings: Finding[] = [];
+for (const u of units.values())
+  for (const p of scopeFor(u.dir).uses) {
+    if (units.has(p)) u.deps = [...new Set([...u.deps, p])].sort();
+    else
+      findings.push({
+        level: "error",
+        from: u.dir,
+        to: p,
+        msg: "use: unknown unit",
+      });
+  }
 for (const u of units.values()) {
   const s = scopeFor(u.dir);
   if (s.layer === undefined) {
@@ -251,13 +272,12 @@ for (const u of units.values()) {
         to: d,
         msg: `ticketed allowance (${r.from})`,
       });
-    else if (r?.kind === "+") continue;
     else if (t.layer !== undefined && t.layer > s.layer)
       findings.push({
         level: "error",
         from: u.dir,
         to: d,
-        msg: `upward: L${s.layer} -> L${t.layer} (${LAYER_NAMES[t.layer]})`,
+        msg: `upward: L${s.layer} -> L${t.layer} (${LAYER_NAMES[t.layer]})${r?.kind === "+" ? "; + cannot lift an upward edge, use ! with a ticket" : ""}`,
       });
   }
 }
