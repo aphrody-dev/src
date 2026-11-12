@@ -37,3 +37,19 @@ Deleted forks of aphrody-dev: not referenced by .gitmodules or src.lock.json, an
 | Exo | debuggyo/Exo | 26 | true |
 | EAC-Extractor-Utility | lguilhermee/EAC-Extractor-Utility | 0 | true |
 | Boxedwine64 | andrewnakas/Boxedwine64 | 243 | true |
+
+## Archived unit repositories
+
+Their code now lives in `aphrody-dev/src` (flattened in root commit `5d7e803` and later). Each was
+archived read-only with a description pointing to its new path; `gh repo unarchive` reverts it.
+
+ai-os, ai-triad, aphrody, aphrody-app, brain, bun-parity, bun-plugins, chromium-bun, depot, env-kit,
+forge, gamescope-rs, google-design, infra, knowledge-engine, pi-opencode, unix, wayland, wck, xtask.
+
+Kept active: `src` (monorepo), submodules `bench`, `ring3-agent`, `rust-stack`, `mesh-vn` (its code is
+not tracked in the root yet), `cours-ia`, `fairy-tail-archive`, `mochi-desktop` (1 own commit),
+`opentunnel` (comparison failed), and the forks referenced by `src.lock.json` (bun, codex, OmniRoute,
+opencodex, opentui, gemini-cli, claude-code, cc-switch, cc-switch-cli, CLIProxyAPI, agent-browser,
+agent-desktop, antigravity-sdk-python).
+
+Result: 75 repositories (16.9 GB of forks) became 42 (21 active, 21 archived), 10.2 GB of forks removed.
