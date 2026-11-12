@@ -128,7 +128,7 @@ split-debuginfo = "unpacked"
 incremental = true
 
 # No debuginfo for crates.io dependencies: 17% smaller target/, less I/O. Workspace
-# crates keep line tables and locals for the debugger.
+# crates keep debug = 1 (line tables and function info for backtraces and breakpoints).
 [profile.dev.package."*"]
 debug = false
 
