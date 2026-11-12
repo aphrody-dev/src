@@ -57,6 +57,8 @@ graphify-out/
 !/CLAUDE.md
 !/GEMINI.md
 !/README.md
+!/LICENSE-MIT
+!/LICENSE-APACHE
 !/justfile
 !/Cargo.toml
 !/Cargo.lock
