@@ -63,7 +63,7 @@ pub fn check_chromium_hygiene(root: &Path, findings: &mut Vec<ArchFinding>) {
                                     message: format!(
                                         "DEPS entry `{target}` uses non-SHA1 revision `{rev_clean}` (expected strict 40-character git commit hash)"
                                     ),
-                                    remediation: "Pin dependency to an exact 40-character git commit SHA in `DEPS` via `xtk lock`.".into(),
+                                    remediation: "Pin dependency to an exact 40-character git commit SHA in `DEPS` via `ay lock`.".into(),
                                 });
                             }
                         } else if !repo_str.is_empty() && !repo_str.starts_with('{') {

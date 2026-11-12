@@ -4,7 +4,6 @@
 [workspace]
 resolver = "3"
 members = [
-  "tools/archguard",
   "crates/*",
 ]
 exclude = [
@@ -23,8 +22,10 @@ authors = ["aphrody-dev"]
 
 [workspace.dependencies]
 # First-party crates
+archguard = { path = "crates/archguard" }
 aphrody-design-shared = { path = "crates/aphrody-design-shared" }
 aphrody-design-tokens = { path = "crates/aphrody-design-tokens" }
+depot-cli = { path = "crates/depot-cli" }
 depot-core = { path = "crates/depot-core" }
 depot-treesitter = { path = "crates/depot-treesitter" }
 depot-re = { path = "crates/depot-re" }
@@ -34,6 +35,8 @@ depot-ingest = { path = "crates/depot-ingest" }
 depot-graph = { path = "crates/depot-graph" }
 gamescope-core = { path = "crates/gamescope-core" }
 gamescope-wgsl = { path = "crates/gamescope-wgsl" }
+stack-bench = { path = "crates/bench" }
+xtk = { path = "crates/xtask" }
 
 # crates.io
 anyhow = "1.0"

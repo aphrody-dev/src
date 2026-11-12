@@ -65,7 +65,7 @@ $cargoConfig = @"
 rustc-wrapper = "sccache"
 
 [alias]
-xtask = "run --manifest-path C:/src/crates/xtask/Cargo.toml --release --"
+ay = "run --manifest-path C:/src/Cargo.toml -p aphrody --bin ay --release --"
 nt = "nextest run"
 b = "build"
 c = "check"
@@ -130,19 +130,12 @@ if (-not $SkipClones) {
     }
 }
 
-# Compile xtk, rust-stack, triad, and src-deploy CLI Tooling
+# Compile ay, rust-stack, triad, and src-deploy CLI Tooling
 Write-Host "`n[5/5] Building & Installing Sovereign Rust, Bun, and Go CLI Tooling..." -ForegroundColor Yellow
-if (Test-Path "$TargetDir\crates\xtask") {
-    Push-Location "$TargetDir\crates\xtask"
-    cargo build --release
-    Pop-Location
-    $builtExe = "$env:LOCALAPPDATA\Aphrody\cache\cargo-target\release\xtk.exe"
-    if (-not (Test-Path $builtExe)) {
-        $builtExe = "$TargetDir\crates\xtask\target\release\xtk.exe"
-    }
-    if (Test-Path $builtExe) {
-        Copy-Item $builtExe "$localBin\xtk.exe" -Force
-        Write-Host "  [OK] Installed xtk.exe to $localBin\xtk.exe" -ForegroundColor Green
+if (Test-Path "$TargetDir\crates\ay") {
+    cargo install --path "$TargetDir\crates\ay" --root "$env:USERPROFILE\.local" --force --locked --no-track
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "  [OK] Installed ay.exe to $localBin\ay.exe" -ForegroundColor Green
     }
 }
 if (Test-Path "$TargetDir\crates\rust-stack") {
@@ -180,6 +173,6 @@ Write-Host "  [OK] Installed frg.cmd to $localBin\frg.cmd" -ForegroundColor Gree
 
 # Run final verification doctor
 Write-Host "`nRunning Sovereign Doctor Verification:" -ForegroundColor Cyan
-& "$localBin\xtk.exe" doctor
+& "$localBin\ay.exe" doctor
 
 Write-Host "Sovereign Monorepo Setup 100% Complete & Verified.`n" -ForegroundColor Green

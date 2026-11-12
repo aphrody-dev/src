@@ -1,14 +1,13 @@
-use archguard::{
+use crate::{
     AuditConfig, RULES, VERSION, build_monorepo_graph, format_human_report, run_audit,
 };
 use argh::FromArgs;
 use std::fs;
 use std::path::PathBuf;
-use std::process;
 
 #[derive(FromArgs, PartialEq, Debug)]
 /// Sovereign Monorepo Architecture, Domain-Purity, Boundary & Hygiene Auditor (archguard)
-struct Cli {
+pub struct Cli {
     #[argh(subcommand)]
     sub: Option<SubCmd>,
 
@@ -99,7 +98,7 @@ struct GraphCmd {
 /// Resolution order: `$SRC_ROOT`, then the nearest ancestor of the current
 /// directory holding `src.lock.json` (works in any checkout or container), then
 /// the platform default.
-fn default_root() -> PathBuf {
+pub fn default_root() -> PathBuf {
     if let Some(root) = std::env::var_os("SRC_ROOT").filter(|v| !v.is_empty()) {
         return PathBuf::from(root);
     }
@@ -118,17 +117,29 @@ fn default_root() -> PathBuf {
     }
 }
 
-fn main() {
-    let raw_args: Vec<String> = std::env::args().skip(1).collect();
-    if raw_args.iter().any(|a| a == "--version" || a == "-V") {
+/// Run the architecture gate CLI. `cmd` is the name shown in usage (e.g. `ay arch`),
+/// `args` are the arguments after it. Returns the process exit code.
+pub fn run(cmd: &str, args: &[String]) -> i32 {
+    if args.iter().any(|a| a == "--version" || a == "-V") {
         println!("archguard v{VERSION} (Rust 2024 Sovereign Monorepo Architecture Gate)");
-        return;
+        return 0;
     }
 
-    let cli: Cli = argh::from_env();
+    let argv: Vec<&str> = args.iter().map(String::as_str).collect();
+    let cli = match Cli::from_args(&[cmd], &argv) {
+        Ok(cli) => cli,
+        Err(early) => {
+            if early.status.is_ok() {
+                println!("{}", early.output);
+                return 0;
+            }
+            eprintln!("{}", early.output);
+            return 2;
+        }
+    };
     if cli.version {
         println!("archguard v{VERSION} (Rust 2024 Sovereign Monorepo Architecture Gate)");
-        return;
+        return 0;
     }
 
     match cli.sub {
@@ -176,7 +187,7 @@ fn main() {
                 }
                 if let Err(e) = fs::write(&out_p, &rendered) {
                     eprintln!("Error writing graph output to {}: {}", out_p.display(), e);
-                    process::exit(1);
+                    return 1;
                 }
                 println!("Graph written to {}", out_p.display());
             } else {
@@ -184,7 +195,7 @@ fn main() {
             }
         }
         Some(SubCmd::Check(c)) => {
-            execute_check(
+            return execute_check(
                 c.root.or(cli.root),
                 c.json || cli.json,
                 c.quiet || cli.quiet,
@@ -193,9 +204,10 @@ fn main() {
             );
         }
         None => {
-            execute_check(cli.root, cli.json, cli.quiet, cli.strict, cli.rule);
+            return execute_check(cli.root, cli.json, cli.quiet, cli.strict, cli.rule);
         }
     }
+    0
 }
 
 fn execute_check(
@@ -204,7 +216,7 @@ fn execute_check(
     quiet: bool,
     strict: bool,
     only_rule: Option<String>,
-) {
+) -> i32 {
     let config = AuditConfig {
         root: root.map(PathBuf::from).unwrap_or_else(default_root),
         strict,
@@ -233,7 +245,5 @@ fn execute_check(
         print!("{}", format_human_report(&report));
     }
 
-    if !report.clean {
-        process::exit(1);
-    }
+    i32::from(!report.clean)
 }

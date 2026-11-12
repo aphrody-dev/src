@@ -124,7 +124,7 @@ pub fn scan_first_party_contents(
             };
 
             // ARCH-007: Host userspace System32 mutation check (skip archguard's own rules/tests)
-            let is_self_rule_def = rel.starts_with("tools/archguard/");
+            let is_self_rule_def = rel.starts_with("crates/archguard/");
             if !is_self_rule_def && !matches!(ext.as_str(), "md" | "mdx") {
                 for (idx, line) in content.lines().enumerate() {
                     if SYSTEM32_MUTATION_RE.is_match(line) {

@@ -3,13 +3,15 @@ name = "xtk"
 version = "0.1.0"
 edition = "2024"
 authors = ["aphrody-dev <contact@aphrody.com>"]
-description = "Sovereign 3-letter Monorepo Maintenance and Doctor CLI (xtk)"
+description = "Monorepo maintenance library behind `ay doctor`, `ay lock`, `ay manifests` and `ay git slim --all`"
+publish = false
 
-[[bin]]
+[lib]
 name = "xtk"
-path = "src/main.rs"
+path = "src/lib.rs"
 
 [dependencies]
-argh = "0.1.13"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
+argh.workspace = true
+depot-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true

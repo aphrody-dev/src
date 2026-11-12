@@ -12,6 +12,12 @@ pub struct SlimOptions {
     pub write_multi_pack_index: bool,
     pub repack_pack_reuse: bool,
     pub register_scalar: bool,
+    /// protocol v2, parallel fetch, 8 submodule fetch jobs, rerere.
+    #[serde(default)]
+    pub network_tuning: bool,
+    /// `git reflog expire --expire=now --all` then `git prune --expire=now`.
+    #[serde(default)]
+    pub prune_unreachable: bool,
 }
 
 impl Default for SlimOptions {
@@ -25,6 +31,21 @@ impl Default for SlimOptions {
             write_multi_pack_index: true,
             repack_pack_reuse: true,
             register_scalar: true,
+            network_tuning: false,
+            prune_unreachable: false,
+        }
+    }
+}
+
+impl SlimOptions {
+    /// Preset for slimming every repository of the monorepo in one pass (`ay git slim --all`):
+    /// no per-repo scalar registration, network tuning on, unreachable objects pruned.
+    pub fn all_repos() -> Self {
+        Self {
+            register_scalar: false,
+            network_tuning: true,
+            prune_unreachable: true,
+            ..Self::default()
         }
     }
 }
@@ -80,6 +101,41 @@ impl GitSlim {
             .sum()
     }
 
+    /// Apply the Scalar-grade `git config` keys selected by `options`; returns what was set.
+    pub fn apply_config(repo_path: &Path, options: &SlimOptions) -> Vec<String> {
+        let net = options.network_tuning;
+        let config_pairs = [
+            (options.enable_fsmonitor, "core.fsmonitor", "true"),
+            (options.enable_untracked_cache, "core.untrackedCache", "true"),
+            (options.enable_many_files, "feature.manyFiles", "true"),
+            (options.index_version_4, "index.version", "4"),
+            (options.write_commit_graph, "fetch.writeCommitGraph", "true"),
+            (options.write_commit_graph, "gc.writeCommitGraph", "true"),
+            (true, "maintenance.auto", "true"),
+            (options.repack_pack_reuse, "pack.allowPackReuse", "multi"),
+            (net, "protocol.version", "2"),
+            (net, "fetch.parallel", "0"),
+            (net, "submodule.fetchJobs", "8"),
+            (net, "rerere.enabled", "true"),
+        ];
+
+        let mut applied = Vec::new();
+        for (enabled, key, val) in config_pairs {
+            if !enabled {
+                continue;
+            }
+            let ok = Command::new("git")
+                .current_dir(repo_path)
+                .args(["config", key, val])
+                .output()
+                .is_ok_and(|o| o.status.success());
+            if ok {
+                applied.push(format!("git config {} = {}", key, val));
+            }
+        }
+        applied
+    }
+
     pub fn slim_repo(repo_path: &Path, options: &SlimOptions) -> Result<SlimReport, String> {
         let git_dir = repo_path.join(".git");
         if !git_dir.exists() {
@@ -104,27 +160,17 @@ impl GitSlim {
         }
 
         // Configure high-performance git engine settings (Scalar-grade flags)
-        let config_pairs = [
-            (options.enable_fsmonitor, "core.fsmonitor", "true"),
-            (options.enable_untracked_cache, "core.untrackedCache", "true"),
-            (options.enable_many_files, "feature.manyFiles", "true"),
-            (options.index_version_4, "index.version", "4"),
-            (options.write_commit_graph, "fetch.writeCommitGraph", "true"),
-            (options.write_commit_graph, "gc.writeCommitGraph", "true"),
-            (true, "maintenance.auto", "true"),
-            (options.repack_pack_reuse, "pack.allowPackReuse", "multi"),
-        ];
+        applied.extend(Self::apply_config(repo_path, options));
 
-        for (enabled, key, val) in config_pairs {
-            if enabled {
-                let out = Command::new("git")
+        if options.prune_unreachable {
+            for args in [&["reflog", "expire", "--expire=now", "--all"][..], &["prune", "--expire=now"][..]] {
+                let ok = Command::new("git")
                     .current_dir(repo_path)
-                    .args(["config", key, val])
-                    .status();
-                if let Ok(st) = out {
-                    if st.success() {
-                        applied.push(format!("git config {} = {}", key, val));
-                    }
+                    .args(args)
+                    .output()
+                    .is_ok_and(|o| o.status.success());
+                if ok {
+                    applied.push(format!("git {}", args.join(" ")));
                 }
             }
         }

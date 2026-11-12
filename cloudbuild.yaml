@@ -44,8 +44,8 @@ steps:
       - -ceu
       - |
         apt-get update && apt-get install -y --no-install-recommends pkg-config libwayland-dev libxkbcommon-dev libpixman-1-dev
-        cargo run --manifest-path tools/archguard/Cargo.toml -- check --strict --root .
-        cargo test --manifest-path tools/archguard/Cargo.toml
+        cargo run -p aphrody --bin ay -- arch check --strict --root .
+        cargo test -p archguard -p aphrody
         cargo check --workspace --all-targets
 
   # 3. Verify Go Sovereign Deploy Engine (infra/src-deploy)

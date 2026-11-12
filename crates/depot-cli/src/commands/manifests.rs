@@ -32,7 +32,7 @@ pub fn run_manifests_verify(root: &Path) -> Result<(), String> {
         || status.kernel_subsystem_count == 0
     {
         return Err(
-            "One or more governance manifests (DEPS, .repo/manifests/default.xml, MAINTAINERS) are missing or empty. Run `xtk manifests`.".to_string(),
+            "One or more governance manifests (DEPS, .repo/manifests/default.xml, MAINTAINERS) are missing or empty. Run `ay manifests`.".to_string(),
         );
     }
     Ok(())

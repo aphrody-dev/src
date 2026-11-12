@@ -142,12 +142,13 @@ T:	git https://github.com/aphrody-dev/forge.git
 F:	.gitattributes
 F:	.gitignore
 F:	.gitmodules
+F:	crates/archguard/
+F:	crates/ay/
 F:	crates/xtask/
 F:	justfile
 F:	packages/env-kit/
 F:	packages/forge/
 F:	src.lock.json
-F:	tools/archguard/
 
 RING-3 HARDWARE TELEMETRY, BENCHMARKS & PURE-RUST STACK
 M:	Aphrody Engineering <contact@aphrody.com>

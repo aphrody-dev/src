@@ -2,7 +2,7 @@ use std::path::PathBuf;
 use argh::FromArgs;
 use depot_core::StyleExt;
 
-mod commands;
+pub mod commands;
 use commands::*;
 
 #[derive(FromArgs, PartialEq, Debug)]
@@ -660,10 +660,12 @@ pub struct LuaInitArgs {
     pub dir: PathBuf,
 }
 
-fn main() {
+/// Run the depot command set. `cmd` is the name shown in usage (e.g. `ay git`), `args`
+/// follow it. Returns the process exit code.
+pub fn run(cmd: &str, args: &[String]) -> i32 {
     depot_core::enable_vt_processing();
 
-    let mut raw_args: Vec<String> = std::env::args().collect();
+    let mut raw_args: Vec<String> = std::iter::once(cmd.to_string()).chain(args.iter().cloned()).collect();
 
     // Check pass-through for depot_tools
     if raw_args.len() > 1 {
@@ -674,17 +676,17 @@ fn main() {
         ) {
             let passthrough_args = &raw_args[2..];
             match depot_core::DepotTools::run_passthrough(first, passthrough_args) {
-                Ok(code) => std::process::exit(code),
+                Ok(code) => return code,
                 Err(err) => {
                     eprintln!("{} {}", "[ERROR]".red().bold(), err);
-                    std::process::exit(1);
+                    return 1;
                 }
             }
         }
     }
 
     if raw_args.len() <= 1 {
-        println!("{}", "depot - Run `depot --help` for available commands.".cyan());
+        println!("{}", format!("{cmd} - run `{cmd} --help` for available commands.").cyan());
         println!("\nAvailable commands:");
         println!("  analyze     End-to-end AST graphify + prompt ingestion in 1 shot");
         println!("  ast         Multi-language Tree-Sitter AST inspection & S-expression queries");
@@ -703,7 +705,7 @@ fn main() {
         println!("  maintainer  Query subsystem ownership via root MAINTAINERS");
         println!("  ignore      Standard .gitignore and .llmignore templates");
         println!("  info        Display environment, native NT kernel32 telemetry");
-        return;
+        return 0;
     }
 
     // Support 'wt' alias
@@ -716,7 +718,7 @@ fn main() {
         Ok(c) => c,
         Err(early_exit) => {
             println!("{}", early_exit.output);
-            std::process::exit(if early_exit.status.is_ok() { 0 } else { 1 });
+            return if early_exit.status.is_ok() { 0 } else { 2 };
         }
     };
 
@@ -851,6 +853,7 @@ fn main() {
 
     if let Err(err) = result {
         eprintln!("{} {}", "[ERROR]".red().bold(), err);
-        std::process::exit(1);
+        return 1;
     }
+    0
 }

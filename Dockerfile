@@ -15,7 +15,7 @@ ARG RUST_TOOLCHAIN=nightly
 ARG JUST_VERSION=1.58.0
 # Units compiled into the images. Units with path deps into third_party/ (crates/rust-stack -> wgpu)
 # need the full checkout: build them inside `dev`, where the repo is mounted.
-ARG CLI_UNITS="tools/archguard crates/xtask crates/depot-cli"
+ARG CLI_UNITS="crates/ay"
 
 FROM oven/bun:${BUN_VERSION}-alpine AS bun-alpine
 FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS go-alpine
@@ -38,9 +38,8 @@ COPY --from=go-alpine /usr/local/go /usr/local/go
 RUN --mount=type=cache,target=/root/.cargo/registry \
     cargo install just --version "${JUST_VERSION}" --locked --root /opt
 WORKDIR /build
-# Root workspace manifest and lock: tools/archguard and crates/corelib are members of it.
+# Root workspace manifest and lock: every crates/* directory is a member.
 COPY Cargo.toml Cargo.lock ./
-COPY tools/ tools/
 COPY crates/ crates/
 COPY infra/ infra/
 # Submodules are optional: build whichever units are checked out.

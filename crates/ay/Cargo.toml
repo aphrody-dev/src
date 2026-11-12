@@ -1,0 +1,26 @@
+[package]
+name = "aphrody"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "ay: one multicall CLI for the Aphrody monorepo (arch gate, lock, git, ingest, graph, deploy, bench, build)"
+publish = false
+
+[[bin]]
+name = "ay"
+path = "src/main.rs"
+
+[lib]
+name = "ay"
+path = "src/lib.rs"
+
+[dependencies]
+archguard.workspace = true
+clap.workspace = true
+depot-cli.workspace = true
+xtk.workspace = true
+
+# The benchmark suite measures Win32 APIs; `ay bench` reports unsupported elsewhere.
+[target.'cfg(windows)'.dependencies]
+stack-bench.workspace = true

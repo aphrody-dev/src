@@ -45,7 +45,7 @@ cat > "${HOME}/.cargo/config.toml" << 'EOF'
 rustc-wrapper = "sccache"
 
 [alias]
-xtask = "run --manifest-path crates/xtask/Cargo.toml --release --"
+ay = "run -p aphrody --bin ay --release --"
 nt = "nextest run"
 b = "build"
 c = "check"
@@ -87,14 +87,11 @@ abandon-unreachable-commits = true
 EOF
 echo "  [OK] ~/.config/jj/config.toml configured"
 
-# 4. Build xtk, rust-stack, triad, and src-deploy CLI Tooling
+# 4. Build ay, rust-stack, triad, and src-deploy CLI Tooling
 echo "[4/5] Building Sovereign Rust, Bun, and Go CLI Tooling..."
-if [[ -d "${SCRIPT_DIR}/crates/xtask" ]]; then
-  (cd "${SCRIPT_DIR}/crates/xtask" && cargo build --release)
-  cp -f "${SCRIPT_DIR}/crates/xtask/target/release/xtk" "${LOCAL_BIN}/xtk" 2>/dev/null || \
-  cp -f "${HOME}/.cache/cargo-target/release/xtk" "${LOCAL_BIN}/xtk" 2>/dev/null || true
-  chmod +x "${LOCAL_BIN}/xtk"
-  echo "  [OK] Installed xtk to ${LOCAL_BIN}/xtk"
+if [[ -d "${SCRIPT_DIR}/crates/ay" ]]; then
+  cargo install --path "${SCRIPT_DIR}/crates/ay" --root "${HOME}/.local" --force --locked --no-track
+  echo "  [OK] Installed ay to ${LOCAL_BIN}/ay"
 fi
 if [[ -f "${SCRIPT_DIR}/infra/go.mod" ]] && command -v go &>/dev/null; then
   (cd "${SCRIPT_DIR}/infra" && CGO_ENABLED=0 go build -o "${LOCAL_BIN}/src-deploy" ./cmd/src-deploy)
@@ -124,6 +121,6 @@ if [[ -d "${SCRIPT_DIR}/.agents/skills" && ! -e "${SCRIPT_DIR}/.claude/skills" ]
 fi
 
 echo -e "\nRunning Sovereign Doctor Verification:"
-"${LOCAL_BIN}/xtk" doctor || true
+"${LOCAL_BIN}/ay" doctor || true
 
 echo -e "\nSovereign Monorepo Setup 100% Complete & Verified."

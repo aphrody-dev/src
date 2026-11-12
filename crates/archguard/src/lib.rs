@@ -19,6 +19,7 @@
 //! - `ARCH-016` Bun Upstream Speed Contracts & Zero-Glue Vertical Purity
 //! - `ARCH-017` Architecture Graph Acyclic Layer Boundaries & Cycle Detection
 
+pub mod cli;
 pub mod constants;
 pub mod graph;
 pub mod models;

@@ -69,7 +69,7 @@ pub fn check_linux_hygiene(root: &Path, findings: &mut Vec<ArchFinding>) {
                                 message: format!(
                                     "MAINTAINERS section `{current_section}` lists non-existent path pattern `F: {val}`"
                                 ),
-                                remediation: "Update or remove stale path in `MAINTAINERS` via `xtk maintainers`.".into(),
+                                remediation: "Update or remove stale path in `MAINTAINERS` via `ay manifests`.".into(),
                             });
                         }
                     } else if tag == "S" {

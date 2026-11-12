@@ -4,22 +4,12 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository = "https://github.com/aphrody-dev/depot"
+description = "depot command set (VCS, ingest, code graph, RE) behind `ay git`, `ay ingest` and `ay graph`"
+publish = false
 
-[[bin]]
-name = "depot"
-path = "src/main.rs"
-
-[[bin]]
-name = "gitingest"
-path = "src/bin/gitingest.rs"
-
-[[bin]]
-name = "depot-graph"
-path = "src/bin/depot_graph.rs"
-
-[[bin]]
-name = "graphify"
-path = "src/bin/graphify.rs"
+[lib]
+name = "depot_cli"
+path = "src/lib.rs"
 
 [dependencies]
 depot-core.workspace = true

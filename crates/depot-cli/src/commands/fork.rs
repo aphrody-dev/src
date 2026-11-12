@@ -26,7 +26,7 @@ pub fn run_fork_status(repo_path: PathBuf) -> Result<(), String> {
 
     if st.has_diverged {
         println!(
-            "  {} Branches have diverged! Consider running `depot fork sync --strategy rebase`.",
+            "  {} Branches have diverged! Consider running `ay git fork sync --strategy rebase`.",
             "[WARN]".red().bold()
         );
     }
