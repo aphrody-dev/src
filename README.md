@@ -59,7 +59,7 @@ Aphrody Labs (`aphrody-labs/labs`): self-hosted Vercel-like platform and `aphrod
 
 | Path | Content |
 |---|---|
-| `crates/aphrody-cli` | `aphrody` binary (labs `crates/cli`; becomes `ay` subcommands later) |
+| `crates/aphrody-cli` | package `aphrody-labs-cli`, binary `aphrody` (labs `crates/cli`; becomes `ay` subcommands later) |
 | `crates/conformance`, `conformance/` | pinned conformance suites (`upstreams.toml`, `expected/`) |
 | `crates/lore*`, `licenses/lore`, `tools/lore` | Lore VCS, absorbed (MIT) |
 | `crates/apm` | APM crate |

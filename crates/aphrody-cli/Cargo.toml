@@ -1,5 +1,5 @@
 [package]
-name = "aphrody"
+name = "aphrody-labs-cli"
 description = "Aphrody Labs single binary: Bun-style JS runtime (V8), toolchain, Next.js, Tailwind, components, renderer, self-hosted deploy."
 version.workspace = true
 edition.workspace = true

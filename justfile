@@ -191,27 +191,27 @@ core-header:
 
 # Aphrody CLI + conformance harness build.
 lab-build:
-    cargo build -p aphrody -p aphrody-conformance
+    cargo build -p aphrody-labs-cli -p aphrody-conformance
 
 # Distribution build of the aphrody binary: fat LTO, 1 CGU, stripped.
 lab-dist:
-    cargo build --release -p aphrody
+    cargo build --release -p aphrody-labs-cli
 
 # Fast local optimized build with debug assertions.
 lab-iter:
-    cargo build --profile iteration -p aphrody
+    cargo build --profile iteration -p aphrody-labs-cli
 
 # Run the aphrody CLI.
 lab-dev *args:
-    cargo run -p aphrody -- {{args}}
+    cargo run -p aphrody-labs-cli -- {{args}}
 
 # Conformance suites (writes conformance/results/).
 lab-conformance *suites:
-    cargo run -p aphrody -- x conformance --fetch {{suites}}
+    cargo run -p aphrody-labs-cli -- x conformance --fetch {{suites}}
 
 # Refresh Chrome Stable/Beta/Dev/Canary pins (native: aphrody x channels).
 lab-channels:
-    cargo run -q -p aphrody -- x channels
+    cargo run -q -p aphrody-labs-cli -- x channels
 
 # Re-absorb Lore from aphrody-labs/lore.
 lab-lore-sync:
@@ -247,4 +247,4 @@ lab-factory-fetch version:
 
 # Smallest aphrody binary: profile min + rebuilt std with immediate-abort.
 lab-min:
-    cargo build --profile min -p aphrody -Zbuild-std=std,panic_abort --target x86_64-pc-windows-msvc
+    cargo build --profile min -p aphrody-labs-cli -Zbuild-std=std,panic_abort --target x86_64-pc-windows-msvc
