@@ -1,7 +1,7 @@
 {
   "name": "@aphrody/web",
   "version": "1.0.0",
-  "description": "aphrody.com - Independent search portal with Gemini grounding, package catalog and benchmarks, in pure oven-sh/bun Web Standards",
+  "description": "aphrody.com - Aphrody brand homepage, search with package catalog, and runtime benchmarks, in pure Bun web standards",
   "private": true,
   "type": "module",
   "scripts": {

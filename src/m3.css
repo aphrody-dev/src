@@ -21,24 +21,7 @@
   outline: 3px solid var(--m3-primary);
   outline-offset: 2px;
 }
-
-body > main.google-main {
-  min-height: calc(100vh - 60px);
-}
 @supports (height: 100dvh) {
-  body > main.google-main {
-    min-height: calc(100dvh - 60px);
-  }
-}
-.google-footer {
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-.seo-wrap {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 24px max(24px, env(safe-area-inset-right)) 24px
-    max(24px, env(safe-area-inset-left));
 }
 .note {
   color: var(--text-secondary);
@@ -169,21 +152,4 @@ body > main.google-main {
   .consent-banner {
     animation: none;
   }
-}
-
-.aphrody-brand-hero {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  min-height: 92px;
-  cursor: pointer;
-  user-select: none;
-}
-.aphrody-brand-wordmark {
-  font-size: 56px;
-  line-height: 64px;
-  font-weight: 600;
-  letter-spacing: -0.025em;
-  color: var(--text-color);
 }

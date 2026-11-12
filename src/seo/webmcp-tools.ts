@@ -32,20 +32,6 @@ export const WEBMCP_TOOLS: WebMcpTool[] = [
     annotations: { readOnlyHint: true },
   },
   {
-    name: "aphrody_gemini_search",
-    description:
-      "Ask a question. Returns an answer with citations; grounded with Google Search when the server has a Gemini key, otherwise a local fallback.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        q: { type: "string", description: "Question or search query" },
-      },
-      required: ["q"],
-    },
-    http: { method: "GET", path: "/api/gemini/search", param: "q" },
-    annotations: { readOnlyHint: true },
-  },
-  {
     name: "aphrody_package_search",
     description:
       "Search the multi-ecosystem package catalog (Bun, winget, AUR, Nix, Flatpak, Play Store, WASM).",

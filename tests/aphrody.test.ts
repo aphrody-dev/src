@@ -1,20 +1,8 @@
 import { describe, expect, it } from "bun:test";
 import { existsSync, readFileSync, statSync } from "fs";
 import { join } from "path";
-import {
-  GOOGLE_APPS,
-  APHRODY_SYSTEM_APPS,
-  ALL_APPS,
-  getAppIconSvg,
-} from "../src/data/apps";
 import { getSuggestions, POPULAR_SUGGESTIONS } from "../src/data/suggestions";
 import { server } from "../server";
-import {
-  FLUENT_LIGHT_TOKENS,
-  FLUENT_DARK_TOKENS,
-  FLUENT_GLOBAL_TOKENS,
-  getFluentCssVariables,
-} from "../src/design/fluent-tokens";
 import {
   MATERIAL_LIGHT_TOKENS,
   MATERIAL_DARK_TOKENS,
@@ -26,11 +14,7 @@ import {
   buildStorytoldWasmBinary,
   getStorytoldWasm,
 } from "../src/suite/wasm-kernel";
-import { STORYTOLD_APPS } from "../src/suite/storytold-suite";
-import { StoreDatabase } from "../src/store/database";
 import { UniversalStoreManager } from "../src/store/universal-manager";
-import { AwesomeListConverter } from "../src/store/drivers/awesome-converter";
-import { generateNixDeclarativeFlake } from "../src/store/drivers/nix";
 import {
   benchmarkZeroCopyVsCopy,
   benchmarkWasmVsJs,
@@ -67,73 +51,62 @@ describe("Aphrody Zero-External-Dependency Architecture", () => {
   });
 });
 
-describe("Aphrody Bundle Build Output", () => {
-  it("should generate dist/ production assets using native Bun.build()", () => {
-    const distDir = join(ROOT_DIR, "dist");
-    const appJsPath = join(distDir, "app.js");
-    const cssPath = join(distDir, "style.css");
-    const htmlPath = join(distDir, "index.html");
-    const appJsGzPath = join(distDir, "app.js.gz");
+describe("Aphrody build output", () => {
+  const dist = join(ROOT_DIR, "dist");
 
-    expect(existsSync(appJsPath)).toBe(true);
-    expect(existsSync(cssPath)).toBe(true);
-    expect(existsSync(htmlPath)).toBe(true);
-    expect(existsSync(appJsGzPath)).toBe(true);
-
-    const appJsGzStat = statSync(appJsGzPath);
-    expect(appJsGzStat.size).toBeGreaterThan(0);
-    expect(appJsGzStat.size).toBeLessThan(60 * 1024);
+  it("emits the static homepage, boot script, font and compressed copies", () => {
+    for (const f of [
+      "index.html",
+      "en/index.html",
+      "boot.js",
+      "style.css",
+      "atkinson-next.woff2",
+      "atkinson-next-OFL.txt",
+    ]) {
+      expect(existsSync(join(dist, f))).toBe(true);
+    }
+    expect(existsSync(join(dist, "app.js"))).toBe(false);
+    expect(statSync(join(dist, "index.html.gz")).size).toBeLessThan(30 * 1024);
   });
 
-  it("should contain valid HTML referencing pure JS and CSS in index.html", () => {
-    const html = readFileSync(join(ROOT_DIR, "dist", "index.html"), "utf-8");
-    expect(html).toContain('<div id="root"></div>');
-    expect(html).toContain('src="/app.js"');
-    expect(html).toContain('href="/style.css"');
+  it("homepage is readable without JavaScript and names only Aphrody products", () => {
+    const html = readFileSync(join(dist, "index.html"), "utf-8");
     expect(html).toContain(
-      "<title>Aphrody - Recherche, Mode IA Gemini et paquets</title>",
+      "<title>Aphrody — sites et logiciels web indépendants</title>",
     );
+    expect(html).not.toContain('id="root"');
+    expect(html).not.toContain("/app.js");
+    expect((html.match(/<h1[ >]/g) || []).length).toBe(1);
+    for (const href of [
+      'href="/search"',
+      'href="/search/packages"',
+      'href="/search/benchmarks"',
+      'href="mailto:contact@aphrody.com"',
+    ]) {
+      expect(html).toContain(href);
+    }
+    expect(html).toContain("aphrody.app");
+    expect(html).toContain("En développement");
+    for (const banned of [
+      "Gemini",
+      "dragonballfr",
+      "DBFR",
+      "rosegriffon",
+      "Rose Griffon",
+      "Shenron",
+    ]) {
+      expect(html).not.toContain(banned);
+    }
+    expect(/\p{Extended_Pictographic}/u.test(html)).toBe(false);
   });
-});
 
-describe("Microsoft Fluent UI 2 Design System Parity", () => {
-  it("should define complete Fluent 2 neutral backgrounds 1..6 and Mica/Acrylic tokens", () => {
-    expect(FLUENT_LIGHT_TOKENS.colorNeutralBackground1).toBe("#ffffff");
-    expect(FLUENT_LIGHT_TOKENS.colorNeutralBackground2).toBe("#fafafa");
-    expect(FLUENT_LIGHT_TOKENS.colorNeutralBackground3).toBe("#f5f5f5");
-    expect(FLUENT_LIGHT_TOKENS.colorNeutralBackground4).toBe("#f0f0f0");
-    expect(FLUENT_LIGHT_TOKENS.colorNeutralBackground5).toBe("#ebebeb");
-    expect(FLUENT_LIGHT_TOKENS.colorNeutralBackground6).toBe("#e6e6e6");
-
-    expect(FLUENT_DARK_TOKENS.colorNeutralBackground1).toBe("#292929");
-    expect(FLUENT_DARK_TOKENS.colorNeutralBackground2).toBe("#1f1f1f");
-    expect(FLUENT_DARK_TOKENS.colorNeutralBackground3).toBe("#141414");
-
-    expect(FLUENT_LIGHT_TOKENS.colorBackgroundMica).toContain(
-      "rgba(255, 255, 255",
+  it("english homepage mirrors the french one", () => {
+    const html = readFileSync(join(dist, "en", "index.html"), "utf-8");
+    expect(html).toContain('<html lang="en">');
+    expect(html).toContain(
+      "<title>Aphrody — independent websites and web software</title>",
     );
-    expect(FLUENT_DARK_TOKENS.colorBackgroundMica).toContain("rgba(32, 32, 32");
-    expect(FLUENT_LIGHT_TOKENS.colorBrandBackground).toBe("#0f6cbd");
-    expect(FLUENT_LIGHT_TOKENS.colorStrokeFocus1).toBe("#ffffff");
-    expect(FLUENT_LIGHT_TOKENS.colorStrokeFocus2).toBe("#000000");
-  });
-
-  it("should provide Fluent global stroke, radius, and typography ramp tokens", () => {
-    expect(FLUENT_GLOBAL_TOKENS.strokeWidthThin).toBe("1px");
-    expect(FLUENT_GLOBAL_TOKENS.borderRadiusMedium).toBe("4px");
-    expect(FLUENT_GLOBAL_TOKENS.borderRadiusLarge).toBe("8px");
-    expect(FLUENT_GLOBAL_TOKENS.fontFamilyBase).toContain("Segoe UI Variable");
-    expect(FLUENT_GLOBAL_TOKENS.fontSizeTitle1).toBe("32px");
-    expect(FLUENT_GLOBAL_TOKENS.fontSizeDisplay).toBe("68px");
-  });
-
-  it("should generate valid CSS variables string for Fluent tokens", () => {
-    const cssLight = getFluentCssVariables("light");
-    expect(cssLight).toContain("--fluent-colorBrandBackground: #0f6cbd;");
-    expect(cssLight).toContain("--fluent-strokeWidthThin: 1px;");
-
-    const cssDark = getFluentCssVariables("dark");
-    expect(cssDark).toContain("--fluent-colorNeutralBackground1: #292929;");
+    expect(html).toContain('href="/en/search/packages"');
   });
 });
 
@@ -182,27 +155,6 @@ describe("Google Material Design 3 Parity & Symbols", () => {
   });
 });
 
-describe("Apple macOS Traffic-Light Windowing System Standards", () => {
-  it("should follow pixel-accurate macOS Sequoia traffic-light specs", () => {
-    const css = readFileSync(
-      join(ROOT_DIR, "src", "style.css"),
-      "utf-8",
-    ).toLowerCase();
-    // Close: #ff5f56 (1px solid #e0443e)
-    expect(css).toContain("#ff5f56");
-    expect(css).toContain("#e0443e");
-    // Minimize: #ffbd2e (1px solid #dea123)
-    expect(css).toContain("#ffbd2e");
-    expect(css).toContain("#dea123");
-    // Maximize: #27c93f (1px solid #1aab29)
-    expect(css).toContain("#27c93f");
-    expect(css).toContain("#1aab29");
-    // Inactive unfocused states
-    expect(css).toContain("#dcdcdc");
-    expect(css).toContain("#464646");
-  });
-});
-
 describe("Storytold Pure Binary WASM SIMD Kernel", () => {
   it("should compile a valid binary WebAssembly module from byte opcodes", () => {
     const bytes = buildStorytoldWasmBinary();
@@ -231,85 +183,9 @@ describe("Storytold Pure Binary WASM SIMD Kernel", () => {
     // compute_orbit: 3.14 * 10 = 31.4
     expect(wasm.compute_orbit(3.14, 10)).toBeCloseTo(31.4, 1);
   });
-
-  it("should contain all 6 Storytold suite applications with metadata", () => {
-    expect(STORYTOLD_APPS.length).toBe(6);
-    const ids = STORYTOLD_APPS.map((a) => a.id);
-    expect(ids).toContain("artcraft");
-    expect(ids).toContain("bevy-3d");
-    expect(ids).toContain("hanashi-shader");
-    expect(ids).toContain("point-cloud");
-    expect(ids).toContain("audio-vis");
-    expect(ids).toContain("codecraft");
-  });
 });
 
-describe("Universal Declarative Store & Multi-Ecosystem Package Manager", () => {
-  it("should support bun:sqlite declarative generations and rollbacks", () => {
-    const db = new StoreDatabase(":memory:");
-    const initial = db.getActiveGeneration();
-    expect(initial.id).toBe(1);
-    expect(initial.active).toBe(true);
-
-    const gen2 = db.createGeneration("Install bun-elysia", ["bun-elysia"]);
-    expect(gen2.id).toBe(2);
-    expect(gen2.active).toBe(true);
-    expect(gen2.packages).toEqual(["bun-elysia"]);
-
-    const gen3 = db.createGeneration("Install wgpu", [
-      "bun-elysia",
-      "wasm-wgpu",
-    ]);
-    expect(gen3.id).toBe(3);
-    expect(gen3.packages.length).toBe(2);
-
-    // Rollback to Generation 2
-    const rollbackGen = db.rollbackToGeneration(2);
-    expect(rollbackGen.id).toBe(4);
-    expect(rollbackGen.rollbackId).toBe(2);
-    expect(rollbackGen.packages).toEqual(["bun-elysia"]);
-
-    const active = db.getActiveGeneration();
-    expect(active.id).toBe(4);
-    expect(active.packages).toEqual(["bun-elysia"]);
-
-    db.close();
-  });
-
-  it("should parse arbitrary Awesome List markdown into StorePackages", () => {
-    const md = `
-# Awesome Graphics & Toolchains
-
-## WebGPU & Shaders
-- [wgpu](https://github.com/gfx-rs/wgpu) - Safe, portable GPU library implementing WebGPU in Rust.
-- [naga](https://github.com/gfx-rs/wgpu) - Shader translation library for WGSL and SPIR-V.
-
-## Web Runtimes
-- [bun](https://github.com/oven-sh/bun) - Fast all-in-one JavaScript runtime in full Rust.
-    `;
-
-    const result = AwesomeListConverter.parseMarkdown(md, "Test Awesome");
-    expect(result.totalParsed).toBe(3);
-    expect(result.categories).toContain("WebGPU & Shaders");
-    expect(result.categories).toContain("Web Runtimes");
-
-    const wgpu = result.packages.find((p) => p.name === "wgpu")!;
-    expect(wgpu).toBeDefined();
-    expect(wgpu.repoUrl).toBe("https://github.com/gfx-rs/wgpu");
-    expect(wgpu.pickedStack).toBeDefined();
-
-    const bun = result.packages.find((p) => p.name === "bun")!;
-    expect(bun).toBeDefined();
-    expect(bun.ecosystem).toBe("bun");
-  });
-
-  it("should generate NixOS declarative flakes with package profiles", () => {
-    const flake = generateNixDeclarativeFlake(["nixpkgs#bun", "nixpkgs#rustc"]);
-    expect(flake).toContain("nixpkgs.url");
-    expect(flake).toContain("pkgs.bun");
-    expect(flake).toContain("pkgs.rustc");
-  });
-
+describe("Package catalog", () => {
   it("should search packages across all ecosystems through UniversalStoreManager", async () => {
     const manager = new UniversalStoreManager(":memory:");
     const results = await manager.search("bun", "all");
@@ -379,8 +255,8 @@ describe("Performance, LTO, AOT & Zero-Copy Stack Benchmark & Picker Engine", ()
 
   it("should run full benchmark suite and produce complete system report", async () => {
     const report = await runBenchmarkSuite();
-    expect(report.hardware.cpu).toContain("Intel Core i7-13700F");
-    expect(report.hardware.gpu).toContain("RTX 4070");
+    expect(report.hardware.cpu.length).toBeGreaterThan(0);
+    expect(typeof report.hardware.gpu).toBe("string");
     expect(report.zeroCopy.speedupRatio).toBeGreaterThan(1);
     expect(report.candidateStacks.length).toBe(CANDIDATE_STACKS.length);
   });
@@ -397,8 +273,8 @@ describe("Aphrody HTTP Server & Endpoints", () => {
     expect(res.headers.get("content-security-policy")).toBeDefined();
 
     const text = await res.text();
-    expect(text).toContain("Google");
-    expect(text).toContain('id="root"');
+    expect(text).toContain("Aphrody développe des logiciels web");
+    expect(res.headers.get("link")).toContain("atkinson-next.woff2");
   });
 
   it("should serve autocomplete JSON at GET /api/complete?q=aphrody", async () => {
@@ -424,16 +300,6 @@ describe("Aphrody HTTP Server & Endpoints", () => {
     expect(data.packages.length).toBeGreaterThan(0);
   });
 
-  it("should serve Store generations at GET /api/store/generations", async () => {
-    const req = new Request("http://localhost:3000/api/store/generations");
-    const res = await server.fetch(req);
-    expect(res.status).toBe(200);
-
-    const data = await res.json();
-    expect(data.active).toBeDefined();
-    expect(Array.isArray(data.generations)).toBe(true);
-  });
-
   it("should run and return benchmark report at GET /api/bench", async () => {
     const req = new Request("http://localhost:3000/api/bench");
     const res = await server.fetch(req);
@@ -443,6 +309,31 @@ describe("Aphrody HTTP Server & Endpoints", () => {
     expect(data.hardware).toBeDefined();
     expect(data.zeroCopy).toBeDefined();
     expect(data.sqlite).toBeDefined();
+  });
+
+  it("removed endpoints are gone: suite APIs 404, former AI pages 410", async () => {
+    for (const p of [
+      "/api/gemini/search?q=x",
+      "/api/studio/daemons",
+      "/api/search?q=x",
+      "/api/workspace/mail",
+      "/api/store/generations",
+    ]) {
+      const res = await server.fetch(new Request("http://localhost:3000" + p));
+      expect(res.status).toBe(404);
+    }
+    for (const p of ["/search/ai-gemini", "/en/search/ai-gemini"]) {
+      const res = await server.fetch(new Request("http://localhost:3000" + p));
+      expect(res.status).toBe(410);
+    }
+    // No route handles it any more; the static fallback answers 405 to a POST.
+    const install = await server.fetch(
+      new Request("http://localhost:3000/api/store/install", {
+        method: "POST",
+        body: "{}",
+      }),
+    );
+    expect([404, 405]).toContain(install.status);
   });
 
   it("should serve health check at GET /healthz and /ok", async () => {

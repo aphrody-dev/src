@@ -10,7 +10,6 @@ export const POPULAR_SUGGESTIONS: string[] = [
   "traducteur français anglais",
   "google maps",
   "youtube tendances",
-  "intelligence artificielle gemini",
   "programme tv ce soir",
   "recette facile et rapide",
   "bun runtime",

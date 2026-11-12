@@ -62,16 +62,7 @@ function emit(rel: string, content: string | Uint8Array): void {
 
 console.log("Building Aphrody with native Bun.build()...");
 
-// 1. Application bundle (code-split) and the small boot entry.
-const appBuild = await Bun.build({
-  entrypoints: [join(ROOT, "src", "main.ts")],
-  outdir: DIST_DIR,
-  naming: { entry: "app.js", chunk: "chunk-[hash].js" },
-  minify: true,
-  target: "browser",
-  format: "esm",
-  splitting: true,
-});
+// 1. Small boot entry (consent, analytics config, WebMCP). Pages render without it.
 const bootBuild = await Bun.build({
   entrypoints: [join(ROOT, "src", "client", "boot.ts")],
   outdir: DIST_DIR,
@@ -81,7 +72,7 @@ const bootBuild = await Bun.build({
   target: "browser",
   format: "esm",
 });
-for (const r of [appBuild, bootBuild]) {
+for (const r of [bootBuild]) {
   if (!r.success) {
     console.error("Build failed:", r.logs);
     process.exit(1);
@@ -144,13 +135,13 @@ emit(
     "  X-Content-Type-Options: nosniff",
     "  X-Frame-Options: SAMEORIGIN",
     "  Referrer-Policy: strict-origin-when-cross-origin",
-    "  Permissions-Policy: microphone=(self)",
+    "  Permissions-Policy: microphone=(), camera=(), geolocation=()",
     `  Content-Security-Policy: ${buildCsp(cfg)}`,
     "/",
-    "  Link: </style.css>; rel=preload; as=style, </app.js>; rel=modulepreload, </boot.js>; rel=modulepreload",
+    '  Link: </atkinson-next.woff2>; rel=preload; as=font; type="font/woff2"; crossorigin, </boot.js>; rel=modulepreload',
     "/en",
-    "  Link: </style.css>; rel=preload; as=style, </app.js>; rel=modulepreload, </boot.js>; rel=modulepreload",
-    "/chunk-*.js",
+    '  Link: </atkinson-next.woff2>; rel=preload; as=font; type="font/woff2"; crossorigin, </boot.js>; rel=modulepreload',
+    "/atkinson-next.woff2",
     "  Cache-Control: public, max-age=31536000, immutable",
     "/*.xml",
     "  Cache-Control: public, max-age=0, s-maxage=3600, stale-while-revalidate=86400",
@@ -162,7 +153,7 @@ emit(
 );
 emit(
   "favicon.svg",
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#0B57D0"/><path d="M32 14L49 48H40.6L37.1 40.4H26.9L23.4 48H15L32 14ZM29.6 34H34.4L32 28.2L29.6 34Z" fill="#FFFFFF"/><circle cx="48" cy="16" r="5" fill="#34A853"/></svg>',
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="10" fill="#17202A"/><path d="M32 14L49 48H40.6L37.1 40.4H26.9L23.4 48H15L32 14ZM29.6 34H34.4L32 28.2L29.6 34Z" fill="#F2F4F1"/><rect x="42" y="10" width="12" height="12" rx="2" fill="#3FC1B9"/></svg>',
 );
 const publicDir = join(ROOT, "public");
 if (existsSync(publicDir)) {
@@ -211,7 +202,7 @@ for (const file of walk(DIST_DIR)) {
 const sz = (rel: string) => statSync(join(DIST_DIR, rel)).size;
 const gz = (rel: string) => statSync(join(DIST_DIR, rel + ".gz")).size;
 console.log("Aphrody build finished:");
-for (const f of ["app.js", "boot.js", "style.css", "index.html"]) {
+for (const f of ["boot.js", "style.css", "index.html"]) {
   console.log(
     `- dist/${f}: ${(sz(f) / 1024).toFixed(2)} KB (gz: ${(gz(f) / 1024).toFixed(2)} KB)`,
   );

@@ -1,64 +1,77 @@
-# Cahier des Charges Technique (PRD) — Aphrody Sovereign Web Suite
+# Cahier des charges (PRD) — aphrody.com, page d'accueil de la marque
 
-| Champ / Field                 | Specification                                                                    |
-| :---------------------------- | :------------------------------------------------------------------------------- |
-| **Identifiant / Slug**        | `aphrody-sovereign-web-suite`                                                    |
-| **Domaine / Surface**         | `aphrody.com`                                                                    |
-| **Mode d'Usage (Impeccable)** | `operate`                                                                        |
-| **Proprietaire / Owner**      | Aphrody Sovereign Engineering (`contact@aphrody.com`)                            |
-| **Couleur Racine (HCT Seed)** | `#1a73e8` (`tonal_spot`)                                                         |
-| **Runtime & Verification**    | Bun v1.4.4 Full-Rust, `gds verify`, `gds audit-slop`, Lighthouse / `wck` 100/100 |
+| Champ           | Valeur                                                                                             |
+| :-------------- | :------------------------------------------------------------------------------------------------- |
+| Surface         | `https://aphrody.com/` (fr, par défaut) et `https://aphrody.com/en`                                |
+| Rôle de la page | Dire qui est Aphrody, ce qu'elle fait, et mener à ses produits                                     |
+| Propriétaire    | Aphrody (`contact@aphrody.com`)                                                                    |
+| Runtime         | Bun 1.4.4, HTML/CSS rendus au build (`build.ts` -> `dist/`), servis par `server.ts` derrière nginx |
+| Vérification    | `bun test`, `gds verify`, `gds audit-slop`, `wck dist` 100/100                                     |
 
-## 1. Objectif Produit & Positionnement / Product Scope
+## 1. Objectif
 
-Unified zero-dependency Pure Bun v1.4.4 web platform uniting 3-VPS Datacenter Search, Craft WASM/WebGPU Creative Cloud, Fluent UI 2 Office (.docx / Formulas / Decks), Spacedrive VDFS, M3 Workspace, Aphrody Pets, and Locally Uncensored Studio.
+Remplacer l'ancienne page d'accueil (clone d'interface de moteur de recherche, rendue en JavaScript, avec un « Mode IA Gemini ») par une page de marque statique, lisible sans JavaScript, optimisée pour le référencement.
 
-- **Frontiere Souveraine (Single AI Ownership)** : `@aphrody/ai-os` demeure l'unique produit IA public du monorepo. Cette surface (`Aphrody Sovereign Web Suite`) expose une interface generaliste sobre, rapide et deterministe inspiree par Linus Torvalds (structures plates), Jarred Sumner (vitesse native zero-dependance) et Larry Page (clarte visuelle immediate).
-- **Politique Anti-Slop** : Zero emoji, zero jargon promotionnel genere automatiquement, zero degrade violet-rose generique, zero icone Unicode de substitution.
+- La recherche reste disponible, mais sur `/search` (page secondaire, liée depuis l'en-tête).
+- Aucune fonctionnalité d'IA sur aphrody.com. Règle du dépôt : seul `packages/ai-os` porte de l'IA. Le Mode IA Gemini (`/api/gemini/search`, `/search/ai-gemini`) et Local Studio (`/api/studio/*`) sont retirés. `/search/ai-gemini` répond `410 Gone`.
 
-## 2. Utilisateurs Cibles & Parcours / Target Workflows
+## 2. Public et parcours
 
-1. **Lecture & Orientation (< 100 ms)** : L'utilisateur identifie l'action principale, l'etat courant et la navigation primaire des le premier rendu sans decalage de mise en page (`CLS = 0.00`).
-2. **Execution Clavier & Pointeur** : Toutes les commandes critiques disposent d'un raccourci clavier, d'un anneau `:focus-visible` haute visibilite (`2px solid #435e91`) et de cibles tactiles minimales de `40x40px` (desktop) / `48x48px` (mobile).
-3. **Resilience d'Etat** : Chaque vue implemente explicitement les 8 etats canoniques : `default`, `hover`, `focus-visible`, `active`, `disabled`, `loading` (squelette geometrique stable), `empty` (action directe de creation) et `error` (diagnostic factuel et action de reprise).
+1. **Visiteur qui découvre Aphrody** (moteur de recherche, lien partagé) : comprend en moins de 5 secondes ce qu'est Aphrody et voit la liste des produits avec leur statut.
+2. **Développeur** : trouve la recherche, le catalogue de paquets et les benchmarks en un clic depuis la mosaïque.
+3. **Partenaire ou association** qui cherche un prestataire : trouve ce qu'Aphrody sait faire et un contact direct.
 
-## 3. Architecture de Maquette & Grille Spatiale / Wireframe Specification
+## 3. Contenu (uniquement des faits vérifiables)
+
+Chaque produit affiché est réel, et son statut est vérifié au moment de l'écriture (2026-11-12).
+
+| Produit              | URL                    | Statut affiché                                | Fait vérifié                                                                                                                        |
+| :------------------- | :--------------------- | :-------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
+| Recherche Aphrody    | `/search`              | En ligne                                      | `/search` et `/api/q` répondent 200 en production                                                                                   |
+| Catalogue de paquets | `/search/packages`     | En ligne                                      | Bun, winget, AUR, Nix, Flatpak, Play Store, WASM hub ; pages 200 en production                                                      |
+| Benchmarks           | `/search/benchmarks`   | En ligne                                      | Mesures calculées à la demande par `/api/bnc` ; page 200 en production                                                              |
+| aphrody.app          | `https://aphrody.app/` | En développement, pas encore ouvert au public | Dépôt `apps/aphrody-app` : mosaïque de fenêtres (dwindle, grille, défilement), rendu WebGPU, stockage local ; domaine en erreur 526 |
+
+Interdits : témoignages, notes, chiffres d'usage, logos de clients, promesses de dates, textes de remplissage. Un produit dont l'URL ne répond pas n'est jamais présenté comme disponible. Les sites communautaires maintenus par Aphrody (DBFR, Shenron, Rose Griffon) ne sont pas des produits Aphrody et n'apparaissent pas sur la page.
+
+## 4. Structure de la page
 
 ```text
-+----------------------------------------------------------------------------------+
-| TopAppBar (height: 56px, surface-container-low, 1px outline-variant bottom)      |
-| [Brand Lockup 24px]   [Primary Context / Search 480px max]   [Theme] [Primary]   |
-+--------------------+-------------------------------------------------------------+
-| NavigationRail     | Main Stage (max-width: 1280px, padding: 24px, gap: 24px)    |
-| (72px compact /    | +---------------------------------------------------------+ |
-|  240px expanded)   | | Primary Focal Panel (surface-container-lowest, r=12px)  | |
-|                    | | Headline (Space Grotesk 32px/40px) + Action Bar         | |
-| - Workspace        | +---------------------------------------------------------+ |
-| - Assets           | +---------------------------+-----------------------------+ |
-| - Telemetry        | | Data / Inspector Region   | WebGPU / Vector Preview     | |
-| - Settings         | | (tabular-nums, 4dp rows)  | (60fps / reduced-motion ok) | |
-|                    | +---------------------------+-----------------------------+ |
-+--------------------+-------------------------------------------------------------+
++--------------------------------------------------------------------------+
+| En-tête : Aphrody      Produits  Recherche  Contact            FR | EN   |
++--------------------------------------------------------------------------+
+| H1 (phrase de marque) + paragraphe d'introduction (max 64ch)             |
++--------------------------------------+-----------------------------------+
+|                                      | Recherche                         |
+|  aphrody.app (tuile principale)      +-----------------+-----------------+
+|                                      | Paquets         | Benchmarks      |
++--------------------------------------+-----------------+-----------------+
+| Ce que fait Aphrody : 3 paragraphes courts (sites, logiciels, systèmes)  |
++--------------------------------------------------------------------------+
+| Contact : adresse e-mail, ce qu'on peut demander                         |
++--------------------------------------------------------------------------+
+| Pied de page : mentions, langues, liens produits                         |
++--------------------------------------------------------------------------+
 ```
 
-- **Points de Rupture Responsifs / Breakpoints** :
-  - `Compact` : `375px - 599px` (4 colonnes, marges `16px`, gouttieres `12px`, `NavigationBar` inferieure)
-  - `Medium` : `600px - 1023px` (8 colonnes, marges `24px`, gouttieres `16px`, `NavigationRail`)
-  - `Expanded` : `1024px - 1440px+` (12 colonnes, marges `24px`, gouttieres `24px`, `NavigationDrawer` ou Rail)
+- Mosaïque : partition « dwindle » (la tuile principale prend 3/5 de la largeur, le reste est découpé récursivement), comme `apps/aphrody-app/crates/aphrody-core/src/layout.rs`. Sous 720 px, les tuiles s'empilent.
+- Une tuile est un lien unique (toute la surface est cliquable), avec nom, phrase descriptive et statut.
 
-## 4. Contraste Perceptuel & Accessibilite / WCAG 2.2 Verification
+## 5. SEO
 
-- **Mode Clair (`#1a1b20` sur `#f9f9ff`)** : Ratio `16.39:1` (WCAG AA: `PASS`, AAA: `PASS`)
-- **Mode Sombre (`#e2e2e9` sur `#111318`)** : Ratio `14.41:1` (WCAG AA: `PASS`, AAA: `PASS`)
-- **Action Primaire (`#ffffff` sur `#435e91`)** : Ratio `6.46:1` (Delta Tone HCT: `60.01`)
+- `title` fr : « Aphrody — sites et logiciels web indépendants » ; en : « Aphrody — independent websites and web software ».
+- `description` : une phrase factuelle sur ce que fait Aphrody et ses produits.
+- Une seule balise `h1` visible. Canonical, hreflang fr-FR / en-US / x-default, Open Graph avec `og:locale`.
+- JSON-LD : `Organization` (nom, url, logo, e-mail, `sameAs` limité aux URL qui répondent), `WebSite` avec `SearchAction` vers `/search`, `ItemList` des produits, `BreadcrumbList`. `Dataset` pour les benchmarks (`/api/bnc`), pas d'`aggregateRating`, pas de `SoftwareApplication` tant qu'aphrody.app n'est pas public.
+- Sitemaps et `robots.txt` sans référence à Gemini.
 
-## 5. Budgets de Performance & Criteres d'Acceptation / Lighthouse & WCK 100/100
+## 6. Critères d'acceptation
 
-| Metrique / Gate                     | Cible Stricte              | Commande de Verification    |
-| :---------------------------------- | :------------------------- | :-------------------------- |
-| **First Contentful Paint (FCP)**    | `<= 600 ms`                | `wck` / Lighthouse          |
-| **Largest Contentful Paint (LCP)**  | `<= 1200 ms`               | `wck` / Lighthouse          |
-| **Interaction to Next Paint (INP)** | `<= 50 ms`                 | `wck` / Performance         |
-| **Cumulative Layout Shift (CLS)**   | `0.00`                     | Metriques `size-adjust` OFL |
-| **Conformite Design System**        | `>= 90 / 100`, `0` erreur  | `gds verify`                |
-| **Audit Anti-Slop (Prose & CSS)**   | `clean: true`, `100 / 100` | `gds audit-slop`            |
+| Critère                      | Cible                                                                            | Vérification              |
+| :--------------------------- | :------------------------------------------------------------------------------- | :------------------------ |
+| Page lisible sans JavaScript | Tout le contenu et tous les liens présents dans le HTML                          | test `home` dans `tests/` |
+| LCP / CLS                    | <= 1200 ms / 0.00                                                                | `wck dist`                |
+| Accessibilité                | WCAG 2.2 AA, focus visible, cibles >= 44 px                                      | `wck`, revue clavier      |
+| Poids                        | HTML + CSS de la home < 30 Ko compressé, police < 60 Ko                          | taille de `dist/`         |
+| Aucune trace d'IA            | 0 occurrence de « Gemini », « IA », « AI mode » sur la home et dans les sitemaps | tests                     |
+| Anti-slop                    | 0 emoji, 0 formule promotionnelle                                                | `gds audit-slop`          |

@@ -1,6 +1,6 @@
 /**
  * Aphrody Universal Package & Store Manager
- * Unified interface orchestrating all drivers, bun:sqlite state & NixOS-style generations
+ * Searches the curated catalogs of every ecosystem driver through a bun:sqlite index
  * Zero external npm dependencies
  */
 
@@ -21,9 +21,8 @@ import {
   PLAYSTORE_CURATED_PACKAGES,
 } from "./drivers/playstore";
 import { searchWasmHubPackages, WASM_HUB_PACKAGES } from "./drivers/wasm-hub";
-import { AwesomeListConverter } from "./drivers/awesome-converter";
 import { pickOptimalStack } from "../benchmark/stack-picker";
-import type { StorePackage, StoreGeneration, Ecosystem } from "./types";
+import type { StorePackage, Ecosystem } from "./types";
 
 export class UniversalStoreManager {
   private static instance: UniversalStoreManager;
@@ -104,64 +103,5 @@ export class UniversalStoreManager {
       ...pkg,
       pickedStack: pickOptimalStack({ name: pkg.name, language: pkg.category }),
     }));
-  }
-
-  public async convertAwesomeList(
-    markdownOrUrl: string,
-  ): Promise<StorePackage[]> {
-    let result;
-    if (
-      markdownOrUrl.startsWith("http://") ||
-      markdownOrUrl.startsWith("https://")
-    ) {
-      result = await AwesomeListConverter.fetchAndConvert(markdownOrUrl);
-    } else {
-      result = AwesomeListConverter.parseMarkdown(
-        markdownOrUrl,
-        "Custom Awesome List",
-      );
-    }
-
-    if (result.packages.length > 0) {
-      this.db.upsertBatch(result.packages);
-    }
-
-    return result.packages;
-  }
-
-  public installPackage(packageId: string): StoreGeneration {
-    const pkg = this.db.getPackageById(packageId);
-    if (!pkg) {
-      throw new Error(`Package ${packageId} not found in Store`);
-    }
-
-    const currentGen = this.db.getActiveGeneration();
-    const newPkgs = Array.from(new Set([...currentGen.packages, packageId]));
-    return this.db.createGeneration(
-      `Install ${pkg.name} (${pkg.ecosystem})`,
-      newPkgs,
-    );
-  }
-
-  public uninstallPackage(packageId: string): StoreGeneration {
-    const currentGen = this.db.getActiveGeneration();
-    const newPkgs = currentGen.packages.filter((id) => id !== packageId);
-    return this.db.createGeneration(`Uninstall ${packageId}`, newPkgs);
-  }
-
-  public rollback(targetGenerationId: number): StoreGeneration {
-    return this.db.rollbackToGeneration(targetGenerationId);
-  }
-
-  public listGenerations(): StoreGeneration[] {
-    return this.db.listGenerations();
-  }
-
-  public getActiveGeneration(): StoreGeneration {
-    return this.db.getActiveGeneration();
-  }
-
-  public getDatabase(): StoreDatabase {
-    return this.db;
   }
 }

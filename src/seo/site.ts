@@ -66,42 +66,6 @@ export const VERTICALS: Vertical[] = [
     },
   },
   {
-    slug: "ai-gemini",
-    links: [
-      {
-        href: "/api/gemini/search?q=webgpu",
-        label: { fr: "API Gemini (JSON)", en: "Gemini API (JSON)" },
-      },
-      { href: "/llms.txt", label: { fr: "llms.txt", en: "llms.txt" } },
-    ],
-    fr: {
-      title: "Mode IA Gemini - Aphrody",
-      description:
-        "Point d'accès /api/gemini/search : réponse Gemini ancrée sur Google Search quand une clé API est configuree, sinon repli local déterministe.",
-      h1: "Mode IA Gemini",
-      intro:
-        "Le point d'accès /api/gemini/search renvoie une réponse en JSON ou en flux SSE. Avec une clé Gemini côté serveur, la requête utilise l'outil google_search pour l'ancrage ; sans clé, un repli local déterministe répond à partir du catalogue Aphrody.",
-      points: [
-        "Le champ grounded indique si la réponse provient de Gemini.",
-        "Les sources apparaissent dans le champ citations.",
-        "La clé API reste côté serveur et n'est jamais exposée au navigateur.",
-      ],
-    },
-    en: {
-      title: "Gemini AI mode - Aphrody",
-      description:
-        "The /api/gemini/search endpoint: Gemini answers grounded with Google Search when an API key is configured, else a deterministic local fallback.",
-      h1: "Gemini AI mode",
-      intro:
-        "The /api/gemini/search endpoint returns an answer as JSON or as an SSE stream. With a server-side Gemini key the request uses the google_search tool for grounding; without a key a deterministic local fallback answers from the Aphrody catalog.",
-      points: [
-        "The grounded field tells whether the answer came from Gemini.",
-        "Sources are listed in the citations field.",
-        "The API key stays on the server and is never exposed to the browser.",
-      ],
-    },
-  },
-  {
     slug: "packages",
     links: [
       {
@@ -330,59 +294,21 @@ export const HOME: Record<
   { title: string; description: string; h1: string; intro: string }
 > = {
   fr: {
-    title: "Aphrody - Recherche, Mode IA Gemini et paquets",
+    title: "Aphrody — sites et logiciels web indépendants",
     description:
-      "Recherche avec suggestions, Mode IA Gemini, catalogue de paquets et benchmarks. Indépendant de Google.",
-    h1: "Aphrody",
+      "Aphrody développe des logiciels web hébergés en France : recherche, catalogue de paquets, benchmarks et aphrody.app, un bureau en mosaïque pour le navigateur.",
+    h1: "Aphrody développe des logiciels web et les héberge en France.",
     intro:
-      "Portail indépendant : recherche web avec suggestions, Mode IA Gemini, catalogue de paquets multi-écosystèmes et benchmarks. Non affilié à Google.",
+      "La recherche, le catalogue de paquets et les benchmarks sont en ligne. aphrody.app, un bureau en mosaïque pour le navigateur, est en cours de développement.",
   },
   en: {
-    title: "Aphrody - Search, Gemini AI mode and packages",
+    title: "Aphrody — independent websites and web software",
     description:
-      "Search with suggestions, Gemini AI mode, a package catalog and benchmarks. Independent from Google.",
-    h1: "Aphrody",
+      "Aphrody builds web software hosted in France: a search with a package catalog, runtime benchmarks, and aphrody.app, a tiling desktop for the browser.",
+    h1: "Aphrody builds web software and hosts it in France.",
     intro:
-      "Independent portal: web search with suggestions, Gemini AI mode, a multi-ecosystem package catalog and benchmarks. Not affiliated with Google.",
+      "The search, the package catalog and the benchmarks are online. aphrody.app, a tiling desktop for the browser, is in development.",
   },
-};
-
-export const HOME_FAQS: Record<
-  Locale,
-  Array<{ question: string; answer: string }>
-> = {
-  fr: [
-    {
-      question: "Qu'est-ce qu'Aphrody ?",
-      answer:
-        "Un portail web indépendant : recherche, Mode IA Gemini, catalogue de paquets et benchmarks.",
-    },
-    {
-      question: "Quel lien avec aphrody.app ?",
-      answer: "aphrody.app est le projet compagnon d'aphrody.com.",
-    },
-    {
-      question: "Mes données sont-elles suivies ?",
-      answer:
-        "Les balises Google ne se chargent que si elles sont configurées, consentement refusé par défaut.",
-    },
-  ],
-  en: [
-    {
-      question: "What is Aphrody?",
-      answer:
-        "An independent web portal: search, Gemini AI mode, package catalog and benchmarks.",
-    },
-    {
-      question: "How does it relate to aphrody.app?",
-      answer: "aphrody.app is the companion project of aphrody.com.",
-    },
-    {
-      question: "Is my data tracked?",
-      answer:
-        "Google tags only load when configured, with consent denied by default.",
-    },
-  ],
 };
 
 export interface NewsArticle {
@@ -394,15 +320,27 @@ export interface NewsArticle {
 
 export const NEWS: NewsArticle[] = [
   {
+    slug: "new-homepage-2026-11",
+    date: "2026-11-12",
+    fr: {
+      title: "Nouvelle page d'accueil",
+      body: "La page d'accueil présente maintenant Aphrody et ses produits, sans JavaScript nécessaire. La recherche reste disponible sur /search. Le mode de réponse par IA a été retiré du site.",
+    },
+    en: {
+      title: "New homepage",
+      body: "The homepage now presents Aphrody and its products, with no JavaScript required. Search remains available at /search. The AI answer mode has been removed from the site.",
+    },
+  },
+  {
     slug: "platform-upgrade-2026-11",
     date: "2026-11-10",
     fr: {
-      title: "Mise à jour: sitemaps, API Gemini et WebMCP",
-      body: "Aphrody ajoute un index de sitemaps, le point d'accès /api/gemini/search, des fichiers llms.txt, et des outils WebMCP exposés quand le navigateur les supporte.",
+      title: "Mise à jour: sitemaps, llms.txt et WebMCP",
+      body: "Aphrody ajoute un index de sitemaps, des fichiers llms.txt, et des outils WebMCP exposés quand le navigateur les supporte.",
     },
     en: {
-      title: "Update: sitemaps, Gemini API and WebMCP",
-      body: "Aphrody adds a sitemap index, the /api/gemini/search endpoint, llms.txt files, and WebMCP tools exposed when the browser supports them.",
+      title: "Update: sitemaps, llms.txt and WebMCP",
+      body: "Aphrody adds a sitemap index, llms.txt files, and WebMCP tools exposed when the browser supports them.",
     },
   },
 ];

@@ -125,7 +125,7 @@ export const AI_CRAWLERS = [
   "ClaudeBot",
   "PerplexityBot",
 ] as const;
-const ROBOTS_DISALLOW = ["/g/", "/api/store/", "/api/seo/", "/api/gemini/"];
+const ROBOTS_DISALLOW = ["/g/", "/api/store/", "/api/seo/"];
 
 export function robotsTxt(): string {
   const rules = [
@@ -155,7 +155,6 @@ export function llmsTxt(): string {
     "",
     "## Machine-readable endpoints",
     "",
-    `- [Gemini search](${SITE_URL}/api/gemini/search?q={query}): JSON or SSE answer with citations (Google Search grounding when configured)`,
     `- [Suggestions](${SITE_URL}/api/q?q={query}): search suggestions`,
     `- [Package catalog](${SITE_URL}/api/pm?q={query}): multi-ecosystem catalog search`,
     `- [Benchmarks](${SITE_URL}/api/bnc): runtime micro-benchmarks, computed on demand`,

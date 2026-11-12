@@ -1,64 +1,50 @@
-# DESIGN.md — Aphrody (`aphrody.com`)
+# DESIGN.md — aphrody.com
 
-> Canonical machine- and human-readable design specification following the `DESIGN.md` open standard (`google-labs-code/design.md`) and enforced by `@aphrody/google-design` (`gds`) and `@aphrody/wck`.
+Design specification for the aphrody.com brand homepage. Requirements and content live in `PRD.md`; this file defines the visual system. The tokens are implemented in `src/seo/home-css.ts`.
 
-## 1. Brand & Product Philosophy
+## 1. Idea
 
-- **Identity**: Aphrody (`https://aphrody.com`), generalist web search portal, multi-ecosystem package catalog, native Omarchy x CachyOS WSL2 hub, and open-source creative asset bank.
-- **Engineering Lineage**:
-  - _Linus Torvalds_: Flat, honest information hierarchy; zero decorative bloat; deterministic system behavior.
-  - _Jarred Sumner (Bun v1.4.4)_: Sub-millisecond feedback, zero external npm dependencies, pre-compressed in-memory asset serving.
-  - _Larry Page_: Immediate focal point on the primary task (search & discovery), generous negative space, sub-second Largest Contentful Paint.
-- **Strict AI Boundary**: `@aphrody/ai-os` is the sole public AI product in the monorepo. `aphrody.com` uses factual, human-edited technical language with zero AI marketing buzzwords and zero emojis.
+Aphrody's flagship idea is the tiling desktop (aphrody.app). The homepage borrows that vernacular instead of a generic card grid: the products form one tiled composition, partitioned like the "dwindle" layout of `aphrody-core`, separated by uniform gaps, and the tile under the pointer or keyboard focus takes the "active border", exactly as a focused window does in a tiling window manager. That is the one bold element. Everything else is quiet: left-aligned prose, generous margins, no decoration.
 
-## 2. Adaptive Tri-System Token Architecture
+## 2. Color
 
-`aphrody.com` supports three user-selectable visual shells sharing one semantic CSS variable contract:
+| Token      | Light     | Dark      | Use                                              |
+| :--------- | :-------- | :-------- | :----------------------------------------------- |
+| `--paper`  | `#F2F4F1` | `#151B21` | Page background                                  |
+| `--tile`   | `#FFFFFF` | `#1C242C` | Tile surface                                     |
+| `--ink`    | `#17202A` | `#E6EAEE` | Text, brand mark                                 |
+| `--muted`  | `#55606B` | `#A3ADB7` | Secondary text                                   |
+| `--rule`   | `#848E96` | `#647381` | Tile borders (3:1 against the page, WCAG 1.4.11) |
+| `--active` | `#0B7A75` | `#3FC1B9` | Active tile border, focus ring, links            |
+| `--live`   | `#2E6B3A` | `#7CC98A` | "En ligne" status                                |
+| `--dev`    | `#8A5A00` | `#E3B35C` | "En développement" status                        |
 
-### 2.1 Color System (Light / Dark)
+Contrast (WCAG 2.2, computed): light ink/paper 14.87, muted/tile 6.42, active/paper 4.68, active/tile 5.18, live/tile 6.40, dev/tile 5.93, rule/paper 3.02; dark ink/paper 14.35, muted/tile 6.89, active/tile 7.13, live/tile 7.91, dev/tile 8.12, rule/paper 3.56. Theme follows `prefers-color-scheme`; no toggle is needed without JavaScript.
 
-| Token Role        | Classic Web (Light / Dark) | Material Design 3 HCT (Light / Dark) | Fluent UI 2 Mica (Light / Dark)       |
-| :---------------- | :------------------------- | :----------------------------------- | :------------------------------------ |
-| Surface Primary   | `#ffffff` / `#202124`      | `#fef7ff` / `#141218`                | `#ffffff` / `#292929`                 |
-| Surface Container | `#f8f9fa` / `#303134`      | `#f3edf7` / `#211f26`                | `#f5f5f5` / `#1f1f1f`                 |
-| Text Primary      | `#1f1f1f` / `#e8eaed`      | `#1d1b20` / `#e6e0e9`                | `#242424` / `#ffffff`                 |
-| Text Secondary    | `#4d5156` / `#bdc1c6`      | `#49454f` / `#cac4d0`                | `#616161` / `#d6d6d6`                 |
-| Accent Primary    | `#1a73e8` / `#8ab4f8`      | `#6750a4` / `#d0bcff`                | `#0f6cbd` / `#479ef5`                 |
-| Outline / Stroke  | `#dfe1e5` / `#5f6368`      | `#79747e` / `#938f99`                | `#e0e0e0` / `#424242`                 |
-| Focus Ring        | `2px solid #1a73e8`        | `2px solid #6750a4`                  | `2px solid #000000` (inner `#ffffff`) |
+## 3. Type
 
-### 2.2 Typography Scale (Zero-CLS System & Metric-Matched OFL Stack)
+- One family: **Atkinson Hyperlegible Next** (OFL, variable weight), self-hosted as `/atkinson-next.woff2` (license: `/atkinson-next-OFL.txt`), preloaded, `font-display: optional` so a late font never swaps in and shifts the layout (CLS 0).
+- Scale (1.25 ratio, 18 px body): h1 `clamp(2.25rem, 1.6rem + 2.6vw, 3.6rem)` / 1.08, weight 700, tracking -0.015em; h2 1.6rem / 1.2, weight 700; tile name 1.4rem / 1.2, weight 700; body 1.125rem / 1.6; small 0.95rem / 1.5.
+- Sentence case everywhere. No all-caps labels, no single-word accents in headlines, no monospace labels.
+- Measure: prose capped at 64ch.
 
-- **UI Sans**: `"Inter", "Segoe UI Variable", system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif`
-- **Display / Brand**: `"Space Grotesk", "Inter", system-ui, sans-serif`
-- **Code / Commands**: `"JetBrains Mono", "Cascadia Mono", ui-monospace, SFMono-Regular, Menlo, monospace`
-- **Ramp**:
-  - `H1 Page`: `32px / 40px`, weight `400`, letter-spacing `-0.01em`
-  - `H2 Section`: `22px / 28px`, weight `500`, letter-spacing `-0.005em`
-  - `Lead`: `16px / 24px`, weight `400`, max-measure `68ch`
-  - `Body / Card`: `14px / 20px`, weight `400`
-  - `Code`: `13px / 18px`, weight `400`
+## 4. Layout
 
-### 2.3 Spacing, Touch Targets & Layout Grid
+- Container: `max-width: 76rem`, side padding `clamp(1.25rem, 4vw, 3rem)`.
+- Mosaic: CSS grid `2fr 1fr 1fr` x 2 rows at >= 720 px (dwindle: the main tile takes half, the rest splits recursively). The aphrody.app tile spans both rows of column 1 and lists verified facts from its repository; Recherche spans columns 2-3 on row 1; Paquets and Benchmarks split row 2. Gap `0.75rem` (the "gaps_in" of a tiling WM). Tiles have a 1 px `--rule` border and a 6 px radius, the same on every tile because they are siblings of equal rank.
+- Below 720 px: single column, aphrody.app first.
+- Section rhythm: `clamp(3rem, 6vw, 6rem)` between sections; sections are separated by space, not by rules.
 
-- **Base Unit**: `4px` spatial rhythm (`4, 8, 12, 16, 24, 32, 48, 64px`).
-- **Interactive Touch Minimum**: Every interactive link, chip, or button in navigation and content pages maintains `min-height: 48px` (WCAG 2.2 / Material 3 target parity).
-- **Content Container**: `max-width: 840px` for editorial/hub reading; `repeat(auto-fill, minmax(260px, 1fr))` responsive grid for asset, theme, and package cards.
-- **Safe Areas**: Respect `env(safe-area-inset-top|right|bottom|left)` on notched mobile and tablet viewports.
+## 5. Interaction and motion
 
-## 3. Motion, 3D WebGPU & Asset Standards
+- Tile hover and `:focus-visible`: border becomes `--active` and an inset 1 px ring doubles it to 2 px, so nothing moves, transition 120 ms. This is the only motion on the page, and it answers the user's pointer or keyboard.
+- `prefers-reduced-motion: reduce` removes the transition.
+- Focus ring for every other link: 2 px `--active` outline, 3 px offset.
+- Touch targets >= 44 x 44 px.
 
-- **Reduced Motion First**: Honor `@media (prefers-reduced-motion: reduce)` across all transitions, canvas scenes, and sprite animations.
-- **Zero Layout Shift (`CLS = 0`)**: Every image, SVG preview, Open Pet GIF, 3D canvas, and optional ad container reserves explicit intrinsic dimensions (`width`/`height` or `min-height` + `contain: strict`).
-- **Open Creative Asset Formats**:
-  - Icons: `24x24` viewBox, `1.75px` uniform stroke, rounded caps/joins, pixel-aligned coordinates.
-  - Open Pets: Crisp integer-scaled pixel art exported as looping `GIF89a` binaries and `<svg>` sprite sheets.
-  - 3D Models: Valid binary glTF 2.0 (`.glb`), JSON `.gltf`, and Wavefront `.obj` with physically based metallic-roughness parameters.
-  - Audio: 44.1 kHz 16-bit PCM `.wav` micro-interactions under `60 KB` each, triggered only on explicit user click.
+## 6. Anti-slop rules
 
-## 4. Anti-AI-Slop Enforcement Checklist (`impeccable` + `humanizer`)
-
-- Strictly zero emoji characters (`\p{Extended_Pictographic}`) in UI, copy, SVG labels, or metadata.
-- Strictly zero puffery clichés (`revolutionary`, `unleash`, `delve`, `seamless`, `game-changer`, `AI-powered magic`).
-- Strictly zero unrequested decorative purple/neon SaaS mesh gradients or fake testimonials/ratings (`aggregateRating` is never emitted without verifiable user reviews).
-- Every claim on `aphrody.com` describes concrete, verifiable behavior inspectable via public endpoints (`/api/q`, `/api/pm`, `/api/bnc`, `/api/distro/themes`, `/api/assets/catalog`, `/ok`).
+- No emoji, no gradients, no shadows, no stock imagery, no fake metrics or testimonials.
+- No eyebrow labels above headings, no middle-dot meta strings, no arrows appended to link text.
+- Product status is plain text with a colored text label, never a fake "live" pulse animation.
+- Copy names things by what people use ("le catalogue de paquets"), not by how they are built.

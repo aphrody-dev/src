@@ -31,27 +31,3 @@ export interface StorePackage {
   tags: string[];
   pickedStack?: StackRecommendation;
 }
-
-export interface StoreGeneration {
-  id: number;
-  timestamp: string;
-  active: boolean;
-  packages: string[];
-  description: string;
-  rollbackId?: number;
-}
-
-export interface StoreSearchQuery {
-  q?: string;
-  ecosystem?: Ecosystem | "all";
-  category?: string;
-  limit?: number;
-}
-
-export interface AwesomeParseResult {
-  sourceTitle: string;
-  sourceUrl?: string;
-  totalParsed: number;
-  categories: string[];
-  packages: StorePackage[];
-}

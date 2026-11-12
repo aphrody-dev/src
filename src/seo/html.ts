@@ -9,8 +9,6 @@
 import {
   APP_URL,
   ECOSYSTEM_LABELS,
-  HOME,
-  HOME_FAQS,
   HREFLANG,
   LOCALES,
   PACKAGE_ECOSYSTEMS,
@@ -28,6 +26,7 @@ import {
 import { buildPageGraph, graphToScript } from "./schema-graph";
 import { consentScriptTag, type GoogleConfig } from "../google/config";
 import { PAGE_CSS } from "./page-css";
+import { renderBrandHome } from "./home";
 
 export const UI = {
   fr: {
@@ -227,42 +226,9 @@ function faqHtml(
   );
 }
 
-export function renderHome(locale: Locale, cfg: GoogleConfig): string {
-  const h = HOME[locale];
-  const u = UI[locale];
-  const url = SITE_URL + localizedPath("/", locale);
-  const faqs = HOME_FAQS[locale];
-  const graph = buildPageGraph({
-    locale,
-    canonicalUrl: url,
-    title: h.title,
-    description: h.description,
-    breadcrumbs: [{ name: u.home, url }],
-    faqs,
-    items: VERTICALS.map((v) => ({
-      name: v[locale].h1,
-      url: SITE_URL + localizedPath(verticalPath(v.slug), locale),
-    })),
-    itemListName: u.topics,
-    dataset: true,
-  });
-  const main = `<noscript>${searchForm(locale, "ns-q")}</noscript><h1 class="visually-hidden">${h.h1}</h1><div id="root"></div>`;
-  const footer =
-    `<div class="seo-wrap">${topicsNav(locale)}${faqHtml(locale, faqs)}<p class="note">${u.disclaimer}</p>` +
-    `</div>`;
-  return renderDocument({
-    locale,
-    frPath: "/",
-    title: h.title,
-    description: h.description,
-    main,
-    footer,
-    cfg,
-    graph,
-    withApp: true,
-    mainClass: "google-main",
-    header: false,
-  });
+/** Brand homepage: static, no client app. See src/seo/home.ts, PRD.md, DESIGN.md. */
+export function renderHome(locale: Locale, _cfg: GoogleConfig): string {
+  return renderBrandHome(locale);
 }
 
 function breadcrumbs(

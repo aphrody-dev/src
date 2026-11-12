@@ -28,11 +28,6 @@ import {
   readGoogleConfig,
 } from "../src/google/config";
 import { handleCollect, MAX_RELAY_BODY_BYTES } from "../src/google/relay";
-import {
-  geminiSearch,
-  handleGeminiSearch,
-  localFallback,
-} from "../src/gemini/search";
 import { getHashEngine, loadFfiBlake3, strongEtag } from "../src/runtime/hash";
 import { PAGE_CSS } from "../src/seo/page-css";
 
@@ -121,41 +116,53 @@ describe("Sitemap index and child sitemaps", () => {
   it("lists every indexable URL for IndexNow", () => {
     const urls = allIndexableUrls();
     expect(urls).toContain(`${SITE_URL}/`);
-    expect(urls).toContain(`${SITE_URL}/en/search/ai-gemini`);
+    expect(urls).toContain(`${SITE_URL}/en/search/packages`);
+    expect(urls.some((u) => u.includes("ai-gemini"))).toBe(false);
     expect(new Set(urls).size).toBe(urls.length);
   });
 });
 
 describe("Schema.org JSON-LD @graph", () => {
-  const home = [
-    "Organization",
-    "WebSite",
-    "WebApplication",
-    "SoftwareApplication",
-    "BreadcrumbList",
-    "FAQPage",
-    "ItemList",
-    "Dataset",
-  ];
-
-  it("home pages carry the full graph with honest content", () => {
+  it("home pages carry an honest brand graph", () => {
     for (const l of LOCALES) {
       const html = renderHome(l, {});
       const graph = ldGraph(html);
       const types = graph.map((n) => n["@type"]);
-      for (const t of home) expect(types).toContain(t);
+      for (const t of ["Organization", "WebSite", "BreadcrumbList", "ItemList"])
+        expect(types).toContain(t);
+      for (const t of [
+        "WebApplication",
+        "SoftwareApplication",
+        "FAQPage",
+        "Dataset",
+      ])
+        expect(types).not.toContain(t);
       const site = graph.find((n) => n["@type"] === "WebSite")!;
       expect(site.potentialAction["@type"]).toBe("SearchAction");
       expect(site.potentialAction.target.urlTemplate).toContain(
         "{search_term_string}",
       );
-      const sw = graph.find((n) => n["@type"] === "SoftwareApplication")!;
-      expect(sw.url).toBe("https://aphrody.app/");
+      const org = graph.find((n) => n["@type"] === "Organization")!;
+      expect(org.email).toBe("contact@aphrody.com");
+      expect(org.sameAs).toEqual(["https://github.com/aphrody-dev"]);
+      const list = graph.find((n) => n["@type"] === "ItemList")!;
+      expect(list.itemListElement.map((i: { url: string }) => i.url)).toEqual([
+        "https://aphrody.com/search",
+        "https://aphrody.com" + (l === "fr" ? "" : "/en") + "/search/packages",
+        "https://aphrody.com" +
+          (l === "fr" ? "" : "/en") +
+          "/search/benchmarks",
+      ]);
       const raw = JSON.stringify(graph);
       expect(raw).not.toContain("aggregateRating");
-      expect(raw).not.toContain("softwareVersion");
+      expect(raw).not.toContain("aphrody.app");
       expect(html).toContain(
         '<link rel="canonical" href="https://aphrody.com/',
+      );
+      expect(html).toContain(
+        '<meta property="og:locale" content="' +
+          (l === "fr" ? "fr_FR" : "en_US") +
+          '">',
       );
     }
   });
@@ -169,7 +176,6 @@ describe("Schema.org JSON-LD @graph", () => {
           "Organization",
           "WebSite",
           "WebApplication",
-          "SoftwareApplication",
           "BreadcrumbList",
           "FAQPage",
           "ItemList",
@@ -219,7 +225,7 @@ describe("Schema.org JSON-LD @graph", () => {
       );
     }
     const html = readFileSync(join(DIST, "index.html"), "utf-8");
-    expect(ldGraph(html).length).toBeGreaterThanOrEqual(8);
+    expect(ldGraph(html).length).toBe(4);
   });
 });
 
@@ -238,7 +244,7 @@ describe("Consent Mode v2 and Google stack", () => {
     }
     expect(CONSENT_DEFAULT_SNIPPET).toContain("gtag('consent','default'");
     expect(html.indexOf("gtag('consent','default'")).toBeLessThan(
-      html.indexOf('src="/app.js"'),
+      html.indexOf('src="/boot.js"'),
     );
     expect(html).not.toContain("googletagmanager.com");
     expect(html).not.toContain("googlesyndication.com");
@@ -415,95 +421,6 @@ describe("First-party GA4 relay (/g/collect)", () => {
   });
 });
 
-describe("Gemini grounded search (/api/gemini/search)", () => {
-  it("falls back deterministically offline when no key is set", async () => {
-    const a = await geminiSearch("webgpu benchmarks", {});
-    const b = await geminiSearch("webgpu benchmarks", {});
-    expect(a).toEqual(b);
-    expect(a.grounded).toBe(false);
-    expect(a.source).toBe("local-fallback");
-    expect(a.model).toBeNull();
-    expect(
-      a.citations.every((c) => c.url.startsWith("https://aphrody.com/")),
-    ).toBe(true);
-    expect(localFallback("zzzzqqq").citations).toEqual([]);
-  });
-
-  it("calls Gemini with the google_search tool and maps grounding chunks to citations", async () => {
-    let seen: { url: string; key: string | null; body: any } | null = null;
-    const fetchImpl = (async (url: string, init: RequestInit) => {
-      seen = {
-        url,
-        key: new Headers(init.headers).get("x-goog-api-key"),
-        body: JSON.parse(init.body as string),
-      };
-      return Response.json({
-        candidates: [
-          {
-            content: { parts: [{ text: "Grounded answer." }] },
-            groundingMetadata: {
-              webSearchQueries: ["q1"],
-              groundingChunks: [
-                { web: { uri: "https://example.com/a", title: "A" } },
-                { web: { uri: "https://example.com/a", title: "dup" } },
-              ],
-            },
-          },
-        ],
-      });
-    }) as unknown as typeof fetch;
-    const r = await geminiSearch(
-      "what is bun",
-      { GEMINI_API_KEY: "test-key" },
-      "en",
-      fetchImpl,
-    );
-    expect(seen!.url).toContain("generativelanguage.googleapis.com");
-    expect(seen!.key).toBe("test-key");
-    expect(seen!.body.tools).toEqual([{ google_search: {} }]);
-    expect(r.grounded).toBe(true);
-    expect(r.citations).toEqual([{ title: "A", url: "https://example.com/a" }]);
-    expect(JSON.stringify(r)).not.toContain("test-key");
-    const failing = (async () =>
-      new Response("x", { status: 500 })) as unknown as typeof fetch;
-    expect(
-      (await geminiSearch("q", { GOOGLE_API_KEY: "k" }, "fr", failing)).source,
-    ).toBe("local-fallback");
-  });
-
-  it("answers JSON and SSE, validates input and rate limits", async () => {
-    const json = await handleGeminiSearch(
-      new Request("http://x/api/gemini/search?q=packages"),
-      { env: {} },
-    );
-    expect(json.status).toBe(200);
-    expect((await json.json()).query).toBe("packages");
-    const sse = await handleGeminiSearch(
-      new Request("http://x/api/gemini/search?q=packages&stream=1"),
-      { env: {} },
-    );
-    expect(sse.headers.get("content-type")).toContain("text/event-stream");
-    const text = await sse.text();
-    expect(text).toContain("event: meta");
-    expect(text).toContain("event: delta");
-    expect(text).toContain("event: done");
-    const missing = await server.fetch(
-      new Request("http://localhost:3000/api/gemini/search"),
-    );
-    expect(missing.status).toBe(400);
-    let last = 200;
-    for (let i = 0; i < 40; i++) {
-      last = (
-        await handleGeminiSearch(
-          new Request("http://x/api/gemini/search?q=a"),
-          { env: {}, client: "rl-test" },
-        )
-      ).status;
-    }
-    expect(last).toBe(429);
-  });
-});
-
 describe("WebMCP", () => {
   it("manifest lists every tool with a valid input schema", async () => {
     const manifest = webmcpJson() as {
@@ -585,10 +502,8 @@ describe("Zero-copy static serving, hashing and progressive enhancement", () => 
 
   it("search works without JavaScript (server-rendered form and results)", async () => {
     const home = readFileSync(join(DIST, "index.html"), "utf-8");
-    expect(home).toContain(
-      '<noscript><form class="ns-search" action="/search" method="get"',
-    );
-    expect(home).toContain('<div id="root"></div>');
+    expect(home).toContain('href="/search"');
+    expect(home).not.toContain('<div id="root"></div>');
     const res = await server.fetch(
       new Request("http://localhost:3000/search?q=bun"),
     );

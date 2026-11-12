@@ -55,37 +55,6 @@ export const NIX_CURATED_PACKAGES: StorePackage[] = [
   },
 ];
 
-export function generateNixDeclarativeFlake(packages: string[]): string {
-  const pkgLines = packages
-    .map((p) => `        pkgs.${p.replace(/^nixpkgs#/, "")}`)
-    .join("\n");
-  return `
-# Aphrody Declarative Flake Profile (NixOS Generation)
-{
-  description = "Aphrody Declarative System Generation Profile";
-
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
-  };
-
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = import nixpkgs { inherit system; };
-      in
-      {
-        devShells.default = pkgs.mkShell {
-          packages = [
-${pkgLines}
-          ];
-        };
-      }
-    );
-}
-  `.trim();
-}
-
 export async function searchNixPackages(
   query: string,
 ): Promise<StorePackage[]> {

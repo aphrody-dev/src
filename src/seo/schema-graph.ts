@@ -1,12 +1,13 @@
 /**
  * Schema.org @graph builder.
- * Emits Organization, WebSite (+SearchAction), WebApplication, SoftwareApplication
- * (linking https://aphrody.app), BreadcrumbList, FAQPage, ItemList and Dataset.
+ * Emits Organization, WebSite (+SearchAction), WebApplication (optional), BreadcrumbList,
+ * FAQPage, ItemList and Dataset. aphrody.app is not described as a SoftwareApplication
+ * until it is public.
  * Descriptions are factual: no ratings, no price claims beyond a free web app,
  * no invented versions. Pure TypeScript, zero dependencies.
  */
 
-import { ABOUT_URL, APP_URL, HREFLANG, SITE_URL, type Locale } from "./site";
+import { HREFLANG, SITE_URL, type Locale } from "./site";
 
 export interface GraphFaq {
   question: string;
@@ -31,6 +32,8 @@ export interface PageGraphOptions {
   items?: GraphItem[];
   itemListName?: string;
   dataset?: boolean;
+  /** Describe the page as a WebApplication (search tools). Default true. */
+  webApp?: boolean;
 }
 
 const ORG_ID = `${SITE_URL}/#organization`;
@@ -45,7 +48,9 @@ export function buildPageGraph(o: PageGraphOptions): Record<string, unknown> {
       name: "Aphrody",
       url: SITE_URL + "/",
       logo: `${SITE_URL}/favicon.svg`,
-      sameAs: [APP_URL + "/", ABOUT_URL + "/"],
+      email: "contact@aphrody.com",
+      // Only profiles that resolve. Products are not "sameAs" the organization.
+      sameAs: ["https://github.com/aphrody-dev"],
     },
     {
       "@type": "WebSite",
@@ -63,23 +68,6 @@ export function buildPageGraph(o: PageGraphOptions): Record<string, unknown> {
       },
     },
     {
-      "@type": "WebApplication",
-      "@id": `${o.canonicalUrl}#webapp`,
-      name: o.title,
-      url: o.canonicalUrl,
-      description: o.description,
-      applicationCategory: "UtilitiesApplication",
-      operatingSystem: "Any (web browser)",
-      inLanguage: lang,
-      offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
-    },
-    {
-      "@type": "SoftwareApplication",
-      "@id": `${APP_URL}/#software`,
-      name: "Aphrody",
-      url: APP_URL + "/",
-    },
-    {
       "@type": "BreadcrumbList",
       "@id": `${o.canonicalUrl}#breadcrumb`,
       itemListElement: o.breadcrumbs.map((c, i) => ({
@@ -90,6 +78,20 @@ export function buildPageGraph(o: PageGraphOptions): Record<string, unknown> {
       })),
     },
   ];
+
+  if (o.webApp !== false) {
+    graph.splice(2, 0, {
+      "@type": "WebApplication",
+      "@id": `${o.canonicalUrl}#webapp`,
+      name: o.title,
+      url: o.canonicalUrl,
+      description: o.description,
+      applicationCategory: "UtilitiesApplication",
+      operatingSystem: "Any (web browser)",
+      inLanguage: lang,
+      offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+    });
+  }
 
   if (o.faqs && o.faqs.length) {
     graph.push({
@@ -156,7 +158,6 @@ export const GRAPH_TYPES = [
   "Organization",
   "WebSite",
   "WebApplication",
-  "SoftwareApplication",
   "BreadcrumbList",
   "FAQPage",
   "ItemList",

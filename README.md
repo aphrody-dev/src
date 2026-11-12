@@ -1,6 +1,6 @@
 # aphrody.com
 
-Pixel-identical replica of `https://www.google.com/` aligned with `https://design.google/`, Chromium UI (`C:\src\chromium\src\docs\ui\index.md` / GoogleChrome standards), Microsoft Fluent UI 2, Apple macOS Sequoia traffic-light windowing, Storytold WASM+WebGPU Creative Suite, and Universal Declarative Store & Multi-Ecosystem Package Manager.
+Pixel-identical replica of `https://www.google.com/` aligned with `https://design.google/`, Chromium UI (`C:\src\third_party\chromium\src\docs\ui\index.md` / GoogleChrome standards), Microsoft Fluent UI 2, Apple macOS Sequoia traffic-light windowing, Storytold WASM+WebGPU Creative Suite, and Universal Declarative Store & Multi-Ecosystem Package Manager.
 
 Built in **100% pure oven-sh/bun (Full Rust) TypeScript + Web Standards (DOM, HTML5, CSS3, SVG, WebGPU, WebAssembly) with ZERO external npm dependencies**.
 
