@@ -318,7 +318,7 @@ repo = "jj-vcs/jj"
 
 [[tool]]
 name = "sccache"
-version = "0.18.0"
+version = "0.19.0"
 lock = "sccache"
 bin = ["sccache"]
 source = "ubi"
