@@ -1,0 +1,31 @@
+# License and supply-chain policy for the root Cargo workspace (cargo-deny; docs/ARCHITECTURE.md, Enforcement).
+[graph]
+all-features = true
+
+[licenses]
+allow = ["MIT", "Apache-2.0", "Apache-2.0 WITH LLVM-exception", "BSD-2-Clause", "BSD-3-Clause", "ISC", "Zlib", "Unicode-3.0", "CC0-1.0", "Unlicense", "MPL-2.0"]
+confidence-threshold = 0.9
+# Reviewed exception (docs/ARCHITECTURE.md §11): media crates link FFmpeg libav* (LGPL) dynamically.
+exceptions = [
+  { crate = "tv-core", allow = ["LGPL-2.1-or-later"] },
+  { crate = "tv-ffmpeg", allow = ["LGPL-2.1-or-later"] },
+  { crate = "tv-i18n", allow = ["LGPL-2.1-or-later"] },
+  { crate = "tv-cli", allow = ["LGPL-2.1-or-later"] },
+  { crate = "ffmpeg-next", allow = ["WTFPL"] },
+  { crate = "ffmpeg-sys-next", allow = ["WTFPL"] },
+]
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+allow-wildcard-paths = true
+deny = [{ name = "openssl-sys" }, { name = "openssl" }]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = ["https://github.com/aphrody-dev/russh", "https://github.com/aphrody-dev/sntrup761"]
+
+[advisories]
+yanked = "deny"

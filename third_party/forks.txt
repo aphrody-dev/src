@@ -152,3 +152,5 @@ jj-vcs/jj Rust
 GitoxideLabs/gitoxide Rust
 aphrody-labs/vcpkg
 aphrody-labs/llvm-project
+openclaw/openclaw TypeScript
+NousResearch/hermes-agent Python

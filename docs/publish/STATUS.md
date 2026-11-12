@@ -13,9 +13,9 @@ Source : `docs/PUBLISH-AUDIT.md`, plus un gitleaks 8.30.1 (sha256 vérifié) lan
 | aphrody-labs/msys | private | **public** | corrigé | 8e29324 : LICENSE-MIT + LICENSE-APACHE, métadonnées des 3 package.json. 8 findings = faux positifs (noms de paquets cygwin) |
 | aphrody-dev/knowledge-engine | private (archivé) | **public** (archivé) | corrigé | Désarchivé, puis 4050e87 (licences + package.json), puis réarchivé. 1 finding = fixture `SYNTHETIC` |
 | aphrody-labs/labs | private | **public** | propre (vide) | Dépôt vide. C:\labs se pousse vers le serveur Lore, pas vers ce dépôt. LICENSE-MIT et LICENSE-APACHE ajoutés à la racine de C:\labs |
-| aphrody-labs/shenron | private | private | bloqué | Clé Stripe `sk_test_` au format réel dans l'historique, plus le build `.next-ui-preview` commité. Voir BLOCKED.md |
-| aphrody-dev/mesh-vn | private (archivé) | private | bloqué | **Clé privée WireGuard réelle** (`generated/wg-win.conf`, `src/generator.ts`, commit 2f81bf77) et IP publiques des hubs. Voir BLOCKED.md |
-| aphrody-labs/UnrealEngine | private | private | bloqué (légal) | EULA Epic ; fork de EpicGames/UnrealEngine, un amont privé, donc impossible à rendre public |
+| aphrody-labs/shenron | private | **public** | HEAD propre | HEAD propre ; historique : clé Stripe `sk_test_` (a2671e1e→14cbbe07) et `.next-ui-preview` (3ffae86d→5ad418d0). Clé mode test (ne peut pas déplacer d argent réel) ; à **roller dans le dashboard Stripe** (action propriétaire). Non testée contre l API |
+| aphrody-dev/mesh-vn | private (archivé) | private (archivé) | bloqué (rotation) | Clé retirée du HEAD (1757fcd), `generated/` ignoré et détracké (65be40b). Ancienne pubkey `up+fbCDK…` toujours présente sur fr1 et prd après 3 h de sondage (absente de fr2, pair inexistant là). Rotation = action propriétaire (UAC) : `infra/fleet/wg/rotate-wg-win.sh`, puis désarchiver, passer public, réarchiver |
+| aphrody-labs/UnrealEngine | private | private | bloqué (légal) | Vérifié 2026-11-12 (`gh api` : parent EpicGames/UnrealEngine, private=true, fork=true) : GitHub interdit de rendre public un fork d un amont privé, et l EULA Epic interdit de publier les sources UE. Aucune action. Donc impossible à rendre public |
 | aphrody-dev/UnrealEngine | private | private | bloqué (légal) | Même cas |
 
 Bilan : 13 dépôts privés inventoriés. 9 passés en public (5 propres, 3 corrigés, 1 vide), 4 restent privés (2 pour des secrets, 2 pour l'EULA Epic).
