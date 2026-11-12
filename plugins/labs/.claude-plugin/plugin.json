@@ -1,0 +1,8 @@
+{
+  "name": "labs",
+  "version": "0.1.0",
+  "description": "Aphrody Labs dev plugin: Chromium/ChromiumOS factory, browser engines, web quality (Lighthouse, web-vitals, Baseline/BCD, modern-web-guidance), Vercel Labs skills, condensed Bun docs, labs monorepo workflows (just, Lore, fr1).",
+  "author": { "name": "Aphrody Labs" },
+  "repository": "https://github.com/aphrody-labs/labs",
+  "keywords": ["chromium", "chromiumos", "headless", "lighthouse", "web-vitals", "baseline", "bun", "vercel-labs", "lore", "rust"]
+}

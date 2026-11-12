@@ -1,0 +1,80 @@
+# Wedge definition for re2c.
+#
+# Loaded by deps/wedge.sh.
+
+set -o nounset
+set -o pipefail
+set -o errexit
+
+# sourced
+WEDGE_NAME='re2c'
+WEDGE_VERSION='4.3.1'
+WEDGE_IS_ABSOLUTE=1  # TODO: consider relaxing
+
+wedge-make() {
+  local src_dir=$1
+  local build_dir=$2
+  local install_dir=$3
+
+  pushd $build_dir
+
+  $src_dir/configure --help
+  echo
+
+  # Disable everything except C and Rust: https://re2c.org/build/build.html
+  time $src_dir/configure \
+    --prefix=$install_dir \
+    --enable-dlang=no \
+    --enable-golang=no \
+    --enable-haskell=no \
+    --enable-java=no \
+    --enable-js=no \
+    --enable-ocaml=no \
+    --enable-python=no \
+    --enable-swift=no \
+    --enable-vlang=no \
+    --enable-zig=no
+
+  echo
+
+  time make
+
+  popd
+}
+
+wedge-install() {
+  local build_dir=$1
+
+  pushd $build_dir
+
+  # install-strip is a GNU thing!  It discards symbols.
+
+  # TODO: copy them from the original binary in $BUILD_DIR
+  # objcopy --add-debug-link, etc.
+  #
+  # /wedge/oilshell.org/symbols could be a separate thing.
+
+  time make install-strip
+
+  popd
+}
+
+wedge-smoke-test() {
+  local install_dir=$1
+
+  $install_dir/bin/re2c --version
+}
+
+
+#
+# Unused
+# 
+
+strip-bin() {
+  ### UNUSED
+
+  # Makes a big difference -- stripped binary is 674K, while unstriped is 12.5
+  # MB!
+
+  strip -o $INSTALL_DIR/bin/re2c.stripped $INSTALL_DIR/bin/re2c
+}

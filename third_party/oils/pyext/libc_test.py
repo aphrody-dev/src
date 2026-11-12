@@ -1,0 +1,386 @@
+#!/usr/bin/env python2
+# coding=utf8
+# Copyright 2016 Andy Chu. All rights reserved.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+from __future__ import print_function
+"""
+libc_test.py: Tests for libc.py
+"""
+import unittest
+import sys
+import signal
+
+import libc  # module under test
+
+# guard some tests that fail on Darwin
+IS_DARWIN = sys.platform == 'darwin'
+
+class LibcTest(unittest.TestCase):
+
+  def testConstants(self):
+      print('GLOB_PERIOD %d' % libc.GLOB_PERIOD)
+      print('HAVE_GLOB_PERIOD %d' % libc.HAVE_GLOB_PERIOD)
+      print('HAVE_FNM_EXTMATCH %d' % libc.HAVE_FNM_EXTMATCH)
+
+  def testFnmatch(self):
+
+    cases = [
+    #   (pattern, string, result)
+
+        ('', '', 1),  # no pattern is valid
+        ('a', 'a', 1),
+        ('?', 'a', 1),
+
+        # Test escaping of glob operator chars
+        ('\\?', '-', 0),
+        ('\\?', '?', 1),
+
+        ('\\*', '-', 0),
+        ('\\*', '*', 1),
+
+        ('\\[', '-', 0),
+        ('\\[', '[', 1),
+
+        ('\\!', '-', 0),
+        ('\\!', '!', 1),
+
+        # What if we also escape extended glob chars?
+        # Extra escaping is OK, so we should ALWAYS escape them.
+        ('\\(', '(', 1),
+        ('\\(', 'x', 0),
+        ('\\(', '\\', 0),
+        ('\\(', '\\(', 0),
+
+        ('\\|', '|', 1),
+        ('\\|', 'x', 0),
+
+        ('\\\\', '\\', 1),
+        ('\\\\', 'x', 0),
+        ('\\\\', '\\extra', 0),
+
+        ('\\f', '\\', 0),  # no match
+
+        # Hm this is weird, c is not a special character
+        ('\\c', 'c', 1),
+        ('\\c', '\\c', 0),
+        ('\\\\c', '\\c', 1),  # the proper way to match
+
+        ('c:\\foo', 'c:\\foo', 0),
+        ('c:\\foo', 'c:foo', 1),
+
+        ('strange]one', 'strange]one', 1),
+
+        # What is another error?  Invalid escape is OK?
+        None if IS_DARWIN else ('\\', '\\', 0),  # no pattern is valid
+
+        ('[[:alpha:]]', 'a', 1),
+        ('[^[:alpha:]]', 'a', 0),  # negate
+        ('[[:alpha:]]', 'aa', 0),  # exact match fails
+
+        # Combining char class and a literal character
+        ('[[:alpha:]7]', '7', 1),
+        ('[[:alpha:]][[:alpha:]]', 'az', 1),
+
+        ('[a]', 'a', 1),
+        # Hm [] is treated as a constant string, not an empty char class.
+        # Should we change LooksLikeGlob?
+        ('[]', '', 0),
+
+        ('[a-z]', 'a', 1),
+        ('[a-z]', '-', 0),
+
+        # THIS IS INCONSISTENT WITH REGEX!
+        # Somehow in regexes (at least ERE) GNU libc  treats [a\-z] as [a-z].
+        # See below.
+        ('[a\-z]', '-', 1),
+        ('[a\-z]', 'b', 0),
+
+        # Need double backslash in character class
+        ('[\\\\]', '\\', 1),
+
+        # Can you escape ] with \?  Yes in fnmatch
+        ('[\\]]', '\\', 0),
+        ('[\\]]', ']', 1),
+
+
+        None if IS_DARWIN else ('[]', 'a', 0),
+        None if IS_DARWIN else ('[]', '[]', 1),
+
+        ('?.c', 'a.c', 1),
+        ('?.c', 'aa.c', 0),
+        # mu character
+        ('?.c', '\xce\xbc.c', 1),
+    ]
+
+    for pat, s, expected in filter(None, cases):
+      actual = libc.fnmatch(pat, s)
+      self.assertEqual(
+          expected, actual, '%r %r -> got %d' % (pat, s, actual))
+
+  def testFnmatchExtglob(self):
+    # NOTE: We always use FNM_EXTMATCH when available
+
+    # With GNU extension.
+    cases = [
+        # One of these
+        ('--@(help|verbose)', '--verbose', 1),
+        ('--@(help|verbose)', '--foo', 0),
+
+        ('--*(help|verbose)', '--verbose', 1),
+        ('--*(help|verbose)', '--', 1),
+        ('--*(help|verbose)', '--helpverbose', 1),  # Not what we want
+
+        ('--+(help|verbose)', '--verbose', 1),
+        ('--+(help|verbose)', '--', 0),
+        ('--+(help|verbose)', '--helpverbose', 1),  # Not what we want
+
+        ('--?(help|verbose)', '--verbose', 1),
+        ('--?(help|verbose)', '--helpverbose', 0),
+
+        # Neither of these
+        ('--!(help|verbose)', '--verbose', 0),
+
+        # escaping *
+        ('@(ab\*)', 'ab*', 1),
+        ('@(ab\*)', 'abc', 0),
+        # escaping ?
+        ('@(ab\?)', 'ab?', 1),
+        ('@(ab\?)', 'abc', 0),
+
+        # escaping []
+        ('@(ab\[\])', 'ab[]', 1),
+        ('@(ab\[\])', 'abcd', 0),
+
+        # escaping :
+        ('@(ab\:)', 'ab:', 1),
+        ('@(ab\:)', 'abc', 0),
+
+        # escaping a is no-op
+        (r'@(\ab)', 'ab', 1),
+        (r'@(\ab)', r'\ab', 0),
+
+        #('@(ab\|)', 'ab|', 1),  # GNU libc bug?  THIS SHOULD WORK
+
+        # There's no way to escape | in extended glob???  wtf.
+        #('@(ab\|)', 'ab', 1),
+        #('@(ab\|)', 'ab\\', 1),
+        #('@(ab\|)', 'ab\\|', 1),
+    ]
+    for pat, s, expected in cases:
+      actual = libc.fnmatch(pat, s)
+      self.assertEqual(expected, actual,
+          "Matching %s against %s: got %s but expected %s" %
+          (pat, s, actual, expected))
+
+  def testGlob(self):
+    print(libc.glob('*.py', 0))
+
+    # This will not match anything!
+    print(libc.glob('\\', 0))
+    # This one will match a file named \
+    print(libc.glob('\\\\', 0))
+    print(libc.glob('[[:punct:]]', 0))
+
+  # core/util_test.py has more tests like this, for util.RegexSearch()
+
+  def testRegexSearch(self):
+    # Oh it's a PRECEDENCE problem?
+    # leftMatch() is not implemented correctly
+    #pat = '^([0-9])|([a-z])'
+
+    pat = '^([0-9])|^([a-z])'
+
+    lines = 'one\n2\nthree\n'
+
+    pos = 3
+    indices = libc.regex_search(pat, 0, lines, 0, pos)
+
+    self.assertEqual(None, indices)
+
+  def testRegexSearchError(self):
+    try:
+      libc.regex_search(r'*', 0, 'abcd', 0)
+    except ValueError as e:
+      print(e)
+    else:
+      self.fail('Expected ValueError')
+
+  def testRegexSearchUnicode(self):
+    self.assertEqual([0, 1], libc.regex_search(r'.', 0, 'a', 0))
+    self.assertEqual([0, 1], libc.regex_search(r'.', 0, '\x7f', 0))
+
+    # dot matches both bytes of utf-8 encoded MU char - appears independent of LANG=C LC_ALL=C
+    self.assertEqual([0, 2], libc.regex_search(r'.', 0, '\xce\xbc', 0))
+
+    # Literal
+    self.assertEqual([0, 2], libc.regex_search('\xce\xbc', 0, '\xce\xbc', 0))
+
+    # literal mu in char class allowed?
+    self.assertEqual([0, 2], libc.regex_search('[\xce\xbc]', 0, '\xce\xbc', 0))
+    # two bytes here
+    self.assertEqual(None, libc.regex_search('[\xce\xbc]', 0, '\xce', 0))
+
+    # dot doesn't match high byte?  not utf-8
+    self.assertEqual(None, libc.regex_search(r'.', 0, '\xce', 0))
+
+    # [a] matches a
+    self.assertEqual([0, 1], libc.regex_search(r'[a]', 0, 'a', 0))
+
+    # \x01 isn't valid syntax
+    self.assertEqual(None, libc.regex_search(r'[\x01]', 0, '\x01', 0))
+
+    # literal low byte matches
+    self.assertEqual([0, 1], libc.regex_search('[\x01]', 0, '\x01', 0))
+
+    # literal high byte does NOT match?  Why?
+    if 0:
+      self.assertEqual([0, 1], libc.regex_search('[\xff]', 0, '\xff', 0))
+
+  def testRegexFirstGroupMatch(self):
+    s='oXooXoooXoX'
+    self.assertEqual(
+        (1, 3),
+        libc.regex_first_group_match('(X.)', s, 0))
+
+    # Match from position 3
+    self.assertEqual(
+        (4, 6),
+        libc.regex_first_group_match('(X.)', s, 3))
+
+    # Match from position 3
+    self.assertEqual(
+        (8, 10),
+        libc.regex_first_group_match('(X.)', s, 6))
+
+    # Syntax Error
+    self.assertRaises(
+        RuntimeError, libc.regex_first_group_match, r'*', 'abcd', 0)
+
+  def testRegexFirstGroupMatchError(self):
+    # Helping to debug issue #291
+    s = ''
+    if 0:
+      # Invalid regex syntax
+      libc.regex_first_group_match("(['+-'])", s, 6)
+
+  def testSpecialCharsInCharClass(self):
+    CASES = [
+      ("([a-z]+)", '123abc123', (3, 6)),
+
+      # Uh what the heck, \- means the same thing as -?  It's just ignored.  At
+      # least in GNU libc.
+
+      # https://stackoverflow.com/questions/28495913/how-do-you-escape-a-hyphen-as-character-range-in-a-posix-regex
+      # The <hyphen> character shall be treated as itself if it occurs first (after an initial '^', if any) or last in the list, or as an ending range point in a range expression
+
+      ("([a\-z]+)", '123abc123', (3, 6)),
+
+      # This is an inverted range.  TODO: Need to fix the error message.
+      #("([a\-.]+)", '123abc123', None),
+
+      ("([\\\\]+)", 'a\\b', (1, 2)),
+
+      # Can you escape ] with \?  Yes in fnmatch, but NO here!!!
+      ('([\\]])', '\\', None),
+      ('([\\]])', ']', None),
+
+      # Weird parsing!!!
+      ('([\\]])', '\\]', (0, 2)),
+
+    ]
+
+    for pat, s, expected in CASES:
+      result = libc.regex_first_group_match(pat, s, 0)
+      self.assertEqual(expected, result,
+          "FAILED: pat %r  s %r  result %s" % (pat, s, result))
+
+  def testRealpathFailOnNonexistentDirectory(self):
+    # This behaviour is actually inconsistent with GNU readlink,
+    # but matches behaviour of busybox readlink
+    # (https://github.com/jgunthorpe/busybox)
+    self.assertEqual(None, libc.realpath('_tmp/nonexistent'))
+
+    # Consistent with GNU
+    self.assertEqual(None, libc.realpath('_tmp/nonexistent/supernonexistent'))
+
+  def testPrintTime(self):
+    print('', file=sys.stderr)
+    libc.print_time(0.1, 0.2, 0.3)
+    print('', file=sys.stderr)
+
+  def testGethostname(self):
+    print(libc.gethostname())
+
+  def testGetTerminalWidth(self):
+    try:
+      width = libc.get_terminal_width()
+    except IOError as e:
+      print('error getting terminal width: %s' % e)
+    else:
+      print('width % d' % width)
+
+  def testWcsWidth(self):
+    if not IS_DARWIN:
+      self.assertEqual(1, libc.wcswidth("▶️"))
+      self.assertEqual(28, libc.wcswidth("(osh) ~/.../unchanged/oil ▶️ "))
+
+    mu = u"\u03bc".encode('utf-8')
+    print(repr(mu))
+    print(mu)
+    print(len(mu))
+    self.assertEqual(1, libc.wcswidth(mu))
+
+    self.assertEqual(2, libc.wcswidth("→ "))
+
+    # mbstowcs fails on invalid utf-8
+    try:
+      # first byte of mu
+      libc.wcswidth("\xce")
+    except UnicodeError as e:
+      self.assertEqual('mbstowcs() 1', e.message)
+    else:
+      self.fail('Expected failure')
+
+    # wcswidth fails on unprintable character
+    try:
+      libc.wcswidth("\x01")
+    except UnicodeError as e:
+      self.assertEqual('wcswidth()', e.message)
+    else:
+      self.fail('Expected failure')
+
+    self.assertRaises(UnicodeError, libc.wcswidth, "\xfe")
+
+  def testSleepUntilError(self):
+    try:
+      bad = libc.sleep_until_error(None)
+    except TypeError:
+      print('ok')
+    else:
+      self.fail('Expected TypeError')
+
+    result = libc.sleep_until_error(0.001)
+    self.assertEqual(0, result)
+
+    # Not testing errno case
+
+  def testStrsignal(self):
+    self.assertEqual('Segmentation fault', libc.strsignal(11))
+    self.assertEqual('Aborted', libc.strsignal(6))
+    self.assertEqual('Illegal instruction', libc.strsignal(4))
+    self.assertEqual('Terminated', libc.strsignal(signal.SIGTERM))
+    
+    with self.assertRaises(ValueError):
+      libc.strsignal(999)
+
+
+if __name__ == '__main__':
+  # To simulate the OVM_MAIN patch in pythonrun.c
+  libc.cpython_reset_locale()
+  unittest.main()
+
+# vim: ts=2 sw=2

@@ -1,0 +1,277 @@
+// SPDX-FileCopyrightText: 2026 Epic Games, Inc.
+// SPDX-License-Identifier: MIT
+use std::sync::Arc;
+use std::sync::atomic::Ordering;
+
+use lore_error_set::prelude::*;
+use serde::Serialize;
+
+use crate::errors::*;
+use crate::event;
+use crate::event::EventError;
+use crate::fs::filesystem_provider::InstanceOperation;
+use crate::fs::filesystem_provider::with_operation;
+use crate::interface::LoreError;
+use crate::lore::Address;
+use crate::node::NodeFlags;
+use crate::repository::RepositoryContext;
+use crate::repository::RepositoryWriteToken;
+use crate::stage::StageStats;
+use crate::stage::stage_delete;
+use crate::state;
+use crate::store::StoreObliterateStats;
+use crate::util::path::RelativePath;
+
+#[cfg(not(feature = "test-util"))]
+mod impact;
+#[cfg(feature = "test-util")]
+pub mod impact;
+
+/// Data for the event emitted when file content is obliterated.
+#[repr(C)]
+#[derive(Clone, PartialEq, Serialize, bitcode::Encode, bitcode::Decode)]
+#[serde(rename_all = "camelCase")]
+pub struct LoreFileObliterateEventData {
+    /// Address of the obliterated content.
+    pub address: Address,
+    /// Number of fragments removed.
+    pub num_fragments: usize,
+    /// Number of payloads removed.
+    pub num_payloads: usize,
+}
+
+#[error_set]
+pub enum ObliterateError {
+    InvalidArguments,
+    InvalidPath,
+    InvalidAddress,
+    FileNotFound,
+    AddressNotFound,
+    AlreadyLinked,
+    BranchAdvanced,
+    BranchAlreadyExists,
+    BranchNotFound,
+    Conflict,
+    DeleteCurrent,
+    DeleteDefault,
+    DeleteProtected,
+    Disconnected,
+    Divergent,
+    IdenticalMetadata,
+    InvalidNodeHierarchy,
+    LayerNotFound,
+    LinkNotFound,
+    LinkPathNotFound,
+    LocalModifications,
+    LockNotFound,
+    LockNotOwned,
+    Maintenance,
+    MaxHistorySearchDepth,
+    NodeNotFound,
+    NoRemote,
+    NotALayer,
+    NotALink,
+    NotAuthenticated,
+    NotAuthorized,
+    NotConnected,
+    NotFound,
+    NothingStaged,
+    NotSupported,
+    Oversized,
+    PayloadNotFound,
+    RepositoryAlreadyExists,
+    RepositoryNotFound,
+    RevisionNotFound,
+    SharedStoreNotFound,
+    SlowDown,
+    TokenNotFound,
+    WriteRequired,
+    MissingIdentity,
+}
+
+impl EventError for ObliterateError {
+    fn translated(&self) -> LoreError {
+        match self {
+            ObliterateError::InvalidArguments(_)
+            | ObliterateError::InvalidPath(_)
+            | ObliterateError::InvalidAddress(_) => LoreError::InvalidArguments,
+            ObliterateError::FileNotFound(_) => LoreError::FileNotFound,
+            _ => LoreError::Internal,
+        }
+    }
+
+    fn inner(&self) -> String {
+        self.to_string()
+    }
+}
+
+pub(crate) async fn obliterate_file(
+    repository: Arc<RepositoryContext>,
+    token: &RepositoryWriteToken,
+    path: String,
+) -> Result<(), ObliterateError> {
+    let relative_path = RelativePath::new_from_user_path(repository.require_path()?, path.as_str())
+        .forward::<ObliterateError>("resolving user path")?;
+
+    let (current_revision, _current_branch) = crate::instance::load_current_anchor(&repository)
+        .await
+        .forward::<ObliterateError>("Failed to deserialize current revision anchor")?;
+
+    let staged_revision = crate::instance::load_staged_revision(&repository)
+        .await
+        .ok()
+        .flatten()
+        .unwrap_or(current_revision);
+
+    let state = state::State::deserialize(repository.clone(), staged_revision)
+        .await
+        .forward::<ObliterateError>("Failed to deserialize state")?;
+
+    let node_link = state
+        .find_node_link(repository.clone(), relative_path.as_str())
+        .await
+        .map_err(|err| {
+            forward_refusal_or(err, "finding the node", |_err| {
+                ObliterateError::from(FileNotFound {
+                    resource: relative_path.to_string(),
+                })
+            })
+        })?;
+
+    if !node_link.is_valid() {
+        return Err(FileNotFound {
+            resource: relative_path.to_string(),
+        }
+        .into());
+    }
+
+    // TODO(vri): UCS-18010 - Implement obliterate for links
+    if node_link.crosses_link(&repository, &state) {
+        return Err(NotSupported {
+            operation: format!(
+                "obliterating {relative_path} inside a link - obliterate it by address in the linked \
+                 repository"
+            ),
+        }
+        .into());
+    }
+
+    let node = state
+        .node(repository.clone(), node_link.node)
+        .await
+        .map_err(|err| {
+            forward_refusal_or(err, "reading the node", |_err| {
+                ObliterateError::from(FileNotFound {
+                    resource: relative_path.to_string(),
+                })
+            })
+        })?;
+
+    if !node.is_file() {
+        return Err(InvalidPath {
+            path: relative_path.to_string(),
+        }
+        .into());
+    }
+
+    obliterate_address(repository.clone(), node.address).await?;
+
+    with_operation(repository.file_system(), async |operation| {
+        operation
+            .remove_recursive(&relative_path)
+            .await
+            .forward::<ObliterateError>("Failed to remove the obliterated path")
+    })
+    .await?;
+
+    let stage_stats = Arc::new(StageStats::default());
+
+    stage_delete(
+        repository.clone(),
+        state.clone(),
+        relative_path.clone(),
+        node_link.node,
+        NodeFlags::NoFlags,
+        stage_stats,
+        None,
+    )
+    .await
+    .forward::<ObliterateError>("Failed to stage deleted path")?;
+
+    let signature = state
+        .serialize(repository.clone(), token)
+        .await
+        .forward::<ObliterateError>("Failed to serialize staged obliterate state")?;
+    crate::instance::store_staged_anchor(&repository, signature)
+        .await
+        .forward::<ObliterateError>("Failed to serialize revision anchor")?;
+
+    Ok(())
+}
+
+/// Boxed version of [`obliterate_file`] for cross-crate use.
+pub fn obliterate_file_boxed(
+    repository: Arc<RepositoryContext>,
+    token: &RepositoryWriteToken,
+    path: String,
+) -> crate::BoxFuture<'_, Result<(), ObliterateError>> {
+    Box::pin(obliterate_file(repository, token, path))
+}
+
+/// Obliterates `address` on the remote, then in the local store. A remote that refuses the caller
+/// or fails the request fails the obliterate with the local content in place. A remote that does
+/// not hold the address counts as obliterated, so an obliterate that failed after the remote's
+/// half completes when run again. A remote that can't be reached keeps its copy.
+pub(crate) async fn obliterate_address(
+    repository: Arc<RepositoryContext>,
+    address: Address,
+) -> Result<(), ObliterateError> {
+    impact::warn(&repository, address).await;
+
+    let stats = Arc::new(StoreObliterateStats::default());
+
+    // Obliterating removes the content here and on the remote, for good. A dry run reports the
+    // address with nothing counted.
+    if !crate::lore::execution_context().globals().dry_run() {
+        if let Some(remote) = absent_unless_refused::<_, _, ObliterateError>(
+            repository.remote().await,
+            "connecting to the remote",
+        )? && let Some(admin) = absent_unless_refused::<_, _, ObliterateError>(
+            remote.admin(repository.id).await,
+            "opening the remote admin service",
+        )? {
+            admin
+                .obliterate(address)
+                .await
+                .or_else(|err| if err.is_not_found() { Ok(()) } else { Err(err) })
+                .forward_with::<ObliterateError, _>(|| {
+                    format!("Failed to obliterate a remote address: {address}")
+                })?;
+        }
+
+        repository
+            .immutable_store()
+            .obliterate(repository.id, address, stats.clone())
+            .await
+            .forward_with::<ObliterateError, _>(|| {
+                format!("Failed to obliterate an address: {address}")
+            })?;
+    }
+
+    event::LoreEvent::FileObliterate(LoreFileObliterateEventData {
+        address,
+        num_fragments: stats.num_fragments.load(Ordering::Relaxed),
+        num_payloads: stats.num_payloads.load(Ordering::Relaxed),
+    })
+    .send();
+
+    Ok(())
+}
+
+/// Boxed version of [`obliterate_address`] for cross-crate use.
+pub fn obliterate_address_boxed(
+    repository: Arc<RepositoryContext>,
+    address: Address,
+) -> crate::BoxFuture<'static, Result<(), ObliterateError>> {
+    Box::pin(obliterate_address(repository, address))
+}

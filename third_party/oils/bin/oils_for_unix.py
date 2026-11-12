@@ -1,0 +1,263 @@
+#!/usr/bin/env python2
+"""oils_for_unix.py - A busybox-like binary for OSH and YSH
+
+This is the main program that is translated to C++ by mycpp.
+
+Based on argv[0], it acts like a few different programs.
+- true, false
+- readlink
+
+We could could also expose some other binaries for a smaller POSIX system:
+
+- test / '['
+- printf, echo
+- 'time' -- different usage
+- private builtin cat, rm
+"""
+from __future__ import print_function
+
+# We only use the low-level _locale.{setlocale,nl_langinfo} functions
+# Lib/locale.py has string wrappers that we don't need, and it imports
+# 'encodings', which is not in the oils-ref tarball
+from pylib import pylocale
+import sys
+
+from _devbuild.gen.syntax_asdl import loc, CompoundWord
+from core import error
+from core import shell
+from core import pyos
+from core import pyutil
+from core import util
+from frontend import args
+from frontend import match
+from frontend import py_readline
+from mycpp import mylib
+from mycpp.mylib import print_stderr, log
+from pylib import os_path
+
+if mylib.PYTHON:
+    from tools import readlink
+
+import fanos
+import posix_ as posix
+
+from typing import List, Dict
+
+
+def CaperDispatch():
+    # type: () -> int
+    log('Running Oils in ---caper mode')
+    fd_out = []  # type: List[int]
+    while True:
+        try:
+            msg = fanos.recv(0, fd_out)
+        except ValueError as e:
+            # TODO: recv() needs to detect EOF condition.  Should it return ''
+            # like sys.stdin.readline(), or something else?
+            # Should that be distinguished from '0:,' ?   with None perhaps?
+            log('FANOS error: %s', e)
+            fanos.send(1, 'ERROR %s' % e)
+            continue
+
+        log('msg = %r', msg)
+
+        command, arg = mylib.split_once(msg, ' ')
+        if command == 'GETPID':
+            pass
+        elif command == 'CHDIR':
+            pass
+        elif command == 'SETENV':
+            pass
+        elif command == 'MAIN':
+            #argv = ['TODO']
+            # I think we need to factor the oil.{py,ovm} condition out and call it like this:
+            # MainDispatch(main_name, argv) or
+            # MainDispatch(main_name, arg_r)
+            pass
+
+        # fanos.send(1, reply)
+
+    return 0  # Does this fail?
+
+
+def InitLocale(environ, lang):
+    # type: (Dict[str, str], str) -> None
+    """Set the GLOBAL libc locale from the env, and CHECK that it's valid."""
+    try:
+        # NOTE: We don't pass LC_ALL because that implies LC_NUMERIC.  This
+        # messes up mycpp functions to_float() and str(double d).
+        # So unlike bash, numbers aren't localized.
+
+        # We need LC_CTYPE in YSH for so libc functions respect UTF-8.
+        locale_name = pylocale.setlocale(pylocale.LC_CTYPE, '')
+
+    except pylocale.Error:
+        # we could make this nicer
+        print_stderr('oils: setlocale(LC_CTYPE) failed')
+        locale_name = ''  # unknown value
+    #log('LOC %s', locale_name)
+
+    if locale_name not in ('', 'C'):
+        # Check if the codeset is UTF-8, unless OILS_LOCALE_OK=1 is set
+        if environ.get('OILS_LOCALE_OK') == '1':
+            return
+
+        codeset = pylocale.nl_langinfo(pylocale.CODESET)
+        #log('codeset %s', codeset)
+
+        if not match.IsUtf8Codeset(codeset):
+            print_stderr("oils warning: codeset %r doesn't look like UTF-8" %
+                         codeset)
+            print_stderr('              OILS_LOCALE_OK=1 removes this message')
+
+    assert lang in ('osh', 'ysh'), lang
+
+    if lang == 'osh':
+        try:
+            # On the other hand, we respect LC_COLLATE in OSH, so the glob sort
+            # order matches bash and zsh.
+            pylocale.setlocale(pylocale.LC_COLLATE, '')
+        except pylocale.Error:
+            # we could make this nicer
+            print_stderr('oils: setlocale(LC_COLLATE) failed')
+
+
+# TODO: Hook up valid applets (including these) to completion
+# APPLETS = ['osh', 'ysh', 'oil', 'readlink', 'true', 'false']
+
+
+def AppBundleMain(argv):
+    # type: (List[str]) -> int
+
+    # NOTE: This has a side effect of deleting _OVM_* from the environment!
+    loader = pyutil.GetResourceLoader()
+
+    b = os_path.basename(argv[0])
+    main_name, ext = os_path.splitext(b)
+
+    missing = None  # type: CompoundWord
+    arg_r = args.Reader(argv, locs=[missing] * len(argv))
+
+    login_shell = False
+
+    # Are we running the C++ bundle or the Python bundle directly, without a
+    # symlink?
+    if mylib.PYTHON:
+        bundle = 'oils_for_unix'  # bin/oils_for_unix.py
+    else:
+        bundle = 'oils-for-unix'  # _bin/cxx-dbg/oils-for-unix
+
+    # oils-for-unix-static is allowed
+    # oils-ref.ovm
+    if main_name.startswith(bundle) or (main_name == 'oils-ref' and len(ext)):
+        arg_r.Next()
+        first_arg = arg_r.Peek()
+        if first_arg is None:
+            raise error.Usage('Missing required applet name.', loc.Missing)
+
+        # Special flags to the top level binary: bin/oil.py --help, ---caper, etc.
+        if first_arg in ('-h', '--help'):
+            util.HelpFlag(loader, 'oils-usage', mylib.Stdout())
+            return 0
+
+        if first_arg in ('-V', '--version'):
+            util.VersionFlag(loader, mylib.Stdout())
+            return 0
+
+        # This has THREE dashes since it isn't a normal flag
+        if first_arg == '---caper':
+            return CaperDispatch()
+
+        applet = first_arg
+    else:
+        applet = main_name
+
+        if applet.startswith('-'):
+            login_shell = True
+            applet = applet[1:]
+
+    readline = py_readline.MaybeGetReadline()
+
+    environ = pyos.Environ()
+
+    if applet.startswith('ysh'):
+        lang = 'ysh'
+        InitLocale(environ, lang)
+        return shell.Main(lang, arg_r, environ, login_shell, loader, readline)
+
+    # sh, osh, bash imply OSH
+    elif applet.startswith('osh') or applet.endswith('sh'):
+        lang = 'osh'
+        InitLocale(environ, lang)
+        return shell.Main(lang,
+                          arg_r,
+                          environ,
+                          login_shell,
+                          loader,
+                          readline,
+                          bash_compat=(applet == 'bash'))
+
+    # For testing latency
+    elif applet == 'true':
+        return 0
+    elif applet == 'false':
+        return 1
+
+    # TODO:
+    # - private builtins:
+    #   - sleep, rm, cat
+    # - Others
+    #   - printf, test
+    #   - time keyword can change to something that outputs JSON / QTT8
+    # - readlink should be a builtin
+    #
+    # So then arg_locs - loc_t.Argument?
+    elif applet == 'readlink':
+        if mylib.PYTHON:
+            # TODO: Make this 'builtin readlink'
+            main_argv = arg_r.Rest()
+            return readlink.main(main_argv)
+        else:
+            print_stderr('readlink not translated')
+            return 2
+
+    else:
+        raise error.Usage("Invalid applet %r" % applet, loc.Missing)
+
+
+def main(argv):
+    # type: (List[str]) -> int
+
+    try:
+        return AppBundleMain(argv)
+
+    except error.Usage as e:
+        #builtin.Help(['oil-usage'], util.GetResourceLoader())
+        log('oils: %s', e.msg)
+        return 2
+
+    except KeyboardInterrupt:
+        # The interactive shell and the batch shell both handle
+        # KeyboardInterrupt themselves.
+        # This is a catch-all for --tool and so forth.
+        print('')
+        return 130  # 128 + 2
+
+    except (IOError, OSError) as e:
+        if 0:
+            import traceback
+            traceback.print_exc()
+
+        # test this with prlimit --nproc=1 --pid=$$
+        print_stderr('oils I/O error (main): %s' % posix.strerror(e.errno))
+
+        # dash gives status 2.  Consider changing: it conflicts a bit with
+        # usage errors.
+        return 2
+
+    # We don't catch RuntimeError (including AssertionError/NotImplementedError),
+    # because those are simply bugs, and we want to see a Python stack trace.
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))

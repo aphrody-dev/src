@@ -1,0 +1,133 @@
+[package]
+name = "lore-server"
+edition = "2024"
+version = "0.13.1-nightly"
+publish = false
+autobins = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = { workspace = true }
+async-channel = { workspace = true }
+async-stream = { workspace = true }
+base64 = { workspace = true }
+blake3 = { workspace = true }
+async-trait = { workspace = true }
+axum = { workspace = true }
+bytes = { workspace = true }
+clap = { workspace = true, features = ["env"] }
+config = { workspace = true }
+dashmap = { workspace = true }
+enum_dispatch = { workspace = true }
+futures = { workspace = true }
+hex = { workspace = true }
+http = { workspace = true }
+hyper = { workspace = true, features = ["server", "http2"] }
+hyper-util = { workspace = true, features = ["tokio"] }
+jsonwebtoken = { workspace = true }
+opentelemetry = { workspace = true }
+opentelemetry-semantic-conventions = { workspace = true }
+parking_lot = { workspace = true }
+pin-project = { workspace = true }
+prost-types = { workspace = true }
+quinn = { workspace = true }
+quinn-proto = { workspace = true }
+rand = { workspace = true }
+reqwest = { workspace = true }
+ring = { workspace = true }
+rustls = { workspace = true }
+rustls-pki-types = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_with = { workspace = true }
+smallvec = { workspace = true }
+socket2 = { workspace = true }
+sysinfo = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tokio-metrics = { workspace = true }
+tokio-util = { workspace = true }
+tokio-stream = { workspace = true }
+toml = { workspace = true }
+tonic = { workspace = true }
+tonic-prost = { workspace = true }
+tower = { workspace = true }
+tower-http = { workspace = true, features = ["timeout", "trace"] }
+tracing = { workspace = true }
+tracing-appender = { workspace = true }
+tracing-ecs = { workspace = true }
+tracing-opentelemetry = { workspace = true }
+tracing-subscriber = { workspace = true }
+opentelemetry-appender-tracing = "=0.33.1"
+opentelemetry-otlp = { workspace = true }
+opentelemetry_sdk = { workspace = true }
+lore-base = { workspace = true }
+lore-aws = { workspace = true }
+lore-hashicorp = { workspace = true }
+lore-storage = { workspace = true }
+lore-revision = { workspace = true }
+lore-transport = { workspace = true }
+lore-error-set = { workspace = true }
+lore-macro = { workspace = true }
+lore-notification = { workspace = true }
+lore-proto = { workspace = true }
+lore-telemetry = { workspace = true }
+uuid = { workspace = true }
+x509-parser = { workspace = true }
+zerocopy = { workspace = true }
+# Stands in for the replication client in this crate's own tests, behind `test-util`.
+mockall = { workspace = true, optional = true }
+
+[build-dependencies]
+tonic-prost-build = { workspace = true }
+
+[dev-dependencies]
+# The unit-test binary's store policies, set before the harness starts; see tests/unit/main.rs.
+ctor = { workspace = true }
+lore-base = { workspace = true, features = ["test-util"] }
+lore-credential = { workspace = true }
+lore-storage = { workspace = true, features = ["test-util"] }
+axum-test = { version = "21.1.0", default-features = false }
+rcgen = { workspace = true }
+http-body = "1.1.0"
+http-body-util = "0.1.5"
+indexmap = { workspace = true }
+mockall = { workspace = true }
+opentelemetry_sdk = { workspace = true, features = ["testing"] }
+temp-env = { workspace = true }
+# `start_paused` for the tests that time push phases on a virtual clock.
+tokio = { workspace = true, features = ["test-util"] }
+lore-server = { workspace = true, features = ["test-util"] }
+# The points where a test stops a branch write, to leave a restore stopped part way.
+lore-revision = { workspace = true, features = ["test-util"] }
+
+[features]
+default = []
+test-util = ["dep:mockall"]
+oodle = ["lore-revision/oodle"]
+integration_tests = []
+test_random = []
+seeding = ["lore-revision/seeding"]
+# Enables fault-injection in the storage layer (e.g. LORE_MISS_FRAGMENT_WRITES).
+# Used by smoke tests that exercise missing-fragment recovery paths.
+failure_generator = ["lore-storage/failure_generator"]
+# Builds the `uds-bench` example, which the container tests drive.
+uds-bench = []
+
+[[bin]]
+name = "loreserver"
+# The binary holds no unit tests; the library it drives does.
+test = false
+
+[[example]]
+name = "uds-bench"
+path = "examples/uds_bench.rs"
+required-features = ["uds-bench"]
+
+[lib]
+name = "lore_server"
+test = false
+
+[lints]
+workspace = true

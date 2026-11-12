@@ -1,3 +1,5 @@
+cargo-features = ["codegen-backend", "panic-immediate-abort"]
+
 # Root Cargo workspace for every first-party Rust crate in this repository.
 # Every first-party crate sits one level below crates/ and is a member through the glob.
 # See docs/CONSOLIDATION_PLAN.md.
@@ -19,6 +21,9 @@ edition = "2024"
 rust-version = "1.85"
 license = "MIT OR Apache-2.0"
 authors = ["aphrody-dev"]
+repository = "https://github.com/aphrody-labs/src"
+homepage = "https://labs.aphrody.com"
+publish = false
 
 [workspace.dependencies]
 # First-party crates
@@ -41,14 +46,51 @@ gamescope-core = { path = "crates/gamescope-core" }
 gamescope-wgsl = { path = "crates/gamescope-wgsl" }
 stack-bench = { path = "crates/bench" }
 xtk = { path = "crates/xtask" }
+# Labs (merged from C:\labs): Lore VCS, APM, conformance harness, aphrody CLI
+lore = { path = "crates/lore" }
+lore-aws = { path = "crates/lore-aws" }
+lore-base = { path = "crates/lore-base" }
+lore-credential = { path = "crates/lore-credential" }
+lore-error-set = { path = "crates/lore-error-set" }
+lore-error-set-macro = { path = "crates/lore-error-set-macro" }
+lore-hashicorp = { path = "crates/lore-hashicorp" }
+lore-io = { path = "crates/lore-io" }
+lore-macro = { path = "crates/lore-macro" }
+lore-notification = { path = "crates/lore-notification" }
+lore-proto = { path = "crates/lore-proto" }
+lore-revision = { path = "crates/lore-revision" }
+lore-server = { path = "crates/lore-server" }
+lore-storage = { path = "crates/lore-storage" }
+lore-telemetry = { path = "crates/lore-telemetry" }
+lore-transport = { path = "crates/lore-transport" }
 
+# crates.io. Keys shared by src and labs: labs exact pin (same or newer version), union of features.
+anyhow = "=1.0.104"
+base64 = "=0.23.1"
+bitflags = "=2.13.2"
+blake3 = { version = "=1.8.7", features = ["mmap", "rayon"] }
+clap = { version = "=4.6.7", features = ["derive", "env", "cargo", "string", "unicode"] }
+regex = "=1.13.1"
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = "=1.0.154"
+thiserror = "=2.0.21"
+toml = "=1.2.1+spec-1.1.0"
+tracing = { version = "=0.1.44", features = ["release_max_level_debug"] }
+tracing-subscriber = { version = "=0.3.23", features = ["env-filter", "fmt", "json"] }
+windows-sys = { version = "=0.61.2", features = [
+  "Win32_Foundation",
+  "Win32_System_Console",
+  "Win32_System_SystemInformation",
+  "Win32_Storage_FileSystem",
+  "Win32_System_Performance",
+  "Win32_Security",
+] }
+# Unified on labs' 0.8.63 (depot-core + lore*). Submodules bench and ring3-agent declare
+# zerocopy 0.9.0-alpha.0 directly (not via the workspace), so both majors coexist in the graph.
+zerocopy = { version = "=0.8.63", features = ["derive", "alloc", "simd"] }
 # crates.io
-anyhow = "1.0.104"
-bitflags = "2.13"
 byteorder = "1.5"
 raw-cpuid = "11.6"
-tracing = "0.1.44"
-tracing-subscriber = { version = "0.3.23", features = ["env-filter", "fmt"] }
 windows = { version = "0.62.2", features = [
   "Win32_Foundation",
   "Win32_Graphics_Direct3D",
@@ -65,11 +107,8 @@ windows = { version = "0.62.2", features = [
   "System",
 ] }
 argh = "0.1.19"
-base64 = "0.23.1"
 bevy = { version = "0.20", default-features = false }
-blake3 = { version = "1.8.7", features = ["mmap", "rayon"] }
 bytemuck = { version = "1.25", features = ["derive"] }
-clap = { version = "4.6", features = ["derive", "env", "cargo"] }
 console_error_panic_hook = "0.1.7"
 egui = { version = "0.37", default-features = false }
 gix = { version = "0.90.0", default-features = false, features = ["default"] }
@@ -83,14 +122,9 @@ lightningcss = { version = "=1.0.0-alpha.72", default-features = false }
 pollster = "1.0"
 quick-xml = "0.42"
 rayon = "1.12"
-regex = "1.13"
 ropey = { version = "2.0.0-beta.1", features = ["metric_chars"] }
-serde = { version = "1.0.229", features = ["derive"] }
-serde_json = "1.0.154"
 streaming-iterator = "0.1.9"
 taffy = "0.15.1"
-thiserror = "2.0.21"
-toml = "1.2"
 tree-sitter = "0.27"
 tree-sitter-language = "0.1.9"
 tree-sitter-rust = "0.24"
@@ -112,28 +146,229 @@ wasm-bindgen-futures = "0.4.80"
 web-sys = "0.3.107"
 wgpu = "30.0.1"
 winit = "0.31.0-beta.4"
-windows-sys = { version = "0.61.2", features = [
-  "Win32_Foundation",
-  "Win32_System_Console",
-  "Win32_System_SystemInformation",
-  "Win32_Storage_FileSystem",
-  "Win32_System_Performance",
-  "Win32_Security",
-] }
-zerocopy = { version = "0.9.0-alpha.0", features = ["derive"] }
 
-# Edit-compile loop profile. Measurements and rejected levers: docs/BUILD_SPEED.md.
+# Labs-only crates.io dependencies
+anstyle = "=1.0.14"
+anstream = "=1.0.0"
+async-channel = "=2.5.0"
+async-stream = "=0.3.6"
+async-trait = "=0.1.92"
+axum = "=0.8.9"
+# Pinned: the C API pointer types implement the derive-support traits bitcode exports for its own
+# derive macro, which its semver guarantees do not cover.
+bitcode = "=0.6.9"
+bytes = { version = "=1.12.1", features = ["serde"] }
+chrono = { version = "=0.4.45", default-features = false, features = ["alloc", "clock"] }
+clap-markdown = "=0.1.5"
+config = { version = "=0.15.27", features = ["toml"], default-features = false }
+ctor = "=1.0.13"
+dtor = "=1.0.6"
+crossbeam-epoch = "=0.9.21"
+crossbeam-queue = "=0.3.14"
+crossbeam-utils = "=0.8.23"
+dashmap = "=7.0.0-rc2"
+diffy = "=0.5.2"
+directories = "=6.0.0"
+enum_dispatch = "=0.3.13"
+tracing-appender = "=0.2.5"
+tracing-ecs = "=0.5.0"
+tracing-opentelemetry = "=0.34.0"
+fastcdc = "=5.0.0"
+futures = "=0.3.34"
+glob-match = "=0.2.1"
+governor = { version = "=0.10.4", default-features = false, features = ["std"] }
+hex = "=0.4.3"
+http = "=1.5.0"
+http-body = "=1.1.0"
+hyper = { version = "=1.12.0", default-features = false }
+hyper-util = { version = "=0.1.21", default-features = false }
+indexmap = "=2.14.2"
+infer = "=0.22.0"
+io-uring = "=0.7.16"
+# PEM keys are never parsed; `use_pem` would pull in a second `pem`.
+jsonwebtoken = { version = "=11.1.0", default-features = false, features = ["rust_crypto"] }
+# The OS secure stores the token store keeps its encryption keys in, one per platform.
+keyring-core = "=1.0.1"
+apple-native-keyring-store = { version = "=1.0.2", features = ["keychain"] }
+linux-keyutils-keyring-store = "=1.0.0"
+windows-native-keyring-store = { version = "=1.1.0", default-features = false }
+libc = "=1.0.0-alpha.5"
+lz4-sys = "=1.11.1+lz4-1.10.0"
+zstd-sys = { version = "=2.1.2+zstd.1.5.7", default-features = false, features = ["experimental"] }
+mockall = "=0.15.0"
+opentelemetry = "=0.33.1"
+opentelemetry-otlp = { version = "=0.33.1", default-features = false, features = [
+    "grpc-tonic",
+    "tls-ring",
+    "tls-roots",
+    "trace",
+    "metrics",
+    "logs",
+    "internal-logs",
+] }
+opentelemetry_sdk = { version = "=0.33.1", features = ["rt-tokio"] }
+opentelemetry-semantic-conventions = { version = "=0.33.1", features = ["semconv_experimental"] }
+parking_lot = { version = "=0.13.0", features = ["arc_lock"] }
+pin-project = "=1.1.13"
+proc-macro2 = "=1.0.107"
+prost = "=0.14.5"
+prost-types = "=0.14.5"
+quinn = { version = "=0.11.12", default-features = false, features = ["runtime-tokio", "rustls-ring", "bloom"] }
+quinn-proto = { version = "=0.11.19", default-features = false }
+quote = "=1.0.47"
+rand = "=0.10.3"
+rand_distr = "=0.6.0"
+tempfile = "=3.27.0"
+rcgen = "=0.14.10"
+reqwest = { version = "=0.13.5", default-features = false, features = [
+    "rustls-no-provider",
+    "charset",
+    "http2",
+    "system-proxy",
+    "form",
+] }
+ring = { version = "=0.17.14", features = ["std"] }
+# We configure rustls to not bring in aws-lc-sys, which seems to have build issues on Windows.
+rustls = { version = "=0.23.46", default-features = false, features = [
+    "std",
+    "logging",
+    "ring",
+] }
+rustls-pki-types = "=1.16.0"
+rustls-native-certs = "=0.8.5"
+smallvec = "=2.0.0-beta.4"
+serde_bytes = "=0.11.19"
+serde_with = { version = "=3.24.0", default-features = false, features = ["alloc", "macros"] }
+saphyr-parser = "=0.3.4"
+sha2 = "=0.11.1"
+serial_test = { version = "=4.0.1" }
+socket2 = "=0.6.5"
+syn = "=3.0.10"
+sysinfo = { version = "=0.40.3", default-features = false, features = ["disk", "system", "linux-tmpfs"] }
+temp-env = "=0.3.6"
+tokio = { version = "=1.54.1", features = [
+    "fs",
+    "io-util",
+    "macros",
+    "net",
+    "parking_lot",
+    "rt",
+    "rt-multi-thread",
+    "signal",
+    "sync",
+    "time",
+] }
+tokio-metrics = { version = "=0.5.2", default-features = false, features = ["rt"] }
+tokio-stream = { version = "=0.1.19", default-features = false, features = ["sync"] }
+tokio-util = { version = "=0.7.20", default-features = false, features = ["rt"] }
+trybuild = "=1.0.122"
+tonic = { version = "=0.14.9", default-features = false, features = ["codegen", "router", "server", "tls-native-roots", "tls-webpki-roots"] }
+tonic-prost = "=0.14.9"
+tonic-prost-build = "=0.14.9"
+tower = { version = "=0.5.3", default-features = false }
+tower-http = { version = "=0.7.1", default-features = false }
+tracing-test = "=0.2.6"
+url = "=2.5.8"
+urlencoding = "=2.1.3"
+uuid = { version = "=1.29.2", default-features = false, features = ["v4", "v7"] }
+webpki-roots = "=1.0.12"
+x509-parser = "=0.18.1"
+xxhash-rust = { version = "=0.8.19", default-features = false, features = ["xxh3"] }
+
+
+
+[workspace.lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
+unused_must_use = "deny"
+future_incompatible = { level = "warn", priority = -1 }
+nonstandard_style = { level = "warn", priority = -1 }
+rust_2018_idioms = { level = "warn", priority = -1 }
+# lore-server's telemetry reads cfg(tokio_unstable). Declared here because a crate cannot
+# have its own lints table alongside `workspace = true`.
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(tokio_unstable)'] }
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+# cargo = { level = "warn", priority = -1 } # TODO(raghav.narula) Enable after duplicate dependencies fixed
+# undocumented_unsafe_blocks = "warn" # TODO(raghav.narula) enable in follow up
+checked_conversions = "warn"
+dbg_macro = "deny"
+debug_assert_with_mut_call = "warn"
+doc_markdown = "warn"
+empty_enums = "warn"
+enum_glob_use = "warn"
+exit = "warn"
+expl_impl_clone_on_copy = "warn"
+explicit_deref_methods = "warn"
+explicit_into_iter_loop = "warn"
+fallible_impl_from = "warn"
+filter_map_next = "warn"
+flat_map_option = "warn"
+float_cmp_const = "warn"
+fn_params_excessive_bools = "warn"
+implicit_clone = "warn"
+imprecise_flops = "warn"
+inefficient_to_string = "warn"
+invalid_upcast_comparisons = "warn"
+large_digit_groups = "warn"
+large_futures = "warn"
+large_stack_arrays = "warn"
+large_types_passed_by_value = "warn"
+linkedlist = "warn"
+lossy_float_literal = "warn"
+macro_use_imports = "warn"
+manual_ok_or = "warn"
+map_err_ignore = "warn"
+map_unwrap_or = "warn"
+match_same_arms = "warn"
+match_wild_err_arm = "warn"
+match_wildcard_for_single_variants = "warn"
+mem_forget = "warn"
+mut_mut = "warn"
+mutex_integer = "warn"
+needless_continue = "warn"
+needless_for_each = "warn"
+option_option = "warn"
+path_buf_push_overwrite = "warn"
+ptr_as_ptr = "warn"
+rc_mutex = "warn"
+ref_option_ref = "warn"
+rest_pat_in_fully_bound_structs = "warn"
+same_functions_in_if_condition = "warn"
+semicolon_if_nothing_returned = "warn"
+single_match_else = "warn"
+string_add_assign = "warn"
+string_add = "warn"
+string_lit_as_bytes = "warn"
+todo = "warn"
+trait_duplication_in_bounds = "warn"
+unimplemented = "warn"
+uninlined_format_args = "warn"
+unnested_or_patterns = "warn"
+unused_async = "warn"
+unused_self = "warn"
+verbose_file_reads = "warn"
+zero_sized_map_values = "warn"
+
+# Edit-compile loop: workspace crates on Cranelift (nightly, rustup component
+# rustc-codegen-cranelift-preview), dependencies on LLVM at opt-level 1.
+# Measurements and rejected levers: docs/BUILD_SPEED.md.
 [profile.dev]
 opt-level = 0
-debug = 1
+debug = "line-tables-only"
+codegen-backend = "cranelift"
 # Only takes effect on Linux/macOS (no objcopy pass, faster links); MSVC always emits a PDB.
 split-debuginfo = "unpacked"
 incremental = true
 
-# No debuginfo for crates.io dependencies: 17% smaller target/, less I/O. Workspace
-# crates keep debug = 1 (line tables and function info for backtraces and breakpoints).
+# Dependencies: LLVM, opt-level 1, no debuginfo (smaller target/).
 [profile.dev.package."*"]
+codegen-backend = "llvm"
+opt-level = 1
 debug = false
+
+[profile.test]
+codegen-backend = "llvm"
 
 # One release profile for every member: fat LTO, single codegen unit, abort on panic.
 [profile.release]
@@ -143,9 +378,31 @@ codegen-units = 1
 panic = "abort"
 strip = "symbols"
 
+[profile.release.package.quinn]
+debug-assertions = false
+
+[profile.release.package.tokio]
+debug-assertions = false
+
 # Profile dist (dist-workspace.toml) builds release artifacts with; same settings as release.
 [profile.dist]
 inherits = "release"
+
+# Fast optimized local iteration (labs).
+[profile.iteration]
+inherits = "release"
+lto = "off"
+codegen-units = 16
+incremental = true
+strip = "none"
+debug = "line-tables-only"
+debug-assertions = true
+
+# Size-optimized (labs).
+[profile.min]
+inherits = "release"
+opt-level = "z"
+panic = "immediate-abort"
 
 # Per-package overrides carried over from the members manifests.
 [profile.dev.package.ring3-agent]
@@ -154,7 +411,10 @@ opt-level = 1
 [profile.dev.package.rust-stack]
 opt-level = 1
 
-# aphrody-dev forks: russh with sntrup761x25519-sha512 (OpenSSH hybrid PQ kex), pure-Rust sntrup761.
 [patch.crates-io]
+# aphrody-dev forks: russh with sntrup761x25519-sha512 (OpenSSH hybrid PQ kex), pure-Rust sntrup761.
 russh = { git = "https://github.com/aphrody-dev/russh", branch = "aphrody/sntrup761" }
 sntrup761 = { git = "https://github.com/aphrody-dev/sntrup761", branch = "aphrody/pure-rust" }
+# Labs patches (third_party/patches, see docs/labs-legacy and third_party/patches/*/README).
+quinn-proto = { path = "third_party/patches/quinn-proto" }
+glob-match = { path = "third_party/patches/glob-match" }

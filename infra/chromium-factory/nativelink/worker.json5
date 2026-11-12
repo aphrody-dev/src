@@ -1,0 +1,27 @@
+// NativeLink worker; env: NL_SCHED (fr1 mesh IP), NL_CACHE_BYTES.
+{
+  stores: [
+    { name: "GRPC_CAS", grpc: { instance_name: "main", store_type: "cas", endpoints: [{ address: "grpc://${NL_SCHED}:50051" }], connections_per_endpoint: 4 } },
+    { name: "GRPC_AC", grpc: { instance_name: "main", store_type: "ac", endpoints: [{ address: "grpc://${NL_SCHED}:50051" }] } },
+    { name: "FAST_SLOW", fast_slow: {
+        fast: { filesystem: { content_path: "/var/lib/nativelink/cas", temp_path: "/var/lib/nativelink/cas-tmp",
+          eviction_policy: { max_bytes: "${NL_CACHE_BYTES}" } } },
+        slow: { ref_store: { name: "GRPC_CAS" } } } },
+  ],
+  workers: [{ local: {
+    worker_api_endpoint: { uri: "grpc://${NL_SCHED}:50061" },
+    cas_fast_slow_store: "FAST_SLOW",
+    upload_action_result: { ac_store: "GRPC_AC" },
+    work_directory: "/var/lib/nativelink/work",
+    max_inflight_tasks: "${NL_JOBS}",
+    max_action_timeout_s: 1800,
+    platform_properties: {
+      cpu_count: { query_cmd: "nproc" },
+      OSFamily: { values: ["Linux"] },
+      "container-image": { values: [""] },
+      "label:action_default": { values: ["1"] },
+      "label:action_large": { values: ["1"] },
+      ISA: { values: ["x86-64"] },
+    } } }],
+  servers: [],
+}

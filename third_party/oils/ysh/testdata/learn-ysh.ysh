@@ -1,0 +1,59 @@
+#!/usr/local/bin/ysh
+#
+# "Learn YSH in Y Minutes"
+#
+# Based on "Learn Bash in Y Minutes"
+#
+# The first line, starting with #! is the shebang, which tells the system how
+# to execute the script: https://en.wikipedia.org/wiki/Shebang_(Unix)
+# 
+# Comments start with #
+
+# Hello world:
+echo "Hello world!"  # => Hello world!
+
+# Each command starts on a new line, or after a semicolon:
+echo 'first line'; echo 'second line'
+# => first line
+# => second line
+
+# Declaring a variable looks like this:
+var myvar = 'Some string'
+
+# Using the variable:
+echo $myvar    # => Some string
+echo "$myvar"  # => Some string
+echo '$myvar'  # => $myvar
+
+# When you use the variable itself — assign it, export it, or else — you write
+# its name without $. If you want to use the variable's value, you should use $.
+# Note that ' (single quote) won't expand the variables!
+
+# Parameter expansion ${ }:
+echo ${myvar} # => Some string
+
+# Substring from a variable using Python-like slices.
+var n = 7
+echo $[myvar[0:n]]  # => Some st
+# This will return only the first 7 characters of the value
+echo $[myvar[:-5]] # => tring
+# This will return the last 5 characters (note the space before -5)
+
+# String length
+echo ${#myvar} # => 11
+
+# Default value for variable
+echo ${Foo:-"DefaultValueIfFooIsMissingOrEmpty"}
+# => DefaultValueIfFooIsMissingOrEmpty
+# This works for null (Foo=) and empty string (Foo=""); zero (Foo=0) returns 0.
+# Note that it only returns default value and doesn't change variable value.
+
+# Declare an array with 6 elements
+var array0 = :| one two three four five six |
+
+
+#
+# Stopped translating here, not sure I like this format.
+# It's good for some languages, but too long for bash.
+#
+return

@@ -52,3 +52,22 @@ just rust-stack serve # Launch 4.80 MB Pure-Rust Auth + UI + WebUI + OpenAI Gate
 just deploy          # One-click Vercel-style build + OCI + R2 + VPS/Cloud deployment
 just verify-all      # Run Bun, Cargo, and Go + 3-way FFI test suites end-to-end
 ```
+
+## Labs (merged from `C:\labs`, 2026-11-12)
+
+Aphrody Labs (`aphrody-labs/labs`): self-hosted Vercel-like platform and `aphrody` single binary (V8 JS runtime, Next.js/Tailwind/shadcn compatibility, native renderer). Target architecture: [docs/ROOT-ARCHITECTURE.md](docs/ROOT-ARCHITECTURE.md).
+
+| Path | Content |
+|---|---|
+| `crates/aphrody-cli` | `aphrody` binary (labs `crates/cli`; becomes `ay` subcommands later) |
+| `crates/conformance`, `conformance/` | pinned conformance suites (`upstreams.toml`, `expected/`) |
+| `crates/lore*`, `licenses/lore`, `tools/lore` | Lore VCS, absorbed (MIT) |
+| `crates/apm` | APM crate |
+| `third_party/patches/{quinn-proto,glob-match}` | patched crates (`[patch.crates-io]`) |
+| `third_party/oils` | oils fork (aphrody-labs) |
+| `third_party/{vendor.lock,chrome-channels.toml,forks.txt}` | pins |
+| `tools/labs-scripts` | vendor.sh, absorb-lore.sh, chrome-channels.sh |
+| `infra/chromium-factory` | Chromium build factory (fr1) |
+| `plugins/labs` | Claude Code plugin `labs` (docs/PLUGIN.md) |
+
+Recipes: `just lab-build`, `just lab-dev`, `just lab-conformance`, `just lab-factory*`.

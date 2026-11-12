@@ -1,0 +1,40 @@
+# For running test/wild.sh
+
+FROM ghcr.io/oils-for-unix/soil-debian-12
+
+# Copy again to prevent unsound caching
+COPY deps/from-apt.sh /home/uke/tmp/deps/from-apt.sh
+
+RUN --mount=type=cache,id=var-cache-apt-debian-12,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,id=var-lib-apt-debian-12,target=/var/lib/apt,sharing=locked \
+    du --si -s /var/cache/apt /var/lib/apt && \
+    deps/from-apt.sh wild
+
+USER uke
+
+# Copy pre-built wedges
+
+COPY --chown=uke \
+  _build/boxed/wedge/cmark/0.29.0 \
+  /home/uke/oils.DEPS/wedge/cmark/0.29.0
+
+COPY --chown=uke \
+  _build/boxed/wedge/re2c/4.3.1 \
+  /home/uke/oils.DEPS/wedge/re2c/4.3.1
+
+RUN mkdir -p /home/uke/oils.DEPS/bin && \
+    ln -s --relative /home/uke/oils.DEPS/wedge/re2c/4.3.1/bin/re2c /home/uke/oils.DEPS/bin
+
+# TODO:
+# - Try to extract FIRST, and then copy.
+# - Put it in deps/source.medo/wild-source.tree-tar (vs. tree-pack, blob)
+
+COPY --chown=uke _cache/wild-source.tar.gz \
+  /home/uke/tmp/_cache/wild-source.tar.gz
+
+COPY build/common.sh /home/uke/tmp/build/common.sh
+COPY deps/from-tar.sh /home/uke/tmp/deps/from-tar.sh
+
+RUN deps/from-tar.sh extract-wild
+
+CMD ["sh", "-c", "echo 'hello from oilshell/soil-wild'"]

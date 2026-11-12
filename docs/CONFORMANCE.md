@@ -1,0 +1,65 @@
+# Conformance
+
+Compatibility is measured, not claimed. Each of the 11 suites below is an upstream test suite or schema. It is fetched at a pinned commit as a `gh` tarball (no git), run headless by `aphrody x conformance [--fetch] [suite...]` (crate `crates/conformance`), and reported as JSON. Upstream sources are never committed: only the listed paths are extracted into the ignored `conformance/upstream/<suite>/`.
+
+## Initial pins (2026-11-12)
+
+The default-branch HEAD of each repo was read from `https://api.github.com/repos/<repo>/commits/<branch>`. Each test path was confirmed with an HTTP 200 from `raw.githubusercontent.com` at that commit.
+
+| Upstream | Branch | Commit | Commit date | License (GitHub API) |
+|---|---|---|---|---|
+| oven-sh/bun | main | `43850629ce62b457ececc95689ad54abae3f6d47` | 2026-11-12 | NOASSERTION (LICENSE.md: MIT + LGPL-2 JSC) |
+| tc39/test262 | main | `2e58f87d8350ad51224617a041c6e041d52f8444` | 2026-11-11 | NOASSERTION (LICENSE: BSD-style, Ecma) |
+| tailwindlabs/tailwindcss | main | `b08bf83a327271dfb7e3cd485fd793da15013f7c` | 2026-11-11 | MIT |
+| shadcn-ui/ui | main | `dd41d19e2f80ff6891951f7ced74c2c9a650b065` | 2026-11-11 | MIT |
+| mui/base-ui | master | `5aacdbb7852487518b982ea397885c8322a3ebc6` | 2026-11-10 | MIT |
+| vercel/next.js | canary | `3642b242d40fb98652ee0894c2df8bfc510cc9aa` | 2026-11-11 | MIT |
+| vercel/vercel | main | `84878e532142f0ac584953695658b324eb9e5b80` | 2026-10-27 | Apache-2.0 |
+| web-platform-tests/wpt | master | `55ea0bd898f8e26dfe39491d23895b12ff37b892` | 2026-11-12 | NOASSERTION (3-Clause BSD) |
+
+## The 11 suites
+
+| # | Suite | Upstream path | How it runs headless | Metric | Gate |
+|---|---|---|---|---|---|
+| 1 | **Test262** | `tc39/test262:test/{built-ins,language,annexB,intl402}`, `harness/` | A Rust runner parses each file's YAML frontmatter (`flags`, `includes`, `negative`, `features`) and runs it in a fresh realm, strict and sloppy as required, with `$262` host hooks. Module and async tests go through the `runtime` module loader. The same V8 version runs under `d8` as a baseline. | pass % overall and per directory; **gap to the d8 baseline** (embedding bugs) | M1 |
+| 2 | **Bun tests** | `oven-sh/bun:test/js/{bun,node,web}`, `test/cli`, `test/bundler`, `test/regression`, `test/harness.ts` | `aphrody test <file>`, one process per file and 60 s timeout, with `bun:test` provided by `bunapi`. A `bun` shim on `PATH` points at `aphrody`, so `bunExe()` respawns aphrody. Tests that need network or credentials are tagged and skipped offline. | pass % per directory (`js/node`, `js/web`, `js/bun`, `bundler`, `cli/install`) | M1, M2 |
+| 3 | **Oxide** | `tailwindlabs/tailwindcss:crates/oxide` | `cargo test` of upstream `tailwindcss-oxide` at the pin, plus the same tests against `crates/tailwind-oxide` if vendored. Pure Rust, no JS. | pass count (target: all) | M3 |
+| 4 | **Tailwind snapshots** | `tailwindlabs/tailwindcss:packages/tailwindcss/src/**/*.test.ts` | The upstream test files run unmodified under `aphrody test`, with the import of `./index` / `compile` aliased to the Rust engine binding. Inline snapshots are the expected output. On failure the runner also emits a byte diff. | pass % of test cases; count of byte-identical outputs | M3 |
+| 5 | **Tailwind integrations** | `tailwindlabs/tailwindcss:integrations/{cli,postcss,vite,upgrade}` | The upstream harness, with `aphrody` providing `node` and the package manager. Each test creates a temp project, installs, builds and asserts the CSS output. Vite runs on the aphrody runtime. | pass % per integration | M3 |
+| 6 | **shadcn schemas** | `shadcn-ui/ui:apps/v4/public/schema/{registry,registry-item}.json`, `apps/v4/registry/`, `apps/v4/public/r/` | (a) `aphrody registry build` on the upstream registry source, with every emitted item validated against the JSON Schema and compared with upstream `public/r/*.json`. (b) `aphrody add` vs `shadcn add` on fixture projects, comparing file-tree snapshots. | % items schema-valid (target 100), % items byte-equal, % `add` scenarios equal | M4 |
+| 7 | **Base UI** | `mui/base-ui:packages/react/src/**/*.test.tsx` | `aphrody test` with a Vitest-compatible API and the jsdom environment (jsdom runs as JS on the aphrody runtime). The upstream Chromium project runs later through Playwright against `aphrody serve`. | pass % (jsdom project); pass % (browser project, informational) | M4 |
+| 8 | **Next.js e2e** | `vercel/next.js:test/e2e/app-dir/**`, `run-tests.js` | `run-tests.js --type e2e` with `NEXT_TEST_MODE=start` and `dev`, with `next` resolved to the aphrody shim. A frozen list file `conformance/lists/next-e2e.txt` is the denominator. Playwright drives headless Chromium, which is used as an external oracle browser only. | pass % on the frozen list (start and dev reported separately) | M4, M5 |
+| 9 | **Next.js deploy adapter** | `vercel/next.js:test/deploy-tests-manifest.json`, `packages/next/src/build/adapter/` | `NEXT_TEST_MODE=deploy`, with the deploy step replaced by `aphrody build --target vercel` followed by `aphrody serve` locally. A weekly job deploys for real to a Vercel sandbox project and to the self-hosted Aphrody platform with `aphrody deploy`. Adapter unit tests run under `aphrody test`. | pass % of manifest-included tests (local); pass % (real deploy, weekly) | M5 |
+| 10 | **Vercel Build Output v3** | spec: `https://vercel.com/docs/build-output-api/v3`; reference builder: `vercel/vercel` at the pin | (a) JSON Schemas for `config.json`, `.vc-config.json` and `.prerender-config.json`, written from the spec in `conformance/schemas/` with each rule citing its doc section, validate every `.vercel/output`. (b) Differential: for each fixture app, compare upstream `next build` + `vercel build` output with `aphrody build` on route-table semantics (request corpus, same status/headers/body). (c) `vercel deploy --prebuilt` acceptance in a sandbox. | % fixtures schema-valid (target 100); % request-corpus equivalence | M5 |
+| 11 | **WPT interop subset** | `web-platform-tests/wpt:css/{css-flexbox,css-grid,css-box,css-display,css-position,css-sizing,css-text,css-fonts,css-backgrounds,css-color,css-values,css-cascade,css-variables,selectors}` | `aphrody render --reftest` reads `MANIFEST.json` and renders test and reference with the deterministic `vello_cpu` backend at 800x600. It compares with the per-test `fuzzy` metadata. testharness.js tests in the subset are skipped until page JS exists. | pass % per directory, compared with the Blitz baseline at its pinned version and with Chromium on wpt.fyi for the same WPT commit | M6 |
+
+## Ordering
+
+CI runs the suites cheapest and lowest-layer first. A failure in a lower layer marks dependent suites as `blocked`, not `failed`, which keeps the signal clean:
+
+1. Oxide (seconds, pure Rust)
+2. Test262 (engine embedding)
+3. shadcn schemas, part (a) (pure data)
+4. Tailwind snapshots
+5. Bun tests
+6. Tailwind integrations
+7. Base UI
+8. Vercel Build Output v3, parts (a) and (b)
+9. Next.js e2e
+10. Next.js deploy adapter
+11. WPT interop subset
+
+## Pinned upstream commits policy
+
+- Each pin lives in `conformance/upstreams.toml` (`repo`, `commit`, `license`, `pinned_on`; suites list their `paths`), and the table above is generated from it. Branch names are never used as refs.
+- Pins are bumped only by a dedicated change (`aphrody x conformance bump <suite>`) that runs the suite before and after and records the delta in the change description. Bumps happen monthly, or when the supported Next.js or Tailwind line moves.
+- Each suite has an expected-failures file, `conformance/expected/<suite>.txt`, with one test id and one reason per line. A test that moves from pass to fail fails CI. A test that starts passing must be removed from the file in the same change.
+- Denominators are frozen per pin, so pass rates are comparable across commits of this repo. The denominator changes only with a pin bump.
+
+## CI dashboard
+
+- Every suite writes `conformance/results/<suite>.json`:
+  `{ suite, upstream_commit, aphrody_commit, target, total, passed, failed, skipped, blocked, duration_ms, by_dir: { <dir>: { total, passed } } }`.
+- The CI matrix on the Lore main line is `x86_64-unknown-linux-gnu` (all suites), `x86_64-pc-windows-msvc` and `aarch64-apple-darwin` (suites 1 to 7), and `x86_64-unknown-linux-musl` (suites 1 to 3). Results are kept as build artifacts on the self-hosted CI.
+- A static dashboard, planned at `https://labs.aphrody.com/conformance/`, shows the latest pass rate per suite and target, a history chart per suite, and the M0 to M6 exit-criteria lines from [STACK-ROADMAP.md, annexe jalons labs](STACK-ROADMAP.md). It is generated from the JSON files and needs no backend.
+- Each change submitted to Lore gets the per-suite delta against main.

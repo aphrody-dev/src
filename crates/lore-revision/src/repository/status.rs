@@ -1,0 +1,2339 @@
+// SPDX-FileCopyrightText: 2026 Epic Games, Inc.
+// SPDX-License-Identifier: MIT
+use std::sync::Arc;
+use std::sync::OnceLock;
+use std::sync::atomic::AtomicU64;
+use std::sync::atomic::AtomicUsize;
+use std::sync::atomic::Ordering;
+use std::time::Instant;
+
+use crossbeam_queue::SegQueue;
+use futures::FutureExt;
+use lore_base::lore_spawn;
+use lore_error_set::prelude::*;
+use serde::Serialize;
+use tokio::sync::Notify;
+use tokio::task::JoinSet;
+
+use super::RepositoryContext;
+use super::RepositoryWriteToken;
+use crate::MAX_CONCURRENT_TREE_TASKS;
+use crate::branch;
+use crate::change::FileAction;
+use crate::change::NodeChange;
+use crate::errors::*;
+use crate::event;
+use crate::event::EventError;
+use crate::file::stage::LayerRoute;
+use crate::file::stage::classify_stage_path;
+use crate::filter::FilterMode;
+use crate::filter::FilterStates;
+use crate::find;
+use crate::fs::filesystem_provider::FilesystemDiffIntent;
+use crate::fs::filesystem_provider::FilesystemDiffTree;
+use crate::fs::filesystem_provider::InstanceOperation;
+use crate::fs::filesystem_provider::InstanceOperationImpl;
+use crate::fs::filesystem_provider::with_operation_if;
+use crate::interface::LoreError;
+use crate::interface::LoreFileAction;
+use crate::interface::LoreNodeType;
+use crate::interface::LoreString;
+use crate::layer;
+use crate::link::LinkedStagedContent;
+use crate::link::LinkedState;
+use crate::link::settle_linked_staged_state;
+use crate::lore::BranchId;
+use crate::lore::Hash;
+use crate::lore::RepositoryId;
+use crate::lore::execution_context;
+use crate::lore_debug;
+use crate::lore_drain_tasks;
+use crate::lore_limit_drain_tasks;
+use crate::lore_trace;
+use crate::metadata::Metadata;
+use crate::node::NodeID;
+use crate::node::NodeIDExt;
+use crate::node::ROOT_NODE;
+use crate::path::emit_path_ignore;
+use crate::state;
+use crate::state::Clear;
+use crate::state::State;
+use crate::util::fan_out;
+use crate::util::path::RelativePath;
+use crate::util::serde::u8_as_bool;
+
+/// Revision status of a repository, describing the current, local, and remote
+/// positions of the active branch.
+#[repr(C)]
+#[derive(Clone, PartialEq, Serialize, Debug, bitcode::Encode, bitcode::Decode)]
+#[serde(rename_all = "camelCase")]
+pub struct LoreRepositoryStatusRevisionEventData {
+    /// Repository identifier
+    pub repository: RepositoryId,
+    /// Current branch identifier
+    pub branch: BranchId,
+    /// Current branch name
+    pub branch_name: LoreString,
+    /// Current revision identifier
+    pub revision: Hash,
+    /// Current revision number
+    pub revision_number: u64,
+    /// Staged revision identifier (zero when nothing is staged)
+    pub revision_staged: Hash,
+    /// Incoming revision identifier of a pending merge (zero when none)
+    pub revision_merged: Hash,
+    /// Last revision merged in from the parent branch (calculated and reported if sync point option is set).
+    pub revision_merged_parent_branch: Hash,
+    /// Local branch latest revision identifier
+    pub revision_local: Hash,
+    /// Local branch latest revision number
+    pub revision_local_number: u64,
+    /// Remote branch latest revision identifier (zero if unknown, branch not existing on remote or remote not available)
+    pub revision_remote: Hash,
+    /// Remote branch latest revision number (zero if corresponding identifier is zero)
+    pub revision_remote_number: u64,
+    /// Local holds revisions not on the remote history line
+    pub is_local_ahead: u8,
+    /// Remote holds revisions not present locally
+    pub is_remote_ahead: u8,
+    /// Remote configured and reachable with a local identity; connectivity only, not authorization
+    pub remote_available: u8,
+    /// Remote revision query returned an authoritative answer, identity is authorized to access the repository
+    pub remote_authorized: u8,
+    /// Branch exists on the remote and the query returned a latest revisoin (possibly zero if branch does not exist on remote)
+    pub remote_branch_exist: u8,
+}
+
+#[allow(clippy::too_many_arguments)]
+#[allow(clippy::fn_params_excessive_bools)]
+impl LoreRepositoryStatusRevisionEventData {
+    pub fn new(
+        repository: RepositoryId,
+        branch: BranchId,
+        branch_name: &str,
+        revision: Hash,
+        revision_number: u64,
+        revision_staged: Hash,
+        revision_merged: Hash,
+        revision_merged_parent_branch: Hash,
+        revision_local: Hash,
+        revision_local_number: u64,
+        revision_remote: Hash,
+        revision_remote_number: u64,
+        is_local_ahead: bool,
+        is_remote_ahead: bool,
+        remote_available: bool,
+        remote_authorized: bool,
+        remote_branch_exist: bool,
+    ) -> Self {
+        LoreRepositoryStatusRevisionEventData {
+            repository,
+            branch,
+            branch_name: branch_name.into(),
+            revision,
+            revision_number,
+            revision_staged,
+            revision_merged,
+            revision_merged_parent_branch,
+            revision_local,
+            revision_local_number,
+            revision_remote,
+            revision_remote_number,
+            is_local_ahead: is_local_ahead.into(),
+            is_remote_ahead: is_remote_ahead.into(),
+            remote_available: remote_available.into(),
+            remote_authorized: remote_authorized.into(),
+            remote_branch_exist: remote_branch_exist.into(),
+        }
+    }
+}
+
+/// Status of a single file or node reported by a repository status operation.
+#[repr(C)]
+#[derive(Clone, PartialEq, Serialize, Debug, bitcode::Encode, bitcode::Decode)]
+#[serde(rename_all = "camelCase")]
+pub struct LoreRepositoryStatusFileEventData {
+    /// Path of the file, relative to the root of the working tree.
+    pub path: LoreString,
+    /// Size of the file in bytes.
+    pub size: u64,
+    /// Change applied to the file, such as add, modify, delete, or move.
+    pub action: LoreFileAction,
+    /// Kind of node: file, directory, or link.
+    pub r#type: LoreNodeType,
+
+    /// Non-zero when the change is staged.
+    #[serde(with = "u8_as_bool")]
+    pub flag_staged: u8,
+    /// Non-zero when the change comes from a merge.
+    #[serde(with = "u8_as_bool")]
+    pub flag_merged: u8,
+    /// Non-zero when the file is in conflict.
+    #[serde(with = "u8_as_bool")]
+    pub flag_conflict: u8,
+    /// Non-zero when the conflict is not yet resolved.
+    #[serde(with = "u8_as_bool")]
+    pub flag_conflict_unresolved: u8,
+    /// Non-zero when the conflict was resolved automatically.
+    #[serde(with = "u8_as_bool")]
+    pub flag_conflict_automerged: u8,
+    /// Non-zero when the local side was chosen to resolve the conflict.
+    #[serde(with = "u8_as_bool")]
+    pub flag_conflict_mine: u8,
+    /// Non-zero when the incoming side was chosen to resolve the conflict.
+    #[serde(with = "u8_as_bool")]
+    pub flag_conflict_theirs: u8,
+    /// Non-zero when the file differs from the recorded state.
+    #[serde(with = "u8_as_bool")]
+    pub flag_dirty: u8,
+
+    /// Previous path of the file when it was moved or copied. Empty otherwise.
+    pub from_path: LoreString,
+}
+
+impl LoreRepositoryStatusFileEventData {
+    pub fn from_node_change(change: &NodeChange, size: u64) -> Self {
+        let node_type = if change.action == FileAction::Add
+            || change.action == FileAction::Move
+            || change.to.mapping.node.is_valid_node_id()
+        {
+            change.to.flags
+        } else {
+            change.from.flags
+        };
+        let node_type = node_type.node_type();
+        LoreRepositoryStatusFileEventData {
+            path: LoreString::from(change.path()),
+            size,
+            action: LoreFileAction::from(change.action),
+            r#type: node_type,
+            flag_dirty: change.flags.is_dirty().into(),
+            flag_staged: change.flags.is_stage().into(),
+            flag_merged: change.flags.is_merge().into(),
+            flag_conflict: change.flags.is_conflict().into(),
+            flag_conflict_unresolved: change.flags.is_conflict_unresolved().into(),
+            flag_conflict_automerged: change.flags.is_conflict_automerged().into(),
+            flag_conflict_mine: change.flags.is_conflict_mine().into(),
+            flag_conflict_theirs: change.flags.is_conflict_theirs().into(),
+            from_path: change.move_source().map(|path| path.as_str()).into(),
+        }
+    }
+
+    pub fn action_as_string_short(&self) -> &'static str {
+        self.action.as_string_short()
+    }
+
+    pub fn merged_as_string_short(&self) -> &'static str {
+        if self.flag_merged != 0 {
+            return "(M)";
+        }
+        ""
+    }
+
+    pub fn conflict_as_string_short(&self) -> &'static str {
+        if self.flag_conflict != 0 && self.flag_conflict_unresolved != 0 {
+            return "!";
+        }
+        ""
+    }
+}
+
+/// Counts of directories and files in the repository tree.
+#[repr(C)]
+#[derive(Clone, PartialEq, Serialize, Debug, bitcode::Encode, bitcode::Decode)]
+#[serde(rename_all = "camelCase")]
+pub struct LoreRepositoryStatusCountEventData {
+    /// Number of directories in the tree, view-filtered (staged state if
+    /// present, otherwise the current revision)
+    pub directories: u64,
+    /// Number of files in the tree, view-filtered (staged state if present,
+    /// otherwise the current revision)
+    pub files: u64,
+}
+
+/// Aggregate counts of dirty nodes by action type, emitted once at the end of
+/// a reconciling status (`--scan` or `--check-dirty`). For `--scan` these are
+/// the changes detected against the filesystem; for `--check-dirty` they are
+/// the nodes that remained dirty after the filesystem verification.
+#[repr(C)]
+#[derive(Clone, PartialEq, Serialize, Debug, bitcode::Encode, bitcode::Decode)]
+#[serde(rename_all = "camelCase")]
+pub struct LoreRepositoryStatusSummaryEventData {
+    /// Number of files added.
+    pub adds: u64,
+    /// Number of files deleted.
+    pub deletes: u64,
+    /// Number of files modified.
+    pub modifies: u64,
+    /// Number of files moved.
+    pub moves: u64,
+    /// Number of files copied.
+    pub copies: u64,
+    /// Number of files the answer required reading, including any that could not be read.
+    pub hash_checks: u64,
+    /// Number of files a recorded modified time answered for, sparing them a hash check.
+    pub mtime_matches: u64,
+}
+
+/// Thread-safe accumulator for dirty-node counts during the parallel status
+/// scan/verify walk. Each spawned task increments the relevant counter via
+/// [`StatusSummaryStats::classify`].
+#[derive(Default)]
+pub struct StatusSummaryStats {
+    adds: AtomicU64,
+    deletes: AtomicU64,
+    modifies: AtomicU64,
+    moves: AtomicU64,
+    copies: AtomicU64,
+    hash_checks: AtomicU64,
+    mtime_matches: AtomicU64,
+}
+
+impl StatusSummaryStats {
+    /// Increment the counter matching a reported change's action, which states where the node
+    /// went rather than what became of its content. A node that stayed in place is counted as a
+    /// modification, being reported at all only because something about it changed.
+    fn classify(&self, change: &NodeChange) {
+        let counter = match change.action {
+            FileAction::Add => &self.adds,
+            FileAction::Delete => &self.deletes,
+            FileAction::Move => &self.moves,
+            FileAction::Copy => &self.copies,
+            // A graft replaces a directory's subtree. Count it as a
+            // modification of that directory.
+            FileAction::Graft | FileAction::Keep => &self.modifies,
+        };
+        counter.fetch_add(1, Ordering::Relaxed);
+    }
+
+    /// Record what settled a file comparison, so a caller can tell a run that measured
+    /// content from one the recorded modified times carried.
+    fn classify_modification(&self, modification: &state::FileModification) {
+        match modification.answered_by() {
+            state::ComparisonAnswer::Mtime => {
+                self.mtime_matches.fetch_add(1, Ordering::Relaxed);
+            }
+            state::ComparisonAnswer::Hash => {
+                self.hash_checks.fetch_add(1, Ordering::Relaxed);
+            }
+            state::ComparisonAnswer::Size => {}
+        }
+    }
+
+    /// Fold a filesystem diff's comparison counts in, for the `--scan` walk that does its
+    /// comparing inside the diff rather than here.
+    fn append_diff(&self, stats: &state::FilesystemDiffStats) {
+        self.hash_checks
+            .fetch_add(stats.file_hash.load(Ordering::Relaxed), Ordering::Relaxed);
+        self.mtime_matches.fetch_add(
+            stats.file_mtime_match.load(Ordering::Relaxed),
+            Ordering::Relaxed,
+        );
+    }
+
+    fn event_data(&self) -> LoreRepositoryStatusSummaryEventData {
+        LoreRepositoryStatusSummaryEventData {
+            adds: self.adds.load(Ordering::Relaxed),
+            deletes: self.deletes.load(Ordering::Relaxed),
+            modifies: self.modifies.load(Ordering::Relaxed),
+            moves: self.moves.load(Ordering::Relaxed),
+            copies: self.copies.load(Ordering::Relaxed),
+            hash_checks: self.hash_checks.load(Ordering::Relaxed),
+            mtime_matches: self.mtime_matches.load(Ordering::Relaxed),
+        }
+    }
+}
+
+#[error_set]
+pub enum StatusError {
+    NodeNotFound,
+    LinkNotFound,
+    NotFound,
+    FileNotFound,
+    RevisionNotFound,
+    WriteRequired,
+    Oversized,
+    InvalidArguments,
+    InvalidPath,
+    InvalidNodeHierarchy,
+    AddressNotFound,
+    PayloadNotFound,
+    AlreadyLinked,
+    LayerNotFound,
+    Disconnected,
+    SlowDown,
+    NotAuthorized,
+    NotAuthenticated,
+    Maintenance,
+    NoRemote,
+    NotSupported,
+    BranchAdvanced,
+    BranchAlreadyExists,
+    BranchNotFound,
+    Conflict,
+    DeleteCurrent,
+    DeleteDefault,
+    DeleteProtected,
+    Divergent,
+    IdenticalMetadata,
+    LinkPathNotFound,
+    LocalModifications,
+    LockNotFound,
+    LockNotOwned,
+    MaxHistorySearchDepth,
+    NotALayer,
+    NotALink,
+    NotConnected,
+    NothingStaged,
+    RepositoryAlreadyExists,
+    RepositoryNotFound,
+    SharedStoreNotFound,
+    TokenNotFound,
+    MissingIdentity,
+}
+
+impl EventError for StatusError {
+    fn translated(&self) -> LoreError {
+        match self {
+            StatusError::Disconnected(_) => LoreError::Connection,
+            StatusError::SlowDown(_) => LoreError::SlowDown,
+            StatusError::Oversized(_) => LoreError::Oversized,
+            StatusError::FileNotFound(_) => LoreError::FileNotFound,
+            StatusError::NotFound(_)
+            | StatusError::LayerNotFound(_)
+            | StatusError::RevisionNotFound(_) => LoreError::NotFound,
+            StatusError::AddressNotFound(_) => LoreError::AddressNotFound,
+            StatusError::PayloadNotFound(_) => LoreError::PayloadNotFound,
+            StatusError::InvalidArguments(_) | StatusError::InvalidPath(_) => {
+                LoreError::InvalidArguments
+            }
+            _ => LoreError::Internal,
+        }
+    }
+
+    fn inner(&self) -> String {
+        self.to_string()
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct StatusOptions {
+    // Include staged or not
+    pub staged: bool,
+    /// Reconcile against the filesystem and refresh dirty tracking.
+    ///
+    /// When `false` (default), status reports the currently tracked state:
+    /// the staged revision (if any) plus all files and directories marked
+    /// dirty in the repository. No filesystem reads are performed beyond the
+    /// existing dirty flags.
+    ///
+    /// When `true`, the filesystem is walked under each requested path,
+    /// every file is reconciled against the current revision, and dirty
+    /// flags are set or cleared accordingly. The refreshed flags are
+    /// persisted in the staged state so subsequent operations see an
+    /// accurate picture without rescanning.
+    pub scan: bool,
+    /// Verify dirty flags against the filesystem while reporting tracked state.
+    ///
+    /// Unlike [`scan`](Self::scan), this performs no filesystem walk: it only
+    /// re-examines files already marked dirty. For each dirty file the on-disk
+    /// content is checked (a size difference is a modification; otherwise, when
+    /// the recorded modification time differs, the content is rehashed and
+    /// compared). A file that turns out unmodified has its dirty flag cleared
+    /// and is dropped from the report, unless it is also staged. Structural
+    /// dirty actions (add/move/copy/delete) are always treated as modified.
+    ///
+    /// The refreshed flags are persisted in the staged state, so this requires
+    /// write capability.
+    pub check_dirty: bool,
+    // Drop the existing staged anchor before computing status.
+    // Combine with `scan` to scan from a clean slate.
+    pub reset: bool,
+    // Include sync point
+    pub sync_point: bool,
+    // Only emit revision info, skip all diffs
+    pub revision_only: bool,
+    // Count directories and files (view-filtered) in the staged state if
+    // present, otherwise the current revision
+    pub count: bool,
+}
+
+async fn file_size_from_node_change_id(change: &NodeChange) -> Result<u64, StatusError> {
+    if change.action == FileAction::Delete {
+        Ok(0)
+    } else {
+        let size = change
+            .to
+            .mapping
+            .state
+            .node(change.to.mapping.repository.clone(), change.to.mapping.node)
+            .await
+            .forward::<StatusError>("accessing node path")?
+            .size;
+        Ok(size)
+    }
+}
+
+/// The size a filesystem change reports, taken from the same view the diff walked.
+///
+/// Reuses what the walk already measured when it recorded an observation, and asks
+/// the operation otherwise, so a file that exists only in a provider's view is sized
+/// from that view rather than from the host filesystem. A path the operation reports
+/// as absent — deleted, or vanished under a concurrent `branch switch` between the
+/// walk and here — is size 0, matching a delete.
+async fn file_size_from_node_change_path(
+    operation: &InstanceOperationImpl,
+    _repository: &Arc<RepositoryContext>,
+    change: &NodeChange,
+) -> Result<u64, StatusError> {
+    if change.action == FileAction::Delete {
+        return Ok(0);
+    }
+    if let Some(observed) = &change.resolved_side().observed {
+        return Ok(observed.size());
+    }
+    let repository_path = change.path().clone();
+    let info = operation
+        .file_info(&repository_path)
+        .await
+        .forward::<StatusError>("accessing metadata for file")?;
+    Ok(info.size())
+}
+
+/// How a scan reports the changes it finds: what it counts them into, and whether a deleted
+/// directory stands for everything below it.
+#[lore_macro::test_pub]
+#[derive(Clone)]
+pub(crate) struct ScanReport {
+    /// The counts the reported changes fold into.
+    summary: Arc<StatusSummaryStats>,
+    /// Whether a deleted directory is reported as one entry, as a plain status reports the marks
+    /// a scan left, rather than with every entry below it, as `--scan` reports them.
+    whole_deleted_directories: bool,
+}
+
+/// Reports every change a path's scan finds, answering with how many were reported and the first
+/// failure among them.
+///
+/// Reads to the end rather than stopping at a failure: the walk marks dirty as it goes, and its
+/// marks are what a status run leaves behind whether or not every change could be reported.
+///
+/// Where `report` asks for whole deleted directories, a delete below a directory reported
+/// deleted is left out. The walk reports a directory before what it finds below it, so the
+/// directories reported deleted are all that is held, never the changes.
+///
+/// Each change is taken by a `let`-`else` rather than a `while let`, whose scrutinee would stay
+/// reserved beside the change while it is reported.
+#[lore_macro::test_pub]
+async fn report_scan_changes(
+    operation: &InstanceOperationImpl,
+    repository: &Arc<RepositoryContext>,
+    report: &ScanReport,
+    changes: &mut state::ChangeStream<state::FilesystemDiffStats>,
+) -> (usize, Option<StatusError>) {
+    let mut reported = 0;
+    let mut failure = None;
+    let mut deleted_directories: Vec<RelativePath> = Vec::new();
+    loop {
+        let Some(change) = changes.next().await else {
+            break;
+        };
+        if report.whole_deleted_directories && change.action == FileAction::Delete {
+            let path = change.path();
+            if deleted_directories
+                .iter()
+                .any(|directory| path.below(directory).is_some_and(|rest| !rest.is_empty()))
+            {
+                continue;
+            }
+            if change.from.flags.is_directory() && !change.to.mapping.node.is_valid_node_id() {
+                deleted_directories.push(path.clone());
+            }
+        }
+        reported += 1;
+        if let Err(err) = report_scan_change(operation, repository, &report.summary, &change).await
+        {
+            failure.get_or_insert(err);
+        }
+    }
+    (reported, failure)
+}
+
+/// Reports one scanned change: a staged one is the caller's own doing and only traced, and every
+/// other is counted into the summary and emitted for display. Dirty flags are set and cleared by
+/// the walk itself.
+#[lore_macro::test_pub]
+async fn report_scan_change(
+    operation: &InstanceOperationImpl,
+    repository: &Arc<RepositoryContext>,
+    summary: &StatusSummaryStats,
+    change: &NodeChange,
+) -> Result<(), StatusError> {
+    if change.flags.is_stage() {
+        lore_debug!("Ignore staged file {}", change.path());
+        return Ok(());
+    }
+    let size = file_size_from_node_change_path(operation, repository, change).await?;
+    summary.classify(change);
+    event::LoreEvent::RepositoryStatusFile(LoreRepositoryStatusFileEventData::from_node_change(
+        change, size,
+    ))
+    .send();
+    Ok(())
+}
+
+/// Verify whether a dirty file change reflects a real on-disk modification,
+/// clearing the node's dirty flag when it does not.
+///
+/// Structural dirty actions (add/move/copy/delete) are modifications by
+/// definition and always report `true`. For a content modification the file is
+/// compared against its tracked node (the staged side of the diff, which
+/// carries the tracked content hash and size): a differing size is a modification;
+/// otherwise, when the recorded modification time differs, the content is
+/// rehashed and compared. A file that turns out unmodified has its dirty flag
+/// cleared on the staged node (propagating to parents) and reports `false`.
+///
+/// A missing or unreadable file is reported as modified — the dirty flag then
+/// reflects a real change that the regular diff will surface.
+///
+/// Everything read of the working tree — whether a file is there, its size and modified time, and
+/// the content a hash check compares — is read through `operation`, so that the measurement and the
+/// content it is measured against come from one view of the tree.
+///
+/// What the check settles is written, not only reported: a flag it finds stale is cleared on the
+/// node.
+async fn dirty_change_is_modified(
+    operation: &InstanceOperationImpl,
+    repository: &Arc<RepositoryContext>,
+    change: &NodeChange,
+    summary: &StatusSummaryStats,
+) -> Result<bool, StatusError> {
+    if change.action != FileAction::Keep {
+        return Ok(true);
+    }
+
+    let node_state = &change.to;
+    if !node_state.mapping.node.is_valid_node_id() {
+        return Ok(true);
+    }
+    let node = node_state
+        .get_node()
+        .await
+        .forward::<StatusError>("loading dirty node for verification")?;
+    if !node.is_file() {
+        return Ok(true);
+    }
+
+    let Ok(info) = operation.file_info(change.path()).await else {
+        return Ok(true);
+    };
+    if !info.is_file() {
+        return Ok(true);
+    }
+
+    let modification = state::file_modified_against_node(
+        repository.clone(),
+        &node,
+        info.mtime(),
+        info.size(),
+        change.path(),
+        !node.is_staged(),
+        operation,
+        &lore_storage::ContentHashes::default(),
+    )
+    .await
+    .forward::<StatusError>("comparing dirty file against filesystem")?;
+    summary.classify_modification(&modification);
+
+    if !modification.is_modified() {
+        node_state
+            .mapping
+            .state
+            .node_clear(
+                &node_state.mapping.repository,
+                node_state.mapping.node,
+                Clear::Dirty,
+            )
+            .await
+            .forward::<StatusError>("clearing stale dirty flag")?;
+    }
+
+    Ok(modification.is_modified())
+}
+
+/// Upper bound on concurrent subtree-counting tasks. Counting is dominated by
+/// per-directory node-block reads (and link resolutions that may reach other
+/// repositories), so overlapping them up to this many in-flight tasks hides I/O
+/// latency while keeping fan-out bounded on huge trees. Scaled to the machine
+/// but capped so a many-core host doesn't spawn excessive workers.
+const COUNT_MAX_CONCURRENCY: usize = 128;
+
+/// A directory (or resolved link target) whose children still need counting.
+struct CountWork {
+    state: Arc<state::State>,
+    repository: Arc<RepositoryContext>,
+    node_id: NodeID,
+    path: RelativePath,
+    /// The view filter's verdict for `path`, which each child steps from
+    /// instead of folding its whole path.
+    states: FilterStates,
+}
+
+/// Shared state for the bounded worker pool counting view-filtered nodes.
+///
+/// The recursion is reified as an explicit lock-free `queue` of [`CountWork`]
+/// items drained by a fixed set of workers, rather than recursive task
+/// spawning, so concurrency is hard-bounded by the worker count regardless of
+/// tree shape. `outstanding` tracks items neither fully processed nor yet
+/// counted (queued plus in flight); workers exit once it reaches zero. The
+/// first error is kept in `error`, after which workers stop processing but
+/// keep draining so the counter still reaches zero and every worker terminates.
+struct CountShared {
+    queue: SegQueue<CountWork>,
+    outstanding: AtomicUsize,
+    directories: AtomicU64,
+    files: AtomicU64,
+    error: OnceLock<StatusError>,
+    notify: Notify,
+}
+
+/// Whether the diff against the staged state is what reports `change`.
+///
+/// A change that is neither staged nor dirty is not a working-tree change. One a scan will
+/// re-detect from the filesystem, settling its flags inline, is left to the scan rather than
+/// reported twice — except a move, which only this diff pairs by file identity to recover the
+/// path it came from.
+fn reported_by_state_diff(change: &NodeChange, show_scan: bool) -> bool {
+    if !(change.flags.is_stage() || change.flags.is_dirty()) {
+        return false;
+    }
+    !(show_scan
+        && change.flags.is_dirty()
+        && !change.flags.is_stage()
+        && change.action != FileAction::Move)
+}
+
+/// What every task comparing a tree against its staged state shares: the counts it folds into,
+/// whether a scan will re-detect what it finds, and the operation a dirty flag is checked through
+/// where one was asked for.
+#[derive(Clone)]
+struct StagedDiff {
+    summary: Arc<StatusSummaryStats>,
+    show_scan: bool,
+    check_dirty: Option<Arc<InstanceOperationImpl>>,
+    cleared_links: Arc<parking_lot::Mutex<Vec<LinkedState>>>,
+}
+
+/// Report every change the diff against the staged state answers for.
+///
+/// A dirty node is verified against the working tree where `check_dirty` supplies an operation to
+/// read it through, and one that turns out unmodified has its flag cleared and is reported without
+/// it — or dropped, where the flag was all it had. A node still dirty once verified counts toward
+/// `summary`; a purely staged one does not.
+///
+/// `repository` is the one holding the nodes, which for a layer is the layer's own. The working
+/// tree is the parent's either way, since a layer context keeps it.
+async fn report_staged_changes(
+    repository: &Arc<RepositoryContext>,
+    changes: &[NodeChange],
+    diff: &StagedDiff,
+) -> Result<(), StatusError> {
+    let summary = diff.summary.as_ref();
+    for change in changes {
+        if !reported_by_state_diff(change, diff.show_scan) {
+            continue;
+        }
+
+        let mut cleared_dirty = false;
+        if let Some(operation) = diff.check_dirty.as_deref()
+            && change.flags.is_dirty()
+            && !dirty_change_is_modified(operation, repository, change, summary).await?
+        {
+            let mapping = &change.to.mapping;
+            if mapping.repository.id != repository.id {
+                let mut cleared_links = diff.cleared_links.lock();
+                if !cleared_links
+                    .iter()
+                    .any(|(_, state)| Arc::ptr_eq(state, &mapping.state))
+                {
+                    cleared_links.push((mapping.repository.clone(), mapping.state.clone()));
+                }
+            }
+            if !change.flags.is_stage() {
+                continue;
+            }
+            cleared_dirty = true;
+        }
+
+        if change.flags.is_dirty() && !cleared_dirty {
+            summary.classify(change);
+        }
+
+        let size = file_size_from_node_change_id(change).await?;
+        let mut data = LoreRepositoryStatusFileEventData::from_node_change(change, size);
+        if cleared_dirty {
+            data.flag_dirty = 0;
+        }
+        event::LoreEvent::RepositoryStatusFile(data).send();
+    }
+    Ok(())
+}
+
+/// Whether a layer's staged state still holds anything worth pinning: a dirty marker or a staged
+/// node anywhere in the subtree the layer draws.
+///
+/// Asked of the drawn subtree rather than the whole state, the same way `layer::list_staged`
+/// counts, because everything outside it belongs to the drawn-from repository and not the layer.
+/// Dirty flags propagate to a node's parents and clearing one propagates the clear back up, so
+/// the source node's children answer for the whole subtree. They are read in the state holding
+/// the source node, a linked one where the source path crosses a link. On any error the answer is
+/// "holds staging": dropping a pin on a question that could not be answered loses staged work.
+#[lore_macro::test_pub]
+async fn layer_holds_staging(layer: &layer::Layer, layer_state: &layer::LayerState) -> bool {
+    let Ok((source, (repository, state))) = layer_state
+        .state_staged
+        .find_relative_held(
+            layer_state.repository.clone(),
+            ROOT_NODE,
+            &layer.source_path,
+        )
+        .await
+    else {
+        return true;
+    };
+    if !source.node.is_valid_or_root_node_id() {
+        return true;
+    }
+
+    if state
+        .node_has_dirty_children(repository.clone(), source.node)
+        .await
+        .unwrap_or(true)
+    {
+        return true;
+    }
+
+    let staged = state::count_staged_files(repository, state, source.node).await;
+    staged.count > 0 || !staged.complete
+}
+
+/// Persist the markers `--check-dirty` cleared in the linked states `pending` names, for the links
+/// `state` holds and the links below them, and whether `state` changed for it.
+///
+/// Only a dirty link is visited: a cleared marker was propagated to its link node, which nothing
+/// has cleared yet.
+async fn settle_cleared_links(
+    repository: &Arc<RepositoryContext>,
+    token: &RepositoryWriteToken,
+    state: &Arc<State>,
+    pending: &mut Vec<LinkedState>,
+    depth: usize,
+) -> Result<bool, StatusError> {
+    if depth >= state::MAX_LINK_DEPTH {
+        return Ok(false);
+    }
+
+    let mut changed = false;
+    let links = state
+        .link_list(repository.clone())
+        .await
+        .forward::<StatusError>("listing links to settle")?;
+    for link in links {
+        if pending.is_empty() {
+            break;
+        }
+        let node = link.local_node();
+        if !repository.can_read_link(link.repository)
+            || !state
+                .node(repository.clone(), node)
+                .await
+                .forward::<StatusError>("reading link node to settle")?
+                .is_dirty()
+        {
+            continue;
+        }
+
+        let cleared = pending
+            .iter()
+            .position(|(linked, linked_state)| {
+                linked.id == link.repository && linked_state.revision() == link.signature
+            })
+            .map(|index| pending.swap_remove(index));
+        let is_cleared = cleared.is_some();
+        let linked = if let Some(linked) = cleared {
+            linked
+        } else {
+            let linked_repository = repository.to_link_context(link.repository).await;
+            let linked_state = State::deserialize(linked_repository.clone(), link.signature)
+                .await
+                .forward::<StatusError>("deserializing linked state to settle")?;
+            (linked_repository, linked_state)
+        };
+        let (linked_repository, linked_state) = &linked;
+
+        let nested = Box::pin(settle_cleared_links(
+            linked_repository,
+            token,
+            linked_state,
+            pending,
+            depth + 1,
+        ))
+        .await?;
+        if !is_cleared && !nested {
+            continue;
+        }
+
+        let content = LinkedStagedContent::of(linked_state, linked_repository).await;
+        settle_linked_staged_state(
+            state,
+            repository.clone(),
+            node,
+            link.branch,
+            &linked,
+            content,
+            token,
+        )
+        .await
+        .forward::<StatusError>("repinning settled link")?;
+        changed = true;
+    }
+    Ok(changed)
+}
+
+/// Compare a repository's own tree against its staged state below `path`, or the whole of it where
+/// no path is given, and report what differs.
+async fn report_repository_staged_diff(
+    diff: StagedDiff,
+    repository: Arc<RepositoryContext>,
+    state_current: Arc<State>,
+    state_staged: Arc<State>,
+    path: Option<RelativePath>,
+) -> Result<(), StatusError> {
+    let changes = state::diff_collect(
+        repository.clone(),
+        state_current,
+        repository.clone(),
+        state_staged,
+        path,
+        FilterMode::CHANGES,
+    )
+    .await
+    .forward::<StatusError>("computing diff against staged state")?;
+    lore_debug!("Found {} changes in staged revision", changes.len());
+
+    report_staged_changes(&repository, &changes, &diff).await
+}
+
+/// Compare the subtree a layer draws against its staged state, and report what differs at the
+/// mount it is materialized at.
+async fn report_layer_staged_diff(
+    diff: StagedDiff,
+    layer_state: layer::LayerState,
+    selection: LayerSelection,
+) -> Result<(), StatusError> {
+    let changes = state::diff_collect_subtree(
+        layer::drawn_subtree_state(
+            &layer_state.repository,
+            &layer_state.state_current,
+            &selection.source_path,
+            &selection.mount_path,
+        )
+        .await,
+        layer::drawn_subtree_state(
+            &layer_state.repository,
+            &layer_state.state_staged,
+            &selection.source_path,
+            &selection.mount_path,
+        )
+        .await,
+        selection.mount_path.clone(),
+        FilterMode::CHANGES,
+    )
+    .await
+    .forward::<StatusError>("computing diff against staged state")?;
+    lore_debug!(
+        "Found {} changes in layer at \"{}\" staged revision",
+        changes.len(),
+        selection.mount_path,
+    );
+
+    report_staged_changes(&layer_state.repository, &changes, &diff).await
+}
+
+/// What a request for a path selects of a layer: where the selection sits in the working tree,
+/// and the path the layer draws it from.
+struct LayerSelection {
+    /// Where the selection is materialized, which every path reported for it is spelled from.
+    mount_path: RelativePath,
+    /// The path the drawn-from repository spells the selection at, read only to name its node.
+    source_path: RelativePath,
+}
+
+/// What `path` selects of `layer`, or `None` where it names nothing the mount holds.
+///
+/// A request naming nothing, or naming an ancestor of the mount, selects the whole of what the
+/// layer draws. One naming a path below the mount selects what lies at the same offset below the
+/// layer's source.
+fn layer_selection(layer: &layer::Layer, path: Option<&RelativePath>) -> Option<LayerSelection> {
+    let mount_path = RelativePath::new_from_initial_path(&layer.target_path).unwrap_or_default();
+    let selected = path.cloned().unwrap_or_else(|| mount_path.clone());
+    if !selected.is_empty() && !selected.overlaps(&layer.target_path) {
+        return None;
+    }
+
+    let sub_path = selected
+        .as_str()
+        .get(mount_path.len()..)
+        .unwrap_or_default();
+    Some(LayerSelection {
+        mount_path: RelativePath::new_from_clean_parts(&layer.target_path, sub_path),
+        source_path: RelativePath::new_from_clean_parts(&layer.source_path, sub_path),
+    })
+}
+
+/// `paths` without those inside a layer mount, which a provider that holds its state leaves to the
+/// staged comparison: a scan started inside a mount walks the parent's tree, which holds nothing of
+/// the mount, and would mark the layer's files there as parent adds.
+fn paths_outside_layer_mounts(
+    paths: &[Option<RelativePath>],
+    layers: &[(layer::Layer, layer::LayerState)],
+) -> Vec<Option<RelativePath>> {
+    let targets: Vec<&str> = layers
+        .iter()
+        .map(|(layer, _)| layer.target_path.as_str())
+        .collect();
+    paths
+        .iter()
+        .filter(|path| {
+            !path.as_ref().is_some_and(|path| {
+                matches!(
+                    classify_stage_path(path.as_str(), &targets),
+                    LayerRoute::Inside { .. }
+                )
+            })
+        })
+        .cloned()
+        .collect()
+}
+
+/// Compare the current state against the staged one for every requested path, in the repository's
+/// own tree and in each layer the path selects, and report what differs.
+async fn report_staged_diffs(
+    repository: &Arc<RepositoryContext>,
+    paths: &[Option<RelativePath>],
+    state_current: &Arc<State>,
+    state_staged: &Arc<State>,
+    layers: &[(layer::Layer, layer::LayerState)],
+    diff: StagedDiff,
+) -> Result<(), StatusError> {
+    lore_debug!("Calculating deltas against staged revision");
+
+    let mut tasks = JoinSet::new();
+    for path in paths.iter() {
+        lore_spawn!(
+            tasks,
+            report_repository_staged_diff(
+                diff.clone(),
+                repository.clone(),
+                state_current.clone(),
+                state_staged.clone(),
+                path.clone(),
+            )
+        );
+
+        for (layer, layer_state) in layers.iter() {
+            let Some(selection) = layer_selection(layer, path.as_ref()) else {
+                continue;
+            };
+            lore_spawn!(
+                tasks,
+                report_layer_staged_diff(diff.clone(), layer_state.clone(), selection)
+            );
+        }
+    }
+
+    lore_drain_tasks!(tasks, StatusError::internal("Recursion task failed"))?;
+    Ok(())
+}
+
+/// Resolve `source_path` to the work needed to count its subtree, labelling
+/// descendant paths under `mount_path` for view filtering. The two differ for
+/// a layer: the node is resolved at the layer's `source_path` while paths are
+/// labelled with the `mount_path`, so the local view filter matches the
+/// working-tree layout. Returns the node's own `(directories, files)`
+/// contribution plus an optional root [`CountWork`] for its descendants. A file
+/// yields `(0, 1, None)`; a directory or link `(1, 0, Some(work))`. An empty
+/// `source_path` is the root of `state` (a layer whose source is the repo
+/// root), counted as one directory plus its descendants. An unresolved path
+/// yields `(0, 0, None)`.
+async fn count_at_path_root(
+    state: Arc<state::State>,
+    repository: Arc<RepositoryContext>,
+    source_path: &RelativePath,
+    mount_path: &RelativePath,
+) -> Result<(u64, u64, Option<CountWork>), StatusError> {
+    // Every work item below is rooted at `mount_path`, so its ancestors are
+    // folded once here and the walk steps from there. Link resolution keeps the
+    // filter, so the verdict holds for the resolved repository too.
+    let states = repository.filter.exclusion_states(mount_path);
+
+    if source_path.is_empty() {
+        return Ok((
+            1,
+            0,
+            Some(CountWork {
+                state,
+                repository,
+                node_id: ROOT_NODE,
+                path: mount_path.clone(),
+                states,
+            }),
+        ));
+    }
+
+    let Ok(link) = state
+        .find_node_link(repository.clone(), source_path.as_str())
+        .await
+    else {
+        return Ok((0, 0, None));
+    };
+    if !link.is_valid() {
+        return Ok((0, 0, None));
+    }
+
+    let (repository, state) = link
+        .resolve(repository.clone(), state.clone())
+        .await
+        .forward::<StatusError>("resolving count path")?;
+    let node = state
+        .node(repository.clone(), link.node)
+        .await
+        .forward::<StatusError>("reading count path node")?;
+
+    if node.is_file() {
+        return Ok((0, 1, None));
+    }
+
+    if node.is_link() {
+        let inner = node.linked_node();
+        let (repository, state) = inner
+            .resolve(repository.clone(), state.clone())
+            .await
+            .forward::<StatusError>("resolving count path link target")?;
+        return Ok((
+            1,
+            0,
+            Some(CountWork {
+                state,
+                repository,
+                node_id: inner.node,
+                path: mount_path.clone(),
+                states,
+            }),
+        ));
+    }
+
+    Ok((
+        1,
+        0,
+        Some(CountWork {
+            state,
+            repository,
+            node_id: link.node,
+            path: mount_path.clone(),
+            states,
+        }),
+    ))
+}
+
+/// Count `work`'s direct children, honoring the repository's local view filter,
+/// adding files/directories to the shared totals and pushing each directory (or
+/// resolved link target) back onto the shared stack for later counting. A link
+/// node is counted as a directory and descended into.
+async fn count_node_children(work: &CountWork, shared: &CountShared) -> Result<(), StatusError> {
+    let mut children = state::StateNodeChildrenWithNameIterator::new(
+        work.state.clone(),
+        work.repository.clone(),
+        work.node_id,
+    )
+    .await
+    .forward::<StatusError>("iterating revision tree children")?;
+
+    let mut directories = 0u64;
+    let mut files = 0u64;
+    let mut pushed = Vec::new();
+
+    while let Some((child_id, child_node, child_name)) = children
+        .next()
+        .await
+        .forward::<StatusError>("reading revision tree node")?
+    {
+        let is_directory = child_node.is_directory();
+        let is_link = child_node.is_link();
+        let child_path = work.path.push_into_buf(child_name).freeze();
+
+        let (child_states, excluded) = work.repository.filter.child_excludes_tree(
+            work.states,
+            &child_path,
+            is_directory || is_link,
+            FilterMode::View,
+        );
+        if excluded {
+            continue;
+        }
+
+        if is_directory {
+            directories += 1;
+            pushed.push(CountWork {
+                state: work.state.clone(),
+                repository: work.repository.clone(),
+                node_id: child_id,
+                path: child_path,
+                states: child_states,
+            });
+        } else if is_link {
+            directories += 1;
+            let link = child_node.linked_node();
+            let (link_repository, link_state) = link
+                .resolve(work.repository.clone(), work.state.clone())
+                .await
+                .forward::<StatusError>("resolving link target for count")?;
+            pushed.push(CountWork {
+                state: link_state,
+                repository: link_repository,
+                node_id: link.node,
+                path: child_path,
+                states: child_states,
+            });
+        } else if child_node.is_file() {
+            files += 1;
+        }
+    }
+
+    if directories > 0 {
+        shared.directories.fetch_add(directories, Ordering::Relaxed);
+    }
+    if files > 0 {
+        shared.files.fetch_add(files, Ordering::Relaxed);
+    }
+
+    if !pushed.is_empty() {
+        // Account for the new work before it becomes visible so a worker that
+        // pops and finishes a child can't drive `outstanding` to zero early.
+        shared.outstanding.fetch_add(pushed.len(), Ordering::AcqRel);
+        for work in pushed {
+            shared.queue.push(work);
+        }
+        shared.notify.notify_waiters();
+    }
+
+    Ok(())
+}
+
+/// A single pool worker: drain the shared queue until no work remains in flight.
+///
+/// Termination is driven solely by `outstanding` reaching zero, so it is robust
+/// regardless of scheduling: a notification interest is registered (`enable`)
+/// before each empty-queue check, so a concurrent push or completion can never
+/// be missed before the worker parks on `notify`.
+async fn count_worker(shared: Arc<CountShared>) -> Result<(), StatusError> {
+    loop {
+        let notified = shared.notify.notified();
+        tokio::pin!(notified);
+        notified.as_mut().enable();
+
+        let Some(work) = shared.queue.pop() else {
+            if shared.outstanding.load(Ordering::Acquire) == 0 {
+                shared.notify.notify_waiters();
+                return Ok(());
+            }
+            notified.await;
+            continue;
+        };
+
+        // Once any worker has failed, stop processing but keep draining so
+        // `outstanding` still reaches zero and every worker terminates. The
+        // `OnceLock` keeps the first error and ignores the rest.
+        if shared.error.get().is_none()
+            && let Err(err) = count_node_children(&work, &shared).await
+        {
+            let _ = shared.error.set(err);
+        }
+
+        if shared.outstanding.fetch_sub(1, Ordering::AcqRel) == 1 {
+            shared.notify.notify_waiters();
+        }
+    }
+}
+
+/// Count directories and files in the subtrees rooted at `roots`, honoring each
+/// repository's local view filter, using a pool of at most
+/// [`COUNT_MAX_CONCURRENCY`] workers. Returns the summed `(directories, files)`
+/// across all roots (excluding the root nodes themselves).
+async fn count_subtrees(roots: Vec<CountWork>) -> Result<(u64, u64), StatusError> {
+    if roots.is_empty() {
+        return Ok((0, 0));
+    }
+
+    let queue = SegQueue::new();
+    let outstanding = roots.len();
+    for work in roots {
+        queue.push(work);
+    }
+
+    let shared = Arc::new(CountShared {
+        queue,
+        outstanding: AtomicUsize::new(outstanding),
+        directories: AtomicU64::new(0),
+        files: AtomicU64::new(0),
+        error: OnceLock::new(),
+        notify: Notify::new(),
+    });
+
+    let workers = lore_base::runtime::processor_count().clamp(1, COUNT_MAX_CONCURRENCY);
+    let mut tasks = JoinSet::new();
+    for _ in 0..workers {
+        let shared = shared.clone();
+        lore_spawn!(tasks, count_worker(shared));
+    }
+    lore_drain_tasks!(tasks, StatusError::internal("Count worker task failed"))?;
+
+    let directories = shared.directories.load(Ordering::Relaxed);
+    let files = shared.files.load(Ordering::Relaxed);
+    if shared.error.get().is_some() {
+        let shared = Arc::into_inner(shared)
+            .expect("all count workers have completed and released their references");
+        return Err(shared
+            .error
+            .into_inner()
+            .expect("error presence was just observed"));
+    }
+
+    Ok((directories, files))
+}
+
+/// Resolve the remote's latest revision for a branch, degrading to the existing
+/// `NoRemote` state when the remote is unavailable so an unreachable remote never
+/// stalls a local status read; transport connect timeouts bound the wait.
+///
+/// Returns `(latest, authorized, available)`, where `available` reflects
+/// connectivity, not query success — a reachable remote that errors is still available.
+#[lore_macro::test_pub]
+async fn resolve_remote_latest(
+    repository: &Arc<RepositoryContext>,
+    branch_id: BranchId,
+) -> (Option<Hash>, bool, bool) {
+    let remote = match repository.remote().await {
+        Ok(r) => r,
+        Err(err) => {
+            lore_debug!("Remote unavailable for status: {err}");
+            return (None, false, false);
+        }
+    };
+
+    match branch::load_remote(remote, repository.id, branch_id).await {
+        Ok(status) => (Some(status.latest), true, true),
+        Err(err) if err.is_branch_not_found() => (None, true, true),
+        Err(err) => {
+            lore_debug!("Remote branch query failed: {err}");
+            (None, false, true)
+        }
+    }
+}
+
+/// Whether a branch has revisions the remote latest does not, and whether the remote latest has
+/// revisions the branch does not, answered as `(local_ahead, remote_ahead)` for `local_state`, the
+/// branch's local latest, and `remote_state`, a different remote latest.
+///
+/// `local_diverged` is whether the branch holds revisions not on the remote history, and
+/// `last_sync` is the remote latest the branch was last recorded as synced to. A diverged branch
+/// numbered past the remote latest is behind it unless the remote latest is on its first-parent
+/// history, where a merge of divergent history holds the remote latest it merged. A `last_sync`
+/// equal to the remote latest says it is. Any other `last_sync` is checked against that history
+/// ([`on_first_parent_history`]), since it is stored apart from the branch latest and a process
+/// killed between the two writes leaves a committed merge with the sync point before it.
+#[lore_macro::test_pub]
+async fn compare_with_remote(
+    repository: &Arc<RepositoryContext>,
+    branch: BranchId,
+    local_state: &State,
+    remote_state: &State,
+    local_diverged: bool,
+    last_sync: Hash,
+) -> (bool, bool) {
+    let local_n = local_state.revision_number();
+    let remote_n = remote_state.revision_number();
+    if !local_diverged {
+        (false, remote_n > local_n)
+    } else if local_n > remote_n {
+        let remote_ahead = last_sync != remote_state.revision()
+            && !on_first_parent_history(repository, branch, local_state, remote_state).await;
+        (true, remote_ahead)
+    } else {
+        // Numbered at or past the branch latest, the remote latest is not on its history.
+        (true, true)
+    }
+}
+
+/// Whether `revision_state` is on the history of `latest_state`, walked along first parents.
+///
+/// The walk stops at the first revision numbered at or below `revision_state`, so it reads at most
+/// one revision for each revision number between the two. A revision that cannot be read ends it,
+/// answering `false`.
+async fn on_first_parent_history(
+    repository: &Arc<RepositoryContext>,
+    branch: BranchId,
+    latest_state: &State,
+    revision_state: &State,
+) -> bool {
+    let revision = revision_state.revision();
+    let revision_number = revision_state.revision_number();
+    find::find_revision(
+        repository.clone(),
+        branch,
+        latest_state.revision(),
+        false,
+        None,
+        |state, _metadata| {
+            if state.revision() == revision {
+                find::FindMatchResult::Match
+            } else if state.revision_number() <= revision_number {
+                find::FindMatchResult::Abort
+            } else {
+                find::FindMatchResult::Continue
+            }
+        },
+    )
+    .await
+    .inspect_err(|err| {
+        lore_debug!(
+            "Revision {revision} not found on the first-parent history of {}: {err}",
+            latest_state.revision()
+        );
+    })
+    .is_ok()
+}
+
+/// Reconciles every requested path against the filesystem within `operation`, marking
+/// dirty as it goes. Given a `summary`, it emits a status event per change the caller did not
+/// stage, counted into `summary`, and reports a path neither the tree nor the working tree holds
+/// as ignored. Without one it marks alone, leaving both to its caller.
+///
+/// `paths` is an antichain in lexicographic order, as [`RelativePath::dedup_to_supersets`]
+/// leaves it, or the repository root alone. The paths are scanned in parallel, at most
+/// [`MAX_CONCURRENT_TREE_TASKS`] at once, once the directory nodes their scans would race to
+/// create exist. No scan starts after the first failure, which is the one returned once the
+/// scans in flight have finished.
+///
+/// What the scans find stale is discarded once all of them have drained, since a discard clears
+/// marks other scans may still be carrying up through the directories they share. It is discarded
+/// whether or not a scan failed: a node a scan found stale is stale whatever stopped another scan,
+/// and left in the tree it would carry marks no file backs. A scan's failure is the error
+/// returned. Discarding is boxed as the cold path: most scans find nothing stale. Answers whether
+/// anything was discarded.
+pub(crate) async fn scan_paths(
+    operation: Arc<InstanceOperationImpl>,
+    repository: &Arc<RepositoryContext>,
+    paths: &[Option<RelativePath>],
+    state_current: &Arc<state::State>,
+    state_staged: &Arc<state::State>,
+    layer_mounts: &Arc<Vec<state::LayerMountInfo>>,
+    report: Option<&ScanReport>,
+) -> Result<bool, StatusError> {
+    let targets = resolve_scan_targets(
+        &operation,
+        repository,
+        state_staged,
+        paths,
+        report.is_some(),
+    )
+    .await?;
+    create_shared_untracked_ancestors(repository, state_staged, &targets).await?;
+
+    let discards = Arc::new(state::WalkDiscards::default());
+    let mut tasks = JoinSet::new();
+    let mut failure = None;
+    for target in targets {
+        lore_spawn!(
+            tasks,
+            scan_path(
+                operation.clone(),
+                repository.clone(),
+                state_current.clone(),
+                state_staged.clone(),
+                target.path,
+                layer_mounts.clone(),
+                report.cloned(),
+                discards.clone(),
+            )
+        );
+        if let Err(err) = lore_limit_drain_tasks!(
+            tasks,
+            MAX_CONCURRENT_TREE_TASKS,
+            StatusError::internal("Recursion task failed")
+        ) {
+            failure = Some(err);
+            break;
+        }
+    }
+    let drained = lore_drain_tasks!(tasks, StatusError::internal("Recursion task failed"));
+    let discarded = if discards.is_empty() {
+        Ok(false)
+    } else {
+        Box::pin(discards.apply())
+            .await
+            .forward::<StatusError>("discarding entries the scans found stale")
+            .map(|()| true)
+    };
+    if let Some(err) = failure {
+        return Err(err);
+    }
+    drained?;
+    discarded
+}
+
+/// A path a status scan reconciles, as resolved before any scan starts.
+struct ScanTarget {
+    /// The path, or `None` for the whole repository.
+    path: Option<RelativePath>,
+    /// Whether its scan creates the directory nodes above it that the tree lacks: only the
+    /// working tree holds the path, the filter keeps it, and the deepest node the tree holds on
+    /// it is a directory, short of any link.
+    creates_ancestors: bool,
+}
+
+/// Resolve every path before any is scanned, at most [`MAX_CONCURRENT_TREE_TASKS`] at once,
+/// keeping input order and leaving out a path neither tree holds, which is reported ignored where
+/// `report_ignored` asks.
+///
+/// A resolution reads the tree and the working tree alone and has no failure of its own.
+async fn resolve_scan_targets(
+    operation: &Arc<InstanceOperationImpl>,
+    repository: &Arc<RepositoryContext>,
+    state: &Arc<state::State>,
+    paths: &[Option<RelativePath>],
+    report_ignored: bool,
+) -> Result<Vec<ScanTarget>, StatusError> {
+    let mut resolved: Vec<(usize, ScanTarget)> = Vec::with_capacity(paths.len());
+    let mut tasks = JoinSet::new();
+    let mut failure = None;
+    let join_failure = |err: tokio::task::JoinError| {
+        StatusError::internal_with_context(err, "Failed to join scan target resolution task")
+    };
+    for (index, path) in paths.iter().enumerate() {
+        let Some(path) = path else {
+            resolved.push((
+                index,
+                ScanTarget {
+                    path: None,
+                    creates_ancestors: false,
+                },
+            ));
+            continue;
+        };
+        lore_spawn!(
+            tasks,
+            resolve_scan_target(
+                operation.clone(),
+                repository.clone(),
+                state.clone(),
+                path.clone(),
+                report_ignored,
+            )
+            .map(move |target| target.map(|target| (index, target)))
+        );
+        fan_out::join_below(
+            &mut tasks,
+            MAX_CONCURRENT_TREE_TASKS,
+            &mut failure,
+            join_failure,
+            |target| {
+                resolved.extend(target);
+                Ok(())
+            },
+        )
+        .await;
+        if failure.is_some() {
+            break;
+        }
+    }
+    fan_out::join_below(&mut tasks, 1, &mut failure, join_failure, |target| {
+        resolved.extend(target);
+        Ok(())
+    })
+    .await;
+    if let Some(err) = failure {
+        return Err(err);
+    }
+
+    resolved.sort_unstable_by_key(|(index, _)| *index);
+    Ok(resolved.into_iter().map(|(_, target)| target).collect())
+}
+
+/// Where `path` stands before it is scanned, or `None` where neither the tree nor the working
+/// tree holds it, which is reported ignored here where `report_ignored` asks.
+///
+/// The filter verdict is the one [`state::diff_filesystem`] reaches for the path, asked without
+/// reporting it: the scan reports it, and only a path the scan keeps creates directory nodes.
+///
+/// Not an `async fn`, which would hold a second copy of its arguments.
+#[allow(clippy::manual_async_fn)]
+fn resolve_scan_target(
+    operation: Arc<InstanceOperationImpl>,
+    repository: Arc<RepositoryContext>,
+    state: Arc<state::State>,
+    path: RelativePath,
+    report_ignored: bool,
+) -> impl Future<Output = Option<ScanTarget>> + Send {
+    async move {
+        let (tracked, missing_below) = match state
+            .find_to_link(&repository, ROOT_NODE, path.as_str(), false)
+            .await
+        {
+            Ok(state::PathStop {
+                at: state::Stop::End,
+                ..
+            }) => (true, None),
+            Ok(
+                stop @ state::PathStop {
+                    at: state::Stop::Link(_),
+                    ..
+                },
+            ) => (
+                state
+                    .find_relative_from(repository.clone(), path.as_str(), stop)
+                    .await
+                    .is_ok_and(|(node_link, _)| node_link.is_valid()),
+                None,
+            ),
+            Ok(state::PathStop {
+                at: state::Stop::Missing,
+                node,
+                ..
+            }) => (false, Some(node)),
+            Err(_) => (false, None),
+        };
+        if tracked {
+            return Some(ScanTarget {
+                path: Some(path),
+                creates_ancestors: false,
+            });
+        }
+
+        // A path that cannot be described is kept, so that the scan reports it, rather than
+        // dropped with the paths that are not there.
+        let info = match operation.file_info(&path).await {
+            Ok(info) if !info.exists() => {
+                if report_ignored {
+                    emit_path_ignore(path.as_str()).await;
+                }
+                lore_trace!("Ignoring invalid path: {path}");
+                return None;
+            }
+            Ok(info) => Some(info),
+            Err(_) => None,
+        };
+
+        let filter = &repository.filter;
+        let (_, excluded) = filter.child_excludes_tree(
+            filter.parent_exclusion_states(&path),
+            &path,
+            info.is_some_and(|info| info.is_dir()),
+            FilterMode::Full,
+        );
+        // The directories leading to a path below a link mount belong to the linked tree, where
+        // its own scan adds them, and none is added below a file. A path that cannot be read
+        // through is left to its own scan too, which fails on it as this would.
+        let creates_ancestors = !excluded
+            && match missing_below {
+                Some(node) => state
+                    .node(repository.clone(), node)
+                    .await
+                    .is_ok_and(|node| node.is_directory()),
+                None => false,
+            };
+        Some(ScanTarget {
+            path: Some(path),
+            creates_ancestors,
+        })
+    }
+}
+
+/// Create the directory nodes two or more untracked targets share, as their scans would.
+///
+/// A scan of an untracked path creates the directory nodes above it that the tree lacks, and
+/// [`state::State::node_add`] creates rather than finds: two scans reaching one such directory
+/// at once would each add it. Created first, each is found by every scan that reaches it, and a
+/// directory no scan would create is not created here either.
+async fn create_shared_untracked_ancestors(
+    repository: &Arc<RepositoryContext>,
+    state: &Arc<state::State>,
+    targets: &[ScanTarget],
+) -> Result<(), StatusError> {
+    let untracked: Vec<&RelativePath> = targets
+        .iter()
+        .filter(|target| target.creates_ancestors)
+        .filter_map(|target| target.path.as_ref())
+        .collect();
+    let ancestors = fan_out::shared_ancestors(&untracked);
+    lore_debug!(
+        "Creating {} directories shared by {} untracked scan targets",
+        ancestors.len(),
+        untracked.len()
+    );
+
+    fan_out::create_shared_ancestors(
+        &ancestors,
+        |ancestor, nodes| {
+            let (start, below) = match fan_out::longest_ancestor(ancestor, nodes) {
+                Some((prefix, node)) => (*node, &ancestor[prefix.len() + 1..]),
+                None => (ROOT_NODE, ancestor),
+            };
+            state::os_diff::ensure_scan_dir_chain(
+                repository.clone(),
+                state.clone(),
+                start,
+                below.to_string(),
+            )
+            .map(|created| {
+                created
+                    .map(Some)
+                    .forward::<StatusError>("creating a directory shared by untracked paths")
+            })
+        },
+        |err| StatusError::internal_with_context(err, "Failed to join directory creation task"),
+    )
+    .await?;
+    Ok(())
+}
+
+/// Reconciles `path` against the filesystem, or the whole repository for `None`, reporting the
+/// changes it finds as `report` asks where given and holding what it finds stale on `discards`.
+///
+/// Not an `async fn`, which would hold a second copy of its arguments.
+#[allow(clippy::manual_async_fn, clippy::too_many_arguments)]
+fn scan_path(
+    operation: Arc<InstanceOperationImpl>,
+    repository: Arc<RepositoryContext>,
+    state_current: Arc<state::State>,
+    state_staged: Arc<state::State>,
+    path: Option<RelativePath>,
+    layer_mounts: Arc<Vec<state::LayerMountInfo>>,
+    report: Option<ScanReport>,
+    discards: Arc<state::WalkDiscards>,
+) -> impl Future<Output = Result<(), StatusError>> + Send {
+    async move {
+        if let Some(path) = path.as_ref() {
+            lore_debug!(
+                "Calculating deltas against filesystem path: {}",
+                path.as_str()
+            );
+        } else {
+            lore_debug!("Calculating deltas against filesystem for full repository");
+        }
+
+        let start = Instant::now();
+
+        let mut changes = state::diff_filesystem_queuing(
+            &operation,
+            FilesystemDiffTree {
+                repository: repository.clone(),
+                state: state_staged,
+            },
+            FilesystemDiffTree {
+                repository: repository.clone(),
+                state: state_current,
+            },
+            path,
+            FilterMode::Full,
+            FilesystemDiffIntent::MarkDirty,
+            layer_mounts,
+            Some(discards),
+        )
+        .await
+        .forward::<StatusError>("computing diff against filesystem")?;
+
+        let (reported, failure) = match report.as_ref() {
+            Some(report) => {
+                report_scan_changes(&operation, &repository, report, &mut changes).await
+            }
+            None => (0, None),
+        };
+
+        let diff_stats = changes
+            .finish()
+            .await
+            .forward::<StatusError>("computing diff against filesystem")?;
+        if let Some(report) = report {
+            report.summary.append_diff(&diff_stats);
+        }
+
+        lore_debug!(
+            "Scan reported {reported} file system changes in {:.3}s",
+            start.elapsed().as_secs_f64(),
+        );
+
+        match failure {
+            Some(err) => Err(err),
+            None => Ok(()),
+        }
+    }
+}
+
+/// What a status run reads out of the trees it has: the comparison against the staged state, the
+/// scan against the working tree, or both.
+#[lore_macro::test_pub]
+#[derive(Clone, Copy)]
+struct TreeDiffPlan {
+    /// Whether a staged state was asked for and exists to compare the current one against.
+    compare_staged: bool,
+    /// Whether a dirty flag the staged comparison finds is checked against the working tree.
+    check_dirty: bool,
+    /// Whether the working tree is scanned for changes neither state holds.
+    scan: bool,
+    /// Whether the scan was asked for, so it reports as `--scan` does: every entry below a
+    /// deleted directory, and a summary. A scan run unasked reports as a plain status does.
+    scan_asked: bool,
+}
+
+impl TreeDiffPlan {
+    /// The plan `options` ask for over a repository that holds a staged state where `has_staged`
+    /// says so. A provider that holds its state in a `State`, whose diff is exact, is scanned
+    /// whether or not the scan was asked for, and its dirty flags need no check. Unasked, its
+    /// scan reports what a plain status reports on any other working tree: a deleted directory as
+    /// one entry, and no summary.
+    #[lore_macro::test_pub]
+    fn for_status(options: &StatusOptions, has_staged: bool, holds_state: bool) -> Self {
+        TreeDiffPlan {
+            compare_staged: options.staged && has_staged,
+            check_dirty: options.check_dirty && !holds_state,
+            scan: options.scan || holds_state,
+            scan_asked: options.scan,
+        }
+    }
+
+    /// Whether the staged comparison checks dirty flags, which it does only where it runs at all.
+    fn checks_dirty(&self) -> bool {
+        self.compare_staged && self.check_dirty
+    }
+
+    /// Whether either phase reads the working tree, and so whether an operation is opened at all.
+    fn reads_working_tree(&self) -> bool {
+        self.checks_dirty() || self.scan
+    }
+}
+
+/// Report what the staged state and the working tree hold against the current state.
+///
+/// One operation covers whichever phases `plan` asks for. Beginning an operation freezes a
+/// provider's view of the working tree, so a run that both checks dirty flags and scans reads a
+/// single snapshot rather than two that may disagree; a run reading neither opens none.
+#[lore_macro::test_pub]
+#[allow(clippy::too_many_arguments)]
+async fn report_tree_diffs(
+    repository: &Arc<RepositoryContext>,
+    paths: &[Option<RelativePath>],
+    state_current: &Arc<State>,
+    state_staged: &Arc<State>,
+    layers: &[(layer::Layer, layer::LayerState)],
+    layer_mounts: &Arc<Vec<state::LayerMountInfo>>,
+    summary: &Arc<StatusSummaryStats>,
+    plan: TreeDiffPlan,
+) -> Result<Vec<LinkedState>, StatusError> {
+    with_operation_if(
+        repository.file_system(),
+        plan.reads_working_tree(),
+        async |operation| {
+            let mut cleared_links = vec![];
+            if plan.compare_staged {
+                let diff = StagedDiff {
+                    summary: summary.clone(),
+                    show_scan: plan.scan,
+                    check_dirty: operation.clone().filter(|_| plan.checks_dirty()),
+                    cleared_links: Arc::default(),
+                };
+                let cleared = diff.cleared_links.clone();
+                report_staged_diffs(repository, paths, state_current, state_staged, layers, diff)
+                    .await?;
+                cleared_links = std::mem::take(&mut *cleared.lock());
+            }
+
+            let Some(operation) = operation.filter(|_| plan.scan) else {
+                return Ok(cleared_links);
+            };
+            let outside_layers;
+            let paths = if operation.holds_state() && !layers.is_empty() {
+                outside_layers = paths_outside_layer_mounts(paths, layers);
+                outside_layers.as_slice()
+            } else {
+                paths
+            };
+            lore_debug!(
+                "Calculating deltas against filesystem for {} paths",
+                paths.len()
+            );
+            let report = ScanReport {
+                summary: summary.clone(),
+                whole_deleted_directories: !plan.scan_asked,
+            };
+            scan_paths(
+                operation,
+                repository,
+                paths,
+                state_current,
+                state_staged,
+                layer_mounts,
+                Some(&report),
+            )
+            .await?;
+            Ok(cleared_links)
+        },
+    )
+    .await
+}
+
+pub(crate) async fn status(
+    repository: Arc<RepositoryContext>,
+    paths: Option<Vec<RelativePath>>,
+    options: StatusOptions,
+) -> Result<(), StatusError> {
+    if options.reset {
+        crate::instance::delete_staged_anchor(&repository)
+            .await
+            .forward::<StatusError>("dropping staged anchor for status reset")?;
+    }
+
+    let (state_current, state_staged, current_branch) =
+        state::State::deserialize_current_and_staged(repository.clone())
+            .await
+            .forward::<StatusError>("deserializing current and staged state")?;
+
+    let mut has_staged = state_staged.is_some();
+    let state_staged = state_staged.unwrap_or_else(|| state_current.clone());
+
+    lore_debug!(
+        "Repository status, current signature {}, staged signature {}",
+        state_current.revision(),
+        state_staged.revision()
+    );
+
+    let layers = {
+        let mut layers = vec![];
+        let list = layer::list(repository.clone()).await.unwrap_or_default();
+        for layer in list {
+            let layer_state = layer
+                .deserialize_current_and_staged(repository.clone())
+                .await
+                .forward::<StatusError>("deserializing layer state")?;
+
+            if !layer_state.state_staged.revision().is_zero()
+                && layer_state.state_staged.revision() != layer_state.state_current.revision()
+            {
+                has_staged = true;
+            }
+
+            layers.push((layer, layer_state));
+        }
+        layers
+    };
+
+    let layer_mounts = layer::mounts(&layers).await;
+
+    let branch_metadata = branch::metadata(repository.clone(), current_branch)
+        .await
+        .forward::<StatusError>("loading branch metadata")?;
+    let branch = branch::branch_metadata(repository.clone(), current_branch, &branch_metadata)
+        .await
+        .forward::<StatusError>("loading branch info")?;
+    let branch_stack = branch::stack(&branch_metadata);
+
+    let check_dirty = options.check_dirty;
+
+    // Accumulates per-action dirty counts across the parallel staged/scan
+    // walks; emitted as a single summary event for --scan / --check-dirty.
+    let summary = Arc::new(StatusSummaryStats::default());
+
+    let local_latest = branch::load_latest(repository.clone(), branch.id)
+        .await
+        .unwrap_or_default();
+
+    let local_state = state::State::deserialize(repository.clone(), local_latest)
+        .await
+        .forward::<StatusError>("deserializing local state")?;
+
+    // Authorized only on an authoritative answer — a latest revision
+    // or branch not found; proving the identity is authorized and has access
+    let (remote_latest, remote_authorized, remote_available) =
+        resolve_remote_latest(&repository, branch.id).await;
+
+    let remote_state = if let Some(remote_latest) = remote_latest {
+        state::State::deserialize(repository.clone(), remote_latest)
+            .await
+            .ok()
+    } else {
+        None
+    };
+
+    let branch_parent = branch_stack
+        .first()
+        .map(|parent| parent.branch)
+        .unwrap_or_default();
+    let branch_point = branch_stack
+        .first()
+        .map(|parent| parent.revision)
+        .unwrap_or_default();
+
+    let revision_merged_parent_branch = if options.sync_point {
+        if branch_point.is_zero() {
+            Hash::default()
+        } else {
+            let mut search_point = state_current.revision();
+
+            // Repeatedly search for a revision that's the result of a merge and then
+            // check if the merged revision was coming from the parent branch.
+            loop {
+                let Ok(signature) = find::find_revision(
+                    repository.clone(),
+                    current_branch,
+                    search_point,
+                    false,
+                    None,
+                    |state, _metadata| {
+                        let is_branch_point = state.revision() == branch_point;
+                        let is_merge = !state.parent_other().is_zero();
+
+                        if is_merge || is_branch_point {
+                            find::FindMatchResult::Match
+                        } else {
+                            find::FindMatchResult::Continue
+                        }
+                    },
+                )
+                .await
+                else {
+                    break Hash::default();
+                };
+
+                if signature == branch_point {
+                    lore_debug!(
+                        "Found branch point {} as last merged in from parent branch",
+                        signature
+                    );
+                    break signature;
+                }
+
+                let branch_state = state::State::deserialize(repository.clone(), signature)
+                    .await
+                    .forward::<StatusError>("deserializing branch state")?;
+                let parent_state =
+                    state::State::deserialize(repository.clone(), branch_state.parent_other())
+                        .await
+                        .forward::<StatusError>("deserializing parent state")?;
+                let parent_state_metadata =
+                    Metadata::deserialize(repository.clone(), parent_state.metadata_hash())
+                        .await
+                        .forward::<StatusError>("deserializing parent metadata")?;
+                let parent_state_branch = parent_state_metadata
+                    .get_branch()
+                    .forward::<StatusError>("reading parent branch from metadata")?;
+                if parent_state_branch == branch_parent {
+                    lore_debug!(
+                        "Found revision {} as last merged in from parent branch",
+                        parent_state.revision()
+                    );
+                    break parent_state.revision();
+                }
+
+                search_point = branch_state.parent_self();
+            }
+        }
+    } else {
+        Hash::default()
+    };
+
+    let last_sync = branch::load_last_sync(repository.clone(), branch.id)
+        .await
+        .unwrap_or_default();
+
+    // Authoritative answer to "does local have revisions not on remote history?":
+    // the LATEST_STATUS flag set by commit/push/sync/clone/restore. When
+    // Convergent, local_latest is guaranteed to be on the remote history line —
+    // any difference can only mean remote moved past us.
+    let local_diverged = branch::load_latest_divergent(repository.clone(), branch.id)
+        .await
+        .unwrap_or(true);
+
+    let (local_ahead, remote_ahead) = if local_latest != remote_latest.unwrap_or_default()
+        && let Some(remote_state) = remote_state.clone()
+    {
+        compare_with_remote(
+            &repository,
+            branch.id,
+            &local_state,
+            &remote_state,
+            local_diverged,
+            last_sync,
+        )
+        .await
+    } else {
+        (false, false)
+    };
+    {
+        let status = match (remote_ahead, local_ahead) {
+            (true, true) => "divergent",
+            (true, false) => "remote ahead",
+            (false, true) => "local ahead",
+            (false, false) => "synchronized",
+        };
+        lore_debug!(
+            "Branch is {}, remote LATEST {}, local LATEST {}, last sync {}",
+            status,
+            remote_latest.unwrap_or_default(),
+            local_latest,
+            last_sync
+        );
+    }
+
+    {
+        let data = LoreRepositoryStatusRevisionEventData::new(
+            repository.id,
+            branch.id,
+            branch.name.as_str(),
+            state_current.revision(),
+            state_current.revision_number(),
+            if has_staged {
+                state_staged.revision()
+            } else {
+                Hash::default()
+            },
+            state_staged.parent_other(),
+            revision_merged_parent_branch,
+            local_state.revision(),
+            local_state.revision_number(),
+            remote_latest.unwrap_or_default(),
+            if let Some(remote_state) = remote_state {
+                remote_state.revision_number()
+            } else {
+                0
+            },
+            local_ahead,
+            remote_ahead,
+            remote_available,
+            remote_authorized,
+            remote_latest.is_some(),
+        );
+        lore_debug!("Repository status: {data:?}");
+        event::LoreEvent::RepositoryStatusRevision(data).send();
+    }
+
+    let paths = match paths.map(RelativePath::dedup_to_supersets) {
+        // Caller supplied a path filter that survived dedup — iterate it.
+        Some(deduped) if !deduped.is_empty() => deduped.into_iter().map(Some).collect(),
+        // No filter, or dedup collapsed to the repository root — scan everything.
+        _ => vec![None],
+    };
+
+    if options.count {
+        let mut directories = 0u64;
+        let mut files = 0u64;
+        let mut roots = Vec::new();
+
+        for path in paths.iter() {
+            match path {
+                None => {
+                    roots.push(CountWork {
+                        state: state_staged.clone(),
+                        repository: repository.clone(),
+                        node_id: ROOT_NODE,
+                        path: RelativePath::default(),
+                        states: FilterStates::ROOT,
+                    });
+                }
+                Some(path) => {
+                    let (path_directories, path_files, work) =
+                        count_at_path_root(state_staged.clone(), repository.clone(), path, path)
+                            .await?;
+                    directories += path_directories;
+                    files += path_files;
+                    roots.extend(work);
+                }
+            };
+
+            for (layer, layer_state) in layers.iter() {
+                let Some(selection) = layer_selection(layer, path.as_ref()) else {
+                    continue;
+                };
+                let (layer_directories, layer_files, work) = count_at_path_root(
+                    layer_state.state_staged.clone(),
+                    layer_state.repository.clone(),
+                    &selection.source_path,
+                    &selection.mount_path,
+                )
+                .await?;
+                directories += layer_directories;
+                files += layer_files;
+                roots.extend(work);
+            }
+        }
+
+        let (subtree_directories, subtree_files) = count_subtrees(roots).await?;
+        directories += subtree_directories;
+        files += subtree_files;
+
+        lore_debug!("Repository size: {directories} directories, {files} files");
+        event::LoreEvent::RepositoryStatusCount(LoreRepositoryStatusCountEventData {
+            directories,
+            files,
+        })
+        .send();
+    }
+
+    if options.revision_only {
+        return Ok(());
+    }
+
+    let plan =
+        TreeDiffPlan::for_status(&options, has_staged, repository.file_system().holds_state());
+    let mut cleared_links = report_tree_diffs(
+        &repository,
+        &paths,
+        &state_current,
+        &state_staged,
+        &layers,
+        &layer_mounts,
+        &summary,
+        plan,
+    )
+    .await?;
+
+    // Emit the aggregate dirty-node summary for reconciling status runs. For
+    // a scan these are the changes detected against the filesystem; for
+    // --check-dirty they are the nodes that stayed dirty after verification. A scan run unasked
+    // reports as a plain status does, with no summary.
+    if plan.scan_asked || check_dirty {
+        let data = summary.event_data();
+        lore_debug!(
+            "Status summary: {} added, {} modified, {} deleted, {} moved, {} copied, {} hash checks, {} mtime matches",
+            data.adds,
+            data.modifies,
+            data.deletes,
+            data.moves,
+            data.copies,
+            data.hash_checks,
+            data.mtime_matches
+        );
+        event::LoreEvent::RepositoryStatusSummary(data).send();
+    }
+
+    let mut settled_links = false;
+    if !cleared_links.is_empty()
+        && let Some(token) = repository.try_write_token()
+    {
+        settled_links =
+            settle_cleared_links(&repository, token, &state_staged, &mut cleared_links, 0).await?;
+    }
+
+    // If the staged state was updated (by scan or other operations), serialize it.
+    // When scanning, the state may have been modified even if no staged anchor existed before.
+    // Opportunistically serialize only when the context carries write capability.
+    // Read-only status invocations leave the dirty state for the next write command to flush.
+    if (has_staged || plan.scan)
+        && state_staged.is_dirty()
+        && let Some(token) = repository.try_write_token()
+    {
+        state_staged.reparent_onto(state_current.revision());
+        let emptied = settled_links
+            && state_staged.parent_other().is_zero()
+            && !state_staged
+                .node_has_staged_or_dirty_children(repository.clone(), ROOT_NODE)
+                .await
+                .unwrap_or(true);
+        if emptied {
+            if !execution_context().globals().dry_run() {
+                crate::instance::delete_staged_anchor(&repository)
+                    .await
+                    .forward::<StatusError>("deleting staged revision anchor")?;
+            }
+        } else {
+            let signature = state_staged
+                .serialize(repository.clone(), token)
+                .await
+                .forward::<StatusError>("serializing staged revision state")?;
+            crate::instance::store_staged_anchor(&repository, signature)
+                .await
+                .forward::<StatusError>("serializing staged revision anchor")?;
+        }
+    }
+
+    // A layer's nodes live in the layer's own staged state, so a reconciling status mutates that
+    // state and not the parent's: `--check-dirty` clears a marker verification found stale, and
+    // `--scan` sets and clears markers as it walks across a mount. The parent's anchor names the
+    // parent's revision alone, so neither mutation survives the call unless the layer's state is
+    // serialized and its own pin moved to it — a marker cleared without that is reported again by
+    // every later status. Opportunistic in the same way as the parent's flush above: a read-only
+    // invocation leaves the state for the next write command.
+    if let Some(token) = repository.try_write_token() {
+        let dry_run = execution_context().globals().dry_run();
+        for (layer, layer_state) in layers.iter() {
+            let state_staged = &layer_state.state_staged;
+            if !state_staged.is_dirty() {
+                continue;
+            }
+
+            if !layer_holds_staging(layer, layer_state).await {
+                if layer.staged_revision().is_some() && !dry_run {
+                    layer::store_layer_staged(
+                        repository.clone(),
+                        token,
+                        layer.target_path.as_str(),
+                        layer.repository,
+                        Hash::default(),
+                    )
+                    .await
+                    .forward::<StatusError>("clearing layer staged revision pin")?;
+
+                    lore_debug!(
+                        "Cleared staged pin for emptied layer at {}",
+                        layer.target_path
+                    );
+                }
+                continue;
+            }
+
+            state_staged.reparent_onto(layer_state.state_current.revision());
+
+            let signature = state_staged
+                .serialize(layer_state.repository.clone(), token)
+                .await
+                .forward::<StatusError>("serializing layer staged revision state")?;
+
+            if signature != layer.current && !dry_run {
+                layer::store_layer_staged(
+                    repository.clone(),
+                    token,
+                    layer.target_path.as_str(),
+                    layer.repository,
+                    signature,
+                )
+                .await
+                .forward::<StatusError>("storing layer staged revision pin")?;
+
+                lore_debug!(
+                    "Stored staged state {signature} for layer at {}",
+                    layer.target_path
+                );
+            }
+        }
+    }
+
+    Ok(())
+}
+
+/// Boxed version of [`status`] for cross-crate use.
+pub fn status_boxed(
+    repository: Arc<RepositoryContext>,
+    paths: Option<Vec<RelativePath>>,
+    options: StatusOptions,
+) -> crate::BoxFuture<'static, Result<(), StatusError>> {
+    Box::pin(status(repository, paths, options))
+}

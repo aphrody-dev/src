@@ -1,0 +1,1574 @@
+// SPDX-FileCopyrightText: 2026 Epic Games, Inc.
+// SPDX-License-Identifier: MIT
+use std::any::Any;
+use std::borrow::Cow;
+use std::fmt::Debug;
+use std::fmt::Display;
+use std::path::Path;
+use std::path::PathBuf;
+use std::sync::Arc;
+use std::sync::Once;
+use std::sync::OnceLock;
+
+use base64::Engine as _;
+use base64::engine::general_purpose::STANDARD as BASE64;
+use lore_base::env::CallEnvironment;
+use lore_base::error::InvalidArguments;
+use lore_base::runtime::runtime_shutdown_timeout;
+use lore_base::text::TextNotUtf8;
+use lore_base::text::ValidateText;
+use lore_base::types::BranchPoint;
+pub use lore_credential::user_info;
+pub use lore_transport::drop_connections;
+use serde::Deserialize;
+use serde::Serialize;
+use serde::ser::SerializeSeq;
+use tokio::sync::Mutex;
+use zerocopy::IntoBytes;
+
+use crate::auth::AuthMode;
+use crate::change::FileAction;
+use crate::event::LoreBytes;
+use crate::event::LoreBytesMut;
+pub use crate::event::LoreEvent;
+pub use crate::logging::LoreLogLevel;
+use crate::lore::Address;
+use crate::lore::BranchId;
+use crate::lore::Context;
+use crate::lore::Hash;
+use crate::relay::EventDispatcher;
+use crate::revision::ResolveSearchLocation;
+use crate::util::path::RelativePath;
+
+mod encoding;
+
+/// A block of raw bytes described by a pointer and a length.
+///
+/// Owns its payload: [`Self::from_bytes`] copies into a fresh allocation and
+/// `Drop` frees it, so a value carried in an event stays valid without the
+/// producer having to outlive the dispatch. An empty block is a NULL pointer
+/// with length 0.
+#[repr(C)]
+#[derive(Debug)]
+pub struct LoreBinary {
+    /// Pointer to the start of the byte block.
+    pub payload: *const std::ffi::c_void,
+    /// Number of bytes in the block.
+    pub length: usize,
+}
+
+unsafe impl Send for LoreBinary {}
+unsafe impl Sync for LoreBinary {}
+
+impl LoreBinary {
+    /// A NULL pointer is empty whatever the length field says, as for
+    /// [`LoreString::is_empty`].
+    pub fn is_empty(&self) -> bool {
+        self.payload.is_null() || self.length == 0
+    }
+
+    pub fn len(&self) -> usize {
+        if self.is_empty() { 0 } else { self.length }
+    }
+
+    pub fn as_bytes(&self) -> &[u8] {
+        if self.is_empty() {
+            &[]
+        } else {
+            // SAFETY: a non-empty block points at `length` initialized bytes owned by
+            // this value, allocated in `from_bytes` and freed in `Drop`.
+            unsafe { std::slice::from_raw_parts(self.payload.cast::<u8>(), self.length) }
+        }
+    }
+
+    /// Build an owning `LoreBinary` from raw bytes. Non-empty bytes are copied
+    /// into a freshly allocated buffer that `Drop` frees with the matching
+    /// layout. Empty bytes allocate nothing and answer the NULL pointer of
+    /// length 0 the type documents.
+    pub fn from_bytes(source: &[u8]) -> Self {
+        if source.is_empty() {
+            return Self::default();
+        }
+        // SAFETY: the layout is non-zero-sized and matches the one `free` uses;
+        // the copy fills exactly the bytes just allocated.
+        unsafe {
+            let length = source.len();
+            let layout = std::alloc::Layout::from_size_align_unchecked(length, 1);
+            let buffer = std::alloc::alloc(layout);
+            std::ptr::copy_nonoverlapping(source.as_ptr(), buffer, length);
+            LoreBinary {
+                payload: buffer.cast::<std::ffi::c_void>(),
+                length,
+            }
+        }
+    }
+
+    fn free(&mut self) {
+        if !self.payload.is_null() && self.length > 0 {
+            // SAFETY: the layout matches the one `from_bytes` allocated with.
+            unsafe {
+                let layout = std::alloc::Layout::from_size_align_unchecked(self.length, 1);
+                std::alloc::dealloc(self.payload as *mut u8, layout);
+            }
+        }
+        self.payload = std::ptr::null();
+        self.length = 0;
+    }
+}
+
+impl Default for LoreBinary {
+    fn default() -> Self {
+        LoreBinary {
+            payload: std::ptr::null(),
+            length: 0,
+        }
+    }
+}
+
+impl Clone for LoreBinary {
+    fn clone(&self) -> Self {
+        Self::from_bytes(self.as_bytes())
+    }
+}
+
+impl Drop for LoreBinary {
+    fn drop(&mut self) {
+        self.free();
+    }
+}
+
+impl PartialEq for LoreBinary {
+    fn eq(&self, other: &Self) -> bool {
+        self.as_bytes() == other.as_bytes()
+    }
+}
+
+/// Base64 text for a self-describing format, raw bytes for the rest.
+///
+/// A format that writes bytes as text has to be told which text: JSON would
+/// otherwise render a block as one number per byte, which costs about four
+/// characters for each byte carried. The split is the same one
+/// [`lore_base::types::serialize_hex`] makes for the identifiers, in base64
+/// rather than hex because a block has no length bound to keep it short.
+///
+/// The text path allocates about a third again the payload and cannot stream:
+/// `serialize_str` wants one contiguous `&str`, so the encoding has to be
+/// complete before it is handed over. Only JSON pays it.
+impl Serialize for LoreBinary {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        if serializer.is_human_readable() {
+            serializer.serialize_str(&BASE64.encode(self.as_bytes()))
+        } else {
+            serializer.serialize_bytes(self.as_bytes())
+        }
+    }
+}
+
+/// A string described by a pointer to its character data and a length, holding
+/// text as a sequence of bytes.
+///
+/// The text is UTF-8 by convention, but the bytes are never validated on
+/// construction: a string carrying any other encoding is accepted here and
+/// rejected by whichever verb needs to read it as text. The length field counts
+/// the bytes before the trailing NUL. An empty string is a NULL pointer with
+/// length 0, and a length of 0 means the string is empty.
+#[repr(C)]
+pub struct LoreString {
+    /// Pointer to the start of the character data.
+    pub string: *const std::ffi::c_char,
+    /// Number of bytes in the string, not counting any trailing terminator.
+    pub length: usize,
+}
+
+unsafe impl Send for LoreString {}
+unsafe impl Sync for LoreString {}
+
+impl std::fmt::Debug for LoreString {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!("{}", String::from_utf8_lossy(self.as_bytes())))
+    }
+}
+
+impl LoreString {
+    /// A NULL pointer is empty whatever the length field says. The library
+    /// answers NULL for every empty string it emits, so a caller can hand one
+    /// back in an argument struct beside a length it filled in itself, and the
+    /// pointer alone says whether there are bytes to read.
+    pub fn is_empty(&self) -> bool {
+        self.string.is_null() || self.length == 0
+    }
+
+    pub fn len(&self) -> usize {
+        if self.is_empty() { 0 } else { self.length }
+    }
+
+    /// The text as `&str`, assuming it is valid UTF-8.
+    ///
+    /// Sound for arguments reaching a command handler, because the entry point
+    /// checks every text field a call carries before dispatching it. Not sound
+    /// for a string built by [`Self::from_bytes`] outside that path, which
+    /// accepts any byte sequence — read those through [`Self::as_bytes`].
+    pub fn as_str(&self) -> &str {
+        if !self.is_empty() {
+            unsafe {
+                std::str::from_utf8_unchecked(std::slice::from_raw_parts(
+                    self.string.cast::<u8>(),
+                    self.length,
+                ))
+            }
+        } else {
+            ""
+        }
+    }
+
+    pub fn as_bytes(&self) -> &[u8] {
+        if self.is_empty() {
+            &[]
+        } else {
+            // SAFETY: a non-empty string points to `length` initialized bytes that outlive this
+            // borrow, per the FFI contract and the `from_bytes` / `from_str` constructors.
+            unsafe { std::slice::from_raw_parts(self.string.cast::<u8>(), self.length) }
+        }
+    }
+
+    pub fn from_path(source: impl AsRef<Path>) -> Self {
+        let source = source.as_ref().display().to_string();
+        Self::from_str(source.as_str())
+    }
+
+    /// Build an owning `LoreString` from raw bytes. Non-empty bytes are copied
+    /// into a freshly allocated NUL-terminated buffer that `Drop` frees with the
+    /// matching layout. Empty bytes allocate nothing and answer the NULL pointer
+    /// of length 0 the type documents. The bytes need not be valid UTF-8.
+    pub fn from_bytes(source: &[u8]) -> Self {
+        if source.is_empty() {
+            return Self::default();
+        }
+        unsafe {
+            let length = source.len();
+            let layout = std::alloc::Layout::from_size_align_unchecked(length + 1, 1);
+            let buffer = std::alloc::alloc(layout);
+            std::ptr::copy_nonoverlapping(source.as_ptr(), buffer, length);
+            *buffer.add(length) = 0;
+            LoreString {
+                string: buffer as *const std::os::raw::c_char,
+                length,
+            }
+        }
+    }
+
+    #[allow(clippy::should_implement_trait)]
+    pub fn from_str(source: &str) -> Self {
+        Self::from_bytes(source.as_bytes())
+    }
+
+    fn free(&mut self) {
+        if !self.string.is_null() {
+            unsafe {
+                let layout = std::alloc::Layout::from_size_align_unchecked(self.length + 1, 1);
+                std::alloc::dealloc(self.string as *mut u8, layout);
+            }
+            self.string = std::ptr::null();
+        }
+        self.length = 0;
+    }
+}
+
+impl Default for LoreString {
+    fn default() -> Self {
+        LoreString {
+            string: core::ptr::null(),
+            length: 0usize,
+        }
+    }
+}
+
+impl Clone for LoreString {
+    /// Copies the raw bytes. Cloning must not read the text as `&str`: every
+    /// call clones its arguments before anything has checked them, so this runs
+    /// on whatever the caller passed in.
+    fn clone(&self) -> Self {
+        Self::from_bytes(self.as_bytes())
+    }
+}
+
+impl PartialEq for LoreString {
+    fn eq(&self, other: &Self) -> bool {
+        self.as_bytes() == other.as_bytes()
+    }
+}
+
+impl Display for LoreString {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&String::from_utf8_lossy(self.as_bytes()))
+    }
+}
+
+impl Drop for LoreString {
+    fn drop(&mut self) {
+        self.free();
+    }
+}
+
+impl AsRef<str> for LoreString {
+    /// Carries [`LoreString::as_str`]'s assumption without showing it at the
+    /// call site.
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl From<LoreString> for Option<String> {
+    fn from(value: LoreString) -> Self {
+        if !value.is_empty() {
+            Some(value.to_string())
+        } else {
+            None
+        }
+    }
+}
+
+impl From<&LoreString> for Option<String> {
+    fn from(value: &LoreString) -> Self {
+        if !value.is_empty() {
+            Some(value.to_string())
+        } else {
+            None
+        }
+    }
+}
+
+impl<'a> From<&'a LoreString> for Option<&'a str> {
+    /// Carries [`LoreString::as_str`]'s assumption without showing it at the
+    /// call site.
+    fn from(value: &'a LoreString) -> Self {
+        if !value.is_empty() {
+            Some(value.as_str())
+        } else {
+            None
+        }
+    }
+}
+
+impl From<String> for LoreString {
+    fn from(value: String) -> Self {
+        LoreString::from_str(value.as_str())
+    }
+}
+
+impl From<&String> for LoreString {
+    fn from(value: &String) -> Self {
+        LoreString::from_str(value.as_str())
+    }
+}
+
+impl From<&str> for LoreString {
+    fn from(value: &str) -> Self {
+        LoreString::from_str(value)
+    }
+}
+
+impl From<Option<String>> for LoreString {
+    fn from(value: Option<String>) -> Self {
+        value
+            .as_deref()
+            .map(LoreString::from_str)
+            .unwrap_or_default()
+    }
+}
+
+impl From<Option<&String>> for LoreString {
+    fn from(value: Option<&String>) -> Self {
+        value
+            .map(|value| LoreString::from_str(value.as_str()))
+            .unwrap_or_default()
+    }
+}
+
+impl From<&Option<String>> for LoreString {
+    fn from(value: &Option<String>) -> Self {
+        value
+            .as_deref()
+            .map(LoreString::from_str)
+            .unwrap_or_default()
+    }
+}
+
+impl From<Option<&str>> for LoreString {
+    fn from(value: Option<&str>) -> Self {
+        value.map(LoreString::from_str).unwrap_or_default()
+    }
+}
+
+impl From<&Path> for LoreString {
+    fn from(value: &Path) -> Self {
+        LoreString::from_path(value)
+    }
+}
+
+impl From<PathBuf> for LoreString {
+    fn from(value: PathBuf) -> Self {
+        LoreString::from_path(value.as_path())
+    }
+}
+
+impl From<&PathBuf> for LoreString {
+    fn from(value: &PathBuf) -> Self {
+        LoreString::from_path(value.as_path())
+    }
+}
+
+impl From<&RelativePath> for LoreString {
+    fn from(value: &RelativePath) -> Self {
+        LoreString::from_str(value.as_str())
+    }
+}
+
+impl From<RelativePath> for LoreString {
+    fn from(value: RelativePath) -> Self {
+        LoreString::from_str(value.as_str())
+    }
+}
+
+/// Serializes as a string, failing on bytes that are not UTF-8 rather than
+/// substituting replacement characters, which would report a name that was
+/// never stored.
+impl Serialize for LoreString {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let text = std::str::from_utf8(self.as_bytes()).map_err(serde::ser::Error::custom)?;
+        serializer.serialize_str(text)
+    }
+}
+
+impl ValidateText for LoreString {
+    fn validate_text(&self) -> Result<(), TextNotUtf8> {
+        match std::str::from_utf8(self.as_bytes()) {
+            Ok(_) => Ok(()),
+            Err(_) => Err(TextNotUtf8::here()),
+        }
+    }
+}
+
+impl<T: ValidateText> ValidateText for LoreArray<T> {
+    fn validate_text(&self) -> Result<(), TextNotUtf8> {
+        for (index, item) in self.as_slice().iter().enumerate() {
+            if let Err(error) = item.validate_text() {
+                return Err(error.at(index));
+            }
+        }
+        Ok(())
+    }
+}
+
+lore_base::carries_no_text!(LoreBinary, LoreBytes, LoreBytesMut, LoreMetadataType);
+
+impl ValidateText for LoreGlobalArgs {
+    fn validate_text(&self) -> Result<(), TextNotUtf8> {
+        self.repository_path
+            .validate_text()
+            .map_err(|error| error.inside("repository_path"))
+            .and_then(|()| {
+                self.working_directory
+                    .validate_text()
+                    .map_err(|error| error.inside("working_directory"))
+            })
+            .and_then(|()| {
+                self.correlation_id
+                    .validate_text()
+                    .map_err(|error| error.inside("correlation_id"))
+            })
+            .and_then(|()| {
+                self.identity
+                    .validate_text()
+                    .map_err(|error| error.inside("identity"))
+            })
+            .and_then(|()| {
+                self.identity_token
+                    .validate_text()
+                    .map_err(|error| error.inside("identity_token"))
+            })
+            .and_then(|()| {
+                self.access_token
+                    .validate_text()
+                    .map_err(|error| error.inside("access_token"))
+            })
+    }
+}
+
+/// A contiguous array of elements described by a pointer and a count.
+/// Holds zero or more values of the element type laid out one after another.
+#[lore_macro::test_pub]
+#[repr(C)]
+#[derive(PartialEq)]
+pub struct LoreArray<T> {
+    /// Pointer to the first element.
+    ptr: *const T,
+    /// Number of elements in the array.
+    count: usize,
+}
+
+unsafe impl<T: Send> Send for LoreArray<T> {}
+unsafe impl<T: Sync> Sync for LoreArray<T> {}
+
+impl<T> Default for LoreArray<T> {
+    fn default() -> Self {
+        Self {
+            ptr: std::ptr::null(),
+            count: 0,
+        }
+    }
+}
+
+/// Elements a `Debug` rendering prints before it reports the count alone.
+/// Arguments are logged whole, and a caller's path list runs to thousands.
+#[lore_macro::test_pub]
+const DEBUG_ELEMENT_LIMIT: usize = 16;
+
+impl<T> Debug for LoreArray<T>
+where
+    T: Debug,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let elements = self.as_slice();
+        if elements.len() > DEBUG_ELEMENT_LIMIT {
+            return write!(f, "[{} items...]", elements.len());
+        }
+        f.write_fmt(format_args!("{elements:?}"))
+    }
+}
+
+impl<T> LoreArray<T> {
+    pub fn as_slice(&self) -> &[T] {
+        // SAFETY: ptr addresses count elements, of a boxed slice or of an array a caller lent
+        unsafe {
+            if !self.ptr.is_null() && self.count > 0 {
+                std::slice::from_raw_parts(self.ptr, self.count)
+            } else {
+                &[]
+            }
+        }
+    }
+
+    /// Takes over the vec's elements, and its allocation unless it has spare capacity.
+    pub fn from_vec(vec: Vec<T>) -> Self {
+        vec.into_boxed_slice().into()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.ptr.is_null() || self.count == 0
+    }
+
+    pub fn len(&self) -> usize {
+        self.count
+    }
+}
+
+/// Takes over the slice's allocation, which has the layout `Drop` frees: `Layout::array` of its
+/// length, and none at all for an empty slice or a zero-sized type.
+impl<T> From<Box<[T]>> for LoreArray<T> {
+    fn from(elements: Box<[T]>) -> Self {
+        if elements.is_empty() {
+            return Self::default();
+        }
+        let count = elements.len();
+        Self {
+            ptr: Box::into_raw(elements).cast::<T>(),
+            count,
+        }
+    }
+}
+
+impl<T: Clone> Clone for LoreArray<T> {
+    fn clone(&self) -> Self {
+        Self::from_vec(self.as_slice().to_vec())
+    }
+}
+
+impl<T> Drop for LoreArray<T> {
+    fn drop(&mut self) {
+        if !self.ptr.is_null() && self.count > 0 {
+            unsafe {
+                let items = std::ptr::slice_from_raw_parts_mut(self.ptr.cast_mut(), self.count);
+                std::ptr::drop_in_place(items);
+                // A boxed slice of a zero-sized type holds a dangling pointer rather than an
+                // allocation. Every element still drops, above.
+                if std::mem::size_of::<T>() != 0 {
+                    let layout = std::alloc::Layout::array::<T>(self.count)
+                        .expect("layout overflow in LoreArray<T>::drop");
+                    std::alloc::dealloc(self.ptr as *mut u8, layout);
+                }
+            }
+            self.ptr = std::ptr::null();
+            self.count = 0;
+        }
+    }
+}
+
+impl<T> Serialize for LoreArray<T>
+where
+    T: serde::Serialize,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let mut seq = serializer.serialize_seq(Some(self.len()))?;
+        for value in self.as_slice() {
+            seq.serialize_element(value)?;
+        }
+        seq.end()
+    }
+}
+
+/// Selects which configuration sources are loaded. The values are flags
+/// that can be combined.
+/// cbindgen:prefix-with-name
+/// cbindgen:rename-all=ScreamingSnakeCase
+#[repr(C)]
+#[derive(Debug, Copy, Clone, PartialEq, Default)]
+pub enum LoreLoadConfig {
+    /// Load no configuration from any source.
+    Disable = 0,
+    /// Load configuration from the repository.
+    Repository = 1,
+    /// Load configuration from the user's home location.
+    Home = 2,
+    /// Load configuration from the environment.
+    Environment = 4,
+    /// Load configuration from all sources.
+    #[default]
+    Default = 7,
+}
+
+/// How often an operation emits progress events when the caller names no
+/// interval, in milliseconds.
+pub const DEFAULT_EVENT_INTERVAL_MS: u64 = 100;
+
+/// Common options shared by repository operations.
+///
+/// Zero every byte of it, padding included, before setting the fields a call
+/// uses, as every structure passed to the library: a field left zero selects
+/// its default, and a field a release adds in its padding is left unset by
+/// code built against an earlier header.
+#[repr(C)]
+#[derive(Default, Debug, Clone, PartialEq, bitcode::Encode, bitcode::Decode)]
+pub struct LoreGlobalArgs {
+    /// Repository path
+    pub repository_path: LoreString,
+    /// Directory that relative paths in this call are resolved against. Set it
+    /// when a call may be executed by another process, such as the Lore
+    /// service, whose own working directory is unrelated to the caller's. When
+    /// empty, relative paths resolve against the working directory of the
+    /// process performing the call.
+    pub working_directory: LoreString,
+    /// Correlation ID
+    pub correlation_id: LoreString,
+    /// Identity to use
+    pub identity: LoreString,
+    /// Force the operation if possible
+    pub force: u8,
+    /// Run operation without connecting to server
+    pub offline: u8,
+    /// Use only local data
+    pub local: u8,
+    /// Use only remote data
+    pub remote: u8,
+    /// Dry run mode, only report what would have been changed and perform no changes to local file system
+    pub dry_run: u8,
+    /// Number of parallel storage connections for bulk data transfer, 0 for the default of 1.
+    /// At most 10 are opened
+    pub max_connections: u32,
+    /// Search limit when iterating revisions
+    pub search_limit: u32,
+    /// Allow matching to the nearest matching revision when a perfect match is not available
+    pub search_nearest: u8,
+    /// Prevent the automatic incremental/step GC for this operation; it otherwise runs in the background on write operations. `repository gc` always runs a full pass regardless
+    pub no_gc: u8,
+    /// Use in-memory stores instead of file-backed stores. No store data is
+    /// read from or written to the .urc/immutable/ and .urc/mutable/ directories.
+    pub in_memory: u8,
+    /// Maximum number of files being processed in parallel
+    pub file_count_limit: u64,
+    /// Maximum total size of all files being processed in parallel
+    pub file_size_limit: u64,
+    /// Maximum number of parallel compression tasks
+    pub compress_task_limit: u64,
+    /// Keep store references alive after a repository call completes to avoid
+    /// repeated store open/close cycles for consecutive API calls in the same process.
+    /// The stores stay locked meanwhile, so another process using them waits. With
+    /// `LORE_STORE_RETAIN` set to `1` or `true` in the environment of the process running
+    /// the call, the stores are kept after every call whether or not this is set,
+    /// unlocked, and the next call reloads them only if another process changed them.
+    pub store_keep_alive: u8,
+    /// Duration in seconds to keep store references alive, when `store_keep_alive` or
+    /// `LORE_STORE_RETAIN` is set. 0 means use the default (10 seconds).
+    pub store_keep_alive_seconds: u64,
+    /// Force sync data to storage media during store flush
+    pub sync_data: u8,
+    /// Cache fragment payloads fetched from remote, and those written, in the local store, as
+    /// a repository's `[store] cache_payloads` does for every command. Without either only state
+    /// fragments and fragments flagged for local cache priority are retained
+    pub cache: u8,
+    /// Authentication token to use instead of the one held in the secure token
+    /// store. Authorization tokens are exchanged from it as they are needed.
+    ///
+    /// Supplying either token puts the call in external-credential mode: `identity`
+    /// must be left empty, since it is read from the token.
+    pub identity_token: LoreString,
+    /// Authorization token to use instead of exchanging one with the auth
+    /// service. If given, will not perform token exchanges.
+    ///
+    /// Supplying either token puts the call in external-credential mode: `identity`
+    /// must be left empty, since it is read from the token.
+    pub access_token: LoreString,
+    /// How much an operation reports about what it cost.
+    ///
+    /// - `0` — no statistics event, and no per-fragment counters kept for one.
+    /// - `1` — one statistics event when the operation finishes: per-action file
+    ///   counts, and the fragment, local-store and remote-store totals.
+    /// - `2` — also a `FragmentWrite` event per stored fragment, which describes
+    ///   the shape of what was written rather than its sums. One event per
+    ///   fragment is the cost of this level.
+    ///
+    /// A level above the highest known behaves as the highest known.
+    pub stats: u32,
+    /// How often an operation emits progress events, in milliseconds. Applies
+    /// whatever `stats` is set to, statistics being reported once at the end
+    /// rather than on an interval. Zero takes [`DEFAULT_EVENT_INTERVAL_MS`].
+    pub event_interval_ms: u64,
+    /// Which authentication path to take if the server advertises both its
+    /// gRPC auth service and an OIDC issuer.
+    pub auth_mode: AuthMode,
+    /// Treat the remote as a trusted source, for a caller within its
+    /// infrastructure where performance comes first: payloads fetched from it
+    /// have only their sizes checked against their length, are never hashed,
+    /// and are decompressed only where their content is read. A storage handle
+    /// takes it from the globals it is opened with. Any non-zero value trusts
+    /// the remote, so a caller zeroes the whole struct, padding included
+    pub trust_remote: u8,
+    /// Have the call's flushes write the local stores' index in place, rather than replacing each
+    /// of its files through a temporary file, which is faster where creating files is slow. If the
+    /// process stops or a write fails while a file is being written, the store drops every entry
+    /// that file held, including those of revisions and branches not yet pushed. Eviction and
+    /// compaction replace the files they write whatever it says, and it is independent of
+    /// `sync_data`, which syncs what is written either way. Any non-zero value writes in place
+    pub fast_flush: u8,
+}
+
+// Lock the C ABI size of `LoreGlobalArgs` (`lore_global_args_t`), which callers zero-initialize.
+const _: () = assert!(std::mem::size_of::<LoreGlobalArgs>() == 192);
+
+impl LoreGlobalArgs {
+    pub fn repository_path(&self) -> &str {
+        self.repository_path.as_str()
+    }
+
+    pub fn working_directory(&self) -> Option<&str> {
+        (&self.working_directory).into()
+    }
+
+    pub fn identity(&self) -> Option<&str> {
+        (&self.identity).into()
+    }
+
+    /// The authentication token supplied for this call, or an empty string when
+    /// the credential comes from the token store as usual.
+    pub fn identity_token(&self) -> &str {
+        self.identity_token.as_str()
+    }
+
+    /// The authorization token supplied for this call, or an empty string when
+    /// it is obtained by exchange as usual.
+    pub fn access_token(&self) -> &str {
+        self.access_token.as_str()
+    }
+
+    /// Validates the global arguments. Can mutate the arguments after validation
+    /// E.g. if called with `identity_token`, sets the identity from the token.
+    pub fn validate(&mut self) -> Result<(), InvalidArguments> {
+        let invalid = |reason: String| Err(InvalidArguments { reason });
+
+        // The identity token names the identity when there is one; otherwise an
+        // access token on its own does.
+        let (token, which) = if !self.identity_token.is_empty() {
+            (self.identity_token(), "identity token")
+        } else if !self.access_token.is_empty() {
+            (self.access_token(), "access token")
+        } else {
+            return Ok(());
+        };
+
+        if !self.identity.is_empty() {
+            return invalid(format!(
+                "the {which} already names the identity it acts as; do not also pass an identity"
+            ));
+        }
+
+        let identity = lore_credential::identity_from_token(token);
+        if identity.is_empty() {
+            return invalid(format!(
+                "the {which} is not a JSON Web Token naming an identity, so there is no identity to act as"
+            ));
+        }
+
+        self.identity = identity.into();
+
+        Ok(())
+    }
+
+    pub fn force(&self) -> bool {
+        self.force != 0
+    }
+
+    pub fn offline(&self) -> bool {
+        self.offline != 0
+    }
+
+    pub fn set_offline(self) -> Self {
+        let mut globals = self;
+        globals.offline = 1;
+        globals
+    }
+
+    pub fn local(&self) -> bool {
+        self.local != 0
+    }
+
+    /// True when the operation should avoid the server: either explicit
+    /// offline mode or local-only data mode.
+    pub fn offline_or_local(&self) -> bool {
+        self.offline() || self.local()
+    }
+
+    pub fn remote(&self) -> bool {
+        self.remote != 0
+    }
+
+    pub fn dry_run(&self) -> bool {
+        self.dry_run != 0
+    }
+
+    pub fn search_limit(&self) -> Option<usize> {
+        if self.search_limit > 0 {
+            Some(self.search_limit as usize)
+        } else {
+            None
+        }
+    }
+
+    pub fn search_location(&self) -> ResolveSearchLocation {
+        if self.local > 0 || self.offline > 0 {
+            ResolveSearchLocation::Local
+        } else if self.remote > 0 {
+            ResolveSearchLocation::Remote
+        } else {
+            ResolveSearchLocation::RemoteOrLocal
+        }
+    }
+
+    pub fn search_nearest(&self) -> bool {
+        self.search_nearest != 0
+    }
+
+    pub fn no_gc(&self) -> bool {
+        self.no_gc != 0
+    }
+
+    pub fn in_memory(&self) -> bool {
+        self.in_memory != 0
+    }
+
+    pub fn sync_data(&self) -> bool {
+        self.sync_data != 0
+    }
+
+    /// The options of the flushes this call makes: its `sync_data` and `fast_flush`.
+    pub fn flush_options(&self) -> lore_storage::FlushOptions {
+        lore_storage::FlushOptions {
+            sync_data: self.sync_data(),
+            fast_flush: self.fast_flush != 0,
+        }
+    }
+
+    pub fn cache(&self) -> bool {
+        self.cache != 0
+    }
+
+    /// Whether the command trusts its remote.
+    pub fn trust_remote(&self) -> bool {
+        self.trust_remote != 0
+    }
+
+    /// Whether an operation should emit statistics events at all.
+    pub fn stats(&self) -> bool {
+        self.stats > 0
+    }
+
+    /// Whether an operation should emit per-fragment detail alongside the totals.
+    pub fn stats_full(&self) -> bool {
+        self.stats > 1
+    }
+
+    /// How often to emit progress events. Zero takes the default, and the floor
+    /// keeps an interval from costing more than the operation it reports on.
+    pub fn event_interval(&self) -> std::time::Duration {
+        const MINIMUM_INTERVAL_MS: u64 = 10;
+        let interval_ms = if self.event_interval_ms == 0 {
+            DEFAULT_EVENT_INTERVAL_MS
+        } else {
+            self.event_interval_ms.max(MINIMUM_INTERVAL_MS)
+        };
+        std::time::Duration::from_millis(interval_ms)
+    }
+
+    /// Returns how long stores are kept after a call: `None` when neither `store_keep_alive`
+    /// is set nor this process retains stores ([`crate::store::retain_stores`]), and the
+    /// default duration where `store_keep_alive_seconds` is 0.
+    pub fn store_keep_alive_duration(&self) -> Option<std::time::Duration> {
+        if self.store_keep_alive == 0 && !crate::store::retain_stores() {
+            return None;
+        }
+        let seconds = if self.store_keep_alive_seconds == 0 {
+            default_store_keep_alive_seconds()
+        } else {
+            self.store_keep_alive_seconds
+        };
+        Some(std::time::Duration::from_secs(seconds))
+    }
+}
+
+/// Default duration in seconds to keep store references alive between consecutive
+/// API calls when store keep-alive is enabled but no explicit duration is set.
+const fn default_store_keep_alive_seconds() -> u64 {
+    10
+}
+
+pub type LoreEventCallback = Option<Box<dyn Fn(&LoreEvent) + Send + Sync>>;
+
+/// A callback function paired with a caller-supplied context value, used to
+/// receive events.
+///
+/// The callback does not run inside the lore_* call that configured it. It runs
+/// on a thread the library manages, one of a pool of worker threads, not the
+/// calling thread.
+///
+/// The event pointer, and everything it points to, is valid only until the
+/// callback returns. Copy any data you need to keep, and do not use the event
+/// pointer after the callback returns.
+///
+/// Events for a single call arrive one at a time. Two concurrent asynchronous
+/// calls that share one configuration can run the callback at the same time, so
+/// a shared callback must be safe to call from more than one thread at once. A
+/// callback that blocks delays the library's other work and can stall other
+/// in-flight calls. Do long or blocking work on your own thread and return from
+/// the callback promptly.
+#[repr(C)]
+pub struct LoreEventCallbackConfig {
+    /// Caller-supplied value passed back to the callback on each call.
+    pub user_context: u64,
+    /// Function invoked for each event, or none to receive no events.
+    pub func: Option<unsafe extern "C" fn(event: &LoreEvent, user_context: u64)>,
+}
+
+static EXECUTION_INITIALIZER: Once = Once::new();
+
+fn execution_initialize() {
+    EXECUTION_INITIALIZER.call_once(|| {
+        #[cfg(debug_assertions)]
+        {
+            std::panic::set_hook(Box::new(|info| {
+                eprintln!("panic: {info}");
+                let bt = std::backtrace::Backtrace::force_capture();
+                eprintln!("{bt}");
+            }));
+        }
+
+        #[cfg(target_family = "unix")]
+        unsafe {
+            use libc::RLIMIT_NOFILE;
+            use libc::getrlimit;
+            use libc::rlim_t;
+            use libc::rlimit;
+            use libc::setrlimit;
+
+            let mut rlimit = rlimit {
+                rlim_cur: 0,
+                rlim_max: 0,
+            };
+            if getrlimit(RLIMIT_NOFILE, &mut rlimit) == 0 {
+                let desired_limit: rlim_t = 65536 * 2;
+                if rlimit.rlim_cur < desired_limit {
+                    rlimit.rlim_cur = desired_limit;
+                    if rlimit.rlim_cur > rlimit.rlim_max {
+                        rlimit.rlim_cur = rlimit.rlim_max;
+                    }
+                    setrlimit(RLIMIT_NOFILE, &rlimit);
+                }
+            }
+        }
+
+        let _ = install_crypto_provider();
+        lore_base::env::find_context_environment_with(|context| {
+            context
+                .downcast_ref::<ExecutionContext>()?
+                .environment
+                .as_ref()
+        });
+    });
+}
+
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub enum ExecutionMode {
+    Client,
+    Server,
+}
+
+pub struct ExecutionContext {
+    globals: LoreGlobalArgs,
+    pub dispatcher: EventDispatcher,
+    pub log_level: LoreLogLevel,
+    user_id: Mutex<String>,
+    mode: ExecutionMode,
+    caller_state: Option<Arc<dyn Any + Send + Sync>>,
+    /// What this call's fragment writes cost, accumulated across every write it
+    /// performs — including the ones a background tracker task performs and the
+    /// ones inside linked and layered repositories, which run under this same
+    /// context.
+    ///
+    /// It lives here rather than being threaded through the write API because a
+    /// write that has to finish before its caller continues — serializing a
+    /// state block, say — carries no tracker to hang the counters off, and would
+    /// otherwise go unaccounted.
+    ///
+    /// Allocated on first read: at statistics level zero the write pipeline holds
+    /// no counters, and only a push reads them whatever the level.
+    fragment_stats: OnceLock<Arc<lore_storage::FragmentWriteStats>>,
+    /// What this call's push registered with the peer, accumulated across every
+    /// revision, link and layer it covers, for the statistics event.
+    push_stats: OnceLock<Arc<crate::branch::push::PushStats>>,
+    /// The query and upload slots every push this call makes shares.
+    push_budget: OnceLock<crate::branch::push::PushBudget>,
+    /// The environment of the process that relayed this call, read in place of this process's
+    /// through [`lore_base::env::var`]. `None` for a call made in this process.
+    environment: Option<CallEnvironment>,
+}
+
+impl ExecutionContext {
+    fn new(
+        mut globals: LoreGlobalArgs,
+        mut dispatcher: EventDispatcher,
+        user_id: String,
+        mode: ExecutionMode,
+    ) -> Self {
+        execution_initialize();
+        lore_storage::concurrency::configure(globals.file_count_limit as usize);
+        lore_storage::concurrency::configure_compress_limiter(globals.compress_task_limit as usize);
+
+        // Ensure we have a consistent correlation ID
+        if globals.correlation_id.is_empty() {
+            globals.correlation_id = uuid::Uuid::new_v4().to_string().into();
+        }
+        dispatcher.correlation_id = globals.correlation_id.to_string();
+
+        Self {
+            globals,
+            dispatcher,
+            log_level: LoreLogLevel::Debug,
+            user_id: Mutex::new(user_id),
+            mode,
+            ..Default::default()
+        }
+    }
+
+    pub fn new_client(globals: LoreGlobalArgs, dispatcher: EventDispatcher) -> Self {
+        Self::new(
+            globals,
+            dispatcher,
+            String::default(),
+            ExecutionMode::Client,
+        )
+    }
+
+    pub fn new_client_with_user_id(
+        globals: LoreGlobalArgs,
+        dispatcher: EventDispatcher,
+        user_id: String,
+    ) -> Self {
+        Self::new(globals, dispatcher, user_id, ExecutionMode::Client)
+    }
+
+    pub fn new_server(
+        globals: LoreGlobalArgs,
+        dispatcher: EventDispatcher,
+        user_id: String,
+    ) -> Self {
+        Self::new(globals, dispatcher, user_id, ExecutionMode::Server)
+    }
+
+    /// This context, for a call relayed from a process with `environment`.
+    pub fn with_environment(self, environment: CallEnvironment) -> Self {
+        Self {
+            environment: Some(environment),
+            ..self
+        }
+    }
+
+    /// This context for a holder that serves past the call that made it, a mounted filesystem,
+    /// for a caller with `environment`: these globals and this mode, and a dispatcher that sends
+    /// nowhere, as no call awaits what the holder logs.
+    #[cfg(target_os = "linux")]
+    #[lore_macro::test_pub]
+    pub(crate) fn serving(&self, environment: CallEnvironment) -> Self {
+        let mut dispatcher = EventDispatcher::new(None);
+        dispatcher
+            .correlation_id
+            .clone_from(&self.dispatcher.correlation_id);
+        let user_id = self
+            .user_id
+            .try_lock()
+            .map(|id| id.clone())
+            .unwrap_or_default();
+        Self {
+            globals: self.globals.clone(),
+            dispatcher,
+            log_level: self.log_level,
+            user_id: Mutex::new(user_id),
+            mode: self.mode,
+            caller_state: self.caller_state.clone(),
+            environment: Some(environment),
+            ..Default::default()
+        }
+    }
+
+    /// The environment of the process that relayed this call, `None` for a call made in this
+    /// process.
+    #[cfg(target_os = "linux")]
+    pub(crate) fn environment(&self) -> Option<&CallEnvironment> {
+        self.environment.as_ref()
+    }
+
+    pub fn globals(&self) -> &LoreGlobalArgs {
+        &self.globals
+    }
+
+    pub fn is_client(&self) -> bool {
+        self.mode == ExecutionMode::Client
+    }
+
+    pub fn is_server(&self) -> bool {
+        self.mode == ExecutionMode::Server
+    }
+
+    pub fn set_caller_state(&mut self, state: Arc<dyn Any + Send + Sync>) {
+        self.caller_state = Some(state);
+    }
+
+    pub fn caller_state(&self) -> Option<&Arc<dyn Any + Send + Sync>> {
+        self.caller_state.as_ref()
+    }
+
+    /// The counters this call's fragment writes report into. See the field.
+    pub fn fragment_stats(&self) -> &Arc<lore_storage::FragmentWriteStats> {
+        self.fragment_stats
+            .get_or_init(Arc::<lore_storage::FragmentWriteStats>::default)
+    }
+
+    /// The counters this call's push registers into. See the field.
+    pub(crate) fn push_stats(&self) -> &Arc<crate::branch::push::PushStats> {
+        self.push_stats
+            .get_or_init(|| Arc::new(crate::branch::push::PushStats::new(self.globals().stats())))
+    }
+
+    /// The slots this call's pushes share. See the field.
+    pub(crate) fn push_budget(&self) -> &crate::branch::push::PushBudget {
+        self.push_budget
+            .get_or_init(crate::branch::push::PushBudget::default)
+    }
+}
+
+impl Default for ExecutionContext {
+    fn default() -> Self {
+        execution_initialize();
+
+        ExecutionContext {
+            globals: LoreGlobalArgs::default(),
+            dispatcher: EventDispatcher::default(),
+            log_level: LoreLogLevel::Error,
+            user_id: Mutex::default(),
+            mode: ExecutionMode::Client,
+            caller_state: None,
+            fragment_stats: OnceLock::new(),
+            push_stats: OnceLock::new(),
+            push_budget: OnceLock::new(),
+            environment: None,
+        }
+    }
+}
+
+impl ExecutionContext {
+    pub async fn user_id(&self) -> String {
+        self.user_id.lock().await.clone()
+    }
+
+    pub async fn set_user_id(&self, id: &str) {
+        *self.user_id.lock().await = id.to_string();
+    }
+}
+
+fn install_crypto_provider() -> Result<(), String> {
+    rustls::crypto::CryptoProvider::install_default(rustls::crypto::ring::default_provider())
+        .map_err(|current| {
+            format!("Trying to install default crypto provider, but one is already installed? (current: {current:?})")
+        })
+}
+
+/// Error codes returned across the FFI boundary.
+///
+/// Every discriminant except the legacy categories and `Internal` matches the
+/// `#[ffi_code(..)]` of the same-named struct in [`lore_base::error`], so a
+/// caller comparing a `status` against one of these names gets the same answer
+/// as a caller comparing it against the discrete type's code. The grouped
+/// allocation those codes come from is documented on that module.
+///
+/// cbindgen:prefix-with-name
+/// cbindgen:rename-all=ScreamingSnakeCase
+#[repr(i32)]
+#[derive(Eq, PartialEq)]
+pub enum LoreError {
+    /// The arguments supplied to the operation were invalid.
+    InvalidArguments = 3,
+    /// The backing store is overloaded; the caller should retry later.
+    SlowDown = 31,
+    /// No Lore service could be reached, and none could be started, so the
+    /// operation did not run.
+    ServiceUnavailable = 32,
+    /// A content-addressable object could not be found in any store.
+    AddressNotFound = 80,
+    /// A payload blob could not be found with the associated hash.
+    PayloadNotFound = 81,
+    /// A file path could not be resolved to a tracked node or found in the file system.
+    FileNotFound = 82,
+    /// A blob exceeded a size limit enforced by the caller or the protocol.
+    Oversized = 118,
+
+    // Legacy error categories (transitional, will be removed). They sit in the
+    // 100–109 range that `lore_base::error` reserves for them, so no discrete
+    // error type is ever allocated a code that collides with one of these.
+    /// A requested item was not found.
+    NotFound = 101,
+    /// An item that was being created already exists.
+    AlreadyExists = 102,
+    /// A connection could not be established or was lost.
+    Connection = 103,
+
+    /// An internal error occurred.
+    Internal = -1,
+}
+
+/// A metadata value, tagged by the kind of value it holds.
+/// cbindgen:prefix-with-name
+/// cbindgen:rename-all=ScreamingSnakeCase
+#[repr(C, u32)]
+#[derive(Clone, Debug, PartialEq, bitcode::Encode, bitcode::Decode)]
+pub enum LoreMetadata {
+    /// An address value.
+    Address(Address) = LoreMetadataType::Address as u32,
+    /// A boolean value, stored as a byte; any non-zero value is true.
+    Boolean(u8) = LoreMetadataType::Boolean as u32,
+    /// A context value.
+    Context(Context) = LoreMetadataType::Context as u32,
+    /// A hash value.
+    Hash(Hash) = LoreMetadataType::Hash as u32,
+    /// An unsigned integer value.
+    Numeric(u64) = LoreMetadataType::Numeric as u32,
+    /// A string value.
+    String(LoreString) = LoreMetadataType::String as u32,
+    /// A block of raw bytes.
+    Binary(LoreBinary) = LoreMetadataType::Binary as u32,
+}
+
+/// cbindgen:prefix-with-name
+/// cbindgen:rename-all=ScreamingSnakeCase
+#[repr(C)]
+/// The kind of value held by a metadata entry.
+///
+/// This is both the tag a caller passes across the API and the tag written into
+/// a stored metadata buffer — the same type, so the two cannot drift apart.
+///
+/// There is deliberately no zero value: a zero-initialized field has not chosen
+/// a type and must not be passed as one.
+#[derive(Debug, Copy, Clone, PartialEq, Serialize, bitcode::Encode, bitcode::Decode)]
+#[serde(rename_all = "camelCase")]
+pub enum LoreMetadataType {
+    /// A content address: 48 bytes, the 32-byte hash followed by the 16-byte
+    /// context.
+    Address = 1,
+    /// A boolean: exactly one byte, where any non-zero value is true.
+    Boolean = 2,
+    /// A context identifier: 16 raw bytes.
+    Context = 3,
+    /// A content hash: 32 raw bytes.
+    Hash = 4,
+    /// An unsigned 64-bit integer: 8 bytes, little-endian.
+    Numeric = 5,
+    /// Text: UTF-8 bytes, not terminated.
+    String = 6,
+    /// Raw bytes, stored exactly as supplied and of any length.
+    Binary = 255,
+}
+
+/// Adjacent tagging (`{"tagName": …, "data": …}`), with a boolean written as one.
+mod metadata_repr {
+    use serde::Serialize;
+
+    pub(super) const ADDRESS: &str = "address";
+    pub(super) const BOOLEAN: &str = "boolean";
+    pub(super) const BINARY: &str = "binary";
+    pub(super) const CONTEXT: &str = "context";
+    pub(super) const HASH: &str = "hash";
+    pub(super) const NUMERIC: &str = "numeric";
+    pub(super) const STRING: &str = "string";
+
+    pub(super) fn emit<S, T>(
+        serializer: S,
+        name: &'static str,
+        value: &T,
+    ) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+        T: Serialize + ?Sized,
+    {
+        use serde::ser::SerializeStruct;
+        let mut tagged = serializer.serialize_struct("LoreMetadata", 2)?;
+        tagged.serialize_field("tagName", name)?;
+        tagged.serialize_field("data", value)?;
+        tagged.end()
+    }
+}
+
+impl Serialize for LoreMetadata {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        use metadata_repr::*;
+        match self {
+            LoreMetadata::Address(value) => emit(serializer, ADDRESS, value),
+            LoreMetadata::Boolean(value) => emit(serializer, BOOLEAN, &(*value != 0)),
+            LoreMetadata::Binary(value) => emit(serializer, BINARY, value),
+            LoreMetadata::Context(value) => emit(serializer, CONTEXT, value),
+            LoreMetadata::Hash(value) => emit(serializer, HASH, value),
+            LoreMetadata::Numeric(value) => emit(serializer, NUMERIC, value),
+            LoreMetadata::String(value) => emit(serializer, STRING, value),
+        }
+    }
+}
+
+impl LoreMetadata {
+    /// The value's stored byte form and the tag it is stored under.
+    ///
+    /// The inverse of [`crate::event::LoreMetadataEventData::new`], which reads
+    /// the same pair back out. Nothing here can fail: the value already is the
+    /// type it claims, which is the point of carrying a typed value rather than
+    /// text plus a separate tag.
+    ///
+    /// A kind that already holds its stored bytes contiguously lends them out,
+    /// so the two kinds of unbounded length cost nothing to encode; only the
+    /// two that have to be laid out as bytes allocate, and both are tiny.
+    pub fn to_stored(&self) -> (Cow<'_, [u8]>, LoreMetadataType) {
+        match self {
+            LoreMetadata::Address(address) => {
+                (Cow::Borrowed(address.as_bytes()), LoreMetadataType::Address)
+            }
+            LoreMetadata::Boolean(flag) => (
+                Cow::Owned(vec![u8::from(*flag != 0)]),
+                LoreMetadataType::Boolean,
+            ),
+            LoreMetadata::Binary(block) => {
+                (Cow::Borrowed(block.as_bytes()), LoreMetadataType::Binary)
+            }
+            LoreMetadata::Context(context) => {
+                (Cow::Borrowed(context.data()), LoreMetadataType::Context)
+            }
+            LoreMetadata::Hash(hash) => (Cow::Borrowed(hash.data()), LoreMetadataType::Hash),
+            LoreMetadata::Numeric(number) => (
+                Cow::Owned(number.to_le_bytes().to_vec()),
+                LoreMetadataType::Numeric,
+            ),
+            LoreMetadata::String(text) => {
+                (Cow::Borrowed(text.as_bytes()), LoreMetadataType::String)
+            }
+        }
+    }
+}
+
+impl ValidateText for LoreMetadata {
+    fn validate_text(&self) -> Result<(), TextNotUtf8> {
+        match self {
+            LoreMetadata::String(text) => text.validate_text(),
+            // Every other variant is fixed-width or opaque bytes; a binary value
+            // is deliberately not text and must not be rejected for not being it.
+            _ => Ok(()),
+        }
+    }
+}
+
+/// cbindgen:prefix-with-name
+/// cbindgen:rename-all=ScreamingSnakeCase
+#[repr(C)]
+/// The kind of a tracked node.
+#[derive(Clone, Copy, PartialEq, Debug, Serialize, bitcode::Encode, bitcode::Decode)]
+#[serde(rename_all = "camelCase")]
+pub enum LoreNodeType {
+    /// A directory.
+    Directory = 0,
+    /// A file.
+    File = 1,
+    /// A symbolic link.
+    Link = 2,
+}
+
+/// cbindgen:prefix-with-name
+/// cbindgen:rename-all=ScreamingSnakeCase
+#[repr(C)]
+/// The change staged on a node for the next revision. `None` is a node the
+/// current revision holds unchanged; every other value is an edit that has not
+/// been committed yet.
+#[derive(Clone, Copy, PartialEq, Debug, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum LoreNodeStagedAction {
+    /// No staged change.
+    #[default]
+    None = 0,
+    /// Staged for addition; the node is not in the revision it was loaded from.
+    Add = 1,
+    /// Staged with rewritten content fields.
+    Modify = 2,
+    /// Staged for removal; the node is dropped when the revision is committed.
+    Delete = 3,
+    /// Staged at a new path or under a new name.
+    Move = 4,
+    /// Staged as a copy of another node.
+    Copy = 5,
+}
+
+/// cbindgen:prefix-with-name
+/// cbindgen:rename-all=ScreamingSnakeCase
+#[repr(C)]
+/// The change applied to a file.
+#[derive(Clone, Copy, PartialEq, Debug, Serialize, bitcode::Encode, bitcode::Decode)]
+#[serde(rename_all = "camelCase")]
+pub enum LoreFileAction {
+    /// The file is unchanged.
+    Keep = 0,
+    /// The file was added.
+    Add = 1,
+    /// The file was deleted.
+    Delete = 2,
+    /// The file was moved to a new path.
+    Move = 3,
+    /// The file was copied from another path.
+    Copy = 4,
+}
+
+/// cbindgen:prefix-with-name
+/// cbindgen:rename-all=ScreamingSnakeCase
+#[repr(C)]
+/// Where a branch is located.
+#[derive(Clone, Copy, PartialEq, Debug, Serialize, bitcode::Encode, bitcode::Decode)]
+#[serde(rename_all = "camelCase")]
+pub enum LoreBranchLocation {
+    /// A branch held locally.
+    Local = 0,
+    /// A branch held on the server.
+    Remote = 1,
+}
+
+impl Display for LoreBranchLocation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            LoreBranchLocation::Local => write!(f, "local"),
+            LoreBranchLocation::Remote => write!(f, "remote"),
+        }
+    }
+}
+
+/// A branch paired with a revision on that branch.
+#[repr(C)]
+#[derive(Clone, Copy, PartialEq, Debug, Serialize, bitcode::Encode, bitcode::Decode)]
+pub struct LoreBranchPoint {
+    /// The branch.
+    pub branch: BranchId,
+    /// The revision on the branch.
+    pub revision: Hash,
+}
+
+impl From<&BranchPoint> for LoreBranchPoint {
+    fn from(branch_point: &BranchPoint) -> Self {
+        LoreBranchPoint {
+            branch: branch_point.branch,
+            revision: branch_point.revision,
+        }
+    }
+}
+
+impl From<FileAction> for LoreFileAction {
+    fn from(value: FileAction) -> Self {
+        LoreFileAction::from(value as u32)
+    }
+}
+
+impl From<u16> for LoreFileAction {
+    fn from(value: u16) -> Self {
+        LoreFileAction::from(value as u32)
+    }
+}
+
+impl From<u32> for LoreFileAction {
+    fn from(value: u32) -> Self {
+        if value == FileAction::Add as u32 {
+            return LoreFileAction::Add;
+        } else if value == FileAction::Delete as u32 {
+            return LoreFileAction::Delete;
+        } else if value == FileAction::Move as u32 {
+            return LoreFileAction::Move;
+        } else if value == FileAction::Copy as u32 {
+            return LoreFileAction::Copy;
+        }
+
+        // `FileAction::Graft` maps here too. A graft replaces a directory's
+        // subtree, which reads as a modification, and the C enum stays
+        // unchanged.
+        LoreFileAction::Keep
+    }
+}
+
+impl LoreFileAction {
+    pub fn as_string_short(&self) -> &'static str {
+        match self {
+            LoreFileAction::Add => "A",
+            LoreFileAction::Delete => "D",
+            LoreFileAction::Move => "V",
+            LoreFileAction::Copy => "C",
+            LoreFileAction::Keep => "M",
+        }
+    }
+}
+
+pub fn shutdown() {
+    runtime_shutdown_timeout(std::time::Duration::from_secs(10));
+
+    unsafe {
+        unsafe extern "C" {
+            fn rpmalloc_finalize();
+        }
+
+        rpmalloc_finalize();
+    }
+}

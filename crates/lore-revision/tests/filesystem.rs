@@ -1,0 +1,413 @@
+// SPDX-FileCopyrightText: 2026 Epic Games, Inc.
+// SPDX-License-Identifier: MIT
+//! Integration tests for the filesystem provider abstraction.
+//!
+//! These tests verify the `FilesystemProvider` and `InstanceOperation` traits
+//! work correctly with real repository contexts.
+
+#[cfg(test)]
+mod tests {
+    use std::future::Future;
+    use std::io::Write;
+    use std::path::PathBuf;
+    use std::sync::Arc;
+
+    use bytes::Bytes;
+    use lore_base::runtime::LORE_CONTEXT;
+    use lore_base::runtime::runtime;
+    use lore_base::types::Address;
+    use lore_base::types::Context;
+    use lore_revision::branch;
+    use lore_revision::fs::filesystem_provider::InstanceOperation;
+    use lore_revision::fs::filesystem_provider::InstanceOperationImpl;
+    use lore_revision::lore::RepositoryId;
+    use lore_revision::repository;
+    use lore_revision::repository::RepositoryContext;
+    use lore_revision::util::path::RelativePath;
+
+    include!("helper.rs");
+
+    /// Runs a filesystem operation test with standard setup and teardown.
+    ///
+    /// Creates a temporary repository, begins a filesystem operation, runs the test,
+    /// then finalizes and cleans up. The test closure receives:
+    /// - `operation`: The filesystem operation handle
+    /// - `repo_path`: Path to the repository root
+    async fn run_fs_test<F, Fut>(test_fn: F)
+    where
+        F: FnOnce(Arc<RepositoryContext>, Arc<InstanceOperationImpl>, PathBuf) -> Fut
+            + Send
+            + 'static,
+        Fut: Future<Output = ()> + Send,
+    {
+        let (_immutable_store, _mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+        let repository_id = RepositoryId::from(uuid::Uuid::now_v7());
+        let tempdir = generate_tempdir();
+        let temp_path = tempdir.to_path_buf();
+        let path = temp_path.clone();
+
+        #[allow(clippy::disallowed_methods)]
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
+                std::fs::create_dir_all(path.as_path()).expect("Create directory failed");
+                let write_token = repository::RepositoryWriteToken::acquire(path.as_path()).await;
+                let repository = repository::create_local(
+                    path.as_path(),
+                    &write_token,
+                    repository_id,
+                    Context::from(uuid::Uuid::now_v7()),
+                    branch::DEFAULT_DEFAULT_NAME.to_string(),
+                    repository::RepositoryConfig::default(),
+                    false,
+                )
+                .await
+                .expect("Failed to create repository");
+
+                let fs_provider = repository.file_system();
+                let operation = fs_provider
+                    .begin_operation()
+                    .await
+                    .expect("begin_operation should succeed");
+
+                test_fn(repository.clone(), operation.clone(), path.clone()).await;
+
+                operation.finalize().await.expect("finalize should succeed");
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn filesystem_provider_begin_operation_finalize() {
+        let (_immutable_store, _mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+        let repository_id = RepositoryId::from(uuid::Uuid::now_v7());
+        let tempdir = generate_tempdir();
+        let temp_path = tempdir.to_path_buf();
+        let path = temp_path.clone();
+
+        #[allow(clippy::disallowed_methods)]
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
+                std::fs::create_dir_all(path.as_path()).expect("Create directory failed");
+                let write_token = repository::RepositoryWriteToken::acquire(path.as_path()).await;
+                let repository = repository::create_local(
+                    path.as_path(),
+                    &write_token,
+                    repository_id,
+                    Context::from(uuid::Uuid::now_v7()),
+                    branch::DEFAULT_DEFAULT_NAME.to_string(),
+                    repository::RepositoryConfig::default(),
+                    false,
+                )
+                .await
+                .expect("Failed to create repository");
+
+                // Test begin_operation returns a valid operation
+                let fs_provider = repository.file_system();
+                let operation = fs_provider
+                    .begin_operation()
+                    .await
+                    .expect("begin_operation should succeed");
+
+                let result = operation.finalize().await;
+                assert!(result.is_ok(), "finalize should succeed");
+
+                // Test begin_operation again (should work after finalize)
+                let operation2 = fs_provider
+                    .begin_operation()
+                    .await
+                    .expect("second begin_operation should succeed");
+
+                let result = operation2.finalize().await;
+                assert!(result.is_ok(), "finalize should succeed");
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn instance_operation_create_dir_all() {
+        run_fs_test(|_repository, operation, path| async move {
+            let rel_path = RelativePath::new_from_initial_path("test_subdir/nested").unwrap();
+            operation
+                .create_dir_all(&rel_path)
+                .await
+                .expect("create_dir_all should succeed");
+
+            let absolute_dir = path.join("test_subdir").join("nested");
+            assert!(
+                absolute_dir.exists(),
+                "Directory should exist after create_dir_all"
+            );
+        })
+        .await;
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn instance_operation_file_info_directory() {
+        run_fs_test(|_repository, operation, _path| async move {
+            let rel_path = RelativePath::new_from_initial_path("test_dir").unwrap();
+            operation
+                .create_dir_all(&rel_path)
+                .await
+                .expect("create_dir_all should succeed");
+
+            let info = operation
+                .file_info(&rel_path)
+                .await
+                .expect("file_info should succeed");
+            assert!(info.exists(), "Directory should exist");
+            assert!(info.is_dir(), "Should be identified as directory");
+            assert!(!info.is_file(), "Should not be identified as file");
+        })
+        .await;
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn instance_operation_file_info_file() {
+        run_fs_test(|_repository, operation, path| async move {
+            let test_file = path.join("test_file.txt");
+            let content = b"test content";
+            {
+                let mut file = std::fs::File::create(&test_file).expect("Create file failed");
+                file.write_all(content).expect("Write failed");
+            }
+
+            let rel_path = RelativePath::new_from_initial_path("test_file.txt").unwrap();
+            let info = operation
+                .file_info(&rel_path)
+                .await
+                .expect("file_info should succeed");
+            assert!(info.exists(), "File should exist");
+            assert!(info.is_file(), "Should be identified as file");
+            assert!(!info.is_dir(), "Should not be identified as directory");
+            assert_eq!(info.size(), content.len() as u64, "Size should match");
+        })
+        .await;
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn instance_operation_file_info_nonexistent() {
+        run_fs_test(|_repository, operation, _path| async move {
+            let rel_path = RelativePath::new_from_initial_path("nonexistent").unwrap();
+            let info = operation
+                .file_info(&rel_path)
+                .await
+                .expect("file_info should succeed even for nonexistent path");
+            assert!(!info.exists(), "Nonexistent path should have exists=false");
+            assert!(!info.is_file(), "Nonexistent path should not be a file");
+            assert!(!info.is_dir(), "Nonexistent path should not be a directory");
+        })
+        .await;
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn instance_operation_write_file() {
+        run_fs_test(|_repository, operation, path| async move {
+            let rel_path = RelativePath::new_from_initial_path("new_file.txt").unwrap();
+            operation
+                .write_file(&rel_path, Bytes::new())
+                .await
+                .expect("write_file should succeed");
+
+            let absolute_file = path.join("new_file.txt");
+            assert!(absolute_file.exists(), "File should exist after write_file");
+            assert!(
+                absolute_file.metadata().unwrap().is_file(),
+                "Created path should be a file"
+            );
+
+            let info = operation
+                .file_info(&rel_path)
+                .await
+                .expect("file_info should succeed");
+            assert_eq!(info.size(), 0, "Created file should be empty");
+
+            operation
+                .write_file(&rel_path, Bytes::from_static(b"contents"))
+                .await
+                .expect("write_file should succeed");
+            assert_eq!(
+                b"contents".to_vec(),
+                std::fs::read(&absolute_file).expect("read the written file"),
+                "The file should hold what was written over it"
+            );
+        })
+        .await;
+    }
+
+    /// The zero address names no stored content, so the provider leaves an empty file rather
+    /// than asking the store for one, and reports what it wrote.
+    #[tokio::test(flavor = "multi_thread")]
+    async fn instance_operation_materializes_the_zero_address() {
+        run_fs_test(|repository, operation, path| async move {
+            let rel_path = RelativePath::new_from_initial_path("empty.txt").unwrap();
+
+            let (fragment, info) = operation
+                .set_file_to_immutable_store_contents(repository, Address::default(), &rel_path)
+                .await
+                .expect("the zero address should materialize an empty file");
+
+            assert_eq!(0, fragment.size_content, "nothing should be transferred");
+            assert_eq!(
+                Some(0),
+                info.map(|info| info.size()),
+                "the write should report the file it left"
+            );
+            let absolute_file = path.join("empty.txt");
+            assert!(absolute_file.is_file(), "an empty file should be there");
+            assert_eq!(0, absolute_file.metadata().unwrap().len());
+        })
+        .await;
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn instance_operation_remove_file() {
+        run_fs_test(|_repository, operation, path| async move {
+            let test_file = path.join("to_remove.txt");
+            {
+                let mut file = std::fs::File::create(&test_file).expect("Create file failed");
+                file.write_all(b"content").expect("Write failed");
+            }
+            assert!(test_file.exists(), "File should exist before removal");
+
+            let rel_path = RelativePath::new_from_initial_path("to_remove.txt").unwrap();
+            operation
+                .remove(&rel_path)
+                .await
+                .expect("remove should succeed");
+
+            assert!(!test_file.exists(), "File should not exist after remove");
+        })
+        .await;
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn instance_operation_remove_empty_directory() {
+        run_fs_test(|_repository, operation, path| async move {
+            let rel_path = RelativePath::new_from_initial_path("empty_dir").unwrap();
+            operation
+                .create_dir_all(&rel_path)
+                .await
+                .expect("create_dir_all should succeed");
+
+            let absolute_dir = path.join("empty_dir");
+            assert!(absolute_dir.exists(), "Directory should exist");
+
+            operation
+                .remove(&rel_path)
+                .await
+                .expect("remove should succeed on empty directory");
+
+            assert!(
+                !absolute_dir.exists(),
+                "Directory should not exist after remove"
+            );
+        })
+        .await;
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn instance_operation_remove_recursive() {
+        run_fs_test(|_repository, operation, path| async move {
+            let dir_path = path.join("dir_with_contents");
+            std::fs::create_dir_all(&dir_path).expect("Create directory failed");
+            {
+                let file_path = dir_path.join("file.txt");
+                let mut file = std::fs::File::create(&file_path).expect("Create file failed");
+                file.write_all(b"content").expect("Write failed");
+            }
+            {
+                let nested_dir = dir_path.join("nested");
+                std::fs::create_dir_all(&nested_dir).expect("Create nested dir failed");
+                let nested_file = nested_dir.join("nested_file.txt");
+                let mut file =
+                    std::fs::File::create(&nested_file).expect("Create nested file failed");
+                file.write_all(b"nested content").expect("Write failed");
+            }
+
+            assert!(dir_path.exists(), "Directory should exist");
+
+            let rel_path = RelativePath::new_from_initial_path("dir_with_contents").unwrap();
+            operation
+                .remove_recursive(&rel_path)
+                .await
+                .expect("remove_recursive should succeed");
+
+            assert!(
+                !dir_path.exists(),
+                "Directory should not exist after remove_recursive"
+            );
+        })
+        .await;
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn instance_operation_copy_file() {
+        run_fs_test(|_repository, operation, path| async move {
+            let source_file = path.join("source.txt");
+            let content = b"source content for copy test";
+            {
+                let mut file =
+                    std::fs::File::create(&source_file).expect("Create source file failed");
+                file.write_all(content).expect("Write failed");
+            }
+
+            let source_rel_path = RelativePath::new_from_initial_path("source.txt").unwrap();
+            let destination_rel_path = RelativePath::new_from_initial_path("copy.txt").unwrap();
+            operation
+                .copy_file(&source_rel_path, &destination_rel_path)
+                .await
+                .expect("copy_file should succeed");
+
+            let destination = path.join("copy.txt");
+            assert!(destination.exists(), "The copy should exist");
+            let copied_content = std::fs::read(&destination).expect("Read copy failed");
+            assert_eq!(
+                copied_content, content,
+                "Copied content should match source"
+            );
+        })
+        .await;
+    }
+
+    #[cfg(unix)]
+    #[tokio::test(flavor = "multi_thread")]
+    async fn instance_operation_make_executable() {
+        use std::os::unix::fs::PermissionsExt;
+
+        run_fs_test(|_repository, operation, path| async move {
+            let test_file = path.join("script.sh");
+            {
+                let mut file = std::fs::File::create(&test_file).expect("Create file failed");
+                file.write_all(b"#!/bin/bash\necho hello")
+                    .expect("Write failed");
+            }
+
+            let metadata = std::fs::metadata(&test_file).expect("Get metadata failed");
+            let initial_mode = metadata.permissions().mode();
+            assert_eq!(
+                initial_mode & 0o111,
+                0,
+                "File should not be executable initially"
+            );
+
+            let rel_path = RelativePath::new_from_initial_path("script.sh").unwrap();
+            operation
+                .make_executable(&rel_path, true)
+                .await
+                .expect("make_executable should succeed");
+
+            let metadata = std::fs::metadata(&test_file).expect("Get metadata failed");
+            let final_mode = metadata.permissions().mode();
+            assert_ne!(
+                final_mode & 0o111,
+                0,
+                "File should be executable after make_executable"
+            );
+        })
+        .await;
+    }
+}

@@ -1,0 +1,14 @@
+
+myglobal=global
+
+var myarray = :| $myglobal $'line\n' ${z:-default} |
+
+spec/bin/argv.py @myarray
+
+append _ '1 2' ${myglobal:-default} (myarray)
+spec/bin/argv.py @myarray
+echo
+
+for item in (myarray) {
+  echo "  $item"
+}

@@ -1,0 +1,108 @@
+// SPDX-FileCopyrightText: 2026 Epic Games, Inc.
+// SPDX-License-Identifier: MIT
+
+use std::sync::Arc;
+use std::time::Duration;
+
+use lore_proto::lore::repository::v1::RepositoryCreateRequest;
+use lore_proto::lore::repository::v1::RepositoryCreateResponse;
+use lore_proto::lore::repository::v1::RepositoryGetRequest;
+use lore_proto::lore::repository::v1::RepositoryGetResponse;
+use lore_proto::lore::repository::v1::forwarded_repository_service_server::ForwardedRepositoryService;
+use lore_revision::environment::EnvironmentConfig;
+use lore_telemetry::InstrumentProvider;
+use tonic::Request;
+use tonic::Response;
+use tonic::Status;
+
+use super::repository_create;
+use super::repository_get;
+use crate::auth::jwt::JwtVerifier;
+use crate::authnz::repository_authorizer::RepositoryAuthorizer;
+use crate::authnz::repository_registry::RepositoryRegistry;
+use crate::grpc::timeout_grpc;
+use crate::hooks::HookDispatcher;
+
+#[derive(Clone)]
+struct ForwardedRepositoryServiceInstrumentProvider;
+
+impl InstrumentProvider for ForwardedRepositoryServiceInstrumentProvider {
+    fn namespace(&self) -> &'static str {
+        "lore.forwarded_repository.v1.service"
+    }
+}
+
+/// Mirrors particular RPCs of `LoreRepositoryV1Service`
+#[derive(Clone)]
+pub struct LoreForwardedRepositoryV1Service {
+    registry: RepositoryRegistry,
+    jwt_verifier: Option<JwtVerifier>,
+    authorizer: Arc<dyn RepositoryAuthorizer>,
+    immutable_store: Arc<dyn lore_storage::ImmutableStore>,
+    mutable_store: Arc<dyn lore_storage::MutableStore>,
+    hook_dispatcher: Arc<HookDispatcher>,
+    instrument_provider: ForwardedRepositoryServiceInstrumentProvider,
+    rpc_timeout: Duration,
+}
+
+impl LoreForwardedRepositoryV1Service {
+    pub fn new(
+        environment: EnvironmentConfig,
+        jwt_verifier: Option<JwtVerifier>,
+        authorizer: Arc<dyn RepositoryAuthorizer>,
+        immutable_store: Arc<dyn lore_storage::ImmutableStore>,
+        mutable_store: Arc<dyn lore_storage::MutableStore>,
+        hook_dispatcher: Arc<HookDispatcher>,
+        rpc_timeout: Duration,
+    ) -> Self {
+        let instrument_provider = ForwardedRepositoryServiceInstrumentProvider;
+        Self {
+            registry: RepositoryRegistry::of(&environment),
+            jwt_verifier,
+            authorizer,
+            immutable_store,
+            mutable_store,
+            hook_dispatcher,
+            rpc_timeout,
+            instrument_provider,
+        }
+    }
+}
+
+#[tonic::async_trait]
+impl ForwardedRepositoryService for LoreForwardedRepositoryV1Service {
+    async fn repository_create(
+        &self,
+        request: Request<RepositoryCreateRequest>,
+    ) -> Result<Response<RepositoryCreateResponse>, Status> {
+        timeout_grpc(
+            self.rpc_timeout,
+            repository_create::handler(
+                request,
+                &self.registry,
+                self.immutable_store.clone(),
+                self.mutable_store.clone(),
+                &self.hook_dispatcher,
+                &self.instrument_provider,
+            ),
+        )
+        .await
+    }
+
+    async fn repository_get(
+        &self,
+        request: Request<RepositoryGetRequest>,
+    ) -> Result<Response<RepositoryGetResponse>, Status> {
+        timeout_grpc(
+            self.rpc_timeout,
+            repository_get::handler(
+                request,
+                self.jwt_verifier.clone(),
+                self.authorizer.clone(),
+                self.immutable_store.clone(),
+                self.mutable_store.clone(),
+            ),
+        )
+        .await
+    }
+}

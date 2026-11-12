@@ -1,0 +1,3008 @@
+// SPDX-FileCopyrightText: 2026 Epic Games, Inc.
+// SPDX-License-Identifier: MIT
+#[cfg(test)]
+mod tests {
+    #![allow(clippy::disallowed_methods)] // Test fixture writes; not subject to repository write-token discipline.
+
+    use std::io::Write;
+    use std::sync::Arc;
+
+    use lore_base::runtime::LORE_CONTEXT;
+    use lore_base::runtime::runtime;
+    use lore_base::types::Context;
+    use lore_base::types::Hash;
+    use lore_revision::branch;
+    use lore_revision::commit;
+    use lore_revision::commit::CommitOptions;
+    use lore_revision::file;
+    use lore_revision::instance;
+    use lore_revision::interface::ExecutionContext;
+    use lore_revision::interface::LoreArray;
+    use lore_revision::interface::LoreGlobalArgs;
+    use lore_revision::interface::LoreString;
+    use lore_revision::lore::RepositoryId;
+    use lore_revision::lore_debug;
+    use lore_revision::node;
+    use lore_revision::node::NodeFlags;
+    use lore_revision::relay::EventDispatcher;
+    use lore_revision::repository;
+    use lore_revision::repository::RepositoryContext;
+    use lore_revision::stage;
+    use lore_revision::stage::StageOptions;
+    use lore_revision::state;
+
+    include!("helper.rs");
+
+    /// The names the directory holds that fold to `name`, sorted, read straight off the
+    /// filesystem: what these tests assert staging left the working tree spelling things.
+    fn names_folding_to(directory: &std::path::Path, name: &str) -> Vec<String> {
+        let folded = name.to_lowercase();
+        let mut found: Vec<String> = std::fs::read_dir(directory)
+            .expect("read the directory")
+            .map(|entry| {
+                entry
+                    .expect("directory entry")
+                    .file_name()
+                    .to_string_lossy()
+                    .into_owned()
+            })
+            .filter(|held| held.to_lowercase() == folded)
+            .collect();
+        found.sort();
+        found
+    }
+
+    #[tokio::test]
+    async fn stage_dry_run_no_persist() {
+        let repository_id = RepositoryId::from(uuid::Uuid::now_v7());
+        let execution = setup_test_execution();
+
+        #[allow(clippy::disallowed_methods)]
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
+                let tempdir = generate_tempdir();
+                let path = tempdir.to_path_buf();
+                std::fs::create_dir_all(path.as_path()).expect("Create directory failed");
+                let write_token = repository::RepositoryWriteToken::acquire(path.as_path()).await;
+                let repository = repository::create_local(
+                    path.as_path(),
+                    &write_token,
+                    repository_id,
+                    Context::from(uuid::Uuid::now_v7()),
+                    branch::DEFAULT_DEFAULT_NAME.to_string(),
+                    repository::RepositoryConfig::default(),
+                    false,
+                )
+                .await
+                .expect("Failed to initialize repository");
+
+                let file_path = path.as_path().join("test.file");
+                {
+                    let mut file = std::fs::File::options()
+                        .create(true)
+                        .truncate(true)
+                        .read(true)
+                        .write(true)
+                        .open(file_path.as_path())
+                        .expect("Failed to create test file");
+                    file.write_all(&[0, 1, 2, 3, 4])
+                        .expect("Failed to write test file");
+                }
+
+                let _ = file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(vec![LoreString::from(&path)]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Error,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect("Failed to stage initial file");
+
+                let options = CommitOptions {
+                    message: String::new(),
+                    link_messages: std::collections::HashMap::new(),
+                    link: None,
+                    layer_messages: std::collections::HashMap::new(),
+                    layer: None,
+                };
+                let committed_signature =
+                    commit::commit_boxed(repository.clone(), &write_token, options)
+                        .await
+                        .expect("Failed to commit revision");
+
+                {
+                    let mut file = std::fs::File::options()
+                        .write(true)
+                        .truncate(true)
+                        .open(file_path.as_path())
+                        .expect("Failed to reopen test file");
+                    file.write_all(&[5, 6, 7, 8, 9])
+                        .expect("Failed to modify test file");
+                }
+
+                let dry_run_execution = std::sync::Arc::new(ExecutionContext::new_client(
+                    LoreGlobalArgs {
+                        dry_run: 1,
+                        ..Default::default()
+                    },
+                    EventDispatcher::no_dispatch(),
+                ));
+
+                LORE_CONTEXT
+                    .scope(
+                        dry_run_execution,
+                        file::stage::stage(
+                            repository.clone(),
+                            &write_token,
+                            LoreArray::from_vec(vec![LoreString::from(&path)]),
+                            StageOptions {
+                                case_change: stage::StageCaseChange::Error,
+                                node_flags: NodeFlags::NoFlags,
+                                file_id: None,
+                                no_children: false,
+                                scan: true,
+                            },
+                        ),
+                    )
+                    .await
+                    .expect("Dry-run stage failed");
+
+                let staged_revision = instance::load_staged_revision(&repository)
+                    .await
+                    .ok()
+                    .flatten();
+                assert!(
+                    staged_revision.is_none() || staged_revision == Some(committed_signature),
+                    "Dry-run stage should not persist a new staged anchor"
+                );
+
+                let signature = file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(vec![LoreString::from(&path)]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Error,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect("Real stage after dry-run failed");
+
+                assert_ne!(
+                    signature, committed_signature,
+                    "Real stage after dry-run should persist staged changes"
+                );
+
+                let staged_revision = instance::load_staged_revision(&repository)
+                    .await
+                    .ok()
+                    .flatten()
+                    .expect("Real stage should persist staged anchor");
+                assert_eq!(staged_revision, signature);
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    #[tokio::test]
+    async fn stage_non_exist() {
+        let (immutable_store, mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+        let repository_id = RepositoryId::from(uuid::Uuid::now_v7());
+
+        #[allow(clippy::disallowed_methods)]
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
+                let tempdir = generate_tempdir();
+                let path = tempdir.to_path_buf();
+                std::fs::create_dir_all(path.as_path()).expect("Create directory failed");
+                let default_branch_id = Context::from(uuid::Uuid::now_v7());
+                let write_token = repository::RepositoryWriteToken::acquire(path.as_path()).await;
+                let created_repo = repository::create_local(
+                    path.as_path(),
+                    &write_token,
+                    repository_id,
+                    default_branch_id,
+                    branch::DEFAULT_DEFAULT_NAME.to_string(),
+                    repository::RepositoryConfig::default(),
+                    false,
+                )
+                .await
+                .expect("Failed to initialize repository");
+
+                let repository = Arc::new(
+                    RepositoryContext::new(
+                        default_repository_creation_args(
+                            immutable_store.clone(),
+                            mutable_store.clone(),
+                        )
+                        .with_path(&path)
+                        .with_id(repository_id)
+                        .with_instance_id(created_repo.instance_id),
+                    )
+                    .with_write_token(write_token.share()),
+                );
+
+                lore_revision::instance::store_current_anchor_branch(
+                    &repository,
+                    default_branch_id,
+                )
+                .await
+                .expect("Failed to store anchor branch");
+
+                let paths = LoreArray::from_vec(vec![
+                    LoreString::from("does.not.exist"),
+                    LoreString::from("some/other/path"),
+                ]);
+
+                file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    paths,
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Error,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect("Stage of nonexisting file failed");
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    #[tokio::test]
+    async fn stage_delete() {
+        let (immutable_store, mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+        let repository_id = RepositoryId::from(uuid::Uuid::now_v7());
+
+        #[allow(clippy::disallowed_methods)]
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
+                let tempdir = generate_tempdir();
+                let path = tempdir.to_path_buf();
+                std::fs::create_dir_all(path.as_path()).expect("Create directory failed");
+                let default_branch_id = Context::from(uuid::Uuid::now_v7());
+                let write_token = repository::RepositoryWriteToken::acquire(path.as_path()).await;
+                let created_repo = repository::create_local(
+                    path.as_path(),
+                    &write_token,
+                    repository_id,
+                    default_branch_id,
+                    branch::DEFAULT_DEFAULT_NAME.to_string(),
+                    repository::RepositoryConfig::default(),
+                    false,
+                )
+                .await
+                .expect("Failed to initialize repository");
+
+                let repository = Arc::new(
+                    RepositoryContext::new(
+                        default_repository_creation_args(
+                            immutable_store.clone(),
+                            mutable_store.clone(),
+                        )
+                        .with_path(&path)
+                        .with_id(repository_id)
+                        .with_instance_id(created_repo.instance_id),
+                    )
+                    .with_write_token(write_token.share()),
+                );
+
+                lore_revision::instance::store_current_anchor_branch(
+                    &repository,
+                    default_branch_id,
+                )
+                .await
+                .expect("Failed to store anchor branch");
+
+                let file_path = path.as_path().join("test.file");
+                {
+                    let mut file = std::fs::File::options()
+                        .create(true)
+                        .truncate(true)
+                        .read(true)
+                        .write(true)
+                        .open(file_path.as_path())
+                        .expect("Failed to create test file");
+                    file.write_all(&[0, 1, 2, 3, 4])
+                        .expect("Failed to write test file");
+                }
+
+                let signature = file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(vec![LoreString::from(&path)]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Error,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect("Failed to stage file");
+
+                let repository = Arc::new(
+                    RepositoryContext::new(
+                        default_repository_creation_args(
+                            immutable_store.clone(),
+                            mutable_store.clone(),
+                        )
+                        .with_path(&path)
+                        .with_id(repository_id)
+                        .with_instance_id(created_repo.instance_id),
+                    )
+                    .with_write_token(write_token.share()),
+                );
+
+                // Load the initial state and verify it has one node
+                let state = state::State::deserialize(repository.clone(), signature)
+                    .await
+                    .expect("Failed to deserialize initial staged state");
+                let tree = state
+                    .tree(repository.clone())
+                    .await
+                    .expect("Failed to deserialize tree");
+                assert_eq!(tree.block_count, 1);
+
+                let block = state
+                    .block(repository.clone(), 0)
+                    .await
+                    .expect("Failed to deserialize block");
+                assert!(block.node(0).child().is_some());
+
+                // Committed first: a file no commit holds has no delete to stage.
+                commit::commit_boxed(
+                    repository.clone(),
+                    &write_token,
+                    CommitOptions::new("Initial".to_string()),
+                )
+                .await
+                .expect("Failed to commit test file");
+
+                std::fs::remove_file(file_path.as_path()).expect("Failed to remove test file");
+
+                let signature = file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(vec![LoreString::from(&path)]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Error,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect("Failed to stage file delete");
+
+                // Load the final state and verify the file is staged for delete
+                let state = state::State::deserialize(repository.clone(), signature)
+                    .await
+                    .expect("Failed to deserialize staged state");
+                let tree = state
+                    .tree(repository.clone())
+                    .await
+                    .expect("Failed to deserialize tree");
+                assert_eq!(tree.block_count, 1);
+
+                let block = state
+                    .block(repository.clone(), 0)
+                    .await
+                    .expect("Failed to deserialize block");
+                assert!(block.node(0).child().is_some());
+
+                let node = block.node(block.node(0).child().unwrap() as usize);
+                assert!(node.is_staged_delete());
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    #[tokio::test]
+    async fn stage_error_case() {
+        let repository_id = RepositoryId::from(uuid::Uuid::now_v7());
+
+        let execution = setup_test_execution();
+
+        #[allow(clippy::disallowed_methods)]
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
+                let tempdir = generate_tempdir();
+                let path = tempdir.to_path_buf();
+                std::fs::create_dir_all(path.as_path()).expect("Create directory failed");
+                let write_token = repository::RepositoryWriteToken::acquire(path.as_path()).await;
+                let repository = repository::create_local(
+                    path.as_path(),
+                    &write_token,
+                    repository_id,
+                    Context::from(uuid::Uuid::now_v7()),
+                    branch::DEFAULT_DEFAULT_NAME.to_string(),
+                    repository::RepositoryConfig::default(),
+                    false,
+                )
+                .await
+                .expect("Failed to initialize repository");
+
+                let file_path = path.as_path().join("test.file");
+                {
+                    let mut file = std::fs::File::options()
+                        .create(true)
+                        .truncate(true)
+                        .read(true)
+                        .write(true)
+                        .open(file_path.as_path())
+                        .expect("Failed to create test file");
+                    file.write_all(&[0, 1, 2, 3, 4])
+                        .expect("Failed to write test file");
+                }
+
+                let signature = file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(vec![LoreString::from(&path)]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Error,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect("Failed to stage file");
+
+                // Load the initial state and verify it has one node
+                let state = state::State::deserialize(repository.clone(), signature)
+                    .await
+                    .expect("Failed to deserialize initial staged state");
+                let tree = state
+                    .tree(repository.clone())
+                    .await
+                    .expect("Failed to deserialize tree");
+                assert_eq!(tree.block_count, 1);
+
+                let block = state
+                    .block(repository.clone(), 0)
+                    .await
+                    .expect("Failed to deserialize block");
+                assert!(block.node(0).child().is_some());
+
+                std::fs::remove_file(file_path.as_path()).expect("Failed to remove test file");
+
+                // Create test file that differs by case
+                let file_path = path.as_path().join("test.File");
+                {
+                    let mut file = std::fs::File::options()
+                        .create(true)
+                        .truncate(true)
+                        .read(true)
+                        .write(true)
+                        .open(file_path.as_path())
+                        .expect("Failed to create test file");
+                    file.write_all(&[0, 1, 2, 3, 4, 5])
+                        .expect("Failed to write test file");
+                }
+
+                file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(vec![LoreString::from(&path)]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Error,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect_err("Case difference not detected as expected");
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    #[tokio::test]
+    async fn stage_keep_case() {
+        let (immutable_store, mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+        let repository_id = RepositoryId::from(uuid::Uuid::now_v7());
+
+        #[allow(clippy::disallowed_methods)]
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
+                let tempdir = generate_tempdir();
+                let path = tempdir.to_path_buf();
+                std::fs::create_dir_all(path.as_path()).expect("Create directory failed");
+                let default_branch_id = Context::from(uuid::Uuid::now_v7());
+                let write_token = repository::RepositoryWriteToken::acquire(path.as_path()).await;
+                let created_repo = repository::create_local(
+                    path.as_path(),
+                    &write_token,
+                    repository_id,
+                    default_branch_id,
+                    branch::DEFAULT_DEFAULT_NAME.to_string(),
+                    repository::RepositoryConfig::default(),
+                    false,
+                )
+                .await
+                .expect("Failed to initialize repository");
+
+                let repository = Arc::new(
+                    RepositoryContext::new(
+                        default_repository_creation_args(
+                            immutable_store.clone(),
+                            mutable_store.clone(),
+                        )
+                        .with_path(&path)
+                        .with_id(repository_id)
+                        .with_instance_id(created_repo.instance_id),
+                    )
+                    .with_write_token(write_token.share()),
+                );
+
+                lore_revision::instance::store_current_anchor_branch(
+                    &repository,
+                    default_branch_id,
+                )
+                .await
+                .expect("Failed to store anchor branch");
+
+                let first_file_path = path.as_path().join("test.file");
+                {
+                    let mut file = std::fs::File::options()
+                        .create(true)
+                        .truncate(true)
+                        .read(true)
+                        .write(true)
+                        .open(first_file_path.as_path())
+                        .expect("Failed to create test file");
+                    file.write_all(&[0, 1, 2, 3, 4])
+                        .expect("Failed to write test file");
+                }
+
+                let signature = file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(vec![LoreString::from(&path)]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Error,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect("Failed to stage file");
+
+                // Load the initial state and verify it has one node
+                let state = state::State::deserialize(repository.clone(), signature)
+                    .await
+                    .expect("Failed to deserialize initial staged state");
+                let tree = state
+                    .tree(repository.clone())
+                    .await
+                    .expect("Failed to deserialize tree");
+                assert_eq!(tree.block_count, 1);
+
+                let block = state
+                    .block(repository.clone(), 0)
+                    .await
+                    .expect("Failed to deserialize block");
+                assert!(block.node(0).child().is_some());
+
+                std::fs::remove_file(first_file_path.as_path())
+                    .expect("Failed to remove test file");
+
+                // Create test file that differs by case
+                let second_file_path = path.as_path().join("test.File");
+                {
+                    let mut file = std::fs::File::options()
+                        .create(true)
+                        .truncate(true)
+                        .read(true)
+                        .write(true)
+                        .open(second_file_path.as_path())
+                        .expect("Failed to create test file");
+                    file.write_all(&[0, 1, 2, 3, 4, 5])
+                        .expect("Failed to write test file");
+                }
+
+                // Verify the file system was updated
+                let updated_name = names_folding_to(path.as_path(), "Test.file");
+                assert_eq!(updated_name.len(), 1);
+                let updated_name = updated_name[0].clone();
+                assert_eq!(updated_name, "test.File");
+
+                file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(vec![LoreString::from(&path)]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Keep,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect("Case difference not resolved as expected");
+
+                // Verify the file system was updated
+                let updated_name = names_folding_to(path.as_path(), "Test.file");
+                assert_eq!(updated_name.len(), 1);
+                let updated_name = updated_name[0].clone();
+                assert_eq!(updated_name, "test.file");
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    #[tokio::test]
+    async fn stage_keep_case_recursive() {
+        let (immutable_store, mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+        let repository_id = RepositoryId::from(uuid::Uuid::now_v7());
+
+        #[allow(clippy::disallowed_methods)]
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
+                let tempdir = generate_tempdir();
+                let path = tempdir.to_path_buf();
+                std::fs::create_dir_all(path.as_path()).expect("Create directory failed");
+                let default_branch_id = Context::from(uuid::Uuid::now_v7());
+                let write_token = repository::RepositoryWriteToken::acquire(path.as_path()).await;
+                let created_repo = repository::create_local(
+                    path.as_path(),
+                    &write_token,
+                    repository_id,
+                    default_branch_id,
+                    branch::DEFAULT_DEFAULT_NAME.to_string(),
+                    repository::RepositoryConfig::default(),
+                    false,
+                )
+                .await
+                .expect("Failed to initialize repository");
+
+                let repository = Arc::new(
+                    RepositoryContext::new(
+                        default_repository_creation_args(
+                            immutable_store.clone(),
+                            mutable_store.clone(),
+                        )
+                        .with_path(&path)
+                        .with_id(repository_id)
+                        .with_instance_id(created_repo.instance_id),
+                    )
+                    .with_write_token(write_token.share()),
+                );
+
+                lore_revision::instance::store_current_anchor_branch(
+                    &repository,
+                    default_branch_id,
+                )
+                .await
+                .expect("Failed to store anchor branch");
+
+                let first_directory_path = path.as_path().join("testDir");
+                std::fs::create_dir_all(first_directory_path.as_path())
+                    .expect("Create directory failed");
+                let first_file_path = first_directory_path.as_path().join("teST.file");
+                {
+                    let mut file = std::fs::File::options()
+                        .create(true)
+                        .truncate(true)
+                        .read(true)
+                        .write(true)
+                        .open(first_file_path.as_path())
+                        .expect("Failed to create test file");
+                    file.write_all(&[0, 1, 2, 3, 4])
+                        .expect("Failed to write test file");
+                }
+
+                let stage_path = path.as_path().join("testdir").join("test.file");
+                let signature = file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(vec![LoreString::from(&stage_path)]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Error,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect("Failed to stage file");
+
+                // Load the initial state and verify it has one node
+                let state = state::State::deserialize(repository.clone(), signature)
+                    .await
+                    .expect("Failed to deserialize initial staged state");
+                let tree = state
+                    .tree(repository.clone())
+                    .await
+                    .expect("Failed to deserialize tree");
+                assert_eq!(tree.block_count, 1);
+
+                let block = state
+                    .block(repository.clone(), 0)
+                    .await
+                    .expect("Failed to deserialize block");
+                assert!(block.node(0).child().is_some());
+
+                std::fs::remove_dir_all(first_directory_path.as_path())
+                    .expect("Failed to remove test directory");
+
+                // Create test directory and file that differs by case
+                let second_directory_path = path.as_path().join("Testdir");
+                std::fs::create_dir_all(second_directory_path.as_path())
+                    .expect("Create directory failed");
+                let second_file_path = second_directory_path.as_path().join("test.File");
+                {
+                    let mut file = std::fs::File::options()
+                        .create(true)
+                        .truncate(true)
+                        .read(true)
+                        .write(true)
+                        .open(second_file_path.as_path())
+                        .expect("Failed to create test file");
+                    file.write_all(&[0, 1, 2, 3, 4, 5])
+                        .expect("Failed to write test file");
+                }
+
+                // Verify the file system was updated
+                let updated_name = names_folding_to(path.as_path(), "testdir");
+                assert_eq!(updated_name.len(), 1);
+                let updated_name = updated_name[0].clone();
+                assert_eq!(updated_name, "Testdir");
+
+                file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(vec![LoreString::from(&path)]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Keep,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect("Case difference not resolved as expected");
+
+                // Verify the file system was updated
+                let updated_directory_name = names_folding_to(path.as_path(), "testdir");
+                assert_eq!(updated_directory_name.len(), 1);
+                let updated_directory_name = updated_directory_name[0].clone();
+                assert_eq!(updated_directory_name, "testDir");
+                let updated_file_name =
+                    names_folding_to(first_directory_path.as_path(), "test.file");
+                assert_eq!(updated_file_name.len(), 1);
+                let updated_file_name = updated_file_name[0].clone();
+                assert_eq!(updated_file_name, "teST.file");
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    #[tokio::test]
+    async fn stage_rename_case() {
+        let (immutable_store, mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+        let repository_id = RepositoryId::from(uuid::Uuid::now_v7());
+
+        #[allow(clippy::disallowed_methods)]
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
+                let tempdir = generate_tempdir();
+                let path = tempdir.to_path_buf();
+                std::fs::create_dir_all(path.as_path()).expect("Create directory failed");
+                let default_branch_id = Context::from(uuid::Uuid::now_v7());
+                let write_token = repository::RepositoryWriteToken::acquire(path.as_path()).await;
+                let created_repo = repository::create_local(
+                    path.as_path(),
+                    &write_token,
+                    repository_id,
+                    default_branch_id,
+                    branch::DEFAULT_DEFAULT_NAME.to_string(),
+                    repository::RepositoryConfig::default(),
+                    false,
+                )
+                .await
+                .expect("Failed to initialize repository");
+
+                let repository = Arc::new(
+                    RepositoryContext::new(
+                        default_repository_creation_args(
+                            immutable_store.clone(),
+                            mutable_store.clone(),
+                        )
+                        .with_path(&path)
+                        .with_id(repository_id)
+                        .with_instance_id(created_repo.instance_id),
+                    )
+                    .with_write_token(write_token.share()),
+                );
+
+                lore_revision::instance::store_current_anchor_branch(
+                    &repository,
+                    default_branch_id,
+                )
+                .await
+                .expect("Failed to store anchor branch");
+
+                let file_path = path.as_path().join("test.file");
+                {
+                    let mut file = std::fs::File::options()
+                        .create(true)
+                        .truncate(true)
+                        .read(true)
+                        .write(true)
+                        .open(file_path.as_path())
+                        .expect("Failed to create test file");
+                    file.write_all(&[0, 1, 2, 3, 4])
+                        .expect("Failed to write test file");
+                }
+
+                let signature = file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(vec![LoreString::from(&path)]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Error,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect("Failed to stage file");
+
+                // Load the initial state and verify it has one node
+                let state = state::State::deserialize(repository.clone(), signature)
+                    .await
+                    .expect("Failed to deserialize initial staged state");
+                let tree = state
+                    .tree(repository.clone())
+                    .await
+                    .expect("Failed to deserialize tree");
+                assert_eq!(tree.block_count, 1);
+
+                let block = state
+                    .block(repository.clone(), 0)
+                    .await
+                    .expect("Failed to deserialize block");
+                assert!(block.node(0).child().is_some());
+
+                std::fs::remove_file(file_path.as_path()).expect("Failed to remove test file");
+
+                // Create test file that differs by case
+                let file_path = path.as_path().join("test.File");
+                {
+                    let mut file = std::fs::File::options()
+                        .create(true)
+                        .truncate(true)
+                        .read(true)
+                        .write(true)
+                        .open(file_path.as_path())
+                        .expect("Failed to create test file");
+                    file.write_all(&[0, 1, 2, 3, 4, 5])
+                        .expect("Failed to write test file");
+                }
+
+                // Verify the file system was updated
+                let updated_name = names_folding_to(path.as_path(), "Test.file");
+                assert_eq!(updated_name.len(), 1);
+                let updated_name = updated_name[0].clone();
+                assert_eq!(updated_name, "test.File");
+
+                let signature = file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(vec![LoreString::from(&path)]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Rename,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect("Case difference not resolved as expected");
+
+                // Verify the file system was maintained
+                let updated_name = names_folding_to(path.as_path(), "Test.file");
+                assert_eq!(updated_name.len(), 1);
+                let updated_name = updated_name[0].clone();
+                assert_eq!(updated_name, "test.File");
+
+                // Verify the state was updated
+                let state = state::State::deserialize(repository.clone(), signature)
+                    .await
+                    .expect("Failed to deserialize staged state");
+
+                let node_link = state
+                    .find_node_link(repository.clone(), "Test.file")
+                    .await
+                    .expect("Failed to find staged node");
+
+                assert!(node_link.is_valid());
+
+                let node = state
+                    .node(repository.clone(), node_link.node)
+                    .await
+                    .expect("Failed to load staged node");
+
+                assert!(
+                    node.is_staged_move(),
+                    "Node is not staged moved as expected"
+                );
+
+                let block = state
+                    .block_with_nametable(
+                        repository.clone(),
+                        node::NodeBlock::index(node_link.node),
+                    )
+                    .await
+                    .expect("Failed to deserialize block");
+                let node_index = node::Node::index(node_link.node);
+                let node_name = block.node_name_ref(node_index).expect("Invalid node name");
+
+                assert_eq!(&*node_name, updated_name.as_str());
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    /// Two targets under one directory whose case the tree and the file system
+    /// disagree about, staged together, which is the shape that has a shared
+    /// ancestor to resolve once for both of them.
+    ///
+    /// Under `Keep` the staging renames that very directory as it goes, so
+    /// anything resolved for it beforehand describes a directory that is no
+    /// longer there. Both files have to arrive under the tree's case, and
+    /// neither may be taken for a delete because the path it was resolved under
+    /// stopped existing.
+    #[tokio::test]
+    #[allow(clippy::large_futures)]
+    async fn stage_keep_case_of_a_directory_two_targets_share() {
+        let (immutable_store, mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+        let repository_id = RepositoryId::from(uuid::Uuid::now_v7());
+
+        #[allow(clippy::disallowed_methods)]
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
+                let tempdir = generate_tempdir();
+                let path = tempdir.to_path_buf();
+                std::fs::create_dir_all(path.as_path()).expect("Create directory failed");
+                let default_branch_id = Context::from(uuid::Uuid::now_v7());
+                let write_token = repository::RepositoryWriteToken::acquire(path.as_path()).await;
+                let created_repo = repository::create_local(
+                    path.as_path(),
+                    &write_token,
+                    repository_id,
+                    default_branch_id,
+                    branch::DEFAULT_DEFAULT_NAME.to_string(),
+                    repository::RepositoryConfig::default(),
+                    false,
+                )
+                .await
+                .expect("Failed to initialize repository");
+
+                let repository = Arc::new(
+                    RepositoryContext::new(
+                        default_repository_creation_args(
+                            immutable_store.clone(),
+                            mutable_store.clone(),
+                        )
+                        .with_path(&path)
+                        .with_id(repository_id)
+                        .with_instance_id(created_repo.instance_id),
+                    )
+                    .with_write_token(write_token.share()),
+                );
+
+                lore_revision::instance::store_current_anchor_branch(
+                    &repository,
+                    default_branch_id,
+                )
+                .await
+                .expect("Failed to store anchor branch");
+
+                let directory = path.as_path().join("Assets");
+                std::fs::create_dir(directory.as_path()).expect("Create directory failed");
+                for name in ["first.file", "second.file"] {
+                    let mut file = std::fs::File::options()
+                        .create(true)
+                        .truncate(true)
+                        .write(true)
+                        .open(directory.as_path().join(name))
+                        .expect("Failed to create test file");
+                    file.write_all(&[0, 1, 2])
+                        .expect("Failed to write test file");
+                }
+
+                file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(vec![LoreString::from(&path)]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Error,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect("Failed to stage the tree");
+
+                // The file system now disagrees with the tree about the
+                // directory, and the targets are given in the file system's
+                // case - so the given path, the file system and the node all
+                // have to be reconciled, for a directory two targets share.
+                let renamed = path.as_path().join("assets_renamed");
+                std::fs::rename(directory.as_path(), renamed.as_path()).expect("rename away");
+                let lowered = path.as_path().join("assets");
+                std::fs::rename(renamed.as_path(), lowered.as_path()).expect("rename to lowercase");
+
+                let signature = file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(vec![
+                        LoreString::from(&lowered.join("first.file")),
+                        LoreString::from(&lowered.join("second.file")),
+                    ]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Keep,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: false,
+                    },
+                )
+                .await
+                .expect("Case difference not resolved as expected");
+
+                // Keep puts the file system back to what the tree holds, for the
+                // directory and for everything that was under it.
+                assert_eq!(
+                    vec!["Assets".to_string()],
+                    names_folding_to(path.as_path(), "assets")
+                );
+                let held = path.as_path().join("Assets");
+                assert_eq!(
+                    vec!["first.file".to_string()],
+                    names_folding_to(&held, "first.file"),
+                    "the first file must still be there, under the directory the tree names"
+                );
+                assert_eq!(
+                    vec!["second.file".to_string()],
+                    names_folding_to(&held, "second.file"),
+                    "the second file must still be there, under the directory the tree names"
+                );
+
+                // And the tree holds one directory, not one per case variation that
+                // was resolved along the way.
+                let state = state::State::deserialize(repository.clone(), signature)
+                    .await
+                    .expect("Failed to deserialize the staged state");
+                let root = state
+                    .block(repository.clone(), 0)
+                    .await
+                    .expect("Failed to read the root block");
+                let mut child = root.node(0).child();
+                let mut children = Vec::new();
+                while let Some(node) = child {
+                    let block_index = node::NodeBlock::index(node);
+                    let block = state
+                        .block(repository.clone(), block_index)
+                        .await
+                        .expect("Failed to read a block");
+                    block
+                        .deserialize_nametable_for_tests(repository.clone())
+                        .await
+                        .expect("Failed to read a name table");
+                    let index = node::Node::index(node);
+                    children.push(
+                        block
+                            .node_name_clone(index)
+                            .expect("Failed to read a node name"),
+                    );
+                    child = block.node(index).sibling();
+                }
+                assert_eq!(children, vec!["Assets".to_string()]);
+                for name in ["first.file", "second.file"] {
+                    let node_link = state
+                        .find_node_link(repository.clone(), &format!("Assets/{name}"))
+                        .await
+                        .expect("Failed to find the node");
+                    let node = state
+                        .node(repository.clone(), node_link.node)
+                        .await
+                        .expect("Failed to load the node");
+                    assert!(node.is_staged_add(), "{name} must stay staged as an add");
+                    assert_eq!(
+                        state
+                            .node_path(repository.clone(), node_link.node)
+                            .await
+                            .expect("Failed to read the node path"),
+                        format!("Assets/{name}")
+                    );
+                }
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    /// Committed files under a directory the file system now spells in another case, staged
+    /// together under `Keep`: the shared directory is renamed back to the tree's case while it is
+    /// pre-created, so the walk of each file has to start from that name and not from the one it
+    /// was given. Only a case-sensitive file system can tell the two apart.
+    #[tokio::test]
+    #[allow(clippy::large_futures)]
+    async fn stage_keep_case_of_a_committed_directory_two_targets_share() {
+        let (immutable_store, mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+        let repository_id = RepositoryId::from(uuid::Uuid::now_v7());
+
+        #[allow(clippy::disallowed_methods)]
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
+                let fixture =
+                    test_repository_create(immutable_store, mutable_store, repository_id).await;
+                if case_insensitive(&fixture.path) {
+                    return;
+                }
+                let committed = fixture.path.join("Game").join("Fyre");
+                std::fs::create_dir_all(&committed).expect("Create directory failed");
+                for name in ["a.txt", "b.txt", "c.txt"] {
+                    test_file_write(&committed.join(name), name.as_bytes());
+                }
+                test_commit_tree(&fixture, "Initial").await;
+
+                let lowered = fixture.path.join("Game").join("fyre");
+                std::fs::rename(&committed, &lowered).expect("rename to lowercase");
+                test_file_write(&lowered.join("a.txt"), b"a changed");
+                test_file_write(&lowered.join("b.txt"), b"b changed");
+
+                let signature = file::stage::stage(
+                    fixture.repository.clone(),
+                    &fixture.write_token,
+                    LoreArray::from_vec(vec![
+                        LoreString::from(&lowered.join("a.txt")),
+                        LoreString::from(&lowered.join("b.txt")),
+                    ]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Keep,
+                        ..Default::default()
+                    },
+                )
+                .await
+                .expect("Failed to stage the case variation");
+
+                assert_eq!(
+                    vec!["Fyre".to_string()],
+                    names_folding_to(&fixture.path.join("Game"), "fyre"),
+                    "Keep puts the directory back in the tree's case"
+                );
+
+                let repository = fixture.repository.clone();
+                let state = state::State::deserialize(repository.clone(), signature)
+                    .await
+                    .expect("Failed to deserialize the staged state");
+                for (name, staged) in [("a.txt", true), ("b.txt", true), ("c.txt", false)] {
+                    let node_link = state
+                        .find_node_link(repository.clone(), &format!("Game/Fyre/{name}"))
+                        .await
+                        .expect("Failed to find the node");
+                    let node = state
+                        .node(repository.clone(), node_link.node)
+                        .await
+                        .expect("Failed to load the node");
+                    assert_eq!(
+                        (node.is_staged_modify(), node.is_staged_delete()),
+                        (staged, false),
+                        "{name} must be staged modified only where it was given"
+                    );
+                    assert_eq!(
+                        state
+                            .node_path(repository.clone(), node_link.node)
+                            .await
+                            .expect("Failed to read the node path"),
+                        format!("Game/Fyre/{name}")
+                    );
+                }
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    /// What a staging left behind: whether it succeeded, the names the file
+    /// system holds, and the names the tree holds.
+    #[derive(Debug, PartialEq, Eq)]
+    struct CaseOutcome {
+        staged: bool,
+        filesystem: Vec<String>,
+        tree: Vec<String>,
+    }
+
+    fn collect_filesystem(root: &std::path::Path, prefix: &str, into: &mut Vec<String>) {
+        let mut entries: Vec<_> = std::fs::read_dir(root)
+            .expect("read dir")
+            .map(|entry| entry.expect("entry"))
+            .collect();
+        entries.sort_by_key(std::fs::DirEntry::file_name);
+        for entry in entries {
+            let name = entry.file_name().to_string_lossy().to_string();
+            if name == ".lore" {
+                continue;
+            }
+            let path = format!("{prefix}{name}");
+            if entry.path().is_dir() {
+                collect_filesystem(&entry.path(), &format!("{path}/"), into);
+            } else {
+                into.push(path);
+            }
+        }
+    }
+
+    async fn collect_tree(
+        repository: Arc<RepositoryContext>,
+        state: &state::State,
+        node: node::NodeID,
+        prefix: &str,
+        into: &mut Vec<String>,
+    ) {
+        let block_index = node::NodeBlock::index(node);
+        let block = state
+            .block(repository.clone(), block_index)
+            .await
+            .expect("read block");
+        block
+            .deserialize_nametable_for_tests(repository.clone())
+            .await
+            .expect("read name table");
+        let index = node::Node::index(node);
+        let name = block.node_name_clone(index).expect("read node name");
+        let path = format!("{prefix}{name}");
+        let entry = block.node(index);
+        if entry.is_directory() {
+            if let Some(child) = entry.child() {
+                Box::pin(collect_tree(
+                    repository.clone(),
+                    state,
+                    child,
+                    &format!("{path}/"),
+                    into,
+                ))
+                .await;
+            }
+        } else {
+            into.push(path);
+        }
+        if let Some(sibling) = entry.sibling() {
+            Box::pin(collect_tree(repository, state, sibling, prefix, into)).await;
+        }
+    }
+
+    /// [`stage_case_scenario_with_scan`], taking `given` as the paths to stage
+    /// rather than walking the directory listing.
+    async fn stage_case_scenario(
+        initial: &[&str],
+        on_disk: &[&str],
+        given: &[&str],
+        case_change: stage::StageCaseChange,
+    ) -> CaseOutcome {
+        stage_case_scenario_with_scan(initial, on_disk, given, case_change, false).await
+    }
+
+    /// Stage `initial` so the tree holds those names, put the file system into
+    /// `on_disk`, and stage `given` under `case_change`, walking the directory
+    /// listing where `scan` is set and taking the paths as given otherwise.
+    ///
+    /// The file system is rebuilt rather than renamed into place: on Windows,
+    /// writing to a path that differs from an existing one only by case reuses
+    /// the name already stored, so the only way to be sure of the case on disk
+    /// is to delete what is there and create it afresh.
+    async fn stage_case_scenario_with_scan(
+        initial: &[&str],
+        on_disk: &[&str],
+        given: &[&str],
+        case_change: stage::StageCaseChange,
+        scan: bool,
+    ) -> CaseOutcome {
+        let (immutable_store, mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+        let repository_id = RepositoryId::from(uuid::Uuid::now_v7());
+        let initial: Vec<String> = initial.iter().map(|it| (*it).to_string()).collect();
+        let on_disk: Vec<String> = on_disk.iter().map(|it| (*it).to_string()).collect();
+        let given: Vec<String> = given.iter().map(|it| (*it).to_string()).collect();
+
+        #[allow(clippy::disallowed_methods)]
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
+                let tempdir = generate_tempdir();
+                let path = tempdir.to_path_buf();
+                std::fs::create_dir_all(path.as_path()).expect("Create directory failed");
+                let default_branch_id = Context::from(uuid::Uuid::now_v7());
+                let write_token = repository::RepositoryWriteToken::acquire(path.as_path()).await;
+                let created_repo = repository::create_local(
+                    path.as_path(),
+                    &write_token,
+                    repository_id,
+                    default_branch_id,
+                    branch::DEFAULT_DEFAULT_NAME.to_string(),
+                    repository::RepositoryConfig::default(),
+                    false,
+                )
+                .await
+                .expect("Failed to initialize repository");
+
+                let repository = Arc::new(
+                    RepositoryContext::new(
+                        default_repository_creation_args(
+                            immutable_store.clone(),
+                            mutable_store.clone(),
+                        )
+                        .with_path(&path)
+                        .with_id(repository_id)
+                        .with_instance_id(created_repo.instance_id),
+                    )
+                    .with_write_token(write_token.share()),
+                );
+                lore_revision::instance::store_current_anchor_branch(
+                    &repository,
+                    default_branch_id,
+                )
+                .await
+                .expect("Failed to store anchor branch");
+
+                let write_files = |names: &[String]| {
+                    for name in names {
+                        let file = path.as_path().join(name);
+                        std::fs::create_dir_all(file.parent().expect("has a parent"))
+                            .expect("create parent");
+                        let mut handle = std::fs::File::options()
+                            .create(true)
+                            .truncate(true)
+                            .write(true)
+                            .open(file.as_path())
+                            .expect("create file");
+                        handle.write_all(&[0, 1, 2]).expect("write file");
+                    }
+                };
+
+                write_files(&initial);
+                file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(vec![LoreString::from(&path)]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Error,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect("Failed to stage the initial tree");
+
+                // Delete before creating, so the case on disk is the one asked
+                // for rather than the one already recorded.
+                for entry in std::fs::read_dir(path.as_path()).expect("read root") {
+                    let entry = entry.expect("entry");
+                    if entry.file_name() == ".lore" {
+                        continue;
+                    }
+                    if entry.path().is_dir() {
+                        std::fs::remove_dir_all(entry.path()).expect("remove dir");
+                    } else {
+                        std::fs::remove_file(entry.path()).expect("remove file");
+                    }
+                }
+                write_files(&on_disk);
+
+                let targets: Vec<LoreString> = given
+                    .iter()
+                    .map(|name| LoreString::from(&path.as_path().join(name)))
+                    .collect();
+                let staged = file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(targets),
+                    StageOptions {
+                        case_change,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan,
+                    },
+                )
+                .await;
+
+                let mut filesystem = Vec::new();
+                collect_filesystem(path.as_path(), "", &mut filesystem);
+
+                let mut tree = Vec::new();
+                if let Ok(signature) = staged.as_ref() {
+                    let state = state::State::deserialize(repository.clone(), *signature)
+                        .await
+                        .expect("Failed to deserialize the staged state");
+                    let root = state
+                        .block(repository.clone(), 0)
+                        .await
+                        .expect("Failed to read the root block");
+                    if let Some(child) = root.node(0).child() {
+                        collect_tree(repository.clone(), &state, child, "", &mut tree).await;
+                    }
+                    tree.sort();
+                }
+
+                CaseOutcome {
+                    staged: staged.is_ok(),
+                    filesystem,
+                    tree,
+                }
+            }))
+            .await
+            .expect("Test task failed")
+    }
+
+    const LEAF_TREE: &[&str] = &["Assets/Rock.mesh"];
+    const SHARED_TREE: &[&str] = &["Assets/first.file", "Assets/second.file"];
+
+    fn shared(directory: &str) -> Vec<String> {
+        vec![
+            format!("{directory}/first.file"),
+            format!("{directory}/second.file"),
+        ]
+    }
+
+    /// A component has three names - the path as given, the name the file
+    /// system holds, and the name the node holds - and staging has to reconcile
+    /// them however they disagree. `Error` refuses when the file system and the
+    /// tree disagree, and is untroubled by the caller having typed a third
+    /// case variation, since resolving the given path against the file system settles
+    /// that before the node is ever consulted.
+    #[tokio::test]
+    #[allow(clippy::large_futures)]
+    async fn stage_case_error_mode() {
+        let mode = stage::StageCaseChange::Error;
+
+        // Given differs, file system and node agree: nothing has changed.
+        let outcome = stage_case_scenario(LEAF_TREE, LEAF_TREE, &["Assets/ROCK.MESH"], mode).await;
+        assert!(outcome.staged, "a differently typed path is not a change");
+        assert_eq!(outcome.filesystem, vec!["Assets/Rock.mesh".to_string()]);
+        assert_eq!(outcome.tree, vec!["Assets/Rock.mesh".to_string()]);
+
+        for (label, on_disk, given) in [
+            // Given follows the file system, which the node disagrees with.
+            (
+                "given follows the file system",
+                "Assets/rock.MESH",
+                "Assets/rock.MESH",
+            ),
+            // Given follows the node, which the file system disagrees with.
+            (
+                "given follows the node",
+                "Assets/rock.MESH",
+                "Assets/Rock.mesh",
+            ),
+            // Given is a third case variation of its own.
+            ("all three differ", "Assets/rock.MESH", "Assets/ROCK.mesh"),
+        ] {
+            let outcome = stage_case_scenario(LEAF_TREE, &[on_disk], &[given], mode).await;
+            assert!(!outcome.staged, "{label}: the case change must be refused");
+            assert_eq!(
+                outcome.filesystem,
+                vec![on_disk.to_string()],
+                "{label}: a refused stage must leave the file system alone"
+            );
+        }
+    }
+
+    /// `Error` leaves two names in one directory differing only in case to the
+    /// walk, so the second entry finds the child the first one claimed already
+    /// taken and only the search behind it reaches the node, which is what
+    /// reports the mismatch.
+    ///
+    /// A case insensitive file system holds one of the two names, leaving
+    /// nothing to collide and the stage to stand. That is asserted rather than
+    /// skipped, so the test cannot pass without having tested anything.
+    #[tokio::test]
+    #[allow(clippy::large_futures)]
+    async fn stage_case_of_two_variations_in_one_directory() {
+        let outcome = stage_case_scenario_with_scan(
+            LEAF_TREE,
+            &["Assets/Rock.mesh", "Assets/rock.mesh"],
+            &["Assets"],
+            stage::StageCaseChange::Error,
+            true,
+        )
+        .await;
+
+        let both_variations_on_disk = outcome.filesystem.len() == 2;
+        assert_eq!(
+            outcome.staged, !both_variations_on_disk,
+            "a directory holding both case variations must be refused and one holding a single name must not, fs={:?} tree={:?}",
+            outcome.filesystem, outcome.tree
+        );
+    }
+
+    /// Two names differing only in case that the tree holds neither of: the
+    /// first stages as a new child, and the second has to find the child the
+    /// first one linked in, which is ahead of the listing the walk holds.
+    ///
+    /// Whichever of the two the walk reaches first creates it, so the second is
+    /// refused either way, unlike a scenario where the tree already holds one of
+    /// the names and the order decides which entry the mismatch falls to.
+    #[tokio::test]
+    #[allow(clippy::large_futures)]
+    async fn stage_case_of_two_variations_neither_already_in_the_tree() {
+        let outcome = stage_case_scenario_with_scan(
+            &["Assets/other.file"],
+            &["Assets/other.file", "Assets/Rock.mesh", "Assets/rock.mesh"],
+            &["Assets"],
+            stage::StageCaseChange::Error,
+            true,
+        )
+        .await;
+
+        let both_variations_on_disk = outcome.filesystem.len() == 3;
+        assert_eq!(
+            outcome.staged, !both_variations_on_disk,
+            "the second of two case variations must find the child the first one added, \
+             fs={:?} tree={:?}",
+            outcome.filesystem, outcome.tree
+        );
+    }
+
+    /// `Keep` treats the difference as unintended and puts the file system back
+    /// to what the tree holds, leaving the tree as it was.
+    #[tokio::test]
+    #[allow(clippy::large_futures)]
+    async fn stage_case_keep_mode() {
+        let mode = stage::StageCaseChange::Keep;
+
+        for (label, on_disk, given) in [
+            (
+                "given follows the file system",
+                "Assets/rock.MESH",
+                "Assets/rock.MESH",
+            ),
+            (
+                "given follows the node",
+                "Assets/rock.MESH",
+                "Assets/Rock.mesh",
+            ),
+            ("all three differ", "Assets/rock.MESH", "Assets/ROCK.mesh"),
+            (
+                "only the given path differs",
+                "Assets/Rock.mesh",
+                "Assets/ROCK.MESH",
+            ),
+        ] {
+            let outcome = stage_case_scenario(LEAF_TREE, &[on_disk], &[given], mode).await;
+            assert!(outcome.staged, "{label}: staging must succeed");
+            assert_eq!(
+                outcome.filesystem,
+                vec!["Assets/Rock.mesh".to_string()],
+                "{label}: the file system must be put back to what the tree holds"
+            );
+            assert_eq!(
+                outcome.tree,
+                vec!["Assets/Rock.mesh".to_string()],
+                "{label}: the tree keeps the name it had"
+            );
+        }
+    }
+
+    /// `Rename` treats the difference as intended and updates the tree to what
+    /// the file system holds, leaving the file system as it is.
+    #[tokio::test]
+    #[allow(clippy::large_futures)]
+    async fn stage_case_rename_mode() {
+        let mode = stage::StageCaseChange::Rename;
+
+        for (label, on_disk, given) in [
+            (
+                "given follows the file system",
+                "Assets/rock.MESH",
+                "Assets/rock.MESH",
+            ),
+            (
+                "given follows the node",
+                "Assets/rock.MESH",
+                "Assets/Rock.mesh",
+            ),
+            ("all three differ", "Assets/rock.MESH", "Assets/ROCK.mesh"),
+        ] {
+            let outcome = stage_case_scenario(LEAF_TREE, &[on_disk], &[given], mode).await;
+            assert!(outcome.staged, "{label}: staging must succeed");
+            assert_eq!(
+                outcome.filesystem,
+                vec![on_disk.to_string()],
+                "{label}: the file system keeps the name it has"
+            );
+            assert_eq!(
+                outcome.tree,
+                vec![on_disk.to_string()],
+                "{label}: the tree must take the name the file system holds"
+            );
+        }
+
+        // Nothing to rename: the caller simply typed it differently.
+        let outcome = stage_case_scenario(LEAF_TREE, LEAF_TREE, &["Assets/ROCK.MESH"], mode).await;
+        assert!(outcome.staged);
+        assert_eq!(outcome.filesystem, vec!["Assets/Rock.mesh".to_string()]);
+        assert_eq!(outcome.tree, vec!["Assets/Rock.mesh".to_string()]);
+    }
+
+    /// The same three-way disagreement, on a directory two targets share - which
+    /// is the shape that has a prefix to resolve once for both of them, and so
+    /// the one where an answer carried between them could be the wrong one.
+    #[tokio::test]
+    #[allow(clippy::large_futures)]
+    async fn stage_case_of_a_shared_directory() {
+        // Given differs, file system and node agree.
+        let given: Vec<&str> = vec!["ASSETS/first.file", "ASSETS/second.file"];
+        let outcome = stage_case_scenario(
+            SHARED_TREE,
+            SHARED_TREE,
+            &given,
+            stage::StageCaseChange::Error,
+        )
+        .await;
+        assert!(
+            outcome.staged,
+            "a differently typed directory is not a change"
+        );
+        assert_eq!(outcome.filesystem, shared("Assets"));
+        assert_eq!(outcome.tree, shared("Assets"));
+
+        // The file system disagrees with the node about the directory, and the
+        // targets are given in each of the three case variations in turn.
+        let lowered = shared("assets");
+        let lowered: Vec<&str> = lowered.iter().map(String::as_str).collect();
+        for given in [&lowered, &vec!["Assets/first.file", "Assets/second.file"]] {
+            let outcome =
+                stage_case_scenario(SHARED_TREE, &lowered, given, stage::StageCaseChange::Error)
+                    .await;
+            assert!(!outcome.staged, "the case change must be refused");
+            assert_eq!(outcome.filesystem, shared("assets"));
+
+            let outcome =
+                stage_case_scenario(SHARED_TREE, &lowered, given, stage::StageCaseChange::Keep)
+                    .await;
+            assert!(outcome.staged);
+            assert_eq!(
+                outcome.filesystem,
+                shared("Assets"),
+                "Keep puts the directory back to what the tree holds"
+            );
+            assert_eq!(outcome.tree, shared("Assets"));
+
+            let outcome =
+                stage_case_scenario(SHARED_TREE, &lowered, given, stage::StageCaseChange::Rename)
+                    .await;
+            assert!(outcome.staged);
+            assert_eq!(
+                outcome.filesystem,
+                shared("assets"),
+                "Rename leaves the directory as the file system has it"
+            );
+            assert_eq!(outcome.tree, shared("assets"));
+        }
+    }
+
+    #[tokio::test]
+    #[allow(clippy::large_futures)]
+    async fn stage_move() {
+        let (immutable_store, mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+        let repository_id = RepositoryId::from(uuid::Uuid::now_v7());
+
+        #[allow(clippy::disallowed_methods)]
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
+                let tempdir = generate_tempdir();
+                let path = tempdir.to_path_buf();
+                std::fs::create_dir_all(path.as_path()).expect("Create directory failed");
+                let default_branch_id = Context::from(uuid::Uuid::now_v7());
+                let write_token = repository::RepositoryWriteToken::acquire(path.as_path()).await;
+                let created_repo = repository::create_local(
+                    path.as_path(),
+                    &write_token,
+                    repository_id,
+                    default_branch_id,
+                    branch::DEFAULT_DEFAULT_NAME.to_string(),
+                    repository::RepositoryConfig::default(),
+                    false,
+                )
+                .await
+                .expect("Failed to initialize repository");
+
+                let repository = Arc::new(
+                    RepositoryContext::new(
+                        default_repository_creation_args(
+                            immutable_store.clone(),
+                            mutable_store.clone(),
+                        )
+                        .with_path(&path)
+                        .with_id(repository_id)
+                        .with_instance_id(created_repo.instance_id),
+                    )
+                    .with_write_token(write_token.share()),
+                );
+
+                lore_revision::instance::store_current_anchor_branch(
+                    &repository,
+                    default_branch_id,
+                )
+                .await
+                .expect("Failed to store anchor branch");
+
+                let file_path = path.as_path().join("test.file");
+                {
+                    let mut file = std::fs::File::options()
+                        .create(true)
+                        .truncate(true)
+                        .read(true)
+                        .write(true)
+                        .open(file_path.as_path())
+                        .expect("Failed to create test file");
+                    file.write_all(&[0, 1, 2, 3, 4])
+                        .expect("Failed to write test file");
+                }
+
+                let _ = file::stage::stage(
+                    repository.clone(),
+                    &write_token,
+                    LoreArray::from_vec(vec![LoreString::from(&path)]),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Error,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect("Failed to stage file");
+
+                // Commit the initial state
+                let options = CommitOptions {
+                    message: String::new(),
+                    link_messages: std::collections::HashMap::new(),
+                    link: None,
+                    layer_messages: std::collections::HashMap::new(),
+                    layer: None,
+                };
+                let signature = commit::commit_boxed(repository.clone(), &write_token, options)
+                    .await
+                    .expect("Failed to commit");
+
+                // Load the initial state and verify it has one node
+                let state = state::State::deserialize(repository.clone(), signature)
+                    .await
+                    .expect("Failed to deserialize initial staged state");
+                let tree = state
+                    .tree(repository.clone())
+                    .await
+                    .expect("Failed to deserialize tree");
+                assert_eq!(tree.block_count, 1);
+
+                let block = state
+                    .block(repository.clone(), 0)
+                    .await
+                    .expect("Failed to deserialize block");
+                assert!(block.node(0).child().is_some());
+
+                let node_id = block.node(0).child().unwrap();
+
+                let node = state
+                    .node(repository.clone(), node_id)
+                    .await
+                    .expect("Failed to get staged node");
+
+                let file_id = node.address.context;
+
+                std::fs::remove_file(file_path.as_path()).expect("Failed to remove test file");
+
+                // Create test file that differs in a different path
+                let other_path = path.join("someDir");
+                std::fs::create_dir_all(other_path.as_path()).expect("Failed to create directory");
+                let other_file_path = other_path.as_path().join("Some.file");
+                {
+                    let mut file = std::fs::File::options()
+                        .create(true)
+                        .truncate(true)
+                        .read(true)
+                        .write(true)
+                        .open(other_file_path.as_path())
+                        .expect("Failed to create test file");
+                    file.write_all(&[0, 1, 2, 3, 4, 5])
+                        .expect("Failed to write test file");
+                }
+
+                lore_debug!("Staging bad move, expecting failure",);
+                let bad_file_path = other_path.as_path().join("bad.file");
+                let _ = file::stage::stage_move(
+                    repository.clone(),
+                    &write_token,
+                    file_path.to_string_lossy().to_string(),
+                    bad_file_path.to_string_lossy().to_string(),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Rename,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect_err("Stage moved to non-existing target file did not fail as expected");
+
+                lore_debug!("Staging good move, expecting success");
+                let signature = file::stage::stage_move(
+                    repository.clone(),
+                    &write_token,
+                    file_path.to_string_lossy().to_string(),
+                    other_file_path.to_string_lossy().to_string(),
+                    StageOptions {
+                        case_change: stage::StageCaseChange::Rename,
+                        node_flags: NodeFlags::NoFlags,
+                        file_id: None,
+                        no_children: false,
+                        scan: true,
+                    },
+                )
+                .await
+                .expect("Stage moved file failed");
+
+                // Verify the state was updated as expected
+                lore_debug!("Verify updated state");
+                let state = state::State::deserialize(repository.clone(), signature)
+                    .await
+                    .expect("Failed to deserialize staged state");
+
+                let node_link = state
+                    .find_node_link(repository.clone(), "someDir/Some.file")
+                    .await
+                    .expect("Failed to find staged node");
+
+                let node = state
+                    .node(repository.clone(), node_link.node)
+                    .await
+                    .expect("Failed to load staged node");
+
+                assert!(
+                    node.is_staged_move(),
+                    "Node is not staged moved as expected"
+                );
+
+                // Commit the updated state
+                lore_debug!("Commit updated state");
+                let options = CommitOptions {
+                    message: String::new(),
+                    link_messages: std::collections::HashMap::new(),
+                    link: None,
+                    layer_messages: std::collections::HashMap::new(),
+                    layer: None,
+                };
+                let signature = commit::commit_boxed(repository.clone(), &write_token, options)
+                    .await
+                    .expect("Failed to commit");
+
+                // Verify the committed state
+                lore_debug!("Verify committed state");
+                let state = state::State::deserialize(repository.clone(), signature)
+                    .await
+                    .expect("Failed to deserialize committed state");
+
+                // Verify the node and file ID was maintained
+                lore_debug!("Verify node and file ID was maintained");
+                let node_link = state
+                    .find_node_link(repository.clone(), "someDir/Some.file")
+                    .await
+                    .expect("Failed to find staged node");
+
+                assert_eq!(node_link.node, node_id);
+
+                let node = state
+                    .node(repository.clone(), node_link.node)
+                    .await
+                    .expect("Failed to get child node");
+
+                assert_eq!(node.address.context, file_id);
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    /// How the targets given to one `stage` call are handed to it.
+    enum TargetDelivery {
+        /// Every target in one call, which resolves them concurrently and
+        /// collects them in completion order.
+        Together,
+        /// One target per call, which leaves a single resolution in flight and
+        /// so cannot reorder anything.
+        OneAtATime,
+    }
+
+    /// Every file node reachable from the root as `path size flags`, sorted, as
+    /// the tree the staging arrived at.
+    ///
+    /// Size and flags are what make this an assertion rather than a listing: the
+    /// seed commit already put every path in the tree, so a staging that reached
+    /// fewer targets than it should still names them all, and only the edit it
+    /// failed to take up tells the two apart.
+    async fn staged_file_listing(
+        repository: Arc<RepositoryContext>,
+        state: Arc<state::State>,
+    ) -> Vec<String> {
+        let mut found = Vec::new();
+        let mut stack = vec![(node::ROOT_NODE, String::new())];
+        while let Some((parent, prefix)) = stack.pop() {
+            let children = state
+                .node_children(repository.clone(), parent)
+                .await
+                .expect("Failed to read children");
+            for child in children {
+                let name = state
+                    .node_name_clone(repository.clone(), child)
+                    .await
+                    .expect("Failed to read a node name");
+                let path = if prefix.is_empty() {
+                    name.clone()
+                } else {
+                    format!("{prefix}/{name}")
+                };
+                let node = state
+                    .node(repository.clone(), child)
+                    .await
+                    .expect("Failed to read a node");
+                if node.is_directory() {
+                    stack.push((child, path));
+                } else {
+                    found.push(format!("{path} {} {:#x}", node.size, node.flags));
+                }
+            }
+        }
+        found.sort();
+        found
+    }
+
+    /// Seed a repository, commit it, dirty an edit under each target, then stage
+    /// the targets the given way and return the tree it produced.
+    ///
+    /// The targets are three directories and a loose file, so one list covers
+    /// both resolution results: a directory resolves to its dirty descendants,
+    /// the file resolves to itself.
+    async fn stage_targets_and_list(
+        immutable_store: Arc<dyn lore_storage::immutable_store::ImmutableStore>,
+        mutable_store: Arc<dyn lore_storage::mutable_store::MutableStore>,
+        delivery: TargetDelivery,
+    ) -> Vec<String> {
+        let repository_id = RepositoryId::from(uuid::Uuid::now_v7());
+        let tempdir = generate_tempdir();
+        let path = tempdir.to_path_buf();
+        std::fs::create_dir_all(path.as_path()).expect("Create directory failed");
+        let default_branch_id = Context::from(uuid::Uuid::now_v7());
+        let write_token = repository::RepositoryWriteToken::acquire(path.as_path()).await;
+        let created_repo = repository::create_local(
+            path.as_path(),
+            &write_token,
+            repository_id,
+            default_branch_id,
+            branch::DEFAULT_DEFAULT_NAME.to_string(),
+            repository::RepositoryConfig::default(),
+            false,
+        )
+        .await
+        .expect("Failed to initialize repository");
+
+        let repository = Arc::new(
+            RepositoryContext::new(
+                default_repository_creation_args(immutable_store, mutable_store)
+                    .with_path(&path)
+                    .with_id(repository_id)
+                    .with_instance_id(created_repo.instance_id),
+            )
+            .with_write_token(write_token.share()),
+        );
+
+        lore_revision::instance::store_current_anchor_branch(&repository, default_branch_id)
+            .await
+            .expect("Failed to store anchor branch");
+
+        let directories = ["alpha", "beta", "gamma"];
+        for directory in directories {
+            std::fs::create_dir(path.as_path().join(directory)).expect("Create directory failed");
+            for name in ["one.file", "two.file"] {
+                let mut file = std::fs::File::create(path.as_path().join(directory).join(name))
+                    .expect("Failed to create test file");
+                file.write_all(b"seed").expect("Failed to write test file");
+            }
+        }
+        let mut loose =
+            std::fs::File::create(path.as_path().join("root.file")).expect("Failed to create");
+        loose.write_all(b"seed").expect("Failed to write");
+
+        let scan_options = StageOptions {
+            case_change: stage::StageCaseChange::Error,
+            node_flags: NodeFlags::NoFlags,
+            file_id: None,
+            no_children: false,
+            scan: true,
+        };
+        Box::pin(file::stage::stage(
+            repository.clone(),
+            &write_token,
+            LoreArray::from_vec(vec![LoreString::from(&path)]),
+            scan_options,
+        ))
+        .await
+        .expect("Failed to stage the seed tree");
+        commit::commit_boxed(
+            repository.clone(),
+            &write_token,
+            CommitOptions {
+                message: String::new(),
+                link_messages: std::collections::HashMap::new(),
+                link: None,
+                layer_messages: std::collections::HashMap::new(),
+                layer: None,
+            },
+        )
+        .await
+        .expect("Failed to commit the seed tree");
+
+        let mut edited = Vec::new();
+        for directory in directories {
+            let edit = path.as_path().join(directory).join("one.file");
+            let mut file = std::fs::File::create(edit.as_path()).expect("Failed to reopen");
+            file.write_all(b"edited").expect("Failed to write");
+            edited.push(LoreString::from(&edit));
+        }
+        let loose_edit = path.as_path().join("root.file");
+        let mut file = std::fs::File::create(loose_edit.as_path()).expect("Failed to reopen");
+        file.write_all(b"edited").expect("Failed to write");
+        edited.push(LoreString::from(&loose_edit));
+
+        file::dirty::dirty(repository.clone(), LoreArray::from_vec(edited))
+            .await
+            .expect("Failed to mark the edits dirty");
+
+        let mut targets: Vec<LoreString> = directories
+            .iter()
+            .map(|directory| LoreString::from(&path.as_path().join(directory)))
+            .collect();
+        targets.push(LoreString::from(&loose_edit));
+
+        let stage_options = StageOptions {
+            case_change: stage::StageCaseChange::Error,
+            node_flags: NodeFlags::NoFlags,
+            file_id: None,
+            no_children: false,
+            scan: false,
+        };
+        let signature = match delivery {
+            TargetDelivery::Together => Box::pin(file::stage::stage(
+                repository.clone(),
+                &write_token,
+                LoreArray::from_vec(targets),
+                stage_options,
+            ))
+            .await
+            .expect("Failed to stage the targets together"),
+            TargetDelivery::OneAtATime => {
+                let mut last = None;
+                for target in targets {
+                    last = Some(
+                        Box::pin(file::stage::stage(
+                            repository.clone(),
+                            &write_token,
+                            LoreArray::from_vec(vec![target]),
+                            stage_options,
+                        ))
+                        .await
+                        .expect("Failed to stage a target"),
+                    );
+                }
+                last.expect("No target was staged")
+            }
+        };
+
+        let staged = state::State::deserialize(repository.clone(), signature)
+            .await
+            .expect("Failed to deserialize the staged state");
+        staged_file_listing(repository.clone(), staged).await
+    }
+
+    /// A repository with one file committed on a branch whose metadata `status` reads, a context
+    /// over it reading through an [`HoldingFilesystem`], that filesystem, and the revision
+    /// committed.
+    async fn exact_fixture(
+        immutable_store: Arc<dyn lore_storage::immutable_store::ImmutableStore>,
+        mutable_store: Arc<dyn lore_storage::mutable_store::MutableStore>,
+    ) -> (
+        TestRepository,
+        Arc<RepositoryContext>,
+        Arc<HoldingFilesystem>,
+        Hash,
+    ) {
+        let instance = test_repository_create(
+            immutable_store,
+            mutable_store,
+            RepositoryId::from(uuid::Uuid::now_v7()),
+        )
+        .await;
+        let (_, branch_id) = instance::load_current_anchor_boxed(&instance.repository)
+            .await
+            .expect("Failed to load the anchor");
+        branch::create(
+            instance.repository.clone(),
+            &instance.write_token,
+            branch_id,
+            branch::DEFAULT_DEFAULT_NAME,
+            branch::default_category(),
+            "test-user",
+            0,
+            vec![],
+            false,
+            false,
+        )
+        .await
+        .expect("Failed to create the branch metadata");
+        test_file_write(&instance.path.join("seed.txt"), b"seed");
+        let committed = test_commit_tree(&instance, "Seed").await.revision();
+        let (exact, filesystem) = test_holding_context(&instance.repository);
+        (instance, exact, filesystem, committed)
+    }
+
+    /// Stages the root of `instance` through `repository`, trusting dirty flags.
+    async fn stage_root(instance: &TestRepository, repository: Arc<RepositoryContext>) -> Hash {
+        file::stage::stage(
+            repository,
+            &instance.write_token,
+            LoreArray::from_vec(vec![LoreString::from(&instance.path)]),
+            StageOptions::default(),
+        )
+        .await
+        .expect("Stage failed")
+    }
+
+    /// Over a provider that holds its state, whose diff is exact, a directory stage stages what the
+    /// diff finds with nothing marked before it, reading the marks and the content through one
+    /// operation. Over the OS provider the same stage trusts the dirty flags and stages nothing.
+    #[tokio::test]
+    async fn a_directory_stage_over_an_exact_diff_stages_what_nothing_marked() {
+        let (immutable_store, mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution, async move {
+                let (instance, exact, filesystem, committed) =
+                    exact_fixture(immutable_store, mutable_store).await;
+                test_file_write(&instance.path.join("added.txt"), b"added");
+
+                let trusting = stage_root(&instance, instance.repository.clone()).await;
+                assert_eq!(trusting, committed, "the fixture staged an unmarked file");
+
+                let staged = stage_root(&instance, exact.clone()).await;
+                assert_eq!(
+                    filesystem.begins.load(std::sync::atomic::Ordering::Acquire),
+                    1,
+                    "the stage marked and staged through more than one operation"
+                );
+                let state = state::State::deserialize(exact.clone(), staged)
+                    .await
+                    .expect("Failed to deserialize the staged state");
+                let listing = staged_file_listing(exact, state).await;
+                assert!(
+                    listing.iter().any(|file| file.starts_with("added.txt ")),
+                    "the stage left out the file the exact diff finds: {listing:?}"
+                );
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    /// A stage over an exact diff discards an add the working tree no longer holds, and with
+    /// nothing else staged leaves no staged state.
+    #[tokio::test]
+    async fn a_stage_over_an_exact_diff_discards_a_reverted_add() {
+        let (immutable_store, mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution, async move {
+                let (instance, exact, _, committed) =
+                    exact_fixture(immutable_store, mutable_store).await;
+                let added = instance.path.join("added.txt");
+                test_file_write(&added, b"added");
+                file::dirty::dirty(
+                    instance.repository.clone(),
+                    LoreArray::from_vec(vec![LoreString::from(&added)]),
+                )
+                .await
+                .expect("Dirty failed");
+                std::fs::remove_file(&added).expect("Remove failed");
+
+                let staged = stage_root(&instance, exact.clone()).await;
+                let (_, held, _) = state::State::deserialize_current_and_staged(exact)
+                    .await
+                    .expect("Failed to deserialize the states");
+                assert_eq!(staged, committed);
+                assert!(
+                    held.is_none(),
+                    "the staged state still holds the reverted add"
+                );
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    /// A stage of several targets over an exact diff marks below each, the walks running side by
+    /// side, and discards what any of them finds stale once all have drained.
+    #[tokio::test]
+    async fn a_stage_of_several_targets_over_an_exact_diff_marks_below_each() {
+        let (immutable_store, mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution, async move {
+                let (instance, exact, _, _) = exact_fixture(immutable_store, mutable_store).await;
+                for directory in ["a", "b"] {
+                    let directory = instance.path.join(directory);
+                    std::fs::create_dir_all(&directory).expect("Create failed");
+                    test_file_write(&directory.join("seed.txt"), b"seed");
+                }
+                test_commit_tree(&instance, "Directories").await;
+                test_file_write(&instance.path.join("a/added.txt"), b"added");
+                test_file_write(&instance.path.join("b/added.txt"), b"added");
+                let gone = instance.path.join("b/gone.txt");
+                test_file_write(&gone, b"gone");
+                file::dirty::dirty(
+                    instance.repository.clone(),
+                    LoreArray::from_vec(vec![LoreString::from(&gone)]),
+                )
+                .await
+                .expect("Dirty failed");
+                std::fs::remove_file(&gone).expect("Remove failed");
+
+                let staged = file::stage::stage(
+                    exact.clone(),
+                    &instance.write_token,
+                    LoreArray::from_vec(vec![
+                        LoreString::from(&instance.path.join("a")),
+                        LoreString::from(&instance.path.join("b")),
+                    ]),
+                    StageOptions::default(),
+                )
+                .await
+                .expect("Stage failed");
+                let state = state::State::deserialize(exact.clone(), staged)
+                    .await
+                    .expect("Failed to deserialize the staged state");
+                let listing = staged_file_listing(exact, state).await;
+                for added in ["a/added.txt ", "b/added.txt "] {
+                    assert!(
+                        listing.iter().any(|file| file.starts_with(added)),
+                        "the stage left out {added}found below a target: {listing:?}"
+                    );
+                }
+                assert!(
+                    !listing.iter().any(|file| file.starts_with("b/gone.txt ")),
+                    "the staged state still holds the reverted add: {listing:?}"
+                );
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    /// A stage over an exact diff marks the paths it is given in parallel, and the walk below an
+    /// untracked path creates the directory nodes the tree lacks above it. Many new files sharing
+    /// new directories must still leave each directory as one node, holding each file once.
+    #[tokio::test]
+    async fn a_stage_of_new_files_over_an_exact_diff_creates_each_shared_new_directory_once() {
+        const FILES: usize = 64;
+        let (immutable_store, mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution, async move {
+                let (instance, exact, _, _) = exact_fixture(immutable_store, mutable_store).await;
+                let mut paths = Vec::new();
+                for directory in ["fresh/one", "fresh/two"] {
+                    std::fs::create_dir_all(instance.path.join(directory))
+                        .expect("Create directory failed");
+                    for index in 0..FILES {
+                        let path = instance.path.join(format!("{directory}/{index:03}.txt"));
+                        test_file_write(&path, b"new");
+                        paths.push(LoreString::from(&path));
+                    }
+                }
+
+                let staged = file::stage::stage(
+                    exact.clone(),
+                    &instance.write_token,
+                    LoreArray::from_vec(paths),
+                    StageOptions::default(),
+                )
+                .await
+                .expect("Stage failed");
+                let staged = state::State::deserialize(exact.clone(), staged)
+                    .await
+                    .expect("Failed to deserialize the staged state");
+
+                let fresh = children_named(&exact, &staged, node::ROOT_NODE, "fresh").await;
+                assert_eq!(fresh.len(), 1, "one node for the shared directory");
+                for directory in ["one", "two"] {
+                    let nodes = children_named(&exact, &staged, fresh[0], directory).await;
+                    assert_eq!(nodes.len(), 1, "one node for fresh/{directory}");
+                    for index in 0..FILES {
+                        let name = format!("{index:03}.txt");
+                        let files = children_named(&exact, &staged, nodes[0], &name).await;
+                        assert_eq!(files.len(), 1, "one node for fresh/{directory}/{name}");
+                    }
+                }
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    /// A layer drawn from a repository holding `kept.txt`, mounted at `mount` in a repository read
+    /// through a [`HoldingFilesystem`], whose working tree holds the layer's file, a new one beside
+    /// it and another in `mount/dir`: the layer's repository, the repository and the context over
+    /// it.
+    async fn exact_layer_fixture(
+        immutable_store: Arc<dyn lore_storage::immutable_store::ImmutableStore>,
+        mutable_store: Arc<dyn lore_storage::mutable_store::MutableStore>,
+    ) -> (TestRepository, TestRepository, Arc<RepositoryContext>) {
+        #[derive(serde::Serialize)]
+        struct LayerConfig {
+            layers: Vec<lore_revision::layer::Layer>,
+        }
+
+        let source = test_repository_create(
+            immutable_store.clone(),
+            mutable_store.clone(),
+            RepositoryId::from(uuid::Uuid::now_v7()),
+        )
+        .await;
+        test_file_write(&source.path.join("kept.txt"), b"kept");
+        let layer_revision = test_commit_tree(&source, "Layer").await.revision();
+        let (instance, exact, _, _) = exact_fixture(immutable_store, mutable_store).await;
+        lore_revision::util::config::save(
+            &LayerConfig {
+                layers: vec![lore_revision::layer::Layer {
+                    target_path: "mount".to_string(),
+                    source_path: String::new(),
+                    repository: source.repository.id,
+                    metadata: None,
+                    current: layer_revision,
+                    staged: Hash::default(),
+                }],
+            },
+            lore_revision::layer::layer_config_path(&exact).expect("Layer config path"),
+        )
+        .await
+        .expect("Failed to write the layer set");
+        std::fs::create_dir_all(instance.path.join("mount/dir")).expect("Create directory failed");
+        test_file_write(&instance.path.join("mount/kept.txt"), b"kept");
+        test_file_write(&instance.path.join("mount/new.txt"), b"new");
+        test_file_write(&instance.path.join("mount/dir/new.txt"), b"new");
+        (source, instance, exact)
+    }
+
+    /// A stage over an exact diff marks a layer's files in the layer's tree, as a status does, so
+    /// the layer stages its new file and the parent holds nothing of the mount.
+    #[tokio::test]
+    async fn a_stage_over_an_exact_diff_marks_layer_files_in_the_layer() {
+        let (immutable_store, mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution, async move {
+                let (source, instance, exact) =
+                    exact_layer_fixture(immutable_store, mutable_store).await;
+
+                let staged = stage_root(&instance, exact.clone()).await;
+
+                let parent = state::State::deserialize(exact.clone(), staged)
+                    .await
+                    .expect("Failed to deserialize the parent state");
+                let parent = staged_file_listing(exact.clone(), parent).await;
+                assert!(
+                    !parent.iter().any(|file| file.starts_with("mount/")),
+                    "the parent holds the mount's files: {parent:?}"
+                );
+                let layer = lore_revision::layer::list(exact)
+                    .await
+                    .expect("Failed to read the layer set")
+                    .pop()
+                    .expect("The fixture configures one layer");
+                assert!(!layer.staged.is_zero(), "the layer staged nothing");
+                let layer_state =
+                    state::State::deserialize(source.repository.clone(), layer.staged)
+                        .await
+                        .expect("Failed to deserialize the layer state");
+                let layer_files = staged_file_listing(source.repository.clone(), layer_state).await;
+                assert!(
+                    layer_files.iter().any(|file| file.starts_with("new.txt ")),
+                    "the layer left out its new file: {layer_files:?}"
+                );
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    /// A status over an exact diff scoped to a layer mount, or to a directory below it, marks
+    /// nothing of the mount in the parent's tree, whether or not the scan was asked for: a scan
+    /// started there would mark the layer's files as parent adds.
+    #[tokio::test]
+    async fn a_status_of_a_layer_mount_over_an_exact_diff_marks_nothing_in_the_parent() {
+        let (immutable_store, mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution, async move {
+                let (_source, _instance, exact) =
+                    exact_layer_fixture(immutable_store, mutable_store).await;
+
+                for scan in [false, true] {
+                    for path in ["mount", "mount/dir"] {
+                        repository::status::status_boxed(
+                            exact.clone(),
+                            Some(vec![
+                                lore_revision::util::path::RelativePath::new_from_initial_path(
+                                    path,
+                                )
+                                .expect("A relative path"),
+                            ]),
+                            repository::status::StatusOptions {
+                                staged: true,
+                                scan,
+                                check_dirty: false,
+                                reset: false,
+                                sync_point: false,
+                                revision_only: false,
+                                count: false,
+                            },
+                        )
+                        .await
+                        .expect("Status failed");
+                    }
+                }
+
+                let (_, staged, _) = state::State::deserialize_current_and_staged(exact.clone())
+                    .await
+                    .expect("Failed to deserialize the states");
+                if let Some(staged) = staged {
+                    let mount = children_named(&exact, &staged, node::ROOT_NODE, "mount").await;
+                    assert!(mount.is_empty(), "the parent holds a node for the mount");
+                }
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    /// Resolution collects targets in completion order, and only the antichain
+    /// built from them decides what the walk covers. A target list resolved all at
+    /// once must therefore reach the tree it reaches when one resolution is ever
+    /// in flight.
+    ///
+    /// What that catches is a result lost or left unreaped once several are in
+    /// flight, which no other test sees: reaping one task instead of draining
+    /// stages the first target and leaves the rest at their committed contents.
+    #[tokio::test]
+    async fn targets_staged_together_reach_the_same_tree_as_one_at_a_time() {
+        let (immutable_store, mutable_store, execution) =
+            test_store_create().await.expect("Failed to create stores");
+
+        #[allow(clippy::disallowed_methods)]
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
+                let together = stage_targets_and_list(
+                    immutable_store.clone(),
+                    mutable_store.clone(),
+                    TargetDelivery::Together,
+                )
+                .await;
+                let one_at_a_time = stage_targets_and_list(
+                    immutable_store.clone(),
+                    mutable_store.clone(),
+                    TargetDelivery::OneAtATime,
+                )
+                .await;
+
+                assert!(
+                    !together.is_empty(),
+                    "the fixture must stage something for the comparison to mean anything"
+                );
+                assert_eq!(
+                    together, one_at_a_time,
+                    "targets resolved at once must reach the same tree as targets resolved singly"
+                );
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    /// The mode `signature`'s state records for `script.sh`.
+    #[cfg(target_family = "unix")]
+    async fn script_mode(repository: Arc<RepositoryContext>, signature: Hash) -> u16 {
+        let state = state::State::deserialize(repository.clone(), signature)
+            .await
+            .expect("Failed to deserialize the state");
+        let link = state
+            .find_node_link(repository.clone(), "script.sh")
+            .await
+            .expect("The state must hold the file");
+        state
+            .node(repository, link.node)
+            .await
+            .expect("The node must read back")
+            .mode
+    }
+
+    /// The mode a revision records is the one its file carried on disk, which the commit
+    /// reads from the file it fragments. Only the executable bit is tracked, and a change to
+    /// it alone is a modification the revision carries.
+    ///
+    /// An already-staged node is left alone, so the revision is committed between the two
+    /// stages for the second to reach the mode.
+    #[cfg(target_family = "unix")]
+    #[tokio::test]
+    async fn the_executable_bit_a_file_carries_reaches_the_revision() {
+        use std::os::unix::fs::PermissionsExt;
+
+        let repository_id = RepositoryId::from(uuid::Uuid::now_v7());
+        let execution = setup_test_execution();
+
+        #[allow(clippy::disallowed_methods)]
+        runtime()
+            .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
+                let tempdir = generate_tempdir();
+                let path = tempdir.to_path_buf();
+                std::fs::create_dir_all(path.as_path()).expect("Create directory failed");
+                let write_token = repository::RepositoryWriteToken::acquire(path.as_path()).await;
+                let repository = repository::create_local(
+                    path.as_path(),
+                    &write_token,
+                    repository_id,
+                    Context::from(uuid::Uuid::now_v7()),
+                    branch::DEFAULT_DEFAULT_NAME.to_string(),
+                    repository::RepositoryConfig::default(),
+                    false,
+                )
+                .await
+                .expect("Failed to initialize repository");
+
+                let file_path = path.as_path().join("script.sh");
+                test_file_write(file_path.as_path(), b"#!/bin/sh\necho unchanged");
+                let set_mode = |mode: u32| {
+                    std::fs::set_permissions(
+                        file_path.as_path(),
+                        std::fs::Permissions::from_mode(mode),
+                    )
+                    .expect("Failed to set test file mode");
+                };
+                let stage_all = async || {
+                    let signature = file::stage::stage(
+                        repository.clone(),
+                        &write_token,
+                        LoreArray::from_vec(vec![LoreString::from(&path)]),
+                        StageOptions {
+                            case_change: stage::StageCaseChange::Error,
+                            node_flags: NodeFlags::NoFlags,
+                            file_id: None,
+                            no_children: false,
+                            scan: true,
+                        },
+                    )
+                    .await
+                    .expect("Failed to stage the test file");
+                    script_mode(repository.clone(), signature).await
+                };
+                let commit_all = async || {
+                    let signature = commit::commit_boxed(
+                        repository.clone(),
+                        &write_token,
+                        CommitOptions {
+                            message: String::new(),
+                            link_messages: std::collections::HashMap::new(),
+                            link: None,
+                            layer_messages: std::collections::HashMap::new(),
+                            layer: None,
+                        },
+                    )
+                    .await
+                    .expect("Failed to commit the test file");
+                    let state = state::State::deserialize(repository.clone(), signature)
+                        .await
+                        .expect("Failed to deserialize the committed state");
+                    let link = state
+                        .find_node_link(repository.clone(), "script.sh")
+                        .await
+                        .expect("The committed state must hold the file");
+                    assert!(
+                        state
+                            .node_delta(repository.clone(), link.node)
+                            .await
+                            .expect("The delta must read back")
+                            .is_some(),
+                        "the revision must name the file among the nodes it changed"
+                    );
+                    script_mode(repository.clone(), signature).await
+                };
+
+                let executable = node::NodeFileMode::Executable.bits();
+
+                set_mode(0o755);
+                assert_eq!(
+                    executable,
+                    stage_all().await & executable,
+                    "a staged add must record the bit the file carries"
+                );
+                assert_eq!(
+                    executable,
+                    commit_all().await & executable,
+                    "the revision must record the bit"
+                );
+
+                set_mode(0o644);
+                stage_all().await;
+                assert_eq!(
+                    0,
+                    commit_all().await & executable,
+                    "the revision must record the loss of the bit"
+                );
+            }))
+            .await
+            .expect("Test task failed");
+    }
+
+    #[tokio::test]
+    async fn a_stage_scan_stages_a_file_a_directory_only_rule_names() {
+        in_execution(async {
+            let (repository, tempdir) = intermediate_repository().await;
+            stage_paths(&repository, &tempdir, &["."], true, false).await;
+            assert_file_in_and_directory_out(&repository, "a stage scan").await;
+        })
+        .await;
+    }
+
+    #[tokio::test]
+    async fn a_stage_of_a_file_a_directory_only_rule_names_stages_it() {
+        in_execution(async {
+            let (repository, tempdir) = intermediate_repository().await;
+            stage_paths(
+                &repository,
+                &tempdir,
+                &["src/Intermediate", "build/Intermediate"],
+                false,
+                false,
+            )
+            .await;
+            assert_file_in_and_directory_out(&repository, "a stage of the paths").await;
+        })
+        .await;
+    }
+
+    #[tokio::test]
+    async fn a_stage_scan_stages_the_removal_of_a_file_a_directory_only_rule_names() {
+        in_execution(async {
+            let (ruled, _, tempdir) =
+                ignoring_repository(&["src/Intermediate"], "Intermediate/\n").await;
+            std::fs::remove_file(tempdir.join("src/Intermediate")).expect("Delete failed");
+            stage_paths(&ruled, &tempdir, &["."], true, false).await;
+            assert!(
+                next_node(&ruled, "src/Intermediate")
+                    .await
+                    .is_staged_delete(),
+                "the removal of src/Intermediate is not staged"
+            );
+        })
+        .await;
+    }
+
+    /// A named stage of a tracked file removed from the working tree asks about it as the file the
+    /// tree holds.
+    #[tokio::test]
+    async fn a_stage_of_a_removed_file_a_directory_only_rule_names_stages_its_removal() {
+        in_execution(async {
+            let (ruled, _, tempdir) =
+                ignoring_repository(&["src/Intermediate"], "Intermediate/\n").await;
+            std::fs::remove_file(tempdir.join("src/Intermediate")).expect("Delete failed");
+            stage_paths(&ruled, &tempdir, &["src/Intermediate"], false, false).await;
+            assert!(
+                next_node(&ruled, "src/Intermediate")
+                    .await
+                    .is_staged_delete(),
+                "the removal of src/Intermediate is not staged"
+            );
+        })
+        .await;
+    }
+
+    /// A stage of a tracked file the working tree replaced with a directory a directory-only rule
+    /// names stages the file's removal and leaves out what the directory holds, scanning or naming
+    /// the path: the file the tree holds is asked about as a file.
+    #[tokio::test]
+    async fn a_stage_of_a_file_replaced_by_a_directory_a_directory_only_rule_names_stages_its_removal()
+     {
+        for (name, scan) in [(".", true), ("src/Intermediate", false)] {
+            in_execution(async move {
+                let (ruled, tempdir) = replaced_intermediate_repository("Intermediate/\n").await;
+                stage_paths(&ruled, &tempdir, &[name], scan, false).await;
+                assert!(
+                    next_node(&ruled, "src/Intermediate")
+                        .await
+                        .is_staged_delete(),
+                    "a stage of {name} left the removal of the file src/Intermediate unstaged"
+                );
+                assert!(
+                    !holds(&ruled, &next_tree(&ruled).await, "src/Intermediate/a.txt").await,
+                    "a stage of {name} took in src/Intermediate/a.txt, which the rule excludes"
+                );
+            })
+            .await;
+        }
+    }
+
+    #[tokio::test]
+    async fn a_staged_move_to_a_file_a_directory_only_rule_names_is_staged() {
+        in_execution(async {
+            let (ruled, _, tempdir) =
+                ignoring_repository(&["src/Intermediate"], "Intermediate/\n").await;
+            let root = tempdir.to_path_buf();
+            std::fs::create_dir_all(root.join("lib")).expect("Create directory failed");
+            std::fs::rename(root.join("src/Intermediate"), root.join("lib/Intermediate"))
+                .expect("Move failed");
+            file::stage::stage_move(
+                ruled.clone(),
+                ruled
+                    .try_write_token()
+                    .expect("The repository was opened for writing"),
+                root.join("src/Intermediate").to_string_lossy().to_string(),
+                root.join("lib/Intermediate").to_string_lossy().to_string(),
+                StageOptions::default(),
+            )
+            .await
+            .expect("Stage move failed");
+            assert!(
+                next_node(&ruled, "lib/Intermediate").await.is_staged(),
+                "the move to lib/Intermediate is not staged"
+            );
+        })
+        .await;
+    }
+
+    /// Pins that [`stage::stage_single_node`], which staging a link and realizing a tree reach,
+    /// asks about a link as the directory it mounts: `Mount/` leaves out a link mounted at `Mount`.
+    #[tokio::test]
+    async fn a_directory_only_rule_naming_a_mount_leaves_out_the_link() {
+        in_execution(async {
+            let (repository, _tempdir) = committed_repository("Mount/\n", &[]).await;
+            let link = stage::stage_single_node(
+                repository.clone(),
+                next_tree(&repository).await,
+                relative_path("Mount"),
+                node::Node {
+                    flags: NodeFlags::Link.bits(),
+                    ..Default::default()
+                },
+                Arc::default(),
+                None,
+                lore_revision::filter::FilterMode::Full,
+            )
+            .await
+            .expect("Stage failed");
+            assert!(!link.is_valid(), "the link mounted at Mount was staged");
+        })
+        .await;
+    }
+
+    /// A staging scan leaves out a file directly in a directory the ignore file excludes, where a
+    /// re-inclusion such as `!*/Saved/*/Keep/` reaches below a directory of the file's name, and
+    /// stages the file that re-inclusion brings back.
+    #[tokio::test]
+    async fn a_stage_scan_leaves_out_a_file_a_deeper_re_inclusion_does_not_reach() {
+        in_execution(async {
+            let (repository, tempdir) =
+                committed_repository("Saved/\n!*/Saved/*/Keep/\n", &[]).await;
+            let root = tempdir.to_path_buf();
+            for file in ["Game/Saved/Logs/Keep/k.log", "Game/Saved/direct.log"] {
+                let path = root.join(file);
+                std::fs::create_dir_all(path.parent().expect("A file has a parent"))
+                    .expect("Create directory failed");
+                test_file_write(path.as_path(), file.as_bytes());
+            }
+            stage_paths(&repository, &root, &["."], true, false).await;
+            let tree = next_tree(&repository).await;
+            assert!(
+                holds(&repository, &tree, "Game/Saved/Logs/Keep/k.log").await,
+                "the stage left out Game/Saved/Logs/Keep/k.log"
+            );
+            assert!(
+                !holds(&repository, &tree, "Game/Saved/direct.log").await,
+                "the stage took in Game/Saved/direct.log, which the ignore file excludes"
+            );
+        })
+        .await;
+    }
+
+    /// A stage of an unchanged sparse tree stages no deletion of the files its view leaves out of
+    /// the working tree, scanning or not, forced or not: a forced stage walks the tree as a scan
+    /// does, and a deletion driven by absence asks the view.
+    #[tokio::test]
+    async fn a_stage_scan_of_a_sparse_tree_stages_no_deletion() {
+        for (scan, force) in [(false, false), (false, true), (true, false), (true, true)] {
+            in_execution(async move {
+                let (repository, tempdir) = sparse_repository().await;
+                stage_paths(&repository, &tempdir, &["."], scan, force).await;
+                let deleted = sparse_files_marked(&repository, node::Node::is_staged_delete).await;
+                assert!(
+                    deleted.is_empty(),
+                    "a stage, scanning {scan} and forced {force}, staged the deletion of files \
+                     the view excludes: {deleted:?}"
+                );
+            })
+            .await;
+        }
+    }
+
+    /// A stage keeps what the view excludes below a directory removed from a sparse tree, scanning
+    /// or not, forced or not.
+    #[tokio::test]
+    async fn a_stage_scan_of_a_sparse_tree_keeps_what_the_view_excludes_below_a_removed_directory()
+    {
+        for (scan, force) in [(false, false), (false, true), (true, false), (true, true)] {
+            in_execution(async move {
+                let (repository, tempdir) = sparse_repository().await;
+                std::fs::remove_dir_all(tempdir.join("Engine")).expect("Delete failed");
+                std::fs::remove_dir_all(tempdir.join("Game/Content")).expect("Delete failed");
+                stage_paths(&repository, &tempdir, &["."], scan, force).await;
+                let deleted = sparse_files_marked(&repository, node::Node::is_staged_delete).await;
+                assert!(
+                    deleted.is_empty(),
+                    "a stage, scanning {scan} and forced {force}, staged the deletion of files \
+                     the view excludes: {deleted:?}"
+                );
+            })
+            .await;
+        }
+    }
+
+    /// A named stage of a file a sparse tree's view excludes stages no deletion of it, forced or
+    /// not.
+    #[tokio::test]
+    async fn a_stage_of_a_file_the_view_excludes_stages_no_deletion() {
+        for force in [false, true] {
+            in_execution(async move {
+                let (repository, tempdir) = sparse_repository().await;
+                stage_paths(
+                    &repository,
+                    &tempdir,
+                    &["top.txt", "Engine/Build/b.txt"],
+                    false,
+                    force,
+                )
+                .await;
+                let deleted = sparse_files_marked(&repository, node::Node::is_staged_delete).await;
+                assert!(
+                    deleted.is_empty(),
+                    "a stage of the paths, forced {force}, staged the deletion of files the view \
+                     excludes: {deleted:?}"
+                );
+            })
+            .await;
+        }
+    }
+
+    /// A staging scan stages the removal of a committed file the ignore file excludes below a
+    /// directory removed from the working tree, with the file beside it, scanning the tree or the
+    /// directory, forced or not: the tree tracks the file, so the ignore file has no say over it.
+    #[tokio::test]
+    async fn a_stage_scan_stages_the_removal_of_a_tracked_file_the_ignore_file_excludes() {
+        for name in [".", "Plugins/Foo"] {
+            for force in [false, true] {
+                in_execution(async move {
+                    let (ruled, _, tempdir) = ignoring_repository(
+                        &["Plugins/Foo/Binaries/foo.dll", "Plugins/Foo/foo.uplugin"],
+                        "Binaries/\n",
+                    )
+                    .await;
+                    std::fs::remove_dir_all(tempdir.join("Plugins/Foo")).expect("Delete failed");
+                    stage_paths(&ruled, &tempdir, &[name], true, force).await;
+                    assert!(
+                        next_node(&ruled, "Plugins/Foo/Binaries/foo.dll")
+                            .await
+                            .is_staged_delete(),
+                        "a stage of {name}, forced {force}, left the removal of \
+                         Plugins/Foo/Binaries/foo.dll unstaged"
+                    );
+                    assert!(
+                        next_node(&ruled, "Plugins/Foo/foo.uplugin")
+                            .await
+                            .is_staged_delete(),
+                        "a stage of {name}, forced {force}, left the removal of \
+                         Plugins/Foo/foo.uplugin unstaged"
+                    );
+                })
+                .await;
+            }
+        }
+    }
+
+    /// A staging scan takes back the staged add of a file the ignore file excludes below a directory
+    /// removed from the working tree, as it does for any other staged add there: the ignore file
+    /// leaves out no staged node, as status and unstage read it.
+    #[tokio::test]
+    async fn a_stage_scan_takes_back_a_staged_ignored_file_below_a_removed_directory() {
+        in_execution(async {
+            let (ruled, _, tempdir) =
+                ignoring_repository(&["Plugins/Foo/foo.uplugin"], "Binaries/\n").await;
+            let root = tempdir.to_path_buf();
+            std::fs::create_dir_all(root.join("Plugins/Foo/Binaries"))
+                .expect("Create directory failed");
+            test_file_write(root.join("Plugins/Foo/Binaries/new.dll").as_path(), b"new");
+            stage_paths(
+                &ruled,
+                &root,
+                &["Plugins/Foo/Binaries/new.dll"],
+                false,
+                true,
+            )
+            .await;
+            assert!(
+                next_node(&ruled, "Plugins/Foo/Binaries/new.dll")
+                    .await
+                    .is_staged_add(),
+                "the forced stage of Plugins/Foo/Binaries/new.dll staged no add"
+            );
+            std::fs::remove_dir_all(root.join("Plugins/Foo")).expect("Delete failed");
+            stage_paths(&ruled, &root, &["."], true, false).await;
+            let tree = next_tree(&ruled).await;
+            let left = tree
+                .find_node(ruled.clone(), "Plugins/Foo/Binaries/new.dll")
+                .await
+                .ok();
+            assert!(
+                left.is_none_or(|node| !node.is_staged_add()),
+                "a stage scan left the add of Plugins/Foo/Binaries/new.dll staged: {left:?}"
+            );
+        })
+        .await;
+    }
+}

@@ -1,0 +1,16 @@
+# labs_agent: optimized headless Chromium for agents (headless_shell lineage).
+is_official_build = true
+is_debug = false
+dcheck_always_on = false
+symbol_level = 0
+blink_symbol_level = 0
+v8_symbol_level = 0
+use_thin_lto = true
+chrome_pgo_phase = 2
+enable_remoting = false
+enable_widevine = false
+use_cups = false
+use_pulseaudio = false
+use_vaapi = false
+headless_use_prefs = false
+treat_warnings_as_errors = false

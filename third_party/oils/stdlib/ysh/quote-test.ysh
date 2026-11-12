@@ -1,0 +1,280 @@
+#!bin/ysh
+
+use $LIB_YSH/quote.ysh
+use $LIB_YSH/yblocks.ysh --pick yb-capture
+
+# Change to 'use'?
+source $LIB_OSH/byo-server.sh
+
+proc test-sh {
+  assert ["'x'" === quote.sh('x')]
+  assert [sq_expected === quote.sh("'")]
+}
+
+proc test-shell {
+  echo TODO
+
+  #assert ["'x'" === quote.shell('x')]
+  # Note: the \\ is hard to read - '' doesn't help
+  #assert [sq_expected === quote.shell("'")]
+  #assert ["" === quote.shell(b'\n')]
+}
+
+proc test-ninja {
+  assert ['dir/my-file.txt' === quote.ninja('dir/my-file.txt')]
+
+  assert ['$$' === quote.ninja('$')]
+  assert ['$ ' === quote.ninja(' ')]
+  assert ['$:' === quote.ninja(':')]
+  try {
+    call quote.ninja(u'\n')
+  }
+  assert [10 === _error.code]
+}
+
+proc test-make {
+  assert ['dir/my-file.txt' === quote.make('dir/my-file.txt')]
+
+  # https://www.cmcrossroads.com/article/gnu-make-escaping-walk-wild-side
+
+  # weird special case
+  assert ['$$' === quote.make('$')]
+
+  # % appears in 3 places, esacped by \
+  assert [r'\%' === quote.make('%')]
+  assert [r'\\' === quote.make(r'\')]
+
+  assert [r'\[' === quote.make('[')]
+  assert [r'\]' === quote.make(']')]
+  assert [r'\*' === quote.make('*')]
+  assert [r'\?' === quote.make('?')]
+
+  try {
+    call quote.make(u'\n')
+  }
+  assert [10 === _error.code]
+}
+
+var REAL_CASES = [
+  'Z',            # ASCII
+  '',             # empty string
+  # TODO: This should be explicitly disallowed
+  #b'\y00',        # NUL byte
+  b'\y07',        # low unprintable byte
+  b'\yff',        # high unprintable byte
+
+  # whitespace
+  ' ',   
+  u'\t',
+  # Ninja doesn't allow newlines in filenames
+  #u'\r',
+  #u'\n',
+
+  # JSON stuff
+  u'\b',
+  u'\f',
+  # Note: JSON has no \v
+
+  # Common metacharacters
+  '"',
+  "'",
+  r'\',   # C-style, JSON
+  '$',    # make/ninja
+  '&',    # HTML
+  '%',    # URL
+  '^',    # line continuation for Windows batch
+  ':',    # ninja character
+  #'#',    # comment character - Ninja has no way to escape!
+
+  u'\u{3bc}',     # UTF-8 2 bytes - mu 
+  u'\u{4e09}',    # UTF-8 3 bytes - Chinese 3
+  u'\u{1f618}',   # UTF-8 4 bytes - Emoji
+
+  # surrogate range?  May be round tripped as byte strings
+]
+
+#var REAL_CASES = [ 'a', u'\n', 'b' ]
+
+
+const REAL_JOINED = join(REAL_CASES, '') ++ u'\n'
+const REAL_JOINED_SPACE = join(REAL_CASES, ' ') ++ u'\n'  # for shell
+
+proc test-round-trip-sh {
+  # TODO: our test framework needs a temp dir
+  var dir = '_tmp/quote-test'
+  mkdir -p $dir
+  cd $dir
+
+  var parts = ['echo']
+  for s in (REAL_CASES) {
+    call parts->append(quote.sh(s))
+  }
+
+  echo $[join(parts, ' ')] > round-trip.sh
+
+  yb-capture (&r) {
+    # Hm bash says: cannot execute binary file!
+
+    # The \0 byte is not round trippable in /bin/sh
+    # So we should not allow it
+    # We should exclude it
+
+    /bin/sh round-trip.sh
+  }
+  = r.stdout
+  assert [REAL_JOINED_SPACE === r.stdout]
+}
+
+proc test-round-trip-js {
+  # TODO: we need node.js in the CI to test this, or some other JS interpreter
+  # like duktape
+  return
+
+  # 0xff is not representable, as expected
+
+  # TODO: our test framework needs a temp dir
+  var dir = '_tmp/quote-test'
+  mkdir -p $dir
+  cd $dir
+
+  var parts = []
+  for s in (REAL_CASES) {
+    call parts->append(toJson(s))
+  }
+
+  echo "console.log($[join(parts, ' +" "+ ')])" > round-trip.js
+
+  yb-capture (&r) {
+    # Hm bash says: cannot execute binary file!
+
+    # The \0 byte is not round trippable in /bin/sh
+    # So we should not allow it
+    # We should exclude it
+
+    nodejs round-trip.js
+  }
+  = r.stdout
+  assert [REAL_JOINED_SPACE === r.stdout]
+}
+
+proc test-round-trip-ninja-shell {
+  # TODO: our test framework needs a temp dir
+  var dir = '_tmp/quote-test'
+  mkdir -p $dir
+  cd $dir
+
+  var parts = []
+  for s in (REAL_CASES) {
+    var s2 = quote.ninja(s)
+    # now quote it again
+    var s3 = quote.sh(s2)
+    call parts->append(s3)
+  }
+
+  # Here we are testing the shell + Ninja context.
+  # Can we test just the Ninja context?  By generating a file with a weird
+  # name?
+
+  echo """
+  rule testrule
+    command = echo $[join(parts, ' ')] > \$out
+  build my-out: testrule my-in
+  """ > build.ninja
+
+  touch my-in
+
+  # We can see the shell invocation
+  # It doesn't preserve newlines
+  # execve("/bin/sh", ["/bin/sh", "-c", "echo 'a' '' 'b' > my-out"]
+
+  #strace -ff ninja my-out
+  ninja my-out
+
+  yb-capture (&r) {
+    # Hm bash says: cannot execute binary file!
+
+    # The \0 byte is not round trippable in /bin/sh
+    # So we should not allow it
+    # We should exclude it
+
+    cat my-out
+  }
+  = r.stdout
+  assert [REAL_JOINED_SPACE === r.stdout]
+}
+
+proc test-round-trip-ninja-only {
+  # TODO: our test framework needs a temp dir
+  var dir = '_tmp/quote-test'
+  mkdir -p $dir
+  cd $dir
+
+  var parts = []
+  for s in (REAL_CASES) {
+    var s2 = quote.ninja(s)
+    call parts->append(s2)
+  }
+
+  # Here we are testing the shell + Ninja context.
+  # Can we test just the Ninja context?  By generating a file with a weird
+  # name?
+
+  rm -f --verbose *
+
+  var filename = join(parts, '')
+  echo """
+  rule cp
+    command = cp \$in \$out
+  build $filename: cp my-in
+  default $filename
+  """ > weird-file.ninja
+
+  touch my-in
+
+  # We can see the shell invocation
+  # It doesn't preserve newlines
+  # execve("/bin/sh", ["/bin/sh", "-c", "echo 'a' '' 'b' > my-out"]
+
+  #strace -ff ninja my-out
+  ninja -f weird-file.ninja
+
+  yb-capture (&r) {
+    # python2 doesn't mangle filenames
+    python2 -c '
+import os
+files = [n for n in os.listdir(".") if n not in ["weird-file.ninja", "my-in", ".ninja_log"]]
+print(files[0])
+    '
+  }
+  = r.stdout
+  assert [REAL_JOINED === r.stdout]
+}
+
+
+
+# Note: the \\ is hard to read - '' doesn't help
+const sq_expected = "''\\'''" 
+
+# Gah this doesn't work!  Because it would require '''
+const sq_expected2 = r'''
+''\''  # Gah this would require three
+'''
+
+# TODO: Test the alphabet encoded to
+#
+# - sh: byte strings without nulls
+# - shell: byte strings without nulls, newlines!
+#   - or UTF-8 without nulls?
+# - JSON: encoded form must be UTF-8, with ASCII option \u00ff
+# - HTML: UTF-8, with ASCII option with &#xff;
+#   - without NULLs
+# - CSV: UTF-8
+# - Python/C: UTF-8 without nulls, with ASCII option
+# - urlParam: ASCII
+#
+# Test what is round-tripped - e.g. 0x00 or 0xff omitted
+
+if is-main {
+  byo-maybe-run
+}
+

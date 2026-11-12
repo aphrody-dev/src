@@ -1,0 +1,30 @@
+[package]
+name = "lore-hashicorp"
+edition = "2024"
+version = "0.13.1-nightly"
+publish = false
+
+[lib]
+test = false
+
+[dependencies]
+async-trait = { workspace = true }
+opentelemetry = { workspace = true }
+opentelemetry_sdk = { workspace = true }
+rand = { workspace = true }
+rs-consul = "0.15.0"
+tokio = { workspace = true }
+tracing = { workspace = true }
+lore-revision = { workspace = true }
+lore-telemetry = { workspace = true }
+urlencoding = { workspace = true }
+
+[dev-dependencies]
+lore-base = { workspace = true }
+mockall = { workspace = true }
+rand = { workspace = true }
+temp-env = { workspace = true }
+uuid = { workspace = true }
+
+[lints]
+workspace = true

@@ -1,0 +1,3053 @@
+#!/usr/bin/python3
+# SPDX-FileCopyrightText: 2026 Epic Games, Inc.
+# SPDX-License-Identifier: MIT
+from __future__ import annotations
+
+import filecmp
+import json
+import logging
+import os
+import pathlib
+import random
+import shutil
+import string
+import subprocess
+import sys
+import tempfile
+import uuid
+from collections.abc import Iterable
+from pathlib import Path
+from time import sleep
+from typing import TypedDict, Unpack, overload
+
+from cleanup_util import lore_mount_instance
+from error_types import (
+    ServerConnectionError,
+    UnknownLoreError,
+    get_error_type,
+)
+from lore_parsers import (
+    BisectResults,
+    BranchDescription,
+    BranchList,
+    FileDescription,
+    LockAcquire,
+    LockQuery,
+    LockRelease,
+    LockStatus,
+    RevisionInfo,
+    SharedStoreInfo,
+    SharedStoreList,
+    can_parse_output,
+    parse_branch_info,
+    parse_branch_list,
+    parse_file_info,
+    parse_jsonl,
+    parse_lock_acquire,
+    parse_lock_query,
+    parse_lock_release,
+    parse_lock_status,
+    parse_revision_bisect,
+    parse_revision_list,
+    parse_shared_store_info,
+    parse_shared_store_list,
+    parse_status_json,
+)
+from service_util import LORE_TEST_VFS_VAR, name_service_executable
+
+logger = logging.getLogger(__name__)
+
+
+def run_vfs(vfs: str | None) -> str | None:
+    """`vfs`, or the VFS `LORE_TEST_VFS` names for the run where the test names
+    none."""
+    return vfs or os.environ.get(LORE_TEST_VFS_VAR) or None
+
+
+def lore_test_env(global_dir: str) -> dict[str, str]:
+    """Builds the environment a Lore command needs to stay inside this test.
+
+    Sets the paths that isolate config and credentials per test. Use this when
+    spawning Lore as a subprocess outside of the `Lore` wrapper, such as when a
+    test needs to kill a process mid-operation or read streaming output.
+
+    For service mode, use `Lore.sandboxed_env()` which also names the service
+    executable when `LORE_USE_SERVICE` is set.
+    """
+    env = os.environ.copy()
+    env["LORE_GLOBAL_PATH"] = global_dir
+    # Isolate the auth token store per test so a developer's locally cached
+    # credentials don't leak into smoke runs. Assigned rather than defaulted:
+    # `env` starts from the ambient environment, so a `LORE_AUTH_PATH` a
+    # developer or CI already exports would win and the command would read
+    # that store.
+    env["LORE_AUTH_PATH"] = global_dir
+    # Keep the token store's key in that directory as well, as the Rust tests
+    # do, rather than in the OS keyring: a headless run started over ssh holds a
+    # session keyring that is revoked when the login ends, and a live keyring
+    # would share one key across every test.
+    env["LORE_AUTH_STORE"] = "fallback"
+    return env
+
+
+# TODO: Remove the following section when pytest migrations are done
+def lore_ensure_local():
+    remote_url = os.getenv("LORE_REMOTE_URL")
+    if remote_url is None or remote_url == "":
+        print(
+            "No remote URL is set - smoke tests should not run against a live environment"
+        )
+        exit(-1)
+
+
+def lore_run(lore_executable, repository_path, command, *args):
+    try:
+        command_args = [lore_executable]
+        if len(repository_path) > 0:
+            command_args += ["--repository", repository_path]
+        command_args += [command, *args]
+        print("Executing Lore: " + " ".join(command_args))
+        output = subprocess.check_output(
+            command_args, text=True, stderr=subprocess.STDOUT
+        )
+        print(output)
+        return output
+    except subprocess.CalledProcessError as e:
+        print("Lore failed with return code " + str(e.returncode) + ":")
+        output = e.stdout if e.stdout is not None else ""
+        if len(output) > 0:
+            print(output)
+        else:
+            print("*** No output ***")
+        exit(e.returncode)
+
+
+def lore_fail(lore_executable, repository_path, command, *args):
+    try:
+        command_args = [lore_executable]
+        if len(repository_path) > 0:
+            command_args += ["--repository", repository_path]
+        command_args += [command, *args]
+        print("Executing Lore expecting failure: " + " ".join(command_args))
+        output = subprocess.check_output(
+            command_args, text=True, stderr=subprocess.STDOUT
+        )
+        print("Lore did not fail as expected:")
+        print(output)
+        exit(1)
+    except subprocess.CalledProcessError as e:
+        output = e.stdout if e.stdout is not None else ""
+        if len(output) > 0:
+            print(e.stdout)
+        else:
+            print("*** No output ***")
+        return output
+
+
+def lore_can_fail(lore_executable, repository_path, command, *args):
+    try:
+        command_args = [lore_executable]
+        if len(repository_path) > 0:
+            command_args += ["--repository", repository_path]
+        command_args += [command, *args]
+        print("Executing Lore: " + " ".join(command_args))
+        output = subprocess.check_output(
+            command_args, text=True, stderr=subprocess.STDOUT
+        )
+        print(output)
+        return output
+    except subprocess.CalledProcessError as e:
+        output = e.stdout if e.stdout is not None else ""
+        if len(output) > 0:
+            print(e.stdout)
+        else:
+            print("*** No output ***")
+        return output
+
+
+def verify_file(source_path, dest_path):
+    filecmp.clear_cache()
+    if not filecmp.cmp(
+        source_path,
+        dest_path,
+        shallow=False,
+    ):
+        print("File identical check failed for " + dest_path)
+        exit(-1)
+
+
+# End of the section that needs to be removed eventually
+
+
+def verify_signatures(revision_list: list[RevisionInfo], expected_count):
+    assert len(revision_list) == expected_count, "Incorrect number of revisions"
+    assert all(rev.has_valid_signature() for rev in revision_list), (
+        "Invalid revision signature"
+    )
+
+
+def _inherit_metadata_args(keys: list[str] | None) -> list[str]:
+    """Repeat --inherit-metadata once per key, as the flag takes one key each."""
+    return [arg for key in keys or [] for arg in ("--inherit-metadata", key)]
+
+
+def _link_message_args(link_messages: dict[str, str] | None) -> list[str]:
+    return [
+        arg
+        for path, message in (link_messages or {}).items()
+        for arg in ("--link-message", path, message)
+    ]
+
+
+class Lore:
+    def __init__(
+        self,
+        lore_executable_path: str,
+        path: str,
+        name: str,
+        base_env: dict[str, str],
+        environment_vars: dict[str, str] | None = None,
+        remote_url: str | None = None,
+        remote_path: str | None = None,
+        repo_id: str | None = None,
+        create_repo: bool = True,
+        created_paths: list[str] | None = None,
+    ):
+        self.lore_executable_path = lore_executable_path
+        self.path = path
+        self.name = name
+        # The base environment for subprocess isolation, from the
+        # `lore_subprocess_env` fixture. `sandboxed_env()` layers repo-specific
+        # settings on top of this.
+        self.base_env = base_env
+        self.environment_vars = environment_vars or {}
+        # The `new_lore_repo` fixture's record of what to remove when the test
+        # ends. Handed down to every repository this one clones, so a clone --
+        # which lands beside its source rather than inside it -- is removed with
+        # the rest. Defaults to a list of its own so a directly constructed Lore
+        # outside a fixture still works, just without the cleanup.
+        self.created_paths = [] if created_paths is None else created_paths
+        # If the caller picked a specific remote_url, mirror it into the env
+        # subprocess overrides — otherwise repository_create inherits the
+        # session-level LORE_REMOTE_URL pointing at the autouse server and
+        # registers this repo against the wrong instance.
+        if remote_url:
+            self.environment_vars.setdefault("LORE_REMOTE_URL", remote_url)
+        # Resolved before creating, because the create now passes the full URL rather
+        # than a bare name for the CLI to expand out of LORE_REMOTE_URL.
+        self.remote = remote_url if remote_url else os.getenv("LORE_REMOTE_URL", "")
+        if remote_path:
+            self.remote_path = remote_path
+        elif self.remote:
+            # Supply the separator rather than assuming the caller's remote ends in one:
+            # the session fixture appends it, but a `remote_url=` passed straight in need
+            # not, and concatenating would yield `lore://host:1234name` -- a different
+            # host rather than the intended repository.
+            self.remote_path = f"{self.remote.rstrip('/')}/{self.name}"
+        else:
+            # No remote at all, so the bare name is the whole identifier. Joining a
+            # separator onto nothing would make `/name`, whose empty first segment is not
+            # a valid repository name.
+            self.remote_path = self.name
+        if create_repo:
+            self.repository_create(remote_path=remote_path, repo_id=repo_id)
+        self.test_commit_id = 1
+
+    def dot_dir(self) -> str:
+        """Return the repository metadata directory name (.lore or .urc)."""
+        if os.path.isdir(os.path.join(self.path, ".urc")):
+            return ".urc"
+        return ".lore"
+
+    def dot_path(self) -> str:
+        """Return the full path to the repository metadata directory.
+
+        A virtual clone keeps it outside its mount, in the external directory the
+        global data directory holds for its instance, which is where Lore finds it
+        through the mount table."""
+        instance = lore_mount_instance(self.path)
+        if instance is not None:
+            global_dir = self.sandboxed_env()["LORE_GLOBAL_PATH"]
+            return os.path.join(global_dir, "data", "external", instance, ".lore")
+        return os.path.join(self.path, self.dot_dir())
+
+    def ignore_file(self) -> str:
+        """Return the ignore file name (.loreignore or .urcignore).
+
+        Under .lore/ format, falls back to .urcignore if .loreignore is not found.
+        """
+        if os.path.isdir(os.path.join(self.path, ".urc")):
+            return ".urcignore"
+        # .lore format: prefer .loreignore, fall back to .urcignore
+        if not os.path.isfile(
+            os.path.join(self.path, ".loreignore")
+        ) and os.path.isfile(os.path.join(self.path, ".urcignore")):
+            return ".urcignore"
+        return ".loreignore"
+
+    def sandboxed_env(self, **extra: str) -> dict[str, str]:
+        """The environment a Lore command must run in to stay inside this test.
+
+        Commands run through this wrapper get it already. A test that spawns the
+        binary itself -- to kill it, or to read its output as it streams -- has
+        to ask for it, or the command reads the developer's global config and
+        credentials rather than the ones this test set up. `extra` wins over
+        what this repository sets.
+        """
+        # Start with the base test environment, then layer repository-specific
+        # settings on top. A test that names its own auth path through
+        # `environment_vars` keeps it -- `test_auth_online` gives each actor
+        # a store that way.
+        env = self.base_env.copy()
+        env.update(self.environment_vars)
+        # `extra` wins, and must be applied before naming the executable so that
+        # a caller turning relaying on through `extra` has it seen by that check.
+        env.update(extra)
+        return name_service_executable(env, self.lore_executable_path)
+
+    def _subprocess_env(self) -> dict[str, str]:
+        """Environment for any subprocess this repository drives."""
+        return self.sandboxed_env()
+
+    def run(
+        self,
+        urc_args: list[str] | None = None,
+        use_os_dir: bool = False,
+        path: str | None = None,
+        cwd: str | None = None,
+        check: bool = True,
+        level: str | None = None,
+        debug: bool = False,
+        force: bool = False,
+        dry_run: bool = False,
+        no_pager: bool = False,
+        json: bool = False,
+        offline: bool = False,
+        remote: bool = False,
+        local: bool = False,
+        cache: bool = False,
+        identity: str | None = None,
+        identity_token: str | None = None,
+        access_token: str | None = None,
+        max_connections: int | None = None,
+        file_count_limit: int | None = None,
+        file_size_limit: int | None = None,
+        compress_limit: int | None = None,
+        search_limit: int | None = None,
+        search_nearest: bool = False,
+        no_gc: bool = False,
+        non_interactive: bool = False,
+        stats: int | None = None,
+        event_interval: int | None = None,
+    ):
+        if urc_args is None:
+            urc_args = []
+        command_args = (
+            [
+                self.lore_executable_path,
+            ]
+            + (
+                []
+                if use_os_dir
+                else ["--repository", path if path is not None else self.path]
+            )
+            + (["--log-level", level] if level else [])
+            + (["--debug"] if debug else [])
+            + (["--force"] if force else [])
+            + (["--dry-run"] if dry_run else [])
+            + (["--no-pager"] if no_pager else [])
+            + (["--json"] if json else [])
+            + (["--offline"] if offline else [])
+            + (["--remote"] if remote else [])
+            + (["--local"] if local else [])
+            + (["--cache"] if cache else [])
+            + (["--identity", identity] if identity else [])
+            + (["--max-connections", str(max_connections)] if max_connections else [])
+            + (
+                ["--file-count-limit", str(file_count_limit)]
+                if file_count_limit
+                else []
+            )
+            + (["--file-size-limit", str(file_size_limit)] if file_size_limit else [])
+            + (["--compress-limit", str(compress_limit)] if compress_limit else [])
+            + (["--search-limit", str(search_limit)] if search_limit else [])
+            + (["--search-nearest"] if search_nearest else [])
+            + (["--no-gc"] if no_gc else [])
+            + (["--non-interactive"] if non_interactive else [])
+            + ([f"--stats={stats}"] if stats is not None else [])
+            + (
+                ["--event-interval", str(event_interval)]
+                if event_interval is not None
+                else []
+            )
+            + urc_args
+        )
+        command_string = " ".join(command_args)
+        logger.info("Executing Lore command: %s", command_string)
+        # Run from the repository root so commands behave like a real user
+        # invoking lore inside the working tree. This matters for output that
+        # is rendered relative to the current directory (e.g. `lore status`
+        # paths). When `use_os_dir` is set the test deliberately controls the
+        # cwd (e.g. via monkeypatch.chdir) to exercise repository discovery, so
+        # leave the inherited cwd untouched in that case.
+        run_cwd = cwd
+        if run_cwd is None and not use_os_dir:
+            target_dir = path if path is not None else self.path
+            if target_dir and os.path.isdir(target_dir):
+                run_cwd = target_dir
+        attempt = 0
+        max_attempts = 3
+        while True:
+            try:
+                env = self._subprocess_env()
+                # Supplied tokens go through the environment, as the CLI recommends,
+                # so they stay off the command line and out of the logged command.
+                if identity_token:
+                    env["LORE_IDENTITY_TOKEN"] = identity_token
+                if access_token:
+                    env["LORE_ACCESS_TOKEN"] = access_token
+                output = subprocess.run(
+                    command_args,
+                    capture_output=True,
+                    text=True,
+                    check=check,
+                    env=env,
+                    cwd=run_cwd,
+                )
+                logger.info(output.stdout + output.stderr)
+                return output.stdout + output.stderr
+            except subprocess.CalledProcessError as e:
+                output = e.stdout + e.stderr if e.stdout or e.stderr else ""
+                if len(output) == 0:
+                    output = "*** Lore command failed with no output ***"
+                logger.critical(
+                    "Lore Error while running Lore command: %s", command_string
+                )
+                logger.critical(
+                    "Lore failed with return code %s:\n%s", e.returncode, output
+                )
+                error_type = get_error_type(e)
+                if error_type == UnknownLoreError:
+                    logger.critical(
+                        f"Unknown Lore error: {e}\n Do you need to add a new test exception?"
+                    )
+                elif error_type == ServerConnectionError:
+                    attempt += 1
+                    logger.critical(
+                        f"Failed to connect to server, attempt {attempt} / {max_attempts}.\nError: {e}"
+                    )
+                    sleep(attempt)
+                    if attempt < max_attempts:
+                        continue
+                error = error_type(f"Command: {command_string}\n{output}")
+                error.returncode = e.returncode
+                raise error from None
+            except Exception as e:
+                logger.critical(f"Unknown error: {e}")
+                raise UnknownLoreError(str(e)) from None
+
+    def repository_status(
+        self,
+        path: str | list[str] | Path | list[Path] | None = None,
+        unstaged: bool = False,
+        reset: bool = False,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        path = self._fix_paths(path)
+        return self.run(
+            ["repository", "status"]
+            + path
+            + (["--unstaged"] if unstaged else [])
+            + (["--reset"] if reset else [])
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def repository_info(self, url: str | None = None, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["repository", "info"] + ([url] if url else []), **kwargs)
+
+    def repository_list(self, url: str | None = None, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["repository", "list"] + ([url] if url else []), **kwargs)
+
+    def _own_shared_store(
+        self, asked_vfs: str | None, vfs: str | None, repo_path: str
+    ) -> str | None:
+        """A shared store of its own, beside `repo_path`, for a repository that
+        `LORE_TEST_VFS` makes virtual where the test asked for no shared store, or
+        `None` for any other. A virtual clone always uses a shared store, and one
+        of its own keeps the repository apart from the test's others, as the store
+        in its own `.lore` did: a branch it commits to doesn't advance in theirs."""
+        if asked_vfs or vfs in (None, "none"):
+            return None
+        store = f"{repo_path}.store"
+        self.created_paths.append(store)
+        return store
+
+    def repository_create(
+        self,
+        remote_path: str | None = None,
+        description: str | None = None,
+        repo_id: str | None = None,
+        vfs: str | None = None,
+        use_shared_store: bool = False,
+        shared_store_path: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        asked_vfs = vfs
+        vfs = run_vfs(vfs)
+        if not (use_shared_store or shared_store_path):
+            shared_store_path = self._own_shared_store(asked_vfs, vfs, self.path)
+        output = self.run(
+            ["repository", "create", remote_path if remote_path else self.remote_path]
+            + (["--description", description] if description else [])
+            + (["--id", repo_id] if repo_id else [])
+            + (["--vfs", vfs] if vfs else [])
+            + (["--use-shared-store"] if use_shared_store else [])
+            + (["--shared-store-path", shared_store_path] if shared_store_path else []),
+            **kwargs,
+        )
+        self._ensure_test_identity_in_config(kwargs.get("identity"))
+        return output
+
+    def _ensure_test_identity_in_config(self, identity: str | None = None) -> None:
+        """Seed `identity = "test-user"` into .lore/config.toml when absent.
+
+        A caller that passed `identity=` to `repository_create` gets that
+        identity seeded instead.
+
+        Test infra avoids passing --identity globally because repository
+        create/delete have an asymmetric server-side ownership check
+        (`metadata.creator` is stamped from --identity, but the delete
+        authorization uses the JWT-derived user_id, which is `<unknown>`
+        under no-auth — so a `test-user` creator never matches). Seeding
+        identity locally lets commit-producing commands resolve it via
+        the existing config.toml chain without touching create/delete
+        RPCs. Insert before the first `[section]` header so the key stays
+        top-level rather than being parsed into a table.
+
+        Pass identity="..." on individual commands to override per-call.
+        """
+        identity = identity or "test-user"
+        config = Path(self.dot_path()) / "config.toml"
+        if not config.exists():
+            return
+        lines = config.read_text().splitlines()
+        if any(line.strip().startswith("identity") for line in lines):
+            return
+        out: list[str] = []
+        inserted = False
+        for line in lines:
+            if not inserted and line.strip().startswith("["):
+                out.append(f'identity = "{identity}"')
+                inserted = True
+            out.append(line)
+        if not inserted:
+            out.append(f'identity = "{identity}"')
+        config.write_text("\n".join(out) + "\n")
+
+    def repository_delete(
+        self, remote_path: str | None = None, **kwargs: Unpack[GlobalOptions]
+    ):
+        return self.run(
+            ["repository", "delete", remote_path if remote_path else self.remote_path],
+            **kwargs,
+        )
+
+    def repository_verify(
+        self,
+        path: str | None = None,
+        heal: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["repository", "verify"]
+            + (["--path", path] if path else [])
+            + (["--heal"] if heal else []),
+            **kwargs,
+        )
+
+    def repository_dump(
+        self,
+        path: str | None = None,
+        revision: str | None = None,
+        max_depth: int | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["repository", "dump"]
+            + (["--path", self._fix_path(path)] if path else [])
+            + (["--revision", revision] if revision else [])
+            + (["--max-depth", max_depth] if max_depth else []),
+            **kwargs,
+        )
+
+    def repository_gc(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["repository", "gc"], **kwargs)
+
+    def repository_instance_list(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["repository", "instance", "list"], **kwargs)
+
+    def repository_instance_prune(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["repository", "instance", "prune"], **kwargs)
+
+    def repository_instance_delete(
+        self, dry_run: bool = False, **kwargs: Unpack[GlobalOptions]
+    ):
+        return self.run(
+            ["repository", "instance", "delete"] + (["--dry-run"] if dry_run else []),
+            **kwargs,
+        )
+
+    def repository_instance_move(
+        self,
+        target_path: str,
+        dry_run: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["repository", "instance", "move", target_path]
+            + (["--dry-run"] if dry_run else []),
+            **kwargs,
+        )
+
+    def repository_instance_clone(
+        self,
+        destination: str,
+        dry_run: bool = False,
+        allow_copy: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> "Lore":
+        """Clone this instance to `destination`, which a relative path names against the `cwd` the
+        command runs in, and return the clone."""
+        resolved = os.path.join(kwargs.get("cwd") or self.path, str(destination))
+        # Recorded before the clone exists, so a clone that fails partway is removed with the test.
+        self.created_paths.append(resolved)
+        self.run(
+            ["repository", "instance", "clone", str(destination)]
+            + (["--dry-run"] if dry_run else [])
+            + (["--allow-copy"] if allow_copy else []),
+            **kwargs,
+        )
+        return Lore(
+            base_env=self.base_env,
+            remote_path=self.remote_path,
+            remote_url=self.remote,
+            lore_executable_path=self.lore_executable_path,
+            path=resolved,
+            name=os.path.basename(resolved),
+            create_repo=False,
+            created_paths=self.created_paths,
+            environment_vars=self.environment_vars,
+        )
+
+    def repository_store(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["repository", "store"], **kwargs)
+
+    def repository_store_immutable(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["repository", "store", "immutable"], **kwargs)
+
+    def repository_store_immutable_query(
+        self,
+        address: str | None = None,
+        recurse: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["repository", "store", "immutable", "query"]
+            + ([address] if address else [])
+            + (["--recurse"] if recurse else []),
+            **kwargs,
+        )
+
+    def repository_verify_fragment(
+        self,
+        fragment_hash: str,
+        context: str | None = None,
+        local: bool = False,
+        heal: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["repository", "verify", "fragment", fragment_hash]
+            + (["--context", context] if context else [])
+            + (["--local"] if local else [])
+            + (["--heal"] if heal else []),
+            **kwargs,
+        )
+
+    @overload
+    def branch_list(
+        self, *, archived: bool = False, **kwargs: Unpack[GlobalOptionsParseable]
+    ) -> BranchList: ...
+
+    @overload
+    def branch_list(
+        self, *, archived: bool = False, **kwargs: Unpack[GlobalOptions]
+    ) -> BranchList | str: ...
+
+    def branch_list(
+        self, *, archived: bool = False, **kwargs: Unpack[GlobalOptions]
+    ) -> BranchList | str:
+        args = ["branch", "list"] + (["--archived"] if archived else [])
+        output = self.run(args, **kwargs)
+        if can_parse_output(kwargs):
+            return parse_branch_list(output)
+        return output
+
+    @overload
+    def branch_info(
+        self, name: str | None = None, **kwargs: Unpack[GlobalOptionsParseable]
+    ) -> BranchDescription: ...
+
+    @overload
+    def branch_info(
+        self, name: str | None = None, **kwargs: Unpack[GlobalOptions]
+    ) -> BranchDescription | str: ...
+
+    def branch_info(
+        self, name: str | None = None, **kwargs: Unpack[GlobalOptions]
+    ) -> BranchDescription | str:
+        output = self.run(["branch", "info"] + ([name] if name else []), **kwargs)
+        if can_parse_output(kwargs):
+            return parse_branch_info(output)
+        return output
+
+    def branch_create(
+        self,
+        name: str | None = None,
+        id: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["branch", "create"]
+            + ([name] if name else [])
+            + (["--id", id] if id else []),
+            **kwargs,
+        )
+
+    def branch_switch(
+        self,
+        name: str | None = None,
+        revision: str | None = None,
+        reset: bool = False,
+        bare: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["branch", "switch"]
+            + ([name] if name else [])
+            + ([revision] if revision else [])
+            + (["--reset"] if reset else [])
+            + (["--bare"] if bare else []),
+            **kwargs,
+        )
+
+    def branch_push(self, name: str | None = None, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["branch", "push"] + ([name] if name else []), **kwargs)
+
+    def branch_merge(
+        self,
+        name: str | None = None,
+        repo_id: str | None = None,
+        message: str | None = None,
+        inherit_metadata: list[str] | None = None,
+        link_messages: dict[str, str] | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["branch", "merge"]
+            + ([name] if name else [])
+            + (["--id", repo_id] if repo_id else [])
+            + (["--message", message] if message else [])
+            + _inherit_metadata_args(inherit_metadata)
+            + _link_message_args(link_messages),
+            **kwargs,
+        )
+
+    def branch_merge_unresolve(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["branch", "merge", "unresolve"]
+            + paths
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def branch_merge_into(
+        self,
+        name: str | None = None,
+        message: str | None = None,
+        repo_id: str | None = None,
+        link: str | None = None,
+        ignore_links: bool = False,
+        inherit_metadata: list[str] | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            [
+                "branch",
+                "merge",
+                "into",
+                name if name else "",
+                message if message else "",
+            ]
+            + (["--id", repo_id] if repo_id else [])
+            + (["--link", link] if link else [])
+            + (["--ignore-links"] if ignore_links else [])
+            + _inherit_metadata_args(inherit_metadata),
+            **kwargs,
+        )
+
+    def branch_merge_start(
+        self,
+        name: str | None = None,
+        repo_id: str | None = None,
+        message: str | None = None,
+        no_commit: bool = False,
+        link: str | None = None,
+        dry_run: bool = False,
+        ignore_links: bool = False,
+        link_messages: dict[str, str] | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["branch", "merge", "start"]
+            + ([name] if name else [])
+            + (["--id", repo_id] if repo_id else [])
+            + (["--message", message] if message else [])
+            + (["--no-commit"] if no_commit else [])
+            + (["--link", link] if link else [])
+            + (["--dry-run"] if dry_run else [])
+            + (["--ignore-links"] if ignore_links else [])
+            + _link_message_args(link_messages),
+            **kwargs,
+        )
+
+    def branch_merge_restart(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["branch", "merge", "restart"]
+            + paths
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def branch_merge_resolve(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["branch", "merge", "resolve"]
+            + paths
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def branch_merge_resolve_mine(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["branch", "merge", "resolve", "mine"]
+            + paths
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def branch_merge_resolve_theirs(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["branch", "merge", "resolve", "theirs"]
+            + paths
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def branch_merge_abort(
+        self,
+        link: str | None = None,
+        ignore_links: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["branch", "merge", "abort"]
+            + (["--link", link] if link else [])
+            + (["--ignore-links"] if ignore_links else []),
+            **kwargs,
+        )
+
+    def branch_diff(
+        self,
+        target: str | None = None,
+        source: str | None = None,
+        auto_resolve: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["branch", "diff"]
+            + ([target] if target else [])
+            + (["--source", source] if source else [])
+            + (["--auto-resolve"] if auto_resolve else []),
+            **kwargs,
+        )
+
+    def branch_archive(
+        self,
+        branch: str | None = None,
+        include_layers: bool = False,
+        layer: str | None = None,
+        include_links: bool = False,
+        link: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["branch", "archive"]
+            + ([branch] if branch else [])
+            + (["--include-layers"] if include_layers else [])
+            + (["--layer", layer] if layer else [])
+            + (["--include-links"] if include_links else [])
+            + (["--link", link] if link else []),
+            **kwargs,
+        )
+
+    def branch_reset(
+        self,
+        revision: str | None = None,
+        branch: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["branch", "reset"]
+            + ([revision] if revision else [])
+            + (["--branch", branch] if branch else []),
+            **kwargs,
+        )
+
+    def branch_protect(
+        self, branch: str | None = None, **kwargs: Unpack[GlobalOptions]
+    ):
+        return self.run(["branch", "protect"] + ([branch] if branch else []), **kwargs)
+
+    def branch_unprotect(
+        self, branch: str | None = None, **kwargs: Unpack[GlobalOptions]
+    ):
+        return self.run(
+            ["branch", "unprotect"] + ([branch] if branch else []), **kwargs
+        )
+
+    def branch_latest(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["branch", "latest"], **kwargs)
+
+    def branch_latest_list(
+        self,
+        limit: int | None = None,
+        branch: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["branch", "latest", "list"]
+            + ([str(limit)] if limit else [])
+            + (["--branch", branch] if branch else []),
+            **kwargs,
+        )
+
+    def branch_metadata_set(
+        self,
+        pairs: list[str] | None = None,
+        branch: str | None = None,
+        binary: bool = False,
+        numeric: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["branch", "metadata", "set"]
+            + (pairs if pairs else [])
+            + (["--branch", branch] if branch else [])
+            + (["--binary"] if binary else [])
+            + (["--numeric"] if numeric else []),
+            **kwargs,
+        )
+
+    def branch_metadata_get(
+        self,
+        key: str | None = None,
+        branch: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["branch", "metadata", "get"]
+            + ([key] if key else [])
+            + (["--branch", branch] if branch else []),
+            **kwargs,
+        )
+
+    def branch_metadata_clear(
+        self,
+        keys: list[str] | None = None,
+        branch: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["branch", "metadata", "clear"]
+            + (keys if keys else [])
+            + (["--branch", branch] if branch else []),
+            **kwargs,
+        )
+
+    @overload
+    def revision_history(
+        self,
+        length: int | None = None,
+        revision: str | None = None,
+        branch: str | None = None,
+        date: int | None = None,
+        oneline: bool = False,
+        only_branch: bool = False,
+        **kwargs: Unpack[GlobalOptionsParseable],
+    ) -> list[RevisionInfo]: ...
+
+    @overload
+    def revision_history(
+        self,
+        length: int | None = None,
+        revision: str | None = None,
+        branch: str | None = None,
+        date: int | None = None,
+        oneline: bool = False,
+        only_branch: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> list[RevisionInfo] | str: ...
+
+    def revision_history(
+        self,
+        length: int | None = None,
+        revision: str | None = None,
+        branch: str | None = None,
+        date: int | None = None,
+        oneline: bool = False,
+        only_branch: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> list[RevisionInfo] | str:
+        output = self.run(
+            ["revision", "history"]
+            + ([str(length)] if length else [])
+            + (["--revision", revision] if revision else [])
+            + (["--branch", branch] if branch else [])
+            + (["--date", str(date)] if date is not None else [])
+            + (["--oneline"] if oneline else [])
+            + (["--only-branch"] if only_branch else []),
+            **kwargs,
+        )
+
+        if can_parse_output(kwargs):
+            return parse_revision_list(output, oneline)
+        return output
+
+    @overload
+    def revision_info(
+        self,
+        revision: str | None = None,
+        delta: bool = False,
+        metadata: bool = False,
+        **kwargs: Unpack[GlobalOptionsParseable],
+    ) -> RevisionInfo: ...
+
+    @overload
+    def revision_info(
+        self,
+        revision: str | None = None,
+        delta: bool = False,
+        metadata: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> RevisionInfo | str: ...
+
+    def revision_info(
+        self,
+        revision: str | None = None,
+        delta: bool = False,
+        metadata: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> RevisionInfo | str:
+        output = self.run(
+            ["revision", "info"]
+            + ([revision] if revision else [])
+            + (["--delta"] if delta else [])
+            + (["--metadata"] if metadata else []),
+            **kwargs,
+        )
+        if can_parse_output(kwargs):
+            return parse_revision_list(output, False)[0]
+        return output
+
+    def revision_commit(
+        self,
+        message: str | None = None,
+        stats: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["revision", "commit"]
+            + ([message] if message else [])
+            + (["--stats"] if stats else []),
+            **kwargs,
+        )
+
+    def revision_amend(
+        self,
+        message: str | None = None,
+        stats: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["revision", "amend"]
+            + ([message] if message else [])
+            + (["--stats"] if stats else []),
+            **kwargs,
+        )
+
+    def revision_sync(
+        self,
+        revision: str | None = None,
+        forward_changes: bool = False,
+        reset: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["revision", "sync"]
+            + ([revision] if revision else [])
+            + (["--forward-changes"] if forward_changes else [])
+            + (["--reset"] if reset else []),
+            **kwargs,
+        )
+
+    @overload
+    def revision_bisect(
+        self,
+        start: str | None = None,
+        end: str | None = None,
+        **kwargs: Unpack[GlobalOptionsParseable],
+    ) -> BisectResults: ...
+
+    @overload
+    def revision_bisect(
+        self,
+        start: str | None = None,
+        end: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> BisectResults | str: ...
+
+    def revision_bisect(
+        self,
+        start: str | None = None,
+        end: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> BisectResults | str:
+        output = self.run(
+            ["revision", "bisect"]
+            + (["--start", start] if start else [])
+            + (["--end", end] if end else []),
+            **kwargs,
+        )
+        if can_parse_output(kwargs):
+            return parse_revision_bisect(output)
+        return output
+
+    def revision_diff(
+        self,
+        source: str | None = None,
+        target: str | None = None,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        if paths is not None:
+            paths = self._fix_paths(paths)
+        return self.run(
+            ["revision", "diff"]
+            + ([source] if source else [])
+            + (["--target", target] if target else [])
+            + ([item for path in paths for item in ("--path", path)] if paths else [])
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def revision_find(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["revision", "find"], **kwargs)
+
+    def revision_find_metadata(
+        self,
+        key: str | None = None,
+        value: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            [
+                "revision",
+                "find",
+                "metadata",
+                key if key else "",
+                value if value else "",
+            ],
+            **kwargs,
+        ).strip()
+
+    def revision_find_number(
+        self, number: str | None = None, **kwargs: Unpack[GlobalOptions]
+    ):
+        return self.run(
+            ["revision", "find", "number"] + ([number] if number else []), **kwargs
+        )
+
+    def revision_restore(
+        self, message: str | None = None, **kwargs: Unpack[GlobalOptions]
+    ):
+        return self.run(
+            ["revision", "restore"] + ([message] if message else []), **kwargs
+        )
+
+    def revision_cherry_pick(
+        self,
+        revision: str | None = None,
+        message: str | None = None,
+        no_commit: bool = False,
+        inherit_metadata: list[str] | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["revision", "cherry-pick"]
+            + ([revision] if revision else [])
+            + (["--message", message] if message else [])
+            + (["--no-commit"] if no_commit else [])
+            + _inherit_metadata_args(inherit_metadata),
+            **kwargs,
+        )
+
+    def revision_cherry_pick_unresolve(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["revision", "cherry-pick", "unresolve"]
+            + paths
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def revision_cherry_pick_restart(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["revision", "cherry-pick", "restart"]
+            + paths
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def revision_cherry_pick_resolve(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["revision", "cherry-pick", "resolve"]
+            + paths
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def revision_cherry_pick_resolve_mine(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["revision", "cherry-pick", "resolve", "mine"]
+            + paths
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def revision_cherry_pick_resolve_theirs(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["revision", "cherry-pick", "resolve", "theirs"]
+            + paths
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def revision_cherry_pick_abort(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["revision", "cherry-pick", "abort"], **kwargs)
+
+    def revision_revert(
+        self,
+        revision: str | None = None,
+        message: str | None = None,
+        no_commit: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["revision", "revert"]
+            + ([revision] if revision else [])
+            + (["--message", message] if message else [])
+            + (["--no-commit"] if no_commit else []),
+            **kwargs,
+        )
+
+    def revision_revert_abort(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["revision", "revert", "abort"], **kwargs)
+
+    def revision_revert_restart(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["revision", "revert", "restart"]
+            + paths
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def revision_revert_resolve(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["revision", "revert", "resolve"]
+            + paths
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def revision_revert_resolve_mine(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["revision", "revert", "resolve", "mine"]
+            + paths
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def revision_revert_resolve_theirs(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["revision", "revert", "resolve", "theirs"]
+            + paths
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def revision_revert_unresolve(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["revision", "revert", "unresolve"]
+            + paths
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def repository_metadata_get(
+        self,
+        key: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["repository", "metadata", "get"] + ([key] if key else []),
+            **kwargs,
+        )
+
+    def repository_metadata_set(
+        self,
+        pairs: list[str] | None = None,
+        binary: bool = False,
+        numeric: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["repository", "metadata", "set"]
+            + (pairs if pairs else [])
+            + (["--binary"] if binary else [])
+            + (["--numeric"] if numeric else []),
+            **kwargs,
+        )
+
+    def repository_metadata_clear(
+        self,
+        keys: list[str] | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["repository", "metadata", "clear"] + (keys if keys else []),
+            **kwargs,
+        )
+
+    def revision_metadata_clear(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["revision", "metadata", "clear"], **kwargs)
+
+    def revision_metadata_get(
+        self,
+        key: str | None = None,
+        revision: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["revision", "metadata", "get"]
+            + ([key] if key else [])
+            + (["--revision", revision] if revision else []),
+            **kwargs,
+        )
+
+    def revision_metadata_set(
+        self,
+        pairs: list[str] | None = None,
+        binary: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["revision", "metadata", "set"]
+            + (pairs if pairs else [])
+            + (["--binary"] if binary else []),
+            **kwargs,
+        )
+
+    @overload
+    def file_info(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        revision: str | None = None,
+        filtered: bool = False,
+        **kwargs: Unpack[GlobalOptionsParseable],
+    ) -> list[FileDescription]: ...
+
+    @overload
+    def file_info(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        revision: str | None = None,
+        filtered: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> list[FileDescription] | str: ...
+
+    def file_info(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        revision: str | None = None,
+        filtered: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> list[FileDescription] | str:
+        paths = self._fix_paths(paths)
+        output = self.run(
+            ["file", "info"]
+            + paths
+            + (["--targets", targets] if targets else [])
+            + (["--revision", revision] if revision else [])
+            + (["--filtered"] if filtered else []),
+            **kwargs,
+        )
+        if can_parse_output(kwargs):
+            return parse_file_info(output)
+        return output
+
+    def file_metadata(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["file", "metadata"], **kwargs)
+
+    def file_metadata_clear(
+        self, path: str | None = None, **kwargs: Unpack[GlobalOptions]
+    ):
+        return self.run(
+            ["file", "metadata", "clear"] + ([self._fix_path(path)] if path else []),
+            **kwargs,
+        )
+
+    def file_metadata_get(
+        self,
+        path: str | None = None,
+        key: str | None = None,
+        revision: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["file", "metadata", "get"]
+            + ([self._fix_path(path)] if path else [])
+            + ([key] if key else [])
+            + (["--revision", revision] if revision else []),
+            **kwargs,
+        )
+
+    def file_metadata_set(
+        self,
+        path: str | None = None,
+        pairs: list[str] | None = None,
+        binary: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["file", "metadata", "set"]
+            + ([self._fix_path(path)] if path else [])
+            + (pairs if pairs else [])
+            + (["--binary"] if binary else []),
+            **kwargs,
+        )
+
+    def file_stage(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        case: str | None = None,
+        targets: str | None = None,
+        scan: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["file", "stage"]
+            + paths
+            + (["--case", case] if case else [])
+            + (["--targets", targets] if targets else [])
+            + (["--scan"] if scan else []),
+            **kwargs,
+        )
+
+    def file_stage_move(
+        self, from_path: str, to_path: str, **kwargs: Unpack[GlobalOptions]
+    ):
+        return self.run(
+            [
+                "file",
+                "stage",
+                "move",
+                self._fix_path(from_path),
+                self._fix_path(to_path),
+            ],
+            **kwargs,
+        )
+
+    def file_stage_copy(
+        self, from_path: str, to_path: str, **kwargs: Unpack[GlobalOptions]
+    ):
+        return self.run(
+            [
+                "file",
+                "stage",
+                "copy",
+                self._fix_path(from_path),
+                self._fix_path(to_path),
+            ],
+            **kwargs,
+        )
+
+    def file_stage_merge(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["file", "stage", "merge"]
+            + paths
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def file_unstage(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["file", "unstage"] + paths + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def file_reset(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        purge: bool = False,
+        targets: str | None = None,
+        revision: str | None = None,
+        last_merged_from: str | None = None,
+        mine: bool = False,
+        theirs: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["file", "reset"]
+            + paths
+            + (["--purge"] if purge else [])
+            + (["--targets", targets] if targets else [])
+            + (["--revision", revision] if revision else [])
+            + (["--last-merged-from", last_merged_from] if last_merged_from else [])
+            + (["--mine"] if mine else [])
+            + (["--theirs"] if theirs else []),
+            **kwargs,
+        )
+
+    def file_obliterate(
+        self,
+        address: str | None = None,
+        path: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["file", "obliterate"]
+            + (["--address", address] if address else [])
+            + (["--path", self._fix_path(path)] if path else []),
+            **kwargs,
+        )
+
+    def file_dump(
+        self,
+        address: str | None = None,
+        path: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["file", "dump"]
+            + (["--address", address] if address else [])
+            + (["--path", self._fix_path(path)] if path else []),
+            **kwargs,
+        )
+
+    def file_history(
+        self,
+        path: str | None = None,
+        length: int | None = None,
+        revision: str | None = None,
+        branch: str | None = None,
+        depth: int | None = None,
+        oneline: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["file", "history"]
+            + ([self._fix_path(path)] if path else [])
+            + ([str(length)] if length else [])
+            + (["--revision", revision] if revision else [])
+            + (["--branch", branch] if branch else [])
+            + (["--depth", str(depth)] if depth else [])
+            + (["--oneline"] if oneline else []),
+            **kwargs,
+        )
+
+    def file_audit(
+        self,
+        path: str | None = None,
+        revision: str | None = None,
+        max_revisions: int | None = None,
+        no_ignore_space_at_eol: bool = False,
+        ignore_space_change: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["file", "audit"]
+            + ([self._fix_path(path)] if path else [])
+            + (["--revision", revision] if revision else [])
+            + (
+                ["--max-revisions", str(max_revisions)]
+                if max_revisions is not None
+                else []
+            )
+            + (["--no-ignore-space-at-eol"] if no_ignore_space_at_eol else [])
+            + (["--ignore-space-change"] if ignore_space_change else []),
+            **kwargs,
+        )
+
+    def file_diff(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        source: str | None = None,
+        target: str | None = None,
+        targets: str | None = None,
+        diff3: bool = False,
+        context: int | None = None,
+        ignore_space_at_eol: bool = False,
+        ignore_space_change: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["file", "diff"]
+            + paths
+            + (["--source", source] if source else [])
+            + (["--target", target] if target else [])
+            + (["--targets", targets] if targets else [])
+            + (["--diff3"] if diff3 else [])
+            + (["--context", str(context)] if context is not None else [])
+            + (["--ignore-space-at-eol"] if ignore_space_at_eol else [])
+            + (["--ignore-space-change"] if ignore_space_change else []),
+            **kwargs,
+        )
+
+    def file_write(
+        self,
+        address: str | None = None,
+        path: str | None = None,
+        revision: str | None = None,
+        output: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["file", "write"]
+            + (["--address", address] if address else [])
+            + (["--path", self._fix_path(path)] if path else [])
+            + (["--revision", revision] if revision else [])
+            + (["--output", output] if output else []),
+            **kwargs,
+        )
+
+    def file_hash(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["file", "hash"] + paths + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def file_dependency_add(
+        self,
+        source: str,
+        dependencies: str | list[str],
+        tags: list[str] | None = None,
+        force: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        if isinstance(dependencies, str):
+            dependencies = [dependencies]
+        deps = [self._fix_path(d) for d in dependencies]
+        tag_args = []
+        if tags:
+            for tag in tags:
+                tag_args += ["--tag", tag]
+        return self.run(
+            ["file", "dependency", "add", self._fix_path(source)]
+            + deps
+            + tag_args
+            + (["--force"] if force else []),
+            **kwargs,
+        )
+
+    def file_dependency_remove(
+        self,
+        source: str,
+        dependencies: str | list[str],
+        tags: list[str] | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        if isinstance(dependencies, str):
+            dependencies = [dependencies]
+        deps = [self._fix_path(d) for d in dependencies]
+        tag_args = []
+        if tags:
+            for tag in tags:
+                tag_args += ["--tag", tag]
+        return self.run(
+            ["file", "dependency", "remove", self._fix_path(source)] + deps + tag_args,
+            **kwargs,
+        )
+
+    def file_dependency_list(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        recursive: bool = False,
+        reverse: bool = False,
+        tags: list[str] | None = None,
+        depth: int | None = None,
+        revision: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        if paths is not None:
+            if isinstance(paths, (str, Path)):
+                paths = [self._fix_path(paths)]
+            else:
+                paths = [self._fix_path(p) for p in paths]
+        else:
+            paths = []
+        tag_args = []
+        if tags:
+            for tag in tags:
+                tag_args += ["--tag", tag]
+        return self.run(
+            ["file", "dependency", "list"]
+            + paths
+            + (["--recursive"] if recursive else [])
+            + (["--reverse"] if reverse else [])
+            + tag_args
+            + (["--depth", str(depth)] if depth is not None else [])
+            + (["--revision", revision] if revision else []),
+            **kwargs,
+        )
+
+    def auth_login(
+        self,
+        remote_url: str | None = None,
+        api_key: str | None = None,
+        eg1_token: str | None = None,
+        no_browser: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["auth", "login"]
+            + ([remote_url] if remote_url else [])
+            + (["--api-key", api_key] if api_key else [])
+            + (["--eg1-token", eg1_token] if eg1_token else [])
+            + (["--no-browser"] if no_browser else []),
+            **kwargs,
+        )
+
+    def auth_info_with_token(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(
+            ["auth", "info", "--with-token"],
+            **kwargs,
+        )
+
+    def auth_user_token_event(self) -> dict:
+        """The data of the one `authUserToken` event `auth info` emits for the
+        current user."""
+        output = self.run(["auth", "info", "--with-identity-token"], json=True)
+        [data] = parse_jsonl(output, "authUserToken")
+        return data
+
+    def _capi_driver_output(
+        self, library_path: str, command: str, *args: str
+    ) -> tuple[int, str]:
+        """Runs `lore_ffi.py` as a subprocess, returning the FFI code the call it
+        drives answered and whatever the driver printed.
+
+        Out of process so the call reads this repository's isolated auth and
+        global directories, and so a crash in the library fails one test rather
+        than the pytest worker sharing it. Run from the repository, as `run()`
+        does: repository discovery falls back to the working directory, and the
+        checkout pytest runs from is itself a repository — inheriting that cwd
+        would let a bad repository path silently resolve somewhere else.
+        """
+        command_args = [
+            sys.executable,
+            str(Path(__file__).with_name("lore_ffi.py")),
+            command,
+            library_path,
+            *args,
+        ]
+        command_string = " ".join(command_args)
+        logger.info("Executing Lore C API driver: %s", command_string)
+        result = subprocess.run(
+            command_args,
+            capture_output=True,
+            text=True,
+            env=self._subprocess_env(),
+            cwd=self.path if os.path.isdir(self.path) else None,
+        )
+        logger.info(
+            "Lore C API driver (%s) exited %s, output:\n%s",
+            command_string,
+            result.returncode,
+            result.stdout + result.stderr,
+        )
+        return result.returncode, result.stdout
+
+    def _capi_driver(self, library_path: str, command: str, *args: str) -> int:
+        """The FFI code a driven call answered, for a call whose events a test
+        does not read."""
+        code, _output = self._capi_driver_output(library_path, command, *args)
+        return code
+
+    def file_audit_capi(
+        self,
+        library_path: str,
+        path: str,
+        stop_after: int | None = None,
+    ) -> tuple[int, list[dict]]:
+        """Attribute a file's lines through the public C API, returning the FFI
+        code and the records the event callback received.
+
+        The CLI prints a text summary from the same events, so driving it covers
+        the formatting rather than the structured records an editor integration
+        reads. `stop_after` ends the process from inside the callback once that
+        many range events have arrived.
+        """
+        options: list[str] = []
+        if stop_after is not None:
+            options += ["--stop-after", str(stop_after)]
+
+        code, output = self._capi_driver_output(
+            library_path, "file-audit", self.path, path, *options
+        )
+        events = [json.loads(line) for line in output.splitlines() if line.strip()]
+        return code, events
+
+    def auth_user_info_capi(
+        self, library_path: str, user_ids: str | list[str] | None = None
+    ) -> int:
+        """Resolve user IDs through the public C API, returning the FFI code.
+
+        `authUserInfo` has no CLI surface — the commands that resolve display
+        names discard failures — so this drives `liblore` directly, the same
+        entry point the SDK binds.
+        """
+        if user_ids is None:
+            user_ids = []
+        elif isinstance(user_ids, str):
+            user_ids = [user_ids]
+
+        return self._capi_driver(library_path, "auth-user-info", self.path, *user_ids)
+
+    def branch_latest_list_capi(
+        self, library_path: str, keep_store_alive_seconds: int = 0
+    ) -> int:
+        """List the current branch's LATEST history through the public C API,
+        returning the FFI code. The stores are held open for
+        `keep_store_alive_seconds` after the call, none if `0`."""
+        return self._capi_driver(
+            library_path,
+            "branch-latest-list",
+            self.path,
+            str(keep_store_alive_seconds),
+        )
+
+    def service_capi(self, library_path: str, command: str) -> int:
+        """Start, stop or query the service through the public C API, returning
+        the FFI code. `command` is `service-start`, `service-stop` or
+        `service-status`.
+
+        The CLI's `service start`/`stop`/`status` wrap these, so a test driving the CLI
+        covers the wrapper rather than the entry point an SDK consumer calls.
+        Running out of process matters twice over here: the library records a
+        service running in its own process, which no later test could undo.
+        """
+        return self._capi_driver(library_path, command)
+
+    def repository_delete_capi(self, library_path: str) -> int:
+        """Delete this repository's remote through the public C API, returning
+        the FFI code."""
+        return self._capi_driver(
+            library_path, "repository-delete", self.path, self.remote_path
+        )
+
+    def revision_sync_capi(self, library_path: str, view: str = "") -> int:
+        """Sync through the public C API, returning the FFI code.
+
+        The CLI fills `lore_revision_sync_args_t` from its own flags, so driving
+        it covers the mapping rather than the struct. A consumer that lays the
+        struct out itself is the one the field order and widths have to be right
+        for, and the library reads them out of memory that consumer allocated.
+        """
+        return self._capi_driver(library_path, "revision-sync", self.path, view)
+
+    def revision_bisect_capi(
+        self, library_path: str, start: str, end: str, keep_store_alive_seconds: int = 0
+    ) -> int:
+        """Take a bisect step through the public C API, returning the FFI code.
+        The stores are held open for `keep_store_alive_seconds` after the call,
+        none if `0`."""
+        return self._capi_driver(
+            library_path,
+            "revision-bisect",
+            self.path,
+            start,
+            end,
+            str(keep_store_alive_seconds),
+        )
+
+    def file_metadata_set_capi(
+        self, library_path: str, paths: list[str], key: str, value: str
+    ) -> int:
+        """Set `key` to `value` on every path in one call through the public C API,
+        returning the FFI code. The CLI sets metadata on one path per call."""
+        # The value goes through a file, as a Windows command line holds at most 32 KiB.
+        with tempfile.TemporaryDirectory() as directory:
+            value_file = Path(directory) / "value"
+            value_file.write_text(value)
+            return self._capi_driver(
+                library_path,
+                "file-metadata-set",
+                self.path,
+                key,
+                str(value_file),
+                *(self._fix_path(path) for path in paths),
+            )
+
+    def layer_add(
+        self,
+        target_path: str,
+        source_repository: Lore,
+        source_path: str,
+        metadata: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            [
+                "layer",
+                "add",
+                self._fix_path(target_path),
+                source_repository.name,
+                source_path,
+            ]
+            + (["--metadata", metadata] if metadata else []),
+            **kwargs,
+        )
+
+    def layer_remove(
+        self,
+        target_path: str,
+        source_repository: Lore | None = None,
+        purge: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            [
+                "layer",
+                "remove",
+                self._fix_path(target_path),
+            ]
+            + ([source_repository.name] if source_repository is not None else [])
+            + (["--purge"] if purge else []),
+            **kwargs,
+        )
+
+    def layer_list(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["layer", "list"], **kwargs)
+
+    def logfile_info(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["logfile", "info"], **kwargs)
+
+    def login(
+        self,
+        remote_url: str | None = None,
+        api_key: str | None = None,
+        eg1_token: str | None = None,
+        no_browser: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["login"]
+            + ([remote_url] if remote_url else [])
+            + (["--api-key", api_key] if api_key else [])
+            + (["--eg1-token", eg1_token] if eg1_token else [])
+            + (["--no-browser"] if no_browser else []),
+            **kwargs,
+        )
+
+    def link_add(
+        self,
+        link_path: str,
+        link_identifier: str,
+        source_path: str,
+        pin: str | None = None,
+        disable_branching: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            [
+                "link",
+                "add",
+                self._fix_path(link_path),
+                link_identifier,
+                source_path,
+            ]
+            + (["--pin", pin] if pin else [])
+            + (["--disable-branching"] if disable_branching else []),
+            **kwargs,
+        )
+
+    def link_remove(
+        self, link_path: str | None = None, **kwargs: Unpack[GlobalOptions]
+    ):
+        return self.run(
+            ["link", "remove"] + ([self._fix_path(link_path)] if link_path else []),
+            **kwargs,
+        )
+
+    def link_list(
+        self,
+        staged: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["link", "list"] + (["--staged"] if staged else []),
+            **kwargs,
+        )
+
+    def link_info(
+        self,
+        link_path: str,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["link", "info", self._fix_path(link_path)],
+            **kwargs,
+        )
+
+    def link_update(
+        self,
+        link_path: str,
+        pin: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["link", "update", self._fix_path(link_path)]
+            + (["--pin", pin] if pin else []),
+            **kwargs,
+        )
+
+    def status(
+        self,
+        path: str | list[str] | Path | list[Path] | None = None,
+        unstaged: bool = False,
+        scan: bool = False,
+        check_dirty: bool = False,
+        reset: bool = False,
+        revision_only: bool = False,
+        count: bool = False,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        path = self._fix_paths(path)
+        return self.run(
+            ["status"]
+            + path
+            + (["--unstaged"] if unstaged else [])
+            + (["--scan"] if scan else [])
+            + (["--check-dirty"] if check_dirty else [])
+            + (["--reset"] if reset else [])
+            + (["--revision-only"] if revision_only else [])
+            + (["--count"] if count else [])
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def clone(
+        self,
+        path: str | None = None,
+        name: str | None = None,
+        view: str | None = None,
+        revision: str | None = None,
+        branch: str | None = None,
+        bare: bool = False,
+        virtually: bool = False,
+        direct_file_write: bool = False,
+        flush_file: bool = False,
+        vfs: str | None = None,
+        layer: str | None = None,
+        layer_metadata: str | None = None,
+        prefetch: str | None = None,
+        use_shared_store: bool = False,
+        shared_store_path: str | None = None,
+        root_files: list[str] | None = None,
+        dependency_tags: list[str] | None = None,
+        dependency_recursive: bool = False,
+        dependency_depth_limit: int = 0,
+        no_tracking: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        asked_vfs = vfs
+        # A bare, untracked or dry-run clone has no virtual form, so it stays as asked.
+        if not (bare or no_tracking or kwargs.get("dry_run")):
+            vfs = run_vfs(vfs)
+        new_repo_name = name if name else self.generate_random_name()
+        if path is None:
+            parent = Path(self.path).parent
+            new_repo_path = parent / new_repo_name
+        else:
+            new_repo_path = Path(path)
+        # Recorded before the directory exists, so a clone that fails partway
+        # through still has its half-written tree removed with the test.
+        self.created_paths.append(str(new_repo_path))
+        if not (use_shared_store or shared_store_path):
+            shared_store_path = self._own_shared_store(
+                asked_vfs, vfs, str(new_repo_path)
+            )
+        if not kwargs.get("dry_run") and vfs != "swfs":
+            new_repo_path.mkdir(exist_ok=True)
+        root_file_args = []
+        for rf in root_files or []:
+            root_file_args += ["--root-file", rf]
+        dep_tag_args = []
+        for dt in dependency_tags or []:
+            dep_tag_args += ["--dependency-tag", dt]
+        self.run(
+            ["repository", "clone", self.remote_path, str(new_repo_path)]
+            + (["--view", self._fix_path(view)] if view else [])
+            + (["--revision", revision] if revision else [])
+            + (["--branch", branch] if branch else [])
+            + (["--bare"] if bare else [])
+            + (["--virtually"] if virtually else [])
+            + (["--direct-file-write"] if direct_file_write else [])
+            + (["--flush-file"] if flush_file else [])
+            + (["--vfs", vfs] if vfs else [])
+            + (["--layer", layer] if layer else [])
+            + (["--layer-metadata", layer_metadata] if layer_metadata else [])
+            + (["--prefetch", prefetch] if prefetch else [])
+            + (["--use-shared-store"] if use_shared_store else [])
+            + (["--shared-store-path", shared_store_path] if shared_store_path else [])
+            + root_file_args
+            + dep_tag_args
+            + (["--dependency-recursive"] if dependency_recursive else [])
+            + (
+                ["--dependency-depth-limit", str(dependency_depth_limit)]
+                if dependency_depth_limit > 0
+                else []
+            )
+            + (["--no-tracking"] if no_tracking else []),
+            **kwargs,
+        )
+        new_repo = Lore(
+            base_env=self.base_env,
+            remote_path=self.remote_path,
+            remote_url=self.remote,
+            lore_executable_path=self.lore_executable_path,
+            path=str(new_repo_path),
+            name=new_repo_name,
+            create_repo=False,
+            created_paths=self.created_paths,
+            environment_vars=self.environment_vars,
+        )
+        new_repo._ensure_test_identity_in_config()
+        return new_repo
+
+    def stage(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        case: str | None = None,
+        targets: str | None = None,
+        scan: bool = False,
+        relative_paths: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._paths_arg(paths, relative_paths)
+        return self.run(
+            ["stage"]
+            + paths
+            + (["--case", case] if case else [])
+            + (["--targets", targets] if targets else [])
+            + (["--scan"] if scan else []),
+            **kwargs,
+        )
+
+    def stage_move(self, from_path: str, to_path: str, **kwargs: Unpack[GlobalOptions]):
+        return self.run(
+            [
+                "stage",
+                "move",
+                self._fix_path(from_path),
+                self._fix_path(to_path),
+            ],
+            **kwargs,
+        )
+
+    def stage_merge(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["stage", "merge"] + paths + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    def dirty(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        relative_paths: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._paths_arg(paths, relative_paths)
+        return self.run(
+            ["dirty"] + paths + (["--targets", targets] if targets else []), **kwargs
+        )
+
+    def dirty_move(self, from_path: str, to_path: str, **kwargs: Unpack[GlobalOptions]):
+        return self.run(
+            [
+                "file",
+                "dirty",
+                "move",
+                self._fix_path(from_path),
+                self._fix_path(to_path),
+            ],
+            **kwargs,
+        )
+
+    def dirty_copy(self, from_path: str, to_path: str, **kwargs: Unpack[GlobalOptions]):
+        return self.run(
+            [
+                "file",
+                "dirty",
+                "copy",
+                self._fix_path(from_path),
+                self._fix_path(to_path),
+            ],
+            **kwargs,
+        )
+
+    def unstage(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["unstage"] + paths + (["--targets", targets] if targets else []), **kwargs
+        )
+
+    def reset(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        purge: bool = False,
+        targets: str | None = None,
+        revision: str | None = None,
+        last_merged_from: str | None = None,
+        mine: bool = False,
+        theirs: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["reset"]
+            + paths
+            + (["--purge"] if purge else [])
+            + (["--targets", targets] if targets else [])
+            + (["--revision", revision] if revision else [])
+            + (["--last-merged-from", last_merged_from] if last_merged_from else [])
+            + (["--mine"] if mine else [])
+            + (["--theirs"] if theirs else []),
+            **kwargs,
+        )
+
+    def diff(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        source: str | None = None,
+        target: str | None = None,
+        targets: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        paths = self._fix_paths(paths)
+        return self.run(
+            ["diff"]
+            + paths
+            + (["--source", source] if source else [])
+            + (["--target", target] if target else [])
+            + (["--targets", targets] if targets else []),
+            **kwargs,
+        )
+
+    @overload
+    def history(
+        self,
+        length: int | str | None = None,
+        revision: str | None = None,
+        branch: str | None = None,
+        date: int | None = None,
+        oneline: bool = False,
+        only_branch: bool = False,
+        **kwargs: Unpack[GlobalOptionsParseable],
+    ) -> list[RevisionInfo]: ...
+
+    @overload
+    def history(
+        self,
+        length: int | str | None = None,
+        revision: str | None = None,
+        branch: str | None = None,
+        date: int | None = None,
+        oneline: bool = False,
+        only_branch: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> list[RevisionInfo] | str: ...
+
+    def history(
+        self,
+        length: int | str | None = None,
+        revision: str | None = None,
+        branch: str | None = None,
+        date: int | None = None,
+        oneline: bool = False,
+        only_branch: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> list[RevisionInfo] | str:
+        output = self.run(
+            ["history"]
+            + ([str(length)] if length else [])
+            + (["--revision", revision] if revision else [])
+            + (["--branch", branch] if branch else [])
+            + (["--date", str(date)] if date is not None else [])
+            + (["--oneline"] if oneline else [])
+            + (["--only-branch"] if only_branch else []),
+            **kwargs,
+        )
+        if can_parse_output(kwargs):
+            return parse_revision_list(output, oneline)
+        return output
+
+    def commit(
+        self,
+        message: str | None = None,
+        link: str | None = None,
+        link_messages: dict[str, str] | None = None,
+        layer: str | None = None,
+        layer_messages: dict[str, str] | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        if message is None:
+            message = f"Test commit {self.test_commit_id}"
+            self.test_commit_id += 1
+        layer_args = []
+        if layer_messages:
+            for path, msg in layer_messages.items():
+                layer_args.extend(["--layer-message", path, msg])
+        return self.run(
+            ["commit", message if message else ""]
+            + (["--link", link] if link else [])
+            + _link_message_args(link_messages)
+            + (["--layer", layer] if layer else [])
+            + layer_args,
+            **kwargs,
+        )
+
+    def sync(
+        self,
+        revision: str | None = None,
+        forward_changes: bool = False,
+        reset: bool = False,
+        force: bool = False,
+        root_files: list[str] | None = None,
+        dependency_tags: list[str] | None = None,
+        dependency_recursive: bool = False,
+        dependency_depth_limit: int = 0,
+        view: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        root_file_args = []
+        for rf in root_files or []:
+            root_file_args += ["--root-file", rf]
+        dep_tag_args = []
+        for dt in dependency_tags or []:
+            dep_tag_args += ["--dependency-tag", dt]
+        return self.run(
+            ["sync"]
+            + ([revision] if revision else [])
+            + (["--view", self._fix_path(view)] if view else [])
+            + (["--forward-changes"] if forward_changes else [])
+            + (["--reset"] if reset else [])
+            + (["--force"] if force else [])
+            + root_file_args
+            + dep_tag_args
+            + (["--dependency-recursive"] if dependency_recursive else [])
+            + (
+                ["--dependency-depth-limit", str(dependency_depth_limit)]
+                if dependency_depth_limit > 0
+                else []
+            ),
+            **kwargs,
+        )
+
+    def repository_list(self):
+        return self.run(["repository", "list", self.remote])
+
+    def push(
+        self,
+        name: str | None = None,
+        fast_forward_merge: bool = False,
+        stats: bool = False,
+        **kwargs: Unpack[GlobalOptions],
+    ):
+        return self.run(
+            ["push"]
+            + ([name] if name else [])
+            + (["--fast-forward-merge"] if fast_forward_merge else [])
+            + (["--stats"] if stats else []),
+            **kwargs,
+        )
+
+    @overload
+    def lock_acquire(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        branch: str | None = None,
+        **kwargs: Unpack[GlobalOptionsParseable],
+    ) -> LockAcquire: ...
+
+    @overload
+    def lock_acquire(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        branch: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> LockAcquire | str: ...
+
+    def lock_acquire(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        branch: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> LockAcquire | str:
+        paths = self._fix_paths(paths)
+        output = self.run(
+            ["lock", "acquire"] + paths + (["--branch", branch] if branch else []),
+            **kwargs,
+        )
+        if can_parse_output(kwargs):
+            return parse_lock_acquire(output)
+        return output
+
+    @overload
+    def lock_status(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        branch: str | None = None,
+        **kwargs: Unpack[GlobalOptionsParseable],
+    ) -> list[LockStatus]: ...
+
+    @overload
+    def lock_status(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        branch: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> list[LockStatus] | str: ...
+
+    def lock_status(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        branch: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> list[LockStatus] | str:
+        paths = self._fix_paths(paths)
+        output = self.run(
+            ["lock", "status"] + paths + (["--branch", branch] if branch else []),
+            **kwargs,
+        )
+        if can_parse_output(kwargs):
+            return parse_lock_status(output)
+        return output
+
+    @overload
+    def lock_query(
+        self,
+        branch: str | None = None,
+        owner: str | None = None,
+        path: str | None = None,
+        **kwargs: Unpack[GlobalOptionsParseable],
+    ) -> list[LockQuery]: ...
+
+    @overload
+    def lock_query(
+        self,
+        branch: str | None = None,
+        owner: str | None = None,
+        path: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> list[LockQuery] | str: ...
+
+    def lock_query(
+        self,
+        branch: str | None = None,
+        owner: str | None = None,
+        path: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> list[LockQuery] | str:
+        output = self.run(
+            ["lock", "query"]
+            + (["--branch", branch] if branch else [])
+            + (["--owner", owner] if owner else [])
+            + (["--path", self._fix_path(path)] if path else []),
+            **kwargs,
+        )
+        if can_parse_output(kwargs):
+            return parse_lock_query(output)
+        return output
+
+    @overload
+    def lock_release(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        branch: str | None = None,
+        owner: str | None = None,
+        **kwargs: Unpack[GlobalOptionsParseable],
+    ) -> LockRelease: ...
+
+    @overload
+    def lock_release(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        branch: str | None = None,
+        owner: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> LockRelease | str: ...
+
+    def lock_release(
+        self,
+        paths: str | list[str] | Path | list[Path] | None = None,
+        branch: str | None = None,
+        owner: str | None = None,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> LockRelease | str:
+        paths = self._fix_paths(paths)
+        output = self.run(
+            ["lock", "release"]
+            + paths
+            + (["--branch", branch] if branch else [])
+            + (["--owner", owner] if owner else []),
+            **kwargs,
+        )
+        if can_parse_output(kwargs):
+            return parse_lock_release(output)
+        return output
+
+    def shared_store_create(
+        self,
+        remote_url: str,
+        path: str | None = None,
+        make_default: bool = True,
+        **kwargs: Unpack[GlobalOptions],
+    ) -> str:
+        return self.run(
+            ["shared-store", "create", remote_url]
+            + (["--path", path] if path else [])
+            + ([] if make_default else ["--make-default", "false"]),
+            **kwargs,
+        )
+
+    @overload
+    def shared_store_info(
+        self, **kwargs: Unpack[GlobalOptionsParseable]
+    ) -> SharedStoreInfo: ...
+
+    @overload
+    def shared_store_info(
+        self, **kwargs: Unpack[GlobalOptions]
+    ) -> SharedStoreInfo | str: ...
+
+    def shared_store_info(
+        self, **kwargs: Unpack[GlobalOptions]
+    ) -> SharedStoreInfo | str:
+        output = self.run(["shared-store", "info"])
+        if can_parse_output(kwargs):
+            return parse_shared_store_info(output)
+        return output
+
+    @overload
+    def shared_store_list(
+        self, include_instances: bool = False, **kwargs: Unpack[GlobalOptionsParseable]
+    ) -> SharedStoreList: ...
+
+    @overload
+    def shared_store_list(
+        self, include_instances: bool = False, **kwargs: Unpack[GlobalOptions]
+    ) -> SharedStoreList | str | None: ...
+
+    def shared_store_list(
+        self, include_instances: bool = False, **kwargs: Unpack[GlobalOptions]
+    ) -> SharedStoreList | str | None:
+        output = self.run(
+            [
+                "shared-store",
+                "list",
+                "--include-instances",
+                "true" if include_instances else "false",
+            ],
+            **kwargs,
+        )
+        if can_parse_output(kwargs):
+            return parse_shared_store_list(output)
+        return output
+
+    def shared_store_set_use_automatically(self, enabled: bool):
+        return self.run(
+            ["shared-store", "set-use-automatically", "true" if enabled else "false"]
+        )
+
+    def service_run(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["service", "run"], **kwargs)
+
+    def service_start(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["service", "start"], **kwargs)
+
+    def service_stop(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["service", "stop"], **kwargs)
+
+    def service_status(self, **kwargs: Unpack[GlobalOptions]):
+        return self.run(["service", "status"], **kwargs)
+
+    def notification_subscribe(
+        self, timeout: int | None = None, **kwargs: Unpack[GlobalOptions]
+    ):
+        return self.run(
+            ["notification", "subscribe"] + ([str(timeout)] if timeout else []),
+            **kwargs,
+        )
+
+    def has_branch(self, branch):
+        branch_list = self.branch_list()
+        return (
+            branch_list.current_branch == branch
+            or branch in branch_list.local_branches
+            or branch in branch_list.remote_branches
+        )
+
+    def write_files(
+        self,
+        files_and_contents: TypedDict[str | Path, bytes | str | Iterable[str]],
+        flush_writes: bool = False,
+    ):
+        for file_name, contents in files_and_contents.items():
+            self.make_dirs(os.path.dirname(file_name))
+            write_mode = "w+b" if type(contents) is bytes else "w+"
+            with self.open_file(file_name, write_mode) as output_file:
+                if type(contents) is bytes or type(contents) is str:
+                    output_file.write(contents)
+                else:
+                    output_file.writelines(contents)
+                if flush_writes:
+                    # Closing leaves the bytes in the OS file cache, which hands them to the
+                    # filesystem later. Lore operations that use SWFS need to have the OS write
+                    # flushed before they see it.
+                    output_file.flush()
+                    os.fsync(output_file.fileno())
+
+    def write_commit_push(
+        self,
+        commit_message: str | None,
+        files_and_contents: TypedDict[str | Path, bytes | str | Iterable[str]],
+        offline: bool = False,
+    ) -> None:
+        self.write_files(files_and_contents)
+
+        for file_name in files_and_contents.keys():
+            self.stage(file_name, offline=offline)
+
+        self.commit(message=commit_message, offline=offline)
+        if not offline:
+            self.push()
+
+    def compare_file(
+        self,
+        other_file_repo: Lore | None,
+        file_path: str | Path,
+        other_file_path: str | Path | None = None,
+        only_file_contents: bool = False,
+    ):
+        if other_file_path is None:
+            other_file_path = file_path
+
+        source_path = self._fix_path(file_path)
+        if other_file_repo:
+            dest_path = other_file_repo._fix_path(other_file_path)
+        else:
+            dest_path = self._fix_path(other_file_path)
+
+        if only_file_contents:
+            with (
+                open(source_path, "rb") as source_contents,
+                open(dest_path, "rb") as dest_contents,
+            ):
+                return source_contents.read() == dest_contents.read()
+        else:
+            filecmp.clear_cache()
+            return filecmp.cmp(source_path, dest_path, shallow=False)
+
+    def compare_file2(
+        self,
+        other_file_repo: Lore | None,
+        file_path: str | Path,
+        other_file_path: str | Path | None = None,
+        only_file_contents: bool = False,
+    ):
+        if other_file_path is None:
+            other_file_path = file_path
+
+        source_path = self._fix_path(file_path)
+        if other_file_repo:
+            dest_path = other_file_repo._fix_path(other_file_path)
+        else:
+            dest_path = self._fix_path(other_file_path)
+
+        if only_file_contents:
+            with (
+                open(source_path, "rb") as source_contents,
+                open(dest_path, "rb") as dest_contents,
+            ):
+                source_contents = source_contents.read()
+                dest_contents = dest_contents.read()
+                assert source_contents == dest_contents, (
+                    f"Source: {source_contents}\nDest: {dest_contents}"
+                )
+        else:
+            filecmp.clear_cache()
+            assert filecmp.cmp(source_path, dest_path, shallow=False)
+
+    def open_file(self, path, mode="r", encoding=None):
+        return open(self._fix_path(path), mode, encoding=encoding)
+
+    def move(self, src: str | Path, dst: str | Path):
+        shutil.move(self._fix_path(src), self._fix_path(dst))
+
+    def copy_file(self, from_path, to_path):
+        shutil.copyfile(self._fix_path(from_path), self._fix_path(to_path))
+
+    def copy2(self, from_path, to_path="", to_repo: Lore | None = None):
+        if to_repo:
+            to_path_rel = Path(to_repo.path) / to_path
+        else:
+            to_path_rel = Path(self.path) / to_path
+
+        from_path_rel = Path(self.path) / from_path
+
+        shutil.copy2(from_path_rel, to_path_rel)
+
+    def copy_tree(self, src: str | Path, dst: str | Path):
+        """Copy a directory tree from src to dst, with path resolution."""
+        shutil.copytree(self._fix_path(src), self._fix_path(dst))
+
+    def remove_file(self, path):
+        os.remove(self._fix_path(path))
+
+    def remove_dir(self, path):
+        os.rmdir(self._fix_path(path))
+
+    def rmtree(self, path):
+        shutil.rmtree(self._fix_path(path), ignore_errors=True)
+
+    def file_exists(self, path):
+        return os.path.isfile(self._fix_path(path))
+
+    def path_exists(self, path):
+        return os.path.exists(os.path.join(self.path, path))
+
+    def clear_local_files(self):
+        """
+        Remove all local repository files for this repository
+
+        A virtual clone's files and `.lore` are the service's, so its instance is
+        deleted, which unmounts it, before the mount point goes. The delete runs
+        from outside the mount, which a working directory inside would hold busy.
+        """
+        import shutil
+
+        if lore_mount_instance(self.path) is not None:
+            self.repository_instance_delete(
+                cwd=os.path.dirname(os.path.realpath(self.path))
+            )
+        shutil.rmtree(self.path, ignore_errors=True)
+
+    def make_dirs(self, path):
+        os.makedirs(self._fix_path(path), exist_ok=True)
+
+    def get_id(self):
+        raw_repo_id = b""
+        with open(os.path.join(self.dot_path(), "id"), "rb") as id_file:
+            raw_repo_id = id_file.read(32)
+        processed_repo_id = raw_repo_id.hex()
+        return processed_repo_id
+
+    def get_name(self):
+        return self.name
+
+    def list_paths(self, prefix: Path | None = None) -> list[Path]:
+        if prefix is None:
+            prefix = Path()
+        if prefix == Path(self.dot_dir()):
+            return []
+        path = pathlib.Path(self.path)
+        prefixed_path = path / prefix
+        result = [prefix]
+        if prefixed_path.is_dir():
+            for child in prefixed_path.iterdir():
+                result.extend(self.list_paths(child.relative_to(path)))
+        return result
+
+    def read_files(self) -> dict[str, str]:
+        """The text of every file the working tree holds, by path."""
+        return {
+            path.as_posix(): pathlib.Path(self.path, path).read_text()
+            for path in self.list_paths()
+            if self.file_exists(path)
+        }
+
+    def unresolved_paths(self, **kwargs: Unpack[GlobalOptions]) -> set[str]:
+        """The paths of the merge conflicts not yet resolved."""
+        return {
+            e["path"]
+            for e in parse_status_json(self.status(json=True, **kwargs))
+            if e.get("flagConflictUnresolved")
+        }
+
+    @staticmethod
+    def generate_random_name(base=""):
+        name = (
+            base
+            + "SmokeTest_"
+            + "".join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(12)
+            )
+        )
+        logger.debug(f"Generated name: {name}")
+        return name
+
+    @staticmethod
+    def generate_id():
+        repo_id = uuid.uuid4().hex
+        return repo_id
+
+    def _fix_path(self, file: str | Path) -> str:
+        if os.path.isabs(file):
+            return str(file)
+        else:
+            import sys
+
+            full_path = os.path.join(self.path, file)
+            if sys.platform == "win32" and not full_path.startswith("\\\\?\\"):
+                full_path = "\\\\?\\" + os.path.abspath(full_path)
+            return full_path
+
+    def _fix_paths(
+        self, files: list[str] | str | list[Path] | Path | None
+    ) -> list[str]:
+        if files is None:
+            result = [self.path]
+        elif isinstance(files, (str, Path)):
+            result = [self._fix_path(files)]
+        elif isinstance(files, list):
+            result = [self._fix_path(file) for file in files]
+        else:
+            raise TypeError("files should be a filename or a list of filenames")
+        return result
+
+    def _paths_arg(
+        self,
+        files: list[str] | str | list[Path] | Path | None,
+        relative: bool,
+    ) -> list[str]:
+        if not relative:
+            return self._fix_paths(files)
+        if files is None:
+            return [self.path]
+        if isinstance(files, (str, Path)):
+            return [str(files)]
+        if isinstance(files, list):
+            return [str(f) for f in files]
+        raise TypeError("files should be a filename or a list of filenames")
+
+
+class GlobalOptionsParseable(TypedDict, total=False):
+    path: str
+    cwd: str
+    use_os_dir: bool
+    check: bool
+    level: str
+    force: bool
+    dry_run: bool
+    no_pager: bool
+    offline: bool
+    remote: bool
+    local: bool
+    cache: bool
+    identity: str
+    max_connections: int
+    file_count_limit: int
+    file_size_limit: int
+    compress_limit: int
+    search_limit: int
+    search_nearest: bool
+    no_gc: bool
+
+
+class GlobalOptions(TypedDict, total=False):
+    path: str
+    cwd: str
+    use_os_dir: bool
+    check: bool
+    level: str
+    debug: bool
+    force: bool
+    dry_run: bool
+    json: bool
+    no_pager: bool
+    offline: bool
+    remote: bool
+    local: bool
+    cache: bool
+    identity: str
+    identity_token: str
+    access_token: str
+    max_connections: int
+    file_count_limit: int
+    file_size_limit: int
+    compress_limit: int
+    search_limit: int
+    search_nearest: bool
+    no_gc: bool
+    non_interactive: bool
+    event_interval: int

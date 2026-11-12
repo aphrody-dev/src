@@ -1,0 +1,55 @@
+[package]
+name = "lore-aws"
+edition = "2024"
+version = "0.13.1-nightly"
+publish = false
+
+[dependencies]
+async-trait = { workspace = true }
+aws-config = { version = "1.13.2", default-features = false, features = ["rt-tokio"] }
+aws-sdk-dynamodb = { version = "1.139.0", default-features = false, features = ["rt-tokio"] }
+aws-sdk-s3 = { version = "1.159.0", default-features = false, features = ["rt-tokio"] }
+aws-smithy-runtime-api = { version = "1.21.0", default-features = false }
+aws-smithy-http-client = { version = "1.5.2", default-features = false, features = ["rustls-ring"] }
+aws-smithy-types = { version = "1.9.4", default-features = false }
+aws-types = { version = "1.7.0", default-features = false }
+bytes = { workspace = true }
+chrono = { workspace = true }
+dashmap = { workspace = true }
+hex = { workspace = true }
+opentelemetry = { workspace = true }
+opentelemetry_sdk = { workspace = true }
+opentelemetry-semantic-conventions = { workspace = true }
+smallvec = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_bytes = { workspace = true }
+serde_dynamo = { version = "4.3.0", features = ["aws-sdk-dynamodb+1"] }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+zerocopy = { workspace = true }
+lore-base = { workspace = true }
+lore-storage = { workspace = true }
+lore-revision = { workspace = true }
+lore-error-set = { workspace = true }
+lore-macro = { workspace = true }
+lore-telemetry = { workspace = true }
+
+[dev-dependencies]
+lore-aws = { workspace = true, features = ["test-util"] }
+mockall = { workspace = true }
+rand = { workspace = true }
+serial_test = "4.0.1"
+temp-env = { workspace = true }
+tokio = { workspace = true, features = ["test-util"] }
+tracing-test = { workspace = true }
+uuid = { workspace = true }
+lore-proto = { workspace = true }
+
+[features]
+default = []
+mocks = []
+test-util = []
+
+[lints]
+workspace = true

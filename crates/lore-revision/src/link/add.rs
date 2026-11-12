@@ -1,0 +1,543 @@
+// SPDX-FileCopyrightText: 2026 Epic Games, Inc.
+// SPDX-License-Identifier: MIT
+use std::sync::Arc;
+
+use lore_error_set::prelude::*;
+
+use super::LinkError;
+use crate::branch;
+use crate::errors::InvalidPath;
+use crate::event;
+use crate::filter::FilterMode;
+use crate::fs::filesystem_provider::FileInfo;
+use crate::fs::filesystem_provider::InstanceOperation;
+use crate::fs::filesystem_provider::InstanceOperationImpl;
+use crate::fs::filesystem_provider::with_operation;
+use crate::interface::LoreFileAction;
+use crate::link;
+use crate::link::LinkFlags;
+use crate::link::LoreLinkChangeEventData;
+use crate::lore::Address;
+use crate::lore::BranchId;
+use crate::lore::execution_context;
+use crate::lore_debug;
+use crate::node::Node;
+use crate::node::NodeFlags;
+use crate::repository;
+use crate::repository::RepositoryContext;
+use crate::repository::RepositoryWriteToken;
+use crate::repository::clone;
+use crate::repository::clone::CloneContext;
+use crate::repository::clone::CloneStats;
+use crate::repository::clone::LoreRepositoryCloneBeginEventData;
+use crate::repository::clone::LoreRepositoryCloneCountData;
+use crate::repository::clone::LoreRepositoryCloneEndEventData;
+use crate::stage;
+use crate::stage::StageOptions;
+use crate::state::NodeMapping;
+use crate::state::State;
+use crate::state::StateNodeChildrenIterator;
+use crate::util::path::RelativePath;
+use crate::util::path::RelativePathBuf;
+
+pub async fn add(
+    repository: Arc<RepositoryContext>,
+    token: &RepositoryWriteToken,
+    link_path: RelativePath,
+    link_identifier: String,
+    source_path: RelativePath,
+    pin: Option<String>,
+    disable_branching: bool,
+) -> Result<(), LinkError> {
+    // A provider holding whole revisions serves no linked repository: its mount refuses a
+    // revision holding a link, and files written below the link would land in this State.
+    if repository.file_system().holds_state() {
+        return Err(crate::fs::hold::refused("add a link").into());
+    }
+
+    // The identifier is a full URL or a bare name or ID, and only a scheme tells them apart:
+    // `is_valid_name` permits scoped names like `org/project`, so a slash says nothing about
+    // which form this is. A schemeless identifier names a repository on the same remote as
+    // this one, so resolve it against this repository's own configured remote rather than
+    // reading its first segment as a host. Taking the remote from the config also keeps the
+    // link and the repository pointing at the same server, which the environment variable
+    // this replaces could not guarantee.
+    let (remote_url, name) = if link_identifier.contains("://") {
+        repository::parse_url(&link_identifier, false).forward_with::<LinkError, _>(|| {
+            format!("Invalid repository URL or ID: {link_identifier}")
+        })?
+    } else {
+        let remote_url = repository
+            .require_path()
+            .ok()
+            .and_then(|path| repository::repository_remote(path.to_string_lossy()).ok())
+            .unwrap_or_default();
+        if remote_url.is_empty() {
+            return Err(LinkError::from(crate::errors::NoRemote));
+        }
+        (remote_url, link_identifier.clone())
+    };
+
+    let context = execution_context();
+    let identity = context.globals().identity().unwrap_or_default();
+    let repository_data = repository::resolve_by_name(&remote_url, &name, identity)
+        .await
+        .forward_with::<LinkError, _>(|| format!("Repository not found: {link_identifier}"))?;
+
+    let link = repository_data.id;
+
+    if link == repository.id {
+        return Err(LinkError::internal(
+            "Invalid link, a link cannot link to itself",
+        ));
+    }
+
+    let (state_current, state_staged, current_branch) =
+        State::deserialize_current_and_staged(repository.clone())
+            .await
+            .forward::<LinkError>("Failed deserializing state")?;
+    let state_staged = state_staged.unwrap_or_else(|| state_current.clone());
+
+    lore_debug!("Resolve link {link} {source_path}");
+    let link = repository.to_link_context(link).await;
+
+    let link_remote = link.remote().await.forward::<LinkError>("Not connected")?;
+
+    // Determine the link branch and revision based on --pin and --disable-branching
+    let (link_revision, link_branch) = if disable_branching {
+        if let Some(pin) = pin {
+            link::resolve_pin(link.clone(), pin).await?
+        } else {
+            // Use the linked repo's default branch latest
+            let link_metadata = repository::metadata_hash(link.clone())
+                .await
+                .forward::<LinkError>("Failed to load repository metadata")?;
+            let link_metadata = repository::metadata(link.clone(), link_metadata)
+                .await
+                .forward::<LinkError>("Failed to load repository metadata")?;
+            let default_branch_id = link_metadata.default_branch;
+
+            let link_latest =
+                branch::load_remote_latest(link_remote.clone(), link.id, default_branch_id)
+                    .await
+                    .forward::<LinkError>("Failed to load link latest")?;
+
+            lore_debug!("Using default branch {default_branch_id} at LATEST ({link_latest})");
+
+            (link_latest, default_branch_id)
+        }
+    } else {
+        // Branching enabled: ensure a matching branch exists in the linked repo
+        let current_branch_id = current_branch;
+
+        let branch_latest = if let Ok(link_latest) =
+            branch::load_remote_latest(link_remote.clone(), link.id, current_branch_id).await
+        {
+            lore_debug!("Using existing link branch at LATEST ({link_latest})");
+            link::report_branch_outcome(
+                link_path.as_str(),
+                link.id,
+                current_branch_id,
+                link_latest,
+                true, /* reused */
+            );
+            link_latest
+        } else {
+            let link_metadata = repository::metadata_hash(link.clone())
+                .await
+                .forward::<LinkError>("Failed to load repository metadata")?;
+            let link_metadata = repository::metadata(link.clone(), link_metadata)
+                .await
+                .forward::<LinkError>("Failed to load repository metadata")?;
+            let default_branch_id = link_metadata.default_branch;
+
+            let branch_metadata = branch::metadata(repository.clone(), current_branch_id)
+                .await
+                .forward::<LinkError>("Failed getting branch metadata")?;
+            let branch_name = branch::name(&branch_metadata)
+                .forward::<LinkError>("Failed getting branch metadata")?;
+            let branch_category = branch::category(&branch_metadata).unwrap_or_default();
+
+            let parent_latest =
+                branch::load_remote_latest(link_remote.clone(), link.id, default_branch_id)
+                    .await
+                    .forward::<LinkError>("Failed getting branch metadata")?;
+
+            let outcome = link::create_branch(
+                link.clone(),
+                link_remote.clone(),
+                current_branch_id,
+                branch_name.into(),
+                branch_category.into(),
+                default_branch_id,
+                parent_latest,
+            )
+            .await?;
+
+            link::report_branch_outcome(
+                link_path.as_str(),
+                link.id,
+                current_branch_id,
+                outcome.revision,
+                outcome.reused,
+            );
+
+            lore_debug!(
+                "Created branch {} at LATEST ({}) in linked repo",
+                current_branch_id,
+                outcome.revision
+            );
+
+            outcome.revision
+        };
+
+        let link_revision = if let Some(pin) = pin {
+            let (pin_revision, _pin_branch) = link::resolve_pin(link.clone(), pin).await?;
+            lore_debug!("Using pinned revision {pin_revision} on branch {current_branch_id}");
+            pin_revision
+        } else {
+            branch_latest
+        };
+
+        (link_revision, current_branch_id)
+    };
+
+    // A dry run does not create a missing link branch, which takes the name of the branch it
+    // is created for in this repository.
+    let branch_metadata = match branch::metadata(link.clone(), link_branch).await {
+        Err(err) if err.is_branch_not_found() && execution_context().globals().dry_run() => {
+            branch::metadata(repository.clone(), link_branch).await
+        }
+        metadata => metadata,
+    }
+    .forward::<LinkError>("Failed getting branch metadata")?;
+    let branch_name =
+        branch::name(&branch_metadata).forward::<LinkError>("Failed getting branch metadata")?;
+
+    lore_debug!("Load link revision state");
+    let link_state = State::deserialize(link.clone(), link_revision)
+        .await
+        .forward::<LinkError>("Failed deserializing state")?;
+
+    lore_debug!("Find link target node for {source_path}");
+    let link_node_link = link_state
+        .find_node_link(link.clone(), source_path.as_str())
+        .await
+        .forward::<LinkError>("Invalid path")?;
+
+    lore_debug!("Link target node is {link_node_link:?}");
+    if !link_node_link.is_valid_or_root() {
+        return Err(InvalidPath {
+            path: source_path.to_string(),
+        }
+        .into());
+    }
+
+    // Target node must be in the given link repository, not a link itself
+    if link_node_link.repository != link.id {
+        return Err(LinkError::internal(
+            "Link path is a link itself, link to the target repository directly",
+        ));
+    }
+
+    // Target node must be a directory
+    let link_node = link_state
+        .node(link.clone(), link_node_link.node)
+        .await
+        .forward::<LinkError>("Failed deserializing state")?;
+
+    if !link_node.is_directory() {
+        return Err(LinkError::internal(
+            "Link path must be a directory in the target repository",
+        ));
+    }
+
+    let clone_path = link_path.clone();
+
+    // Resolve through any parent links so the link lands in the innermost
+    // containing repository (empty chain for a plain top-level link).
+    let chain = link::resolve_link_chain(
+        NodeMapping::root(repository.clone(), state_staged.clone()),
+        state_current.clone(),
+        link_path.clone(),
+        current_branch,
+    )
+    .await?;
+
+    let inner_repository = chain.innermost.repository.clone();
+    let inner_state = chain.innermost.state.clone();
+    let remainder_path = chain.remainder_path.clone();
+
+    // The stored path rather than the argument, which resolved case-insensitively.
+    let resolved_source_path =
+        link::link_source_path(link.clone(), &link_state, link_node_link.node)
+            .await
+            .forward::<LinkError>("Failed resolving link source path")?;
+
+    link::check_source_path_overlap(
+        &inner_state,
+        inner_repository.clone(),
+        link.clone(),
+        resolved_source_path,
+        crate::node::INVALID_NODE,
+    )
+    .await
+    .forward::<LinkError>("Failed checking link source paths")?;
+
+    if let Ok(node_link) = inner_state
+        .find_relative_node_link(
+            inner_repository.clone(),
+            chain.innermost.node,
+            remainder_path.as_str(),
+        )
+        .await
+        && let Ok(node) = inner_state.node(inner_repository.clone(), node_link.node).await
+        // Allow re-adding a link to a path that is staged for delete
+        && !node.is_staged_delete()
+    {
+        // Prevent linking into file or other link
+        if !node.is_directory() {
+            return Err(LinkError::internal(format!(
+                "Link path is already a link {clone_path}"
+            )));
+        }
+
+        let mut children = StateNodeChildrenIterator::new(
+            inner_state.clone(),
+            inner_repository.clone(),
+            node_link.node,
+        )
+        .await
+        .forward::<LinkError>("Failed deserializing state node block")?;
+
+        // Prevent the directory having children
+        if let Ok(child) = children.next().await
+            && child.is_some()
+        {
+            return Err(LinkError::internal(format!(
+                "Link path already has children {clone_path}"
+            )));
+        }
+    };
+
+    // Intermediate directories leading to the link, relative to the innermost repo.
+    let mut remainder_parent = remainder_path.clone();
+    remainder_parent.pop();
+
+    with_operation(repository.file_system(), async |operation| {
+        create_link_mount(
+            &operation,
+            chain.innermost.clone(),
+            remainder_parent,
+            &clone_path,
+        )
+        .await
+    })
+    .await?;
+
+    lore_debug!("Staging link node");
+    let node = Node {
+        flags: NodeFlags::Link.bits(),
+        child: link_node_link.node,
+        address: Address {
+            hash: link_revision,
+            context: link.id.into(),
+        },
+        ..Default::default()
+    };
+    let link_node = stage::stage_single_node(
+        inner_repository.clone(),
+        inner_state.clone(),
+        remainder_path.clone().freeze(),
+        node,
+        Arc::default(),
+        None, // No link tracking when adding links
+        FilterMode::Full,
+    )
+    .await
+    .forward::<LinkError>("Failed staging the link node")?;
+
+    let (link_flags, stored_branch) = if disable_branching {
+        lore_debug!("Disabled auto-follow for link {}", link.id);
+        (LinkFlags::DisableAutoFollow, link_branch)
+    } else {
+        (LinkFlags::NoFlags, BranchId::default())
+    };
+
+    inner_state
+        .link_add(
+            inner_repository.clone(),
+            link.id,
+            stored_branch,
+            link_revision,
+            link_node.node,
+            link_flags,
+        )
+        .await
+        .forward::<LinkError>("Failed to add link")?;
+
+    // Clone the link in the path
+    lore_debug!("Connecting remote storage");
+    let correlation_id = execution_context().globals().correlation_id.to_string();
+    let storage = link_remote
+        .session(link.id, &correlation_id)
+        .await
+        .forward::<LinkError>("Not connected")?;
+
+    lore_debug!("Clone link in {}", link_path);
+
+    event::LoreEvent::RepositoryCloneBegin(LoreRepositoryCloneBeginEventData {
+        repository: link.id,
+        branch: branch_name.into(),
+        revision: link_state.revision(),
+        path: repository.require_path()?.into(),
+    })
+    .send();
+
+    let stats = Arc::new(CloneStats::default());
+    let clone_states = link.filter.mount_states(&clone_path);
+    with_operation(link.file_system(), async |operation| {
+        let clone_ctx = CloneContext {
+            repository: link.clone(),
+            state: link_state,
+            operation,
+            options: Arc::default(),
+            stats: stats.clone(),
+            modified_times: Arc::new(crate::state::RecordedModifiedTimes::default()),
+        };
+        clone::clone_node(
+            clone_ctx,
+            storage,
+            clone_path,
+            link_node_link.node,
+            clone_states,
+        )
+        .await
+        .forward::<LinkError>("Failed cloning target link")
+    })
+    .await?;
+
+    event::LoreEvent::RepositoryCloneEnd(LoreRepositoryCloneEndEventData {
+        branch: branch_name.into(),
+        revision: link_revision,
+        count: LoreRepositoryCloneCountData::new(&stats),
+    })
+    .send();
+
+    // Fold nested link revisions up into the top-level state (no-op if flat).
+    link::propagate_link_chain(&chain, token).await?;
+
+    state_staged.reparent_onto(state_current.revision());
+
+    // Serialize the staged state
+    let signature = state_staged
+        .serialize(repository.clone(), token)
+        .await
+        .forward::<LinkError>("Failed to serialize state")?;
+
+    crate::instance::store_staged_anchor(&repository, signature)
+        .await
+        .forward::<LinkError>("Failed to serialize anchor")?;
+
+    event::LoreEvent::LinkChange(LoreLinkChangeEventData::new(
+        link_path.as_str(),
+        link.id,
+        link_branch,
+        link_revision,
+        LoreFileAction::Add,
+    ))
+    .send();
+
+    Ok(())
+}
+
+/// Creates the directory the link mounts at and the one holding it, and stages the intermediate
+/// path against the innermost repository.
+///
+/// A mount point the filesystem already holds is taken only as an empty directory: a file, or a
+/// directory with children, is something the link would displace.
+///
+/// One operation covers all of it: the mount point, the directory the link is placed in, the path
+/// staged against the innermost repository, and the mount directory itself are in the same
+/// filesystem.
+async fn create_link_mount(
+    operation: &Arc<InstanceOperationImpl>,
+    innermost: NodeMapping,
+    remainder_parent: RelativePathBuf,
+    clone_path: &RelativePath,
+) -> Result<(), LinkError> {
+    let mount_info = operation
+        .file_info(clone_path)
+        .await
+        .forward_with::<LinkError, _>(|| format!("Failed to check link path {clone_path}"))?;
+    match mount_info {
+        FileInfo::NotExist => {}
+        FileInfo::Directory => {
+            let mut entries = operation
+                .read_directory(clone_path)
+                .await
+                .forward_with::<LinkError, _>(|| {
+                    format!("Failed to check link path {clone_path}")
+                })?;
+            if entries
+                .next()
+                .await
+                .transpose()
+                .forward_with::<LinkError, _>(|| format!("Failed to check link path {clone_path}"))?
+                .is_some()
+            {
+                return Err(LinkError::internal(format!(
+                    "Link path already has children {clone_path}"
+                )));
+            }
+        }
+        FileInfo::File { .. } => {
+            return Err(LinkError::internal(format!(
+                "Link path is a file {clone_path}"
+            )));
+        }
+    }
+
+    let parent_path = clone_path.parent_path();
+    if !operation
+        .file_info(&parent_path)
+        .await
+        .is_ok_and(|info| info.exists())
+    {
+        lore_debug!("Creating directory {parent_path}");
+        operation
+            .create_dir_all(&parent_path)
+            .await
+            .forward_with::<LinkError, _>(|| format!("Failed to create directory {parent_path}"))?;
+    }
+
+    if !remainder_parent.is_empty() {
+        lore_debug!("Staging link parent path in innermost repository");
+        Box::pin(stage::stage_filesystem_path(
+            operation.clone(),
+            innermost,
+            remainder_parent.freeze(),
+            Arc::default(),
+            StageOptions {
+                no_children: true,
+                ..Default::default()
+            },
+            None, // No link tracking when adding links
+            None, // No layer mask
+            None, // Prefixes resolved for the outer repository do not apply
+            None, // Node ids here index the inner repository's own state
+        ))
+        .await
+        .forward::<LinkError>("Failed staging the link node")?;
+    }
+
+    if mount_info == FileInfo::NotExist {
+        lore_debug!("Creating directory {clone_path}");
+        operation
+            .create_dir_all(clone_path)
+            .await
+            .forward_with::<LinkError, _>(|| format!("Failed to create directory {clone_path}"))?;
+    }
+
+    Ok(())
+}

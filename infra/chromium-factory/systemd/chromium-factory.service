@@ -1,0 +1,11 @@
+[Unit]
+Description=Chromium factory (labs_agent headless_shell, Chrome Stable)
+After=network-online.target
+[Service]
+Type=oneshot
+User=ubuntu
+Nice=10
+IOSchedulingClass=idle
+WorkingDirectory=/srv/chromium
+ExecStart=/srv/chromium/factory/chromium-factory.sh all stable
+TimeoutStartSec=infinity

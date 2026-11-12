@@ -1,0 +1,40 @@
+# Wedge definition for time-helper
+#
+# Loaded by deps/wedge.sh.
+
+set -o nounset
+set -o pipefail
+set -o errexit
+
+# sourced
+WEDGE_NAME='time-helper'
+WEDGE_VERSION='2023-02-28'
+WEDGE_IS_ABSOLUTE=1  # TODO: consider relaxing
+
+wedge-make() {
+  local src_dir=$1
+  local build_dir=$2
+  local install_dir=$3
+
+  local in=$src_dir/time-helper.c
+  local out=$build_dir/time-helper
+
+  # Copied from build/py.sh time-helper
+  cc -std=c99 -o $out $in
+}
+
+wedge-install() {
+  local build_dir=$1
+  local install_dir=$2
+
+  # TODO: The harness should make this
+  mkdir -p $install_dir
+  echo '*** wedge-install'
+  cp -v $build_dir/time-helper $install_dir/time-helper
+}
+
+wedge-smoke-test() {
+  local install_dir=$1
+
+  $install_dir/time-helper -o /dev/stdout -x true
+}

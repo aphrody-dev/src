@@ -1,0 +1,32 @@
+-- To test how all ASDL construct generate typed code.
+
+module shared_variant {
+
+  prod = (string a, string b)
+
+  DoubleQuoted = (int left, string* tokens) 
+
+  expr =
+    Binary(expr left, expr right)
+    -- Use the existing TYPE DoubleQuoted, but create a new TAG
+    -- expr_e.DoubleQuoted.
+  | DoubleQuoted %DoubleQuoted
+
+  Token = (int id, string val)
+
+  tok =
+    Eof
+  | Token %Token
+
+  tok_struct = (tok token, int x)
+  tok_array = (tok* tokens)
+
+  word_part =
+    Literal(string s)
+  | DoubleQuoted %DoubleQuoted
+  -- Comment out to test build-time error
+  -- | ErrorIsDuplicate %DoubleQuoted
+
+  -- Make sure we didn't break these variants
+  cflow = Break | Continue | Return(int val)
+}

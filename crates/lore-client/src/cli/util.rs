@@ -1,0 +1,449 @@
+// SPDX-FileCopyrightText: 2026 Epic Games, Inc.
+// SPDX-License-Identifier: MIT
+use std::collections::HashMap;
+use std::io::BufRead;
+use std::path::Component;
+use std::path::Path;
+use std::path::PathBuf;
+use std::sync::Arc;
+use std::time::Duration;
+
+use lore::branch::LoreBranchInfoArgs;
+use lore::call_delegation::run_command;
+use lore::interface::Context;
+use lore::interface::LoreArray;
+use lore::interface::LoreEvent;
+use lore::interface::LoreEventCallback;
+use lore::interface::LoreGlobalArgs;
+use lore::interface::LoreMaintenanceEventData;
+use lore::interface::LorePathIgnoreEventData;
+use lore::interface::LoreRevisionResolveEventData;
+use lore::interface::LoreRevisionResolveTarget;
+use lore::interface::LoreRevisionSyncProgressEventData;
+use lore::interface::LoreString;
+use parking_lot::Mutex;
+
+use crate::eprintln;
+use crate::println;
+use crate::styling::CommonStyles;
+
+/// Discover the repository root by walking up from the process working
+/// directory, when `--repository` named none.
+///
+/// Runs in the CLI process while building `LoreGlobalArgs`, before any call
+/// crosses to the service, so the process working directory is the user's own —
+/// which is exactly what "the repository I am standing in" has to mean.
+#[allow(clippy::disallowed_methods)]
+pub fn get_repository_path(path: Option<String>) -> LoreString {
+    if let Some(path) = path {
+        path.into()
+    } else {
+        let current_dir = std::env::current_dir().unwrap_or_default();
+        let mut current_path = current_dir.as_path();
+        loop {
+            if current_path.join(".urc").is_dir() || current_path.join(".lore").is_dir() {
+                break current_path.into();
+            }
+            if let Some(parent_path) = current_path.parent() {
+                current_path = parent_path;
+            } else {
+                break current_dir.as_path().into();
+            }
+        }
+    }
+}
+
+/// Compute `target` expressed relative to `base`, inserting `..` components as
+/// needed. Returns `None` if a relative path can't be formed (e.g. mismatched
+/// path prefixes/roots, such as different Windows drives).
+fn diff_paths(target: &Path, base: &Path) -> Option<PathBuf> {
+    let mut ta = target.components();
+    let mut ba = base.components();
+
+    let mut ta_rest;
+    let mut ba_rest;
+    loop {
+        ta_rest = ta.clone();
+        ba_rest = ba.clone();
+        match (ta.next(), ba.next()) {
+            (Some(Component::Normal(t)), Some(Component::Normal(b))) => {
+                if !t.eq_ignore_ascii_case(b) {
+                    // Components diverged; rewind both to this point.
+                    break;
+                }
+            }
+            (Some(t), Some(b)) => {
+                // Root / prefix / cur-dir components must match exactly.
+                if t != b {
+                    return None;
+                }
+            }
+            // One side exhausted (or both): rewind to the pre-`next()` state.
+            _ => break,
+        }
+    }
+
+    let mut result = PathBuf::new();
+    for component in ba_rest {
+        match component {
+            Component::Normal(_) => result.push(".."),
+            Component::CurDir => {}
+            // A `..` or root/prefix in the remaining base means we can't form a
+            // sane relative path.
+            _ => return None,
+        }
+    }
+
+    for component in ta_rest {
+        result.push(component.as_os_str());
+    }
+    Some(result)
+}
+
+/// Build a repo-root-relative path for display, rebased on the current working
+/// directory. Falls back to repo-root-relative string on any failure.
+pub fn relativize_for_display(repo_root: &Path, cwd: &Path, repo_relative: &str) -> String {
+    if repo_relative.is_empty() {
+        return String::new();
+    }
+    let target = repo_root.join(repo_relative);
+    match diff_paths(&target, cwd) {
+        Some(rel) if rel.as_os_str().is_empty() => ".".to_string(),
+        Some(rel) => rel.to_string_lossy().replace('\\', "/"),
+        None => repo_relative.to_string(),
+    }
+}
+
+/// Build a closure that rebases repo-root-relative paths onto the current
+/// working directory for display, capturing the repo root and cwd once.
+///
+/// Presentation only, and runs in the CLI process, so the process working
+/// directory is the user's terminal directory — the frame paths must be printed
+/// relative to. A failure to read it degrades to repo-root-relative output.
+#[allow(clippy::disallowed_methods)]
+pub fn cwd_relativizer(globals: &LoreGlobalArgs) -> impl Fn(&str) -> String + 'static {
+    let repo_root = std::path::absolute(globals.repository_path())
+        .unwrap_or_else(|_| PathBuf::from(globals.repository_path()));
+    let cwd = std::env::current_dir().unwrap_or_else(|_| repo_root.clone());
+    move |path: &str| relativize_for_display(&repo_root, &cwd, path)
+}
+
+pub fn read_targets_file(path: &String) -> Vec<String> {
+    let targets_file = std::fs::File::open(path).unwrap();
+    let reader = std::io::BufReader::new(targets_file);
+
+    reader
+        .lines()
+        .map(|line| {
+            if let Ok(line) = line {
+                // TODO(mjansson): If this is a relative path it should be made absolute
+                // using the target_file path as the base path
+                line
+            } else {
+                "".to_owned()
+            }
+        })
+        .filter(|path| !path.is_empty())
+        .collect()
+}
+
+pub fn convert_to_lore_string_vec(paths: &[String]) -> Vec<LoreString> {
+    paths.iter().map(LoreString::from).collect()
+}
+
+pub fn split_path_messages(values: &[String]) -> (Vec<LoreString>, Vec<LoreString>) {
+    values
+        .as_chunks::<2>()
+        .0
+        .iter()
+        .map(|[path, message]| (LoreString::from(path), LoreString::from(message)))
+        .unzip()
+}
+
+pub fn convert_paths_and_targets(
+    paths: &Option<Vec<String>>,
+    targets: &Option<String>,
+) -> LoreArray<LoreString> {
+    let mut converted = vec![];
+
+    if let Some(paths) = paths {
+        converted.append(&mut convert_to_lore_string_vec(paths));
+    }
+
+    if let Some(targets) = targets {
+        converted.append(&mut convert_to_lore_string_vec(&read_targets_file(targets)));
+    }
+
+    LoreArray::from_vec(converted)
+}
+
+/// Resolves branch identifiers to names, remembering each answer.
+///
+/// Events carry the branch identifier rather than its name, so naming a branch
+/// costs a round trip. Links commonly follow one branch, and a listing would
+/// otherwise pay that trip once per link, so repeats are served from the map.
+/// An unresolvable identifier answers as itself.
+///
+/// `link_path` names the mount whose repository owns the branch, empty for a
+/// branch of this repository. A link pinned to its own branch keeps that name
+/// only in the linked repository, so the lookup has to be scoped there.
+pub struct BranchNameResolver {
+    globals: LoreGlobalArgs,
+    names: HashMap<(Context, String), String>,
+}
+
+impl BranchNameResolver {
+    pub fn new(globals: LoreGlobalArgs) -> Self {
+        Self {
+            globals,
+            names: HashMap::new(),
+        }
+    }
+
+    pub fn name(&mut self, id: Context, link_path: &str) -> String {
+        let key = (id, link_path.to_string());
+        if let Some(name) = self.names.get(&key) {
+            return name.clone();
+        }
+        let resolved = self.lookup(id, link_path);
+        self.names.insert(key, resolved.clone());
+        resolved
+    }
+
+    fn lookup(&self, id: Context, link_path: &str) -> String {
+        let args = LoreBranchInfoArgs {
+            branch: LoreString::from(id.to_string().as_str()),
+            link: LoreString::from(link_path),
+        };
+        let name = Arc::new(Mutex::new(None));
+        let name_cb = name.clone();
+        // Sub-operation callback without the default handlers: a name that will
+        // not resolve falls back to the identifier, and reporting that as an
+        // error would put a line on stderr for every link in a listing.
+        let callback: LoreEventCallback = Some(Box::new(move |event: &LoreEvent| {
+            if let LoreEvent::BranchInfo(data) = event {
+                *name_cb.lock() = Some(data.name.to_string());
+            }
+        }));
+        run_command(self.globals.clone(), args.into(), callback);
+        name.lock()
+            .take()
+            .filter(|name| !name.is_empty())
+            .unwrap_or_else(|| id.to_string())
+    }
+}
+
+pub fn handle_maintenance_event(event: &LoreMaintenanceEventData) {
+    eprintln!(
+        "{}Server is in maintenance mode: {}{}",
+        CommonStyles::MAINTENANCE,
+        event.message,
+        anstyle::Reset
+    );
+}
+
+pub fn handle_path_ignore_event(event: &LorePathIgnoreEventData) {
+    println!("Ignoring invalid path: {}", event.path);
+}
+
+pub fn handle_revision_resolve_event(event: &LoreRevisionResolveEventData) {
+    match event.target {
+        LoreRevisionResolveTarget::Number => println!(
+            "Resolving revision number {} on branch {}",
+            event.revision_number, event.branch
+        ),
+        LoreRevisionResolveTarget::Latest => {
+            println!("Resolving latest revision on branch {}", event.branch);
+        }
+        LoreRevisionResolveTarget::Signature => println!(
+            "Resolving revision {} on branch {}",
+            event.revision, event.branch
+        ),
+    }
+}
+
+pub use lore_base::units::format_bytes_to_string;
+
+pub fn progress_info_display(progress: &LoreRevisionSyncProgressEventData) -> String {
+    let bytes_info = if progress.bytes_update_total > 0 {
+        format!(
+            ", {}/{}",
+            format_bytes_to_string(progress.bytes_update),
+            format_bytes_to_string(progress.bytes_update_total)
+        )
+    } else {
+        String::new()
+    };
+
+    if progress.file_conflict > 0 {
+        format!(
+            "Syncing {}/{} files{}, {}/{} deleted, {} merged, {} conflicted",
+            progress.file_update,
+            progress.file_update_total,
+            bytes_info,
+            progress.file_delete,
+            progress.file_delete_total,
+            progress.file_automerge,
+            progress.file_conflict
+        )
+    } else if progress.file_automerge > 0 {
+        format!(
+            "Syncing {}/{} files{}, {}/{} deleted, {} merged",
+            progress.file_update,
+            progress.file_update_total,
+            bytes_info,
+            progress.file_delete,
+            progress.file_delete_total,
+            progress.file_automerge
+        )
+    } else {
+        format!(
+            "Syncing {}/{} files{}, {}/{} deleted",
+            progress.file_update,
+            progress.file_update_total,
+            bytes_info,
+            progress.file_delete,
+            progress.file_delete_total
+        )
+    }
+}
+
+pub fn merge_result_display(progress: &LoreRevisionSyncProgressEventData) -> String {
+    format!(
+        "Merged files, {} updated, {} deleted, {} merged, {} conflicted",
+        progress.file_update, progress.file_delete, progress.file_automerge, progress.file_conflict
+    )
+}
+
+/// The termination signals, registered separately from the wait on them.
+///
+/// A signal ends the process outright until a handler is in place, so a caller
+/// that must not be killed between becoming reachable and reaching the wait
+/// registers these first. [`listen_for_termination`] registers on its own, which
+/// is the right shape for a caller with no such window.
+pub struct TerminationSignals {
+    #[cfg(unix)]
+    interrupt: tokio::signal::unix::Signal,
+    #[cfg(unix)]
+    terminate: tokio::signal::unix::Signal,
+    #[cfg(windows)]
+    ctrl_c: tokio::signal::windows::CtrlC,
+    // What a process started in a group of its own can be sent: a console delivers
+    // Ctrl-C to a group only when it is the one the console runs, so Ctrl-Break is
+    // the signal a supervisor can use to ask such a process to stop.
+    #[cfg(windows)]
+    ctrl_break: tokio::signal::windows::CtrlBreak,
+}
+
+impl TerminationSignals {
+    /// Registers the handlers, which needs a runtime context: the signal driver
+    /// belongs to the runtime.
+    pub fn register() -> tokio::io::Result<Self> {
+        #[cfg(unix)]
+        {
+            use tokio::signal::unix::SignalKind;
+            use tokio::signal::unix::signal;
+            Ok(Self {
+                interrupt: signal(SignalKind::interrupt())?,
+                terminate: signal(SignalKind::terminate())?,
+            })
+        }
+        #[cfg(windows)]
+        {
+            Ok(Self {
+                ctrl_c: tokio::signal::windows::ctrl_c()?,
+                ctrl_break: tokio::signal::windows::ctrl_break()?,
+            })
+        }
+        // No signals to register, matching `remote::network::stub`, which reports
+        // no IPC on the same targets. A caller that cannot register them reports
+        // it and carries on without a signal path.
+        #[cfg(not(any(unix, windows)))]
+        Err(std::io::Error::new(
+            std::io::ErrorKind::Unsupported,
+            "termination signals are not supported on this OS",
+        ))
+    }
+
+    /// Resolves on the first of the signals to arrive.
+    pub async fn recv(&mut self) {
+        #[cfg(unix)]
+        tokio::select! {
+            _ = self.interrupt.recv() => { println!(); },
+            _ = self.terminate.recv() => { println!("SIGTERM received"); },
+        }
+
+        #[cfg(windows)]
+        {
+            tokio::select! {
+                _ = self.ctrl_c.recv() => {},
+                _ = self.ctrl_break.recv() => {},
+            }
+            println!();
+        }
+
+        // Unreachable, since `register` yields nothing to wait on here. Pending
+        // rather than returning, so a wait on no signals never reads as one
+        // arriving.
+        #[cfg(not(any(unix, windows)))]
+        std::future::pending::<()>().await
+    }
+}
+
+/// Waits for a termination signal, or for `timeout` to pass where one is given.
+///
+/// Registers the handlers here, so a caller that must not be killed before it
+/// reaches this await registers its own [`TerminationSignals`] earlier instead.
+pub async fn listen_for_termination(timeout: Option<Duration>) -> tokio::io::Result<()> {
+    let mut signals = TerminationSignals::register()?;
+    match timeout {
+        Some(timeout) => {
+            let _ = tokio::time::timeout(timeout, signals.recv()).await;
+        }
+        None => signals.recv().await,
+    }
+
+    Ok(())
+}
+
+/// Read a line from stdin with proper visual line editing (backspace, etc.).
+///
+/// Some terminals have `ECHOE` / `ECHOK` disabled, which causes backspace to
+/// echo as `^?` instead of visually erasing the character. This function
+/// temporarily enables those flags for the duration of the read, then restores
+/// the original terminal settings.
+pub fn read_line_with_editing(buf: &mut String) -> std::io::Result<usize> {
+    #[cfg(unix)]
+    {
+        use std::os::unix::io::AsRawFd;
+
+        let fd = std::io::stdin().as_raw_fd();
+        let mut original: libc::termios = unsafe { std::mem::zeroed() };
+        let got_attrs = unsafe { libc::tcgetattr(fd, &mut original) } == 0;
+
+        if got_attrs {
+            let needs_fix =
+                (original.c_lflag & libc::ECHOE) == 0 || (original.c_lflag & libc::ECHOK) == 0;
+
+            if needs_fix {
+                let mut modified = original;
+                modified.c_lflag |= libc::ECHOE | libc::ECHOK;
+                unsafe {
+                    libc::tcsetattr(fd, libc::TCSANOW, &modified);
+                }
+                let result = std::io::stdin().read_line(buf);
+                unsafe {
+                    libc::tcsetattr(fd, libc::TCSANOW, &original);
+                }
+                return result;
+            }
+        }
+
+        std::io::stdin().read_line(buf)
+    }
+
+    #[cfg(not(unix))]
+    {
+        std::io::stdin().read_line(buf)
+    }
+}

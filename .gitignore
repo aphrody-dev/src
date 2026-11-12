@@ -25,6 +25,7 @@ graphify-out/
 !/.cargo/
 /.cargo/*
 !/.cargo/config.toml
+!/.cargo/neoverse-512tvb.toml
 !/.claude/
 /.claude/skills
 /.claude/settings.local.json
@@ -38,6 +39,13 @@ graphify-out/
 !/crates/
 !/infra/
 !/tools/
+!/plugins/
+!/third_party/
+!/licenses/
+!/conformance/
+/conformance/upstream/
+/conformance/results/
+!/rust-toolchain.toml
 !/.gitignore
 !/.gitattributes
 !/.gitmodules

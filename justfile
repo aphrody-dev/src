@@ -187,3 +187,64 @@ index-gen:
 # Regenerate the core C header (cbindgen)
 core-header:
     cbindgen --config crates/core-capi/cbindgen.toml crates/core-capi -o crates/core-capi/include/aphrody_core.h
+# --- Labs (merged from C:\labs): aphrody CLI, Lore, Chromium factory ---
+
+# Aphrody CLI + conformance harness build.
+lab-build:
+    cargo build -p aphrody -p aphrody-conformance
+
+# Distribution build of the aphrody binary: fat LTO, 1 CGU, stripped.
+lab-dist:
+    cargo build --release -p aphrody
+
+# Fast local optimized build with debug assertions.
+lab-iter:
+    cargo build --profile iteration -p aphrody
+
+# Run the aphrody CLI.
+lab-dev *args:
+    cargo run -p aphrody -- {{args}}
+
+# Conformance suites (writes conformance/results/).
+lab-conformance *suites:
+    cargo run -p aphrody -- x conformance --fetch {{suites}}
+
+# Refresh Chrome Stable/Beta/Dev/Canary pins (native: aphrody x channels).
+lab-channels:
+    cargo run -q -p aphrody -- x channels
+
+# Re-absorb Lore from aphrody-labs/lore.
+lab-lore-sync:
+    sh tools/labs-scripts/absorb-lore.sh
+
+# Deploy the Lore server binary to prd (systemd unit loreserver).
+lab-deploy-loreserver:
+    cargo build --release -p lore-server --target x86_64-unknown-linux-gnu
+    scp target/x86_64-unknown-linux-gnu/release/loreserver prd:/opt/lore/bin/loreserver.new
+    ssh prd 'mv /opt/lore/bin/loreserver.new /opt/lore/bin/loreserver && systemctl restart loreserver && sleep 3 && curl -fsS -o /dev/null -w "health %{http_code}\n" http://10.200.77.5:41339/health_check'
+
+# Deploy Chromium factory scripts, args and units to fr1.
+lab-factory-deploy:
+    ssh vps 'mkdir -p /srv/chromium/factory/scripts /srv/chromium/factory/third_party /srv/chromium/factory/args'
+    scp -q infra/chromium-factory/chromium-factory.sh infra/chromium-factory/cros-factory.sh vps:/srv/chromium/factory/
+    scp -q infra/chromium-factory/args/*.gn vps:/srv/chromium/factory/args/
+    scp -q tools/labs-scripts/chrome-channels.sh vps:/srv/chromium/factory/scripts/
+    scp -q third_party/chrome-channels.toml vps:/srv/chromium/factory/third_party/
+    scp -q infra/chromium-factory/systemd/chromium-factory.* vps:/tmp/
+    ssh vps 'sudo mv /tmp/chromium-factory.service /tmp/chromium-factory.timer /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable chromium-factory.timer'
+
+# Run a factory step on fr1 as a managed unit: sync | build | publish | all.
+lab-factory step="all" channel="stable":
+    ssh vps 'sudo systemd-run --unit=chromium-factory-{{step}} --uid=ubuntu --gid=ubuntu -p Nice=10 -p WorkingDirectory=/srv/chromium -E HOME=/home/ubuntu /srv/chromium/factory/chromium-factory.sh {{step}} {{channel}}'
+
+# Factory status and last log lines.
+lab-factory-status:
+    ssh vps 'systemctl list-units "chromium-factory*" --all --no-pager; journalctl -u "chromium-factory*" -n 15 --no-pager; df -h /srv | tail -1'
+
+# Download the latest published labs_agent build from R2.
+lab-factory-fetch version:
+    rclone copyto r2-chromium:aphrody-chromium/labs_agent/{{version}}/linux-x64.tar.zst target/labs_agent-{{version}}-linux-x64.tar.zst
+
+# Smallest aphrody binary: profile min + rebuilt std with immediate-abort.
+lab-min:
+    cargo build --profile min -p aphrody -Zbuild-std=std,panic_abort --target x86_64-pc-windows-msvc

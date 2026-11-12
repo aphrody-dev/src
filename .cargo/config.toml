@@ -1,5 +1,6 @@
 # Repo-wide cargo settings for the root workspace. Measurements: docs/BUILD_SPEED.md.
 # Credentials never go here; they stay in $CARGO_HOME.
+# Vendored sources: deliberately NOT replaced here (vendor is regenerable and ignored).
 
 [build]
 # Disable the sccache wrapper set in ~/.cargo/config.toml for this repo: it made
@@ -7,11 +8,25 @@
 # wasm builds with os error 206 (sccache re-spawns rustc with the full command line).
 # A RUSTC_WRAPPER environment variable still wins over this key.
 rustc-wrapper = ""
+# NOTE: a per-target [target.<triple>] rustflags table fully REPLACES this list, so
+# every value here (the --cfg flags Lore compiles against: tokio_unstable for tokio
+# metrics, uuid_unstable for uuid IntoBytes/FromBytes) MUST be repeated in any
+# [target.*] rustflags block. Lints belong in [workspace.lints].
+rustflags = [
+    # Parallel rustc frontend (nightly).
+    "-Zthreads=16",
+    "--cfg", "tokio_unstable",
+    "-C", "force-unwind-tables=yes",
+    "-C", "force-frame-pointers=yes",
+    "--cfg", "uuid_unstable",
+]
+rustdocflags = ["--cfg", "tokio_unstable"]
 
 [unstable]
-# Nightly only (ignored on stable). Unify features across the whole workspace so
-# `cargo build -p X` / `cargo test -p X` reuse the dependency artifacts of
-# `cargo build --workspace` instead of compiling a second feature set.
+# Nightly only (ignored on stable).
+codegen-backend = true
+# Unify features across the whole workspace so `cargo build -p X` / `cargo test -p X`
+# reuse the dependency artifacts of `cargo build --workspace`.
 feature-unification = true
 
 [resolver]
@@ -23,6 +38,51 @@ incompatible-rust-versions = "allow"
 # rust-lld ships with the toolchain (lib/rustlib/<host>/bin) and links the
 # multi-binary crates about 10% faster than link.exe.
 linker = "rust-lld.exe"
+rustflags = [
+    "-Zthreads=16",
+    "--cfg", "tokio_unstable",
+    "-C", "force-unwind-tables=yes",
+    "-C", "force-frame-pointers=yes",
+    "-C", "target-feature=+crt-static",
+    "-C", "split-debuginfo=packed",
+    # Reproducible links (stable proc-macro DLL bytes for sccache).
+    "-C", "link-arg=/Brepro",
+    "--cfg", "uuid_unstable",
+]
 
-# Linux: nothing to set. x86_64-unknown-linux-gnu already links with the bundled
-# rust-lld on nightly. Alpine musl builds keep the default cc linker.
+# Linux x86_64: nothing to set; nightly links with the bundled rust-lld. [build] flags apply.
+
+[target.aarch64-unknown-linux-gnu]
+# Portable baseline. Graviton3+/Neoverse V1: add --config .cargo/neoverse-512tvb.toml
+# --features lore-base/neoverse-512tvb.
+rustflags = [
+    "--cfg", "tokio_unstable",
+    "-C", "force-unwind-tables=yes",
+    "-C", "force-frame-pointers=yes",
+    "-C", "split-debuginfo=off",
+    "--cfg", "uuid_unstable",
+]
+
+[target.x86_64-apple-darwin]
+rustflags = [
+    "--cfg", "tokio_unstable",
+    "-C", "force-unwind-tables=yes",
+    "-C", "force-frame-pointers=yes",
+    "-C", "split-debuginfo=packed",
+    "--cfg", "uuid_unstable",
+]
+
+[target.aarch64-apple-darwin]
+rustflags = [
+    "--cfg", "tokio_unstable",
+    "-C", "force-unwind-tables=yes",
+    "-C", "force-frame-pointers=yes",
+    "-C", "split-debuginfo=packed",
+    "--cfg", "uuid_unstable",
+]
+
+[env]
+# Lore tests must not relay to, or stop, a developer's running Lore service
+# (rationale: labs .cargo/config.toml history, crates/lore/tests/service_api.rs).
+LORE_USE_SERVICE = "0"
+LORE_SERVICE_SOCKET = "lore_service-cargo"

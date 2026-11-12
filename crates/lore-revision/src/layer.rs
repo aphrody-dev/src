@@ -1,0 +1,1432 @@
+// SPDX-FileCopyrightText: 2026 Epic Games, Inc.
+// SPDX-License-Identifier: MIT
+use std::future::Future;
+use std::path::Path;
+use std::path::PathBuf;
+use std::sync::Arc;
+
+use lore_base::types::BranchPoint;
+use lore_error_set::prelude::*;
+use serde::Deserialize;
+use serde::Serialize;
+
+use crate::branch;
+use crate::change;
+use crate::errors::*;
+use crate::event;
+use crate::event::EventError;
+use crate::find;
+use crate::fs::filesystem_provider::FilesystemDiffIntent;
+use crate::fs::filesystem_provider::InstanceOperation;
+use crate::fs::filesystem_provider::InstanceOperationImpl;
+use crate::fs::filesystem_provider::with_operation;
+use crate::interface::LoreError;
+use crate::interface::LoreString;
+use crate::lore::BranchId;
+use crate::lore::Hash;
+use crate::lore::RepositoryId;
+use crate::lore::execution_context;
+use crate::lore_debug;
+use crate::lore_info;
+use crate::lore_warn;
+use crate::metadata;
+use crate::node::INVALID_NODE;
+use crate::node::NodeID;
+use crate::node::NodeLink;
+use crate::node::ROOT_NODE;
+use crate::repository;
+use crate::repository::RepositoryContext;
+use crate::repository::RepositoryWriteToken;
+use crate::repository::clone;
+use crate::repository::clone::CloneContext;
+use crate::revision::sync;
+use crate::revision::sync::SyncOptions;
+use crate::revision::sync::SyncRealizeStats;
+use crate::state;
+use crate::state::NodeMapping;
+use crate::state::RecordedModifiedTimes;
+use crate::state::State;
+use crate::util::path::RelativePath;
+
+#[error_set]
+pub enum LayerError {
+    AlreadyLinked,
+    LayerNotFound,
+    LocalModifications,
+    InvalidArguments,
+    Disconnected,
+    SlowDown,
+    NotAuthorized,
+    NotAuthenticated,
+    Maintenance,
+    NotFound,
+    NoRemote,
+    NotSupported,
+    WriteRequired,
+    AddressNotFound,
+    BranchAdvanced,
+    BranchAlreadyExists,
+    BranchNotFound,
+    Conflict,
+    DeleteCurrent,
+    DeleteDefault,
+    DeleteProtected,
+    Divergent,
+    FileNotFound,
+    IdenticalMetadata,
+    InvalidNodeHierarchy,
+    InvalidPath,
+    LinkNotFound,
+    LinkPathNotFound,
+    LockNotFound,
+    LockNotOwned,
+    MaxHistorySearchDepth,
+    NodeNotFound,
+    NotALayer,
+    NotALink,
+    NotConnected,
+    NothingStaged,
+    Oversized,
+    PayloadNotFound,
+    RepositoryAlreadyExists,
+    RepositoryNotFound,
+    RevisionNotFound,
+    SharedStoreNotFound,
+    TokenNotFound,
+    MissingIdentity,
+}
+
+impl EventError for LayerError {
+    fn translated(&self) -> LoreError {
+        LoreError::Internal
+    }
+
+    fn inner(&self) -> String {
+        self.to_string()
+    }
+}
+
+/// Data for the event emitted when a layer is added.
+#[repr(C)]
+#[derive(Clone, PartialEq, Serialize, bitcode::Encode, bitcode::Decode)]
+#[serde(rename_all = "camelCase")]
+pub struct LoreLayerAddEventData {
+    /// Path in the outer repository where the layer is placed.
+    pub target_path: LoreString,
+    /// Identifier of the source repository.
+    pub source_repository: RepositoryId,
+    /// Path inside the source repository where the layer starts.
+    pub source_path: LoreString,
+    /// Metadata used to match revisions between the repositories.
+    pub metadata: LoreString,
+    /// Revision of the source repository.
+    pub revision: Hash,
+}
+
+/// Data for the event describing a single configured layer.
+#[repr(C)]
+#[derive(Clone, PartialEq, Serialize, bitcode::Encode, bitcode::Decode)]
+#[serde(rename_all = "camelCase")]
+pub struct LoreLayerEntryEventData {
+    /// Path in the outer repository where the layer is placed.
+    pub target_path: LoreString,
+    /// Identifier of the source repository.
+    pub source_repository: RepositoryId,
+    /// Path inside the source repository where the layer starts.
+    pub source_path: LoreString,
+    /// Metadata used to match revisions between the repositories.
+    pub metadata: LoreString,
+    /// Revision of the source repository.
+    pub revision: Hash,
+}
+
+/// Data for the event describing a layer that has staged changes.
+#[repr(C)]
+#[derive(Clone, PartialEq, Serialize, bitcode::Encode, bitcode::Decode)]
+#[serde(rename_all = "camelCase")]
+pub struct LoreLayerStagedEntryEventData {
+    /// Path in the outer repository where the layer is placed.
+    pub target_path: LoreString,
+    /// Identifier of the source repository.
+    pub source_repository: RepositoryId,
+    /// Number of staged files in the layer.
+    pub staged_file_count: u64,
+}
+
+/// Data for the event emitted when a layer is removed.
+#[repr(C)]
+#[derive(Clone, PartialEq, Serialize, bitcode::Encode, bitcode::Decode)]
+#[serde(rename_all = "camelCase")]
+pub struct LoreLayerRemoveEventData {
+    /// Path in the outer repository where the layer was placed.
+    pub target_path: LoreString,
+    /// Identifier of the source repository.
+    pub source_repository: RepositoryId,
+    /// Path inside the source repository where the layer started.
+    pub source_path: LoreString,
+    /// Revision of the source repository.
+    pub revision: Hash,
+    /// Set when removal was forced.
+    pub forced: u8,
+    /// Set when the layer files were purged from disk.
+    pub purged: u8,
+    /// Number of files removed.
+    pub file_count: u64,
+    /// Number of directories removed.
+    pub directory_count: u64,
+    /// Number of modified files encountered.
+    pub modified_count: u64,
+}
+
+/// The field names are the keys of the layer config, so `target_path` keeps the spelling
+/// existing configs were written with rather than the `mount_path` used elsewhere.
+#[derive(Serialize, Deserialize, Default, Debug, Clone)]
+pub struct Layer {
+    /// Path in the parent outer repository where the layer should be placed
+    pub target_path: String,
+    /// Path inside the layer target repository where the layer should start
+    pub source_path: String,
+    /// Repository of the layer
+    pub repository: RepositoryId,
+    /// Metadata used to match revisions between outer repository and layer repository
+    pub metadata: Option<String>,
+    /// Currently synchronized revision of the layer repository
+    pub current: Hash,
+    /// Currently staged revision of the layer repository
+    pub staged: Hash,
+}
+
+#[derive(Serialize, Deserialize, Default, Debug, Clone)]
+struct LayerConfig {
+    layers: Vec<Layer>,
+}
+
+async fn load_config(config_path: impl AsRef<Path>) -> Result<LayerConfig, LayerError> {
+    crate::util::config::load(config_path)
+        .await
+        .forward::<LayerError>("Failed to load configuration")
+}
+
+async fn save_config(
+    _: &RepositoryWriteToken,
+    config_path: impl AsRef<Path>,
+    config: &LayerConfig,
+) -> Result<(), LayerError> {
+    if execution_context().globals().dry_run() {
+        return Ok(());
+    }
+    crate::util::config::save(config, config_path)
+        .await
+        .forward::<LayerError>("Failed to save configuration")
+}
+
+pub fn layer_config_path(repository: &Arc<RepositoryContext>) -> Result<PathBuf, InvalidArguments> {
+    repository
+        .dot_dir_path()
+        .map(|path| path.join(repository::LAYER))
+}
+
+#[derive(Clone)]
+pub struct LayerState {
+    pub repository: Arc<RepositoryContext>,
+    pub state_current: Arc<State>,
+    pub state_staged: Arc<State>,
+}
+
+/// One side of a diff of the subtree a layer draws, as `state` holds it.
+///
+/// A layer names that subtree by the path it draws from, which is the one thing the drawn-from
+/// repository's own spelling of a path is read for: a revision numbers its nodes as it pleases,
+/// so the same subtree is a different node in each. A revision holding no such subtree names no
+/// node, which is one side of an add or a delete.
+///
+/// `source_path` reaches no further. What a diff of two of these reports is spelled from
+/// `mount_path`, so no change carries the drawn-from spelling.
+pub(crate) async fn drawn_subtree_state(
+    repository: &Arc<RepositoryContext>,
+    state: &Arc<State>,
+    source_path: &RelativePath,
+    mount_path: &RelativePath,
+) -> change::NodeChangeState {
+    if source_path.is_empty() {
+        return state::node_change_state(repository, state, ROOT_NODE, mount_path.clone()).await;
+    }
+
+    let node_link = state
+        .find_node_link(repository.clone(), source_path.as_str())
+        .await
+        .ok()
+        .filter(NodeLink::is_valid);
+    let Some(node_link) = node_link else {
+        return state::node_change_state(repository, state, INVALID_NODE, mount_path.clone()).await;
+    };
+
+    match node_link.resolve(repository.clone(), state.clone()).await {
+        Ok((repository, state)) => {
+            state::node_change_state(&repository, &state, node_link.node, mount_path.clone()).await
+        }
+        Err(_) => {
+            state::node_change_state(repository, state, INVALID_NODE, mount_path.clone()).await
+        }
+    }
+}
+
+impl Layer {
+    /// The layer's staged revision, if it holds staging distinct from `current`.
+    ///
+    /// A zero pin means the layer was never staged; a pin equal to `current`
+    /// means the stage has since been committed or reverted. Neither carries
+    /// staged nodes, so both read as "no staged revision".
+    pub fn staged_revision(&self) -> Option<Hash> {
+        (!self.staged.is_zero() && self.staged != self.current).then_some(self.staged)
+    }
+
+    pub async fn deserialize_current_and_staged(
+        &self,
+        repository: Arc<RepositoryContext>,
+    ) -> Result<LayerState, LayerError> {
+        let repository = repository.to_layer_context(self.repository).await;
+
+        let state_current = State::deserialize(repository.clone(), self.current)
+            .await
+            .forward::<LayerError>("Failed deserializing state")?;
+
+        let state_staged = match self.staged_revision() {
+            Some(staged) => State::deserialize(repository.clone(), staged)
+                .await
+                .forward::<LayerError>("Failed deserializing state")?,
+            None => state_current.clone(),
+        };
+
+        Ok(LayerState {
+            repository,
+            state_current,
+            state_staged,
+        })
+    }
+}
+
+pub async fn add(
+    repository: Arc<RepositoryContext>,
+    token: &RepositoryWriteToken,
+    mount_path: RelativePath,
+    source_repository: RepositoryId,
+    source_path: RelativePath,
+    metadata: Option<&str>,
+) -> Result<(), LayerError> {
+    let (_state_current, state_staged, current_branch) =
+        State::deserialize_current_and_staged(repository.clone())
+            .await
+            .forward::<LayerError>("Failed deserializing state")?;
+    let state_staged = state_staged.unwrap_or_else(|| _state_current.clone());
+
+    lore_debug!("Resolve repository layer source {source_repository} path {source_path}");
+    let layer_repository = repository.to_layer_context(source_repository).await;
+
+    let layer_remote = layer_repository
+        .remote()
+        .await
+        .forward::<LayerError>("Not connected")?;
+
+    let repository_metadata = repository::metadata_hash(repository.clone())
+        .await
+        .forward::<LayerError>("Failed to load repository metadata")?;
+    let repository_metadata = repository::metadata(repository.clone(), repository_metadata)
+        .await
+        .forward::<LayerError>("Failed to load repository metadata")?;
+
+    let default_branch_id = repository_metadata.default_branch;
+    let current_branch_id = current_branch;
+
+    // Get the latest revision of the branch in the layer repository
+    let layer_latest = if let Ok(layer_latest) =
+        branch::load_remote_latest(layer_remote.clone(), layer_repository.id, current_branch_id)
+            .await
+    {
+        lore_debug!("Layer repository branch exists, remote latest revision {layer_latest}");
+        layer_latest
+    } else {
+        // If branch did not exist, create it
+        let branch_metadata = branch::metadata(repository.clone(), current_branch_id)
+            .await
+            .forward::<LayerError>("Failed getting branch metadata")?;
+        let branch_name = branch::name(&branch_metadata)
+            .forward::<LayerError>("Failed getting branch metadata")?;
+        let branch_category = branch::category(&branch_metadata).unwrap_or_default();
+
+        // TODO(mjansson): Do we need to recreate branch hierarchies here, or fine to just branch
+        //                 from default branch at current latest?
+        let parent_latest = branch::load_remote_latest(
+            layer_remote.clone(),
+            layer_repository.id,
+            default_branch_id,
+        )
+        .await
+        .forward::<LayerError>("Failed getting branch metadata")?;
+
+        // A dry run reports the branch at the revision it would start at, creating nothing on
+        // the remote.
+        if execution_context().globals().dry_run() {
+            parent_latest
+        } else {
+            lore_debug!(
+                "Creating layer repository branch {branch_name} at revision {parent_latest}"
+            );
+
+            let user_id = execution_context().user_id().await;
+
+            let branch_stack = vec![BranchPoint {
+                branch: default_branch_id,
+                revision: parent_latest,
+            }];
+
+            let revision = layer_remote
+                .revision(layer_repository.id)
+                .await
+                .forward::<LayerError>("Not connected")?;
+            let layer_latest = revision
+                .branch_create(
+                    current_branch_id,
+                    branch_name,
+                    branch_category,
+                    user_id.as_str(),
+                    &branch_stack,
+                )
+                .await
+                .forward::<LayerError>("Failed to create branch in layer repository")?
+                .latest;
+
+            lore_debug!(
+                "Layer repository branch {branch_name} created at latest revision {layer_latest}"
+            );
+            layer_latest
+        }
+    };
+
+    lore_debug!("Find matching revision");
+    let (layer_revision, _) = find_revision_match(
+        repository.clone(),
+        layer_repository.clone(),
+        current_branch_id,
+        state_staged.clone(),
+        layer_latest,
+        metadata,
+    )
+    .await?;
+
+    lore_debug!("Load layer revision state {layer_revision}");
+    let layer_state = State::deserialize(layer_repository.clone(), layer_revision)
+        .await
+        .forward::<LayerError>("Failed deserializing state")?;
+
+    lore_debug!("Find layer revision source node for {source_path}");
+    let layer_node_link = layer_state
+        .find_node_link(layer_repository.clone(), source_path.as_str())
+        .await
+        .forward_with::<LayerError, _>(|| format!("Invalid path {source_path}"))?;
+
+    lore_debug!("Layer revision source node is {layer_node_link:?}");
+    if !layer_node_link.is_valid_or_root() {
+        return Err(LayerError::internal(format!("Invalid path {source_path}")));
+    }
+
+    // Target node must be in the given layer repository, not in a linked repository
+    if layer_node_link.repository != layer_repository.id {
+        return Err(LayerError::internal(
+            "Layer path is in a linked repository itself, create the layer using the target repository directly",
+        ));
+    }
+
+    // Target node must be a directory
+    let layer_node = layer_state
+        .node(layer_repository.clone(), layer_node_link.node)
+        .await
+        .forward::<LayerError>("Failed deserializing state")?;
+
+    if !layer_node.is_directory() {
+        return Err(LayerError::internal(
+            "Layer target path must be a directory in the layer repository",
+        ));
+    }
+
+    let config_path = layer_config_path(&repository)?;
+    let mut config = load_config(&config_path).await?;
+
+    for layer in config.layers.iter() {
+        if layer.repository == layer_repository.id
+            && layer.target_path.as_str() == mount_path.as_str()
+        {
+            return Err(AlreadyLinked.into());
+        }
+    }
+
+    config.layers.push(Layer {
+        target_path: mount_path.to_string(),
+        source_path: source_path.to_string(),
+        repository: layer_repository.id,
+        metadata: metadata.map(|key| key.to_string()),
+        current: layer_revision,
+        staged: Hash::default(),
+    });
+
+    // Materialize layer
+    lore_debug!("Connecting remote storage");
+    let correlation_id = crate::lore::execution_context()
+        .globals()
+        .correlation_id
+        .to_string();
+    let layer_storage = layer_remote
+        .session(layer_repository.id, &correlation_id)
+        .await
+        .forward::<LayerError>("Not connected")?;
+
+    event::LoreEvent::LayerAdd(LoreLayerAddEventData {
+        target_path: LoreString::from(&mount_path.clone()),
+        source_repository: layer_repository.id,
+        source_path: LoreString::from(&source_path),
+        metadata: metadata.into(),
+        revision: layer_revision,
+    })
+    .send();
+
+    let mount_states = layer_repository.filter.mount_states(&mount_path);
+    // The mount directory and the files cloned under it are in the same filesystem, so one
+    // operation covers both.
+    with_operation(layer_repository.file_system(), async |operation| {
+        operation
+            .create_dir_all(&mount_path)
+            .await
+            .forward::<LayerError>("Failed to create the target directory for layer")?;
+
+        let clone_ctx = CloneContext {
+            repository: layer_repository.clone(),
+            state: layer_state,
+            operation,
+            options: Arc::new(clone::CloneOptions {
+                ignore_existing: false,
+                ..Default::default()
+            }),
+            stats: Arc::default(),
+            modified_times: Arc::new(crate::state::RecordedModifiedTimes::default()),
+        };
+        clone::clone_node(
+            clone_ctx,
+            layer_storage,
+            mount_path,
+            layer_node_link.node,
+            mount_states,
+        )
+        .await
+        .forward::<LayerError>("Failed cloning target layer")
+    })
+    .await?;
+
+    save_config(token, &config_path, &config).await?;
+
+    Ok(())
+}
+
+/// Find the index of a configured layer matching `mount_path`. When
+/// `source_repository` is zero, ambiguity (multiple layers sharing the mount
+/// path) is reported as `InvalidArguments`; otherwise an exact match on both
+/// `mount_path` and `source_repository` is required.
+fn resolve_layer_index(
+    layers: &[Layer],
+    mount_path: &str,
+    source_repository: RepositoryId,
+) -> Result<usize, LayerError> {
+    if source_repository.is_zero() {
+        let mut matches = layers
+            .iter()
+            .enumerate()
+            .filter(|(_, layer)| layer.target_path.as_str() == mount_path);
+        let first = matches.next().ok_or(LayerNotFound)?;
+        if matches.next().is_some() {
+            return Err(InvalidArguments {
+                reason: format!(
+                    "Multiple layers configured at '{mount_path}', specify a source repository to disambiguate"
+                ),
+            }
+            .into());
+        }
+        Ok(first.0)
+    } else {
+        layers
+            .iter()
+            .position(|layer| {
+                layer.repository == source_repository && layer.target_path.as_str() == mount_path
+            })
+            .ok_or_else(|| LayerNotFound.into())
+    }
+}
+
+/// Removes the files and directories a layer materialized at `mount_path`.
+///
+/// Directories are removed in reverse path order, which places a directory before its ancestors
+/// so each is empty when it is removed. One still holding untracked content remains: only what
+/// the layer put there is removed. `purge` removes the whole subtree instead. Failures are
+/// logged and do not stop the removal.
+async fn remove_layer_mount(
+    operation: &InstanceOperationImpl,
+    mount_path: &RelativePath,
+    tracked_files: &[RelativePath],
+    tracked_directories: &mut [RelativePath],
+    purge: bool,
+) {
+    if purge {
+        if let Err(err) = operation.remove_recursive(mount_path).await {
+            lore_warn!("Failed to purge layer root {mount_path}: {err}");
+        }
+        return;
+    }
+
+    for file in tracked_files {
+        if let Err(err) = operation.remove(file).await {
+            lore_warn!("Failed to remove layer file {file}: {err}");
+        }
+    }
+
+    tracked_directories.sort_unstable_by(|a, b| b.as_str().cmp(a.as_str()));
+    for directory in tracked_directories.iter() {
+        if let Err(err) = operation.remove(directory).await {
+            lore_debug!("Skip non-empty or unremovable layer directory {directory}: {err}");
+        }
+    }
+
+    if !mount_path.is_empty()
+        && let Err(err) = operation.remove(mount_path).await
+    {
+        lore_debug!("Skip non-empty or unremovable layer root {mount_path}: {err}");
+    }
+}
+
+pub async fn remove(
+    repository: Arc<RepositoryContext>,
+    token: &RepositoryWriteToken,
+    mount_path: RelativePath,
+    source_repository: RepositoryId,
+    purge: bool,
+) -> Result<(), LayerError> {
+    let config_path = layer_config_path(&repository)?;
+    let mut config = load_config(&config_path).await?;
+
+    let layer_index = resolve_layer_index(&config.layers, mount_path.as_str(), source_repository)?;
+    let layer = config.layers[layer_index].clone();
+
+    // Walk the staged state, not `current`: a staged add exists only there, so
+    // walking `current` would leave it on disk as untracked debris once the
+    // layer is gone.
+    let LayerState {
+        repository: layer_repository,
+        state_staged: layer_state,
+        ..
+    } = layer
+        .deserialize_current_and_staged(repository.clone())
+        .await?;
+
+    let source_path = RelativePath::new_from_initial_path(layer.source_path.as_str())
+        .forward_with::<LayerError, _>(|| {
+            format!("Invalid layer source path {}", layer.source_path)
+        })?;
+    let source_node_link = layer_state
+        .find_node_link(layer_repository.clone(), source_path.as_str())
+        .await
+        .forward::<LayerError>("Failed to locate layer source node")?;
+
+    let staged_file_count = state::count_staged_files(
+        layer_repository.clone(),
+        layer_state.clone(),
+        source_node_link.node,
+    )
+    .await
+    .count;
+
+    let mut tracked_files: Vec<RelativePath> = Vec::new();
+    let mut tracked_directories: Vec<RelativePath> = Vec::new();
+    let mut modified: Vec<String> = Vec::new();
+
+    let force = execution_context().globals().force();
+    // The walk reads the same files the removal then deletes, so one operation covers both.
+    with_operation(repository.file_system(), async |operation| {
+        walk_layer_subtree(
+            &operation,
+            layer_repository.clone(),
+            layer_state.clone(),
+            source_node_link.node,
+            mount_path.clone(),
+            &mut tracked_files,
+            &mut tracked_directories,
+            &mut modified,
+        )
+        .await?;
+
+        // Both reasons are reported before returning so a layer that is both staged
+        // and modified does not hide one behind the other across two --force runs.
+        if !force && (staged_file_count > 0 || !modified.is_empty()) {
+            if staged_file_count > 0 {
+                lore_warn!(
+                    "Layer at '{}' has {staged_file_count} staged file(s) (use --force to discard)",
+                    mount_path.as_str()
+                );
+            }
+            if !modified.is_empty() {
+                lore_warn!(
+                    "Layer at '{}' has locally modified files (use --force to discard): {}",
+                    mount_path.as_str(),
+                    modified.join(", ")
+                );
+            }
+            return Err(LocalModifications.into());
+        }
+
+        remove_layer_mount(
+            &operation,
+            &mount_path,
+            &tracked_files,
+            &mut tracked_directories,
+            purge,
+        )
+        .await;
+        Ok::<(), LayerError>(())
+    })
+    .await?;
+
+    let modified_count = modified.len() as u64;
+    let file_count = tracked_files.len() as u64;
+    let directory_count = tracked_directories.len() as u64;
+
+    config.layers.remove(layer_index);
+    save_config(token, &config_path, &config).await?;
+
+    event::LoreEvent::LayerRemove(LoreLayerRemoveEventData {
+        target_path: LoreString::from(&mount_path),
+        source_repository: layer.repository,
+        source_path: LoreString::from_str(&layer.source_path),
+        revision: layer.current,
+        forced: (force && (modified_count > 0 || staged_file_count > 0)) as u8,
+        purged: purge as u8,
+        file_count,
+        directory_count,
+        modified_count,
+    })
+    .send();
+
+    Ok(())
+}
+
+#[allow(clippy::too_many_arguments)]
+fn walk_layer_subtree<'a>(
+    operation: &'a InstanceOperationImpl,
+    layer_repository: Arc<RepositoryContext>,
+    layer_state: Arc<State>,
+    node: NodeID,
+    filesystem_path: RelativePath,
+    tracked_files: &'a mut Vec<RelativePath>,
+    tracked_directories: &'a mut Vec<RelativePath>,
+    modified: &'a mut Vec<String>,
+) -> std::pin::Pin<Box<dyn Future<Output = Result<(), LayerError>> + Send + 'a>> {
+    Box::pin(async move {
+        let mut iter = crate::state::StateNodeChildrenWithNameIterator::new(
+            layer_state.clone(),
+            layer_repository.clone(),
+            node,
+        )
+        .await
+        .forward::<LayerError>("Failed to iterate layer state children")?;
+
+        while let Some((child_id, child_node, child_name)) = iter
+            .next()
+            .await
+            .forward::<LayerError>("Failed to iterate layer state children")?
+        {
+            let name_ref: &str = child_name.as_ref();
+            if name_ref.is_empty() {
+                continue;
+            }
+            let child_path = filesystem_path.join(name_ref);
+            drop(child_name);
+
+            if child_node.is_directory() {
+                tracked_directories.push(child_path.clone());
+                walk_layer_subtree(
+                    operation,
+                    layer_repository.clone(),
+                    layer_state.clone(),
+                    child_id,
+                    child_path,
+                    tracked_files,
+                    tracked_directories,
+                    modified,
+                )
+                .await?;
+            } else if !child_node.is_staged_delete() {
+                match operation.file_info(&child_path).await {
+                    Ok(info) if info.is_file() => {
+                        if !child_node.is_staged() {
+                            let is_modified = state::file_modification(
+                                layer_repository.clone(),
+                                &child_node,
+                                info.mtime(),
+                                info.size(),
+                                &child_path,
+                                true,
+                                operation,
+                                &lore_storage::ContentHashes::default(),
+                            )
+                            .await
+                            .map_or(true, |modification| modification.is_modified());
+                            if is_modified {
+                                modified.push(child_path.as_str().to_string());
+                            }
+                        }
+                        tracked_files.push(child_path);
+                    }
+                    Ok(info) if info.exists() => {
+                        modified.push(format!("{} (type changed)", child_path.as_str()));
+                        tracked_files.push(child_path);
+                    }
+                    Ok(_) => {
+                        modified.push(format!("{} (missing)", child_path.as_str()));
+                    }
+                    Err(err) => {
+                        lore_warn!("Failed to stat layer file {}: {err}", child_path.as_str());
+                        modified.push(format!("{} (stat failed)", child_path.as_str()));
+                    }
+                }
+            }
+        }
+        Ok(())
+    })
+}
+
+pub async fn list(repository: Arc<RepositoryContext>) -> Result<Vec<Layer>, LayerError> {
+    let config = load_config(layer_config_path(&repository)?).await?;
+    Ok(config.layers)
+}
+
+/// The mount paths of `layers`, for routing a path to the layer that owns it and
+/// for masking those subtrees out of a parent-repository walk.
+///
+/// Takes an iterator so callers holding `Layer` alongside its state or context
+/// can project without rebuilding a `Vec<Layer>` first.
+pub fn mount_paths<'a>(layers: impl IntoIterator<Item = &'a Layer>) -> Vec<String> {
+    layers
+        .into_iter()
+        .map(|layer| layer.target_path.clone())
+        .collect()
+}
+
+/// Where a walk over the parent's tree switches to each layer's staged tree rather than treating
+/// the mount's contents as parent adds: the node the layer's source path names, at the path the
+/// layer is mounted at. A layer whose staged tree holds no such node is left out.
+pub(crate) async fn mounts(layers: &[(Layer, LayerState)]) -> Arc<Vec<state::LayerMountInfo>> {
+    let mut mounts = Vec::with_capacity(layers.len());
+    for (layer, layer_state) in layers {
+        let Ok(source) = layer_state
+            .state_staged
+            .find_node_link(layer_state.repository.clone(), &layer.source_path)
+            .await
+        else {
+            lore_debug!(
+                "Skipping layer mount {} — source path {} not found in layer state",
+                layer.target_path,
+                layer.source_path
+            );
+            continue;
+        };
+        mounts.push(state::LayerMountInfo {
+            mount_path: layer.target_path.clone(),
+            repository: layer_state.repository.clone(),
+            state: layer_state.state_staged.clone(),
+            source_node: source.node,
+        });
+    }
+    Arc::new(mounts)
+}
+
+/// For operations that cascade into every configured layer.
+///
+/// Each context costs its own connection until UCS-19226 lands, so they are
+/// opened concurrently rather than one handshake after another.
+pub async fn list_with_context(
+    repository: Arc<RepositoryContext>,
+) -> Result<Vec<(Layer, Arc<RepositoryContext>)>, LayerError> {
+    let layers = list(repository.clone()).await?;
+    futures::future::try_join_all(layers.into_iter().map(|layer| {
+        let repository = repository.clone();
+        async move {
+            let context = repository.to_layer_context(layer.repository).await;
+            Ok((layer, context))
+        }
+    }))
+    .await
+}
+
+/// Information about a layer with staged changes, including the count of files
+/// modified since the layer's `current` revision.
+#[derive(Clone, Debug)]
+pub struct StagedLayerInfo {
+    pub mount_path: String,
+    pub repository: RepositoryId,
+    pub staged_file_count: u64,
+}
+
+/// Walk the configured layers and emit a `LayerStagedEntry` event for each
+/// layer with `staged != current` and at least one staged file. Returns the
+/// list for callers that want it as a value.
+///
+/// Mirrors `link::list::list_staged` for use by the CLI's per-layer message
+/// prompt.
+pub(crate) async fn list_staged(
+    repository: Arc<RepositoryContext>,
+) -> Result<Vec<StagedLayerInfo>, LayerError> {
+    let layers = list(repository.clone()).await?;
+    let mut result = Vec::new();
+    for layer in layers {
+        let Some(staged) = layer.staged_revision() else {
+            continue;
+        };
+        let layer_repository = repository.to_layer_context(layer.repository).await;
+        let staged_state = State::deserialize(layer_repository.clone(), staged)
+            .await
+            .forward::<LayerError>("Failed to deserialize layer staged state")?;
+
+        // Walk from the layer's source_path node and count nodes flagged staged.
+        let source_node_link = staged_state
+            .find_node_link(layer_repository.clone(), &layer.source_path)
+            .await
+            .forward::<LayerError>("Failed to locate layer source node")?;
+        let staged_file_count = state::count_staged_files(
+            layer_repository.clone(),
+            staged_state,
+            source_node_link.node,
+        )
+        .await
+        .count;
+
+        if staged_file_count == 0 {
+            continue;
+        }
+
+        let info = StagedLayerInfo {
+            mount_path: layer.target_path.clone(),
+            repository: layer.repository,
+            staged_file_count,
+        };
+
+        event::LoreEvent::LayerStagedEntry(LoreLayerStagedEntryEventData {
+            target_path: LoreString::from_str(&layer.target_path),
+            source_repository: layer.repository,
+            staged_file_count,
+        })
+        .send();
+
+        result.push(info);
+    }
+    Ok(result)
+}
+
+/// Boxed version of [`list_staged`] for cross-crate use.
+pub fn list_staged_boxed(
+    repository: Arc<RepositoryContext>,
+) -> crate::BoxFuture<'static, Result<Vec<StagedLayerInfo>, LayerError>> {
+    Box::pin(list_staged(repository))
+}
+
+/// Carries the layer's mount to `state_target`, and to the view `repository_target` holds,
+/// answering the modified times it collected, which are true once the layer's current revision
+/// is stored at `state_target`.
+///
+/// `repository_current` is the layer context the mount stands under, which is `repository_target`
+/// itself for a sync carrying the mount between revisions under one view.
+pub async fn sync(
+    repository_current: Arc<RepositoryContext>,
+    repository_target: Arc<RepositoryContext>,
+    state_current: Arc<State>,
+    state_target: Arc<State>,
+    mount_path: RelativePath,
+    source_path: RelativePath,
+    options: SyncOptions,
+) -> Result<RecordedModifiedTimes, LayerError> {
+    let filesystem = repository_target.file_system();
+    with_operation(filesystem, async |operation| {
+        sync_in_operation(
+            operation.clone(),
+            repository_current,
+            repository_target,
+            state_current,
+            state_target,
+            mount_path,
+            source_path,
+            options,
+        )
+        .await?;
+        Ok(operation.take_modified_times())
+    })
+    .await
+}
+
+/// Realizes the layer's target state over its mount, within `operation`, and removes the
+/// directories below the mount that the view excludes and the realize left empty.
+#[allow(clippy::too_many_arguments)]
+pub(crate) async fn sync_in_operation(
+    operation: Arc<InstanceOperationImpl>,
+    repository_current: Arc<RepositoryContext>,
+    repository_target: Arc<RepositoryContext>,
+    state_current: Arc<State>,
+    state_target: Arc<State>,
+    mount_path: RelativePath,
+    source_path: RelativePath,
+    options: SyncOptions,
+) -> Result<(), LayerError> {
+    let stats: Arc<SyncRealizeStats> = Arc::default();
+    let current = drawn_subtree_state(
+        &repository_current,
+        &state_current,
+        &source_path,
+        &mount_path,
+    )
+    .await;
+    let target =
+        drawn_subtree_state(&repository_target, &state_target, &source_path, &mount_path).await;
+    let current_tree = NodeMapping {
+        repository: current.mapping.repository.clone(),
+        state: current.mapping.state.clone(),
+        path: mount_path.clone(),
+        node: current.mapping.node,
+    };
+
+    let changes = if !options.reset {
+        lore_info!(
+            "Calculating deltas {} -> {}",
+            state_current.revision_number(),
+            state_target.revision_number()
+        );
+        state::diff_collect_subtree(current, target, mount_path.clone(), options.filter_mode)
+            .await
+            .forward::<LayerError>("Failed to calculate state diff when synchronizing")?
+    } else {
+        // Reverse the changes since diff filesystem returns changes from state to filesystem,
+        // while we want to do filesystem to state
+        lore_info!(
+            "Calculating deltas from filesystem -> {}",
+            state_target.revision_number()
+        );
+        let mut changes = state::diff_filesystem_subtree(
+            &operation,
+            NodeMapping {
+                repository: target.mapping.repository,
+                state: target.mapping.state,
+                path: mount_path.clone(),
+                node: target.mapping.node,
+            },
+            NodeMapping {
+                repository: current.mapping.repository,
+                state: current.mapping.state,
+                path: mount_path.clone(),
+                node: current.mapping.node,
+            },
+            mount_path.clone(),
+            options.filter_mode,
+            FilesystemDiffIntent::ReportTracked,
+            Arc::new(Vec::new()),
+        )
+        .await
+        .forward::<LayerError>("Failed to calculate file system diff when synchronizing")?
+        .collect()
+        .await
+        .forward::<LayerError>("Failed to calculate file system diff when synchronizing")?;
+
+        change::reverse(changes.as_mut_slice());
+        changes
+    };
+
+    let options = Arc::new(options);
+    let changes = Arc::new(changes);
+    let force = execution_context().globals().force();
+    let changes = if !changes.is_empty() && !force && !options.reset {
+        lore_info!(
+            "Verifying {} layer changes with local file system",
+            changes.len()
+        );
+        sync::sync_verify_filesystem(
+            repository_target.clone(),
+            Arc::new(sync::SyncVerifyArgs {
+                // Moved in, so verification filters it in place.
+                changes,
+                repository_current,
+                operation: operation.clone(),
+                current: current_tree,
+                options: options.clone(),
+                carries_modes: true,
+            }),
+        )
+        .await
+        .forward::<LayerError>("Failed to verify file system during layer sync")?
+    } else {
+        changes
+    };
+
+    let dry_run = execution_context().globals().dry_run();
+    crate::fs::realize::realize_changes(
+        repository_target.clone(),
+        operation.clone(),
+        changes.clone(),
+        None,
+        dry_run,
+        false, /* Not a merge */
+        stats.clone(),
+    )
+    .await
+    .forward::<LayerError>("Failed to sync layer files")?;
+    if !dry_run {
+        crate::fs::realize::remove_emptied_excluded_directories(
+            &operation,
+            &repository_target,
+            &changes,
+            &mount_path,
+            &stats,
+        )
+        .await;
+    }
+
+    Ok(())
+}
+
+pub async fn latest_revision(
+    repository: Arc<RepositoryContext>,
+    branch: BranchId,
+) -> Result<Hash, LayerError> {
+    let local_latest = branch::load_latest(repository.clone(), branch)
+        .await
+        .unwrap_or_default();
+
+    let remote_latest = if let Some(remote) = absent_unless_refused::<_, _, LayerError>(
+        repository.remote().await,
+        "connecting to the remote",
+    )? {
+        absent_unless_refused::<_, _, LayerError>(
+            branch::load_remote_latest(remote, repository.id, branch).await,
+            "loading remote branch latest",
+        )?
+        .unwrap_or_default()
+    } else {
+        local_latest
+    };
+
+    if local_latest.is_zero() {
+        if remote_latest.is_zero() {
+            return Err(LayerError::internal(
+                "Failed to find latest revision for layer branch",
+            ));
+        }
+        return Ok(remote_latest);
+    } else if remote_latest.is_zero() {
+        return Ok(local_latest);
+    }
+
+    let Some(local_state) = absent_unless_refused::<_, _, LayerError>(
+        State::deserialize(repository.clone(), local_latest).await,
+        "reading the local latest state",
+    )?
+    else {
+        return Ok(remote_latest);
+    };
+    let Some(remote_state) = absent_unless_refused::<_, _, LayerError>(
+        State::deserialize(repository.clone(), remote_latest).await,
+        "reading the remote latest state",
+    )?
+    else {
+        return Ok(local_latest);
+    };
+
+    if local_state.revision_number() > remote_state.revision_number() {
+        Ok(local_latest)
+    } else {
+        Ok(remote_latest)
+    }
+}
+
+/// The revision of `layer`, searched back from `latest`, whose `metadata` value matches that of a
+/// revision of `repository` at or below `state`, with that revision. Without `metadata`, `latest`
+/// and `state`'s revision. Fails where a batch of either history fails to load, as
+/// [`find::batch_load_history`] describes, and where no revision matches, as
+/// [`no_matching_revision`] describes.
+///
+/// Where the source line holds more than one revision, as with `search_nearest`, a round keeps the
+/// layer revisions it compared, so the source revisions a later round adds are compared with them.
+/// Otherwise each round compares only the next layer batch.
+#[allow(clippy::too_many_arguments)]
+pub async fn find_revision_match(
+    repository: Arc<RepositoryContext>,
+    layer: Arc<RepositoryContext>,
+    _branch: BranchId,
+    state: Arc<State>,
+    latest: Hash,
+    metadata: Option<&str>,
+) -> Result<(Hash, Hash), LayerError> {
+    let Some(metadata) = metadata else {
+        lore_debug!("Layer has no metadata link, use latest revision {latest}");
+        return Ok((latest, state.revision()));
+    };
+
+    // Find the revision with matching metadata
+    let search_limit = execution_context()
+        .globals()
+        .search_limit()
+        .unwrap_or(find::DEFAULT_SEARCH_LIMIT);
+    let search_nearest = execution_context().globals().search_nearest();
+    lore_debug!(
+        "Find revision with matching metadata: {metadata} (search limit: {search_limit}, search nearest: {search_nearest})",
+    );
+
+    // Start by building a set of revisions to match against
+    let mut source_revisions = vec![];
+    if execution_context().globals().search_nearest() {
+        lore_debug!("Batch load revisions for source history");
+        let revisions = find::batch_load_history(repository.clone(), state.revision())
+            .await
+            .forward::<LayerError>("loading a batch of the source history")?;
+        source_revisions = revisions
+            .into_iter()
+            .map(|(_, hash)| (hash, None))
+            .collect();
+    }
+    if source_revisions.is_empty() {
+        source_revisions.push((state.revision(), None));
+    }
+
+    lore_debug!("Batch load revisions for target history from revision {latest}");
+    let target_revisions = find::batch_load_history(layer.clone(), latest)
+        .await
+        .forward::<LayerError>("loading a batch of the layer's history")?;
+    let mut target_revisions: Vec<(Hash, Option<Vec<u8>>)> = target_revisions
+        .into_iter()
+        .map(|(_, hash)| (hash, None))
+        .collect();
+
+    let mut target_search_count = target_revisions.len();
+    loop {
+        lore_debug!("Iterate {} source revisions", source_revisions.len());
+        for source_revision in source_revisions.iter_mut() {
+            if source_revision.1.is_none() {
+                let state = state::State::deserialize(repository.clone(), source_revision.0)
+                    .await
+                    .forward::<LayerError>("Failed deserializing state")?;
+                let revision_metadata = state.metadata_hash();
+                let revision_metadata =
+                    metadata::Metadata::deserialize(repository.clone(), revision_metadata)
+                        .await
+                        .forward::<LayerError>("Failed to deserialize revision metadata")?;
+                let current_value = revision_metadata
+                    .get_binary(metadata)
+                    .forward::<LayerError>("Failed to get the metadata value for revision link")?;
+                source_revision.1.replace(current_value.to_vec());
+            }
+
+            let Some(source_value) = source_revision.1.as_deref() else {
+                continue;
+            };
+
+            lore_debug!(
+                "Iterate {} target revisions for source revision metadata {:?}",
+                target_revisions.len(),
+                source_value
+            );
+            for target_revision in target_revisions.iter_mut() {
+                if target_revision.1.is_none() {
+                    let state = state::State::deserialize(layer.clone(), target_revision.0)
+                        .await
+                        .forward::<LayerError>("Failed deserializing state")?;
+                    let revision_metadata = state.metadata_hash();
+                    let revision_metadata =
+                        metadata::Metadata::deserialize(layer.clone(), revision_metadata)
+                            .await
+                            .forward::<LayerError>("Failed to deserialize revision metadata")?;
+                    let target_value = revision_metadata
+                        .get_binary(metadata)
+                        .forward::<LayerError>(
+                            "Failed to get the metadata value for revision link",
+                        )?;
+                    target_revision.1.replace(target_value.to_vec());
+                }
+
+                let Some(target_value) = target_revision.1.as_deref() else {
+                    continue;
+                };
+
+                if target_value == source_value {
+                    lore_debug!(
+                        "Found matching metadata for source revision {} target revision {} value {:?}",
+                        source_revision.0,
+                        target_revision.0,
+                        target_value
+                    );
+                    return Ok((target_revision.0, source_revision.0));
+                }
+            }
+        }
+
+        if target_search_count >= search_limit {
+            return Err(no_matching_revision());
+        }
+
+        let mut source_grew = false;
+        if search_nearest {
+            lore_debug!("Batch load additional revisions for source history");
+            let revisions =
+                find::batch_load_history(repository.clone(), last_hash(&source_revisions))
+                    .await
+                    .forward::<LayerError>("loading the next batch of the source history")?;
+            let below = find::below(&revisions, last_hash(&source_revisions));
+            source_grew = !below.is_empty();
+            source_revisions.extend(below.iter().map(|&(_, hash)| (hash, None)));
+        }
+
+        lore_debug!("Batch load additional revisions for target history");
+        let revisions = find::batch_load_history(layer.clone(), last_hash(&target_revisions))
+            .await
+            .forward::<LayerError>("loading the next batch of the layer's history")?;
+        let additional = find::below(&revisions, last_hash(&target_revisions));
+        if additional.is_empty() && !source_grew {
+            return Err(no_matching_revision());
+        }
+        target_search_count += additional.len();
+        if source_revisions.len() <= 1 {
+            target_revisions.clear();
+        }
+        target_revisions.extend(additional.iter().map(|&(_, hash)| (hash, None)));
+    }
+}
+
+/// The hash of the last revision of `revisions`, a line [`find_revision_match`] searches, or zero
+/// where it holds none. Read again after a batch load rather than held across it, which would
+/// grow the search's future by the hash.
+fn last_hash(revisions: &[(Hash, Option<Vec<u8>>)]) -> Hash {
+    revisions.last().map(|tuple| tuple.0).unwrap_or_default()
+}
+
+/// The error [`find_revision_match`] fails with where no revision matches: its search reached the
+/// search limit, or a round added no revision to either line, so a later round would compare
+/// nothing new. Each line adds the part of its batch below the revision the batch was read from
+/// ([`find::below`]), so a line adds none once it ends, or leaves the local store where no remote
+/// lists it.
+fn no_matching_revision() -> LayerError {
+    LayerError::internal("Failed to find matching revision for link metadata")
+}
+
+pub async fn store_layer_current(
+    repository: Arc<RepositoryContext>,
+    token: &RepositoryWriteToken,
+    mount_path: &str,
+    layer_repository: RepositoryId,
+    current: Hash,
+    staged: Option<Hash>,
+) -> Result<(), LayerError> {
+    let config_path = layer_config_path(&repository)?;
+    let mut config = load_config(&config_path).await?;
+
+    for layer in config.layers.iter_mut() {
+        if layer.repository == layer_repository && layer.target_path.as_str() == mount_path {
+            layer.current = current;
+            if let Some(staged) = staged {
+                layer.staged = staged;
+            }
+            save_config(token, &config_path, &config).await?;
+            lore_debug!("Saved layer config: {config:?}");
+            return Ok(());
+        }
+    }
+
+    Err(LayerNotFound.into())
+}
+
+pub async fn store_layer_current_batch(
+    repository: Arc<RepositoryContext>,
+    token: &RepositoryWriteToken,
+    updates: &[(RepositoryId, &str, Hash)],
+) -> Result<(), LayerError> {
+    if updates.is_empty() {
+        return Ok(());
+    }
+
+    let config_path = layer_config_path(&repository)?;
+    let mut config = load_config(&config_path).await?;
+
+    for (layer_repository, mount_path, current) in updates {
+        for layer in config.layers.iter_mut() {
+            if layer.repository == *layer_repository && layer.target_path.as_str() == *mount_path {
+                layer.current = *current;
+                break;
+            }
+        }
+    }
+
+    save_config(token, &config_path, &config).await?;
+    lore_debug!(
+        "Saved layer config (batch update, {} layers): {config:?}",
+        updates.len()
+    );
+
+    Ok(())
+}
+
+pub async fn store_layer_staged(
+    repository: Arc<RepositoryContext>,
+    token: &RepositoryWriteToken,
+    mount_path: &str,
+    layer_repository: RepositoryId,
+    staged: Hash,
+) -> Result<(), LayerError> {
+    let config_path = layer_config_path(&repository)?;
+    let mut config = load_config(&config_path).await?;
+
+    for layer in config.layers.iter_mut() {
+        if layer.repository == layer_repository && layer.target_path.as_str() == mount_path {
+            layer.staged = staged;
+            save_config(token, &config_path, &config).await?;
+            lore_debug!("Saved layer config: {config:?}");
+            return Ok(());
+        }
+    }
+
+    Err(LayerNotFound.into())
+}
+
+/// Pin `state`'s staged revision on the layer, writing a zero pin when nothing is left staged.
+///
+/// A pin that differs from `current` without staged content makes the next commit produce an
+/// empty revision in the layer.
+pub async fn store_staged_or_clear(
+    repository: Arc<RepositoryContext>,
+    token: &RepositoryWriteToken,
+    layer: &Layer,
+    state: &LayerState,
+) -> Result<Hash, LayerError> {
+    let signature = if state
+        .state_staged
+        .node_has_staged_or_dirty_children(state.repository.clone(), crate::node::ROOT_NODE)
+        .await
+        .forward::<LayerError>("Failed to check staged and dirty nodes")?
+    {
+        state.state_staged.mark_dirty();
+        state
+            .state_staged
+            .serialize(state.repository.clone(), token)
+            .await
+            .forward::<LayerError>("Failed to serialize layer staged revision state")?
+    } else {
+        Hash::default()
+    };
+
+    store_layer_staged(
+        repository,
+        token,
+        layer.target_path.as_str(),
+        layer.repository,
+        signature,
+    )
+    .await?;
+
+    Ok(signature)
+}

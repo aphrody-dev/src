@@ -1,0 +1,1678 @@
+// SPDX-FileCopyrightText: 2026 Epic Games, Inc.
+// SPDX-License-Identifier: MIT
+use std::str::FromStr;
+use std::sync::Arc;
+use std::time::Instant;
+
+use lore_base::runtime::LORE_CONTEXT;
+use lore_base::runtime::runtime_flush_guarded;
+use lore_error_set::prelude::*;
+use lore_macro::LoreArgs;
+use lore_macro::ValidateText;
+use lore_revision::global::GlobalConfig;
+use lore_revision::interface::ExecutionContext;
+use lore_revision::interface::LoreArray;
+use lore_revision::interface::LoreEventCallback;
+use lore_revision::interface::LoreGlobalArgs;
+use lore_revision::interface::LoreMetadataType;
+use lore_revision::lore::RepositoryId;
+use lore_revision::lore::execution_context;
+use lore_revision::repository;
+use lore_revision::repository::LoreSharedStoreMode;
+use lore_revision::repository::RepositoryContext;
+use lore_revision::repository::RepositoryError;
+use lore_revision::repository::SharedStoreToUseConfig;
+use lore_revision::repository::VfsConfig;
+use lore_revision::repository::VfsType;
+use lore_revision::repository::clone::CloneError;
+use lore_revision::repository::clone::CloneLayer;
+use lore_revision::repository::clone::CloneOptions;
+use lore_revision::repository::create::CreateError;
+use lore_revision::repository::create::CreateMetadata;
+use lore_revision::repository::create::CreateOptions;
+use lore_revision::repository::status::StatusOptions;
+use lore_revision::revision;
+use lore_revision::util;
+use lore_revision::util::config::SaveableConfig;
+use lore_revision::util::path::RelativePath;
+
+use crate::call::no_repository_call;
+use crate::call::repository_call_exclusive_planned;
+use crate::call::repository_call_no_store;
+use crate::call::repository_call_read;
+use crate::call::repository_call_write;
+use crate::call::setup_execution;
+use crate::call_delegation::dispatch_call;
+use crate::interface::LoreString;
+use crate::util::convert_user_paths;
+use crate::util::log_command_done;
+use crate::util::log_command_info;
+
+/// Virtual File System type for repository operations.
+///
+/// When not `None`, the `vfs` field causes the repository to create a Virtual File System
+/// as the repository directory instead of materializing files directly on disk.
+/// cbindgen:prefix-with-name
+/// cbindgen:rename-all=ScreamingSnakeCase
+#[repr(C)]
+#[derive(Clone, PartialEq, Debug, Default, ValidateText, bitcode::Encode, bitcode::Decode)]
+pub enum LoreVfsType {
+    /// Use no VFS, store all files using the regular file system
+    #[default]
+    None = 0,
+    /// Use whichever VFS is suggested based on the user's environment
+    Default = 1,
+    /// Use SWFS as a VFS
+    Swfs = 2,
+    /// Use a Linux FUSE mount served by the Lore service as a VFS
+    Fuse = 3,
+}
+
+impl LoreVfsType {
+    pub fn to_config(&self) -> VfsConfig {
+        VfsConfig {
+            vfs_type: match self {
+                LoreVfsType::None => VfsType::None,
+                LoreVfsType::Swfs => VfsType::Swfs,
+                LoreVfsType::Fuse => VfsType::Fuse,
+                LoreVfsType::Default => {
+                    #[cfg(target_os = "linux")]
+                    {
+                        VfsType::Fuse
+                    }
+                    #[cfg(target_family = "windows")]
+                    {
+                        VfsType::Swfs
+                    }
+                    #[cfg(not(any(target_os = "linux", target_family = "windows")))]
+                    {
+                        VfsType::None
+                    }
+                }
+            },
+            base_time: None,
+        }
+    }
+}
+
+/// Arguments for cloning a remote repository to the local path.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, Default, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(clone_local)]
+#[requires_service]
+pub struct LoreRepositoryCloneArgs {
+    /// URL to the repository
+    pub repository_url: LoreString,
+    /// [Optional] Revision to clone
+    pub revision: LoreString,
+    /// [Optional] Client side view filter to use
+    pub view: LoreString,
+    /// Clone without any files
+    pub bare: u8,
+    /// Use direct file write
+    pub direct_file_write: u8,
+    /// Which VFS to use, if any
+    pub vfs: LoreVfsType,
+    /// (Optional) Layer module
+    pub layer: LoreString,
+    /// (Optional) Layer metadata key to link revisions with
+    pub layer_metadata: LoreString,
+    /// (Optional) Access recording whose paths a virtual clone warms in the background: one
+    /// repository-relative path per line, a directory ending with `/`, `/` for the root. A
+    /// relative file path resolves against the caller's working directory.
+    pub prefetch: LoreString,
+    /// Whether to use the shared store instead of a local immutable store. Zero-initialized
+    /// (`LORE_SHARED_STORE_MODE_INHERIT`) follows the machine's global setting, except where `vfs`
+    /// is a virtual one, which always uses a shared store and refuses
+    /// `LORE_SHARED_STORE_MODE_DISABLED` with `InvalidArguments`.
+    pub use_shared_store: LoreSharedStoreMode,
+    /// [Optional] Path to use for the shared store, an empty string means to use the default
+    pub shared_store_path: LoreString,
+    /// Clone without local repository tracking (memory-only stores)
+    pub no_tracking: u8,
+    /// Root files for dependency-based selective clone. A root file inside a link is skipped, and
+    /// error code 9 (not supported) is returned when every root file is.
+    pub root_files: LoreArray<LoreString>,
+    /// Tags to filter dependencies by during resolution
+    pub dependency_tags: LoreArray<LoreString>,
+    /// Follow transitive dependencies recursively
+    pub dependency_recursive: u8,
+    /// Maximum dependency traversal depth. 0 means unlimited.
+    pub dependency_depth_limit: u32,
+}
+
+/// Clones a remote repository to the local path specified in the global arguments.
+///
+/// A clone needs the remote, so the offline flag does not keep it from connecting: it prepares the
+/// clone for working offline instead. With it, as with the cache flag, a clone that writes its
+/// files caches every file metadata block of the cloned revision, which staging and committing
+/// write to, so both work without the remote, and fails if it cannot. A bare or virtual clone writes
+/// no files and reads them from the remote when a command needs them.
+///
+/// # Events
+///
+/// ## Standard Events
+///
+/// These events are emitted by all interface functions:
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::Log`](crate::interface::LoreEvent::Log) | Diagnostic messages throughout execution |
+/// | [`LoreEvent::Error`](crate::interface::LoreEvent::Error) | Emitted for a non-fatal error during the operation |
+/// | [`LoreEvent::Complete`](crate::interface::LoreEvent::Complete) | Always emitted at the end; `status` is `0` on success or the error code on failure |
+/// | [`LoreEvent::End`](crate::interface::LoreEvent::End) | Always emitted after `Complete` to signal callback termination |
+///
+/// ## Clone Events
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::RepositoryCloneBegin`](crate::interface::LoreEvent::RepositoryCloneBegin) | Emitted when clone begins, includes remote URL and target path |
+/// | [`LoreEvent::RepositoryCloneProgress`](crate::interface::LoreEvent::RepositoryCloneProgress) | Emitted periodically during clone with progress data, and at completion with final totals |
+/// | [`LoreEvent::RepositoryCloneEnd`](crate::interface::LoreEvent::RepositoryCloneEnd) | Emitted only when the clone succeeds; [`LoreEvent::Complete`](crate::interface::LoreEvent::Complete) reports the outcome of every clone |
+/// | [`LoreEvent::RevisionSyncTarget`](crate::interface::LoreEvent::RevisionSyncTarget) | Emitted after resolving the target revision to sync during clone |
+/// | [`LoreEvent::RevisionSyncRevision`](crate::interface::LoreEvent::RevisionSyncRevision) | Emitted with the resulting revision |
+/// | [`LoreEvent::RevisionSyncProgress`](crate::interface::LoreEvent::RevisionSyncProgress) | Emitted periodically during initial file sync |
+/// | [`LoreEvent::RevisionSyncFile`](crate::interface::LoreEvent::RevisionSyncFile) | Emitted for each file written during initial sync |
+/// | [`LoreEvent::FilterExclude`](crate::interface::LoreEvent::FilterExclude) | Emitted for each path excluded by view filters |
+/// | [`LoreEvent::FragmentWrite`](crate::interface::LoreEvent::FragmentWrite) | Emitted for each fragment written to the local store |
+pub async fn clone(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryCloneArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, clone_local).await
+}
+
+async fn clone_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryCloneArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    let (execution, prepare_offline) = clone_execution(globals, callback);
+
+    LORE_CONTEXT
+        .scope(execution, async move {
+            log_command_info(&clone, &args);
+
+            let time_start = Instant::now();
+
+            let result = clone_impl(
+                execution_context().globals().repository_path(),
+                &args,
+                prepare_offline,
+            )
+            .await;
+
+            log_command_done(&clone, time_start);
+            execution_context().dispatcher.complete_result(result).await
+        })
+        .await
+}
+
+/// The execution a clone runs in, with the offline flag cleared since a clone needs the remote,
+/// and whether the flag was set, asking the clone to prepare the repository for working offline.
+///
+/// A function of its own so that `clone_local` moves its globals whole: written in place, they
+/// would take space in its future beside the scope it awaits.
+fn clone_execution(
+    mut globals: LoreGlobalArgs,
+    callback: LoreEventCallback,
+) -> (Arc<ExecutionContext>, bool) {
+    let prepare_offline = globals.offline();
+    globals.offline = 0;
+    (setup_execution(globals, callback), prepare_offline)
+}
+
+/// Clones as [`clone`] describes, preparing the repository for working offline where
+/// `prepare_offline` is set.
+async fn clone_impl(
+    repository_path: &str,
+    args: &LoreRepositoryCloneArgs,
+    prepare_offline: bool,
+) -> Result<(), CloneError> {
+    let remote_url = args.repository_url.as_str();
+    let clone_path = util::path::make_absolute(repository_path)
+        .forward_with::<CloneError, _>(|| format!("Invalid path: {repository_path}"))?;
+    let bare = args.bare != 0;
+    let ignore_existing = false;
+    let direct_file_write = args.direct_file_write != 0;
+    let no_tracking = args.no_tracking != 0;
+
+    let view_path = if args.view.length > 0 {
+        Some(
+            util::path::make_absolute(args.view.as_str())
+                .forward_with::<CloneError, _>(|| format!("Failed to load view {}", args.view))?,
+        )
+    } else {
+        None
+    };
+    let prefetch = if args.prefetch.length > 0 {
+        Some(
+            util::path::make_absolute(args.prefetch.as_str())
+                .forward_with::<CloneError, _>(|| format!("Invalid path: {}", args.prefetch))?
+                .display()
+                .to_string(),
+        )
+    } else {
+        None
+    };
+
+    let global_config = GlobalConfig::load()
+        .await
+        .forward::<CloneError>("Couldn't load global config")?;
+    let vfs_options = args.vfs.to_config();
+    let shared_store_options = SharedStoreToUseConfig::from_api_args(
+        &global_config,
+        args.use_shared_store.for_vfs(vfs_options.vfs_type)?,
+        &args.shared_store_path,
+    )
+    .forward_with::<CloneError, _>(|| format!("Invalid path: {}", args.shared_store_path))?;
+    let vfs_options = Some(vfs_options);
+
+    let root_files: Vec<String> = args
+        .root_files
+        .as_slice()
+        .iter()
+        .map(|s| s.to_string())
+        .collect();
+    let dependency_tags: Vec<String> = args
+        .dependency_tags
+        .as_slice()
+        .iter()
+        .map(|s| s.to_string())
+        .collect();
+
+    let options = CloneOptions {
+        bare,
+        ignore_existing,
+        direct_file_write,
+        prefetch,
+        tree_prefetch: None,
+        shared_store_options,
+        vfs_options,
+        no_tracking,
+        root_files,
+        dependency_tags,
+        dependency_recursive: args.dependency_recursive != 0,
+        dependency_depth_limit: args.dependency_depth_limit,
+        cache_file_metadata: prepare_offline || execution_context().globals().cache(),
+    };
+
+    let layer = if !args.layer.is_empty() {
+        Some(CloneLayer {
+            repository: args.layer.to_string(),
+            source_path: String::default(),
+            mount_path: String::default(),
+            metadata: args.layer_metadata.clone().into(),
+        })
+    } else {
+        None
+    };
+
+    lore_revision::repository::clone::clone(
+        remote_url,
+        execution_context().globals().identity().unwrap_or_default(),
+        clone_path.as_path(),
+        args.revision.clone().into(),
+        view_path.as_deref(),
+        layer,
+        options,
+    )
+    .await
+}
+
+/// Arguments for retrieving metadata about a remote repository.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(info_local)]
+pub struct LoreRepositoryInfoArgs {
+    /// URL of the remote repository to query
+    pub repository_url: LoreString,
+}
+
+/// Retrieves metadata about a remote repository, such as its name, URL, and branch information.
+///
+/// # Events
+///
+/// ## Standard Events
+///
+/// These events are emitted by all interface functions:
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::Log`](crate::interface::LoreEvent::Log) | Diagnostic messages throughout execution |
+/// | [`LoreEvent::Error`](crate::interface::LoreEvent::Error) | Emitted for a non-fatal error during the operation |
+/// | [`LoreEvent::Complete`](crate::interface::LoreEvent::Complete) | Always emitted at the end; `status` is `0` on success or the error code on failure |
+/// | [`LoreEvent::End`](crate::interface::LoreEvent::End) | Always emitted after `Complete` to signal callback termination |
+///
+/// ## Repository Events
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::RepositoryData`](crate::interface::LoreEvent::RepositoryData) | Emitted with repository metadata (name, URL, branch info, etc.) |
+pub async fn info(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryInfoArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, info_local).await
+}
+
+async fn info_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryInfoArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    let execution = setup_execution(globals, callback);
+
+    LORE_CONTEXT
+        .scope(execution, async move {
+            log_command_info(&info, &args);
+
+            let time_start = Instant::now();
+
+            // The global `--local` flag reads metadata from the working
+            // repository's own stores instead of issuing a remote query.
+            let result = if execution_context().globals().local() {
+                repository::info::info_local().await
+            } else {
+                repository::info::info(
+                    (&args.repository_url).into(),
+                    execution_context().globals().identity().unwrap_or_default(),
+                )
+                .await
+            };
+
+            log_command_done(&info, time_start);
+            execution_context().dispatcher.complete_result(result).await
+        })
+        .await
+}
+
+/// Arguments for dumping the internal state tree of the repository.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(dump_local)]
+pub struct LoreRepositoryDumpArgs {
+    /// Revision to dump; empty string uses the current revision
+    pub revision: LoreString,
+    /// Repository-relative path to start dumping from; empty dumps the root
+    pub path: LoreString,
+    /// Maximum tree traversal depth
+    pub max_depth: usize,
+}
+
+/// Dumps the internal state tree of the repository for diagnostic purposes.
+///
+/// # Events
+///
+/// ## Standard Events
+///
+/// These events are emitted by all interface functions:
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::Log`](crate::interface::LoreEvent::Log) | Diagnostic messages throughout execution |
+/// | [`LoreEvent::Error`](crate::interface::LoreEvent::Error) | Emitted for a non-fatal error during the operation |
+/// | [`LoreEvent::Complete`](crate::interface::LoreEvent::Complete) | Always emitted at the end; `status` is `0` on success or the error code on failure |
+/// | [`LoreEvent::End`](crate::interface::LoreEvent::End) | Always emitted after `Complete` to signal callback termination |
+///
+/// ## Repository Events
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::RepositoryDumpBegin`](crate::interface::LoreEvent::RepositoryDumpBegin) | Emitted before dump output begins |
+/// | [`LoreEvent::RepositoryDumpEnd`](crate::interface::LoreEvent::RepositoryDumpEnd) | Emitted when dump completes |
+/// | [`LoreEvent::RepositoryStateDump`](crate::interface::LoreEvent::RepositoryStateDump) | Emitted with repository state summary |
+/// | [`LoreEvent::RepositoryStateDumpNode`](crate::interface::LoreEvent::RepositoryStateDumpNode) | Emitted for each node in the state tree |
+pub async fn dump(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryDumpArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, dump_local).await
+}
+
+fn dump_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryDumpArgs,
+    callback: LoreEventCallback,
+) -> impl Future<Output = i32> {
+    repository_call_read(globals, callback, args, dump, dump_impl)
+}
+
+async fn dump_impl(
+    repository: Arc<RepositoryContext>,
+    args: LoreRepositoryDumpArgs,
+) -> Result<(), RepositoryError> {
+    // Revision is an optional argument, so check for if it was provided
+    let revision = if args.revision.is_empty() {
+        None
+    } else {
+        revision::resolve_boxed(
+            repository.clone(),
+            args.revision.as_str(),
+            execution_context().globals().search_location(),
+        )
+        .await
+        .forward::<RepositoryError>("Invalid revision")?
+        .into()
+    };
+
+    let path = if args.path.length > 0 {
+        Some(
+            RelativePath::new_from_user_path(repository.require_path()?, args.path.as_str())
+                .forward::<RepositoryError>("Invalid repository path")?,
+        )
+    } else {
+        None
+    };
+
+    lore_revision::repository::dump::dump_boxed(repository, revision, path, args.max_depth).await
+}
+
+/// Arguments for creating a new repository.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(create_local)]
+#[requires_service]
+pub struct LoreRepositoryCreateArgs {
+    /// URL to the repository. Treated as the repository name instead when the call is
+    /// offline or local, where an empty value names it after the directory it is
+    /// created in. A URL naming no host is an error otherwise.
+    pub repository_url: LoreString,
+    /// Optional repository description
+    pub description: LoreString,
+    /// Optional repository ID, set to empty string to generate a new ID
+    pub id: LoreString,
+    /// Which VFS to use, if any
+    pub vfs: LoreVfsType,
+    /// Whether to use the shared store instead of a local immutable store. Zero-initialized
+    /// (`LORE_SHARED_STORE_MODE_INHERIT`) follows the machine's global setting, except where `vfs`
+    /// is a virtual one, which always uses a shared store and refuses
+    /// `LORE_SHARED_STORE_MODE_DISABLED` with `InvalidArguments`.
+    pub use_shared_store: LoreSharedStoreMode,
+    /// [Optional] Path to use for the shared store, an empty string means to use the default
+    pub shared_store_path: LoreString,
+}
+
+/// Creates a new repository.
+///
+/// # Events
+///
+/// ## Standard Events
+///
+/// These events are emitted by all interface functions:
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::Log`](crate::interface::LoreEvent::Log) | Diagnostic messages throughout execution |
+/// | [`LoreEvent::Error`](crate::interface::LoreEvent::Error) | Emitted for a non-fatal error during the operation |
+/// | [`LoreEvent::Complete`](crate::interface::LoreEvent::Complete) | Always emitted at the end; `status` is `0` on success or the error code on failure |
+/// | [`LoreEvent::End`](crate::interface::LoreEvent::End) | Always emitted after `Complete` to signal callback termination |
+///
+/// ## Repository Events
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::RepositoryCreate`](crate::interface::LoreEvent::RepositoryCreate) | Emitted when the repository has been successfully created |
+pub async fn create(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryCreateArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, create_local).await
+}
+
+async fn create_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryCreateArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    let execution = setup_execution(globals, callback);
+
+    LORE_CONTEXT
+        .scope(execution, async move {
+            log_command_info(&create, &args);
+
+            let time_start = Instant::now();
+
+            let result = create_impl(&args).await;
+
+            log_command_done(&create, time_start);
+            execution_context().dispatcher.complete_result(result).await
+        })
+        .await
+}
+
+async fn create_impl(args: &LoreRepositoryCreateArgs) -> Result<(), CreateError> {
+    let context = execution_context();
+
+    let repository_url = args.repository_url.as_str();
+    let repository_path = context.globals().repository_path();
+    let repository_path = util::path::make_absolute(repository_path)
+        .forward::<CreateError>("resolving repository path")?;
+
+    let id = RepositoryId::from_str(args.id.as_str()).unwrap_or_default();
+
+    let global_config = GlobalConfig::load()
+        .await
+        .forward::<CreateError>("loading global config")?;
+
+    let vfs_options = args.vfs.to_config();
+    let options = CreateOptions {
+        id: if !id.is_zero() { Some(id) } else { None },
+        description: if !args.description.is_empty() {
+            Some(args.description.to_string())
+        } else {
+            None
+        },
+        shared_store_options: SharedStoreToUseConfig::from_api_args(
+            &global_config,
+            args.use_shared_store.for_vfs(vfs_options.vfs_type)?,
+            &args.shared_store_path,
+        )
+        .forward::<CreateError>("resolving shared store config")?,
+        vfs_options,
+    };
+
+    lore_revision::repository::create::create_boxed(repository_url, repository_path, options).await
+}
+
+/// Optional creator and creation-time metadata to record on a new repository.
+pub struct LoreRepositoryCreateMetadata {
+    /// Identity to attribute repository creation to
+    pub creator: LoreString,
+    /// Creation timestamp (milliseconds since the Unix epoch)
+    pub created: u64,
+}
+
+pub async fn create_with_metadata(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryCreateArgs,
+    metadata: LoreRepositoryCreateMetadata,
+    callback: LoreEventCallback,
+) -> i32 {
+    let execution = setup_execution(globals, callback);
+
+    LORE_CONTEXT
+        .scope(execution, async move {
+            log_command_info(&create, &args);
+
+            let time_start = Instant::now();
+
+            let result = create_with_metadata_impl(&args, &metadata).await;
+
+            log_command_done(&create, time_start);
+            execution_context().dispatcher.complete_result(result).await
+        })
+        .await
+}
+
+async fn create_with_metadata_impl(
+    args: &LoreRepositoryCreateArgs,
+    metadata: &LoreRepositoryCreateMetadata,
+) -> Result<(), CreateError> {
+    let context = execution_context();
+
+    let repository_url = args.repository_url.as_str();
+    let repository_path = context.globals().repository_path();
+
+    let id = RepositoryId::from_str(args.id.as_str()).unwrap_or_default();
+
+    let global_config = GlobalConfig::load()
+        .await
+        .forward::<CreateError>("loading global config")?;
+
+    let vfs_options = args.vfs.to_config();
+    let options = CreateOptions {
+        id: if !id.is_zero() { Some(id) } else { None },
+        description: if !args.description.is_empty() {
+            Some(args.description.to_string())
+        } else {
+            None
+        },
+        shared_store_options: SharedStoreToUseConfig::from_api_args(
+            &global_config,
+            args.use_shared_store.for_vfs(vfs_options.vfs_type)?,
+            &args.shared_store_path,
+        )
+        .forward::<CreateError>("resolving shared store config")?,
+        vfs_options,
+    };
+    let metadata = Some(CreateMetadata {
+        creator: metadata.creator.to_string(),
+        created: metadata.created,
+    });
+
+    lore_revision::repository::create::create_with_metadata_boxed(
+        repository_url,
+        repository_path,
+        options,
+        metadata,
+    )
+    .await
+}
+
+/// Arguments for deleting a remote repository.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(delete_local)]
+pub struct LoreRepositoryDeleteArgs {
+    /// URL of the remote repository to delete, or a name or ID resolved against the remote of
+    /// the repository at `repository_path`
+    pub repository_url: LoreString,
+}
+
+/// Deletes a remote repository.
+///
+/// # Events
+///
+/// ## Standard Events
+///
+/// These events are emitted by all interface functions:
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::Log`](crate::interface::LoreEvent::Log) | Diagnostic messages throughout execution |
+/// | [`LoreEvent::Error`](crate::interface::LoreEvent::Error) | Emitted for a non-fatal error during the operation |
+/// | [`LoreEvent::Complete`](crate::interface::LoreEvent::Complete) | Always emitted at the end; `status` is `0` on success or the error code on failure |
+/// | [`LoreEvent::End`](crate::interface::LoreEvent::End) | Always emitted after `Complete` to signal callback termination |
+pub async fn delete(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryDeleteArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, delete_local).await
+}
+
+fn delete_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryDeleteArgs,
+    callback: LoreEventCallback,
+) -> impl Future<Output = i32> {
+    no_repository_call(globals, callback, args, delete, |args| async move {
+        repository::delete::delete(
+            args.repository_url.as_str(),
+            execution_context().globals().identity().unwrap_or_default(),
+        )
+        .await
+    })
+}
+
+/// Arguments for releasing cached store references for the repository path.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(release_local)]
+pub struct LoreRepositoryReleaseArgs {}
+
+/// Release all cached store references for the given repository path.
+///
+/// Frees cached in-memory store data. Disk-backed stores are not forced closed:
+/// each is released once nothing uses it, and a later open reuses one that is still
+/// alive, which the store epoch keeps current with what other processes wrote.
+/// Any active `RepositoryContext` instances for this path remain valid.
+///
+/// # Events
+///
+/// ## Standard Events
+///
+/// These events are emitted by all interface functions:
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::Log`](crate::interface::LoreEvent::Log) | Diagnostic messages throughout execution |
+/// | [`LoreEvent::Error`](crate::interface::LoreEvent::Error) | Emitted for a non-fatal error during the operation |
+/// | [`LoreEvent::Complete`](crate::interface::LoreEvent::Complete) | Always emitted at the end; `status` is `0` on success or the error code on failure |
+/// | [`LoreEvent::End`](crate::interface::LoreEvent::End) | Always emitted after `Complete` to signal callback termination |
+pub async fn release(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryReleaseArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, release_local).await
+}
+
+fn release_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryReleaseArgs,
+    callback: LoreEventCallback,
+) -> impl Future<Output = i32> {
+    no_repository_call(globals, callback, args, release, move |_args| {
+        let path = execution_context().globals().repository_path().to_string();
+        async move {
+            repository::repository_release(path.as_ref() as &std::path::Path);
+            Ok::<(), RepositoryError>(())
+        }
+    })
+}
+
+/// Arguments for waiting on outstanding asynchronous repository tasks.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(flush_local)]
+pub struct LoreRepositoryFlushArgs {}
+
+/// Waits for all outstanding asynchronous repository tasks to complete.
+///
+/// # Events
+///
+/// ## Standard Events
+///
+/// These events are emitted by all interface functions:
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::Log`](crate::interface::LoreEvent::Log) | Diagnostic messages throughout execution |
+/// | [`LoreEvent::Error`](crate::interface::LoreEvent::Error) | Emitted for a non-fatal error during the operation |
+/// | [`LoreEvent::Complete`](crate::interface::LoreEvent::Complete) | Always emitted at the end; `status` is `0` on success or the error code on failure |
+/// | [`LoreEvent::End`](crate::interface::LoreEvent::End) | Always emitted after `Complete` to signal callback termination |
+pub async fn flush(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryFlushArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, flush_local).await
+}
+
+async fn flush_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryFlushArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    // For now we just ensure there are no outstanding tasks globally
+    no_repository_call(globals, callback, args, flush, move |_args| {
+        // TODO(mjansson): Make this more granular and only flush tasks for given repository
+        async move {
+            runtime_flush_guarded().await;
+            Ok::<(), RepositoryError>(())
+        }
+    })
+    .await
+}
+
+/// Arguments for running garbage collection on the local repository store.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(gc_local)]
+pub struct LoreRepositoryGcArgs {}
+
+/// Runs garbage collection on the local repository store to reclaim space from unreferenced data.
+///
+/// # Events
+///
+/// ## Standard Events
+///
+/// These events are emitted by all interface functions:
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::Log`](crate::interface::LoreEvent::Log) | Diagnostic messages throughout execution |
+/// | [`LoreEvent::Error`](crate::interface::LoreEvent::Error) | Emitted for a non-fatal error during the operation |
+/// | [`LoreEvent::Complete`](crate::interface::LoreEvent::Complete) | Always emitted at the end; `status` is `0` on success or the error code on failure |
+/// | [`LoreEvent::End`](crate::interface::LoreEvent::End) | Always emitted after `Complete` to signal callback termination |
+pub async fn gc(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryGcArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, gc_local).await
+}
+
+/// Runs a single full GC pass. `repository gc` always runs a full pass, so it
+/// forces `globals.no_gc = 1` to suppress the automatic incremental tasks (which
+/// would otherwise race the full pass), then runs the pass explicitly.
+async fn gc_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryGcArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    let mut globals = globals;
+    globals.no_gc = 1;
+
+    repository_call_write(
+        globals,
+        callback,
+        args,
+        gc,
+        move |repository, _token, _args| lore_revision::repository::gc(repository),
+    )
+    .await
+}
+
+/// Arguments for listing all repositories available at a remote URL.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(list_local)]
+pub struct LoreRepositoryListArgs {
+    /// Remote URL to list repositories from
+    pub url: LoreString,
+}
+
+/// Lists all repositories available at the given remote URL.
+///
+/// # Events
+///
+/// ## Standard Events
+///
+/// These events are emitted by all interface functions:
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::Log`](crate::interface::LoreEvent::Log) | Diagnostic messages throughout execution |
+/// | [`LoreEvent::Error`](crate::interface::LoreEvent::Error) | Emitted for a non-fatal error during the operation |
+/// | [`LoreEvent::Complete`](crate::interface::LoreEvent::Complete) | Always emitted at the end; `status` is `0` on success or the error code on failure |
+/// | [`LoreEvent::End`](crate::interface::LoreEvent::End) | Always emitted after `Complete` to signal callback termination |
+///
+/// ## Repository Events
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::RepositoryListEntry`](crate::interface::LoreEvent::RepositoryListEntry) | Emitted for each repository found |
+pub async fn list(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryListArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, list_local).await
+}
+
+async fn list_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryListArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    let url = args.url.to_string();
+
+    let execution = setup_execution(globals, callback);
+
+    LORE_CONTEXT
+        .scope(execution, async move {
+            log_command_info(&list, &args);
+
+            let time_start = Instant::now();
+
+            let result = repository::list::list(
+                url.as_str(),
+                execution_context().globals().identity().unwrap_or_default(),
+            )
+            .await;
+
+            log_command_done(&list, time_start);
+            execution_context().dispatcher.complete_result(result).await
+        })
+        .await
+}
+
+/// Arguments for reporting the working directory status.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(status_local)]
+pub struct LoreRepositoryStatusArgs {
+    /// Include staged state in the report
+    pub staged: u8,
+    /// Reconcile against the filesystem and refresh dirty tracking.
+    ///
+    /// By default, status reports the currently tracked state: the
+    /// staged revision (if any) plus any files and directories already
+    /// marked dirty. No filesystem reads are performed beyond the existing
+    /// dirty flags — clean or unmarked files on disk are not inspected even
+    /// if they differ from the current revision.
+    ///
+    /// When enabled, the filesystem is walked under each requested path, every
+    /// file is reconciled against the current revision, and dirty flags are
+    /// set or cleared accordingly. The refreshed flags are persisted in the
+    /// staged state so subsequent operations (commit, stage, status) see an
+    /// accurate picture without rescanning.
+    pub scan: u8,
+    /// Verify dirty flags against the filesystem without a full scan.
+    ///
+    /// When enabled, files already marked dirty are re-examined individually: a
+    /// dirty file whose on-disk content matches its tracked node (same size,
+    /// and same content when the modification time differs) has its dirty flag
+    /// cleared and is omitted from the report, unless it is also staged.
+    /// Structural dirty actions (add/move/copy/delete) are always reported.
+    /// The refreshed flags are persisted in the staged state.
+    pub check_dirty: u8,
+    /// Reset the tracked state before computing status
+    pub reset: u8,
+    /// Include the sync point in the report
+    pub sync_point: u8,
+    /// Only emit revision info, skipping all diffs
+    pub revision_only: u8,
+    /// Count directories and files (view-filtered) in the staged state if
+    /// present, otherwise the current revision
+    pub count: u8,
+    /// Repository-relative paths to limit the status check to; empty checks all
+    pub paths: LoreArray<LoreString>,
+}
+
+/// Reports the working directory status.
+///
+/// By default this lists the currently tracked state: the staged revision (if
+/// any) plus all files and directories marked dirty in the repository. Dirty
+/// flags are maintained by prior `lore dirty`, `lore stage`, or `lore status
+/// --scan` operations, and by filesystem notifications — files modified
+/// externally without going through any of those will not appear until the
+/// next reconciliation.
+///
+/// Set [`scan`](LoreRepositoryStatusArgs::scan) to walk the filesystem under
+/// each requested path, reconcile every file against the current revision,
+/// and update the persisted dirty flags. Use this to recover from drift
+/// between the on-disk tree and the tracked dirty state (for example after
+/// external edits that bypassed notifications).
+///
+/// # Events
+///
+/// ## Standard Events
+///
+/// These events are emitted by all interface functions:
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::Log`](crate::interface::LoreEvent::Log) | Diagnostic messages throughout execution |
+/// | [`LoreEvent::Error`](crate::interface::LoreEvent::Error) | Emitted for a non-fatal error during the operation |
+/// | [`LoreEvent::Complete`](crate::interface::LoreEvent::Complete) | Always emitted at the end; `status` is `0` on success or the error code on failure |
+/// | [`LoreEvent::End`](crate::interface::LoreEvent::End) | Always emitted after `Complete` to signal callback termination |
+///
+/// ## Repository Events
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::RepositoryStatusRevision`](crate::interface::LoreEvent::RepositoryStatusRevision) | Emitted with current and staged revision info |
+/// | [`LoreEvent::RepositoryStatusFile`](crate::interface::LoreEvent::RepositoryStatusFile) | Emitted for each file with pending changes, conflict status, or untracked status |
+/// | [`LoreEvent::RepositoryStatusCount`](crate::interface::LoreEvent::RepositoryStatusCount) | Emitted when `count` is set, with the directory and file count (view-filtered) of the staged state if present, otherwise the current revision |
+/// | [`LoreEvent::PathIgnore`](crate::interface::LoreEvent::PathIgnore) | Emitted for each path excluded by ignore rules |
+pub async fn status(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryStatusArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, status_local).await
+}
+
+async fn status_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryStatusArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    if args.scan != 0 || args.check_dirty != 0 || args.reset != 0 {
+        // Scan and check_dirty persist refreshed dirty flags in the staged
+        // state and reset drops the staged anchor; all require write capability
+        // (same pattern as verify_state + heal).
+        repository_call_write(
+            globals,
+            callback,
+            args,
+            status,
+            |repository, _token, args| {
+                let options = StatusOptions {
+                    staged: args.staged != 0,
+                    scan: args.scan != 0,
+                    check_dirty: args.check_dirty != 0,
+                    reset: args.reset != 0,
+                    sync_point: args.sync_point != 0,
+                    revision_only: args.revision_only != 0,
+                    count: args.count != 0,
+                };
+                status_impl(repository, args.paths, options)
+            },
+        )
+        .await
+    } else {
+        repository_call_read(globals, callback, args, status, move |repository, args| {
+            let options = StatusOptions {
+                staged: args.staged != 0,
+                scan: false,
+                check_dirty: false,
+                reset: false,
+                sync_point: args.sync_point != 0,
+                revision_only: args.revision_only != 0,
+                count: args.count != 0,
+            };
+            status_impl(repository, args.paths, options)
+        })
+        .await
+    }
+}
+
+async fn status_impl(
+    repository: Arc<RepositoryContext>,
+    paths: LoreArray<LoreString>,
+    options: StatusOptions,
+) -> Result<(), repository::status::StatusError> {
+    let paths = if !paths.is_empty() {
+        Some(
+            convert_user_paths(repository.require_path()?, paths)
+                .forward::<repository::status::StatusError>("converting user paths")?,
+        )
+    } else {
+        None
+    };
+
+    lore_revision::repository::status::status_boxed(repository, paths, options).await
+}
+
+/// Arguments for verifying the integrity of the local repository state.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(verify_state_local)]
+pub struct LoreRepositoryVerifyStateArgs {
+    /// Repository-relative path to verify; empty verifies the whole repository
+    pub path: LoreString,
+    /// Heal detected inconsistencies
+    pub heal: u8,
+}
+
+/// Verifies the integrity of the local repository state, optionally healing inconsistencies.
+///
+/// # Events
+///
+/// ## Standard Events
+///
+/// These events are emitted by all interface functions:
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::Log`](crate::interface::LoreEvent::Log) | Diagnostic messages throughout execution |
+/// | [`LoreEvent::Error`](crate::interface::LoreEvent::Error) | Emitted for a non-fatal error during the operation |
+/// | [`LoreEvent::Complete`](crate::interface::LoreEvent::Complete) | Always emitted at the end; `status` is `0` on success or the error code on failure |
+/// | [`LoreEvent::End`](crate::interface::LoreEvent::End) | Always emitted after `Complete` to signal callback termination |
+///
+/// ## Verify Events
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::RepositoryVerifyStateBegin`](crate::interface::LoreEvent::RepositoryVerifyStateBegin) | Emitted when verify begins |
+/// | [`LoreEvent::RepositoryVerifyStateEnd`](crate::interface::LoreEvent::RepositoryVerifyStateEnd) | Emitted when verify completes (successfully or with errors) |
+/// | [`LoreEvent::RepositoryVerifyFragment`](crate::interface::LoreEvent::RepositoryVerifyFragment) | Emitted for each fragment verified in the local store |
+/// | [`LoreEvent::RepositoryVerifyFragmentRemote`](crate::interface::LoreEvent::RepositoryVerifyFragmentRemote) | Emitted for each fragment verified against the remote store, and when remote verification fails |
+pub async fn verify_state(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryVerifyStateArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, verify_state_local).await
+}
+
+async fn verify_state_local(
+    globals: LoreGlobalArgs,
+    mut args: LoreRepositoryVerifyStateArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    // A dry run reports what healing would repair, healing nothing.
+    if globals.dry_run() {
+        args.heal = 0;
+    }
+    if args.heal != 0 {
+        repository_call_write(
+            globals,
+            callback,
+            args,
+            verify_state,
+            |repository, _token, args| verify_state_impl(repository, args),
+        )
+        .await
+    } else {
+        repository_call_read(globals, callback, args, verify_state, verify_state_impl).await
+    }
+}
+
+async fn verify_state_impl(
+    repository: Arc<RepositoryContext>,
+    args: LoreRepositoryVerifyStateArgs,
+) -> Result<(), RepositoryError> {
+    let path = if !args.path.is_empty() {
+        Some(
+            RelativePath::new_from_user_path(repository.require_path()?, args.path.as_str())
+                .forward::<RepositoryError>("Invalid repository path")?,
+        )
+    } else {
+        None
+    };
+    lore_revision::repository::verify::verify_boxed(repository, path, args.heal != 0).await
+}
+
+/// Arguments for verifying a single fragment in the local store.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(verify_fragment_local)]
+pub struct LoreRepositoryVerifyFragmentArgs {
+    /// Fragment hash to verify
+    pub hash: LoreString,
+    /// Optional context to match; empty matches any
+    pub context: LoreString,
+    /// Heal detected inconsistencies during remote verification
+    pub heal: u8,
+}
+
+pub async fn verify_fragment(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryVerifyFragmentArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, verify_fragment_local).await
+}
+
+fn verify_fragment_local(
+    globals: LoreGlobalArgs,
+    mut args: LoreRepositoryVerifyFragmentArgs,
+    callback: LoreEventCallback,
+) -> impl Future<Output = i32> {
+    // A dry run reports what healing would repair, healing nothing.
+    if globals.dry_run() {
+        args.heal = 0;
+    }
+    repository_call_read(
+        globals,
+        callback,
+        args,
+        verify_fragment,
+        verify_fragment_impl,
+    )
+}
+
+async fn verify_fragment_impl(
+    repository: Arc<RepositoryContext>,
+    args: LoreRepositoryVerifyFragmentArgs,
+) -> Result<(), RepositoryError> {
+    let core_args = lore_revision::repository::verify::VerifyFragmentArgs {
+        hash: args.hash,
+        context: args.context,
+        heal: args.heal != 0,
+    };
+    lore_revision::repository::verify::verify_fragment_boxed(repository, core_args).await
+}
+
+/// Arguments for querying the local immutable store by fragment address.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(store_immutable_query_local)]
+pub struct LoreRepositoryStoreImmutableQueryArgs {
+    /// Fragment address to query
+    pub address: LoreString,
+    /// Recurse into and query subfragments
+    pub recurse: u8,
+}
+
+/// Queries the local immutable store for fragments matching a given address.
+///
+/// # Events
+///
+/// ## Standard Events
+///
+/// These events are emitted by all interface functions:
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::Log`](crate::interface::LoreEvent::Log) | Diagnostic messages throughout execution |
+/// | [`LoreEvent::Error`](crate::interface::LoreEvent::Error) | Emitted for a non-fatal error during the operation |
+/// | [`LoreEvent::Complete`](crate::interface::LoreEvent::Complete) | Always emitted at the end; `status` is `0` on success or the error code on failure |
+/// | [`LoreEvent::End`](crate::interface::LoreEvent::End) | Always emitted after `Complete` to signal callback termination |
+///
+/// ## Repository Events
+///
+/// | Event | Description |
+/// |-------|-------------|
+/// | [`LoreEvent::RepositoryStoreImmutableQuery`](crate::interface::LoreEvent::RepositoryStoreImmutableQuery) | Emitted for each fragment entry found in the immutable store |
+pub async fn store_immutable_query(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryStoreImmutableQueryArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, store_immutable_query_local).await
+}
+
+fn store_immutable_query_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryStoreImmutableQueryArgs,
+    callback: LoreEventCallback,
+) -> impl Future<Output = i32> {
+    repository_call_read(
+        globals,
+        callback,
+        args,
+        store_immutable_query,
+        move |repository, args| {
+            lore_revision::repository::store::immutable_query(
+                repository,
+                args.address.to_string(),
+                execution_context().globals().local(),
+                args.recurse != 0,
+            )
+        },
+    )
+}
+
+/// Arguments for retrieving repository metadata.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, Default, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(metadata_get_local)]
+pub struct LoreRepositoryMetadataGetArgs {
+    /// Metadata key to fetch; empty string lists all entries
+    pub key: LoreString,
+}
+
+/// Retrieves repository metadata. If `key` is non-empty, returns that single key's value.
+/// If `key` is empty, returns all metadata entries.
+pub async fn metadata_get(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryMetadataGetArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, metadata_get_local).await
+}
+
+fn metadata_get_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryMetadataGetArgs,
+    callback: LoreEventCallback,
+) -> impl Future<Output = i32> {
+    repository_call_read(
+        globals,
+        callback,
+        args,
+        metadata_get,
+        move |repository, args| {
+            let key = if args.key.is_empty() {
+                None
+            } else {
+                Some(args.key.to_string())
+            };
+            async move {
+                lore_revision::metadata::repository::get_boxed(
+                    repository,
+                    key.as_deref(),
+                    execution_context().globals().local(),
+                )
+                .await
+            }
+        },
+    )
+}
+
+/// Arguments for setting metadata key-value pairs on the current repository.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, Default, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(metadata_set_local)]
+pub struct LoreRepositoryMetadataSetArgs {
+    /// Metadata keys to set, positionally aligned with `values` and `formats`
+    pub keys: LoreArray<LoreString>,
+    /// Values to set, one per key, encoded per the matching `formats` entry
+    pub values: LoreArray<LoreString>,
+    /// Value format/type for each key-value pair
+    pub formats: LoreArray<LoreMetadataType>,
+}
+
+/// Sets one or more metadata key-value pairs on the current repository.
+pub async fn metadata_set(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryMetadataSetArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, metadata_set_local).await
+}
+
+fn metadata_set_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryMetadataSetArgs,
+    callback: LoreEventCallback,
+) -> impl Future<Output = i32> {
+    repository_call_write(
+        globals,
+        callback,
+        args,
+        metadata_set,
+        |repository, _token, args| metadata_set_impl(repository, args),
+    )
+}
+
+async fn metadata_set_impl(
+    repository: Arc<RepositoryContext>,
+    args: LoreRepositoryMetadataSetArgs,
+) -> Result<(), lore_revision::metadata::repository::RepositoryMetadataError> {
+    use lore_revision::metadata::Metadata;
+    use lore_revision::metadata::MetadataType;
+
+    let keys: Vec<_> = args
+        .keys
+        .as_slice()
+        .iter()
+        .map(|k| k.as_str().as_bytes())
+        .collect();
+
+    let mut encoded_values: Vec<Vec<u8>> = Vec::with_capacity(args.values.as_slice().len());
+    let mut formats: Vec<MetadataType> = Vec::with_capacity(args.formats.as_slice().len());
+    for (v, f) in args
+        .values
+        .as_slice()
+        .iter()
+        .zip(args.formats.as_slice().iter())
+    {
+        let metadata_type = *f;
+        encoded_values.push(
+            Metadata::decode_to_value(v.as_str(), &metadata_type).map_err(|e| {
+                lore_base::error::InvalidArguments {
+                    reason: format!("invalid metadata value '{}': {e}", v.as_str()),
+                }
+            })?,
+        );
+        formats.push(metadata_type);
+    }
+    let values: Vec<&[u8]> = encoded_values.iter().map(|v| v.as_slice()).collect();
+
+    lore_revision::metadata::repository::set_boxed(repository, &keys, &values, &formats).await
+}
+
+/// Arguments for removing metadata keys from the current repository.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, Default, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(metadata_clear_local)]
+pub struct LoreRepositoryMetadataClearArgs {
+    /// Keys to clear; empty array clears all user-defined keys
+    pub keys: LoreArray<LoreString>,
+}
+
+/// Removes metadata keys from the current repository.
+pub async fn metadata_clear(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryMetadataClearArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, metadata_clear_local).await
+}
+
+fn metadata_clear_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryMetadataClearArgs,
+    callback: LoreEventCallback,
+) -> impl Future<Output = i32> {
+    repository_call_write(
+        globals,
+        callback,
+        args,
+        metadata_clear,
+        move |repository, _token, args| {
+            let keys: Vec<String> = args.keys.as_slice().iter().map(|k| k.to_string()).collect();
+            async move {
+                let key_refs: Vec<&str> = keys.iter().map(|s| s.as_str()).collect();
+                lore_revision::metadata::repository::clear_boxed(repository, &key_refs).await
+            }
+        },
+    )
+}
+
+// --- Instance management commands ---
+
+/// Arguments for listing the tracked instances of the repository.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(instance_list_local)]
+pub struct LoreRepositoryInstanceListArgs {}
+
+pub async fn instance_list(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryInstanceListArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, instance_list_local).await
+}
+
+fn instance_list_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryInstanceListArgs,
+    callback: LoreEventCallback,
+) -> impl Future<Output = i32> {
+    repository_call_read(
+        globals,
+        callback,
+        args,
+        instance_list,
+        move |repository, _args| lore_revision::instance::instance_list(repository),
+    )
+}
+
+/// Arguments for pruning stale instances of the repository.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(instance_prune_local)]
+pub struct LoreRepositoryInstancePruneArgs {}
+
+pub async fn instance_prune(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryInstancePruneArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, instance_prune_local).await
+}
+
+fn instance_prune_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryInstancePruneArgs,
+    callback: LoreEventCallback,
+) -> impl Future<Output = i32> {
+    repository_call_write(
+        globals,
+        callback,
+        args,
+        instance_prune,
+        move |repository, _token, _args| lore_revision::instance::instance_prune(repository),
+    )
+}
+
+/// Arguments for updating the recorded path of the current repository instance.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(update_path_local)]
+pub struct LoreRepositoryUpdatePathArgs {}
+
+pub async fn repository_update_path(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryUpdatePathArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, update_path_local).await
+}
+
+fn update_path_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryUpdatePathArgs,
+    callback: LoreEventCallback,
+) -> impl Future<Output = i32> {
+    repository_call_write(
+        globals,
+        callback,
+        args,
+        repository_update_path,
+        move |repository, _token, _args| lore_revision::instance::update_path(repository),
+    )
+}
+
+/// Arguments for deleting the current repository instance.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(instance_delete_local)]
+pub struct LoreRepositoryInstanceDeleteArgs {}
+
+pub async fn instance_delete(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryInstanceDeleteArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, instance_delete_local).await
+}
+
+async fn instance_delete_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryInstanceDeleteArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    repository_call_no_store(
+        globals,
+        callback,
+        args,
+        instance_delete,
+        move |repository, _args| lore_revision::instance::instance_delete(repository),
+    )
+    .await
+}
+
+/// Arguments for moving the current repository instance to a new path.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(instance_move_local)]
+pub struct LoreRepositoryInstanceMoveArgs {
+    /// Target path for the instance.
+    pub target_path: LoreString,
+}
+
+pub async fn instance_move(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryInstanceMoveArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, instance_move_local).await
+}
+
+async fn instance_move_local(
+    globals: LoreGlobalArgs,
+    mut args: LoreRepositoryInstanceMoveArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    // A relative target is relative to the caller's working directory, which for a call relayed
+    // to a service is not this process's. Left as given when it cannot be resolved.
+    if let Ok(target) = util::path::make_absolute_from(
+        args.target_path.as_str(),
+        globals.working_directory().map(std::path::Path::new),
+    ) {
+        args.target_path = target.display().to_string().into();
+    }
+    repository_call_no_store(
+        globals,
+        callback,
+        args,
+        instance_move,
+        move |repository, args| {
+            let target = args.target_path.as_str().to_string();
+            async move { lore_revision::instance::instance_move(repository, &target).await }
+        },
+    )
+    .await
+}
+
+/// Arguments for cloning the current repository instance to a new path.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(instance_clone_local)]
+pub struct LoreRepositoryInstanceCloneArgs {
+    /// Path the clone is created at, which must not exist; a relative path is resolved against
+    /// `globals->working_directory`, or the process's working directory where that is empty
+    pub target_path: LoreString,
+    /// Nonzero to copy the instance's files where the clone cannot share their data blocks;
+    /// zero refuses such a clone
+    pub allow_copy: u8,
+}
+
+/// Clones the current repository instance as `args` describes, in this process or in the service
+/// the call is relayed to.
+pub async fn instance_clone(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryInstanceCloneArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, instance_clone_local).await
+}
+
+async fn instance_clone_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryInstanceCloneArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    // Cloned holding the source's repository lock alone, so no Lore command that takes the
+    // instance's lock changes it while it is copied.
+    repository_call_exclusive_planned(
+        globals,
+        callback,
+        args,
+        instance_clone,
+        move |repository, args| {
+            let target_path = args.target_path.as_str().to_string();
+            async move {
+                lore_revision::instance::instance_clone_plan(
+                    repository,
+                    &target_path,
+                    args.allow_copy != 0,
+                )
+                .await
+            }
+        },
+        async move |repository, _token, plan: &lore_revision::instance::InstanceClonePlan| {
+            lore_revision::instance::instance_clone(repository, plan).await
+        },
+        lore_revision::instance::instance_clone_finish,
+    )
+    .await
+}
+
+/// Arguments for reading a value from the repository config.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, LoreArgs, bitcode::Encode, bitcode::Decode)]
+#[handler(config_get_local)]
+pub struct LoreRepositoryConfigGetArgs {
+    /// Config key to read (`remote_url` or `identity`)
+    pub key: LoreString,
+}
+
+pub async fn config_get(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryConfigGetArgs,
+    callback: LoreEventCallback,
+) -> i32 {
+    dispatch_call(globals, args, callback, config_get_local).await
+}
+
+fn config_get_local(
+    globals: LoreGlobalArgs,
+    args: LoreRepositoryConfigGetArgs,
+    callback: LoreEventCallback,
+) -> impl Future<Output = i32> {
+    repository_call_no_store(
+        globals,
+        callback,
+        args,
+        config_get,
+        move |repository, args| {
+            let key = args.key.to_string();
+            async move {
+                let config_path = repository
+                    .dot_dir_path()?
+                    .join(lore_revision::repository::CONFIG);
+                let config_bytes = lore_io::IoDriver::global()
+                    .read_file_bytes(&config_path)
+                    .await
+                    .internal("Failed to load config file")?;
+                let config_str =
+                    str::from_utf8(&config_bytes).internal("Failed to load config file")?;
+                let config: lore_revision::repository::RepositoryConfig =
+                    toml::de::from_str(config_str).internal("Failed to load config file")?;
+                let value = match key.as_str() {
+                    "remote_url" => config.remote_url.unwrap_or_default(),
+                    "identity" => config.identity.unwrap_or_default(),
+                    _ => {
+                        return Err(lore_revision::repository::RepositoryError::internal(
+                            "Invalid repository path",
+                        ));
+                    }
+                };
+                lore_revision::event::LoreEvent::RepositoryConfigGet(
+                    lore_revision::repository::LoreRepositoryConfigGetEventData {
+                        key: LoreString::from(key.as_str()),
+                        value: LoreString::from(value.as_str()),
+                    },
+                )
+                .send();
+                Ok(())
+            }
+        },
+    )
+}

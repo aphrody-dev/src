@@ -1,0 +1,418 @@
+#!/usr/bin/env bash
+#
+# Create reports, published at https://pages.oils.pub/
+#
+# Usage:
+#   test/spec-compat-html.sh <function name>
+#
+# Examples:
+#   $0 deploy   # Deploys result of test/spec-compat.sh osh-all to ../pages/
+#
+# TODO:
+#   - improve pages.oils.pub/ index.html
+#   - Add epoch or Build timestamp on page - that's at the top
+# - Improve
+#   - summary/percentages in TOP.html?
+#   - More shells: might as well include ash, dash, ysh
+#   - Make a container with `buildah`, so others can collaborate?
+# - Refactor
+#   - maybe clean up test/spec-runner.sh arguments
+
+: ${LIB_OSH=stdlib/osh}
+source $LIB_OSH/bash-strict.sh
+source $LIB_OSH/task-five.sh
+
+REPO_ROOT=$(cd "$(dirname $0)/.."; pwd)
+
+source benchmarks/common.sh  # cmark function
+source test/common.sh
+source test/spec-common.sh
+source test/tsv-lib.sh  # tsv-row
+source web/table/html.sh  # table-sort-begin
+
+# Matches SHELLS in test/spec-compat.sh
+readonly -a SH_LABELS=(bash dash ash zsh mksh ksh toysh sush brush osh)
+
+summary-tsv-row() {
+  ### Print one row or the last total row
+
+  local report=$1
+  local spec_subdir=$2
+  shift 2
+
+  if test $# -eq 1; then
+    local spec_name=$1
+    local -a tsv_files=( _tmp/spec/$spec_subdir/$spec_name.result.tsv )
+  else
+    local spec_name='TOTAL'
+    local -a tsv_files=( "$@" )
+  fi
+
+  awk -v report=$report -v spec_name=$spec_name '
+# skip the first row
+FNR != 1 {
+  case_num = $1
+  sh = $2
+  result = $3
+
+  if (sh == "bash") {
+    bash[result] += 1
+  } else if (sh == "dash") {
+    dash[result] += 1
+  } else if (sh == "ash") {
+    ash[result] += 1
+  } else if (sh == "zsh") {
+    zsh[result] += 1
+  } else if (sh == "mksh") {
+    mksh[result] += 1
+  } else if (sh == "ksh") {
+    ksh[result] += 1
+  } else if (sh == "toysh") {
+    toysh[result] += 1
+  } else if (sh == "sush") {
+    sush[result] += 1
+  } else if (sh == "brush") {
+    brush[result] += 1
+  } else if (sh == "osh") {
+    osh[result] += 1
+  }
+}
+
+END { 
+  if (spec_name == "TOTAL") {
+    href = ""
+  } else {
+    href = sprintf("%s.html", spec_name)
+  }
+
+  if (report == "PASSING") {
+    bash_total = ("pass" in bash) ? bash["pass"] : 0
+    dash_total = ("pass" in dash) ? dash["pass"] : 0
+    ash_total = ("pass" in ash) ? ash["pass"] : 0
+    zsh_total = ("pass" in zsh) ? zsh["pass"] : 0
+    mksh_total = ("pass" in mksh) ? mksh["pass"] : 0
+    ksh_total = ("pass" in ksh) ? ksh["pass"] : 0
+    toysh_total = ("pass" in toysh) ? toysh["pass"] : 0
+    sush_total = ("pass" in sush) ? sush["pass"] : 0
+    brush_total = ("pass" in brush) ? brush["pass"] : 0
+    osh_total = ("pass" in osh) ? osh["pass"] : 0
+
+  } else if (report == "DELTA-osh") {
+    bash_total = bash["pass"] - osh["pass"]
+    dash_total = dash["pass"] - osh["pass"]
+    ash_total = ash["pass"] - osh["pass"]
+    zsh_total = zsh["pass"] - osh["pass"]
+    mksh_total = mksh["pass"] - osh["pass"]
+    ksh_total = ksh["pass"] - osh["pass"]
+    toysh_total = toysh["pass"] - osh["pass"]
+    sush_total = sush["pass"] - osh["pass"]
+    brush_total = brush["pass"] - osh["pass"]
+    osh_total = osh["pass"] - osh["pass"]
+
+  } else if (report == "DELTA-bash") {
+    bash_total = bash["pass"] - bash["pass"]
+    dash_total = dash["pass"] - bash["pass"]
+    ash_total = ash["pass"] - bash["pass"]
+    zsh_total = zsh["pass"] - bash["pass"]
+    mksh_total = mksh["pass"] - bash["pass"]
+    ksh_total = ksh["pass"] - bash["pass"]
+    toysh_total = toysh["pass"] - bash["pass"]
+    sush_total = sush["pass"] - bash["pass"]
+    brush_total = brush["pass"] - bash["pass"]
+    osh_total = osh["pass"] - bash["pass"]
+  }
+
+  # TODO: change this color
+  row_css_class = "cpp-good"  # green
+
+  row = sprintf("%s %s %s %d %d %d %d %d %d %d %d %d %d",
+         row_css_class,
+         spec_name, href,
+         bash_total,
+         dash_total,
+         ash_total,
+         zsh_total,
+         mksh_total,
+         ksh_total,
+         toysh_total,
+         sush_total,
+         brush_total,
+         osh_total)
+
+  # Turn tabs into spaces - awk mutates the row!
+  gsub(/ /, "\t", row)
+  print row
+}
+' "${tsv_files[@]}"
+}
+
+summary-tsv() {
+  local report=$1
+  local spec_subdir=$2
+
+  local manifest=_tmp/spec/SUITE-compat.txt
+
+  # Can't go at the top level because files might not exist!
+  tsv-row \
+    'ROW_CSS_CLASS' 'name' 'name_HREF' "${SH_LABELS[@]}"
+
+  # total row rows goes at the TOP, so it's in <thead> and not sorted.
+  summary-tsv-row $report $spec_subdir _tmp/spec/$spec_subdir/*.result.tsv
+
+  head -n $NUM_SPEC_TASKS $manifest | sort |
+  while read spec_name; do
+    summary-tsv-row $report $spec_subdir $spec_name
+  done 
+}
+
+html-summary-header() {
+  local report=$1
+
+  local prefix=../../..
+  spec-html-head $prefix "$report - Shell Compatibility "
+
+  table-sort-begin "width50"
+
+  cat <<EOF
+<p id="home-link">
+  <a href="/">Root</a> |
+  <a href="https://oils.pub/">oils.pub</a>
+</p>
+
+<h1>$report - Shell Compatibility</h1>
+
+<p>Back to <a href="TOP.html">TOP.html</a>
+</p>
+EOF
+}
+
+html-summary-footer() {
+  local report=$1
+
+  echo "
+<p>Generated by <code>test/spec-compat.sh</code>.
+</p>
+
+<p><a href="$report.tsv">Raw TSV</a>
+</p>
+"
+  table-sort-end "$report"  # The table name
+}
+
+write-summary-html() {
+  local report=$1
+  local spec_subdir=$2
+
+  local dir=_tmp/spec/$spec_subdir
+  local out=$dir/$report.html
+
+  summary-tsv $report $spec_subdir >$dir/$report.tsv 
+
+  # The underscores are stripped when we don't want them to be!
+  # Note: we could also put "pretty_heading" in the schema
+
+  here-schema-tsv >$dir/$report.schema.tsv <<EOF
+column_name     type
+ROW_CSS_CLASS   string
+name            string
+name_HREF       string
+bash            integer
+dash            integer
+ash             integer
+zsh             integer
+mksh            integer
+ksh             integer
+toysh           integer
+sush            integer
+brush           integer
+osh             integer
+EOF
+
+  { html-summary-header "$report"
+    # total row isn't sorted
+    tsv2html --thead-offset 1 $dir/$report.tsv
+    html-summary-footer "$report"
+  } > $out
+
+  log "Comparison: file://$REPO_ROOT/$out"
+}
+
+top-html() {
+  local base_url='../../../web'
+  html-head --title 'Shell Compatibility Reports' \
+    "$base_url/base.css"
+
+  echo '
+  <body class="width35">
+    <style>
+      code { color: green; }
+    </style>
+
+    <p id="home-link">
+      <a href="/">Root</a> |
+      <a href="https://oils.pub/">oils.pub</a>
+    </p>
+  '
+
+  cmark <<'EOF'
+## Shell Compatibility Reports
+
+These reports are based on [spec tests written for Oils][spec-tests].
+
+Here are some summary tables.  **Click** on the column headers to sort:
+
+- [Total Passing](PASSING.html)
+  - Each shell gets 1 point for each case we marked passing.
+  - Our assertions are usually based on a **survey** of `bash`, `dash`, `mksh`,
+    `zsh`, and other shells.  Assertions from 2016-2018 may favor OSH, but
+    there shouldn't be many of them.
+- [Delta bash](DELTA-bash.html)
+  - Compare each shell's passing count vs. bash
+- [Delta OSH](DELTA-osh.html)
+  - Compare each shell's passing count vs. OSH
+
+[tree.html](tree.html)
+
+### Notes and Caveats
+
+- Some tests may fail for innocuous reasons, e.g. printing `'$'` versus `\$`
+  - Shell authors are welcome to use our test suite, and add assertions.
+- OSH has some features that bash doesn't have.
+  - e.g. I removed `spec/strict-options` so shells aren't penalized for not
+    having these features.
+  - But I left `spec/errexit-osh` in because I think new shells should provide 
+    alternatives to the **bugs** in POSIX:
+    [YSH Fixes Shell's Error Handling (`errexit`)](https://oils.pub/release/latest/doc/error-handling.html)
+  - I also think shells should adopt [Simple Word Evaluation in Unix Shell](https://oils.pub/release/latest/doc/simple-word-eval.html) (i.e. deprecate `$IFS`, more so than `zsh`)
+- Other ideas
+  - We could add a  "majority agreement" metric, for a more neutral report.
+  - We could add the Smoosh test suite.  Results are published on our [quality
+page](https://oils.pub/release/latest/quality.html).
+
+### Shells Compared
+
+- GNU `bash`
+  - <https://www.gnu.org/software/bash/>
+  - running fixed version built for Oils
+- `mksh` - shell on Android, derivative of `pdksh`
+  - <http://www.mirbsd.org/mksh.htm>
+  - running fixed version built for Oils
+- AT&T `ksh`
+  - <https://github.com/ksh93/ksh>
+  - running distro package
+- `toysh`
+  - <https://landley.net/toybox/>
+  - running tarball release
+- `sush`
+  - <https://github.com/shellgei/rusty_bash>
+  - running git HEAD
+- `brush`
+   - <https://github.com/reubeno/brush>
+  - running git HEAD
+- `osh`
+  - <https://github.com/oils-for-unix/oils>
+  - running git HEAD
+
+TODO: Add other shells, and be more specific about versions.
+
+### More Comparisons
+
+- [Binary Sizes](../../binary-sizes.txt)
+
+Possibly TODO
+
+- Build times
+- Lines of code?
+  - [Oils has a "compressed" implementation](https://www.oilshell.org/blog/2024/09/line-counts.html)
+- Memory safety
+- Oils has many other:
+  - test suites - `test/gold`, `test/wild`, ...
+  - benchmarks - parse time, runtime, ...
+
+### Links
+
+- Wiki:
+  - [Spec Tests][spec-tests]
+  - [Contributing](https://github.com/oils-for-unix/oils/wiki/Contributing)
+- Zulip:  <https://oilshell.zulipchat.com/>
+  - Feel free to send feedback, and ask questions!
+
+[spec-tests]: https://github.com/oils-for-unix/oils/wiki/Spec-Tests
+
+### Features Not Yet Implemented in OSH
+
+We know about these gaps:
+
+- `kill` builtin, `let` keyword - we do have some spec tests for them
+- `coproc` keyword
+
+EOF
+
+  echo '
+  </body>
+</html>
+'
+
+# Notes on big files:
+# - spec/strict-options, errexit-osh - could be in the YSH suite
+#   - but then that messes up our historical metrics
+#   - or we create a new 'spec-compat' suite?
+# - spec/globignore - a big one for OSH
+
+}
+
+write-compare-html() {
+  local spec_subdir=${1:-'compat'}
+  local dir=_tmp/spec/$spec_subdir
+
+  local out=$dir/TOP.html 
+  top-html >$out
+  log "Top-level index: file://$REPO_ROOT/$out"
+
+  if test -n "${QUICKLY:-}"; then
+    return
+  fi
+
+  write-summary-html PASSING "$spec_subdir"
+  write-summary-html DELTA-osh "$spec_subdir"
+  write-summary-html DELTA-bash "$spec_subdir"
+
+  echo
+  test/spec-compat.sh binary-sizes | tee _tmp/binary-sizes.txt
+}
+
+write-tree-html() {
+  local dir=${1:-_tmp/spec/compat}
+  tree -H './' -T 'Files in spec-compat Report' --charset=ascii $dir \
+    > $dir/tree.html
+}
+
+# TODO: Publish this script
+multi() { ~/git/tree-tools/bin/multi "$@"; }
+
+deploy() {
+  local epoch=${1:-2025-07-28}
+
+  local dest=$PWD/../pages/spec-compat/$epoch
+
+  local web_dir=$dest/web
+  #rm -r -f $web_dir
+
+  #mkdir -p $web_dir
+
+  find web/ -name '*.js' -o -name '*.css' | multi cp $dest
+
+  pushd _tmp
+  find spec/compat -name '*.html' -o -name '*.tsv' | multi cp $dest/renamed-tmp
+  cp -v binary-sizes.txt $dest/renamed-tmp/
+  popd
+
+  write-tree-html $dest/renamed-tmp/spec/compat
+
+  # Work around Jekyll rule for Github pages
+  #mv -v $dest/_tmp $dest/renamed-tmp
+
+  tree $dest/
+}
+
+task-five "$@"

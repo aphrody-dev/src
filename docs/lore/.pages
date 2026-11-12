@@ -1,0 +1,14 @@
+nav:
+  - Docs homepage: README.md
+  - Quickstart: tutorials/quickstart/
+  - System design: explanation/system-design/
+  - FAQ: faq.md
+  - Roadmap: roadmap.md
+  - Release notes: release-notes.md
+  - tutorials
+  - how-to
+  - explanation
+  - reference
+  - developing
+  - ...
+  - glossary.md

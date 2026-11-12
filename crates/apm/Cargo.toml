@@ -1,0 +1,32 @@
+[package]
+name = "aphrody-apm"
+description = "Rust port of Microsoft APM (Agent Package Manager): apm.yml, apm.lock.yaml, resolution, install/compile for Claude Code and Copilot."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+publish.workspace = true
+
+[lib]
+name = "aphrody_apm"
+path = "src/lib.rs"
+
+[[bin]]
+name = "apm"
+path = "src/bin/apm.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+indexmap.workspace = true
+saphyr-parser.workspace = true
+sha2.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true

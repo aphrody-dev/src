@@ -1,0 +1,25 @@
+[package]
+name = "aphrody-conformance"
+description = "Fetch pinned upstream suites, run them, report JSON results."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+publish.workspace = true
+
+[dependencies]
+serde = { workspace = true, features = ["derive", "std"] }
+serde_json = { workspace = true, features = ["std"] }
+toml.workspace = true
+base64.workspace = true
+futures.workspace = true
+reqwest.workspace = true
+rustls.workspace = true
+tokio.workspace = true
+webpki-roots.workspace = true
+
+[lints]
+workspace = true

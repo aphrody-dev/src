@@ -1,0 +1,13 @@
+# cpp/win32/oils_for_unix.lpatch: Windows fixes to _gen/bin/oils_for_unix.mycpp.cc
+# (generated from pylib/os_path.py and core/state.py).  "C:/x" and "C:\x" are
+# absolute paths.
+
+# os_path.join()
+-   if ((s2->startswith(S_ckc) or len(s1) == 0)) {
++   if ((s2->startswith(S_ckc) or len(s1) == 0 or oils_win_isabs(s2->data_))) {
+# os_path.isabs()
+-   return s->startswith(S_ckc);
++   return s->startswith(S_ckc) or oils_win_isabs(s->data_);
+# state.InitDefaultVars(): accept PWD=C:/...
+-       if ((env_pwd->startswith(S_ckc) and pyos::IsSameFile(env_pwd, S_Aru))) {
++       if (((env_pwd->startswith(S_ckc) or oils_win_isabs(env_pwd->data_)) and pyos::IsSameFile(env_pwd, S_Aru))) {

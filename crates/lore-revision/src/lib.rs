@@ -1,0 +1,87 @@
+// SPDX-FileCopyrightText: 2026 Epic Games, Inc.
+// SPDX-License-Identifier: MIT
+
+use std::future::Future;
+use std::pin::Pin;
+
+/// Boxed future for external API boundaries.
+///
+/// Used to reduce monomorphization pressure at crate boundaries by erasing
+/// the concrete future type behind a trait object.
+pub type BoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;
+
+pub mod anchor;
+pub mod auth;
+pub mod branch;
+pub mod change;
+pub mod cluster;
+pub mod commit;
+pub mod dependency;
+pub mod diff;
+pub mod environment;
+pub mod errors;
+pub mod event;
+pub mod file;
+pub mod filter;
+pub mod find;
+pub mod fragment;
+pub mod fs;
+pub mod global;
+pub mod hash;
+pub mod history;
+pub mod immutable;
+pub mod infer;
+pub mod instance;
+pub mod interface;
+pub mod layer;
+pub mod link;
+pub mod lock;
+pub mod logging;
+pub mod shared_store;
+// Re-export lore_base for use by lore_ macros when expanded in downstream crates
+#[doc(hidden)]
+pub use lore_base;
+pub mod lore;
+pub mod merge;
+pub mod merge_carry;
+pub mod metadata;
+pub mod nametable;
+pub mod node;
+pub mod notification;
+pub mod path;
+pub mod progress;
+pub mod proto;
+pub mod protocol;
+pub mod records;
+pub mod relay;
+pub mod repository;
+pub mod revision;
+pub mod runtime;
+pub mod service_state;
+pub mod stage;
+pub mod state;
+pub mod store;
+#[cfg(feature = "test-util")]
+pub mod test_util;
+pub mod util;
+
+#[cfg(all(target_family = "windows", feature = "vfs"))]
+pub mod projfs;
+
+pub use lore_base::lore_drain_tasks;
+pub use lore_base::lore_limit_drain_tasks;
+pub use lore_base::lore_spawn_blocking;
+pub use lore_base::lore_spawn_blocking_nocontext;
+
+/// Ceiling on concurrently-spawned tasks in a filesystem or state tree walk:
+/// the diff, stage, realize and verify-filesystem walks.
+///
+/// These tasks wait on the `lore-io` syscall pool rather than holding a core, so
+/// the bound keeps that pool fed while capping live per-task state. A walk that
+/// reaches the ceiling carries the work rather than waiting for a permit: the
+/// revision diff queues it for the task that found it, the filesystem diff and
+/// the local-size walk take it inline, and the walks bounded by the length of
+/// their own `JoinSet` wait on a task of theirs, which needs no permit to
+/// finish. So any value >= 1 is correct, and waiting for a permit instead would
+/// deadlock, since a task holds its own until the subtrees it spawned finish.
+pub const MAX_CONCURRENT_TREE_TASKS: usize = 1000;

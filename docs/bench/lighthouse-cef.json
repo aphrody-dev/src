@@ -1,0 +1,30 @@
+{
+ "next": {
+  "cef-156": {
+   "runs": [
+    {
+     "ok": false,
+     "err": "Failed to create a page for context (id = undefined)"
+    },
+    {
+     "ok": false,
+     "err": "Failed to create a page for context (id = undefined)"
+    },
+    {
+     "ok": false,
+     "err": "Failed to create a page for context (id = undefined)"
+    }
+   ],
+   "median": {
+    "score": null,
+    "fcp": null,
+    "lcp": null,
+    "cls": null,
+    "tbt": null,
+    "ttfb": null,
+    "si": null
+   }
+  }
+ },
+ "sites": {}
+}

@@ -6,18 +6,6 @@
 	path = apps/rosegriffon
 	url = https://github.com/aphrody-labs/rosegriffon.git
 	branch = main
-[submodule "crates/bench"]
-	path = crates/bench
-	url = https://github.com/aphrody-dev/bench.git
-	branch = main
-[submodule "crates/ring3-agent"]
-	path = crates/ring3-agent
-	url = https://github.com/aphrody-dev/ring3-agent.git
-	branch = main
-[submodule "crates/rust-stack"]
-	path = crates/rust-stack
-	url = https://github.com/aphrody-dev/rust-stack.git
-	branch = main
 [submodule "apps/r2b"]
 	path = apps/r2b
 	url = https://github.com/aphrody-labs/r2b.git

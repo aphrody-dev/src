@@ -1,0 +1,1824 @@
+// SPDX-FileCopyrightText: 2026 Epic Games, Inc.
+// SPDX-License-Identifier: MIT
+use std::collections::HashMap;
+use std::fs;
+use std::io::Read;
+use std::io::Write;
+use std::path::Path;
+use std::path::PathBuf;
+use std::str;
+use std::sync::Arc;
+use std::sync::OnceLock;
+use std::sync::RwLock;
+
+use base64::prelude::BASE64_STANDARD;
+use base64::prelude::Engine as _;
+use lore_base::directories::project_directory;
+use lore_base::env::AUTH_PATH_VAR;
+use lore_base::env::AUTH_STORE_VAR;
+use lore_base::env::AuthStore;
+use lore_base::error::Disconnected;
+use lore_base::error::NotAuthenticated;
+use lore_base::error::TokenNotFound;
+use lore_base::fs::lock::FSLock;
+use lore_base::lore_debug;
+use lore_base::lore_trace;
+use lore_base::lore_warn;
+use lore_error_set::prelude::*;
+use ring::aead::AES_256_GCM;
+use ring::aead::Aad;
+use ring::aead::BoundKey;
+use ring::aead::NONCE_LEN;
+use ring::aead::Nonce;
+use ring::aead::NonceSequence;
+use ring::aead::OpeningKey;
+use ring::aead::SealingKey;
+use ring::aead::UnboundKey;
+use ring::error::Unspecified;
+use ring::rand::SecureRandom;
+use ring::rand::SystemRandom;
+use serde::Deserialize;
+use serde::Serialize;
+use tokio::sync::MappedMutexGuard;
+use tokio::sync::Mutex;
+use tokio::sync::MutexGuard;
+use toml;
+
+use crate::jwt::domain_in_root_domains;
+use crate::util::get_domain_or_empty;
+
+/// Secure-store service these secrets live under.
+const SERVICE_NAME: &str = "org.lore";
+
+/// Secure-store account holding the encryption key, and the stem of its
+/// on-disk fallback file. Distinct from the name earlier versions used: they
+/// store a different blob layout under the old name, and would overwrite this
+/// one with it whenever both fall back to disk.
+const ENCRYPTION_KEY_TARGET: &str = "tokenstore_encryption_key";
+
+#[error_set]
+pub enum TokenStoreError {
+    TokenNotFound,
+}
+
+#[error_set]
+pub enum RefreshError {
+    TokenNotFound,
+    NotAuthenticated,
+    Disconnected,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct IdentityToken {
+    /// User identity
+    user_id: String,
+    /// Base64 encoded (encrypted) authentication token
+    token: String,
+    /// The root domains this token can be given to without security concerns
+    #[serde(default)]
+    acceptable_root_domains: Vec<String>,
+    /// Base64 encoded (encrypted) one-time-use refresh token.
+    /// Stored separately from the auth token because it has a different
+    /// lifecycle: consumed on use and replaced atomically.
+    #[serde(default)]
+    refresh_token: Option<String>,
+    /// When `refresh_token` stops working, in milliseconds since the UNIX epoch, or 0 when the
+    /// issuer named no deadline. Stored, removed and restored with `refresh_token`.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    refresh_expires: u64,
+    /// The scope the issuer granted, space-delimited as RFC 6749 §3.3 has it.
+    #[serde(default)]
+    scope: Option<String>,
+}
+
+fn is_zero(value: &u64) -> bool {
+    *value == 0
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct RemoteIdentity {
+    /// Auth service remote URL
+    remote: String,
+    /// Token info
+    token: Vec<IdentityToken>,
+}
+
+impl std::fmt::Debug for RemoteIdentity {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "remote: {}, token: [...]", self.remote)
+    }
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, Default)]
+pub struct TokenMap {
+    /// Tokens per remote (an auth service URL) and user identity info
+    remotes: Vec<RemoteIdentity>,
+}
+
+/// Each token store's map as last read, keyed by the store's directory: a process carrying out
+/// calls for other processes reads the store each caller names.
+static TOKEN_MAPS: OnceLock<Mutex<HashMap<PathBuf, Option<TokenMap>>>> = OnceLock::new();
+
+pub fn tokens_only_for_recipient_domain(domain: String) -> impl FnMut(&&IdentityToken) -> bool {
+    move |item: &&IdentityToken| {
+        // backwards compatibility with old `IdentityToken` that don't have the acceptable_root_domains
+        // Once end users are using the latest version of Lore then we can remove this case. Without
+        // this check, new Lore clients with old tokens will have to run login again
+        if item.acceptable_root_domains.is_empty() {
+            true
+        } else {
+            domain_in_root_domains(&domain, &item.acceptable_root_domains)
+        }
+    }
+}
+
+/// No filter on the tokens you get back. Use with caution.
+/// See comment at top of `urc-core::auth` - Check Token Recipient
+pub fn vulnerable_all_tokens() -> impl FnMut(&&IdentityToken) -> bool {
+    move |_item: &&IdentityToken| true
+}
+
+/// The directory of the token store this call reads, which keys what is cached from it. A store
+/// that cannot be located is keyed as the empty path, leaving the failure to the operation that
+/// reads it.
+fn cache_key() -> PathBuf {
+    base_path(false).unwrap_or_default()
+}
+
+/// The cached map of the token store this call reads, `None` until it is loaded.
+async fn cached_token_map() -> MappedMutexGuard<'static, Option<TokenMap>> {
+    let maps = TOKEN_MAPS.get_or_init(Default::default).lock().await;
+    MutexGuard::map(maps, |maps| maps.entry(cache_key()).or_default())
+}
+
+/// Base directory holding the auth store files (`tokenstore.toml` and the
+/// encryption-key fallback). The `LORE_AUTH_PATH` environment variable
+/// overrides the default per-user configuration directory.
+fn base_path(create_dir: bool) -> Result<PathBuf, TokenStoreError> {
+    if let Some(path) = lore_base::env::var(AUTH_PATH_VAR)
+        && !path.is_empty()
+    {
+        let path = PathBuf::from(path);
+        if create_dir {
+            create_store_dir(path.as_path()).map_err(|e| {
+                lore_warn!("Failed to find base path: {e}");
+                TokenStoreError::internal_with_context(e, "Failed to find base path")
+            })?;
+        }
+        return Ok(path);
+    }
+
+    let path =
+        project_directory().ok_or_else(|| TokenStoreError::internal("Failed to find base path"))?;
+    let path = path.config_local_dir();
+    if create_dir {
+        create_store_dir(path).map_err(|e| {
+            lore_warn!("Failed to find base path: {e}");
+            TokenStoreError::internal_with_context(e, "Failed to find base path")
+        })?;
+    }
+    Ok(path.to_path_buf())
+}
+
+/// Creates the token store directory `path` and its missing parents, on Unix readable and writable
+/// by its owner alone whatever the umask, so that no other account can put a store file in it.
+fn create_store_dir(path: &Path) -> std::io::Result<()> {
+    let mut builder = fs::DirBuilder::new();
+    builder.recursive(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::DirBuilderExt;
+        builder.mode(0o700);
+    }
+    builder.create(path)
+}
+
+/// Path to the token store. Earlier versions used `tokens.toml` in the same
+/// directory and seal tokens in a layout this one does not read; that file is
+/// left alone rather than migrated, so the two can coexist without either
+/// resetting the other's tokens.
+fn token_map_path(create_dir: bool) -> Result<PathBuf, TokenStoreError> {
+    let path = base_path(create_dir)?;
+    Ok(path.join("tokenstore.toml"))
+}
+
+/// Information about a stored identity token.
+#[derive(Debug, Clone)]
+pub struct StoredIdentityInfo {
+    /// Auth service URL
+    pub auth_url: String,
+    /// Resource ID (empty for authentication tokens)
+    pub resource: String,
+    /// User identity
+    pub user_id: String,
+    /// Root domains this token is authorized for
+    pub acceptable_root_domains: Vec<String>,
+    /// Expiry time in milliseconds since UNIX epoch, or 0 if unavailable
+    pub expires_ms: u64,
+    /// Decrypted token (only populated when requested)
+    pub token: String,
+}
+
+/// Splits a token store key into (`auth_url`, `resource_id`).
+///
+/// Authorization tokens are stored under `"{auth_url}/{repository_id}"` where
+/// `repository_id` is a 32-character hex string. Legacy entries may use
+/// `"{auth_url}/urc-{repository_id}"` with a `urc-` prefix.
+/// Authentication tokens use just the `auth_url` with no resource suffix.
+///
+/// Only considers the path portion of the URL to avoid matching hostnames
+/// like `urc-auth.example.com`.
+fn split_remote_resource(store_key: &str) -> (String, String) {
+    if let Ok(url) = url::Url::parse(store_key) {
+        let path = url.path();
+        // New format: last path segment is a 32-char hex repository ID
+        if let Some(pos) = path.rfind('/') {
+            let segment = &path[pos + 1..];
+            if segment.len() == 32 && segment.chars().all(|c| c.is_ascii_hexdigit()) {
+                let base_end = store_key.len() - path.len() + pos;
+                return (store_key[..base_end].to_string(), segment.to_string());
+            }
+        }
+        // Legacy format: last path segment starts with "urc-"
+        if let Some(pos) = path.rfind("/urc-") {
+            let resource = &path[pos + 1..];
+            let base_end = store_key.len() - path.len() + pos;
+            return (store_key[..base_end].to_string(), resource.to_string());
+        }
+    }
+    (store_key.to_string(), String::new())
+}
+
+/// Load all stored identities across all remotes, decrypting tokens to extract expiry.
+///
+/// When `include_token` is true, the decrypted token string is included in the result.
+pub async fn load_all_identities(
+    include_token: bool,
+) -> Result<Vec<StoredIdentityInfo>, TokenStoreError> {
+    let identity_entries = {
+        let mut store = cached_token_map().await;
+        if store.is_none()
+            && let Ok(guard) = lock_token_map().await
+            && let Ok(loaded_map) = load_token_map(&guard)
+        {
+            store.replace(loaded_map);
+        }
+
+        let mut entries = vec![];
+        if let Some(map) = store.as_ref() {
+            for remote in &map.remotes {
+                let (auth_url, resource) = split_remote_resource(&remote.remote);
+                for identity in &remote.token {
+                    entries.push((auth_url.clone(), resource.clone(), identity.clone()));
+                }
+            }
+        }
+        entries
+    };
+
+    let mut result = vec![];
+    for (auth_url, resource, identity) in identity_entries {
+        let (expires_ms, token) = match decrypt_token(identity.token).await {
+            Ok(token_str) => {
+                let expires =
+                    crate::jwt::user_info_from_token(token_str.clone()).map_or(0, |i| i.expires);
+                let token = if include_token {
+                    token_str
+                } else {
+                    String::new()
+                };
+                (expires, token)
+            }
+            Err(_) => (0, String::new()),
+        };
+        result.push(StoredIdentityInfo {
+            auth_url,
+            resource,
+            user_id: identity.user_id,
+            acceptable_root_domains: identity.acceptable_root_domains,
+            expires_ms,
+            token,
+        });
+    }
+
+    Ok(result)
+}
+
+/// Clear token map and token store file.
+pub async fn reset_tokens() -> Result<(), TokenStoreError> {
+    let mut store = cached_token_map().await;
+    let guard = lock_token_map().await?;
+    store_token_map(&guard, &TokenMap::default())?;
+    if store.is_some() {
+        store.replace(TokenMap::default());
+    }
+    Ok(())
+}
+
+/// Open options for the store files. On Unix a file they create is readable
+/// by its owner alone, whatever the umask, and a link in place of a store file
+/// is refused rather than followed. On Windows the share mode admits
+/// concurrent readers but denies other writers for as long as the file is
+/// open, excluding even processes that do not take the store lock, and a new
+/// file takes its directory's access list.
+fn store_open_options() -> fs::OpenOptions {
+    let mut options = fs::OpenOptions::new();
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        options.mode(0o600).custom_flags(libc::O_NOFOLLOW);
+    }
+    #[cfg(windows)]
+    {
+        use std::os::windows::fs::OpenOptionsExt;
+        options.share_mode(windows_sys::Win32::Storage::FileSystem::FILE_SHARE_READ);
+    }
+    options
+}
+
+/// Serializes store file access across lore processes via the `<file>.lock`
+/// sidecar, released when the returned guard drops. Hold the guard across a
+/// whole load -> modify -> store span (not just the individual file
+/// operations) so concurrent processes cannot interleave their updates.
+async fn lock_store_file(path: &Path) -> Result<FSLock, TokenStoreError> {
+    FSLock::acquire_file_lock(path, false).await.map_err(|e| {
+        lore_warn!("Failed to lock store file: {e}");
+        TokenStoreError::internal_with_context(e, "Failed to lock store file")
+    })
+}
+
+/// Cross-process guard for `tokenstore.toml`, creating the store directory so
+/// the lock sidecar can be placed next to the file.
+async fn lock_token_map() -> Result<FSLock, TokenStoreError> {
+    lock_store_file(token_map_path(true)?.as_path()).await
+}
+
+/// Refreshes the in-memory token map from disk ahead of a mutation: another
+/// process may have updated the file since it was cached. Callers hold the
+/// store lock, so the reloaded state cannot change before it is written back.
+fn reload_token_map(guard: &FSLock, store: &mut Option<TokenMap>) {
+    if let Ok(loaded_map) = load_token_map(guard) {
+        store.replace(loaded_map);
+    }
+}
+
+/// Loads `tokenstore.toml`. The `_guard` parameter proves the caller holds the
+/// cross-process store lock for the duration of the read.
+fn load_token_map(_guard: &FSLock) -> Result<TokenMap, TokenStoreError> {
+    let path = token_map_path(false)?;
+    let mut options = store_open_options();
+    options.read(true);
+    let mut config_file = match options.open(path.as_path()) {
+        Ok(file) => file,
+        Err(err) => {
+            lore_debug!("Failed to load token map file: {err}");
+            return Err(TokenStoreError::internal_with_context(
+                err,
+                "Failed to load token map",
+            ));
+        }
+    };
+
+    let mut config = String::default();
+    // Read via the guarded handle; `fs::read_to_string` would re-open the
+    // file without the cross-process guard.
+    #[allow(clippy::verbose_file_reads)]
+    config_file.read_to_string(&mut config).map_err(|err| {
+        lore_warn!("Failed to read token map file in {}: {err}", path.display());
+        TokenStoreError::internal_with_context(err, "Failed to load token map")
+    })?;
+
+    let config = toml::from_str(config.as_str()).map_err(|err| {
+        lore_warn!(
+            "Failed to parse token map file in {}: {err}",
+            path.display()
+        );
+        TokenStoreError::internal_with_context(err, "Failed to load token map")
+    })?;
+    lore_trace!("Loaded token map {config:?}");
+
+    Ok(config)
+}
+
+/// Stores `tokenstore.toml`. The `_guard` parameter proves the caller holds the
+/// cross-process store lock for the duration of the write.
+fn store_token_map(_guard: &FSLock, token_map: &TokenMap) -> Result<(), TokenStoreError> {
+    let path = token_map_path(true)?;
+
+    lore_trace!("Store token map: {token_map:?}");
+    let config_string = toml::to_string_pretty(token_map).map_err(|e| {
+        lore_warn!("Failed to store token map: {e}");
+        TokenStoreError::internal_with_context(e, "Failed to store token map")
+    })?;
+
+    let mut options = store_open_options();
+    options.create(true).write(true);
+    let mut config_file = match options.open(path.as_path()) {
+        Ok(file) => file,
+        Err(err) => {
+            lore_debug!("Failed to store token map file: {err}");
+            return Err(TokenStoreError::internal_with_context(
+                err,
+                "Failed to store token map",
+            ));
+        }
+    };
+
+    // Truncate only after the write guard is held, so a concurrent reader
+    // can never observe a partially written file.
+    config_file
+        .set_len(0)
+        .and_then(|()| config_file.write_all(config_string.as_bytes()))
+        .map_err(|e| {
+            lore_warn!("Failed to store token map: {e}");
+            TokenStoreError::internal_with_context(e, "Failed to store token map")
+        })
+}
+
+/// Where the encryption key lives: what `LORE_AUTH_STORE` names, and the secure store where it is
+/// unset, blank or names neither store. A call relayed to the service reads its caller's value, and
+/// never the service's own, so a caller that made no choice uses the secure store. Outside a call
+/// the process's own value applies, which a secure store that failed to take a key switches to the
+/// fallback.
+fn auth_store() -> AuthStore {
+    lore_base::env::var(AUTH_STORE_VAR)
+        .and_then(|store| AuthStore::from_var(&store))
+        .unwrap_or(AuthStore::Secure)
+}
+
+/// The fallback file of the secret `name`, in the token store directory `directory`.
+fn store_fallback_path(directory: &Path, name: &str) -> PathBuf {
+    directory.join(format!("sec-{name}"))
+}
+
+static KEYRING_ENTRIES: OnceLock<RwLock<HashMap<String, Arc<keyring_core::Entry>>>> =
+    OnceLock::new();
+
+/// In-memory cache of the loaded encryption keys, keyed by the token store directory and the store
+/// that keeps the key.
+///
+/// A key is invariant for the lifetime of its secure-store entry, so it is read
+/// once per token store: a fallback key lives beside its store, and a process
+/// carrying out calls for other processes reads the store each caller names.
+/// Nonces are drawn at random per seal and travel with the sealed token, so
+/// nothing here has to be written back.
+static ENCRYPTION_CACHE: OnceLock<Mutex<HashMap<KeyLocation, Vec<u8>>>> = OnceLock::new();
+
+/// Where the encryption key of a token store is kept, evaluated once per key load so that the
+/// key is read, written and cached for one location.
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+struct KeyLocation {
+    /// The directory of the token store the key protects, which holds the fallback file.
+    directory: PathBuf,
+    store: AuthStore,
+}
+
+impl KeyLocation {
+    /// The key location of the token store this call reads.
+    fn current() -> Result<Self, TokenStoreError> {
+        Ok(Self {
+            directory: base_path(false)?,
+            store: auth_store(),
+        })
+    }
+}
+
+const SECURE_STORE_MSG: &str =
+    "Failed to store secret in secure storage, encryption key will be stored in plain text";
+
+fn new_keyring_entry(target: &str) -> Result<keyring_core::Entry, TokenStoreError> {
+    secure_store_entry(target).map_err(|e| {
+        lore_warn!("{SECURE_STORE_MSG}: {e}");
+        TokenStoreError::internal_with_context(e, SECURE_STORE_MSG)
+    })
+}
+
+/// The secure-store entry for the token store `target` names.
+///
+/// A default store the process installed, such as the mock the tests install, takes precedence
+/// and is addressed by service and target. Otherwise the entry is the OS store's item that keyring
+/// 3 addressed for the same target, so a key it stored is still found.
+fn secure_store_entry(target: &str) -> keyring_core::Result<keyring_core::Entry> {
+    if keyring_core::get_default_store().is_some() {
+        return keyring_core::Entry::new(SERVICE_NAME, target);
+    }
+    os_store_entry(target)
+}
+
+/// The login keychain's generic password with service `SERVICE_NAME` and account `target`.
+#[cfg(target_os = "macos")]
+fn os_store_entry(target: &str) -> keyring_core::Result<keyring_core::Entry> {
+    use keyring_core::api::CredentialStoreApi;
+    apple_native_keyring_store::keychain::Store::new()?.build(SERVICE_NAME, target, None)
+}
+
+/// The generic credential named `target`.
+#[cfg(windows)]
+fn os_store_entry(target: &str) -> keyring_core::Result<keyring_core::Entry> {
+    use keyring_core::api::CredentialStoreApi;
+    let modifiers = HashMap::from([("target", target)]);
+    windows_native_keyring_store::Store::new()?.build(SERVICE_NAME, "identity", Some(&modifiers))
+}
+
+/// The session keyring's key described by `target`.
+#[cfg(target_os = "linux")]
+fn os_store_entry(target: &str) -> keyring_core::Result<keyring_core::Entry> {
+    use keyring_core::api::CredentialStoreApi;
+    let modifiers = HashMap::from([("description", target)]);
+    linux_keyutils_keyring_store::Store::new()?.build(SERVICE_NAME, "identity", Some(&modifiers))
+}
+
+/// No OS store elsewhere: the secret is kept in the fallback file.
+#[cfg(not(any(target_os = "macos", windows, target_os = "linux")))]
+fn os_store_entry(_target: &str) -> keyring_core::Result<keyring_core::Entry> {
+    Err(keyring_core::Error::NoDefaultStore)
+}
+
+/// Returns the (cached) keyring entry for `target`. Entries are cached per
+/// target: a single cache slot would pin whichever target was requested first
+/// and hand that entry back for every other target.
+fn keyring_entry(target: &str) -> Result<Arc<keyring_core::Entry>, TokenStoreError> {
+    let entries = KEYRING_ENTRIES.get_or_init(|| RwLock::new(HashMap::new()));
+    if let Ok(cache) = entries.read()
+        && let Some(entry) = cache.get(target)
+    {
+        return Ok(Arc::clone(entry));
+    }
+
+    let entry = Arc::new(new_keyring_entry(target)?);
+    if let Ok(mut cache) = entries.write() {
+        cache.insert(target.to_string(), Arc::clone(&entry));
+    }
+    Ok(entry)
+}
+
+pub async fn store_user_token(
+    auth_endpoint: &str,
+    identity: &str,
+    token: &str,
+    acceptable_root_domains: Vec<String>,
+) -> Result<(), TokenStoreError> {
+    let identity_token =
+        new_identity_token(auth_endpoint, identity, token, acceptable_root_domains).await?;
+    store_identity_token(auth_endpoint, identity_token, RefreshToken::Keep).await
+}
+
+/// Stores `token` with `refresh_token`, the time in milliseconds since the UNIX epoch it
+/// `refresh_expires` at (0 for unknown), and the `scope` it was granted for. Unlike
+/// [`store_user_token`], it replaces the refresh token and the scope of the entry, so a
+/// `refresh_token` of `None` leaves none behind.
+pub async fn store_user_token_and_refresh_token(
+    auth_endpoint: &str,
+    identity: &str,
+    token: &str,
+    acceptable_root_domains: Vec<String>,
+    refresh_token: Option<&str>,
+    refresh_expires: u64,
+    scope: Option<&str>,
+) -> Result<(), TokenStoreError> {
+    let mut identity_token =
+        new_identity_token(auth_endpoint, identity, token, acceptable_root_domains).await?;
+    if let Some(refresh_token) = refresh_token {
+        identity_token.refresh_token = Some(encrypt_token(refresh_token).await?);
+        identity_token.refresh_expires = refresh_expires;
+    }
+    identity_token.scope = scope.map(str::to_owned);
+    store_identity_token(auth_endpoint, identity_token, RefreshToken::Replace).await
+}
+
+/// Whether storing a token keeps the refresh token, and the scope it was granted for, of the
+/// entry it replaces.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum RefreshToken {
+    Keep,
+    Replace,
+}
+
+/// The entry for `token`, sealed. `auth_endpoint`'s domain joins `acceptable_root_domains`: a
+/// token obtained from an endpoint may be sent back to it.
+async fn new_identity_token(
+    auth_endpoint: &str,
+    identity: &str,
+    token: &str,
+    mut acceptable_root_domains: Vec<String>,
+) -> Result<IdentityToken, TokenStoreError> {
+    // A work-around for Auth Service's issuer being a keyword rather than a domain.
+    acceptable_root_domains.push(get_domain_or_empty(auth_endpoint.trim_end_matches('/')));
+    Ok(IdentityToken {
+        user_id: identity.to_string(),
+        token: encrypt_token(token).await?,
+        acceptable_root_domains,
+        refresh_token: None,
+        refresh_expires: 0,
+        scope: None,
+    })
+}
+
+async fn store_identity_token(
+    auth_endpoint: &str,
+    identity_token: IdentityToken,
+    refresh_token: RefreshToken,
+) -> Result<(), TokenStoreError> {
+    let auth_endpoint = auth_endpoint.trim_end_matches('/');
+    let identity = identity_token.user_id.clone();
+    lore_trace!(
+        "Store user {identity} token for auth endpoint {auth_endpoint} and audiences '{:?}'",
+        identity_token.acceptable_root_domains
+    );
+
+    let mut map_lock = cached_token_map().await;
+    let guard = lock_token_map().await?;
+    reload_token_map(&guard, &mut map_lock);
+    if let Some(map) = map_lock.as_mut() {
+        if let Some(remote) = map
+            .remotes
+            .iter_mut()
+            .find(|entry| entry.remote == auth_endpoint)
+        {
+            if let Some(existing_index) = remote
+                .token
+                .iter()
+                .position(|entry| entry.user_id == identity_token.user_id)
+            {
+                let mut new_token = identity_token;
+                if refresh_token == RefreshToken::Keep {
+                    let existing = &mut remote.token[existing_index];
+                    new_token.refresh_token = existing.refresh_token.take();
+                    new_token.refresh_expires = existing.refresh_expires;
+                    new_token.scope = existing.scope.take();
+                }
+                remote.token[existing_index] = new_token;
+                lore_trace!(
+                    "Replace user {identity} token for auth_endpoint {auth_endpoint} in existing entry"
+                );
+            } else {
+                lore_trace!(
+                    "Store user {identity} token for auth_endpoint {auth_endpoint} in new identity entry"
+                );
+                remote.token.push(identity_token);
+            }
+        } else {
+            lore_trace!(
+                "Store user {identity} token for auth_endpoint {auth_endpoint} in new remote entry"
+            );
+            map.remotes.push(RemoteIdentity {
+                remote: auth_endpoint.to_string(),
+                token: vec![identity_token],
+            });
+        }
+    } else {
+        lore_trace!(
+            "Store user {identity} token for auth_endpoint {auth_endpoint} in new entry in new token map"
+        );
+        let map = TokenMap {
+            remotes: vec![RemoteIdentity {
+                remote: auth_endpoint.to_string(),
+                token: vec![identity_token],
+            }],
+        };
+        *map_lock = Some(map);
+    }
+
+    if let Some(map) = map_lock.as_ref() {
+        store_token_map(&guard, map)
+    } else {
+        lore_debug!("Unexpected, no token map to store to file");
+        Err(TokenStoreError::internal("Failed to store token map"))
+    }
+}
+
+/// Load the first suitable token for the given identity from the shared store
+///
+/// filter - You almost certainly want to filter out tokens that are invalid for the domain you want
+/// to use them against. See comment at top of `urc-core::auth` - Check Token Recipient
+pub async fn load_user_token_from_store<P>(
+    auth_endpoint: &str,
+    identity: &str,
+    mut base_filter: P,
+) -> Result<String, TokenStoreError>
+where
+    P: FnMut(&&IdentityToken) -> bool,
+{
+    let auth_endpoint = auth_endpoint.trim_end_matches('/');
+
+    if auth_endpoint.is_empty() {
+        lore_debug!("Load user token failed, no auth endpoint provided");
+        return Err(TokenNotFound.into());
+    }
+    if identity.is_empty() {
+        lore_debug!("Load user token failed, no identity");
+        return Err(TokenNotFound.into());
+    }
+    lore_trace!("Load user {identity} token for auth_endpoint {auth_endpoint}");
+
+    let encrypted_token = {
+        let mut store = cached_token_map().await;
+        if store.is_none()
+            && let Ok(guard) = lock_token_map().await
+            && let Ok(loaded_map) = load_token_map(&guard)
+        {
+            store.replace(loaded_map);
+        }
+        if let Some(map) = store.as_ref()
+            && let Some(remote) = map
+                .remotes
+                .iter()
+                .find(|entry| entry.remote == auth_endpoint)
+        {
+            let token_filter =
+                move |item: &&IdentityToken| base_filter(item) && item.user_id == identity;
+
+            if let Some(token_identity) = remote.token.iter().find(token_filter) {
+                lore_trace!(
+                    "Found user {identity} token for auth_endpoint {auth_endpoint}, loading"
+                );
+                Some(token_identity.token.clone())
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+    };
+    match encrypted_token {
+        Some(token) => decrypt_token(token).await,
+        None => Err(TokenNotFound.into()),
+    }
+}
+
+/// Load the authentication token for `identity`, preferring one the caller
+/// supplied over the shared store.
+pub async fn load_user_token<P>(
+    auth_endpoint: &str,
+    identity: &str,
+    base_filter: P,
+    identity_token: &str,
+    access_token: &str,
+) -> Result<String, TokenStoreError>
+where
+    P: FnMut(&&IdentityToken) -> bool,
+{
+    if !identity_token.is_empty() {
+        lore_debug!("Using the supplied identity token for {identity}");
+        return Ok(identity_token.to_string());
+    }
+
+    if !access_token.is_empty() {
+        lore_debug!(
+            "Only an access token was supplied, not reading an authentication token from the store for {identity}"
+        );
+        return Err(TokenNotFound.into());
+    }
+
+    load_user_token_from_store(auth_endpoint, identity, base_filter).await
+}
+
+/// Returns true if `remote` is the base `auth_url` or a resource-scoped entry
+/// under it (either new `"{auth_url}/{hex_id}"` or legacy `"{auth_url}/urc-*"` format).
+fn is_entry_for_auth_url(remote: &str, auth_url: &str) -> bool {
+    if remote == auth_url {
+        return true;
+    }
+    if let Some(suffix) = remote
+        .strip_prefix(auth_url)
+        .and_then(|s| s.strip_prefix('/'))
+    {
+        // New format: 32-char hex repository ID
+        if suffix.len() == 32 && suffix.chars().all(|c| c.is_ascii_hexdigit()) {
+            return true;
+        }
+        // Legacy format: urc- prefix
+        if suffix.starts_with("urc-") {
+            return true;
+        }
+    }
+    false
+}
+
+pub struct RemovedRefreshToken {
+    pub user_id: String,
+    pub refresh_token: String,
+}
+
+/// Remove a user's tokens from the given auth URL and all its resource-scoped entries, and
+/// return the refresh token removed from the base entry.
+///
+/// Removes the identity from both the base `auth_url` entry (authentication token)
+/// and all resource-scoped entries (authorization tokens), matching both new
+/// `"{auth_url}/{repository_id}"` and legacy `"{auth_url}/urc-*"` key formats.
+pub async fn remove_user_tokens_for_auth_url(
+    auth_url: &str,
+    identity: &str,
+) -> Result<Vec<RemovedRefreshToken>, TokenStoreError> {
+    let auth_url = auth_url.trim_end_matches('/');
+
+    let mut store = cached_token_map().await;
+    let guard = lock_token_map().await?;
+    reload_token_map(&guard, &mut store);
+
+    let mut modified = false;
+    let mut removed = Vec::new();
+
+    if let Some(map) = store.as_mut() {
+        let mut indices_to_process: Vec<usize> = map
+            .remotes
+            .iter()
+            .enumerate()
+            .filter(|(_, entry)| is_entry_for_auth_url(&entry.remote, auth_url))
+            .map(|(i, _)| i)
+            .collect();
+
+        // Process in reverse to preserve indices during removal
+        indices_to_process.reverse();
+
+        for idx in indices_to_process {
+            let before_len = map.remotes[idx].token.len();
+            if map.remotes[idx].remote == auth_url {
+                removed.extend(
+                    map.remotes[idx]
+                        .token
+                        .iter()
+                        .filter(|t| t.user_id == identity)
+                        .cloned(),
+                );
+            }
+            map.remotes[idx].token.retain(|t| t.user_id != identity);
+
+            if map.remotes[idx].token.len() < before_len {
+                lore_trace!(
+                    "Removed token for endpoint {} identity {identity}",
+                    map.remotes[idx].remote
+                );
+                modified = true;
+            }
+
+            if map.remotes[idx].token.is_empty() {
+                lore_trace!(
+                    "Removed empty remote entry for endpoint {}",
+                    map.remotes[idx].remote
+                );
+                map.remotes.remove(idx);
+            }
+        }
+    }
+
+    if modified && let Some(store) = store.as_ref() {
+        store_token_map(&guard, store)?;
+    }
+    drop(guard);
+    drop(store);
+
+    Ok(open_removed_refresh_tokens(removed).await)
+}
+
+/// Remove all tokens for the given auth URL and all its resource-scoped entries, and return
+/// the refresh tokens removed from the base entry.
+///
+/// Removes all identities from both the base `auth_url` entry and all
+/// resource-scoped entries (both new and legacy key formats).
+pub async fn remove_all_tokens_for_auth_url(
+    auth_url: &str,
+) -> Result<Vec<RemovedRefreshToken>, TokenStoreError> {
+    let auth_url = auth_url.trim_end_matches('/');
+
+    let mut store = cached_token_map().await;
+    let guard = lock_token_map().await?;
+    reload_token_map(&guard, &mut store);
+
+    let mut modified = false;
+    let mut removed = Vec::new();
+
+    if let Some(map) = store.as_mut() {
+        let before_len = map.remotes.len();
+
+        if let Some(entry) = map.remotes.iter().find(|entry| entry.remote == auth_url) {
+            removed.extend(entry.token.iter().cloned());
+        }
+
+        map.remotes
+            .retain(|entry| !is_entry_for_auth_url(&entry.remote, auth_url));
+
+        if map.remotes.len() < before_len {
+            lore_trace!("Removed all token entries for auth URL {auth_url}");
+            modified = true;
+        }
+    }
+
+    if modified && let Some(store) = store.as_ref() {
+        store_token_map(&guard, store)?;
+    }
+    drop(guard);
+    drop(store);
+
+    Ok(open_removed_refresh_tokens(removed).await)
+}
+
+/// The refresh tokens of the entries in `removed`, opened. One that does not open is left out,
+/// as there is nothing to do with it. The caller holds no lock on the store: reading the
+/// encryption key may reset the store.
+async fn open_removed_refresh_tokens(removed: Vec<IdentityToken>) -> Vec<RemovedRefreshToken> {
+    let sealed: Vec<_> = removed
+        .into_iter()
+        .filter_map(|entry| Some((entry.user_id, entry.refresh_token?)))
+        .collect();
+    if sealed.is_empty() {
+        return Vec::new();
+    }
+    let key = match get_token_encryption_key().await {
+        Ok(key) => key,
+        Err(err) => {
+            lore_warn!("Failed to read the token encryption key: {err}");
+            return Vec::new();
+        }
+    };
+    sealed
+        .into_iter()
+        .filter_map(|(user_id, sealed)| {
+            Some(RemovedRefreshToken {
+                user_id,
+                refresh_token: open_token(&key, &sealed).ok()?,
+            })
+        })
+        .collect()
+}
+
+/// Remove every token `identity` holds for `endpoint`.
+///
+/// Not an `async fn`, which would hold a second copy of its arguments.
+pub fn remove_user_token<'a>(
+    endpoint: &'a str,
+    identity: &'a str,
+) -> impl Future<Output = Result<(), TokenStoreError>> + 'a {
+    remove_user_token_where(endpoint, identity, |_| true)
+}
+
+/// Remove `identity`'s token for `endpoint` if it is `token`, compared in the store as reloaded
+/// under its file lock, or as this process holds it where the file does not load, so a token
+/// another process has stored in its place is left alone.
+pub async fn remove_user_token_if(
+    endpoint: &str,
+    identity: &str,
+    token: &str,
+) -> Result<(), TokenStoreError> {
+    let key = get_token_encryption_key().await?;
+    remove_user_token_where(endpoint, identity, |sealed| {
+        open_token(&key, sealed).is_ok_and(|stored| stored == token)
+    })
+    .await
+}
+
+/// Remove each of `identity`'s tokens for `endpoint` whose sealed form `removes` returns true
+/// for, in the store as reloaded under its file lock, or as this process holds it where the file
+/// does not load.
+async fn remove_user_token_where(
+    endpoint: &str,
+    identity: &str,
+    mut removes: impl FnMut(&str) -> bool,
+) -> Result<(), TokenStoreError> {
+    lore_trace!("Remove user {identity} token for auth_endpoint {endpoint}");
+
+    let mut store = cached_token_map().await;
+    let guard = lock_token_map().await?;
+    reload_token_map(&guard, &mut store);
+
+    let mut modified = false;
+
+    if let Some(map) = store.as_mut() {
+        let endpoint = endpoint.to_string();
+        if let Some(remote_index) = map
+            .remotes
+            .iter_mut()
+            .position(|entry| entry.remote == endpoint)
+        {
+            let before_len = map.remotes[remote_index].token.len();
+
+            map.remotes[remote_index].token.retain(|token_identity| {
+                token_identity.user_id != identity || !removes(&token_identity.token)
+            });
+
+            if map.remotes[remote_index].token.len() < before_len {
+                lore_trace!("Removed token for endpoint {endpoint} identity {identity}");
+                modified = true;
+            }
+
+            if map.remotes[remote_index].token.is_empty() {
+                lore_trace!("Removed empty remote entry for endpoint {endpoint}");
+                map.remotes.remove(remote_index);
+            }
+        }
+    }
+
+    if modified && let Some(store) = store.as_ref() {
+        store_token_map(&guard, store)?;
+    }
+
+    Ok(())
+}
+
+pub async fn load_identities(auth_endpoint: &str) -> Result<Vec<String>, TokenStoreError> {
+    let auth_endpoint = auth_endpoint.trim_end_matches('/');
+    lore_trace!("Load user identities for endpoint {auth_endpoint}");
+
+    let mut identities = vec![];
+
+    let mut store = cached_token_map().await;
+    if store.is_none()
+        && let Ok(guard) = lock_token_map().await
+        && let Ok(loaded_map) = load_token_map(&guard)
+    {
+        store.replace(loaded_map);
+    }
+
+    if let Some(map) = store.as_mut() {
+        let auth_endpoint = auth_endpoint.to_string();
+        if let Some(remote_index) = map
+            .remotes
+            .iter_mut()
+            .position(|entry| entry.remote == auth_endpoint)
+        {
+            identities = map.remotes[remote_index]
+                .token
+                .iter()
+                .map(|entry| entry.user_id.clone())
+                .collect();
+
+            lore_trace!("Loaded user identities for endpoint {auth_endpoint}: {identities:?}");
+        }
+    }
+
+    Ok(identities)
+}
+
+/// When `identity`'s stored refresh token for `auth_endpoint` stops working, in milliseconds
+/// since the UNIX epoch, or `Some(0)` when the issuer named no deadline. `None` without a stored
+/// refresh token.
+pub async fn load_refresh_expires(auth_endpoint: &str, identity: &str) -> Option<u64> {
+    let auth_endpoint = auth_endpoint.trim_end_matches('/');
+    let mut store = cached_token_map().await;
+    if store.is_none()
+        && let Ok(guard) = lock_token_map().await
+        && let Ok(loaded_map) = load_token_map(&guard)
+    {
+        store.replace(loaded_map);
+    }
+    let entry = identity_entry(&mut store, auth_endpoint, identity)?;
+    entry.refresh_token.as_ref()?;
+    Some(entry.refresh_expires)
+}
+
+/// What a refresh grant answered with.
+pub enum Refreshed<E> {
+    /// A new authentication token. A `refresh_token` of `None` keeps the one presented, as RFC
+    /// 6749 §6 has a client do when the issuer rotates none, and a `scope` of `None` keeps the
+    /// stored scope. `refresh_expires` replaces the stored deadline either way, since a refresh
+    /// moves the idle deadline: milliseconds since the UNIX epoch, or 0 for unknown.
+    Token {
+        token: String,
+        refresh_token: Option<String>,
+        refresh_expires: u64,
+        scope: Option<String>,
+    },
+    /// The issuer refused the refresh token as spent, expired or revoked.
+    Refused(E),
+    /// The grant was not sent, so the refresh token is unspent and is kept for the next attempt.
+    Unsent(E),
+    /// The grant failed after it may have reached the issuer, which may have consumed the
+    /// refresh token.
+    Failed(E),
+}
+
+/// Replaces `expired`, `identity`'s authentication token for `auth_endpoint`, with the one
+/// `refresh` obtains for the stored refresh token, and returns the token stored afterwards.
+///
+/// No refresh token is presented twice. The store stays locked, in this process and across
+/// processes, until the answer is stored, and the refresh token is removed from the store before
+/// `refresh` runs. It is put back only when the grant was [`Refreshed::Unsent`], or answered
+/// without a new one. A grant that is cancelled, or whose process dies, leaves it removed. A
+/// stored token other than `expired` has been replaced already, and is returned without a grant.
+/// An answer naming another identity is refused.
+///
+/// Fails with `TokenNotFound` when there is no refresh token to present, with
+/// `NotAuthenticated` when the grant was [`Refreshed::Refused`] or [`Refreshed::Failed`], and
+/// with `Disconnected` when it was [`Refreshed::Unsent`].
+pub async fn refresh_user_token<E, F, Fut>(
+    auth_endpoint: &str,
+    identity: &str,
+    expired: &str,
+    refresh: F,
+) -> Result<String, RefreshError>
+where
+    E: std::error::Error + HasTrace + Send + Sync + 'static,
+    F: FnOnce(String) -> Fut,
+    Fut: Future<Output = Refreshed<E>>,
+{
+    let auth_endpoint = auth_endpoint.trim_end_matches('/');
+    let key = get_token_encryption_key()
+        .await
+        .forward::<RefreshError>("reading the token encryption key")?;
+
+    let mut store = cached_token_map().await;
+    let guard = lock_token_map()
+        .await
+        .forward::<RefreshError>("locking the token store")?;
+    reload_token_map(&guard, &mut store);
+
+    let Some(entry) = identity_entry(&mut store, auth_endpoint, identity) else {
+        return Err(TokenNotFound.into());
+    };
+    let current =
+        open_token(&key, &entry.token).forward::<RefreshError>("opening the stored token")?;
+    if current != expired {
+        lore_debug!("The token of {identity} at {auth_endpoint} was replaced already");
+        return Ok(current);
+    }
+    let Some(sealed_refresh_token) = entry.refresh_token.take() else {
+        return Err(TokenNotFound.into());
+    };
+    let presented_refresh_expires = std::mem::take(&mut entry.refresh_expires);
+    let refresh_token = open_token(&key, &sealed_refresh_token)
+        .forward::<RefreshError>("opening the stored refresh token")?;
+    if let Some(map) = store.as_ref()
+        && let Err(err) = store_token_map(&guard, map)
+    {
+        if let Some(entry) = identity_entry(&mut store, auth_endpoint, identity) {
+            entry.refresh_token = Some(sealed_refresh_token);
+            entry.refresh_expires = presented_refresh_expires;
+        }
+        return Err(err.forward::<RefreshError>("removing the refresh token before the grant"));
+    }
+
+    lore_debug!("Refreshing the token of {identity} at {auth_endpoint}");
+    let refreshed = refresh(refresh_token).await;
+
+    let Some(entry) = identity_entry(&mut store, auth_endpoint, identity) else {
+        return Err(RefreshError::internal(
+            "Token store entry vanished while the store was locked",
+        ));
+    };
+    let result = match refreshed {
+        Refreshed::Token {
+            token,
+            refresh_token,
+            refresh_expires,
+            scope,
+        } => {
+            let claims = crate::jwt::insecure_decode_token(&token).map(|decoded| decoded.claims);
+            match claims {
+                Ok(claims) if claims.identity() == Some(identity) => {
+                    let mut acceptable_root_domains = claims.acceptable_root_domains();
+                    acceptable_root_domains.push(get_domain_or_empty(auth_endpoint));
+                    entry.token = seal_token(&key, &token)
+                        .forward::<RefreshError>("sealing the refreshed token")?;
+                    entry.acceptable_root_domains = acceptable_root_domains;
+                    entry.refresh_token = match refresh_token {
+                        Some(refresh_token) => Some(
+                            seal_token(&key, &refresh_token)
+                                .forward::<RefreshError>("sealing the new refresh token")?,
+                        ),
+                        None => Some(sealed_refresh_token),
+                    };
+                    entry.refresh_expires = refresh_expires;
+                    if scope.is_some() {
+                        entry.scope = scope;
+                    }
+                    Ok(token)
+                }
+                _ => Err(RefreshError::internal(format!(
+                    "The refreshed token for {identity} at {auth_endpoint} does not name them"
+                ))),
+            }
+        }
+        // The chained error keeps the grant error's trace, not its message, so the message is
+        // logged here.
+        Refreshed::Refused(source) => {
+            lore_debug!("The issuer refused the refresh token of {identity}: {source}");
+            Err(RefreshError::NotAuthenticated(
+                NotAuthenticated.chain_err_from(source, "The issuer refused the refresh token"),
+            ))
+        }
+        Refreshed::Unsent(source) => {
+            lore_debug!("The refresh grant for {identity} was not sent: {source}");
+            entry.refresh_token = Some(sealed_refresh_token);
+            entry.refresh_expires = presented_refresh_expires;
+            Err(RefreshError::Disconnected(Disconnected.chain_err_from(
+                source,
+                "Failed to send the refresh token grant",
+            )))
+        }
+        Refreshed::Failed(source) => {
+            lore_warn!("Failed to refresh the token of {identity} at {auth_endpoint}: {source}");
+            Err(RefreshError::NotAuthenticated(
+                NotAuthenticated.chain_err_from(source, "Failed to refresh the token"),
+            ))
+        }
+    };
+
+    if let Some(map) = store.as_ref() {
+        store_token_map(&guard, map).forward::<RefreshError>("storing the grant's answer")?;
+    }
+    result
+}
+
+/// `identity`'s entry for `auth_endpoint` in `store`.
+fn identity_entry<'a>(
+    store: &'a mut Option<TokenMap>,
+    auth_endpoint: &str,
+    identity: &str,
+) -> Option<&'a mut IdentityToken> {
+    store
+        .as_mut()?
+        .remotes
+        .iter_mut()
+        .find(|entry| entry.remote == auth_endpoint)?
+        .token
+        .iter_mut()
+        .find(|entry| entry.user_id == identity)
+}
+
+async fn encrypt_token(user_token: &str) -> Result<String, TokenStoreError> {
+    lore_trace!("Encrypting user token");
+    let key = get_token_encryption_key().await?;
+    seal_token(&key, user_token)
+}
+
+async fn decrypt_token(token: String) -> Result<String, TokenStoreError> {
+    lore_trace!("Decrypting user token");
+    let key = get_token_encryption_key().await?;
+    open_token(&key, &token)
+}
+
+/// Seals a token as `nonce || ciphertext || tag`, under a 96-bit nonce drawn
+/// fresh for each call.
+///
+/// Nothing is written back to the secure store: a random nonce needs no
+/// persisted counter, and rewriting the keyring entry on every encrypt made
+/// each lore process re-authorize against the OS keychain (and, on macOS,
+/// prompt once per binary and per rebuild).
+fn seal_token(key: &[u8], user_token: &str) -> Result<String, TokenStoreError> {
+    let mut nonce_bytes = [0u8; NONCE_LEN];
+    SystemRandom::new().fill(&mut nonce_bytes).map_err(|e| {
+        lore_warn!("Failed to generate token nonce: {e}");
+        TokenStoreError::internal_with_context(e, "Failed to encrypt user token")
+    })?;
+
+    let mut sealing_key =
+        SealingKey::new(unbound_key(key)?, SingleNonceSequence(Some(nonce_bytes)));
+    let mut sealed = user_token.as_bytes().to_vec();
+    sealing_key
+        .seal_in_place_append_tag(Aad::empty(), &mut sealed)
+        .map_err(|e| {
+            lore_warn!("Failed to encrypt user token: {e}");
+            TokenStoreError::internal_with_context(e, "Failed to encrypt user token")
+        })?;
+
+    let mut blob = Vec::with_capacity(NONCE_LEN + sealed.len());
+    blob.extend_from_slice(&nonce_bytes);
+    blob.append(&mut sealed);
+
+    Ok(BASE64_STANDARD.encode(blob))
+}
+
+/// Opens a token sealed by [`seal_token`].
+fn open_token(key: &[u8], token: &str) -> Result<String, TokenStoreError> {
+    let blob = BASE64_STANDARD.decode(token).map_err(|e| {
+        lore_warn!("Failed to decrypt user token: {e}");
+        TokenStoreError::internal_with_context(e, "Failed to decrypt user token")
+    })?;
+
+    let Some((nonce_bytes, sealed)) = blob.split_at_checked(NONCE_LEN) else {
+        lore_warn!("Failed to decrypt user token: malformed token blob");
+        return Err(TokenStoreError::internal("Failed to decrypt user token"));
+    };
+    let nonce = nonce_bytes.try_into().map_err(|e| {
+        lore_warn!("Failed to decrypt user token: {e}");
+        TokenStoreError::internal_with_context(e, "Failed to decrypt user token")
+    })?;
+
+    let mut opening_key = OpeningKey::new(unbound_key(key)?, SingleNonceSequence(Some(nonce)));
+    let decrypted = opening_key
+        .open_in_place(Aad::empty(), &mut sealed.to_vec())
+        .map_err(|e| {
+            lore_warn!("Failed to decrypt user token: {e}");
+            TokenStoreError::internal_with_context(e, "Failed to decrypt user token")
+        })?
+        .to_vec();
+
+    String::from_utf8(decrypted).map_err(|e| {
+        lore_warn!("Failed to decrypt user token: {e}");
+        TokenStoreError::internal_with_context(e, "Failed to decrypt user token")
+    })
+}
+
+/// Returns the cached encryption key, loading it from the store its location names on first use.
+///
+/// The location is evaluated once the cache is locked, so the wait for the lock holds none of it,
+/// and the load, a cold path run on a cache miss alone, is boxed: inline, it would make every
+/// future awaiting a key as large as the load's.
+async fn get_token_encryption_key() -> Result<Vec<u8>, TokenStoreError> {
+    let mut keys = ENCRYPTION_CACHE.get_or_init(Default::default).lock().await;
+    let location = KeyLocation::current()?;
+    if let Some(key) = keys.get(&location) {
+        return Ok(key.clone());
+    }
+    let key = Box::pin(load_or_init_encryption_key(&location)).await?;
+    keys.insert(location, key.clone());
+    Ok(key)
+}
+
+/// Loads the encryption key kept at `location`.
+///
+/// A new key is generated (which resets every stored token, since they can no
+/// longer be opened) only when the store reports that no key is there, or that
+/// what is there is unusable. A store that exists but cannot be read yields an
+/// error instead: treating a denied or cancelled keychain prompt as "no key"
+/// would rotate the key and log every other lore process out.
+///
+/// The new key is stored before the tokens are reset, so a key that can't be stored leaves them as
+/// they are.
+///
+/// Callers must serialize this with respect to other writers — it is intended
+/// to be invoked only while holding the [`ENCRYPTION_CACHE`] lock.
+async fn load_or_init_encryption_key(location: &KeyLocation) -> Result<Vec<u8>, TokenStoreError> {
+    let stored = get_secret_from_store(ENCRYPTION_KEY_TARGET, location).await?;
+    if let Some(key) = stored.as_deref().and_then(encryption_key_from_stored) {
+        return Ok(key);
+    }
+
+    lore_debug!(
+        "Encryption key not found in secure store or fallback, generate new key and reset tokens"
+    );
+
+    let key = generate_encryption_key()?;
+    set_secret_in_store(ENCRYPTION_KEY_TARGET, key.clone(), location).await?;
+    reset_tokens().await?;
+
+    Ok(key)
+}
+
+/// Checks that a secure-store blob is a key of the right size. Blobs written
+/// by earlier versions carry a nonce counter ahead of the key and so fail
+/// here, but they live under a different target and are never read.
+fn encryption_key_from_stored(stored: &[u8]) -> Option<Vec<u8>> {
+    (stored.len() == AES_256_GCM.key_len()).then(|| stored.to_vec())
+}
+
+/// Reports a secret the store does not hold.
+///
+/// A secure store that could not be read is not the same as one holding no
+/// secret, so an earlier read failure surfaces here as an error: reporting
+/// absence would let the caller replace a key that is merely out of reach, and
+/// invalidate every token the real key still protects.
+fn secret_absent(
+    secure_store_error: Option<TokenStoreError>,
+) -> Result<Option<Vec<u8>>, TokenStoreError> {
+    match secure_store_error {
+        Some(err) => Err(err),
+        None => Ok(None),
+    }
+}
+
+/// Reads a secret from the OS secure store, if `store` selects it and there is a usable one.
+///
+/// `Ok(None)` means the store holds no such secret, or that no secure store is
+/// available at all; `Err` carries the failure of a store that exists but
+/// could not be read, for [`secret_absent`] to weigh.
+async fn secret_from_secure_store(
+    target: &str,
+    store: AuthStore,
+) -> Result<Option<Vec<u8>>, TokenStoreError> {
+    if store != AuthStore::Secure {
+        return Ok(None);
+    }
+    let Ok(entry) = keyring_entry(target) else {
+        return Ok(None);
+    };
+
+    // A locked keychain blocks until the user answers a prompt.
+    let loaded = lore_base::lore_spawn_blocking!(move || entry.get_secret())
+        .await
+        .map_err(|e| TokenStoreError::internal_with_context(e, "Secure store read task failed"))?;
+
+    match loaded {
+        Ok(secret) => {
+            lore_trace!("Loaded secret from secure store {target}");
+            Ok(Some(secret))
+        }
+        Err(keyring_core::Error::NoEntry) => {
+            lore_debug!("No secret in secure store {target}");
+            Ok(None)
+        }
+        Err(err) => {
+            lore_warn!("Failed to load secret from secure store {target}: {err}");
+            Err(TokenStoreError::internal_with_context(
+                err,
+                "Failed to load secret from secure storage",
+            ))
+        }
+    }
+}
+
+/// Makes the fallback secret file `file`, at `path`, readable by its owner alone before it is
+/// written, whatever directory holds it: mode 0600 on Unix, and on Windows an access list of
+/// its own, not inherited from the directory, granting the owner alone.
+fn restrict_to_owner(file: &fs::File, path: &Path) -> Result<(), TokenStoreError> {
+    #[cfg(unix)]
+    let restricted = {
+        use std::os::unix::fs::PermissionsExt;
+        let _ = path;
+        file.set_permissions(fs::Permissions::from_mode(0o600))
+    };
+    #[cfg(windows)]
+    let restricted = {
+        let _ = file;
+        restrict_to_owner_windows(path)
+    };
+    restricted.map_err(|e| {
+        lore_warn!("Failed to restrict the fallback secret file: {e}");
+        TokenStoreError::internal_with_context(e, "Failed to restrict the fallback secret file")
+    })
+}
+
+/// Gives the file at `path` a protected access list with one entry: full access for its owner.
+#[cfg(windows)]
+fn restrict_to_owner_windows(path: &Path) -> std::io::Result<()> {
+    use std::os::windows::ffi::OsStrExt;
+
+    use windows_sys::Win32::Foundation::ERROR_SUCCESS;
+    use windows_sys::Win32::Foundation::LocalFree;
+    use windows_sys::Win32::Security::ACL;
+    use windows_sys::Win32::Security::Authorization::ConvertStringSecurityDescriptorToSecurityDescriptorW;
+    use windows_sys::Win32::Security::Authorization::SDDL_REVISION_1;
+    use windows_sys::Win32::Security::Authorization::SE_FILE_OBJECT;
+    use windows_sys::Win32::Security::Authorization::SetNamedSecurityInfoW;
+    use windows_sys::Win32::Security::DACL_SECURITY_INFORMATION;
+    use windows_sys::Win32::Security::GetSecurityDescriptorDacl;
+    use windows_sys::Win32::Security::PROTECTED_DACL_SECURITY_INFORMATION;
+    use windows_sys::Win32::Security::PSECURITY_DESCRIPTOR;
+
+    // D: access list, P: protected from inheritance, one entry allowing full access (FA) to the
+    // owner (OW).
+    let sddl: Vec<u16> = "D:P(A;;FA;;;OW)".encode_utf16().chain(Some(0)).collect();
+    let wide_path: Vec<u16> = path.as_os_str().encode_wide().chain(Some(0)).collect();
+    let mut descriptor: PSECURITY_DESCRIPTOR = std::ptr::null_mut();
+    // SAFETY: both strings are NUL-terminated and outlive the calls; the descriptor the first call
+    // allocates is read by the next two and freed once, after them.
+    unsafe {
+        if ConvertStringSecurityDescriptorToSecurityDescriptorW(
+            sddl.as_ptr(),
+            SDDL_REVISION_1,
+            &mut descriptor,
+            std::ptr::null_mut(),
+        ) == 0
+        {
+            return Err(std::io::Error::last_os_error());
+        }
+        let mut present = 0;
+        let mut defaulted = 0;
+        let mut dacl: *mut ACL = std::ptr::null_mut();
+        let result = if GetSecurityDescriptorDacl(
+            descriptor,
+            &mut present,
+            &mut dacl,
+            &mut defaulted,
+        ) == 0
+        {
+            Err(std::io::Error::last_os_error())
+        } else {
+            let status = SetNamedSecurityInfoW(
+                wide_path.as_ptr(),
+                SE_FILE_OBJECT,
+                DACL_SECURITY_INFORMATION | PROTECTED_DACL_SECURITY_INFORMATION,
+                std::ptr::null_mut(),
+                std::ptr::null_mut(),
+                dacl,
+                std::ptr::null(),
+            );
+            if status == ERROR_SUCCESS {
+                Ok(())
+            } else {
+                Err(std::io::Error::from_raw_os_error(status as i32))
+            }
+        };
+        LocalFree(descriptor);
+        result
+    }
+}
+
+/// Reads a secret from the secure store, falling back to the on-disk copy.
+///
+/// `Ok(None)` means the secret is genuinely absent from both — see
+/// [`secret_absent`] for how an unreadable secure store is distinguished from
+/// an empty one.
+async fn get_secret_from_store(
+    target: &str,
+    location: &KeyLocation,
+) -> Result<Option<Vec<u8>>, TokenStoreError> {
+    let secure_store_error = match secret_from_secure_store(target, location.store).await {
+        Ok(Some(secret)) => return Ok(Some(secret)),
+        Ok(None) => None,
+        Err(err) => Some(err),
+    };
+
+    let path = store_fallback_path(&location.directory, target);
+    if !path.exists() {
+        return secret_absent(secure_store_error);
+    }
+    let _guard = lock_store_file(path.as_path()).await?;
+    let mut options = store_open_options();
+    options.read(true);
+    let mut secret_file = match options.open(path.as_path()) {
+        Ok(file) => file,
+        Err(err) if err.kind() == std::io::ErrorKind::NotFound => {
+            return secret_absent(secure_store_error);
+        }
+        Err(err) => {
+            lore_warn!("Failed to read secret from fallback path: {err}");
+            return Err(TokenStoreError::internal_with_context(
+                err,
+                "Failed to read secret from fallback path",
+            ));
+        }
+    };
+    lore_trace!(
+        "Loaded secret from insecure fallback path {}",
+        path.display()
+    );
+
+    let mut secret = Vec::default();
+    // Read via the guarded handle; `fs::read` would re-open the file
+    // without the cross-process guard.
+    #[allow(clippy::verbose_file_reads)]
+    secret_file.read_to_end(&mut secret).map_err(|e| {
+        lore_warn!("Failed to read secret from fallback path: {e}");
+        TokenStoreError::internal_with_context(e, "Failed to read secret from fallback path")
+    })?;
+    Ok(Some(secret))
+}
+
+async fn set_secret_in_store(
+    target: &str,
+    secret: Vec<u8>,
+    location: &KeyLocation,
+) -> Result<(), TokenStoreError> {
+    if location.store == AuthStore::Secure
+        && let Ok(entry) = keyring_entry(target)
+    {
+        let stored = {
+            let secret = secret.clone();
+            lore_base::lore_spawn_blocking!(move || entry.set_secret(&secret))
+                .await
+                .map_err(|e| {
+                    TokenStoreError::internal_with_context(e, "Secure store write task failed")
+                })?
+        };
+        if stored
+            .map_err(|e| {
+                lore_warn!("{SECURE_STORE_MSG}: {e}");
+                TokenStoreError::internal_with_context(e, SECURE_STORE_MSG)
+            })
+            .is_ok()
+        {
+            lore_trace!("Stored secret in secure store {target}");
+            return Ok(());
+        }
+        // SAFETY: `set_var` races with concurrent environment access in other
+        // threads. Redirecting subsequent reads to the fallback file is worth
+        // that risk here: the alternative is silently losing the secret.
+        unsafe {
+            std::env::set_var(AUTH_STORE_VAR, AuthStore::Fallback.as_var());
+        }
+    }
+
+    create_store_dir(&location.directory).map_err(|e| {
+        lore_warn!("Failed to make fallback path: {e}");
+        TokenStoreError::internal_with_context(e, "Failed to make fallback path")
+    })?;
+    let path = store_fallback_path(&location.directory, target);
+    let guard = lock_store_file(path.as_path()).await?;
+    let written = path.clone();
+    // The lock moves to the write, so it is held until the write ends though this future is
+    // dropped first.
+    lore_base::lore_spawn_blocking!(move || {
+        let _guard = guard;
+        write_fallback_file(&written, &secret)
+    })
+    .await
+    .map_err(|e| {
+        TokenStoreError::internal_with_context(e, "Fallback secret write task failed")
+    })??;
+    lore_trace!("Stored secret in insecure fallback path {}", path.display());
+    Ok(())
+}
+
+/// Writes `secret` to the fallback file at `path` whole or not at all: to a temporary file beside it,
+/// made readable by its owner alone before anything is written, flushed to disk and then renamed
+/// over `path`, and the directory flushed after it where the platform allows. A temporary file a
+/// failure leaves is removed. The caller holds the file's lock, and runs this on a blocking thread.
+fn write_fallback_file(path: &Path, secret: &[u8]) -> Result<(), TokenStoreError> {
+    let failed = |e: std::io::Error| {
+        lore_warn!("Failed to write secret to fallback path: {e}");
+        TokenStoreError::internal_with_context(e, "Failed to write secret to fallback path")
+    };
+    let mut temporary = path.as_os_str().to_owned();
+    temporary.push(".new");
+    let temporary = PathBuf::from(temporary);
+    let written = write_and_rename(&temporary, path, secret, failed);
+    if written.is_err() {
+        let _ = fs::remove_file(&temporary);
+    }
+    written?;
+    #[cfg(unix)]
+    if let Some(directory) = path.parent()
+        && let Err(err) = fs::File::open(directory).and_then(|directory| directory.sync_all())
+    {
+        lore_warn!("Failed to flush the fallback secret's directory: {err}");
+    }
+    Ok(())
+}
+
+/// The steps of [`write_fallback_file`] that leave `temporary` behind when one fails.
+fn write_and_rename(
+    temporary: &Path,
+    path: &Path,
+    secret: &[u8],
+    failed: impl Fn(std::io::Error) -> TokenStoreError,
+) -> Result<(), TokenStoreError> {
+    let mut options = store_open_options();
+    options.create(true).write(true).truncate(true);
+    let mut file = options.open(temporary).map_err(&failed)?;
+    restrict_to_owner(&file, temporary)?;
+    file.write_all(secret)
+        .and_then(|()| file.sync_all())
+        .map_err(&failed)?;
+    drop(file);
+    fs::rename(temporary, path).map_err(failed)
+}
+
+/// Draws a new key. A failure here is propagated rather than ignored: the
+/// buffer starts zeroed and is the right length either way, so a discarded
+/// error would hand back an all-zero key that every later check accepts.
+fn generate_encryption_key() -> Result<Vec<u8>, TokenStoreError> {
+    let mut key_bytes = vec![0; AES_256_GCM.key_len()];
+    SystemRandom::new().fill(&mut key_bytes).map_err(|e| {
+        lore_warn!("Failed to generate encryption key: {e}");
+        TokenStoreError::internal_with_context(e, "Failed to generate encryption key")
+    })?;
+    lore_debug!("Generated new encryption key");
+    Ok(key_bytes)
+}
+
+fn unbound_key(key: &[u8]) -> Result<UnboundKey, TokenStoreError> {
+    UnboundKey::new(&AES_256_GCM, key).map_err(|e| {
+        lore_warn!("Failed to create unbound key: {e}");
+        TokenStoreError::internal_with_context(e, "Failed to create unbound key")
+    })
+}
+
+/// Yields one caller-supplied nonce and refuses to advance again, so a key
+/// built from it can never seal or open twice under the same nonce.
+struct SingleNonceSequence(Option<[u8; NONCE_LEN]>);
+impl NonceSequence for SingleNonceSequence {
+    fn advance(&mut self) -> Result<Nonce, Unspecified> {
+        self.0
+            .take()
+            .map(Nonce::assume_unique_for_key)
+            .ok_or(Unspecified)
+    }
+}
+
+/// Test-only access to token-store internals for the crate's tests in
+/// `tests/unit/`. Built only with the `test-util` feature, which the crate
+/// enables for its own tests.
+#[cfg(feature = "test-util")]
+pub mod test_util {
+    use ring::aead::NONCE_LEN;
+    use ring::aead::NonceSequence;
+
+    use super::IdentityToken;
+    use super::RemoteIdentity;
+    use super::SingleNonceSequence;
+    use super::TokenMap;
+    use super::TokenStoreError;
+
+    impl IdentityToken {
+        pub fn new(
+            user_id: impl Into<String>,
+            token: impl Into<String>,
+            acceptable_root_domains: Vec<String>,
+            refresh_token: Option<String>,
+            scope: Option<String>,
+        ) -> Self {
+            Self {
+                user_id: user_id.into(),
+                token: token.into(),
+                acceptable_root_domains,
+                refresh_token,
+                refresh_expires: 0,
+                scope,
+            }
+        }
+
+        pub fn user_id(&self) -> &str {
+            &self.user_id
+        }
+
+        pub fn token(&self) -> &str {
+            &self.token
+        }
+
+        pub fn refresh_token(&self) -> Option<&str> {
+            self.refresh_token.as_deref()
+        }
+
+        pub fn scope(&self) -> Option<&str> {
+            self.scope.as_deref()
+        }
+
+        pub fn refresh_expires(&self) -> u64 {
+            self.refresh_expires
+        }
+
+        pub fn with_refresh_expires(self, refresh_expires: u64) -> Self {
+            Self {
+                refresh_expires,
+                ..self
+            }
+        }
+    }
+
+    impl RemoteIdentity {
+        pub fn new(remote: impl Into<String>, tokens: Vec<IdentityToken>) -> Self {
+            Self {
+                remote: remote.into(),
+                token: tokens,
+            }
+        }
+
+        pub fn remote(&self) -> &str {
+            &self.remote
+        }
+
+        pub fn tokens(&self) -> &[IdentityToken] {
+            &self.token
+        }
+    }
+
+    impl TokenMap {
+        pub fn new(remotes: Vec<RemoteIdentity>) -> Self {
+            Self { remotes }
+        }
+
+        pub fn remotes(&self) -> &[RemoteIdentity] {
+            &self.remotes
+        }
+    }
+
+    pub fn generate_encryption_key() -> Result<Vec<u8>, TokenStoreError> {
+        super::generate_encryption_key()
+    }
+
+    pub fn encryption_key_from_stored(stored: &[u8]) -> Option<Vec<u8>> {
+        super::encryption_key_from_stored(stored)
+    }
+
+    pub fn seal_token(key: &[u8], user_token: &str) -> Result<String, TokenStoreError> {
+        super::seal_token(key, user_token)
+    }
+
+    pub fn open_token(key: &[u8], token: &str) -> Result<String, TokenStoreError> {
+        super::open_token(key, token)
+    }
+
+    pub fn split_remote_resource(store_key: &str) -> (String, String) {
+        super::split_remote_resource(store_key)
+    }
+
+    /// The file the token store this call reads is kept in.
+    pub fn store_file() -> Result<std::path::PathBuf, TokenStoreError> {
+        super::token_map_path(false)
+    }
+
+    pub fn is_entry_for_auth_url(remote: &str, auth_url: &str) -> bool {
+        super::is_entry_for_auth_url(remote, auth_url)
+    }
+
+    /// `identity`'s refresh token, opened, and scope for `auth_endpoint`, as the store's file
+    /// holds them. `None` without an entry.
+    pub async fn stored_login(
+        auth_endpoint: &str,
+        identity: &str,
+    ) -> Option<(Option<String>, Option<String>)> {
+        let key = super::get_token_encryption_key().await.ok()?;
+        let guard = super::lock_token_map().await.ok()?;
+        let mut map = super::load_token_map(&guard).ok();
+        let entry = super::identity_entry(&mut map, auth_endpoint, identity)?;
+        let refresh_token = entry.refresh_token.as_deref().map(|sealed| {
+            super::open_token(&key, sealed).expect("a refresh token the store sealed")
+        });
+        Some((refresh_token, entry.scope.clone()))
+    }
+
+    pub fn single_nonce_sequence(nonce: [u8; NONCE_LEN]) -> impl NonceSequence {
+        SingleNonceSequence(Some(nonce))
+    }
+}

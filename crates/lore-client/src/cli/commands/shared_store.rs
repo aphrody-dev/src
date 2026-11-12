@@ -1,0 +1,216 @@
+// SPDX-FileCopyrightText: 2026 Epic Games, Inc.
+// SPDX-License-Identifier: MIT
+use clap::ArgAction;
+use clap::Args;
+use clap::Subcommand;
+use lore::call_delegation::run_command;
+use lore::interface::LoreEvent;
+use lore::interface::LoreGlobalArgs;
+use lore::interface::LoreSharedStoreCreateArgs;
+use lore::interface::LoreSharedStoreInfoArgs;
+use lore::interface::LoreSharedStoreSetUseAutomaticallyArgs;
+use lore::interface::LoreString;
+use lore::shared_store::LoreSharedStoreListArgs;
+
+use crate::cli::EventCallbackExt;
+use crate::cli::EventCallbackFn;
+use crate::cli::output_formatter;
+use crate::println;
+use crate::styling::CommonStyles;
+
+#[derive(Args)]
+pub struct SharedStoreArgs {
+    /// Store subcommand
+    #[command(subcommand)]
+    pub command: SharedStoreCommands,
+}
+
+#[derive(Subcommand)]
+pub enum SharedStoreCommands {
+    /// Create a shared store backed by a remote
+    Create(SharedStoreCreateArgs),
+
+    /// Show the shared store this repository uses
+    Info(SharedStoreInfoArgs),
+
+    /// Show information about the registry of shared stores
+    List(SharedStoreListArgs),
+
+    /// Set whether new clones use a shared store without being asked to
+    SetUseAutomatically(SharedStoreSetUseAutomaticallyArgs),
+}
+
+#[derive(Args)]
+pub struct SharedStoreCreateArgs {
+    /// Remote URL that will back the store
+    #[clap(value_name = "remote-url")]
+    remote_url: String,
+
+    /// Where to create the shared store
+    #[clap(long, value_name = "path")]
+    path: Option<String>,
+
+    /// Set this as the default shared store in the global config file, defaults to true
+    #[clap(long, default_missing_value = "true")]
+    make_default: Option<bool>,
+}
+
+#[derive(Args)]
+pub struct SharedStoreInfoArgs {}
+
+#[derive(Args)]
+pub struct SharedStoreListArgs {
+    /// Look up all instances each shared store is used by.
+    #[clap(long, default_missing_value = "true")]
+    include_instances: Option<bool>,
+}
+
+#[derive(Args)]
+pub struct SharedStoreSetUseAutomaticallyArgs {
+    /// Whether to automatically use the shared store
+    #[clap(value_name = "enabled", value_parser = clap::value_parser!(bool), action = ArgAction::Set)]
+    enabled: bool,
+}
+
+pub fn handle_store_commands(command: &SharedStoreCommands, globals: LoreGlobalArgs) -> u8 {
+    match command {
+        SharedStoreCommands::Create(args) => handle_create(globals, args),
+
+        SharedStoreCommands::Info(args) => handle_info(globals, args),
+
+        SharedStoreCommands::List(args) => handle_list(globals, args),
+
+        SharedStoreCommands::SetUseAutomatically(args) => {
+            handle_set_use_automatically(globals, args)
+        }
+    }
+}
+
+pub fn handle_create(globals: LoreGlobalArgs, args: &SharedStoreCreateArgs) -> u8 {
+    let args = LoreSharedStoreCreateArgs {
+        remote_url: LoreString::from(&args.remote_url),
+        path: args.path.as_ref().map_or("", |s| s as &str).into(),
+        make_default: args.make_default.unwrap_or(true) as u8,
+    };
+
+    let dry_run = globals.dry_run();
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| {
+            if let LoreEvent::SharedStoreCreate(data) = event {
+                println!(
+                    "{} shared store in {}",
+                    if dry_run { "Would create" } else { "Created" },
+                    data.path.as_str(),
+                );
+            }
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    run_command(globals, args.into(), callback) as u8
+}
+
+fn display_bool(value: u8) -> &'static str {
+    if value != 0 { "true" } else { "false" }
+}
+
+pub fn handle_info(globals: LoreGlobalArgs, _args: &SharedStoreInfoArgs) -> u8 {
+    let args = LoreSharedStoreInfoArgs {};
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(|event: &LoreEvent| {
+            if let LoreEvent::SharedStoreInfo(data) = event {
+                println!(
+                    "Shared store will be used automatically: {}",
+                    display_bool(data.use_automatically)
+                );
+                for i in 0..data
+                    .remote_urls
+                    .len()
+                    .min(data.paths.len())
+                    .min(data.exists.len())
+                {
+                    println!(
+                        "{}Remote URL:{} {}",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset,
+                        data.remote_urls.as_slice()[i]
+                    );
+                    println!(
+                        "  {}Path:{} {}",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset,
+                        data.paths.as_slice()[i]
+                    );
+                    println!(
+                        "  {}Exists:{} {}",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset,
+                        display_bool(data.exists.as_slice()[i])
+                    );
+                }
+            }
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    run_command(globals, args.into(), callback) as u8
+}
+
+pub fn handle_list(globals: LoreGlobalArgs, args: &SharedStoreListArgs) -> u8 {
+    let include_instances = args.include_instances.unwrap_or_default();
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| {
+            if let LoreEvent::SharedStoreList(data) = event {
+                for store in data.stores.as_slice() {
+                    println!(
+                        "{}Store at path:{} {}",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset,
+                        store.store_path
+                    );
+                    println!(
+                        "{}  Remote URL:{} {}",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset,
+                        store.remote_url
+                    );
+                    if include_instances {
+                        println!("{}  Instances:{}", CommonStyles::HEADERS, anstyle::Reset);
+                        for (path, id) in store
+                            .instance_paths
+                            .as_slice()
+                            .iter()
+                            .zip(store.instance_ids.as_slice())
+                        {
+                            println!("    -{id}: {path}");
+                        }
+                    }
+                }
+            }
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    let args = LoreSharedStoreListArgs {
+        include_instances: args.include_instances.unwrap_or_default() as u8,
+    };
+
+    run_command(globals, args.into(), callback) as u8
+}
+
+pub fn handle_set_use_automatically(
+    globals: LoreGlobalArgs,
+    args: &SharedStoreSetUseAutomaticallyArgs,
+) -> u8 {
+    let args = LoreSharedStoreSetUseAutomaticallyArgs {
+        enabled: args.enabled as u8,
+    };
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(|_event: &LoreEvent| {}) as EventCallbackFn).with_defaults(),
+    ));
+
+    run_command(globals, args.into(), callback) as u8
+}

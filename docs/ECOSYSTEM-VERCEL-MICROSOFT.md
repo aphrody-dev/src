@@ -1,0 +1,25 @@
+# Écosystème Vercel / vercel-labs / Microsoft → labs (2026-11-12)
+
+Inventaire `gh api orgs/vercel-labs/repos` : 313 dépôts non archivés, 210 poussés depuis 2026-01 forkés en lot dans aphrody-labs (journal : third_party/vercel-labs.forked.log). Étoiles et dates = gh api du jour. Règle d'absorption : TS → bun (bun build/test/fmt, Bun.serve, bun:ffi), natif → Rust nightly (windows-rs, Linux moderne) ; Zig/C gardés tels quels quand ils compilent en WASM ou en lib statique.
+
+## Matrice par domaine
+
+| Domaine | vercel-labs (★, langage) | vercel | Microsoft | Cible labs |
+|---|---|---|---|---|
+| Agent / IA | skills (39k TS), agent-skills (34k JS), open-agents (5,9k), fx (3,8k Zig), ralph-loop-agent, durable-harness, agent-eval, coding-agent-template, eve-*-template | ai, workflow, sandbox, chat, flags | agent-framework, autogen, semantic-kernel, TypeChat, markitdown, Foundry-Local, onnxruntime, BitNet, mcp | runtime agent bun (AI SDK + workflow) ; inférence locale onnxruntime/Foundry-Local ; fx comme CLI de référence |
+| Shell / exécution | just-bash (4,5k TS), bash-tool, scriptc (6,5k), quickjs-wasi (C), run | — | edit, DSC, terminal | niubash (bas niveau nt-03) ; just-bash/quickjs-wasi pour sandbox WASM |
+| Browser | agent-browser (50k Rust), remote-agent-browser, dev3000, webreel, emulate | next.js | playwright, playwright-mcp | labs_agent (Chromium) + agent-browser comme pilote CDP |
+| Desktop | agent-desktop (22,5k Rust) | — | windows-rs, win32metadata, wil, WindowsAppSDK, winappCli | agent-desktop patché (plancher 10 ms, capture) |
+| Native UI | native (7,8k Zig), wterm (Zig→WASM) | satori | microsoft-ui-xaml, react-native-windows, terminal, DirectX-Headers, DirectXShaderCompiler | GPUI/Blitz côté labs ; wterm pour terminal web ; DX/DXC pour WebGPU-Dawn |
+| Web UI | json-render (19,6k), visual-json, beautiful-mermaid, web-interface-guidelines, next-skills | next.js, swr, streamdown | fluentui, fluentui-system-icons, monaco-editor | Tailwind/shadcn/Base UI (notre stack) + json-render ; Fluent icons |
+| Dev / infra | portless (12,9k), deepsec (8,4k), opensrc (Rust), lat.md, tsc-ts, konsistent, mcp-handler, vgpu, gpu-lexer | turborepo, vercel | TypeScript, typescript-go, vscode, lsprotocol, vs-streamjsonrpc, hyperlight, litebox, openvmm | tsgo pour le typecheck ; bun pour le reste ; hyperlight/litebox pour isolation |
+
+## Ordre d'absorption (roadmap)
+
+1. **Bloquants agent sur ce PC** : agent-desktop, agent-browser, skills, mcp-handler (bun), just-bash : flatten dans C:\src\third_party\aphrody-labs (script nt-03 `forks-aphrody-labs.sh`), build bun/Rust, tests.
+2. **Runtime IA** : ai + workflow + sandbox de vercel portés en bun pur (pas de Node), providers locaux onnxruntime/Foundry-Local ; agent-framework comme référence d'architecture.
+3. **UI** : json-render + shadcn/Base UI, satori pour rendu serveur, wterm + native (Zig) évalués pour le shell graphique ; Fluent icons.
+4. **Toolchain** : typescript-go (tsgo) vs `bun check`, deepsec + konsistent en CI, portless pour le dev local.
+5. **Isolation** : hyperlight/litebox/openvmm pour sandboxes Windows/Linux sans WSL.
+
+Chaque étape : fork aphrody-labs → vendor dans third_party (lock) → patch (bun/Rust) → test → doc → Lore. Non vérifié : compatibilité Windows de native, fx, wterm-core hors WASM [NV].

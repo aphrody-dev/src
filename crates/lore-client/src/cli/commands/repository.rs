@@ -1,0 +1,2104 @@
+// SPDX-FileCopyrightText: 2026 Epic Games, Inc.
+// SPDX-License-Identifier: MIT
+use std::sync::Arc;
+use std::sync::atomic::AtomicBool;
+use std::sync::atomic::AtomicU64;
+use std::sync::atomic::Ordering;
+
+use chrono::DateTime;
+use clap::Args;
+use clap::Subcommand;
+use clap::ValueEnum;
+use lore::call_delegation::run_command;
+use lore::interface::LoreArray;
+use lore::interface::LoreEvent;
+use lore::interface::LoreFileAction;
+use lore::interface::LoreGlobalArgs;
+use lore::interface::LoreMetadataType;
+use lore::interface::LoreNodeType;
+use lore::interface::LoreRepositoryCloneArgs;
+use lore::interface::LoreRepositoryCreateArgs;
+use lore::interface::LoreRepositoryDumpArgs;
+use lore::interface::LoreRepositoryGcArgs;
+use lore::interface::LoreRepositoryInfoArgs;
+use lore::interface::LoreRepositoryInstanceCloneMethod;
+use lore::interface::LoreRepositoryInstanceClonePhase;
+use lore::interface::LoreRepositoryListArgs;
+use lore::interface::LoreRepositoryMetadataClearArgs;
+use lore::interface::LoreRepositoryMetadataGetArgs;
+use lore::interface::LoreRepositoryMetadataSetArgs;
+use lore::interface::LoreRepositoryStatusArgs;
+use lore::interface::LoreRepositoryStoreImmutableQueryArgs;
+use lore::interface::LoreRepositoryVerifyFragmentArgs;
+use lore::interface::LoreRepositoryVerifyStateArgs;
+use lore::interface::LoreSharedStoreMode;
+use lore::interface::LoreString;
+use lore::repository::LoreRepositoryDeleteArgs;
+use lore::repository::LoreVfsType;
+use parking_lot::Mutex;
+
+use crate::cli::EventCallbackExt;
+use crate::cli::EventCallbackFn;
+use crate::cli::output_formatter;
+use crate::println;
+use crate::progress_bar::ProgressBar;
+use crate::styling::BranchStyles;
+use crate::styling::CommonStyles;
+use crate::styling::FileActionStyle;
+use crate::util;
+use crate::util::convert_paths_and_targets;
+use crate::util::format_bytes_to_string;
+
+#[derive(Args)]
+pub struct RepositoryArgs {
+    #[command(subcommand)]
+    pub command: RepositoryCommands,
+}
+
+#[derive(Args)]
+pub struct RepositoryStatusArgs {
+    /// Walk the filesystem under the given paths and reconcile every
+    /// file against the current revision.
+    ///
+    /// Detected modifications, adds, and deletes are marked dirty;
+    /// stale dirty flags are cleared. The refreshed flags are
+    /// persisted in the staged state so subsequent `lore stage` and
+    /// `lore status` calls see an accurate picture without
+    /// rescanning.
+    ///
+    /// Without `--scan`, status reports only what is currently
+    /// tracked: the staged revision (if any) plus files already
+    /// marked dirty. Mark files individually with `lore dirty` for
+    /// targeted updates, or pass `--scan` here for bulk
+    /// reconciliation.
+    #[clap(long, action)]
+    scan: bool,
+
+    /// Alias for --scan (backward compatibility)
+    #[clap(long, action, hide = true)]
+    unstaged: bool,
+
+    /// Verify already-dirty files against the filesystem without a full
+    /// scan.
+    ///
+    /// Each file currently marked dirty is re-checked: one whose on-disk
+    /// content still matches the tracked revision (same size, and same
+    /// content when the modification time differs) has its dirty flag
+    /// cleared and is dropped from the report, unless it is also staged.
+    /// Adds, moves, copies, and deletes are always reported. The refreshed
+    /// flags are persisted, so this requires write access.
+    #[clap(long, action)]
+    check_dirty: bool,
+
+    /// Drop the existing staged anchor before computing status.
+    /// Combine with --scan to scan from a clean slate.
+    #[clap(long, action)]
+    reset: bool,
+
+    /// Only show revision info, skip all diffs
+    #[clap(long, action)]
+    revision_only: bool,
+
+    /// Count directories and files (staged state if present, else current revision; view-filtered)
+    #[clap(long, action)]
+    count: bool,
+
+    /// Optional paths in repository
+    path: Option<Vec<String>>,
+
+    /// Path to a targets file
+    #[clap(long, value_name = "file")]
+    targets: Option<String>,
+}
+
+/// Virtual File System type for repository operations.
+#[derive(ValueEnum, Clone, Copy, Default)]
+pub enum VfsType {
+    /// No virtual file system; files are materialized directly on disk.
+    #[default]
+    None,
+    /// Use whichever VFS system is preferred based on the user's system.
+    Default,
+    /// Use Epic's Split Write File System as the Virtual File System. An SWFS instance keeps its
+    /// content in the shared store made for its remote, so it needs a reachable remote: it cannot
+    /// be created offline, or for a repository with no remote.
+    Swfs,
+    /// A writable virtual clone: a Linux FUSE mount served by the Lore service.
+    Fuse,
+}
+
+impl VfsType {
+    pub fn to_lore(self) -> LoreVfsType {
+        match self {
+            VfsType::None => LoreVfsType::None,
+            VfsType::Default => LoreVfsType::Default,
+            VfsType::Swfs => LoreVfsType::Swfs,
+            VfsType::Fuse => LoreVfsType::Fuse,
+        }
+    }
+}
+
+#[derive(Args)]
+pub struct RepositoryCreateArgs {
+    /// URL of repository. With --offline this is the repository name instead, and may
+    /// be omitted to name it after the current directory
+    #[clap(value_name = "url")]
+    url: Option<String>,
+
+    /// Optional description of repository
+    #[clap(long, value_name = "description")]
+    description: Option<String>,
+
+    /// Optional ID of repository
+    #[clap(long, value_name = "id")]
+    id: Option<String>,
+
+    /// Virtual File System type. When not 'none', creates a VFS as the repository directory,
+    /// over a shared store as if --use-shared-store were given.
+    #[clap(long, value_enum, default_value = "none")]
+    vfs: VfsType,
+
+    /// Use the shared store rather than create a local immutable store. A VFS always does
+    #[clap(long)]
+    use_shared_store: bool,
+
+    /// Use this path rather than the system default as the shared store location
+    #[clap(long)]
+    shared_store_path: Option<String>,
+}
+
+#[derive(Args)]
+pub struct RepositoryCloneArgs {
+    /// URL of repository
+    #[clap(value_name = "url")]
+    url: String,
+
+    /// Path to clone into
+    #[clap(value_name = "path")]
+    path: Option<String>,
+
+    /// Optional client side view filter file
+    #[clap(long, value_name = "view")]
+    view: Option<String>,
+
+    /// Optional revision to sync
+    #[clap(long, value_name = "revision")]
+    revision: Option<String>,
+
+    /// Optional branch to sync (shorthand for a full revision specifier)
+    #[clap(long, value_name = "branch", conflicts_with = "revision")]
+    branch: Option<String>,
+
+    /// Clone without files, only fetch latest revision tree
+    #[clap(long, action)]
+    bare: bool,
+
+    /// Write directly to the destination file instead of write to a temporary file and move into place
+    #[clap(long, action)]
+    direct_file_write: bool,
+
+    /// Virtual File System type. When not 'none', creates a VFS as the repository directory,
+    /// over a shared store as if --use-shared-store were given.
+    #[clap(long, value_enum, default_value = "none")]
+    vfs: VfsType,
+
+    /// Layer to add
+    #[clap(long, value_name = "repository")]
+    layer: Option<String>,
+
+    /// Metadata key to link layer revisions with
+    #[clap(long, value_name = "key")]
+    layer_metadata: Option<String>,
+
+    /// Access recording whose paths a virtual clone warms in the background (one path per line, directories ending with `/`)
+    #[clap(long, value_name = "file")]
+    prefetch: Option<String>,
+
+    /// Use the shared store rather than create a local immutable store. A VFS always does
+    #[clap(long)]
+    use_shared_store: bool,
+
+    /// Use this path rather than the system default as the shared store location
+    #[clap(long)]
+    shared_store_path: Option<String>,
+
+    /// Clone without local repository tracking (memory-only stores)
+    #[clap(long, action)]
+    no_tracking: bool,
+
+    /// Root files for dependency-based selective clone (only clone these files and their dependencies). A root file inside a link is skipped
+    #[clap(long = "root-file", value_name = "path")]
+    root_files: Vec<String>,
+
+    /// Tags to filter dependencies by during dependency-based clone
+    #[clap(long = "dependency-tag", value_name = "tag")]
+    dependency_tags: Vec<String>,
+
+    /// Follow transitive dependencies recursively during dependency-based clone
+    #[clap(long, action)]
+    dependency_recursive: bool,
+
+    /// Maximum dependency traversal depth (0 means unlimited)
+    #[clap(long, value_name = "depth", default_value = "0")]
+    dependency_depth_limit: u32,
+}
+
+#[derive(Args)]
+pub struct RepositoryDeleteArgs {
+    /// URL of repository, or a bare name or ID resolved against this repository's remote
+    #[clap(value_name = "url")]
+    url: String,
+}
+
+#[derive(Args)]
+pub struct RepositoryInfoArgs {
+    /// URL of repository
+    #[clap(value_name = "url")]
+    url: Option<String>,
+}
+
+#[derive(Args)]
+pub struct RepositoryDumpArgs {
+    /// Optional path in the repository to start dumping from
+    #[clap(long, value_name = "path")]
+    path: Option<String>,
+
+    /// Optional revision to dump
+    #[clap(long, value_name = "revision")]
+    revision: Option<String>,
+
+    /// Optional max depth of tree dump
+    #[clap(long, value_name = "max-depth")]
+    max_depth: Option<usize>,
+}
+
+#[derive(Args)]
+pub struct RepositoryListArgs {
+    /// URL of remote
+    #[clap(value_name = "url")]
+    url: String,
+}
+
+#[derive(Args)]
+pub struct RepositoryStoreArgs {
+    /// Store action
+    #[command(subcommand)]
+    subcommand: RepositoryStoreCommands,
+}
+
+#[derive(Args)]
+pub struct RepositoryStoreImmutableArgs {
+    /// Store action
+    #[command(subcommand)]
+    subcommand: RepositoryStoreImmutableCommands,
+}
+
+#[derive(Args)]
+pub struct RepositoryStoreImmutableQueryArgs {
+    /// Fragment address to query
+    address: String,
+
+    /// Recurse into subfragments
+    #[clap(long, action)]
+    recurse: bool,
+}
+
+#[derive(Args)]
+pub struct RepositoryVerifyArgs {
+    #[command(subcommand)]
+    pub command: Option<RepositoryVerifyCommands>,
+
+    /// Optional path in the repository to start verification from (for state verification)
+    #[clap(long, value_name = "path")]
+    path: Option<String>,
+
+    /// Attempt to heal discrepancies found in a new staged state
+    #[clap(long, action)]
+    heal: bool,
+}
+
+#[derive(Subcommand)]
+pub enum RepositoryVerifyCommands {
+    /// Verify repository state consistency (default)
+    State(RepositoryVerifyStateArgs),
+    /// Verify a specific fragment in the local store
+    Fragment(RepositoryVerifyFragmentArgs),
+}
+
+#[derive(Args)]
+pub struct RepositoryVerifyStateArgs {
+    /// Optional path in the repository to start verification from
+    #[clap(long, value_name = "path")]
+    path: Option<String>,
+
+    /// Attempt to heal discrepancies found in a new staged state
+    #[clap(long, action)]
+    heal: bool,
+}
+
+#[derive(Args)]
+pub struct RepositoryVerifyFragmentArgs {
+    /// Fragment hash to verify
+    hash: String,
+
+    /// Context part of the address to verify
+    #[clap(long)]
+    context: Option<String>,
+
+    /// Attempt to heal if verification fails (remote only)
+    #[clap(long, action)]
+    heal: bool,
+}
+
+#[derive(Subcommand)]
+pub enum RepositoryCommands {
+    /// Show current repository status.
+    ///
+    /// Reports the staged revision (if any) and the files currently
+    /// marked dirty. No filesystem walk runs by default — pass
+    /// `--scan` to walk the filesystem and refresh dirty flags. See
+    /// `lore status --help` (top-level alias) for the full workflow.
+    Status(RepositoryStatusArgs),
+
+    /// Get info about a repository
+    Info(RepositoryInfoArgs),
+
+    /// List repositories
+    List(RepositoryListArgs),
+
+    // TODO(vri): Add optional path arg?
+    /// Create a repository in the given directory
+    Create(RepositoryCreateArgs),
+
+    /// Clone a remote repository into the given path
+    ///
+    /// A clone needs the remote, so `--offline` does not keep it from connecting: it prepares the
+    /// clone for working offline instead. With it, as with `--cache`, a clone that writes its files
+    /// caches every file metadata block of the cloned revision, which staging and committing write
+    /// to, so both work without the remote, and fails if it cannot. A bare or virtual clone writes no
+    /// files and reads them from the remote when a command needs them.
+    Clone(RepositoryCloneArgs),
+
+    /// Delete a repository
+    Delete(RepositoryDeleteArgs),
+
+    /// Verify repository state consistency
+    Verify(RepositoryVerifyArgs),
+
+    /// Dump repository state information
+    Dump(RepositoryDumpArgs),
+
+    /// Run a full garbage collection pass on the local repository store
+    Gc,
+
+    /// Access the repository data store
+    Store(RepositoryStoreArgs),
+
+    /// Repository metadata operations
+    Metadata(RepositoryMetadataArgs),
+
+    /// Instance management
+    Instance(RepositoryInstanceArgs),
+
+    /// Read a configuration value
+    #[command(name = "config")]
+    Config(RepositoryConfigArgs),
+
+    /// Update the stored path for this instance
+    #[command(name = "update-path")]
+    UpdatePath,
+}
+
+#[derive(Args)]
+pub struct RepositoryInstanceArgs {
+    #[command(subcommand)]
+    pub command: RepositoryInstanceCommands,
+}
+
+#[derive(Subcommand)]
+pub enum RepositoryInstanceCommands {
+    /// List all registered instances for this repository
+    List,
+    /// Remove stale instance entries: paths that no longer exist, paths that hold no revision, and
+    /// paths that now hold a different instance. An SWFS instance is kept while its `.lore` remains
+    /// in the global data directory, even when it is not mounted.
+    Prune,
+    /// Delete the current instance: unmount (if SWFS or a virtual clone), deregister from mutable store, and delete associated directories
+    Delete,
+    /// Move the current instance to a new path
+    Move(RepositoryInstanceMoveArgs),
+    /// Clone the current instance to a new path as an instance of its own, on the same revision,
+    /// branch and staged state. The clone shares the instance's data blocks, and is refused where
+    /// the destination's filesystem or volume cannot share them unless --allow-copy is given.
+    /// The instance must use a shared store and not be a virtual clone, and the path must not be
+    /// inside another instance. While the clone runs, commands on the instance, and commands from
+    /// other processes on every instance over the store, wait for it where they open the store. An
+    /// instance delete waits too, since it opens the store to deregister the instance before it
+    /// removes any file. An instance move renames the instance before it opens the store, so a move
+    /// makes the clone fail, or on Windows is refused while the clone lists one of its directories.
+    Clone(RepositoryInstanceCloneArgs),
+}
+
+#[derive(Args)]
+pub struct RepositoryInstanceMoveArgs {
+    /// Target path to move the instance to
+    #[arg(value_name = "target-path")]
+    pub target_path: String,
+}
+
+#[derive(Args)]
+pub struct RepositoryInstanceCloneArgs {
+    /// Path to create the clone at; it must not exist, and must be on the instance's volume for
+    /// the clone to share its data blocks
+    #[arg(value_name = "target-path")]
+    pub target_path: String,
+    /// Copy the instance's files where the clone cannot share their data blocks, rather than
+    /// refusing. A copy takes as long as writing every file, and commands wait for it as they
+    /// wait for every clone
+    #[arg(long)]
+    pub allow_copy: bool,
+}
+
+#[derive(Args)]
+pub struct RepositoryConfigArgs {
+    /// Operation to perform
+    #[command(subcommand)]
+    pub command: RepositoryConfigCommands,
+}
+
+#[derive(Subcommand)]
+pub enum RepositoryConfigCommands {
+    /// Get a configuration value
+    Get(RepositoryConfigGetArgs),
+}
+
+#[derive(Args)]
+pub struct RepositoryConfigGetArgs {
+    /// The configuration key to read
+    pub key: String,
+}
+
+#[derive(Args)]
+pub struct RepositoryMetadataArgs {
+    #[command(subcommand)]
+    pub command: RepositoryMetadataCommands,
+}
+
+#[derive(Subcommand)]
+pub enum RepositoryMetadataCommands {
+    /// Get metadata from the repository (omit key to list all)
+    Get(RepositoryMetadataGetArgs),
+
+    /// Set metadata on the repository
+    Set(RepositoryMetadataSetArgs),
+
+    /// Clear metadata from the repository
+    Clear(RepositoryMetadataClearArgs),
+}
+
+#[derive(Args)]
+pub struct RepositoryMetadataGetArgs {
+    /// Attribute to get (omit to list all)
+    #[clap(value_name = "key")]
+    key: Option<String>,
+}
+
+#[derive(Args)]
+pub struct RepositoryMetadataSetArgs {
+    /// Metadata key/value pairs
+    #[clap(value_name = "pairs", num_args = 1..)]
+    pairs: Option<Vec<String>>,
+
+    /// Indicator that values are paths to binary files
+    #[clap(long, action)]
+    binary: bool,
+
+    /// Indicator that values are numeric (u64)
+    #[clap(long, action, conflicts_with = "binary")]
+    numeric: bool,
+}
+
+#[derive(Args)]
+pub struct RepositoryMetadataClearArgs {
+    /// Keys to clear (omit to clear all user-defined keys)
+    #[clap(value_name = "keys", num_args = 0..)]
+    keys: Option<Vec<String>>,
+}
+
+#[derive(Subcommand)]
+pub enum RepositoryStoreCommands {
+    /// Operations on the immutable store
+    Immutable(RepositoryStoreImmutableArgs),
+}
+
+#[derive(Subcommand)]
+pub enum RepositoryStoreImmutableCommands {
+    /// Query the store
+    Query(RepositoryStoreImmutableQueryArgs),
+}
+
+fn path_typed(path: &str, node_type: LoreNodeType) -> String {
+    let mut path = path.to_string();
+    if node_type == LoreNodeType::Directory || node_type == LoreNodeType::Link {
+        path.push('/');
+    }
+    path
+}
+
+/// Atomic holder for the dirty-node summary captured from the status callback,
+/// printed after the file sections. `seen` distinguishes "summary emitted with
+/// all-zero counts" (scan/check-dirty found nothing) from "no summary event"
+/// (plain status).
+#[derive(Default)]
+struct StatusSummaryCounts {
+    seen: AtomicBool,
+    adds: AtomicU64,
+    deletes: AtomicU64,
+    modifies: AtomicU64,
+    moves: AtomicU64,
+    copies: AtomicU64,
+}
+
+pub fn handle_repository_status(globals: LoreGlobalArgs, args: &RepositoryStatusArgs) -> u8 {
+    let revision_only = args.revision_only;
+    let staged = if revision_only { 0u8 } else { true as u8 };
+    let scan = if revision_only {
+        0u8
+    } else if args.scan || args.unstaged {
+        1u8
+    } else {
+        0u8
+    };
+    let check_dirty = if revision_only {
+        0u8
+    } else {
+        args.check_dirty as u8
+    };
+    let reset = if revision_only { 0u8 } else { args.reset as u8 };
+    let sync_point = false as u8;
+
+    let paths = convert_paths_and_targets(&args.path, &args.targets);
+
+    let args = LoreRepositoryStatusArgs {
+        staged,
+        scan,
+        check_dirty,
+        reset,
+        sync_point,
+        revision_only: revision_only as u8,
+        count: args.count as u8,
+        paths,
+    };
+
+    let staged: Arc<Mutex<Vec<_>>> = Arc::new(Mutex::new(Vec::new()));
+    let unmerged: Arc<Mutex<Vec<_>>> = Arc::new(Mutex::new(Vec::new()));
+    let unstaged: Arc<Mutex<Vec<_>>> = Arc::new(Mutex::new(Vec::new()));
+    // Stash the dirty-node summary (scan/check-dirty only) so it prints after
+    // the file sections rather than mid-stream from the callback.
+    let summary: Arc<StatusSummaryCounts> = Arc::new(StatusSummaryCounts::default());
+    let staged_path = staged.clone();
+    let unmerged_path = unmerged.clone();
+    let unstaged_path = unstaged.clone();
+    let summary_holder = summary.clone();
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::RepositoryStatusRevision(data) => {
+                println!(
+                    "{}Repository{} {}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset,
+                    data.repository
+                );
+                println!(
+                    "On branch {}{}{} revision {} -> {}",
+                    BranchStyles::CURRENT_BRANCH,
+                    data.branch_name.as_str(),
+                    anstyle::Reset,
+                    data.revision_number,
+                    data.revision
+                );
+                if data.remote_available != 0 {
+                    if data.remote_authorized == 0 {
+                        println!(
+                            "Remote reachable but could not read remote revision (not authorized or unavailable)"
+                        );
+                    } else if data.remote_branch_exist != 0 {
+                        println!(
+                            "Remote revision {} -> {}",
+                            data.revision_remote_number, data.revision_remote
+                        );
+                    } else {
+                        println!("Remote branch does not exist");
+                    }
+                }
+                if data.is_local_ahead > 0 {
+                    if data.is_remote_ahead > 0 {
+                        println!("Local branch has diverged, synchronize to merge");
+                    } else {
+                        println!("Local branch is ahead of remote");
+                    }
+                } else if data.is_remote_ahead > 0 {
+                    println!("Local branch is behind remote");
+                } else if data.remote_branch_exist != 0 {
+                    println!("Local branch in sync with remote");
+                }
+                if !data.revision_staged.is_zero()
+                    && data.revision_staged != data.revision
+                    && !data.revision_merged.is_zero()
+                {
+                    println!("Pending merge, incoming revision {}", data.revision_merged);
+                }
+            }
+            LoreEvent::RepositoryStatusCount(data) => {
+                println!(
+                    "Repository size: {} directories, {} files",
+                    data.directories, data.files
+                );
+            }
+            LoreEvent::RepositoryStatusSummary(data) => {
+                summary_holder.adds.store(data.adds, Ordering::Relaxed);
+                summary_holder.deletes.store(data.deletes, Ordering::Relaxed);
+                summary_holder.modifies.store(data.modifies, Ordering::Relaxed);
+                summary_holder.moves.store(data.moves, Ordering::Relaxed);
+                summary_holder.copies.store(data.copies, Ordering::Relaxed);
+                summary_holder.seen.store(true, Ordering::Relaxed);
+            }
+            LoreEvent::RepositoryStatusFile(data) => {
+                if data.flag_staged != 0 {
+                    if data.flag_conflict_unresolved == 0 {
+                        staged_path.lock().push(data.clone());
+                    } else {
+                        unmerged_path.lock().push(data.clone());
+                    }
+                } else {
+                    unstaged_path.lock().push(data.clone());
+                }
+            }
+            LoreEvent::PathIgnore(data) => {
+                util::handle_path_ignore_event(data);
+            }
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    let repo_root = std::path::absolute(globals.repository_path())
+        .unwrap_or_else(|_| std::path::PathBuf::from(globals.repository_path()));
+
+    let result = run_command(globals, args.into(), callback) as u8;
+
+    for files in [&staged, &unmerged, &unstaged] {
+        files
+            .lock()
+            .sort_unstable_by(|a, b| a.path.as_str().cmp(b.path.as_str()));
+    }
+
+    // CLI process, so this is the user's terminal directory.
+    #[allow(clippy::disallowed_methods)]
+    let cwd = std::env::current_dir().unwrap_or_else(|_| repo_root.clone());
+    let display_path = |path: &str, node_type| {
+        path_typed(
+            &util::relativize_for_display(&repo_root, &cwd, path),
+            node_type,
+        )
+    };
+
+    let files_staged = staged.lock();
+    if !files_staged.is_empty() {
+        println!(
+            "{}Changes staged for commit:{}",
+            CommonStyles::HEADERS,
+            anstyle::Reset
+        );
+
+        for file in files_staged.iter() {
+            let color_code = FileActionStyle::from_action_bg(file.action);
+            if file.action == LoreFileAction::Move || file.action == LoreFileAction::Copy {
+                println!(
+                    "{}{}{} {} -> {} {}",
+                    color_code,
+                    file.action_as_string_short(),
+                    anstyle::Reset,
+                    display_path(file.from_path.as_str(), file.r#type),
+                    display_path(file.path.as_str(), file.r#type),
+                    file.merged_as_string_short(),
+                );
+            } else {
+                println!(
+                    "{}{}{} {} {}",
+                    color_code,
+                    file.action_as_string_short(),
+                    anstyle::Reset,
+                    display_path(file.path.as_str(), file.r#type),
+                    file.merged_as_string_short(),
+                );
+            }
+        }
+    }
+
+    let files_unmerged = unmerged.lock();
+    if !files_unmerged.is_empty() {
+        println!(
+            "{}Changes in conflict:{}",
+            CommonStyles::HEADERS,
+            anstyle::Reset
+        );
+
+        for file in files_unmerged.iter() {
+            println!(
+                "{}{} {} {} {}{}{}{}",
+                FileActionStyle::from_action_bg(file.action),
+                file.action_as_string_short(),
+                anstyle::Reset,
+                display_path(file.path.as_str(), file.r#type),
+                FileActionStyle::CONFLICT,
+                file.merged_as_string_short(),
+                file.conflict_as_string_short(),
+                anstyle::Reset,
+            );
+        }
+    }
+
+    let files_unstaged = unstaged.lock();
+    if !files_unstaged.is_empty() {
+        let mut seen_unstaged = false;
+        for file in files_unstaged.iter() {
+            if file.action == LoreFileAction::Add {
+                continue;
+            }
+
+            if !seen_unstaged {
+                println!(
+                    "{}Changes not staged for commit:{}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset
+                );
+                seen_unstaged = true;
+            }
+
+            let color_code = FileActionStyle::from_action(file.action);
+
+            if file.action == LoreFileAction::Move || file.action == LoreFileAction::Copy {
+                println!(
+                    "{}{}{} {} -> {}",
+                    color_code,
+                    file.action_as_string_short(),
+                    anstyle::Reset,
+                    display_path(file.from_path.as_str(), file.r#type),
+                    display_path(file.path.as_str(), file.r#type),
+                );
+            } else {
+                println!(
+                    "{}{}{} {}",
+                    color_code,
+                    file.action_as_string_short(),
+                    anstyle::Reset,
+                    display_path(file.path.as_str(), file.r#type),
+                );
+            }
+        }
+
+        let mut seen_untracked = false;
+        for file in files_unstaged.iter() {
+            if file.action != LoreFileAction::Add {
+                continue;
+            }
+
+            if !seen_untracked {
+                println!(
+                    "{}Untracked files:{}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset
+                );
+                seen_untracked = true;
+            }
+
+            println!(
+                "{}{}{} {}",
+                FileActionStyle::from_action(file.action),
+                file.action_as_string_short(),
+                anstyle::Reset,
+                display_path(file.path.as_str(), file.r#type)
+            );
+        }
+    }
+
+    if summary.seen.load(Ordering::Relaxed) {
+        let adds = summary.adds.load(Ordering::Relaxed);
+        let deletes = summary.deletes.load(Ordering::Relaxed);
+        let modifies = summary.modifies.load(Ordering::Relaxed);
+        let moves = summary.moves.load(Ordering::Relaxed);
+        let copies = summary.copies.load(Ordering::Relaxed);
+        let total = adds + deletes + modifies + moves + copies;
+        if total == 0 {
+            println!("No tracked changes");
+        } else {
+            let parts = [
+                (adds, "added"),
+                (modifies, "modified"),
+                (deletes, "deleted"),
+                (moves, "moved"),
+                (copies, "copied"),
+            ];
+            let detail = parts
+                .iter()
+                .filter(|(count, _)| *count > 0)
+                .map(|(count, label)| format!("{count} {label}"))
+                .collect::<Vec<_>>()
+                .join(", ");
+            println!(
+                "{}Tracked changes:{} {}",
+                CommonStyles::HEADERS,
+                anstyle::Reset,
+                detail
+            );
+        }
+    }
+
+    result
+}
+
+pub fn handle_repository_info(globals: LoreGlobalArgs, args: &RepositoryInfoArgs) -> u8 {
+    let args = LoreRepositoryInfoArgs {
+        repository_url: LoreString::from(&args.url),
+    };
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::Complete(_) => {}
+            LoreEvent::RepositoryData(data) => {
+                println!(
+                    "{}{}{} ({})",
+                    CommonStyles::HEADERS,
+                    data.name,
+                    anstyle::Reset,
+                    data.id
+                );
+                if !data.description.is_empty() {
+                    println!();
+                    println!("{}", data.description);
+                }
+                println!();
+                println!(
+                    "{}Remote URL:{} {}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset,
+                    data.remote_url
+                );
+                println!(
+                    "{}Default branch:{} {} ({})",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset,
+                    data.default_branch_name,
+                    data.default_branch
+                );
+                println!(
+                    "{}Creator:{} {}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset,
+                    data.creator
+                );
+                if let Some(created) = DateTime::from_timestamp_millis(data.created as i64)
+                    .map(|time| time.to_rfc2822())
+                {
+                    println!(
+                        "{}Created:{} {created}",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset
+                    );
+                }
+                if !data.instance_id.is_zero() {
+                    println!(
+                        "{}Instance:{} {}",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset,
+                        data.instance_id.text_encoding()
+                    );
+                }
+            }
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    return run_command(globals, args.into(), callback) as u8;
+}
+
+pub fn handle_repository_list(globals: LoreGlobalArgs, args: &RepositoryListArgs) -> u8 {
+    let list_args = LoreRepositoryListArgs {
+        url: LoreString::from(&args.url),
+    };
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::Complete(_) => {}
+            LoreEvent::RepositoryListEntry(entry) => {
+                println!("{} ({})", entry.name, entry.id);
+            }
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    return run_command(globals, list_args.into(), callback) as u8;
+}
+
+/// The shared store mode a clone or create passes on for `--use-shared-store`, with `vfs` and
+/// whether `--shared-store-path` is given, or the usage error where the path would be ignored. A
+/// path places a shared store, so it needs one: `--use-shared-store`, or a `vfs` that makes a
+/// virtual file system on this platform, which always uses one.
+pub fn shared_store_mode(
+    use_shared_store: bool,
+    vfs: VfsType,
+    shared_store_path: bool,
+) -> Result<LoreSharedStoreMode, clap::Error> {
+    if use_shared_store {
+        return Ok(LoreSharedStoreMode::Enabled);
+    }
+    if shared_store_path && !vfs.to_lore().to_config().vfs_type.is_virtual() {
+        return Err(clap::Error::raw(
+            clap::error::ErrorKind::MissingRequiredArgument,
+            "'--shared-store-path' needs a shared store: pass '--use-shared-store', or a '--vfs' \
+             that makes a virtual file system, which always uses one\n",
+        ));
+    }
+    Ok(LoreSharedStoreMode::Inherit)
+}
+
+/// Print `error` as clap prints a usage error, and return its exit code.
+fn refused_arguments(error: &clap::Error) -> u8 {
+    let _ = error.print();
+    error.exit_code() as u8
+}
+
+pub fn handle_repository_create(globals: LoreGlobalArgs, args: &RepositoryCreateArgs) -> u8 {
+    // Passed through as given. Whether an argument without a host is a repository name or
+    // a malformed URL depends on `--offline`, which the core resolves along with the rest
+    // of the globals, so there is nothing to decide here.
+    let url = args.url.clone().unwrap_or_default();
+    let use_shared_store = match shared_store_mode(
+        args.use_shared_store,
+        args.vfs,
+        args.shared_store_path.is_some(),
+    ) {
+        Ok(mode) => mode,
+        Err(error) => return refused_arguments(&error),
+    };
+
+    let args = LoreRepositoryCreateArgs {
+        repository_url: url.into(),
+        id: LoreString::from(&args.id),
+        description: LoreString::from(&args.description),
+        use_shared_store,
+        shared_store_path: args.shared_store_path.as_ref().into(),
+        vfs: args.vfs.to_lore(),
+    };
+
+    let dry_run = globals.dry_run();
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::RepositoryCreate(data) => {
+                println!(
+                    "{} repository {} in {} with ID {}",
+                    if dry_run { "Would create" } else { "Created" },
+                    data.name,
+                    data.path.as_str(),
+                    data.id,
+                );
+            }
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    return run_command(globals, args.into(), callback) as u8;
+}
+
+pub fn handle_repository_delete(globals: LoreGlobalArgs, args: &RepositoryDeleteArgs) -> u8 {
+    // Passed through as given: a full URL, or a bare name or ID that the core resolves
+    // against this working copy's remote.
+    let repository_url = LoreString::from_str(args.url.as_str());
+
+    let args = LoreRepositoryDeleteArgs { repository_url };
+
+    let dry_run = globals.dry_run();
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::Complete(data) if data.status == 0 => {
+                if dry_run {
+                    println!(
+                        "{}Repository would be deleted{}",
+                        CommonStyles::SUCCESS,
+                        anstyle::Reset
+                    );
+                } else {
+                    println!(
+                        "{}Repository deleted successfully{}",
+                        CommonStyles::SUCCESS,
+                        anstyle::Reset
+                    );
+                }
+            }
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    return run_command(globals, args.into(), callback) as u8;
+}
+
+fn format_clone_retain_replace(retain: u64, replace: u64) -> String {
+    if retain > 0 || replace > 0 {
+        format!(" ({retain} retained, {replace} replaced)")
+    } else {
+        String::default()
+    }
+}
+
+#[allow(clippy::unnecessary_unwrap)]
+pub fn handle_repository_clone(globals: LoreGlobalArgs, args: &RepositoryCloneArgs) -> u8 {
+    // Cloning fetches from a server, so the URL has to carry the host.
+    if !args.url.contains('/') {
+        println!("Repository URL must include a host name");
+        return 1;
+    }
+    let repository_url = LoreString::from(args.url.clone());
+
+    let mut globals = globals;
+    if let Some(path) = args.path.as_deref() {
+        globals.repository_path = LoreString::from(path);
+    } else if let Some((_, name)) = repository_url.as_str().rsplit_once('/') {
+        globals.repository_path = LoreString::from(name);
+    } else {
+        println!("No path given and unable to parse repository URL");
+        return 1;
+    };
+
+    let revision;
+    if let Some(branch) = args.branch.as_ref() {
+        revision = LoreString::from(&format!("{branch}@latest"));
+    } else {
+        revision = args.revision.as_ref().into();
+    }
+    let use_shared_store = match shared_store_mode(
+        args.use_shared_store,
+        args.vfs,
+        args.shared_store_path.is_some(),
+    ) {
+        Ok(mode) => mode,
+        Err(error) => return refused_arguments(&error),
+    };
+
+    let clone_args = LoreRepositoryCloneArgs {
+        repository_url,
+        revision,
+        view: args.view.as_ref().into(),
+        bare: args.bare.into(),
+        direct_file_write: args.direct_file_write.into(),
+        vfs: args.vfs.to_lore(),
+        layer: args.layer.as_ref().into(),
+        layer_metadata: args.layer_metadata.as_ref().into(),
+        prefetch: args.prefetch.as_ref().into(),
+        use_shared_store,
+        shared_store_path: args.shared_store_path.as_ref().into(),
+        no_tracking: args.no_tracking.into(),
+        root_files: LoreArray::from_vec(
+            args.root_files
+                .iter()
+                .map(|s| LoreString::from(s.as_str()))
+                .collect(),
+        ),
+        dependency_tags: LoreArray::from_vec(
+            args.dependency_tags
+                .iter()
+                .map(|s| LoreString::from(s.as_str()))
+                .collect(),
+        ),
+        dependency_recursive: args.dependency_recursive.into(),
+        dependency_depth_limit: args.dependency_depth_limit,
+    };
+
+    let start = std::time::Instant::now();
+
+    let bar = ProgressBar::new_spinner("Cloning ...");
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::RepositoryCloneBegin(data) => {
+                println!(
+                    "Cloning repository {} branch {} into {}",
+                    data.repository, data.branch, data.path
+                );
+            }
+            LoreEvent::RepositoryCloneProgress(data) => {
+                crate::progress_bar::clone::apply_clone_progress(
+                    data.count.file_count,
+                    data.count.file_complete,
+                    data.count.bytes_transferred,
+                    data.count.bytes_total,
+                    data.count.discovery_complete,
+                    &bar,
+                );
+            }
+            LoreEvent::RepositoryCloneEnd(data) => {
+                println!(
+                    "Cloned {}/{} files ({}/{}){}\x1b[K",
+                    data.count.file_complete,
+                    data.count.file_count,
+                    format_bytes_to_string(data.count.bytes_transferred),
+                    format_bytes_to_string(data.count.bytes_total),
+                    format_clone_retain_replace(data.count.file_retain, data.count.file_replace)
+                );
+                println!(
+                    "Branch {}{}{} revision {}",
+                    BranchStyles::CURRENT_BRANCH,
+                    data.branch.as_str(),
+                    anstyle::Reset,
+                    data.revision
+                );
+                println!("Clone complete in {:.2}s", start.elapsed().as_secs_f32());
+            }
+            LoreEvent::RevisionResolve(data) => util::handle_revision_resolve_event(data),
+            LoreEvent::Complete(_) => {}
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    return run_command(globals, clone_args.into(), callback) as u8;
+}
+
+pub fn handle_repository_verify(globals: LoreGlobalArgs, args: &RepositoryVerifyArgs) -> u8 {
+    match &args.command {
+        Some(RepositoryVerifyCommands::State(state_args)) => {
+            handle_repository_verify_state(globals, state_args)
+        }
+        Some(RepositoryVerifyCommands::Fragment(fragment_args)) => {
+            handle_repository_verify_fragment(globals, fragment_args)
+        }
+        None => {
+            // Backward compatibility: no subcommand means state verification
+            let state_args = RepositoryVerifyStateArgs {
+                path: args.path.clone(),
+                heal: args.heal,
+            };
+            handle_repository_verify_state(globals, &state_args)
+        }
+    }
+}
+
+pub fn handle_repository_verify_state(
+    globals: LoreGlobalArgs,
+    args: &RepositoryVerifyStateArgs,
+) -> u8 {
+    let verify_args = LoreRepositoryVerifyStateArgs {
+        path: LoreString::from(&args.path),
+        heal: args.heal.into(),
+    };
+
+    let _spinner = ProgressBar::new_spinner("Verifying repository state...");
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::RepositoryVerifyStateBegin(_data) => {}
+            LoreEvent::RepositoryVerifyStateEnd(data) => {
+                if data.healed_staged_state.is_zero() {
+                    println!(
+                        "{}Verified repository state integrity{}",
+                        CommonStyles::SUCCESS,
+                        anstyle::Reset
+                    );
+                } else {
+                    println!(
+                        "Serialized new healed staged state as {}",
+                        data.healed_staged_state
+                    );
+                }
+            }
+            LoreEvent::Complete(_) => {}
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    run_command(globals, verify_args.into(), callback) as u8
+}
+
+pub fn handle_repository_verify_fragment(
+    globals: LoreGlobalArgs,
+    args: &RepositoryVerifyFragmentArgs,
+) -> u8 {
+    let verify_args = LoreRepositoryVerifyFragmentArgs {
+        hash: LoreString::from(&args.hash),
+        context: LoreString::from(&args.context),
+        heal: args.heal.into(),
+    };
+
+    let _spinner = ProgressBar::new_spinner("Verifying fragment...");
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::RepositoryVerifyFragment(data) => {
+                println!(
+                    "{}Fragment:{} {}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset,
+                    data.hash
+                );
+                println!(
+                    "{}Location:{} group {}, bucket {}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset,
+                    data.group_index,
+                    data.bucket_index
+                );
+                println!(
+                    "{}Index path:{} {}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset,
+                    data.index_path
+                );
+                println!(
+                    "{}Entries in bucket:{} {}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset,
+                    data.entry_count
+                );
+                println!(
+                    "{}Packfile entries checked:{} {}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset,
+                    data.packfile_entry_count
+                );
+                println!();
+                println!(
+                    "{}Matches ({}){}:",
+                    CommonStyles::HEADERS,
+                    data.match_count,
+                    anstyle::Reset
+                );
+                for (i, m) in data.matches.as_slice().iter().enumerate() {
+                    println!("  [{}] slot={} index={}", i, m.slot, m.index);
+                    println!(
+                        "      {}repository:{} {}",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset,
+                        m.repository
+                    );
+                    println!(
+                        "      {}address:{} {}:{}",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset,
+                        m.address_hash,
+                        m.address_context
+                    );
+                    println!(
+                        "      {}flags:{} 0x{:x}",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset,
+                        m.flags
+                    );
+                    println!(
+                        "      {}payload:{} {} bytes",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset,
+                        m.size_payload
+                    );
+                    println!(
+                        "      {}content:{} {} bytes",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset,
+                        m.size_content
+                    );
+                    println!(
+                        "      {}pack:{} file={} offset={}",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset,
+                        m.pack_file,
+                        m.pack_offset
+                    );
+                    println!(
+                        "      {}last_access:{} {}",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset,
+                        m.last_access
+                    );
+                }
+                println!();
+                if data.error.is_empty() {
+                    println!(
+                        "Fragment status: {}OK{}",
+                        CommonStyles::SUCCESS,
+                        anstyle::Reset
+                    );
+                } else {
+                    println!(
+                        "Fragment status: {}ERROR{}: {}",
+                        CommonStyles::FAILURE,
+                        anstyle::Reset,
+                        data.error
+                    );
+                }
+            }
+            LoreEvent::RepositoryVerifyFragmentRemote(data) => {
+                println!("Fragment: {}:{}", data.address_hash, data.address_context);
+                if data.error.is_empty() {
+                    let is_corrupted = data.corrupted != 0;
+                    if is_corrupted {
+                        println!(
+                            "Fragment status: {}CORRUPTED{}",
+                            CommonStyles::FAILURE,
+                            anstyle::Reset
+                        );
+                    } else {
+                        println!(
+                            "Fragment status: {}OK{}",
+                            CommonStyles::SUCCESS,
+                            anstyle::Reset
+                        );
+                    }
+                    match data.healed {
+                        0 => println!("Healing: Not Attempted"),
+                        1 => println!(
+                            "Healing: {}Success{}",
+                            CommonStyles::SUCCESS,
+                            anstyle::Reset
+                        ),
+                        2 => println!("Healing: {}Failed{}", CommonStyles::FAILURE, anstyle::Reset),
+                        _ => println!("Healing: Unknown"),
+                    };
+                } else {
+                    println!(
+                        "Fragment status: {}ERROR{}: {}",
+                        CommonStyles::FAILURE,
+                        anstyle::Reset,
+                        data.error
+                    );
+                }
+            }
+            LoreEvent::Complete(_) => {}
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    run_command(globals, verify_args.into(), callback) as u8
+}
+
+pub fn handle_repository_dump(
+    globals: LoreGlobalArgs,
+    revision: &str,
+    path: &str,
+    max_depth: usize,
+) -> u8 {
+    let dump_args = LoreRepositoryDumpArgs {
+        revision: revision.into(),
+        path: path.into(),
+        max_depth,
+    };
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::RepositoryDumpBegin(data) => {
+                println!(
+                    "{}Repository{} {}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset,
+                    data.repository
+                );
+                println!(
+                    "{}Revision{} {}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset,
+                    data.revision
+                );
+            }
+            LoreEvent::RepositoryStateDump(data) => {
+                println!(
+                    "{}Revision  :{} {}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset,
+                    data.revision_number
+                );
+                println!(
+                    "{}Signature :{} {}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset,
+                    data.revision
+                );
+                println!(
+                    "{}Tree:{} hash {} size {}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset,
+                    data.tree_hash,
+                    data.tree_size
+                );
+            }
+            LoreEvent::RepositoryStateDumpNode(data) => {
+                println!(
+                    "{} id {} parent {} sibling {} mode 0{:o} size {} flags {:x} {}",
+                    data.name,
+                    data.id,
+                    data.parent,
+                    data.sibling,
+                    data.mode,
+                    data.size,
+                    data.flags,
+                    data.type_data,
+                );
+            }
+            LoreEvent::RepositoryDumpEnd(_dump) => {}
+            LoreEvent::Complete(_) => {}
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    return run_command(globals, dump_args.into(), callback) as u8;
+}
+
+pub fn handle_repository_gc(globals: LoreGlobalArgs) -> u8 {
+    let args = LoreRepositoryGcArgs {};
+    let dry_run = globals.dry_run();
+
+    // Progress events arrive one per evicted bucket / compacted group. Show a single
+    // in-place bar with the running total instead of a line per event, then print the
+    // final totals once on completion so the result survives the bar being cleared.
+    let bar = ProgressBar::new_spinner("Running GC...");
+    let evicted = AtomicU64::new(0);
+    let reclaimed = AtomicU64::new(0);
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::Complete(data) if data.status == 0 && dry_run => {
+                println!("Garbage collection skipped in a dry run");
+            }
+            LoreEvent::Complete(data) if data.status == 0 => {
+                println!(
+                    "Garbage collection complete: compaction reclaimed {}, eviction removed {} fragments",
+                    format_bytes_to_string(reclaimed.load(Ordering::Relaxed)),
+                    evicted.load(Ordering::Relaxed)
+                );
+            }
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            LoreEvent::CompactionBegin(data) => {
+                reclaimed.store(0, Ordering::Relaxed);
+                bar.set_message(format!(
+                    "Compacting (target {})",
+                    format_bytes_to_string(data.target_bytes)
+                ));
+            }
+            LoreEvent::CompactionProgress(data) => {
+                let total = reclaimed.fetch_add(data.compacted_bytes, Ordering::Relaxed)
+                    + data.compacted_bytes;
+                bar.set_message(format!(
+                    "Compacting: {} reclaimed",
+                    format_bytes_to_string(total)
+                ));
+            }
+            LoreEvent::CompactionEnd(data) => {
+                reclaimed.store(data.total_compacted_bytes, Ordering::Relaxed);
+            }
+            LoreEvent::EvictionBegin(data) => {
+                evicted.store(0, Ordering::Relaxed);
+                bar.set_message(format!(
+                    "Evicting (target {} fragments)",
+                    data.target_fragments
+                ));
+            }
+            LoreEvent::EvictionProgress(data) => {
+                let total = evicted.fetch_add(data.evicted, Ordering::Relaxed) + data.evicted;
+                bar.set_message(format!("Evicting: {total} fragments"));
+            }
+            LoreEvent::EvictionEnd(data) => {
+                evicted.store(data.total_evicted, Ordering::Relaxed);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    return run_command(globals, args.into(), callback) as u8;
+}
+
+pub fn handle_repository_store(globals: LoreGlobalArgs, args: &RepositoryStoreArgs) -> u8 {
+    match &args.subcommand {
+        RepositoryStoreCommands::Immutable(args) => {
+            handle_repository_store_immutable(globals, args)
+        }
+    }
+}
+
+pub fn handle_repository_store_immutable(
+    globals: LoreGlobalArgs,
+    args: &RepositoryStoreImmutableArgs,
+) -> u8 {
+    match &args.subcommand {
+        RepositoryStoreImmutableCommands::Query(args) => {
+            handle_repository_store_immutable_query(globals, args)
+        }
+    }
+}
+
+pub fn handle_repository_store_immutable_query(
+    globals: LoreGlobalArgs,
+    args: &RepositoryStoreImmutableQueryArgs,
+) -> u8 {
+    let query_args = LoreRepositoryStoreImmutableQueryArgs {
+        address: LoreString::from(&args.address),
+        recurse: args.recurse.into(),
+    };
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::RepositoryStoreImmutableQuery(data) => {
+                println!(
+                    "{}Address{} {}{}{}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset,
+                    data.address,
+                    if data.remote != 0 {
+                        " (remote)"
+                    } else {
+                        " (local)"
+                    },
+                    if data.subfragment != 0 {
+                        " (subfragment)"
+                    } else {
+                        ""
+                    }
+                );
+                println!(
+                    "{}Status:{} {}",
+                    CommonStyles::HEADERS,
+                    anstyle::Reset,
+                    match data.status {
+                        0 =>
+                            if data.payload != 0 {
+                                "Stored (metadata and payload)"
+                            } else {
+                                "Stored (metadata)"
+                            },
+                        1 => "Hash exist",
+                        2 => "Hash exist in other repository",
+                        3 => "Not found",
+                        _ => "Unknown",
+                    }
+                );
+                if data.status != 3 {
+                    println!(
+                        "{}Payload:{} {} bytes{}",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset,
+                        data.payload_size,
+                        if data.payload != 0 { " (cached)" } else { "" }
+                    );
+                    println!(
+                        "{}Content:{} {} bytes",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset,
+                        data.content_size
+                    );
+                    println!(
+                        "{}Flags:{} 0x{:x}",
+                        CommonStyles::HEADERS,
+                        anstyle::Reset,
+                        data.flags
+                    );
+                }
+            }
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    run_command(globals, query_args.into(), callback) as u8
+}
+
+pub fn handle_repository_metadata_get(
+    globals: LoreGlobalArgs,
+    args: &RepositoryMetadataGetArgs,
+) -> u8 {
+    let get_args = LoreRepositoryMetadataGetArgs {
+        key: LoreString::from(&args.key),
+    };
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::Metadata(data) => {
+                super::file::print_metadata(data, None, None);
+            }
+            LoreEvent::Complete(_) => {}
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    run_command(globals, get_args.into(), callback) as u8
+}
+
+pub fn handle_repository_metadata_set(
+    globals: LoreGlobalArgs,
+    args: &RepositoryMetadataSetArgs,
+) -> u8 {
+    let format = if args.binary {
+        LoreMetadataType::Binary
+    } else if args.numeric {
+        LoreMetadataType::Numeric
+    } else {
+        LoreMetadataType::String
+    };
+
+    let elements = convert_paths_and_targets(&args.pairs, &None);
+    if !elements.as_slice().len().is_multiple_of(2) {
+        println!(
+            "error: metadata set requires <key> <value> pairs; each key must be followed by a value"
+        );
+        return 1;
+    }
+
+    let mut keys = vec![];
+    let mut values = vec![];
+    let mut formats = vec![];
+    for (index, element) in elements.as_slice().iter().enumerate() {
+        if index.is_multiple_of(2) {
+            keys.push(element.clone());
+        } else {
+            values.push(element.clone());
+            formats.push(format);
+        }
+    }
+
+    let set_args = LoreRepositoryMetadataSetArgs {
+        keys: LoreArray::from_vec(keys),
+        values: LoreArray::from_vec(values),
+        formats: LoreArray::from_vec(formats),
+    };
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::Metadata(data) => {
+                super::file::print_metadata(data, None, None);
+            }
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    run_command(globals, set_args.into(), callback) as u8
+}
+
+pub fn handle_repository_metadata_clear(
+    globals: LoreGlobalArgs,
+    args: &RepositoryMetadataClearArgs,
+) -> u8 {
+    let keys: Vec<LoreString> = args
+        .keys
+        .as_ref()
+        .map(|k| k.iter().map(|s| LoreString::from(s.as_str())).collect())
+        .unwrap_or_default();
+
+    let clear_args = LoreRepositoryMetadataClearArgs {
+        keys: LoreArray::from_vec(keys),
+    };
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::Complete(_) => {}
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    run_command(globals, clear_args.into(), callback) as u8
+}
+
+pub fn handle_repository_metadata_commands(
+    cmd: &RepositoryMetadataCommands,
+    globals: LoreGlobalArgs,
+) -> u8 {
+    match cmd {
+        RepositoryMetadataCommands::Get(args) => handle_repository_metadata_get(globals, args),
+        RepositoryMetadataCommands::Set(args) => handle_repository_metadata_set(globals, args),
+        RepositoryMetadataCommands::Clear(args) => handle_repository_metadata_clear(globals, args),
+    }
+}
+
+pub fn handle_repository_commands(cmd: &RepositoryCommands, globals: LoreGlobalArgs) -> u8 {
+    match cmd {
+        RepositoryCommands::Status(args) => handle_repository_status(globals, args),
+        RepositoryCommands::Info(args) => handle_repository_info(globals, args),
+        RepositoryCommands::List(args) => handle_repository_list(globals, args),
+        RepositoryCommands::Create(args) => handle_repository_create(globals, args),
+        RepositoryCommands::Delete(args) => handle_repository_delete(globals, args),
+        RepositoryCommands::Clone(args) => handle_repository_clone(globals, args),
+        RepositoryCommands::Verify(args) => handle_repository_verify(globals, args),
+        RepositoryCommands::Dump(args) => handle_repository_dump(
+            globals,
+            args.revision.as_deref().unwrap_or(""),
+            args.path.as_deref().unwrap_or(""),
+            args.max_depth.unwrap_or_default(),
+        ),
+        RepositoryCommands::Gc => handle_repository_gc(globals),
+        RepositoryCommands::Store(args) => handle_repository_store(globals, args),
+        RepositoryCommands::Metadata(args) => {
+            handle_repository_metadata_commands(&args.command, globals)
+        }
+        RepositoryCommands::Instance(args) => match &args.command {
+            RepositoryInstanceCommands::List => handle_repository_instance_list(globals),
+            RepositoryInstanceCommands::Prune => handle_repository_instance_prune(globals),
+            RepositoryInstanceCommands::Delete => handle_repository_instance_delete(globals),
+            RepositoryInstanceCommands::Move(move_args) => {
+                handle_repository_instance_move(globals, &move_args.target_path)
+            }
+            RepositoryInstanceCommands::Clone(clone_args) => handle_repository_instance_clone(
+                globals,
+                &clone_args.target_path,
+                clone_args.allow_copy,
+            ),
+        },
+        RepositoryCommands::Config(args) => match &args.command {
+            RepositoryConfigCommands::Get(get_args) => {
+                handle_repository_config_get(globals, &get_args.key)
+            }
+        },
+        RepositoryCommands::UpdatePath => handle_repository_update_path(globals),
+    }
+}
+
+/// Suffix for the `stale` value of a `RepositoryInstance` event: 1 is a path
+/// that no longer exists, 2 a path whose repository now names another instance,
+/// 3 a path holding no checkout.
+fn instance_stale_suffix(stale: u8) -> &'static str {
+    match stale {
+        0 => "",
+        2 => " (superseded)",
+        3 => " (no checkout)",
+        _ => " (stale)",
+    }
+}
+
+fn handle_repository_instance_list(globals: LoreGlobalArgs) -> u8 {
+    let args = lore::repository::LoreRepositoryInstanceListArgs {};
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(|event: &LoreEvent| match event {
+            LoreEvent::Complete(_) => {}
+            LoreEvent::RepositoryInstance(data) => {
+                println!(
+                    "{} {} {} {}{}",
+                    data.instance_id,
+                    data.path,
+                    data.branch_name,
+                    data.revision,
+                    instance_stale_suffix(data.stale)
+                );
+            }
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    return run_command(globals, args.into(), callback) as u8;
+}
+
+fn handle_repository_instance_prune(globals: LoreGlobalArgs) -> u8 {
+    let args = lore::repository::LoreRepositoryInstancePruneArgs {};
+
+    let pruned_count = Arc::new(std::sync::atomic::AtomicU32::new(0));
+    let pruned_count_clone = pruned_count.clone();
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::Complete(_) => {
+                let count = pruned_count_clone.load(std::sync::atomic::Ordering::Relaxed);
+                if count > 0 {
+                    println!("Pruned {count} stale instance(s)");
+                } else {
+                    println!("No stale instances found");
+                }
+            }
+            LoreEvent::RepositoryInstance(data) => {
+                pruned_count_clone.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                println!(
+                    "  Pruned {} {}{}",
+                    data.instance_id,
+                    data.path,
+                    instance_stale_suffix(data.stale)
+                );
+            }
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    return run_command(globals, args.into(), callback) as u8;
+}
+
+fn handle_repository_config_get(globals: LoreGlobalArgs, key: &str) -> u8 {
+    let args = lore::repository::LoreRepositoryConfigGetArgs {
+        key: LoreString::from(key),
+    };
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(|event: &LoreEvent| match event {
+            LoreEvent::Complete(_) => {}
+            LoreEvent::RepositoryConfigGet(data) => {
+                println!("{}", data.value);
+            }
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    return run_command(globals, args.into(), callback) as u8;
+}
+
+fn handle_repository_update_path(globals: LoreGlobalArgs) -> u8 {
+    let args = lore::repository::LoreRepositoryUpdatePathArgs {};
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(|event: &LoreEvent| match event {
+            LoreEvent::Complete(_) => {}
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    return run_command(globals, args.into(), callback) as u8;
+}
+
+fn handle_repository_instance_delete(globals: LoreGlobalArgs) -> u8 {
+    let args = lore::repository::LoreRepositoryInstanceDeleteArgs {};
+    let dry_run = globals.dry_run();
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::Complete(_) => {}
+            LoreEvent::RepositoryInstanceDeleteBegin(data) => {
+                let mode = if dry_run { " (dry run)" } else { "" };
+                println!(
+                    "Deleting instance {} at {}{}",
+                    data.instance_id, data.path, mode
+                );
+            }
+            LoreEvent::RepositoryInstanceDeleteProgress(data) => {
+                println!("  {:?}", data.phase);
+            }
+            LoreEvent::RepositoryInstanceDeleteComplete(data) => {
+                let outcome = if dry_run { "can be deleted" } else { "deleted" };
+                println!("Instance {} {}", data.instance_id, outcome);
+            }
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    return run_command(globals, args.into(), callback) as u8;
+}
+
+fn handle_repository_instance_move(globals: LoreGlobalArgs, target_path: &str) -> u8 {
+    let args = lore::repository::LoreRepositoryInstanceMoveArgs {
+        target_path: LoreString::from(target_path),
+    };
+    let dry_run = globals.dry_run();
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::Complete(_) => {}
+            LoreEvent::RepositoryInstanceMoveBegin(data) => {
+                let mode = if dry_run { " (dry run)" } else { "" };
+                println!(
+                    "Moving instance {} from {} to {}{}",
+                    data.instance_id, data.source_path, data.target_path, mode
+                );
+            }
+            LoreEvent::RepositoryInstanceMoveComplete(data) => {
+                let outcome = if dry_run { "can be moved" } else { "moved" };
+                println!(
+                    "Instance {} {} to {}",
+                    data.instance_id, outcome, data.target_path
+                );
+            }
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    return run_command(globals, args.into(), callback) as u8;
+}
+
+/// How often at most the clone prints the counts of its copy, however often its events come.
+const COUNT_LINE_INTERVAL: std::time::Duration = std::time::Duration::from_secs(30);
+
+fn handle_repository_instance_clone(
+    globals: LoreGlobalArgs,
+    target_path: &str,
+    allow_copy: bool,
+) -> u8 {
+    let args = lore::repository::LoreRepositoryInstanceCloneArgs {
+        target_path: LoreString::from(target_path),
+        allow_copy: u8::from(allow_copy),
+    };
+    let last_count_line = std::sync::Mutex::new(None::<std::time::Instant>);
+    let copy_started = std::sync::atomic::AtomicBool::new(false);
+    let dry_run = globals.dry_run();
+
+    let callback = output_formatter().unwrap_or(Some(
+        (Box::new(move |event: &LoreEvent| match event {
+            LoreEvent::Complete(_) => {}
+            LoreEvent::RepositoryInstanceCloneBegin(data) => {
+                let mode = if dry_run { " (dry run)" } else { "" };
+                println!(
+                    "Cloning instance {} at {} to {}{}",
+                    data.instance_id, data.source_path, data.target_path, mode
+                );
+                match data.method {
+                    LoreRepositoryInstanceCloneMethod::SharesBlocks => {
+                        println!(
+                            "  Shares data blocks on the {} volume at {}",
+                            data.filesystem, data.mount_point
+                        );
+                    }
+                    LoreRepositoryInstanceCloneMethod::CopiesBytes => {
+                        println!(
+                            "  A copy takes {} for {} files on the {} volume at {}, which has {} free: \
+                             {}",
+                            format_bytes_to_string(data.size),
+                            data.file_count,
+                            data.filesystem,
+                            data.mount_point,
+                            format_bytes_to_string(data.available_size),
+                            data.reason
+                        );
+                        if allow_copy {
+                            println!(
+                                "  Holds the store's locks throughout the copy, so commands that \
+                                 open the store, on the instance and from other processes on \
+                                 every instance over the store, wait for it"
+                            );
+                        }
+                    }
+                    LoreRepositoryInstanceCloneMethod::Unsupported => {
+                        println!("  Cannot be cloned: {}", data.reason);
+                    }
+                }
+            }
+            LoreEvent::RepositoryInstanceCloneProgress(data) => match data.phase {
+                LoreRepositoryInstanceClonePhase::WritingRecords => {
+                    println!("  Writing the modified-time records back to disk");
+                }
+                LoreRepositoryInstanceClonePhase::Copying
+                    if data.cloned_directory_count
+                        + data.cloned_entry_count
+                        + data.copied_file_count
+                        == 0 =>
+                {
+                    if !copy_started.swap(true, std::sync::atomic::Ordering::Relaxed) {
+                        println!("  Copying the instance's directory");
+                    }
+                }
+                LoreRepositoryInstanceClonePhase::Copying => {
+                    let mut printed = last_count_line.lock().unwrap_or_else(|err| err.into_inner());
+                    if printed.is_none_or(|at| at.elapsed() >= COUNT_LINE_INTERVAL) {
+                        *printed = Some(std::time::Instant::now());
+                        println!(
+                            "  {} directories cloned whole, {} entries cloned, {} files copied",
+                            data.cloned_directory_count,
+                            data.cloned_entry_count,
+                            data.copied_file_count
+                        );
+                    }
+                }
+                LoreRepositoryInstanceClonePhase::Registering => {
+                    println!("  Registering the clone");
+                }
+                LoreRepositoryInstanceClonePhase::RemovingLeftover => {
+                    println!("  Removing {}, left by an interrupted clone", data.path);
+                }
+            },
+            LoreEvent::RepositoryInstanceCloneComplete(data) => {
+                if dry_run {
+                    println!("Instance can be cloned to {}", data.target_path);
+                } else {
+                    println!(
+                        "Instance {} cloned to {} ({} directories cloned whole, {} entries \
+                         cloned, {} files copied)",
+                        data.instance_id,
+                        data.target_path,
+                        data.cloned_directory_count,
+                        data.cloned_entry_count,
+                        data.copied_file_count
+                    );
+                }
+            }
+            LoreEvent::Maintenance(data) => {
+                util::handle_maintenance_event(data);
+            }
+            _ => (),
+        }) as EventCallbackFn)
+            .with_defaults(),
+    ));
+
+    return run_command(globals, args.into(), callback) as u8;
+}

@@ -1,0 +1,60 @@
+[project]
+name = "urc"
+version = "0.1.0"
+description = "URC tests"
+readme = "README.md"
+classifiers = ["Private :: Do Not Upload"]
+# Bounded above because uv otherwise runs the suite on the newest CPython it
+# finds or can download, and the locked grpcio publishes no wheels for CPython
+# 3.15: uv then builds grpcio from source, which fails under MSVC on Windows.
+# Raise the bound together with a grpcio that ships wheels for the next release.
+requires-python = ">=3.13,<3.15"
+dependencies = [
+    "cryptography>=44.0.0",
+    "grpcio>=1.81.0",
+    "pytest>=9.1.1",
+    "pytest-json-ctrf>=0.3.6",
+    "pytest-timeout>=2.4.0",
+    "pytest-xdist>=3.8.0",
+]
+
+[dependency-groups]
+dev = ["ruff>=0.9.6", "pyright>=1.1.396"]
+
+[tool.ruff]
+target-version = "py313"
+extend-exclude = [".urc", ".lore"]
+
+[tool.pytest.ini_options]
+addopts = "--dist loadgroup --tb=short -rsxX"
+# The harness logs every Lore command's output at INFO; capturing it means a
+# failure report shows what the command printed, not only the assertion.
+log_level = "INFO"
+# tmp_path_retention_policy is deliberately left at its default. "none" looks
+# right for a suite that cleans up after itself, but it sets keep=0 on the
+# numbered basetemp rotation, which makes pytest delete the *current* session's
+# basetemp from its own pytest_sessionfinish. That takes lore_server_info.json
+# with it before scripts/test/lore_server.py can read the shared server's pid,
+# leaking a loreserver on every run, and it deletes the very data that
+# --keep-test-data promises to keep. Neither shows up when --basetemp is passed,
+# which is why CI would not have caught it. The default keeps the last three
+# basetemps, which now costs nothing because each run empties its own. Per-test
+# tmp_path directories are handled by a fixture in scripts/test/conftest.py.
+markers = [
+    "smoke: marks as smoke test",
+    "slow: marks as a slow running test",
+    "swfs: marks tests that need the EpicVFS driver (Windows only); deselect with 'not swfs'",
+    "requires_instrumented_lore: marks tests that need an instrumented build",
+]
+# A test that hangs used to take the whole run with it. Nothing in this suite
+# bounds how long a lore command may take - the helper calls `subprocess.run`
+# without a timeout - so a client that never returns is a test that never
+# returns, and CI ends up killing the job with no indication of which test it
+# was. Ten minutes is far above anything here: all 856 tests finish in 19
+# minutes across four workers, so a test reaching this is stuck rather than slow.
+timeout = 600
+# Dumped a minute before that, while the process is still alive, because the
+# stack of every thread is what says *where* it is stuck rather than only that it
+# is. The dump reaches the controller's log even under xdist, where the kill that
+# follows is what names the test: `worker 'gwN' crashed while running <test>`.
+faulthandler_timeout = 540

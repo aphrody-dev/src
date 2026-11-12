@@ -1,0 +1,29 @@
+// NativeLink 1.8.5 scheduler + CAS + AC on fr1 (mesh 10.200.77.x only). Chromium siso: -reapi_instance=main.
+{
+  stores: [
+    { name: "CAS", compression: { compression_algorithm: { lz4: {} }, backend: { filesystem: {
+        content_path: "/home/nativelink/cas", temp_path: "/home/nativelink/cas-tmp",
+        eviction_policy: { max_bytes: 150000000000 } } } } },
+    { name: "AC", filesystem: { content_path: "/home/nativelink/ac", temp_path: "/home/nativelink/ac-tmp",
+        eviction_policy: { max_bytes: 5000000000 } } },
+  ],
+  schedulers: [{ name: "MAIN", simple: {
+    worker_timeout_s: 60,
+    supported_platform_properties: {
+      OSFamily: "priority", "container-image": "priority",
+      "label:action_default": "priority", "label:action_large": "priority",
+      cpu_count: "minimum", ISA: "exact",
+    } } }],
+  servers: [
+    { listener: { http: { socket_address: "10.200.77.1:50051", advanced_http: { http2_keep_alive_interval: 10 } } },
+      services: {
+        cas: [{ instance_name: "main", cas_store: "CAS" }],
+        ac: [{ instance_name: "main", ac_store: "AC" }],
+        execution: [{ instance_name: "main", cas_store: "CAS", scheduler: "MAIN" }],
+        capabilities: [{ instance_name: "main", remote_execution: { scheduler: "MAIN" } }],
+        bytestream: { cas_stores: { main: "CAS" } },
+      } },
+    { listener: { http: { socket_address: "10.200.77.1:50061" } },
+      services: { worker_api: { scheduler: "MAIN" }, health: {} } },
+  ],
+}

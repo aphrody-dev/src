@@ -1,0 +1,5 @@
+[toolchain]
+# Upstream-first: track nightly. Floor for users stays rust-version = 1.97.
+channel = "nightly"
+components = ["rustfmt", "clippy", "rust-src"]
+profile = "minimal"

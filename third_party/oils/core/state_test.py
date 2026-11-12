@@ -1,0 +1,400 @@
+#!/usr/bin/env python2
+import unittest
+import os.path
+import shutil
+import tempfile
+
+from _devbuild.gen.id_kind_asdl import Id
+from _devbuild.gen.runtime_asdl import scope_e
+from _devbuild.gen.syntax_asdl import source, SourceLine
+from _devbuild.gen.value_asdl import (value, value_e, sh_lvalue)
+from asdl import runtime
+from core import bash_impl
+from core import error
+from core import executor
+from core import test_lib
+from core import state  # module under test
+from frontend import lexer
+from frontend import location
+from mycpp.mylib import NewDict
+
+
+def _InitMem():
+    # empty environment, no arena.
+    arena = test_lib.MakeArena('<state_test.py>')
+    col = 0
+    length = 1
+    line_id = arena.AddLine(1, 'foo')
+    arena.NewToken(-1, col, length, line_id)
+    mem = test_lib.MakeMem(arena)
+
+    parse_opts, exec_opts, mutable_opts = state.MakeOpts(mem, {}, None)
+
+    mem.exec_opts = exec_opts
+    return mem
+
+
+class MemTest(unittest.TestCase):
+
+    def _PushShellCall(self, mem, name, tok, argv):
+        """ simulate shell function """
+        mem.argv_stack.append(state._ArgFrame(argv))
+        frame = NewDict()
+        mem.var_stack.append(frame)
+        #mem.PushCall(name, tok)
+
+    def _PopShellCall(self, mem):
+        """ simulate shell function """
+        #mem.PopCall()
+        mem.var_stack.pop()
+        mem.argv_stack.pop()
+
+    def testGet(self):
+        mem = _InitMem()
+
+        tok_a = lexer.DummyToken(Id.Lit_Chars, 'a')
+        tok_a.line = SourceLine(1, 'a b', source.Interactive)
+
+        self._PushShellCall(mem, 'my-func', tok_a, ['a', 'b'])
+        print(mem.GetValue('HOME'))
+        self._PopShellCall(mem)
+        print(mem.GetValue('NONEXISTENT'))
+
+    def testSearchPath(self):
+        mem = _InitMem()
+        #print(mem)
+        search_path = executor.SearchPath(mem, mem.exec_opts)
+
+        # Relative path works without $PATH
+        self.assertEqual(None, search_path.LookupOne('__nonexistent__'))
+        self.assertEqual('bin/osh', search_path.LookupOne('bin/osh'))
+        self.assertEqual(None, search_path.LookupOne('grep'))
+
+        # Set $PATH
+        mem.SetValue(location.LName('PATH'), value.Str('/bin:/usr/bin'),
+                     scope_e.GlobalOnly)
+
+        self.assertEqual(None, search_path.LookupOne('__nonexistent__'))
+        self.assertEqual('bin/osh', search_path.LookupOne('bin/osh'))
+
+        # Not hermetic, but should be true on POSIX systems.
+        # Also see https://www.freedesktop.org/wiki/Software/systemd/TheCaseForTheUsrMerge/
+        #  - on some systems, /bin is a symlink to /usr/bin
+        if os.path.isfile('/bin/env'):
+            self.assertEqual(search_path.LookupOne('env'), '/bin/env')
+        else:
+            self.assertEqual(search_path.LookupOne('env'), '/usr/bin/env')
+
+    def testPushTemp(self):
+        mem = _InitMem()
+
+        # x=1
+        mem.SetValue(location.LName('x'), value.Str('1'), scope_e.Dynamic)
+        self.assertEqual('1', mem.var_stack[-1]['x'].val.s)
+
+        mem.PushTemp()
+
+        self.assertEqual(2, len(mem.var_stack))
+
+        # x=temp E=3 read x <<< 'line'
+        mem.SetValue(location.LName('x'), value.Str('temp'), scope_e.LocalOnly)
+        mem.SetValue(location.LName('E'), value.Str('3'), scope_e.LocalOnly)
+        mem.SetValue(location.LName('x'), value.Str('line'), scope_e.LocalOnly)
+
+        self.assertEqual('3', mem.var_stack[-1]['E'].val.s)
+        self.assertEqual('line', mem.var_stack[-1]['x'].val.s)
+        self.assertEqual('1', mem.var_stack[-2]['x'].val.s)
+
+        mem.PopTemp()
+        self.assertEqual(1, len(mem.var_stack))
+        self.assertEqual('1', mem.var_stack[-1]['x'].val.s)
+
+    def testSetVarClearFlag(self):
+        mem = _InitMem()
+        print(mem)
+
+        tok_one = lexer.DummyToken(Id.Lit_Chars, 'ONE')
+        tok_one.line = SourceLine(1, 'ONE', source.Interactive)
+
+        tok_two = lexer.DummyToken(Id.Lit_Chars, 'TWO')
+        tok_two.line = SourceLine(1, 'TWO', source.Interactive)
+
+        self._PushShellCall(mem, 'my-func', tok_one, ['ONE'])
+        self.assertEqual(2, len(mem.var_stack))  # internal details
+
+        # local x=y
+        mem.SetValue(location.LName('x'), value.Str('y'), scope_e.LocalOnly)
+        self.assertEqual('y', mem.var_stack[-1]['x'].val.s)
+
+        # New frame
+        self._PushShellCall(mem, 'my-func', tok_two, ['TWO'])
+        self.assertEqual(3, len(mem.var_stack))  # internal details
+
+        # x=y -- test out dynamic scope
+        mem.SetValue(location.LName('x'), value.Str('YYY'), scope_e.Dynamic)
+        self.assertEqual('YYY', mem.var_stack[-2]['x'].val.s)
+        self.assertEqual(None, mem.var_stack[-1].get('x'))
+
+        # myglobal=g
+        mem.SetValue(location.LName('myglobal'), value.Str('g'),
+                     scope_e.Dynamic)
+        self.assertEqual('g', mem.var_stack[0]['myglobal'].val.s)
+        self.assertEqual(False, mem.var_stack[0]['myglobal'].exported)
+
+        # 'export PYTHONPATH=/'
+        mem.SetValue(location.LName('PYTHONPATH'),
+                     value.Str('/'),
+                     scope_e.Dynamic,
+                     flags=state.SetExport)
+        self.assertEqual('/', mem.var_stack[0]['PYTHONPATH'].val.s)
+        self.assertEqual(True, mem.var_stack[0]['PYTHONPATH'].exported)
+
+        cmd_ev = mem.GetEnv()
+        self.assertEqual('/', cmd_ev['PYTHONPATH'])
+
+        mem.SetValue(location.LName('PYTHONPATH'),
+                     None,
+                     scope_e.Dynamic,
+                     flags=state.SetExport)
+        self.assertEqual(True, mem.var_stack[0]['PYTHONPATH'].exported)
+
+        # 'export myglobal'.  None means don't touch it.  Undef would be confusing
+        # because it might mean "unset", but we have a separated API for that.
+        mem.SetValue(location.LName('myglobal'),
+                     None,
+                     scope_e.Dynamic,
+                     flags=state.SetExport)
+        self.assertEqual(True, mem.var_stack[0]['myglobal'].exported)
+
+        # export g2  -- define and export empty
+        mem.SetValue(location.LName('g2'),
+                     None,
+                     scope_e.Dynamic,
+                     flags=state.SetExport)
+        self.assertEqual(value_e.Undef, mem.var_stack[0]['g2'].val.tag())
+        self.assertEqual(True, mem.var_stack[0]['g2'].exported)
+
+        # readonly myglobal
+        self.assertEqual(False, mem.var_stack[0]['myglobal'].readonly)
+        mem.SetValue(location.LName('myglobal'),
+                     None,
+                     scope_e.Dynamic,
+                     flags=state.SetReadOnly)
+        self.assertEqual(True, mem.var_stack[0]['myglobal'].readonly)
+
+        mem.SetValue(location.LName('PYTHONPATH'), value.Str('/lib'),
+                     scope_e.Dynamic)
+        self.assertEqual('/lib', mem.var_stack[0]['PYTHONPATH'].val.s)
+        self.assertEqual(True, mem.var_stack[0]['PYTHONPATH'].exported)
+
+        # COMPREPLY=(1 2 3)
+        # invariant to enforce: arrays can't be exported
+        mem.SetValue(location.LName('COMPREPLY'),
+                     bash_impl.BashArray_FromList(['1', '2', '3']),
+                     scope_e.GlobalOnly)
+        compreply_val = mem.var_stack[0]['COMPREPLY'].val
+        self.assertEqual(['1', '2', '3'], sorted(compreply_val.d.values()))
+
+        # export COMPREPLY - allowed when strict_array not set
+        mem.SetValue(location.LName('COMPREPLY'),
+                     None,
+                     scope_e.Dynamic,
+                     flags=state.SetExport)
+
+        # readonly r=1
+        mem.SetValue(location.LName('r'),
+                     value.Str('1'),
+                     scope_e.Dynamic,
+                     flags=state.SetReadOnly)
+        self.assertEqual('1', mem.var_stack[0]['r'].val.s)
+        self.assertEqual(False, mem.var_stack[0]['r'].exported)
+        self.assertEqual(True, mem.var_stack[0]['r'].readonly)
+        print(mem)
+
+        # r=newvalue
+        try:
+            mem.SetValue(location.LName('r'), value.Str('newvalue'),
+                         scope_e.Dynamic)
+        except error.FatalRuntime as e:
+            pass
+        else:
+            self.fail("Expected failure")
+
+        # readonly r2  -- define empty readonly
+        mem.SetValue(location.LName('r2'),
+                     None,
+                     scope_e.Dynamic,
+                     flags=state.SetReadOnly)
+        self.assertEqual(value_e.Undef, mem.var_stack[0]['r2'].val.tag())
+        self.assertEqual(True, mem.var_stack[0]['r2'].readonly)
+
+        # export -n PYTHONPATH
+        # Remove the exported property.  NOTE: scope is LocalOnly for YSH?
+        self.assertEqual(True, mem.var_stack[0]['PYTHONPATH'].exported)
+        mem.ClearFlag('PYTHONPATH', state.ClearExport)
+        self.assertEqual(False, mem.var_stack[0]['PYTHONPATH'].exported)
+
+        lhs = sh_lvalue.Indexed('a', 1, runtime.NO_SPID)
+        # a[1]=2
+        mem.SetValue(lhs, value.Str('2'), scope_e.Dynamic)
+        self.assertEqual(['2'], mem.var_stack[0]['a'].val.d.values())
+
+        # a[1]=3
+        mem.SetValue(lhs, value.Str('3'), scope_e.Dynamic)
+        self.assertEqual(['3'], mem.var_stack[0]['a'].val.d.values())
+
+        # a[1]=(x y z)  # illegal but doesn't parse anyway
+        if 0:
+            try:
+                mem.SetValue(lhs, value.InternalStringArray(['x', 'y', 'z']),
+                             scope_e.Dynamic)
+            except error.FatalRuntime as e:
+                pass
+            else:
+                self.fail("Expected failure")
+
+        # readonly a
+        mem.SetValue(location.LName('a'),
+                     None,
+                     scope_e.Dynamic,
+                     flags=state.SetReadOnly)
+        self.assertEqual(True, mem.var_stack[0]['a'].readonly)
+
+        try:
+            # a[1]=3
+            mem.SetValue(lhs, value.Str('3'), scope_e.Dynamic)
+        except error.FatalRuntime as e:
+            pass
+        else:
+            self.fail("Expected failure")
+
+    def testGetValue(self):
+        mem = _InitMem()
+
+        # readonly a=x
+        mem.SetValue(location.LName('a'),
+                     value.Str('x'),
+                     scope_e.Dynamic,
+                     flags=state.SetReadOnly)
+
+        val = mem.GetValue('a', scope_e.Dynamic)
+        test_lib.AssertAsdlEqual(self, value.Str('x'), val)
+
+        val = mem.GetValue('undef', scope_e.Dynamic)
+        test_lib.AssertAsdlEqual(self, value.Undef, val)
+
+    def testExportThenAssign(self):
+        """Regression Test."""
+        mem = _InitMem()
+
+        # export U
+        mem.SetValue(location.LName('U'),
+                     None,
+                     scope_e.Dynamic,
+                     flags=state.SetExport)
+        print(mem)
+
+        # U=u
+        mem.SetValue(location.LName('U'), value.Str('u'), scope_e.Dynamic)
+        print(mem)
+        e = mem.GetEnv()
+        self.assertEqual('u', e['U'])
+
+    def testUnset(self):
+        mem = _InitMem()
+        # unset a
+        mem.Unset(location.LName('a'), scope_e.Shopt)
+
+        return  # not implemented yet
+
+        # unset a[1]
+        mem.Unset(sh_lvalue.Indexed('a', 1, runtime.NO_SPID), False)
+
+    def testArgv(self):
+        mem = _InitMem()
+        src = source.Interactive
+
+        tok_a = lexer.DummyToken(Id.Lit_Chars, 'a')
+        tok_a.line = SourceLine(1, 'a b', src)
+
+        self._PushShellCall(mem, 'my-func', tok_a, ['a', 'b'])
+        self.assertEqual(['a', 'b'], mem.GetArgv())
+
+        tok_x = lexer.DummyToken(Id.Lit_Chars, 'x')
+        tok_x.line = SourceLine(2, 'x y', src)
+
+        self._PushShellCall(mem, 'my-func', tok_x, ['x', 'y'])
+        self.assertEqual(['x', 'y'], mem.GetArgv())
+
+        status = mem.Shift(1)
+        self.assertEqual(['y'], mem.GetArgv())
+        self.assertEqual(0, status)
+
+        status = mem.Shift(1)
+        self.assertEqual([], mem.GetArgv())
+        self.assertEqual(0, status)
+
+        status = mem.Shift(1)
+        self.assertEqual([], mem.GetArgv())
+        self.assertEqual(1, status)  # error
+
+        self._PopShellCall(mem)
+        self.assertEqual(['a', 'b'], mem.GetArgv())
+
+    def testArgv2(self):
+        mem = state.Mem('', ['x', 'y'], {}, None, [], {})
+
+        mem.Shift(1)
+        self.assertEqual(['y'], mem.GetArgv())
+
+        mem.SetArgv(['i', 'j', 'k'])
+        self.assertEqual(['i', 'j', 'k'], mem.GetArgv())
+
+
+class BashPathTest(unittest.TestCase):
+
+    def setUp(self):
+        # A dir with an executable named bash, to search for in $PATH
+        self.tmp = tempfile.mkdtemp()
+        bash = os.path.join(self.tmp, 'bash')
+        with open(bash, 'w') as f:
+            f.write('')
+        os.chmod(bash, 0o755)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp)
+
+    def _Get(self, argv0, path_str, pwd='/start'):
+        val = state.BashPath(argv0, path_str, pwd).Get()
+        if val.tag() == value_e.Undef:
+            return None
+        return val.s
+
+    def testBashPath(self):
+        bash = os.path.join(self.tmp, 'bash')
+
+        # An absolute argv[0] is used as is
+        self.assertEqual('/usr/bin/bash', self._Get('/usr/bin/bash', None))
+
+        # A relative argv[0] is relative to $PWD at startup
+        self.assertEqual('/start/../dir/bash', self._Get('../dir/bash', None))
+
+        # A name without a slash is searched for in $PATH
+        self.assertEqual(bash, self._Get('bash', '/nonexistent:' + self.tmp))
+
+        # A login shell has a leading -
+        self.assertEqual(bash, self._Get('-bash', self.tmp))
+
+        # A relative $PATH entry is relative to $PWD at startup
+        rel_dir = os.path.basename(self.tmp)
+        pwd = os.path.dirname(self.tmp)
+        self.assertEqual(os.path.join(pwd, rel_dir, 'bash'),
+                         self._Get('bash', rel_dir, pwd=pwd))
+
+        # Unset if it's not in $PATH, or there's no $PATH
+        self.assertEqual(None, self._Get('bash', '/nonexistent'))
+        self.assertEqual(None, self._Get('bash', None))
+
+
+if __name__ == '__main__':
+    unittest.main()

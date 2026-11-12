@@ -1,0 +1,105 @@
+# Pinned upstreams for the 11 conformance suites (docs/CONFORMANCE.md).
+# Refs are commits, never branch names. Fetched as gh tarballs (no git).
+
+[upstream.bun]
+repo = "oven-sh/bun"
+commit = "43850629ce62b457ececc95689ad54abae3f6d47"
+license = "NOASSERTION"
+pinned_on = "2026-11-12"
+
+[upstream.test262]
+repo = "tc39/test262"
+commit = "2e58f87d8350ad51224617a041c6e041d52f8444"
+license = "NOASSERTION"
+pinned_on = "2026-11-12"
+
+[upstream.tailwindcss]
+repo = "tailwindlabs/tailwindcss"
+commit = "b08bf83a327271dfb7e3cd485fd793da15013f7c"
+license = "MIT"
+pinned_on = "2026-11-12"
+
+[upstream.shadcn]
+repo = "shadcn-ui/ui"
+commit = "dd41d19e2f80ff6891951f7ced74c2c9a650b065"
+license = "MIT"
+pinned_on = "2026-11-12"
+
+[upstream.base-ui]
+repo = "mui/base-ui"
+commit = "5aacdbb7852487518b982ea397885c8322a3ebc6"
+license = "MIT"
+pinned_on = "2026-11-12"
+
+[upstream.nextjs]
+repo = "vercel/next.js"
+commit = "3642b242d40fb98652ee0894c2df8bfc510cc9aa"
+license = "MIT"
+pinned_on = "2026-11-12"
+
+[upstream.vercel]
+repo = "vercel/vercel"
+commit = "84878e532142f0ac584953695658b324eb9e5b80"
+license = "Apache-2.0"
+pinned_on = "2026-11-12"
+
+[upstream.wpt]
+repo = "web-platform-tests/wpt"
+commit = "55ea0bd898f8e26dfe39491d23895b12ff37b892"
+license = "NOASSERTION"
+pinned_on = "2026-11-12"
+
+[[suite]]
+id = "test262"
+upstream = "test262"
+paths = ["test/built-ins", "test/language", "test/annexB", "test/intl402", "harness"]
+
+[[suite]]
+id = "bun"
+upstream = "bun"
+paths = ["test/js/bun", "test/js/node", "test/js/web", "test/cli", "test/bundler", "test/regression", "test/harness.ts"]
+
+[[suite]]
+id = "oxide"
+upstream = "tailwindcss"
+paths = ["crates/oxide"]
+
+[[suite]]
+id = "tailwind-snapshots"
+upstream = "tailwindcss"
+paths = ["packages/tailwindcss/src"]
+
+[[suite]]
+id = "tailwind-integrations"
+upstream = "tailwindcss"
+paths = ["integrations/cli", "integrations/postcss", "integrations/vite", "integrations/upgrade"]
+
+[[suite]]
+id = "shadcn"
+upstream = "shadcn"
+paths = ["apps/v4/public/schema", "apps/v4/registry", "apps/v4/public/r"]
+
+[[suite]]
+id = "base-ui"
+upstream = "base-ui"
+paths = ["packages/react/src"]
+
+[[suite]]
+id = "next-e2e"
+upstream = "nextjs"
+paths = ["test/e2e/app-dir", "run-tests.js"]
+
+[[suite]]
+id = "next-deploy"
+upstream = "nextjs"
+paths = ["test/deploy-tests-manifest.json", "packages/next/src/build/adapter"]
+
+[[suite]]
+id = "build-output-v3"
+upstream = "vercel"
+paths = ["packages/next", "packages/static-build"]
+
+[[suite]]
+id = "wpt"
+upstream = "wpt"
+paths = ["css/css-flexbox", "css/css-grid", "css/css-box", "css/css-display", "css/css-position", "css/css-sizing", "css/css-text", "css/css-fonts", "css/css-backgrounds", "css/css-color", "css/css-values", "css/css-cascade", "css/css-variables", "css/selectors"]

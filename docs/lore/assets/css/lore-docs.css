@@ -1,0 +1,654 @@
+/* Lore docs — dark theme overlay for mkdocs-material. */
+
+/* ---------- Fonts ---------- */
+@font-face {
+  font-family: "Inter";
+  font-display: swap;
+  font-weight: 300;
+  src: local("Inter Light"), local("Inter-Light"),
+       url("../fonts/Inter-Light.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-display: swap;
+  font-weight: 400;
+  src: local("Inter Regular"), local("Inter-Regular"),
+       url("../fonts/Inter-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-display: swap;
+  font-weight: 500;
+  src: local("Inter Medium"), local("Inter-Medium"),
+       url("../fonts/Inter-Medium.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-display: swap;
+  font-weight: 700;
+  src: local("Inter Bold"), local("Inter-Bold"),
+       url("../fonts/Inter-Bold.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Recursive Mono";
+  font-display: swap;
+  font-weight: 400;
+  src: local("Recursive Monospace Regular"),
+       url("../fonts/RecursiveMono-Regular.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "Recursive Mono";
+  font-display: swap;
+  font-weight: 700;
+  src: local("Recursive Monospace Bold"),
+       url("../fonts/RecursiveMono-Bold.woff2") format("woff2-variations");
+}
+
+/* ---------- Dark token layer ---------- */
+:root {
+  /* Backgrounds */
+  --lore-bg-default:        #101014;
+  --lore-bg-elev-low:       #18181c;
+  --lore-bg-elev-med:       #202024;
+  --lore-bg-elev-high:      #303034;
+  --lore-bg-backdrop:       rgba(0, 0, 0, 0.65);
+
+  /* Fills */
+  --lore-fill-subtle:       rgba(255, 255, 255, 0.15);
+  --lore-fill-subdued:      rgba(255, 255, 255, 0.10);
+  --lore-fill-faint:        rgba(255, 255, 255, 0.05);
+  --lore-fill-input:        rgba(255, 255, 255, 0.05);
+
+  /* Borders */
+  --lore-border-strong:     rgba(255, 255, 255, 0.35);
+  --lore-border-subtle:     rgba(255, 255, 255, 0.15);
+  --lore-border-subdued:    rgba(255, 255, 255, 0.10);
+  --lore-border-faint:      rgba(255, 255, 255, 0.05);
+  --lore-border-focus:      #ffffff;
+
+  /* Foreground / text */
+  --lore-fg-primary:        rgba(255, 255, 255, 0.95);
+  --lore-fg-secondary:      rgba(255, 255, 255, 0.65);
+  --lore-fg-inverse:        rgba(0, 0, 0, 0.95);
+  --lore-fg-disabled:       rgba(255, 255, 255, 0.65);
+
+  /* Accent (links, primary brand) */
+  --lore-accent-primary:    #33bfff;
+  --lore-accent-secondary:  #69d0ff;
+  --lore-on-accent:         #0a2633;
+
+  /* Status */
+  --lore-success:           #5fe367;
+  --lore-success-secondary: #8aea90;
+  --lore-on-success:        #132d15;
+
+  --lore-warning:           #f7d82b;
+  --lore-warning-secondary: #f9e264;
+  --lore-on-warning:        #312b09;
+
+  --lore-critical:          #fd5e5e;
+  --lore-critical-secondary:#fe8989;
+  --lore-on-critical:       #331313;
+
+  /* Radius — lg: homepage card grid; sm: code blocks + admonitions */
+  --lore-radius-lg:         1.2rem;
+  --lore-radius-sm:         0.8rem;
+
+  /* Typography */
+  --md-text-font: "Inter", system-ui, -apple-system, sans-serif;
+  --md-code-font: "Recursive Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+/* ---------- Map tokens onto mkdocs-material variables (slate / dark) ---------- */
+[data-md-color-scheme="slate"] {
+  /* Surfaces */
+  --md-default-bg-color:               var(--lore-bg-default);
+  --md-default-bg-color--light:        var(--lore-bg-elev-low);
+  --md-default-bg-color--lighter:      var(--lore-bg-elev-med);
+  --md-default-bg-color--lightest:     var(--lore-bg-elev-high);
+
+  /* Text */
+  --md-default-fg-color:               var(--lore-fg-primary);
+  --md-default-fg-color--light:        var(--lore-fg-secondary);
+  --md-default-fg-color--lighter:      rgba(255, 255, 255, 0.45);
+  --md-default-fg-color--lightest:     rgba(255, 255, 255, 0.25);
+  --md-typeset-color:                  var(--lore-fg-primary);
+
+  /* Header / footer / nav */
+  --md-primary-fg-color:               var(--lore-bg-elev-low);
+  --md-primary-fg-color--light:        var(--lore-bg-elev-med);
+  --md-primary-fg-color--dark:         var(--lore-bg-default);
+  --md-primary-bg-color:               var(--lore-fg-primary);
+  --md-primary-bg-color--light:        var(--lore-fg-secondary);
+  --md-footer-bg-color:                var(--lore-bg-elev-low);
+  --md-footer-bg-color--dark:          var(--lore-bg-default);
+
+  /* Links / accents */
+  --md-accent-fg-color:                var(--lore-accent-primary);
+  --md-accent-fg-color--transparent:   rgba(51, 191, 255, 0.10);
+  --md-accent-bg-color:                var(--lore-on-accent);
+  --md-accent-bg-color--light:         var(--lore-accent-secondary);
+  --md-typeset-a-color:                var(--lore-accent-primary);
+
+  /* Code blocks */
+  --md-code-fg-color:                  var(--lore-fg-primary);
+  --md-code-bg-color:                  var(--lore-bg-elev-med);
+  --md-code-hl-color:                  rgba(51, 191, 255, 0.20);
+  --md-code-hl-number-color:           var(--lore-warning-secondary);
+  --md-code-hl-special-color:          var(--lore-critical-secondary);
+  --md-code-hl-function-color:         var(--lore-accent-secondary);
+  --md-code-hl-constant-color:         var(--lore-accent-secondary);
+  --md-code-hl-keyword-color:          var(--lore-success-secondary);
+  --md-code-hl-string-color:           var(--lore-warning);
+  --md-code-hl-name-color:             var(--lore-fg-primary);
+  --md-code-hl-operator-color:         var(--lore-fg-secondary);
+  --md-code-hl-punctuation-color:      var(--lore-fg-secondary);
+  --md-code-hl-comment-color:          var(--lore-fg-secondary);
+  --md-code-hl-generic-color:          var(--lore-fg-secondary);
+  --md-code-hl-variable-color:         var(--lore-fg-primary);
+
+  /* Admonitions / callouts — color stripe maps to status palette */
+  --md-admonition-fg-color:            var(--lore-fg-primary);
+  --md-admonition-bg-color:            var(--lore-bg-elev-low);
+
+  /* Tables */
+  --md-typeset-table-color:            var(--lore-border-subtle);
+  --md-typeset-table-color--light:     var(--lore-border-subdued);
+
+  /* Misc */
+  --md-shadow-z1: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --md-shadow-z2: 0 4px 8px rgba(0, 0, 0, 0.55);
+  --md-shadow-z3: 0 8px 24px rgba(0, 0, 0, 0.65);
+}
+
+/* Status colors per admonition kind */
+[data-md-color-scheme="slate"] .md-typeset .admonition.note,
+[data-md-color-scheme="slate"] .md-typeset details.note {
+  border-color: var(--lore-accent-primary);
+}
+[data-md-color-scheme="slate"] .md-typeset .admonition.note > .admonition-title,
+[data-md-color-scheme="slate"] .md-typeset details.note > summary {
+  background-color: rgba(51, 191, 255, 0.10);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .admonition.tip,
+[data-md-color-scheme="slate"] .md-typeset details.tip,
+[data-md-color-scheme="slate"] .md-typeset .admonition.success,
+[data-md-color-scheme="slate"] .md-typeset details.success {
+  border-color: var(--lore-success);
+}
+[data-md-color-scheme="slate"] .md-typeset .admonition.tip > .admonition-title,
+[data-md-color-scheme="slate"] .md-typeset details.tip > summary,
+[data-md-color-scheme="slate"] .md-typeset .admonition.success > .admonition-title,
+[data-md-color-scheme="slate"] .md-typeset details.success > summary {
+  background-color: rgba(95, 227, 103, 0.10);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .admonition.warning,
+[data-md-color-scheme="slate"] .md-typeset details.warning {
+  border-color: var(--lore-warning);
+}
+[data-md-color-scheme="slate"] .md-typeset .admonition.warning > .admonition-title,
+[data-md-color-scheme="slate"] .md-typeset details.warning > summary {
+  background-color: rgba(247, 216, 43, 0.10);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .admonition.danger,
+[data-md-color-scheme="slate"] .md-typeset details.danger,
+[data-md-color-scheme="slate"] .md-typeset .admonition.failure,
+[data-md-color-scheme="slate"] .md-typeset details.failure,
+[data-md-color-scheme="slate"] .md-typeset .admonition.bug,
+[data-md-color-scheme="slate"] .md-typeset details.bug {
+  border-color: var(--lore-critical);
+}
+[data-md-color-scheme="slate"] .md-typeset .admonition.danger > .admonition-title,
+[data-md-color-scheme="slate"] .md-typeset details.danger > summary,
+[data-md-color-scheme="slate"] .md-typeset .admonition.failure > .admonition-title,
+[data-md-color-scheme="slate"] .md-typeset details.failure > summary,
+[data-md-color-scheme="slate"] .md-typeset .admonition.bug > .admonition-title,
+[data-md-color-scheme="slate"] .md-typeset details.bug > summary {
+  background-color: rgba(253, 94, 94, 0.10);
+}
+
+/* Round admonitions + collapsible details to match the card grid. overflow:hidden
+   clips the tinted title bar to the rounded top corners and the body to the
+   bottom, so nothing pokes past the border radius. */
+[data-md-color-scheme="slate"] .md-typeset .admonition,
+[data-md-color-scheme="slate"] .md-typeset details {
+  border-radius: var(--lore-radius-sm);
+  overflow: hidden;
+}
+
+/* ---------- Search input ---------- */
+[data-md-color-scheme="slate"] .md-search {
+  padding: .2rem .8rem;
+}
+[data-md-color-scheme="slate"] .md-search__form {
+  background-color: var(--lore-fill-input);
+  border: 1px solid var(--lore-border-strong);
+  border-radius: 9999px;
+  height: 1.7rem;
+  padding-inline: 0.75rem;
+  transition: border-color .12s, background-color .12s, outline-color .12s;
+}
+[data-md-color-scheme="slate"] .md-search__form:hover:not(:focus-within) {
+  background-color: var(--lore-fill-input);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+[data-md-color-scheme="slate"] .md-search__form:focus-within {
+  background-color: var(--lore-fill-input);
+  border-color: var(--lore-border-strong);
+  outline: 2px solid var(--lore-border-focus);
+  outline-offset: 2px;
+}
+
+[data-md-color-scheme="slate"] .md-search__input {
+  background-color: transparent;
+  color: var(--lore-fg-primary);
+  border-radius: 9999px;
+  padding-left: 1.75rem;
+  padding-right: 1rem;
+  font-size: 0.7rem;
+}
+[data-md-color-scheme="slate"] .md-search__input::placeholder {
+  color: var(--lore-fg-secondary);
+  opacity: 1;
+}
+
+/* search.suggest: the autocomplete overlay must match the input's font + left
+   padding exactly, or the suggested completion won't line up under the typed
+   text. Material's defaults (0.8rem / 2.2rem) differ from our input overrides
+   above (0.7rem / 1.75rem), so re-state them here. */
+[data-md-color-scheme="slate"] .md-search__suggest {
+  font-size: 0.7rem;
+  padding-left: 1.75rem;
+  padding-right: 1rem;
+}
+
+[data-md-color-scheme="slate"] .md-search__icon {
+  color: var(--lore-fg-secondary);
+}
+[data-md-color-scheme="slate"] .md-search__icon:hover {
+  color: var(--lore-fg-primary);
+}
+[data-md-color-scheme="slate"] .md-search__icon.md-icon {
+  display: flex;
+  justify-content: center;
+}
+
+[data-md-color-scheme="slate"] .md-main__inner {
+  margin-top: 0;
+}
+
+/* Body / content base size */
+[data-md-color-scheme="slate"] .md-typeset {
+  font-size: 0.7rem;
+}
+
+/* Headings h1–h3: Inter Bold, pure white */
+[data-md-color-scheme="slate"] .md-typeset :is(h1, h2, h3) {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  color: #fff;
+}
+[data-md-color-scheme="slate"] .md-typeset h1 {
+  margin: 0;
+}
+
+/* Glossary page h2 overrides */
+[data-md-color-scheme="slate"] .md-typeset h1#lore-glossary ~ h2 {
+  font-size: 1.7rem;
+  margin: 0;
+}
+
+/* Subtle borders for code blocks and tables */
+[data-md-color-scheme="slate"] .md-typeset pre > code,
+[data-md-color-scheme="slate"] .md-typeset code {
+  border: 1px solid var(--lore-border-faint);
+}
+/* Round block code to match the card grid. (Inline `code` keeps its small
+   default radius so short spans don't become pills.) The background + border
+   sit on `pre > code`, but Material pins that element's top corners to 0; the
+   coincident `.highlight` wrapper has no such override, so clipping it with
+   overflow:hidden rounds all four corners. Rounding `pre > code` too keeps its
+   1px border natively round under the clip. */
+[data-md-color-scheme="slate"] .md-typeset .highlight {
+  border-radius: var(--lore-radius-sm);
+  overflow: hidden;
+}
+[data-md-color-scheme="slate"] .md-typeset pre > code {
+  border-radius: var(--lore-radius-sm);
+}
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) {
+  border: 1px solid var(--lore-border-subtle);
+}
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+  background-color: var(--lore-bg-elev-low);
+}
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) tr {
+  border-top: 1px solid var(--lore-border-subdued);
+}
+
+/* ---------- Card grid (Figma node 845:4820 — "Working with Lore" cards) ---------- */
+[data-md-color-scheme="slate"] .md-typeset .card-grid > ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 0.8rem;
+}
+[data-md-color-scheme="slate"] .md-typeset .card-grid > ul > li {
+  background-color: var(--lore-fill-faint);
+  border: 1px solid var(--lore-border-faint);
+  border-radius: var(--lore-radius-lg);
+  padding: 1rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+[data-md-color-scheme="slate"] .md-typeset .card-grid > ul > li > p {
+  margin: 0;
+}
+[data-md-color-scheme="slate"] .md-typeset .card-grid > ul > li > p:first-of-type a {
+  color: var(--lore-fg-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-decoration: none;
+}
+[data-md-color-scheme="slate"] .md-typeset .card-grid > ul > li > p:first-of-type a:hover {
+  color: var(--lore-accent-primary);
+}
+[data-md-color-scheme="slate"] .md-typeset .card-grid > ul > li > p:not(:first-of-type) {
+  color: var(--lore-fg-secondary);
+  font-size: 0.7rem;
+  line-height: 1.43;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Layout overrides ---------- */
+/* Fixed-length stop (px, not %) so the green band is the same height on every
+   page. Percentages here are relative to .md-main, whose height tracks page
+   content — so a % stop made the band scale with page length (a few hundred px
+   on short pages, many thousands on long ones). 200px ≈ the homepage's band. */
+[data-md-color-scheme="slate"] .md-main {
+  background: linear-gradient(to bottom, rgb(38, 57, 43) 0, rgb(16, 16, 20) 200px);
+}
+
+/* Disable the scroll-driven title swap — always show the site title. */
+[data-md-color-scheme="slate"] .md-header__title--active .md-header__topic {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+  z-index: 0;
+}
+[data-md-color-scheme="slate"] .md-header__title--active .md-header__topic + .md-header__topic {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.md-sidebar {
+  height: 100%;
+}
+
+.md-content__inner.md-typeset > p:first-child,
+.md-content__inner.md-typeset > p:first-child a {
+  color: #fff;
+  font-weight: 700;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar {
+  background-color: #18181c;
+}
+
+/* On desktop the sidebars are inline columns sitting over the .md-main gradient
+   (defined above); make them transparent so the background flows continuously
+   across the left nav, content, and right TOC. Below this breakpoint the sidebar
+   is a fixed slide-out drawer, which must keep its solid fill to stay legible. */
+@media screen and (min-width: 76.25em) {
+  [data-md-color-scheme="slate"] .md-sidebar {
+    background-color: transparent;
+  }
+}
+
+/* Align the secondary (right TOC) sidebar's breakpoint with the primary (left
+   nav). Material reveals the secondary sidebar at 60em but only makes the primary
+   inline at 76.25em, so between those widths the right TOC shows while the left is
+   still a hamburger drawer — and the drawer separately includes the integrated
+   TOC, duplicating it. Hide the secondary sidebar until 76.25em so both columns
+   appear together; below that, the TOC lives in the drawer. The `:not([hidden])`
+   selector matches Material's own (0,2,0) specificity to win in the overlap zone. */
+@media screen and (max-width: 76.234375em) {
+  .md-sidebar--secondary,
+  .md-sidebar--secondary:not([hidden]) {
+    display: none;
+  }
+}
+
+.md-nav {
+  font-size: 0.6rem;
+}
+
+[dir="ltr"] .md-nav--primary .md-nav__item > .md-nav__link {
+  color: rgb(255, 255, 255, 0.65);
+}
+
+[dir="ltr"] .md-nav--primary .md-nav__item > .md-nav__link.md-nav__link--active,
+[dir="ltr"] .md-nav--primary .md-nav__item > .md-nav__link.md-nav__link--active code {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* ---------- Left-nav grouping ----------
+   Material has no headerless divider for the sidebar, so the visual grouping is
+   done here in CSS rather than by restructuring the nav (which would add a
+   nesting level and change breadcrumbs/URLs). The primary nav's top-level order
+   is fixed in docs/.pages: Docs homepage, Quickstart, Technical design, FAQ,
+   then the folder sections (Tutorials … Developing), then the trailing Glossary.
+   We add a gap + a small "Browse by type" label above the folder group, and a
+   gap above Glossary. Every selector is scoped to the top-level list
+   (`> .md-nav__list >`) so nested folder contents are untouched, and applies to
+   both the desktop sidebar and the mobile drawer (same .md-nav--primary list). */
+
+/* Each top-level folder is an `--nested` item; only the FIRST should carry the
+   gap + heading. CSS has no "first of class" selector, so set it on every nested
+   item, then reset on any nested item that directly follows another — i.e. all
+   folders except the first, since they're consecutive siblings (FAQ, a plain
+   item, precedes the first folder and so doesn't trigger the reset). */
+.md-nav--primary > .md-nav__list > .md-nav__item--nested {
+  margin-top: 1.4rem;
+}
+.md-nav--primary > .md-nav__list > .md-nav__item--nested::before {
+  content: "Browse by type";
+  display: block;
+  margin-bottom: 0.35rem;
+  padding: 0 0.6rem;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--md-default-fg-color--lighter);
+}
+.md-nav--primary > .md-nav__list > .md-nav__item--nested + .md-nav__item--nested {
+  margin-top: 0;
+}
+.md-nav--primary > .md-nav__list > .md-nav__item--nested + .md-nav__item--nested::before {
+  content: none;
+}
+
+/* Gap above the trailing Glossary entry (separates it from Developing). Glossary
+   is pinned last in docs/.pages, so :last-child reliably targets it on every
+   page, including the Glossary page itself. */
+.md-nav--primary > .md-nav__list > .md-nav__item:last-child {
+  margin-top: 1.4rem;
+}
+
+/* The 0.6rem inset above keeps the label aligned with the mobile drawer's links,
+   which carry 0.8rem of left padding. On desktop the inline-sidebar links have no
+   left padding (their indent comes from the list), so that same inset pushes the
+   label ~0.6rem to the right of them. Zero it at the desktop breakpoint (where the
+   sidebar goes inline) so the label sits flush with the links. */
+@media screen and (min-width: 76.25em) {
+  .md-nav--primary > .md-nav__list > .md-nav__item--nested::before {
+    padding-left: 0;
+  }
+}
+
+[data-md-color-scheme="slate"] .md-nav--primary .md-nav__title,
+[data-md-color-scheme="slate"] .md-nav--secondary .md-nav__title {
+  background: none;
+  box-shadow: none;
+}
+
+[data-md-color-scheme="slate"] .md-nav__title {
+  display: none;
+}
+
+[data-md-color-scheme="slate"] .md-header__title .md-ellipsis {
+  display: none;
+}
+
+[data-md-color-scheme="slate"] .md-grid {
+  margin-left: 0;
+  margin-right: 0;
+  max-width: none;
+}
+
+[data-md-color-scheme="slate"] .md-content {
+  min-width: 0;
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 1.5rem;
+}
+
+@media screen and (max-width: 76.234375em) {
+  .md-header__button.md-logo {
+    display: inline-block;
+  }
+  .md-header__button.md-icon[for="__drawer"] {
+    order: -1;
+  }
+
+  /* Reset Material's slide-in-panel layout for ALL nav elements inside the drawer.
+     Material sets .md-nav { display: flex; height: 100% } and .md-nav__list { flex: 1 }
+     so each sub-panel fills the column. With inline expansion those rules cause every
+     nested .md-nav (including the integrated TOC's per-section navs) to eat the full
+     drawer height, hiding sibling items behind it. Force everything to auto-height
+     block layout instead. */
+  .md-nav--primary,
+  .md-nav--primary .md-nav {
+    position: static;
+    transform: none;
+    visibility: visible;
+    height: auto;
+    display: block;
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+  }
+  /* Match Material's `.md-nav__title ~ .md-nav__list` specificity (0,3,0) so we beat
+     the snap-scroll behavior, which would otherwise create huge scroll gaps. */
+  .md-nav--primary .md-nav__list,
+  .md-nav--primary .md-nav__title ~ .md-nav__list {
+    flex: none;
+    overflow: visible;
+    overflow-y: visible;
+    scroll-snap-type: none;
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  /* With the inline-expand reset above, the nav is one tall block instead of
+     Material's per-level scrolling panels. Material disables scrolling on the
+     drawer's outer scroll wrap on mobile (overflow: hidden) because it expects
+     those panels to scroll — so nothing scrolls and only the page behind moves.
+     Restore scrolling on the wrap so the open drawer scrolls as a single column. */
+  .md-sidebar--primary .md-sidebar__scrollwrap {
+    overflow-y: auto;
+  }
+
+  /* Sub-navs that follow a toggle are collapsed by default; show on :checked. */
+  .md-nav--primary .md-nav__toggle ~ .md-nav {
+    display: none;
+  }
+  .md-nav--primary .md-nav__toggle:checked ~ .md-nav {
+    display: block;
+  }
+
+  /* Show the integrated TOC for the active page (same as desktop). Material's
+     mobile rules set display:flex on the TOC but leave opacity:0 — the
+     opacity:1 counterpart sits inside an @media (min-width:76.25em) block and
+     never fires on mobile. Override both so the TOC is actually visible. The
+     0,3,1 specificity matches Material's display rule; source order wins. */
+  .md-nav--primary .md-nav__link[for="__toc"] ~ .md-nav {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+  }
+  /* Material hides the active page's anchor at very narrow widths (it expects
+     the for="__toc" label to take its place, but we hide that label). Restore
+     the anchor so the active page name renders alongside its sublinks. */
+  .md-nav--primary .md-nav__link[for="__toc"] + .md-nav__link {
+    display: flex;
+  }
+
+  /* Hide the drawer's title bar (site name + close button) at the top. */
+  .md-nav--primary > .md-nav__title {
+    display: none;
+  }
+
+  /* Hide the duplicate active-page label (it exists only to toggle the TOC).
+     Match the active page leaf at any nesting depth — pages inside a section
+     (e.g. Reference › a page) are not direct children of the top-level list, so
+     a `> … >` chain would miss them and leave the title rendered twice. Only the
+     page leaf carries a label[for="__toc"]; section toggles use for="__nav_N",
+     so this never hides a section label. */
+  .md-nav--primary .md-nav__item--active > .md-nav__link[for="__toc"] {
+    display: none;
+  }
+
+  /* Hide the "Table of contents" header row inside the integrated TOC. */
+  .md-nav--primary .md-nav--secondary > .md-nav__title {
+    display: none;
+  }
+
+  /* Indent each nested level of nav links, matching the desktop tree. */
+  .md-nav--primary .md-nav .md-nav__link {
+    padding-left: 1.6rem;
+  }
+  .md-nav--primary .md-nav .md-nav .md-nav__link {
+    padding-left: 2.4rem;
+  }
+  .md-nav--primary .md-nav .md-nav .md-nav .md-nav__link {
+    padding-left: 3.2rem;
+  }
+
+  /* Chevron: collapsed → right (▸), expanded → down (▾). */
+  .md-nav--primary .md-nav__link .md-nav__icon::after {
+    transition: transform 0.25s;
+  }
+  .md-nav--primary .md-nav__toggle:checked ~ .md-nav__link .md-nav__icon::after {
+    transform: rotate(90deg);
+  }
+
+  /* Strip Material's mobile dividers and match desktop font + spacing. */
+  .md-nav--primary .md-nav__item {
+    font-size: 0.6rem;
+    line-height: 1.4;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+  .md-nav--primary .md-nav__link {
+    margin-top: 0;
+    padding: 0.3rem 0.8rem;
+  }
+}

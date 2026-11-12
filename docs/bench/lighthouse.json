@@ -1,0 +1,454 @@
+{
+ "next": {
+  "chs-stable": {
+   "runs": [
+    {
+     "ok": true,
+     "score": 1,
+     "fcp": 216.888,
+     "lcp": 216.888,
+     "cls": 0,
+     "tbt": 0,
+     "ttfb": 88,
+     "si": 346.53728615855766,
+     "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.8103.78 Safari/537.36"
+    },
+    {
+     "ok": true,
+     "score": 1,
+     "fcp": 173.56199999999998,
+     "lcp": 173.56199999999998,
+     "cls": 0,
+     "tbt": 0,
+     "ttfb": 14,
+     "si": 351.98260389461177,
+     "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.8103.78 Safari/537.36"
+    },
+    {
+     "ok": true,
+     "score": 1,
+     "fcp": 186.081,
+     "lcp": 186.081,
+     "cls": 0,
+     "tbt": 0,
+     "ttfb": 19,
+     "si": 360.0624782636245,
+     "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.8103.78 Safari/537.36"
+    }
+   ],
+   "median": {
+    "score": 1,
+    "fcp": 186.081,
+    "lcp": 186.081,
+    "cls": 0,
+    "tbt": 0,
+    "ttfb": 19,
+    "si": 351.98260389461177
+   }
+  },
+  "chs-canary": {
+   "runs": [
+    {
+     "ok": true,
+     "score": 1,
+     "fcp": 183.04999999999998,
+     "lcp": 183.04999999999998,
+     "cls": 0,
+     "tbt": 0,
+     "ttfb": 9,
+     "si": 314.58656789060433,
+     "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/160.0.8156.0 Safari/537.36"
+    },
+    {
+     "ok": true,
+     "score": 1,
+     "fcp": 174.413,
+     "lcp": 174.413,
+     "cls": 0,
+     "tbt": 0,
+     "ttfb": 12,
+     "si": 341.34193959621985,
+     "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/160.0.8156.0 Safari/537.36"
+    },
+    {
+     "ok": true,
+     "score": 1,
+     "fcp": 178.039,
+     "lcp": 178.039,
+     "cls": 0,
+     "tbt": 0,
+     "ttfb": 9,
+     "si": 370.5936416996086,
+     "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/160.0.8156.0 Safari/537.36"
+    }
+   ],
+   "median": {
+    "score": 1,
+    "fcp": 178.039,
+    "lcp": 178.039,
+    "cls": 0,
+    "tbt": 0,
+    "ttfb": 9,
+    "si": 341.34193959621985
+   }
+  },
+  "brave-nightly": {
+   "runs": [
+    {
+     "ok": true,
+     "score": 1,
+     "fcp": 194.2295,
+     "lcp": 194.2295,
+     "cls": 0,
+     "tbt": 0,
+     "ttfb": 7,
+     "si": 370.57934236969953,
+     "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.0.0 Safari/537.36"
+    },
+    {
+     "ok": true,
+     "score": 1,
+     "fcp": 175.0785,
+     "lcp": 175.0785,
+     "cls": 0,
+     "tbt": 0,
+     "ttfb": 9,
+     "si": 332.16579786312246,
+     "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.0.0 Safari/537.36"
+    },
+    {
+     "ok": true,
+     "score": 1,
+     "fcp": 178.0365,
+     "lcp": 178.0365,
+     "cls": 0,
+     "tbt": 0,
+     "ttfb": 7,
+     "si": 340.4407860080719,
+     "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.0.0 Safari/537.36"
+    }
+   ],
+   "median": {
+    "score": 1,
+    "fcp": 178.0365,
+    "lcp": 178.0365,
+    "cls": 0,
+    "tbt": 0,
+    "ttfb": 7,
+    "si": 340.4407860080719
+   }
+  },
+  "helium": {
+   "runs": [
+    {
+     "ok": false,
+     "runtimeError": "FAILED_DOCUMENT_REQUEST",
+     "score": null,
+     "fcp": null,
+     "lcp": null,
+     "cls": null,
+     "tbt": null,
+     "ttfb": null,
+     "si": null,
+     "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36"
+    },
+    {
+     "ok": true,
+     "score": 0.9,
+     "fcp": 179.017,
+     "lcp": 179.017,
+     "cls": 0,
+     "tbt": 0,
+     "ttfb": 15,
+     "si": 4864.090076362844,
+     "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36"
+    },
+    {
+     "ok": true,
+     "score": 0.9,
+     "fcp": 178.2165,
+     "lcp": 178.2165,
+     "cls": 0,
+     "tbt": 8.5,
+     "ttfb": 22,
+     "si": 5734.73329812661,
+     "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36"
+    }
+   ],
+   "median": {
+    "score": 0.9,
+    "fcp": 178.2165,
+    "lcp": 178.2165,
+    "cls": 0,
+    "tbt": 0,
+    "ttfb": 15,
+    "si": 4864.090076362844
+   }
+  },
+  "pw-chromium": {
+   "runs": [
+    {
+     "ok": true,
+     "score": 1,
+     "fcp": 180.964,
+     "lcp": 180.964,
+     "cls": 0,
+     "tbt": 10,
+     "ttfb": 7,
+     "si": 288.3442859000841,
+     "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36"
+    },
+    {
+     "ok": true,
+     "score": 0.88,
+     "fcp": 222.288,
+     "lcp": 222.288,
+     "cls": 0,
+     "tbt": 292.5,
+     "ttfb": 25,
+     "si": 576.7486606569875,
+     "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36"
+    },
+    {
+     "ok": true,
+     "score": 1,
+     "fcp": 199.714,
+     "lcp": 199.714,
+     "cls": 0,
+     "tbt": 1,
+     "ttfb": 54,
+     "si": 446.69690555701425,
+     "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36"
+    }
+   ],
+   "median": {
+    "score": 1,
+    "fcp": 199.714,
+    "lcp": 199.714,
+    "cls": 0,
+    "tbt": 10,
+    "ttfb": 25,
+    "si": 446.69690555701425
+   }
+  },
+  "cef-156": {
+   "runs": [
+    {
+     "ok": false,
+     "err": "Failed to fetch browser webSocket URL from http://127.0.0.1:9815/json/version: fetch failed"
+    },
+    {
+     "ok": false,
+     "err": "Failed to fetch browser webSocket URL from http://127.0.0.1:9816/json/version: fetch failed"
+    },
+    {
+     "ok": false,
+     "err": "Failed to fetch browser webSocket URL from http://127.0.0.1:9817/json/version: fetch failed"
+    }
+   ],
+   "median": {
+    "score": null,
+    "fcp": null,
+    "lcp": null,
+    "cls": null,
+    "tbt": null,
+    "ttfb": null,
+    "si": null
+   }
+  },
+  "electron-43": {
+   "runs": [
+    {
+     "ok": false,
+     "err": "Protocol error (Target.createTarget): Not supported"
+    },
+    {
+     "ok": false,
+     "err": "Protocol error (Target.createTarget): Not supported"
+    },
+    {
+     "ok": false,
+     "err": "Protocol error (Target.createTarget): Not supported"
+    }
+   ],
+   "median": {
+    "score": null,
+    "fcp": null,
+    "lcp": null,
+    "cls": null,
+    "tbt": null,
+    "ttfb": null,
+    "si": null
+   }
+  },
+  "lightpanda": {
+   "runs": [
+    {
+     "ok": false,
+     "err": "session SID-2 not found"
+    }
+   ],
+   "median": {
+    "score": null,
+    "fcp": null,
+    "lcp": null,
+    "cls": null,
+    "tbt": null,
+    "ttfb": null,
+    "si": null
+   }
+  },
+  "obscura": {
+   "runs": [
+    {
+     "ok": false,
+     "err": "session page-1-session-1 not found"
+    }
+   ],
+   "median": {
+    "score": null,
+    "fcp": null,
+    "lcp": null,
+    "cls": null,
+    "tbt": null,
+    "ttfb": null,
+    "si": null
+   }
+  }
+ },
+ "sites": {
+  "https://nextjs.org/": {
+   "ok": true,
+   "score": 0.83,
+   "fcp": 356.2120000000001,
+   "lcp": 721.2250000000003,
+   "cls": 0.0001008540901687855,
+   "tbt": 378.5,
+   "ttfb": 4,
+   "si": 1159.80009266038,
+   "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36"
+  },
+  "https://vercel.com/": {
+   "ok": true,
+   "score": 0.82,
+   "fcp": 670.983,
+   "lcp": 1735.7625,
+   "cls": 0.00007993832715082719,
+   "tbt": 225.5000000000009,
+   "ttfb": 4,
+   "si": 1806.640043129623,
+   "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36"
+  },
+  "https://react.dev/": {
+   "ok": true,
+   "score": 0.93,
+   "fcp": 290.80899999999997,
+   "lcp": 290.80899999999997,
+   "cls": 0,
+   "tbt": 211.5,
+   "ttfb": 5,
+   "si": 757.0980977326124,
+   "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36"
+  },
+  "https://developers.cloudflare.com/": {
+   "ok": true,
+   "score": 0.99,
+   "fcp": 337.9755,
+   "lcp": 615.2505,
+   "cls": 0.025164354955434794,
+   "tbt": 8,
+   "ttfb": 47,
+   "si": 1120.6686461430677,
+   "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36"
+  },
+  "https://web.dev/": {
+   "ok": true,
+   "score": 0.88,
+   "fcp": 908.5315,
+   "lcp": 1527.2625,
+   "cls": 0.10023600238003355,
+   "tbt": 125.49999999999955,
+   "ttfb": 285,
+   "si": 1445.3577552245233,
+   "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36"
+  },
+  "https://en.wikipedia.org/wiki/Web_browser": {
+   "ok": true,
+   "score": 1,
+   "fcp": 408.45359999999994,
+   "lcp": 566.7985699999999,
+   "cls": 0.0036695088586075914,
+   "tbt": 38.5,
+   "ttfb": 16,
+   "si": 844.0770543983895,
+   "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36"
+  },
+  "https://github.com/servo/servo": {
+   "ok": true,
+   "score": 0.66,
+   "fcp": 1196.446,
+   "lcp": 2046.446,
+   "cls": 0.05514496313029702,
+   "tbt": 388.4999999999998,
+   "ttfb": 474,
+   "si": 1973.0607880915709,
+   "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36"
+  },
+  "https://news.ycombinator.com/": {
+   "ok": true,
+   "score": 1,
+   "fcp": 218.84499999999997,
+   "lcp": 218.84499999999997,
+   "cls": 0,
+   "tbt": 0,
+   "ttfb": 150,
+   "si": 632.3700461885134,
+   "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36"
+  },
+  "https://developer.mozilla.org/en-US/docs/Web/JavaScript": {
+   "ok": true,
+   "score": 1,
+   "fcp": 335.84900000000005,
+   "lcp": 335.84900000000005,
+   "cls": 0.0004641580286177062,
+   "tbt": 49.76600000000002,
+   "ttfb": 10,
+   "si": 673.7858241188919,
+   "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36"
+  },
+  "https://www.amazon.com/dp/B0DGHRT7PS": {
+   "ok": false,
+   "runtimeError": "ERRORED_DOCUMENT_REQUEST",
+   "score": null,
+   "fcp": null,
+   "lcp": null,
+   "cls": null,
+   "tbt": null,
+   "ttfb": null,
+   "si": null,
+   "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36"
+  },
+  "https://www.bbc.com/news": {
+   "ok": true,
+   "score": 0.79,
+   "fcp": 318.5400000000001,
+   "lcp": 1639.442000000001,
+   "cls": 0.01106186061749055,
+   "tbt": 306.5000000000001,
+   "ttfb": 29,
+   "si": 1505.3870995945992,
+   "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36"
+  },
+  "https://www.youtube.com/": {
+   "ok": true,
+   "score": 0.43,
+   "fcp": 806.2014999999999,
+   "lcp": 3847.0660000000003,
+   "cls": 0.026584571102999083,
+   "tbt": 931,
+   "ttfb": 97,
+   "si": 3329.959245988007,
+   "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36"
+  }
+ }
+}

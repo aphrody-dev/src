@@ -1,0 +1,546 @@
+// SPDX-FileCopyrightText: 2026 Epic Games, Inc.
+// SPDX-License-Identifier: MIT
+
+use bitflags::bitflags;
+use lore_error_set::prelude::*;
+
+use crate::bitflagsops;
+use crate::fs::filesystem_provider::FileInfo;
+use crate::interface::LoreNodeType;
+use crate::lore::Address;
+use crate::lore::Context;
+use crate::lore::RepositoryId;
+use crate::node::*;
+use crate::state::NodeMapping;
+use crate::state::StateError;
+use crate::util::path::RelativePath;
+
+#[error_set]
+pub enum ChangeError {}
+
+/// cbindgen:prefix-with-name
+#[repr(u16)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum FileAction {
+    Keep = 0,
+    Add = 1,
+    Delete = 2,
+    Move = 3,
+    Copy = 4,
+    /// Adopt a source subtree the target never modified (`base == target`).
+    /// Carries the directory node only. Apply time expands the subtree.
+    Graft = 5,
+}
+
+impl FileAction {
+    pub fn as_string_short(self) -> &'static str {
+        match self {
+            FileAction::Add => "A",
+            FileAction::Delete => "D",
+            FileAction::Move => "V",
+            FileAction::Copy => "C",
+            FileAction::Graft => "G",
+            FileAction::Keep => "M",
+        }
+    }
+
+    pub fn from_node_flags(flags: u16) -> Self {
+        if flags & NodeFlags::StagedDelete == NodeFlags::StagedDelete {
+            FileAction::Delete
+        } else if flags & NodeFlags::StagedAdd == NodeFlags::StagedAdd {
+            FileAction::Add
+        } else if flags & NodeFlags::StagedMove == NodeFlags::StagedMove {
+            FileAction::Move
+        } else if flags & NodeFlags::StagedCopy == NodeFlags::StagedCopy {
+            FileAction::Copy
+        } else {
+            FileAction::Keep
+        }
+    }
+}
+
+bitflags! {
+    #[repr(transparent)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub struct Flags: u16 {
+        const None = 0;
+        // Change is a content modification
+        const Modify = 0b1;
+        // Change is a merge
+        const Merge = 0b10;
+        // Change is a merge resulting in a conflict
+        const Conflict = 0b110;
+        // Change is a merge resulting in a conflict, where the conflict
+        // was resolved
+        const ConflictResolved = 0b1110;
+        // Change is a merge resulting in a conflict, where the conflict
+        // was successfully resolved in-file without any line conflicts
+        const ConflictAutomerged = 0b10110;
+        // Change is a merge resulting in a conflict, where the conflict
+        // was successfully resolved by choosing the mine version
+        const ConflictMine = 0b100110;
+        // Change is a merge resulting in a conflict, where the conflict
+        // was successfully resolved by choosing the theirs version
+        const ConflictTheirs = 0b1000110;
+        // Change is staged
+        const Staged = 0b10000000;
+        // Change is dirty (filesystem modification detected)
+        const Dirty = 0b100000000;
+        // The working file carries an executable bit no revision gave it, which realizing the
+        // change keeps: the content is written and the bit left as a local modification. Set by
+        // the verify, so a reset or a forced sync carries the bit the node names instead.
+        const LocalMode = 0b1000000000;
+        // The working file holds the content the change ends at, so realizing the change carries
+        // its executable bit alone. Set by the verify.
+        const HoldsContent = 0b10000000000;
+    }
+}
+bitflagsops!(Flags, u16);
+
+impl Flags {
+    pub fn is_stage(&self) -> bool {
+        self.contains(Flags::Staged)
+    }
+
+    pub fn is_dirty(&self) -> bool {
+        self.contains(Flags::Dirty)
+    }
+
+    pub fn is_local_mode(&self) -> bool {
+        self.contains(Flags::LocalMode)
+    }
+
+    pub fn holds_content(&self) -> bool {
+        self.contains(Flags::HoldsContent)
+    }
+
+    pub fn is_merge(&self) -> bool {
+        self.contains(Flags::Merge)
+    }
+
+    pub fn is_conflict(&self) -> bool {
+        self.contains(Flags::Conflict)
+    }
+
+    pub fn is_conflict_automerged(&self) -> bool {
+        self.contains(Flags::ConflictAutomerged)
+    }
+
+    pub fn is_conflict_mine(&self) -> bool {
+        self.contains(Flags::ConflictMine)
+    }
+
+    pub fn is_conflict_theirs(&self) -> bool {
+        self.contains(Flags::ConflictTheirs)
+    }
+
+    /// Whether the change is a conflict that is neither resolved nor settled by taking one side.
+    pub fn is_conflict_unresolved(&self) -> bool {
+        self.contains(Flags::Conflict)
+            && !self.contains(Flags::ConflictResolved)
+            && !self.contains(Flags::ConflictMine)
+            && !self.contains(Flags::ConflictTheirs)
+    }
+}
+
+/// One end of a change: what stood at a path before it, or what stands there after.
+///
+/// A side is one of three things, which its first two fields tell apart:
+///
+/// - a node in a revision, which `mapping` names and `flags` and `address` describe
+/// - the file system, which holds no node and states `observed` in its place
+/// - nothing at all, which holds neither: the `from` of an add and the `to` of a delete
+///
+/// A change compares two sides, and a walk against the file system is simply one whose `to` side
+/// is the file system. Nothing else distinguishes it.
+#[derive(Clone, Debug)]
+pub struct NodeChangeState {
+    /// The node this side holds, mapped to the path it stands at.
+    ///
+    /// The path is set even where the side holds no node, so it always states where the change is
+    /// made. A move records its source path here, so an empty one on the `from` of a move is a
+    /// source the walk could not spell.
+    pub mapping: NodeMapping,
+    /// What the file system held at the mapping's path, where this side is the file system.
+    ///
+    /// `None` where the side is a revision's node or nothing at all. A consumer that needs the
+    /// size or the times a walk already measured reads them here rather than reaching for the
+    /// path a second time.
+    pub observed: Option<FileInfo>,
+    /// What the node is and what it is staged for: its type, and the add, delete, move or merge
+    /// a stage left on it. Carries the type alone where the side is the file system.
+    pub flags: NodeFlags,
+    /// The content the node holds and the file it is: the hash answers what the content is, and
+    /// the context which file holds it, which a move carries across and a copy mints anew.
+    ///
+    /// Two sides hold the same content where their hashes agree. Default where the side holds no
+    /// node, and where the file system holds content that has not been fragmented and so has no
+    /// address yet.
+    pub address: Address,
+    /// The mode the node holds, which is the executable bit and nothing else. Zero where the side
+    /// holds no node, the file system's own being what `observed` answers.
+    pub mode: u16,
+}
+
+impl NodeChangeState {
+    /// The side a change does not have, standing at `path` and holding nothing there: an add has
+    /// no `from` and a delete no `to`. `path` is the change's own, which is not this side's own
+    /// path where it is derived from an ancestor.
+    pub fn invalid(&self, path: RelativePath) -> Self {
+        NodeChangeState {
+            mapping: NodeMapping {
+                repository: self.mapping.repository.clone(),
+                state: self.mapping.state.clone(),
+                path,
+                node: INVALID_NODE,
+            },
+            observed: None,
+            flags: NodeFlags::NoFlags,
+            address: Address::default(),
+            mode: 0,
+        }
+    }
+
+    /// The child `path` names, in the tree this side walks.
+    pub fn from_child(&self, child_id: NodeID, child_node: &Node, path: RelativePath) -> Self {
+        NodeChangeState {
+            mapping: NodeMapping {
+                repository: self.mapping.repository.clone(),
+                state: self.mapping.state.clone(),
+                path,
+                node: child_id,
+            },
+            observed: None,
+            flags: NodeFlags::from_bits_retain(child_node.flags),
+            address: child_node.address,
+            mode: child_node.mode,
+        }
+    }
+
+    /// Whether the two sides hold the file differently, which is a modification either way: its
+    /// content differs, or its content stands and the executable bit does not.
+    pub fn differs_from(&self, other: &Self) -> bool {
+        self.address.hash != other.address.hash
+            || crate::util::fs::mode_changed(self.mode, other.mode)
+    }
+
+    pub async fn get_node(&self) -> Result<Node, StateError> {
+        self.mapping
+            .state
+            .node(self.mapping.repository.clone(), self.mapping.node)
+            .await
+    }
+
+    /// Whether this side is a link node, whose `address.context` names the
+    /// repository it mounts rather than a file identity.
+    pub fn is_link(&self) -> bool {
+        self.flags.contains(NodeFlags::Link)
+    }
+}
+
+/// What a walk found at one path between two sides: a node's two ends, and what became of it.
+///
+/// The two answers are independent and are stated separately. `action` says what became of the
+/// node's *location* — added, deleted, kept in place, moved or copied — and `flags` say what
+/// became of its *content* and how it got there. So a file both renamed and edited is a
+/// [`FileAction::Move`] carrying [`Flags::Modify`], and one renamed with its content intact is a
+/// move carrying neither.
+#[derive(Clone, Debug)]
+pub struct NodeChange {
+    /// What became of the node's location.
+    pub action: FileAction,
+    /// What became of the node's content, and what a stage or a merge left on it.
+    pub flags: Flags,
+    /// What stood at the path before the change, which a walk reads from its source revision.
+    pub from: NodeChangeState,
+    /// What stands at the path after it, which is the file system for a walk that measured one.
+    pub to: NodeChangeState,
+}
+
+impl NodeChange {
+    /// The path the change stands at, as a relative path from the top-level repository instance
+    /// root. A move stands at its destination and records its source in [`Self::move_source`].
+    pub fn path(&self) -> &RelativePath {
+        &self.resolved_side().mapping.path
+    }
+
+    /// The path a move came from, which its `from` side stands at. `None` where the change is not
+    /// a move, and where it is one whose source the walk could not spell.
+    pub fn move_source(&self) -> Option<&RelativePath> {
+        (self.action == FileAction::Move && !self.from.mapping.path.is_empty())
+            .then_some(&self.from.mapping.path)
+    }
+
+    /// The path the node stood at where the change leaves it at another: a move's source, or the
+    /// path a node stood at below a directory a move renamed. `None` for a node that stays where it
+    /// stood, and for one the change adds.
+    pub fn relocated_from(&self) -> Option<&RelativePath> {
+        let from = &self.from.mapping.path;
+        (self.from.mapping.node.is_valid_node_id()
+            && !from.is_empty()
+            && from.as_str() != self.path().as_str())
+        .then_some(from)
+    }
+
+    /// Whether the change is a move whose source differs from its destination in case alone.
+    pub fn is_case_only_move(&self) -> bool {
+        self.move_source()
+            .is_some_and(|source| source.as_lowercase_str() == self.path().as_lowercase_str())
+    }
+
+    /// Whether a walk against the working tree found a file under a case variant of its name,
+    /// holding what the node holds.
+    pub fn is_case_variant(&self) -> bool {
+        self.is_case_only_move()
+            && !self.flags.contains(Flags::Modify)
+            && self.from.flags.contains(NodeFlags::File)
+    }
+
+    /// Whether the change gives a file another executable bit, where the file keeps its identity.
+    /// A file deleted and added again is another file, which takes its own mode: its bit is no
+    /// change of the bit the first one held.
+    pub fn changes_mode(&self) -> bool {
+        is_one_file(&self.from, &self.to)
+            && crate::util::fs::mode_changed(self.from.mode, self.to.mode)
+    }
+
+    /// The side the change resolves to: `from` for a delete, `to` otherwise.
+    pub fn resolved_side(&self) -> &NodeChangeState {
+        match self.action {
+            FileAction::Delete => &self.from,
+            _ => &self.to,
+        }
+    }
+
+    /// The identity a move is keyed on, or zero where the change has none to
+    /// offer. A link node's context is shared by every mount of the repository
+    /// it names, so it identifies no single node.
+    pub fn move_identity(&self) -> Context {
+        let side = self.resolved_side();
+        if side.is_link() {
+            Context::default()
+        } else {
+            side.address.context
+        }
+    }
+
+    /// Repository a consumer must fetch this change's content from. A link
+    /// node's content is the revision it points at, which lives in the target
+    /// repository rather than the one the change was walked from.
+    pub fn content_repository_id(&self) -> RepositoryId {
+        let side = self.resolved_side();
+        if side.is_link() {
+            side.address.context.into()
+        } else {
+            side.mapping.repository.id
+        }
+    }
+
+    /// True when the resolved side is a link node following its parent's branch.
+    /// An unresolvable link reference falls back to pinned.
+    pub async fn is_tracking_link(&self) -> bool {
+        let side = self.resolved_side();
+        if !side.is_link() {
+            return false;
+        }
+        side.mapping
+            .state
+            .link_find(
+                side.mapping.repository.clone(),
+                side.address.context.into(),
+                side.mapping.node,
+            )
+            .await
+            .is_ok_and(|link_reference| link_reference.is_tracking())
+    }
+
+    pub fn reverse(&mut self) {
+        // Reverse add/delete/copy - other actions are transitive
+        if self.action == FileAction::Delete {
+            if self.flags.is_conflict() && self.to.flags.contains(NodeFlags::StagedDelete) {
+                // If the change is a conflict where the "from" state is a deleted node and the "to"
+                // state is staged delete, keep it as delete
+            } else {
+                self.action = FileAction::Add;
+            }
+        } else if self.action == FileAction::Add || self.action == FileAction::Copy {
+            self.action = FileAction::Delete;
+        }
+
+        // Reverse nodes
+        std::mem::swap(&mut self.from, &mut self.to);
+
+        // Only modify flag is valid when reversing change
+        if self.flags.contains(Flags::Modify) {
+            self.flags = Flags::Modify;
+        } else {
+            self.flags = Flags::None;
+        }
+    }
+
+    pub async fn is_directory(&self) -> Result<bool, StateError> {
+        if self.to.mapping.node.is_valid_node_id() {
+            let iblock = NodeBlock::index(self.to.mapping.node);
+            let inode = Node::index(self.to.mapping.node);
+            let block = self
+                .to
+                .mapping
+                .state
+                .block(self.to.mapping.repository.clone(), iblock)
+                .await?;
+            let noderef = block.node(inode);
+            Ok(noderef.is_directory())
+        } else {
+            let iblock = NodeBlock::index(self.from.mapping.node);
+            let inode = Node::index(self.from.mapping.node);
+            let block = self
+                .from
+                .mapping
+                .state
+                .block(self.from.mapping.repository.clone(), iblock)
+                .await?;
+            let noderef = block.node(inode);
+            Ok(noderef.is_directory())
+        }
+    }
+}
+
+pub async fn is_conflict(
+    first: &NodeChange,
+    second: &NodeChange,
+    path_equal: bool,
+) -> Result<bool, StateError> {
+    // Conflict is when both paths are the same unless one of
+    // - both are directories
+    // - both are deletes
+    // - both are files and target hash is equal
+    if first.action == FileAction::Delete && second.action == FileAction::Delete {
+        return Ok(false);
+    }
+    let is_first_directory = first.is_directory().await?;
+    let is_second_directory = second.is_directory().await?;
+    if is_first_directory != is_second_directory {
+        // One is a directory, on is a file. Conflicts if exact same path, or
+        // if the shorter path is a file (the prerequisite for this function
+        // is that the paths overlap, so if the shorter is a file it is a conflict)
+        // or the shorter is a directory and it is being deleted
+        if path_equal {
+            return Ok(true);
+        }
+        if first.path().len() <= second.path().len()
+            && (!is_first_directory || first.action == FileAction::Delete)
+        {
+            return Ok(true);
+        }
+        if second.path().len() <= first.path().len()
+            && (!is_second_directory || second.action == FileAction::Delete)
+        {
+            return Ok(true);
+        }
+        return Ok(false);
+    }
+    if is_first_directory {
+        // Both are directories
+        return Ok(false);
+    }
+    if first.to.address.hash != second.to.address.hash {
+        // Both are files and hashes do not match
+        return Ok(true);
+    }
+    // Both are files and hashes match
+    Ok(false)
+}
+
+/// Whether the two sides hold one file, a file of the same identity.
+fn is_one_file(lhs: &NodeChangeState, rhs: &NodeChangeState) -> bool {
+    lhs.flags.contains(NodeFlags::File)
+        && rhs.flags.contains(NodeFlags::File)
+        && lhs.address.context == rhs.address.context
+}
+
+/// The executable bit a merge gives the file the source's change `source` and the target's change
+/// `target` both leave: the bit a side changes it to, and the target's where neither does. One bit
+/// from a common base can't be changed two ways, so the sides never conflict on it. `None` where
+/// the two leave no one file, such as where either deletes it or puts another file in its place.
+pub fn merged_mode(source: &NodeChange, target: &NodeChange) -> Option<u16> {
+    is_one_file(&source.to, &target.to).then(|| {
+        if source.changes_mode() {
+            source.to.mode
+        } else {
+            target.to.mode
+        }
+    })
+}
+
+/// The subtree moves between repositories along with a mount replaced between a directory and a
+/// link, so a change the other side of a merge made below it does not stand on its own.
+pub fn is_link_replacement(change: &NodeChange) -> bool {
+    replaced_types(change).is_some_and(|(from_type, to_type)| {
+        from_type == LoreNodeType::Link || to_type == LoreNodeType::Link
+    })
+}
+
+/// The type of node a change puts where a file stood, or a file where a directory stood. `None`
+/// for any other change.
+pub fn file_directory_replacement(change: &NodeChange) -> Option<LoreNodeType> {
+    replaced_types(change)
+        .filter(|types| {
+            matches!(
+                types,
+                (LoreNodeType::File, LoreNodeType::Directory)
+                    | (LoreNodeType::Directory, LoreNodeType::File)
+            )
+        })
+        .map(|(_, to_type)| to_type)
+}
+
+/// Whether the two sides of a conflict put nodes of different types at one path, which no merge
+/// below that path resolves.
+pub fn node_type_clash(source: &NodeChange, target: &NodeChange) -> bool {
+    source.to.mapping.node.is_valid_node_id()
+        && target.to.mapping.node.is_valid_node_id()
+        && source.to.flags.node_type() != target.to.flags.node_type()
+}
+
+/// The types of the node a change replaces and of the node it replaces it with, where the two
+/// differ.
+fn replaced_types(change: &NodeChange) -> Option<(LoreNodeType, LoreNodeType)> {
+    if !change.from.mapping.node.is_valid_node_id() || !change.to.mapping.node.is_valid_node_id() {
+        return None;
+    }
+    let from_type = change.from.flags.node_type();
+    let to_type = change.to.flags.node_type();
+    (from_type != to_type).then_some((from_type, to_type))
+}
+
+pub fn sort_by_path(changes: &mut [NodeChange]) {
+    changes.sort_unstable_by(|lhs, rhs| lhs.path().as_str().cmp(rhs.path().as_str()));
+}
+
+pub fn sort_conflict_by_path(conflicts: &mut [(NodeChange, NodeChange)]) {
+    conflicts.sort_unstable_by(|lhs, rhs| lhs.1.path().as_str().cmp(rhs.1.path().as_str()));
+}
+
+pub fn reverse(changes: &mut [NodeChange]) {
+    // Change both order and action
+    let count = changes.len() / 2;
+    let (first_half, second_half) = changes.split_at_mut(count);
+    for (index, change) in first_half.iter_mut().enumerate() {
+        change.reverse();
+
+        // The index of the change to swap with
+        let index_swap = second_half.len() - (index + 1);
+
+        // Reverse the change to swap with
+        let swap_change = &mut second_half[index_swap];
+        swap_change.reverse();
+
+        // Swap the changes
+        std::mem::swap(change, swap_change);
+    }
+
+    // Reverse the middle change if not iterated yet
+    if (first_half.len() % 2) != (second_half.len() % 2) {
+        second_half[0].reverse();
+    }
+}

@@ -1,0 +1,188 @@
+{
+ "chs-stable": {
+  "puppeteer": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true
+  },
+  "playwright": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true
+  }
+ },
+ "chs-canary": {
+  "puppeteer": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true
+  },
+  "playwright": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true
+  }
+ },
+ "brave-nightly": {
+  "puppeteer": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true
+  },
+  "playwright": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true
+  }
+ },
+ "helium": {
+  "puppeteer": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true
+  },
+  "playwright": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true
+  }
+ },
+ "lightpanda": {
+  "puppeteer": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true
+  },
+  "playwright": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true
+  }
+ },
+ "obscura": {
+  "puppeteer": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true
+  },
+  "playwright": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true
+  }
+ },
+ "firefox-nightly": {
+  "puppeteer": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true,
+   "protocol": "WebDriver BiDi"
+  },
+  "playwright": {
+   "ok": false,
+   "err": "_wrapApiCall: Failed to launch the browser process."
+  }
+ },
+ "cef-156": {
+  "puppeteer": {
+   "ok": false,
+   "err": "Failed to create a page for context (id = undefined)"
+  },
+  "playwright": {
+   "ok": false,
+   "err": "newPage: undefined is not an object (evaluating 'this._browser._crPages.get(targetId)._page')"
+  }
+ },
+ "electron-43": {
+  "puppeteer": {
+   "ok": false,
+   "err": "Protocol error (Target.createTarget): Not supported"
+  },
+  "playwright": {
+   "ok": false,
+   "err": "newPage: Protocol error (Target.createTarget): Not supported"
+  }
+ },
+ "zen": {
+  "puppeteer": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true,
+   "protocol": "WebDriver BiDi"
+  },
+  "playwright": {
+   "ok": false,
+   "err": "_wrapApiCall: Failed to launch the browser process."
+  }
+ },
+ "pw-chromium": {
+  "puppeteer": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true
+  },
+  "playwright": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true
+  }
+ },
+ "pw-firefox": {
+  "puppeteer": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true,
+   "protocol": "WebDriver BiDi"
+  },
+  "playwright": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true,
+   "protocol": "Juggler"
+  }
+ },
+ "pw-webkit": {
+  "puppeteer": {
+   "ok": false,
+   "err": "n/a: Puppeteer has no WebKit support"
+  },
+  "playwright": {
+   "ok": true,
+   "js": true,
+   "click": true,
+   "screenshot": true
+  }
+ },
+ "servo": {
+  "puppeteer": {
+   "ok": false,
+   "err": "n/a: servoshell exposes WebDriver classic only (no CDP / BiDi endpoint)"
+  },
+  "playwright": {
+   "ok": false,
+   "err": "n/a: no CDP / Juggler"
+  },
+  "webdriver": {
+   "ok": true,
+   "note": "used by bench.ts (WebDriver classic)"
+  }
+ }
+}
