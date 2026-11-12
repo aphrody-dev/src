@@ -22,3 +22,7 @@
 	path = apps/r2b
 	url = https://github.com/aphrody-labs/r2b.git
 	branch = main
+[submodule "apps/auto"]
+	path = apps/auto
+	url = https://github.com/aphrody-labs/auto.git
+	branch = main

@@ -68,6 +68,10 @@ pub struct BuildArgs {
     /// Print the cargo commands without running them
     #[arg(long)]
     pub dry_run: bool,
+    /// Link the musl C runtime dynamically (`-C target-feature=-crt-static`); without it cargo
+    /// silently drops `cdylib` crate types on musl targets (for example a `bun:ffi` library)
+    #[arg(long)]
+    pub dylib: bool,
     /// Extra cargo arguments after `--` (e.g. `-- -p ffi`); `-p` replaces the preset's crates
     #[arg(last = true)]
     pub cargo_args: Vec<String>,
@@ -216,15 +220,38 @@ fn targets_windows(triple: &str) -> bool {
     triple.contains("-windows-")
 }
 
-/// The cargo argument list for one preset (without the program name).
-pub fn cargo_args(preset: &Preset, release: bool, extra: &[String]) -> Vec<String> {
+/// The cargo workspace to build: the one containing the current directory (so `ay build` works
+/// inside a nested workspace such as `apps/auto`), else the repo root. The flag is true when that
+/// workspace is the root one, whose preset scopes and Windows-only exclusions apply.
+pub fn cargo_workspace() -> (PathBuf, bool) {
+    let root = crate::repo_root();
+    let located = Command::new("cargo")
+        .args(["locate-project", "--workspace", "--message-format", "plain"])
+        .output()
+        .ok()
+        .filter(|o| o.status.success())
+        .and_then(|o| String::from_utf8(o.stdout).ok())
+        .and_then(|s| PathBuf::from(s.trim()).parent().map(Path::to_path_buf));
+    match located {
+        Some(dir) => {
+            let is_root = dir.canonicalize().ok().zip(root.canonicalize().ok()).is_some_and(|(a, b)| a == b);
+            (dir, is_root)
+        }
+        None => (root, true),
+    }
+}
+
+/// The cargo argument list for one preset (without the program name). Outside the root
+/// workspace (`root_workspace` false) every preset builds `--workspace` with no exclusions.
+pub fn cargo_args(preset: &Preset, release: bool, extra: &[String], root_workspace: bool) -> Vec<String> {
     let mut args = vec!["build".to_string(), "--target".into(), preset.triple.into()];
     if release {
         args.push("--release".into());
     }
     let picks_packages = extra.iter().any(|a| a == "-p" || a == "--package" || a.starts_with("--package="));
     if !picks_packages {
-        match preset.scope {
+        let scope = if root_workspace { preset.scope } else { Scope::Workspace };
+        match scope {
             Scope::Packages(pkgs) => {
                 for p in pkgs {
                     args.push("-p".into());
@@ -233,7 +260,7 @@ pub fn cargo_args(preset: &Preset, release: bool, extra: &[String]) -> Vec<Strin
             }
             Scope::Workspace => {
                 args.push("--workspace".into());
-                if !targets_windows(preset.triple) {
+                if root_workspace && !targets_windows(preset.triple) {
                     for p in WINDOWS_ONLY {
                         args.push("--exclude".into());
                         args.push((*p).into());
@@ -244,6 +271,21 @@ pub fn cargo_args(preset: &Preset, release: bool, extra: &[String]) -> Vec<Strin
     }
     args.extend(extra.iter().cloned());
     args
+}
+
+/// `CARGO_TARGET_<TRIPLE>_RUSTFLAGS` for `--dylib` on a musl target, appended to any value
+/// already in the environment.
+fn dylib_rustflags(triple: &str, dylib: bool) -> Option<(String, String)> {
+    if !dylib || !triple.ends_with("-musl") {
+        return None;
+    }
+    let key = format!("CARGO_TARGET_{}_RUSTFLAGS", env_key(triple));
+    let mut flags = std::env::var(&key).unwrap_or_default();
+    if !flags.is_empty() {
+        flags.push(' ');
+    }
+    flags.push_str("-C target-feature=-crt-static");
+    Some((key, flags))
 }
 
 fn status_word(ok: Option<bool>) -> &'static str {
@@ -272,10 +314,11 @@ pub fn run(args: BuildArgs) -> i32 {
         print_list(&tc);
         return 0;
     }
+    let (workspace, root_workspace) = cargo_workspace();
     if args.targets.is_empty() {
         let mut cmd = Command::new("cargo");
         cmd.arg("build").arg("--workspace").args(args.release.then_some("--release")).args(&args.cargo_args);
-        cmd.current_dir(crate::repo_root());
+        cmd.current_dir(&workspace);
         if args.dry_run {
             println!("{cmd:?}");
             return 0;
@@ -316,12 +359,16 @@ pub fn run(args: BuildArgs) -> i32 {
             eprintln!("ay build: warning: {} ({}): {}", p.name, p.triple, native.detail);
         }
         let mut cmd = Command::new("cargo");
-        let mut cargo = cargo_args(p, args.release, &args.cargo_args);
+        let mut cargo = cargo_args(p, args.release, &args.cargo_args, root_workspace);
         if native.env.iter().any(|(k, _)| k == ZIGBUILD) {
             cargo[0] = "zigbuild".into();
         }
-        cmd.args(cargo).current_dir(crate::repo_root());
+        cmd.args(cargo).current_dir(&workspace);
         cmd.envs(native.env.iter().map(|(k, v)| (k.as_str(), v.as_os_str())));
+        if let Some((key, flags)) = dylib_rustflags(p.triple, args.dylib) {
+            println!("ay build: {key}={flags}");
+            cmd.env(key, flags);
+        }
         if p.triple.starts_with("wasm32") {
             // sccache fails on the long web-sys command line (os error 206 on Windows).
             cmd.env("RUSTC_WRAPPER", "");
@@ -368,22 +415,39 @@ mod tests {
 
     #[test]
     fn non_windows_targets_exclude_windows_only_crates() {
-        let args = cargo_args(find_preset("linux-musl").unwrap(), true, &[]);
+        let args = cargo_args(find_preset("linux-musl").unwrap(), true, &[], true);
         assert_eq!(&args[..4], ["build", "--target", "x86_64-unknown-linux-musl", "--release"]);
         assert!(args.contains(&"--workspace".to_string()));
         for p in WINDOWS_ONLY {
             assert!(args.windows(2).any(|w| w[0] == "--exclude" && w[1] == *p), "{p} not excluded");
         }
-        let win = cargo_args(find_preset("windows-msvc").unwrap(), false, &[]);
+        let win = cargo_args(find_preset("windows-msvc").unwrap(), false, &[], true);
         assert!(!win.contains(&"--exclude".to_string()));
     }
 
     #[test]
     fn explicit_packages_replace_the_preset_scope() {
-        let args = cargo_args(find_preset("wasm32").unwrap(), false, &["-p".into(), "ffi".into()]);
+        let args = cargo_args(find_preset("wasm32").unwrap(), false, &["-p".into(), "ffi".into()], true);
         assert_eq!(args, ["build", "--target", "wasm32-unknown-unknown", "-p", "ffi"]);
-        let default = cargo_args(find_preset("wasm32").unwrap(), false, &[]);
+        let default = cargo_args(find_preset("wasm32").unwrap(), false, &[], true);
         assert_eq!(default, ["build", "--target", "wasm32-unknown-unknown", "-p", "gamescope-web-wasm"]);
+    }
+
+    #[test]
+    fn nested_workspaces_build_everything_without_root_exclusions() {
+        let musl = cargo_args(find_preset("linux-musl").unwrap(), true, &[], false);
+        assert_eq!(musl, ["build", "--target", "x86_64-unknown-linux-musl", "--release", "--workspace"]);
+        let wasm = cargo_args(find_preset("wasm32").unwrap(), false, &[], false);
+        assert_eq!(wasm, ["build", "--target", "wasm32-unknown-unknown", "--workspace"]);
+    }
+
+    #[test]
+    fn dylib_drops_crt_static_on_musl_only() {
+        let (key, flags) = dylib_rustflags("x86_64-unknown-linux-musl", true).unwrap();
+        assert_eq!(key, "CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_RUSTFLAGS");
+        assert!(flags.ends_with("-C target-feature=-crt-static"));
+        assert!(dylib_rustflags("x86_64-unknown-linux-musl", false).is_none());
+        assert!(dylib_rustflags("x86_64-pc-windows-msvc", true).is_none());
     }
 
     #[test]
