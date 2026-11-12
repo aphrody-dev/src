@@ -11,7 +11,7 @@ import {
 } from "../nexus/security.ts";
 
 // ============================================================================
-// 1. Extracted from `n2b` (`C:/src/n2b` -> `n2b.exe` / `n2b_ffi.dll` + Replica)
+// 1. Extracted from `n2b` (`C:/src/third_party/n2b` -> `n2b.exe` / `n2b_ffi.dll` + Replica)
 // ============================================================================
 
 export type N2bReaOperation =
@@ -39,7 +39,7 @@ export interface ReplicaStageSpec {
 export function resolveN2bBinaryPath(): string {
   const localBin = join(homedir(), ".local", "bin", "n2b.exe");
   if (existsSync(localBin)) return localBin;
-  const workspaceBin = "C:\\src\\n2b\\target\\release\\n2b.exe";
+  const workspaceBin = "C:\\src\\third_party\\n2b\\target\\release\\n2b.exe";
   return existsSync(workspaceBin) ? workspaceBin : localBin;
 }
 

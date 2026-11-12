@@ -141,62 +141,62 @@ export interface ExtractionManifest {
 const SOVEREIGN_TARGETS: Array<{ name: string; path: string; role: string }> = [
   {
     name: "bun",
-    path: "C:/src/bun",
+    path: "C:/src/third_party/bun",
     role: "100% Full-Rust JS/TS runtime, HTTP/WebSocket server, bundler, SQLite/SQL, FFI, HTMLRewriter, CSS engine, AOT compiler",
   },
   {
     name: "aphrody",
-    path: "C:/src/aphrody",
+    path: "C:/src/apps/aphrody",
     role: "Zero-dependency Bun v1.4.4 web/desktop platform (Material 3 + Fluent 2 + macOS windowing + WASM/WebGPU)",
   },
   {
     name: "wayland",
-    path: "C:/src/wayland",
+    path: "C:/src/crates/wayland",
     role: "Sovereign compositor & DirectX 12 / Vulkan / WGPU surface presentation layer",
   },
   {
     name: "gamescope-rs",
-    path: "C:/src/gamescope-rs",
+    path: "C:/src/crates/gamescope-rs",
     role: "High-refresh Rust frame-pacing, DRM/DXGI capture & micro-compositor",
   },
   {
     name: "unix",
-    path: "C:/src/unix",
+    path: "C:/src/crates/unix",
     role: "Native NT + POSIX syscall substrate, Win32 process/job/pipe management & GPU hooks",
   },
   {
     name: "wck",
-    path: "C:/src/wck",
+    path: "C:/src/packages/wck",
     role: "Compile-time 7-spec Web Validator (Lighthouse 100, Core Web Vitals, a11y, SEO, WASM, WebGPU)",
   },
   {
     name: "chromium-bun",
-    path: "C:/src/chromium-bun",
+    path: "C:/src/packages/chromium-bun",
     role: "High-speed Chromium CDP & Blink parity bridge on Bun v1.4.4",
   },
   {
     name: "bun-parity",
-    path: "C:/src/bun-parity",
+    path: "C:/src/packages/bun-parity",
     role: "Live Chromium Blink/V8 vs Bun feature parity matrix and HTMLRewriter/CSS patches",
   },
   {
     name: "pi-opencode",
-    path: "C:/src/pi-opencode",
+    path: "C:/src/packages/pi-opencode",
     role: "Autonomous NHITL coding harness (Pi 4-tool minimalism + OpenCode + OpenTUI + Symphony/Ralph worktrees)",
   },
   {
     name: "ring3-agent",
-    path: "C:/src/ring3-agent",
+    path: "C:/src/crates/ring3-agent",
     role: "Native Rust Ring-3 early-boot HTTP + CUDA sm_89 / AVX2 / WebGPU local inference daemon (r3d)",
   },
   {
     name: "google-design",
-    path: "C:/src/google-design",
+    path: "C:/src/packages/google-design",
     role: "Material Design 3 + Material Symbols + Figma token compiler & design gate (gds)",
   },
   {
     name: "depot",
-    path: "C:/src/depot",
+    path: "C:/src/crates/depot",
     role: "Rust build-graph orchestrator, artifact cache & Cargo workspace accelerator",
   },
 ];
@@ -214,7 +214,7 @@ function classifyCargoCrate(
     if (crateName === "agent-desktop-ffi") {
       return {
         action: "INTEGRATE_INTO_TARGET",
-        target: "C:/src/ai-os (bun:ffi) + C:/src/aphrody + C:/src/pi-opencode",
+        target: "C:/src/packages/ai-os (bun:ffi) + C:/src/apps/aphrody + C:/src/packages/pi-opencode",
         rationale:
           "Load agent_desktop_ffi.dll (ABI v7) zero-copy via bun:ffi dlopen for sub-millisecond OS accessibility snapshots and ref actions",
       };
@@ -222,7 +222,7 @@ function classifyCargoCrate(
     if (crateName === "agent-desktop-windows") {
       return {
         action: "INTEGRATE_INTO_TARGET",
-        target: "C:/src/wayland + C:/src/gamescope-rs + C:/src/unix",
+        target: "C:/src/crates/wayland + C:/src/crates/gamescope-rs + C:/src/crates/unix",
         rationale:
           "Unify UIAutomation + WinRT Graphics.Capture + Direct3D11/DXGI window capture with sovereign DX12/NT surface pipeline",
       };
@@ -230,7 +230,7 @@ function classifyCargoCrate(
     if (crateName === "agent-desktop-linux") {
       return {
         action: "INTEGRATE_INTO_TARGET",
-        target: "C:/src/wayland + C:/src/gamescope-rs",
+        target: "C:/src/crates/wayland + C:/src/crates/gamescope-rs",
         rationale:
           "Fuse AT-SPI2 zbus accessibility tree + X11/Wayland surface capture with sovereign Wayland compositor",
       };
@@ -238,7 +238,7 @@ function classifyCargoCrate(
     if (crateName === "agent-desktop-core" || crateName === "agent-desktop") {
       return {
         action: "KEEP",
-        target: "C:/Users/aphro/.local/bin/agent-desktop.exe + C:/src/ai-os",
+        target: "C:/Users/aphro/.local/bin/agent-desktop.exe + C:/src/packages/ai-os",
         rationale:
           "Compile Fat-LTO AOT Rust 2024 binary & core actionability/refmap engine exposed over MCP/A2A/ACP",
       };
@@ -247,7 +247,7 @@ function classifyCargoCrate(
       return {
         action: "INTEGRATE_INTO_TARGET",
         target:
-          "C:/Users/aphro/.local/bin/agent-browser.exe + C:/src/wck + C:/src/chromium-bun + C:/src/ai-os",
+          "C:/Users/aphro/.local/bin/agent-browser.exe + C:/src/packages/wck + C:/src/packages/chromium-bun + C:/src/packages/ai-os",
         rationale:
           "Compile Fat-LTO Rust CDP + axe-core a11y engine into standalone binary while replacing Next.js dashboard with pure Bun",
       };
@@ -268,7 +268,7 @@ function classifyCargoCrate(
     return {
       action: "REPLACE_WITH_BUN_OR_SOVEREIGN_RUST",
       target:
-        "C:/src/bun (bun build --compile embedded $bunfs) + C:/src/aphrody",
+        "C:/src/third_party/bun (bun build --compile embedded $bunfs) + C:/src/apps/aphrody",
       rationale:
         "Replace Next.js static export embedding with Bun native single-file executable asset bundling and zero-dependency M3/Fluent UI",
     };
@@ -281,7 +281,7 @@ function classifyCargoCrate(
   ) {
     return {
       action: "INTEGRATE_INTO_TARGET",
-      target: "C:/src/unix + C:/src/wayland + C:/src/ring3-agent",
+      target: "C:/src/crates/unix + C:/src/crates/wayland + C:/src/crates/ring3-agent",
       rationale:
         "Align Windows NT / WinRT / UIAutomation / DXGI crates on unified windows-sys 0.61+ ABI across sovereign Rust crates",
     };
@@ -294,7 +294,7 @@ function classifyCargoCrate(
   ) {
     return {
       action: "INTEGRATE_INTO_TARGET",
-      target: "C:/src/wayland + C:/src/gamescope-rs",
+      target: "C:/src/crates/wayland + C:/src/crates/gamescope-rs",
       rationale:
         "Share Linux X11/Wayland/DBus AT-SPI2 bindings with sovereign Linux 7.4 compositor stack",
     };
@@ -310,8 +310,8 @@ function classifyCargoCrate(
       action: "KEEP",
       target:
         repo === "agent-browser"
-          ? "C:/src/agent-browser/cli (CDP WS)"
-          : "C:/src/ai-os (Bun.serve / fetch)",
+          ? "C:/src/third_party/agent-browser/cli (CDP WS)"
+          : "C:/src/packages/ai-os (Bun.serve / fetch)",
       rationale:
         "Retain inside standalone Rust CDP daemon binary; control-plane HTTP/WS routing uses native Bun v1.4.4 fetch & WebSocket",
     };
@@ -328,7 +328,7 @@ function classifyCargoCrate(
   ) {
     return {
       action: "INTEGRATE_INTO_TARGET",
-      target: "C:/src/gamescope-rs + C:/src/wck",
+      target: "C:/src/crates/gamescope-rs + C:/src/packages/wck",
       rationale:
         "Share SIMD-accelerated frame/screenshot encoding across desktop capture and visual regression gates",
     };
@@ -387,7 +387,7 @@ function classifyNpmPackage(name: string): DispositionMapping {
   ) {
     return {
       action: "PURGE_BLOAT",
-      target: "C:/src/aphrody + C:/src/google-design + C:/src/bun",
+      target: "C:/src/apps/aphrody + C:/src/packages/google-design + C:/src/third_party/bun",
       rationale:
         "Purge Next.js 16 / React 19 / Tailwind / Radix / Fumadocs node_modules bloat in favor of zero-dependency Bun v1.4.4 + Material 3 / Fluent 2",
     };
@@ -402,7 +402,7 @@ function classifyNpmPackage(name: string): DispositionMapping {
   ) {
     return {
       action: "REPLACE_WITH_BUN_OR_SOVEREIGN_RUST",
-      target: "C:/src/ai-os (src/protocols/* & src/providers/federation.ts)",
+      target: "C:/src/packages/ai-os (src/protocols/* & src/providers/federation.ts)",
       rationale:
         "Replace npm AI/MCP SDKs with zero-dependency Bun v1.4.4 native OpenAI, MCP 2025-03-26, A2A, ACP, and SSE DataStream router",
     };
@@ -417,7 +417,7 @@ function classifyNpmPackage(name: string): DispositionMapping {
   ) {
     return {
       action: "REPLACE_WITH_BUN_OR_SOVEREIGN_RUST",
-      target: "C:/src/bun (native fetch, WebSocket, Bun.semver, Bun.color)",
+      target: "C:/src/third_party/bun (native fetch, WebSocket, Bun.semver, Bun.color)",
       rationale:
         "Native Rust implementation built directly into Bun v1.4.4 runtime",
     };
@@ -439,7 +439,7 @@ function classifyNpmPackage(name: string): DispositionMapping {
   ) {
     return {
       action: "REPLACE_WITH_BUN_OR_SOVEREIGN_RUST",
-      target: "C:/src/pi-opencode + C:/src/unix + Bun.$",
+      target: "C:/src/packages/pi-opencode + C:/src/crates/unix + Bun.$",
       rationale:
         "Use native Bun.$ shell, OpenCode Rust PTY, and sovereign worktree isolation",
     };
@@ -447,7 +447,7 @@ function classifyNpmPackage(name: string): DispositionMapping {
 
   return {
     action: "PURGE_BLOAT",
-    target: "C:/src/ai-os (dependencies: {})",
+    target: "C:/src/packages/ai-os (dependencies: {})",
     rationale:
       "Transitive pnpm/Next.js/docs dependency eliminated by zero-npm-dependency pure Bun v1.4.4 architecture",
   };
@@ -467,7 +467,7 @@ function classifySourceFile(
       category: "schema",
       disposition: {
         action: "INTEGRATE_INTO_TARGET",
-        target: "C:/src/ai-os/src/protocols/mcp.ts + C:/src/wck",
+        target: "C:/src/packages/ai-os/src/protocols/mcp.ts + C:/src/packages/wck",
         rationale:
           "Expose full agent-browser command schema as typed MCP/A2A/ACP tools",
       },
@@ -484,7 +484,7 @@ function classifySourceFile(
       disposition: {
         action: "INTEGRATE_INTO_TARGET",
         target:
-          "C:/src/ai-os/src/protocols/skills.ts (/api/skills & /api/hooks)",
+          "C:/src/packages/ai-os/src/protocols/skills.ts (/api/skills & /api/hooks)",
         rationale:
           "Index and serve skill/hook definitions dynamically across all AI editors and agents",
       },
@@ -502,7 +502,7 @@ function classifySourceFile(
         disposition: {
           action: "INTEGRATE_INTO_TARGET",
           target:
-            "C:/src/wck + C:/src/chromium-bun + C:/Users/aphro/.local/bin/agent-browser.exe",
+            "C:/src/packages/wck + C:/src/packages/chromium-bun + C:/Users/aphro/.local/bin/agent-browser.exe",
           rationale:
             "Bridge Rust CDP + axe-core accessibility & WebGPU doctor directly into wck and ai-os MCP",
         },
@@ -516,7 +516,7 @@ function classifySourceFile(
         category: "rust-cli",
         disposition: {
           action: "REPLACE_WITH_BUN_OR_SOVEREIGN_RUST",
-          target: "C:/src/aphrody + C:/src/ai-os",
+          target: "C:/src/apps/aphrody + C:/src/packages/ai-os",
           rationale:
             "Replace embedded Next.js dashboard server with pure Bun control plane",
         },
@@ -541,7 +541,7 @@ function classifySourceFile(
       category: "dashboard-ui",
       disposition: {
         action: "PURGE_BLOAT",
-        target: "C:/src/aphrody + C:/src/google-design",
+        target: "C:/src/apps/aphrody + C:/src/packages/google-design",
         rationale:
           "Purge Next.js 16 + React 19 + Tailwind 4 frontend bloat; render UI in pure Bun + Material 3",
       },
@@ -554,7 +554,7 @@ function classifySourceFile(
       disposition: {
         action: "INTEGRATE_INTO_TARGET",
         target:
-          "C:/Users/aphro/.local/bin/agent_desktop_ffi.dll + C:/src/ai-os/src/ffi/desktop.ts",
+          "C:/Users/aphro/.local/bin/agent_desktop_ffi.dll + C:/src/packages/ai-os/src/ffi/desktop.ts",
         rationale:
           "Compile release-ffi C-ABI library and bind directly via bun:ffi",
       },
@@ -570,7 +570,7 @@ function classifySourceFile(
         category: "rust-crate",
         disposition: {
           action: "INTEGRATE_INTO_TARGET",
-          target: "C:/src/wayland + C:/src/gamescope-rs + C:/src/unix",
+          target: "C:/src/crates/wayland + C:/src/crates/gamescope-rs + C:/src/crates/unix",
           rationale:
             "Unify Windows UIAutomation + WinRT Graphics.Capture + D3D11 with sovereign NT/DX12 stack",
         },
@@ -596,7 +596,7 @@ function classifySourceFile(
       category: "npm-shim",
       disposition: {
         action: "REPLACE_WITH_BUN_OR_SOVEREIGN_RUST",
-        target: "C:/Users/aphro/.local/bin (native .exe/.dll) + C:/src/ai-os",
+        target: "C:/Users/aphro/.local/bin (native .exe/.dll) + C:/src/packages/ai-os",
         rationale:
           "Eliminate Node postinstall binary-downloader wrapper scripts in favor of direct AOT binaries",
       },
@@ -608,7 +608,7 @@ function classifySourceFile(
       category: "dashboard-ui",
       disposition: {
         action: "PURGE_BLOAT",
-        target: "C:/src/aphrody",
+        target: "C:/src/apps/aphrody",
         rationale:
           "Purge Next.js 16.4 / Fumadocs / Geistdocs documentation site bloat",
       },
@@ -626,7 +626,7 @@ function classifySourceFile(
       category: "docs-bench-test",
       disposition: {
         action: "INTEGRATE_INTO_TARGET",
-        target: "C:/src/bench + C:/src/labs + C:/src/ai-os/tests",
+        target: "C:/src/crates/bench + C:/src/third_party/labs + C:/src/packages/ai-os/tests",
         rationale:
           "Port empirical latency/footprint verification benchmarks to bun test",
       },
@@ -964,13 +964,13 @@ function extractAllPackageJsons(
       disposition: isDocsOrDashboard
         ? {
             action: "PURGE_BLOAT",
-            target: "C:/src/aphrody + C:/src/ai-os",
+            target: "C:/src/apps/aphrody + C:/src/packages/ai-os",
             rationale:
               "Purge Next.js / React / Vercel Sandbox package.json in favor of zero-dependency Bun",
           }
         : {
             action: "REPLACE_WITH_BUN_OR_SOVEREIGN_RUST",
-            target: "C:/Users/aphro/.local/bin + C:/src/ai-os",
+            target: "C:/Users/aphro/.local/bin + C:/src/packages/ai-os",
             rationale:
               "Replace npm binary wrapper package with native Fat-LTO executable and bun:ffi",
           },
@@ -1058,11 +1058,11 @@ function renderComparisonMarkdown(manifest: ExtractionManifest): string {
   const lines: string[] = [
     "# Sovereign Extraction, Dependency Audit & `C:\\src` Integration Matrix",
     "",
-    `Generated: \`${manifest.generatedAt}\` | Runtime: \`oven-sh/bun v${manifest.bunVersion}\` | Full Inventory: [EXTRACTION_MANIFEST.json](file:///C:/src/ai-os/EXTRACTION_MANIFEST.json)`,
+    `Generated: \`${manifest.generatedAt}\` | Runtime: \`oven-sh/bun v${manifest.bunVersion}\` | Full Inventory: [EXTRACTION_MANIFEST.json](file:///C:/src/packages/ai-os/EXTRACTION_MANIFEST.json)`,
     "",
     "## 1. Executive Extraction Summary",
     "",
-    "| Metric | `aphrody-dev/agent-browser` (`v0.42.0`) | `aphrody-dev/agent-desktop` (`v1.2.0`) | Unified Sovereign Target (`C:\\src\\ai-os`) |",
+    "| Metric | `aphrody-dev/agent-browser` (`v0.42.0`) | `aphrody-dev/agent-desktop` (`v1.2.0`) | Unified Sovereign Target (`C:\\src\\packages\\ai-os`) |",
     "| :--- | ---: | ---: | :--- |",
     `| **Cargo.lock Crates (100% Transitive)** | ${ab.cargoLockCratesTotal} | ${ad.cargoLockCratesTotal} | Fat-LTO AOT (\`lto = true\`, \`codegen-units = 1\`, \`strip = true\`) |`,
     `| **Cargo Metadata Resolved Packages** | ${ab.cargoMetadataPackagesTotal} | ${ad.cargoMetadataPackagesTotal} | Zero runtime bloat; C-ABI \`agent_desktop_ffi.dll\` v7 via \`bun:ffi\` |`,
@@ -1103,7 +1103,7 @@ function renderComparisonMarkdown(manifest: ExtractionManifest): string {
     "",
     `### 2.3 C-ABI Surface (\`agent_desktop_ffi.dll\` — ABI Major v7, ${manifest.agentDesktop.ffiExportedSymbols.length} Exported Symbols)`,
     "",
-    'Compiled with `--profile release-ffi` (`lto = true`, `codegen-units = 1`, `panic = "unwind"` for `trap_panic` FFI safety) and installed to `C:\\Users\\aphro\\.local\\bin\\agent_desktop_ffi.dll`. Bound directly in [`src/ffi/desktop.ts`](file:///C:/src/ai-os/src/ffi/desktop.ts) via `bun:ffi` (`dlopen`):',
+    'Compiled with `--profile release-ffi` (`lto = true`, `codegen-units = 1`, `panic = "unwind"` for `trap_panic` FFI safety) and installed to `C:\\Users\\aphro\\.local\\bin\\agent_desktop_ffi.dll`. Bound directly in [`src/ffi/desktop.ts`](file:///C:/src/packages/ai-os/src/ffi/desktop.ts) via `bun:ffi` (`dlopen`):',
     "",
     "- **Lifecycle & Safety**: `ad_abi_version`, `ad_init`, `ad_adapter_create`, `ad_adapter_create_with_session`, `ad_adapter_destroy`, `ad_check_permissions`, `ad_last_error_code`, `ad_last_error_message`, `ad_free_string`",
     "- **Zero-Subprocess JSON Envelope Commands**: `ad_version`, `ad_status`, `ad_snapshot`, `ad_execute_by_ref`, `ad_execute_by_ref_timeout`, `ad_wait`, `ad_trace_show`, `ad_trace_export`",
@@ -1178,12 +1178,12 @@ export function runExtraction(options: RunExtractionOptions = {}): {
   manifest: ExtractionManifest;
 } {
   const agentBrowserDir = resolve(
-    options.agentBrowserDir ?? "C:/src/agent-browser",
+    options.agentBrowserDir ?? "C:/src/third_party/agent-browser",
   );
   const agentDesktopDir = resolve(
-    options.agentDesktopDir ?? "C:/src/agent-desktop",
+    options.agentDesktopDir ?? "C:/src/third_party/agent-desktop",
   );
-  const outDir = resolve(options.outDir ?? "C:/src/ai-os");
+  const outDir = resolve(options.outDir ?? "C:/src/packages/ai-os");
   mkdirSync(outDir, { recursive: true });
 
   const browserCargo = extractCargoGraph(
@@ -1336,7 +1336,7 @@ export function runExtraction(options: RunExtractionOptions = {}): {
     sovereignStack,
     agentBrowser: {
       schemaSummary: {
-        path: "C:/src/agent-browser/agent-browser.schema.json",
+        path: "C:/src/third_party/agent-browser/agent-browser.schema.json",
         title: schemaTitle,
         commands: Array.from(new Set(schemaCommands)).sort(),
       },

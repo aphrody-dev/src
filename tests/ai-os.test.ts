@@ -27,8 +27,8 @@ afterAll(() => {
 
 describe("Part 1: Exhaustive Extraction Manifest & Native Fat-LTO Binaries", () => {
   test("EXTRACTION_MANIFEST.json & COMPARISON_AND_INTEGRATION_MATRIX.md exist and cover 100% of dependencies", () => {
-    const manifestPath = "C:/src/ai-os/EXTRACTION_MANIFEST.json";
-    const matrixPath = "C:/src/ai-os/COMPARISON_AND_INTEGRATION_MATRIX.md";
+    const manifestPath = "C:/src/packages/ai-os/EXTRACTION_MANIFEST.json";
+    const matrixPath = "C:/src/packages/ai-os/COMPARISON_AND_INTEGRATION_MATRIX.md";
     expect(existsSync(manifestPath)).toBe(true);
     expect(existsSync(matrixPath)).toBe(true);
 
@@ -351,7 +351,7 @@ describe("Part 2: Unified Multi-Protocol AI Control Plane", () => {
         jsonrpc: "2.0",
         id: 2,
         method: "session/new",
-        params: { cwd: "C:/src/ai-os" },
+        params: { cwd: "C:/src/packages/ai-os" },
       }),
     });
     const newJson = (await newRes.json()) as { result: { sessionId: string } };

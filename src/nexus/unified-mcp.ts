@@ -738,7 +738,7 @@ export async function handleDesignFigmaDomain(
     const style = String(args.style ?? "outlined");
     const roots = [
       "C:/src/packages/google-design/upstream/material-design-icons",
-      "C:/src/google-design/upstream/material-design-icons",
+      "C:/src/packages/google-design/upstream/material-design-icons",
     ];
     for (const root of roots) {
       const candidate = join(

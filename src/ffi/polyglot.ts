@@ -91,12 +91,12 @@ export interface System1TransducedDecision {
 
 const CUDA_DLL_CANDIDATES = [
   "C:/Users/aphro/.local/bin/sovereign_cuda_sm89.dll",
-  "C:/src/ai-os/native/cuda/sovereign_cuda_sm89.dll",
+  "C:/src/packages/ai-os/native/cuda/sovereign_cuda_sm89.dll",
 ];
 
 const POLYGLOT_DLL_CANDIDATES = [
   "C:/Users/aphro/.local/bin/sovereign_polyglot_ffi.dll",
-  "C:/src/ai-os/native/sovereign-polyglot-ffi/target/release/sovereign_polyglot_ffi.dll",
+  "C:/src/packages/ai-os/native/sovereign-polyglot-ffi/target/release/sovereign_polyglot_ffi.dll",
 ];
 
 export function resolveCudaDllPath(): string | null {

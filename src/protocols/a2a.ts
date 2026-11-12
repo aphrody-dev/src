@@ -49,7 +49,7 @@ export function buildAgentCard(origin: string): Record<string, unknown> {
     },
     version: "1.0.0",
     documentationUrl:
-      "file:///C:/src/ai-os/COMPARISON_AND_INTEGRATION_MATRIX.md",
+      "file:///C:/src/packages/ai-os/COMPARISON_AND_INTEGRATION_MATRIX.md",
     capabilities: {
       streaming: true,
       pushNotifications: false,

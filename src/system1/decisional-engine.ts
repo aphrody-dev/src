@@ -702,7 +702,7 @@ export function decideSystem1(
   }
 
   // 4. Bare-Metal BitNet 1.58-bit Ternary + PowerInfer Hot-Neuron Sparse GEMV over Bun .mdx Weights!
-  const aiOsRoot = options.aiOsRoot ?? "C:/src/ai-os";
+  const aiOsRoot = options.aiOsRoot ?? "C:/src/packages/ai-os";
   const model = loadOrTrainBunSystem1Weights(aiOsRoot);
   const polyFfi = getPolyglotFfi();
 
@@ -947,7 +947,7 @@ function fallbackTransduceJs(raw: string) {
 }
 
 export function tuneHostForCpuSsdSystem1(
-  aiOsRoot = "C:/src/ai-os",
+  aiOsRoot = "C:/src/packages/ai-os",
 ): HostCpuSsdTuneReport {
   const binPath = resolve(aiOsRoot, "models/bun-system1-b158.bin");
   const poly = getPolyglotFfi();

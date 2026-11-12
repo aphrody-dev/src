@@ -328,7 +328,7 @@ export function inspectPolyglotEcosystem(
 }
 
 export async function runPythonPolyglotScan(
-  aiOsRoot = "C:/src/ai-os",
+  aiOsRoot = "C:/src/packages/ai-os",
 ): Promise<Record<string, unknown>> {
   const pyDir = resolve(aiOsRoot, "python");
   const venvPy = resolve(pyDir, ".venv/Scripts/python.exe");

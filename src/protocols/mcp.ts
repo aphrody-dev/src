@@ -498,9 +498,9 @@ export async function executeMcpTool(
           desktopFfi: ffi
             ? { path: ffi.dllPath, abiVersion: ffi.abiVersion, loaded: true }
             : { loaded: false },
-          wckDir: existsSync("C:/src/wck"),
-          depotDir: existsSync("C:/src/depot"),
-          ring3AgentDir: existsSync("C:/src/ring3-agent"),
+          wckDir: existsSync("C:/src/packages/wck"),
+          depotDir: existsSync("C:/src/crates/depot"),
+          ring3AgentDir: existsSync("C:/src/crates/ring3-agent"),
           rosegriffonDir: existsSync("C:/src/apps/rosegriffon"),
           nieBin: existsSync(join(homedir(), ".local", "bin", "nie.exe")),
           ieCmd: existsSync(join(homedir(), ".local", "bin", "ie.cmd")),
@@ -521,7 +521,7 @@ export async function executeMcpTool(
         };
       }
       if (sub === "bun-parity") {
-        const parityPath = resolve("C:/src/bun-parity/parity-matrix.json");
+        const parityPath = resolve("C:/src/packages/bun-parity/parity-matrix.json");
         const txt = existsSync(parityPath)
           ? await Bun.file(parityPath).text()
           : "{}";
@@ -546,7 +546,7 @@ export async function executeMcpTool(
                 ? rawArgs.args.map(String)
                 : ["--help"]),
             ]
-          : ["bun", "run", "C:/src/wck/src/cli.ts", "--help"];
+          : ["bun", "run", "C:/src/packages/wck/src/cli.ts", "--help"];
         const proc = Bun.spawnSync(cmd, { stdout: "pipe", stderr: "pipe" });
         const out =
           new TextDecoder().decode(proc.stdout) ||
@@ -557,7 +557,7 @@ export async function executeMcpTool(
         };
       }
       if (sub === "depot") {
-        const cargoToml = "C:/src/depot/Cargo.toml";
+        const cargoToml = "C:/src/crates/depot/Cargo.toml";
         const exists = existsSync(cargoToml);
         return {
           content: [
@@ -860,17 +860,17 @@ export async function dispatchMcpJsonRpc(
               mimeType: "application/json",
             },
             {
-              uri: "file:///C:/src/ai-os/EXTRACTION_MANIFEST.json",
+              uri: "file:///C:/src/packages/ai-os/EXTRACTION_MANIFEST.json",
               name: "EXTRACTION_MANIFEST.json",
               mimeType: "application/json",
             },
             {
-              uri: "file:///C:/src/ai-os/COMPARISON_AND_INTEGRATION_MATRIX.md",
+              uri: "file:///C:/src/packages/ai-os/COMPARISON_AND_INTEGRATION_MATRIX.md",
               name: "COMPARISON_AND_INTEGRATION_MATRIX.md",
               mimeType: "text/markdown",
             },
             {
-              uri: "file:///C:/src/ai-os/SENTINEL_REPORT.md",
+              uri: "file:///C:/src/packages/ai-os/SENTINEL_REPORT.md",
               name: "SENTINEL_REPORT.md",
               mimeType: "text/markdown",
             },

@@ -69,7 +69,7 @@ Unified Sovereign AI Control Plane & Real-Time/Nightly Standards Sentinel
 Usage:
   ai-os serve [--port 4318] [--host 127.0.0.1]   Start multi-protocol HTTP/SSE control plane
   ai-os mcp-stdio                                Run MCP 2025-03-26 JSON-RPC 2.0 server over stdio
-  ai-os extract [--out C:/src/ai-os]             Run 100% exhaustive code & dependency extractor
+  ai-os extract [--out C:/src/packages/ai-os]             Run 100% exhaustive code & dependency extractor
   ai-os nightly-sync [--apply]                   Probe live upstream standards feeds & write report
   ai-os watch [--interval 3600] [--once] [--apply] Run real-time / periodic sentinel watch loop
   ai-os doctor                                   Verify native binaries, FFI ABI, providers & skills
@@ -213,7 +213,7 @@ async function main(): Promise<void> {
   }
 
   if (subcommand === "extract") {
-    const outDir = parseFlag(argv, "--out") ?? "C:/src/ai-os";
+    const outDir = parseFlag(argv, "--out") ?? "C:/src/packages/ai-os";
     const res = runExtraction({ outDir });
     console.log(
       JSON.stringify(
@@ -232,7 +232,7 @@ async function main(): Promise<void> {
 
   if (subcommand === "nightly-sync") {
     const apply = hasFlag(argv, "--apply");
-    const outDir = parseFlag(argv, "--out") ?? "C:/src/ai-os";
+    const outDir = parseFlag(argv, "--out") ?? "C:/src/packages/ai-os";
     const state = await runSentinelSync({ outDir, apply });
     console.log(
       JSON.stringify(
@@ -256,7 +256,7 @@ async function main(): Promise<void> {
   if (subcommand === "watch") {
     const apply = hasFlag(argv, "--apply");
     const once = hasFlag(argv, "--once");
-    const outDir = parseFlag(argv, "--out") ?? "C:/src/ai-os";
+    const outDir = parseFlag(argv, "--out") ?? "C:/src/packages/ai-os";
     const intervalSec = Number(parseFlag(argv, "--interval") ?? "3600");
 
     const tick = async () => {

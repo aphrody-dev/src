@@ -897,7 +897,7 @@ export async function syncEcosystemSubmodules(
       const shaRes = runGitSync(["rev-parse", "HEAD"], targetDir);
       if (shaRes.exitCode !== 0 || !shaRes.stdout) continue;
 
-      // Register gitlink mode 160000 in C:\src\ai-os git index
+      // Register gitlink mode 160000 in C:\src\packages\ai-os git index
       runGitSync(
         [
           "update-index",
@@ -961,7 +961,7 @@ export async function syncEcosystemSubmodules(
   }
 
   const manifest = {
-    repository: "C:\\src\\ai-os",
+    repository: "C:\\src\\packages\\ai-os",
     generatedAt: syncedAt,
     cloneStrategy:
       "git submodule shallow (--depth 1 --filter=blob:none --single-branch --no-tags, zero-vendor)",

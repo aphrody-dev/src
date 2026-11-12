@@ -56,19 +56,19 @@ export interface DesktopFfiBinding {
 
 const CANDIDATE_DLL_PATHS = [
   "C:/Users/aphro/.local/bin/agent_desktop_ffi.dll",
-  "C:/src/agent-desktop/target/release-ffi/agent_desktop_ffi.dll",
+  "C:/src/third_party/agent-desktop/target/release-ffi/agent_desktop_ffi.dll",
   "/usr/local/lib/libagent_desktop_ffi.so",
 ];
 
 const CANDIDATE_DESKTOP_CLI_PATHS = [
   "C:/Users/aphro/.local/bin/agent-desktop.exe",
-  "C:/src/agent-desktop/target/release/agent-desktop.exe",
+  "C:/src/third_party/agent-desktop/target/release/agent-desktop.exe",
   "agent-desktop",
 ];
 
 const CANDIDATE_BROWSER_CLI_PATHS = [
   "C:/Users/aphro/.local/bin/agent-browser.exe",
-  "C:/src/agent-browser/cli/target/release/agent-browser.exe",
+  "C:/src/third_party/agent-browser/cli/target/release/agent-browser.exe",
   "agent-browser",
 ];
 

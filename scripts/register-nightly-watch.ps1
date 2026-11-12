@@ -24,22 +24,22 @@ $SyncFlag = if ($ApplyUpdates) { "--apply" } else { "" }
 
 switch ($Action) {
     "InstallLauncher" {
-        $CmdContent = "@echo off`r`n`"$AiOsExe`" nightly-sync --out `"C:/src/ai-os`" $SyncFlag`r`n"
+        $CmdContent = "@echo off`r`n`"$AiOsExe`" nightly-sync --out `"C:/src/packages/ai-os`" $SyncFlag`r`n"
         Set-Content -Path $LauncherScript -Value $CmdContent -Encoding ASCII
         Write-Output "Installed userland sentinel launcher at: $LauncherScript"
     }
     "RunOnce" {
         if (Test-Path $AiOsExe) {
             if ($ApplyUpdates) {
-                & $AiOsExe nightly-sync --out "C:/src/ai-os" --apply
+                & $AiOsExe nightly-sync --out "C:/src/packages/ai-os" --apply
             } else {
-                & $AiOsExe nightly-sync --out "C:/src/ai-os"
+                & $AiOsExe nightly-sync --out "C:/src/packages/ai-os"
             }
         } else {
             if ($ApplyUpdates) {
-                & bun run "C:/src/ai-os/src/cli.ts" nightly-sync --out "C:/src/ai-os" --apply
+                & bun run "C:/src/packages/ai-os/src/cli.ts" nightly-sync --out "C:/src/packages/ai-os" --apply
             } else {
-                & bun run "C:/src/ai-os/src/cli.ts" nightly-sync --out "C:/src/ai-os"
+                & bun run "C:/src/packages/ai-os/src/cli.ts" nightly-sync --out "C:/src/packages/ai-os"
             }
         }
     }

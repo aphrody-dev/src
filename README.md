@@ -1,11 +1,11 @@
-# Sovereign AI Control Plane (`C:\src\ai-os`)
+# Sovereign AI Control Plane (`C:\src\packages\ai-os`)
 
 Unified Multi-Protocol AI Control Plane, Native `bun:ffi` Computer-Use Bus, Multi-Provider Inference Federation, and Real-Time/Nightly Standards Sentinel built in **100% pure `oven-sh/bun` v1.4.4** (`dependencies: {}`, `devDependencies: {}`).
 
 ## Architecture & Core Subsystems
 
 1. **Exhaustive Code & Dependency Extractor (`src/extractor.ts`)**:
-   - Extracts every direct and transitive Cargo crate, `package.json`, `pnpm-lock.yaml` package/snapshot, C-ABI symbol, and source module from `C:\src\agent-browser` (`v0.42.0`) and `C:\src\agent-desktop` (`v1.2.0`).
+   - Extracts every direct and transitive Cargo crate, `package.json`, `pnpm-lock.yaml` package/snapshot, C-ABI symbol, and source module from `C:\src\third_party\agent-browser` (`v0.42.0`) and `C:\src\third_party\agent-desktop` (`v1.2.0`).
    - Generates `EXTRACTION_MANIFEST.json` and `COMPARISON_AND_INTEGRATION_MATRIX.md`.
 2. **Native Fat-LTO Binaries & Zero-Copy FFI (`src/ffi/desktop.ts`)**:
    - `C:\Users\aphro\.local\bin\agent-desktop.exe` (Rust 2024 Fat-LTO CLI)
@@ -21,7 +21,7 @@ Unified Multi-Protocol AI Control Plane, Native `bun:ffi` Computer-Use Bus, Mult
 4. **Multi-Provider & Local Uncensored Federation (`src/providers/federation.ts`)**:
    - Connects local engines (`ring3-agent` `8787`, `Locally Uncensored` `8129`, `llama.cpp` `8081`/`8084`, `mistral.rs` `8080`, `vLLM` `8000`, `Ollama` `11434`, `Open WebUI` `3000`) and cloud APIs (Gemini, Claude, OpenAI / Vercel AI Gateway) with strict secret redaction (`src/env.ts`).
 5. **Real-Time & Nightly Standards Sentinel (`src/sentinel/index.ts`)**:
-   - Probes 25 live upstream feeds (WHATWG HTML/DOM/Fetch, W3C WebGPU, TC39, Linux `7.4-rc*` `kernel.org`, `uutils/coreutils`, Windows 11 Insiders, `windows-rs`, Chrome Win64 Canary vs `C:\src\bun-parity`, ChromiumOS, AOSP Android 17/18, MCP, A2A, ACP, Bun, OpenCode, Pi, Skills, `llama.cpp`, `Ollama`, `vLLM`, `Open WebUI`) backed by `sentinel.sqlite` (WAL).
+   - Probes 25 live upstream feeds (WHATWG HTML/DOM/Fetch, W3C WebGPU, TC39, Linux `7.4-rc*` `kernel.org`, `uutils/coreutils`, Windows 11 Insiders, `windows-rs`, Chrome Win64 Canary vs `C:\src\packages\bun-parity`, ChromiumOS, AOSP Android 17/18, MCP, A2A, ACP, Bun, OpenCode, Pi, Skills, `llama.cpp`, `Ollama`, `vLLM`, `Open WebUI`) backed by `sentinel.sqlite` (WAL).
 
 ## CLI Commands
 

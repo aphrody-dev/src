@@ -87,7 +87,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     name: "W3C WebGPU & WGSL Specification",
     endpoint: "https://api.github.com/repos/gpuweb/gpuweb/commits?per_page=1",
     kind: "github-commits",
-    localMirrorPath: "C:/src/wgpu",
+    localMirrorPath: "C:/src/third_party/wgpu",
   },
   {
     id: "tc39-proposals",
@@ -104,7 +104,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     name: "Linux Kernel Releases (kernel.org mainline / 7.4-rc* / stable)",
     endpoint: "https://www.kernel.org/releases.json",
     kind: "kernel-org",
-    localMirrorPath: "C:/src/linux",
+    localMirrorPath: "C:/src/third_party/linux",
   },
   {
     id: "uutils-coreutils",
@@ -112,7 +112,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     name: "Rust uutils/coreutils",
     endpoint: "https://api.github.com/repos/uutils/coreutils/releases/latest",
     kind: "github-releases",
-    localMirrorPath: "C:/src/unix",
+    localMirrorPath: "C:/src/crates/unix",
   },
 
   // 3. Windows 11 Insiders & Rust Windows SDK
@@ -130,7 +130,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     endpoint:
       "https://api.github.com/repos/microsoft/windows-rs/releases/latest",
     kind: "github-releases",
-    localMirrorPath: "C:/src/microsoft",
+    localMirrorPath: "C:/src/third_party/microsoft",
   },
 
   // 4. Chrome Nightly / Canary & ChromiumOS
@@ -141,7 +141,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     endpoint:
       "https://versionhistory.googleapis.com/v1/chrome/platforms/win64/channels/canary/versions?pageSize=1",
     kind: "chrome-versionhistory",
-    localMirrorPath: "C:/src/bun-parity",
+    localMirrorPath: "C:/src/packages/bun-parity",
   },
   {
     id: "chromiumos-dev",
@@ -150,7 +150,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     endpoint:
       "https://versionhistory.googleapis.com/v1/chrome/platforms/chromeos/channels/dev/versions?pageSize=1",
     kind: "chrome-versionhistory",
-    localMirrorPath: "C:/src/chromium",
+    localMirrorPath: "C:/src/third_party/chromium",
   },
 
   // 5. AOSP Android 17 & Android 18
@@ -186,7 +186,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     endpoint:
       "https://api.github.com/repos/agentclientprotocol/agent-client-protocol/commits?per_page=1",
     kind: "github-commits",
-    localMirrorPath: "C:/src/zed",
+    localMirrorPath: "C:/src/third_party/zed",
   },
   {
     id: "oven-sh-bun",
@@ -194,7 +194,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     name: "oven-sh/bun Full-Rust Runtime",
     endpoint: "https://api.github.com/repos/oven-sh/bun/releases/latest",
     kind: "github-releases",
-    localMirrorPath: "C:/src/bun",
+    localMirrorPath: "C:/src/third_party/bun",
   },
   {
     id: "anomalyco-opencode",
@@ -202,7 +202,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     name: "anomalyco/opencode",
     endpoint: "https://api.github.com/repos/anomalyco/opencode/releases/latest",
     kind: "github-releases",
-    localMirrorPath: "C:/src/opencode",
+    localMirrorPath: "C:/src/third_party/opencode",
   },
   {
     id: "earendil-pi",
@@ -211,7 +211,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     endpoint:
       "https://api.github.com/repos/earendil-works/pi/commits?per_page=1",
     kind: "github-commits",
-    localMirrorPath: "C:/src/pi",
+    localMirrorPath: "C:/src/third_party/pi",
   },
   {
     id: "vercel-labs-skills",
@@ -220,7 +220,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     endpoint:
       "https://api.github.com/repos/vercel-labs/skills/commits?per_page=1",
     kind: "github-commits",
-    localMirrorPath: "C:/src/labs",
+    localMirrorPath: "C:/src/third_party/labs",
   },
   {
     id: "vercel-labs-agent-browser",
@@ -229,7 +229,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     endpoint:
       "https://api.github.com/repos/vercel-labs/agent-browser/releases/latest",
     kind: "github-releases",
-    localMirrorPath: "C:/src/agent-browser",
+    localMirrorPath: "C:/src/third_party/agent-browser",
   },
   {
     id: "vercel-labs-agent-desktop",
@@ -238,7 +238,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     endpoint:
       "https://api.github.com/repos/vercel-labs/agent-desktop/releases/latest",
     kind: "github-releases",
-    localMirrorPath: "C:/src/agent-desktop",
+    localMirrorPath: "C:/src/third_party/agent-desktop",
   },
   {
     id: "ggml-llamacpp",
@@ -275,7 +275,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     name: "astral-sh/uv (Rust Python Package & Runtime Manager)",
     endpoint: "https://api.github.com/repos/astral-sh/uv/releases/latest",
     kind: "github-releases",
-    localMirrorPath: "C:/src/ai-os/submodules/astral-sh/uv",
+    localMirrorPath: "C:/src/packages/ai-os/submodules/astral-sh/uv",
   },
   {
     id: "astral-ruff",
@@ -283,7 +283,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     name: "astral-sh/ruff (Rust Python Linter & Formatter)",
     endpoint: "https://api.github.com/repos/astral-sh/ruff/releases/latest",
     kind: "github-releases",
-    localMirrorPath: "C:/src/ai-os/submodules/astral-sh/ruff",
+    localMirrorPath: "C:/src/packages/ai-os/submodules/astral-sh/ruff",
   },
   {
     id: "astral-ty",
@@ -291,7 +291,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     name: "astral-sh/ty (Rust Python Type Checker & LSP)",
     endpoint: "https://api.github.com/repos/astral-sh/ty/releases/latest",
     kind: "github-releases",
-    localMirrorPath: "C:/src/ai-os/submodules/astral-sh/ty",
+    localMirrorPath: "C:/src/packages/ai-os/submodules/astral-sh/ty",
   },
   {
     id: "ggml-whispercpp",
@@ -300,7 +300,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     endpoint:
       "https://api.github.com/repos/ggml-org/whisper.cpp/releases/latest",
     kind: "github-releases",
-    localMirrorPath: "C:/src/ai-os/submodules/ggml-org/whisper.cpp",
+    localMirrorPath: "C:/src/packages/ai-os/submodules/ggml-org/whisper.cpp",
   },
   {
     id: "pyo3-core",
@@ -308,7 +308,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     name: "PyO3/pyo3 (Rust <-> CPython Interop)",
     endpoint: "https://api.github.com/repos/PyO3/pyo3/releases/latest",
     kind: "github-releases",
-    localMirrorPath: "C:/src/ai-os/submodules/python-rust/pyo3",
+    localMirrorPath: "C:/src/packages/ai-os/submodules/python-rust/pyo3",
   },
   {
     id: "hf-transformers",
@@ -317,7 +317,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     endpoint:
       "https://api.github.com/repos/huggingface/transformers/releases/latest",
     kind: "github-releases",
-    localMirrorPath: "C:/src/ai-os/submodules/huggingface/transformers",
+    localMirrorPath: "C:/src/packages/ai-os/submodules/huggingface/transformers",
   },
   {
     id: "nvidia-cutlass",
@@ -325,7 +325,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     name: "NVIDIA/cutlass (CUDA Tensor Core Templates & CuTe DSL)",
     endpoint: "https://api.github.com/repos/NVIDIA/cutlass/releases/latest",
     kind: "github-releases",
-    localMirrorPath: "C:/src/ai-os/submodules/nvidia/cutlass",
+    localMirrorPath: "C:/src/packages/ai-os/submodules/nvidia/cutlass",
   },
   {
     id: "tree-sitter-core",
@@ -334,7 +334,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     endpoint:
       "https://api.github.com/repos/tree-sitter/tree-sitter/releases/latest",
     kind: "github-releases",
-    localMirrorPath: "C:/src/ai-os/submodules/tree-sitter/tree-sitter",
+    localMirrorPath: "C:/src/packages/ai-os/submodules/tree-sitter/tree-sitter",
   },
 ];
 
@@ -373,7 +373,7 @@ function readBunParityMatrix(): {
   overallNativeScore: number;
   overallPatchedScore: number;
 } | null {
-  const p = "C:/src/bun-parity/parity-matrix.json";
+  const p = "C:/src/packages/bun-parity/parity-matrix.json";
   if (!existsSync(p)) return null;
   try {
     const raw = JSON.parse(readFileSync(p, "utf8")) as {
@@ -550,7 +550,7 @@ function renderSentinelMarkdown(state: SentinelState): string {
 
   if (state.bunParitySummary) {
     lines.push(
-      "## Chrome Canary vs `C:\\src\\bun-parity` Live Alignment",
+      "## Chrome Canary vs `C:\\src\\packages\\bun-parity` Live Alignment",
       "",
       `- **Live Chrome Win64 Canary**: \`${state.bunParitySummary.chromeCanaryVersion ?? "probed"}\``,
       `- **Local Sovereign Runtime**: \`Bun v${state.bunParitySummary.bunVersion}\` — Native Blink/Web Parity: **${state.bunParitySummary.overallNativeScore}%**, Patched Sovereign Parity: **${state.bunParitySummary.overallPatchedScore}%**`,
@@ -624,7 +624,7 @@ export interface RunSentinelOptions {
 export async function runSentinelSync(
   options: RunSentinelOptions = {},
 ): Promise<SentinelState> {
-  const outDir = resolve(options.outDir ?? "C:/src/ai-os");
+  const outDir = resolve(options.outDir ?? "C:/src/packages/ai-os");
   mkdirSync(outDir, { recursive: true });
   const dbPath = resolve(options.dbPath ?? join(outDir, "sentinel.sqlite"));
   const timeoutMs = options.timeoutMs ?? 8000;
@@ -744,9 +744,9 @@ export async function runSentinelSync(
   const appliedUpdates: Array<{ path: string; status: string }> = [];
   if (options.apply) {
     const syncDirs = [
-      "C:/src/labs",
-      "C:/src/agent-browser",
-      "C:/src/agent-desktop",
+      "C:/src/third_party/labs",
+      "C:/src/third_party/agent-browser",
+      "C:/src/third_party/agent-desktop",
     ];
     for (const dir of syncDirs) {
       if (!existsSync(join(dir, ".git"))) continue;
@@ -813,7 +813,7 @@ export async function runSentinelSync(
 }
 
 export function readCachedSentinelState(
-  outDir = "C:/src/ai-os",
+  outDir = "C:/src/packages/ai-os",
 ): SentinelState | null {
   const statePath = join(resolve(outDir), "sentinel-state.json");
   if (!existsSync(statePath)) return null;

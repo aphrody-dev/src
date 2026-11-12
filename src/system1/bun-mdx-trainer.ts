@@ -488,7 +488,7 @@ function assignActionClass(
   const headerText = `${relNorm} ${title.toLowerCase()} ${description.toLowerCase()}`;
   const fullLower = `${headerText} ${cleanBody.slice(0, 2500).toLowerCase()}`;
 
-  // Strong directory / path structural priors from upstream C:\src\bun\docs
+  // Strong directory / path structural priors from upstream C:\src\third_party\bun\docs
   if (relNorm.startsWith("design/")) return "SovereignDesign";
   if (relNorm.startsWith("compiler/")) return "bun compile";
   if (relNorm.startsWith("format/") || relNorm.startsWith("lint/"))
@@ -667,8 +667,8 @@ export function trainSystem1OnBunMdx(
   options: TrainBunMdxOptions = {},
 ): BunSystem1ModelMeta {
   const t0 = performance.now();
-  const docsRoot = resolve(options.bunDocsDir ?? "C:/src/bun/docs");
-  const aiOsRoot = resolve(options.aiOsRoot ?? "C:/src/ai-os");
+  const docsRoot = resolve(options.bunDocsDir ?? "C:/src/third_party/bun/docs");
+  const aiOsRoot = resolve(options.aiOsRoot ?? "C:/src/packages/ai-os");
   const epochs = options.epochs ?? 14;
 
   const modelsDir = resolve(aiOsRoot, "models");
@@ -995,7 +995,7 @@ export function trainSystem1OnBunMdx(
 let cachedSystem1Weights: LoadedBunSystem1Weights | null = null;
 
 export function loadOrTrainBunSystem1Weights(
-  aiOsRoot = "C:/src/ai-os",
+  aiOsRoot = "C:/src/packages/ai-os",
 ): LoadedBunSystem1Weights {
   if (cachedSystem1Weights) return cachedSystem1Weights;
 
@@ -1054,7 +1054,7 @@ export interface BunMdxSearchHit {
 export function queryBunMdxFts5(
   query: string,
   limit = 3,
-  aiOsRoot = "C:/src/ai-os",
+  aiOsRoot = "C:/src/packages/ai-os",
 ): BunMdxSearchHit[] {
   const dbPath = resolve(aiOsRoot, "system1-bun-mdx.sqlite");
   if (!existsSync(dbPath)) return [];
