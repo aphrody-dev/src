@@ -88,7 +88,7 @@ export class Context {
     this.db.run(
       "CREATE TABLE IF NOT EXISTS entries(rid INTEGER PRIMARY KEY, id TEXT UNIQUE NOT NULL, source TEXT NOT NULL, scope TEXT NOT NULL, title TEXT, text TEXT NOT NULL, symbols TEXT, at INTEGER NOT NULL)",
     );
-    this.db.run("CREATE VIRTUAL TABLE IF NOT EXISTS entries_fts USING fts5(title, text, content='entries', content_rowid='rid')");
+    this.db.run("CREATE VIRTUAL TABLE IF NOT EXISTS entries_fts USING fts5(title, text, content='entries', content_rowid='rid', tokenize='porter unicode61')");
     this.db.run(
       "CREATE TRIGGER IF NOT EXISTS entries_ai AFTER INSERT ON entries BEGIN INSERT INTO entries_fts(rowid, title, text) VALUES (new.rid, new.title, new.text); END",
     );
