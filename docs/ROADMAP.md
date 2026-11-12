@@ -7,7 +7,7 @@ Done (2026-11-12)
 - P3 `packages/core`: AI SDK loop, tools (fs, shell, memory, skill), SQLite FTS memory, SKILL.md creation; e2e test green on Windows.
 
 Next
-1. Dedupe legacy: one MCP server (`packages/mcp`, official SDK), one council (from ai-triad), one secret redactor; delete the rest.
+1. Dissolve the rest of legacy (ai-os, knowledge-engine, agy): research/fact-check -> tools/research, sentinel, desktop-use.
 2. Port Hermes skill lint/provenance/usage and learning graph; session compaction.
 3. Scheduler/heartbeat (OpenClaw) on Workflow + Cloudflare Agents schedule, local timer on Windows.
 4. Gateway + channels via Chat SDK; port OpenClaw channel config.

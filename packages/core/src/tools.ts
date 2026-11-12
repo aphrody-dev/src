@@ -3,6 +3,7 @@ import { tool } from "ai";
 import { isAbsolute, relative, resolve } from "node:path";
 import { z } from "zod";
 import type { Memory } from "./memory";
+import { redactText } from "./secrets";
 import type { Skills } from "./skills";
 
 export type ToolCtx = { cwd: string; memory: Memory; skills: Skills; allowShell: boolean };
@@ -32,7 +33,7 @@ export function makeTools(ctx: ToolCtx) {
       execute: async ({ argv }) => {
         if (!ctx.allowShell) return "shell disabled (pass --allow-shell)";
         const p = Bun.spawnSync(argv, { cwd: ctx.cwd, stdout: "pipe", stderr: "pipe" });
-        return `exit=${p.exitCode}\n${p.stdout.toString()}${p.stderr.toString()}`.slice(0, 16_000);
+        return redactText(`exit=${p.exitCode}\n${p.stdout.toString()}${p.stderr.toString()}`, Bun.env).slice(0, 16_000);
       },
     }),
     memory_add: tool({

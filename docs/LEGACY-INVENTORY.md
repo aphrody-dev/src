@@ -20,3 +20,11 @@ Lines = .ts/.rs/.py/.zig. Imported with `git archive HEAD packages/<name>` into 
 - MCP servers: ai-os/protocols/mcp.ts, ai-os/nexus/unified-mcp.ts, knowledge-engine/mcp/stdio.ts, ai-triad/server/gateway.ts (4 implementations).
 - Provider layers: ai-os/providers, pi-opencode/lu-provider.ts, ai-triad runners (replaced by `packages/core/src/model.ts`).
 - Memory: brain, ai-os/nexus/brain-memory.ts (replaced by `packages/core/src/memory.ts`).
+
+## Absorbed (2026-11-12)
+
+- MCP x4 -> `packages/mcp` (official SDK, stdio). Removed: ai-os protocols/mcp.ts, nexus/unified-mcp.ts, knowledge-engine src/mcp, ai-triad server.
+- Council x2 -> `packages/core/src/council.ts` (`council`, `route`, `ask`). Removed: ai-os src/triad, ai-triad.
+- Redactors x3 -> `packages/core/src/secrets.ts`. Copies left inside ai-os/env.ts, nexus/security.ts and knowledge-engine/env go when those packages are dissolved.
+- brain -> core memory; pi-opencode (pi tools, provider) -> core tools + model.ts. Both removed.
+- Remaining legacy: ai-os, knowledge-engine, agy (23 639 lines). Their entry points still import the removed files and do not run; legacy is not built.
