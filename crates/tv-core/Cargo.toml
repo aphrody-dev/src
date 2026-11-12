@@ -3,7 +3,7 @@ name = "tv-core"
 description = "Types communs du domaine média tv : rationnels, temps, flux, médias, erreurs."
 version.workspace = true
 edition.workspace = true
-license = "LGPL-2.1-or-later"
+license.workspace = true
 repository.workspace = true
 
 [dependencies]

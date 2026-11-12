@@ -13,7 +13,7 @@ Inspiré de NT (HAL sous l'Executive, sous les sous-systèmes) et des components
 | L2 plateforme | HAL : Windows, Linux, Cloudflare, Vercel, réseau, C ABI de base | `sys`, `net`, `core-capi`, `dx12-winui-core`, `unix-*`, `remote`, `lore-credential`, `lore-fuse`, `steam-depot`, `gamescope-wgsl`, `smithay-wayland-wire`, `hypr-tiler`, `cosmic-compat`, `tv-ffmpeg` (FFmpeg libav* en liaison dynamique) ; `packages/core` (bun:ffi sur core-capi), `net`, `machine`, `runtime-adapter` ; `infra/*` |
 | L3 services | Executive : VCS, build, design, web | `crates/*` par défaut : `lore*` (stockage, révision, transport, serveur, backends aws/hashicorp), `depot-*` (gclient, cipd, vpython, re, graph...), `xtask`, `up`, `rt`, `archguard`, `factory`, `conformance`, `bench`, `next`, `react`, `ui`, design ; C ABI de services `ffi`, `lore-capi` ; `packages/*` par défaut |
 | L4 agent | sous-système agent | `agent/` (core, research, mcp, agent-context, agent-py ; ses L0-L7 internes sont des sous-couches), `crates/ring3-agent`, `plugins/` |
-| L5 surfaces | embedders (`//chrome`) | CLIs : `ay`, `aphrody-cli`, `depot-cli`, `lore-client`, `gamescope-cli`, `wslg-cli`, `tv-cli` ; `agent/packages/gateway`, `tui` ; `apps/*` (dont `apps/nt`), `browser/` |
+| L5 surfaces | embedders (`//chrome`) | CLIs : `ay`, `aphrody-cli`, `depot-cli`, `lore-client`, `gamescope-cli`, `wslg-cli`, `tv-cli` ; `agent/packages/gateway`, `tui` ; `apps/*` (dont `apps/nt`) |
 
 La liste exacte vient de `just checkdeps --graph` ; ce tableau est un résumé.
 
@@ -77,7 +77,7 @@ crates/ packages/ apps/ agent/ third_party/ infra/ tools/ docs/ scripts/
 |---|---|---|
 | tree-sitter | `crates/core` (`aphrody-core`, L1) | parse multi-langage, symboles/appels/imports, requêtes, index, BLAKE3 |
 | LLVM | `crates/core-capi` (cdylib, L2) | C ABI `core_*`, construite en release avec rustc + clang sur le LLVM partagé ; la LTO inter-langages s'arrête à la cdylib (Rust + C de tree-sitter), jamais à travers bun:ffi |
-| bun:ffi | `packages/core` (`@aphrody/core`, L1) | `dlopen` typé, `CString` + `core_free`, `JSCallback`, store `bun:sqlite` |
+| bun:ffi | `packages/core` (`@aphrody/core`, L2) | `dlopen` typé, `CString` + `core_free`, `JSCallback`, store `bun:sqlite` |
 
 C ABI (`core_abi_version() == 1`) : `core_free`, `core_languages`, `core_parse_json`, `core_query_json`, `core_blake3_hex`, `core_index_json`, `core_index_each`. Sorties JSON, erreurs `{"error": ...}`. En-tête : `cbindgen --config crates/core-capi/cbindgen.toml crates/core-capi -o crates/core-capi/include/aphrody_core.h`. On ajoute des symboles sans en casser ; un changement incompatible incrémente `core_abi_version`. `@aphrody/core` ouvre la bibliothèque en deux temps : résoudre `core_abi_version` seul, refuser si la version diffère, puis seulement lier le reste de la table (TICKET abi-001 si ce n'est pas encore le cas).
 
@@ -403,7 +403,7 @@ candidates --(candidate parser)--> {variants[], utility, value, modifier, import
 - **Allowed dependency licenses**: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, Zlib, Unicode-3.0, CC0-1.0, Unlicense, and MPL-2.0 under the rule below.
 - **MPL-2.0** (lightningcss, stylo, selectors, cssparser, servo): used unmodified, as registry dependencies only. No MPL file is copied, patched or vendored into this repo. If a fix is needed, it goes upstream and the pin is bumped. A `[patch]` entry against an MPL crate is forbidden.
 - **Denied**: GPL, LGPL, AGPL (any version), SSPL, BUSL and other non-OSI licenses, plus any code whose license GitHub reports as NOASSERTION, unless a manual review clears it and the review is recorded here.
-- **Reviewed exception (2026-11-13)**: `crates/tv-*` (media domain, merged from `C:\Users\aphro\tv`) are LGPL-2.1-or-later because `tv-ffmpeg` links FFmpeg libav* dynamically through `ffmpeg-next` (WTFPL). Allowed per crate in `deny.toml` `[licenses] exceptions`; only `tv-*` crates may depend on `tv-ffmpeg`.
+- **Reviewed exception (2026-11-13)**: `ffmpeg-next` / `ffmpeg-sys-next` (WTFPL, permissive) are allowed per crate in `deny.toml` `[licenses] exceptions`. FFmpeg libav* (LGPL-2.1+) is linked dynamically from the system or vcpkg, never vendored, so `crates/tv-*` stay MIT OR Apache-2.0 (LGPL-2.1 §6). Builds must use an FFmpeg configured without `--enable-gpl`/`--enable-nonfree`. Only `tv-*` crates may depend on `tv-ffmpeg` (`-crates/tv-ffmpeg` in `crates/DEPS.rules`, re-allowed in `crates/tv-cli`).
 - **Study-only**: Bun (`oven-sh/bun`). GitHub reports NOASSERTION (`repos.tsv`). Its `LICENSE.md` at `43850629` says Bun itself is MIT but statically links LGPL-2 JavaScriptCore/WebKit and bundles other C/C++ code, so the tree is mixed. Contributors may read it and describe the ideas, but must not copy, translate line by line or vendor its code. The same applies to Zed/GPUI (NOASSERTION).
 - **Test suites as oracles**: upstream suites are fetched at pinned commits into the ignored `conformance/upstream/` and run there. They are not committed, so their licenses (Test262 BSD-style, WPT 3-Clause BSD, Bun NOASSERTION) do not enter the source tree.
 - **Enforcement**: `cargo-deny` (`deny.toml`, added in M0) with `licenses`, `bans` (no `openssl-sys`, which keeps the TLS stack on rustls) and `sources` (crates.io, the `aphrody-dev` git forks, plus `third_party/patches/` path patches) runs in CI before merge to main.

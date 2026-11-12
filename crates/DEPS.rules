@@ -1,2 +1,4 @@
 # checkdeps layer rules (see docs/ARCHITECTURE.md). Inherited by subdirectories.
 layer = 3
+# Only tv-* may link FFmpeg (licence review, docs/ARCHITECTURE.md §11).
+-crates/tv-ffmpeg

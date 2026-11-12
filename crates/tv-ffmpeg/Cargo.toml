@@ -3,7 +3,7 @@ name = "tv-ffmpeg"
 description = "Wrapper sûr au-dessus de ffmpeg-next (libav* 9.x) qui produit les types tv-core."
 version.workspace = true
 edition.workspace = true
-license = "LGPL-2.1-or-later"
+license.workspace = true
 repository.workspace = true
 
 [dependencies]
