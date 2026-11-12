@@ -1,0 +1,80 @@
+graph nodes 224977 reachable 62034 run1 steps 29714 run2 steps 1414
+# classes (nodes, measured, measured slot-s)
+cxx: 30781 22195 128132
+phony: 21819 21819 0
+action: 4230 4224 6371
+cc: 3114 3025 838
+alink: 1567 1190 36
+rust: 311 282 1735
+copy: 183 183 15
+link: 29 25 345
+target node class link measured None imputation pool link| (n=50, mean 13.8 s, max 161.3 s)
+
+## scenario cold (all reachable actions)
+actions to run 40215, imputed 9091 (22.6 %), imputed share of T1 (point) 29.2 %
+point: T1 194198 s (53.94 h) Tinf 492 s (0.14 h) | p=12 bounds [16183, 16675] s, greedy-CP sim 16196 s (4.50 h)
+point: pool mid (fr1:14:0.857:0,prd:4:1.077:0.025,fr2:3:0.819:0.025) bounds [10350, 11941] s, sim 10381 s (2.88 h)
+point: pool opt (fr1:14:0.857:0,prd:4:1.612:0.025,fr2:3:1.226:0.025) bounds [8778, 11414] s, sim 8816 s (2.45 h)
+point: pool coldcas (fr1:14:0.857:0,prd:4:1.077:11.07,fr2:3:0.819:11.07) bounds [10350, 33786] s, sim 13315 s (3.70 h)
+critical path: 45 nodes, measured share 94.1 %
+bootstrap B=1000: T1 median 194151 s [95 % 192546–195727] (53.93 h [53.49–54.37])
+bootstrap: Tinf median 479 s [95 % 468–637] (0.13 h [0.13–0.18])
+bootstrap: p=12 lower median 16179 s [95 % 16046–16311] (4.49 h [4.46–4.53])
+bootstrap: p=12 upper median 16668 s [95 % 16529–16868] (4.63 h [4.59–4.69])
+bootstrap: p=12 sim median 16190 s [95 % 16052–16342] (4.50 h [4.46–4.54])
+bootstrap: pool mid lower median 10348 s [95 % 10262–10432] (2.87 h [2.85–2.90])
+bootstrap: pool mid upper median 11930 s [95 % 11833–12147] (3.31 h [3.29–3.37])
+bootstrap: pool mid sim median 10375 s [95 % 10287–10491] (2.88 h [2.86–2.91])
+bootstrap: pool opt lower median 8776 s [95 % 8703–8847] (2.44 h [2.42–2.46])
+bootstrap: pool opt upper median 11403 s [95 % 11310–11611] (3.17 h [3.14–3.23])
+bootstrap: pool opt sim median 8812 s [95 % 8737–8902] (2.45 h [2.43–2.47])
+bootstrap: pool coldcas lower median 10348 s [95 % 10262–10432] (2.87 h [2.85–2.90])
+bootstrap: pool coldcas upper median 33781 s [95 % 33683–33992] (9.38 h [9.36–9.44])
+bootstrap: pool coldcas sim median 13058 s [95 % 12921–13225] (3.63 h [3.59–3.67])
+
+## scenario remaining (not run in run1/run2)
+actions to run 9091, imputed 9091 (100.0 %), imputed share of T1 (point) 100.0 %
+point: T1 56727 s (15.76 h) Tinf 51 s (0.01 h) | p=12 bounds [4727, 4778] s, greedy-CP sim 4740 s (1.32 h)
+point: pool mid (fr1:14:0.857:0,prd:4:1.077:0.025,fr2:3:0.819:0.025) bounds [3023, 3372] s, sim 3040 s (0.84 h)
+point: pool opt (fr1:14:0.857:0,prd:4:1.612:0.025,fr2:3:1.226:0.025) bounds [2564, 3223] s, sim 2579 s (0.72 h)
+point: pool coldcas (fr1:14:0.857:0,prd:4:1.077:11.07,fr2:3:0.819:11.07) bounds [3023, 8309] s, sim 4033 s (1.12 h)
+critical path: 10 nodes, measured share 0.0 %
+bootstrap B=1000: T1 median 56780 s [95 % 55096–58427] (15.77 h [15.30–16.23])
+bootstrap: Tinf median 117 s [95 % 86–276] (0.03 h [0.02–0.08])
+bootstrap: p=12 lower median 4732 s [95 % 4591–4869] (1.31 h [1.28–1.35])
+bootstrap: p=12 upper median 4855 s [95 % 4704–5075] (1.35 h [1.31–1.41])
+bootstrap: p=12 sim median 4742 s [95 % 4599–4899] (1.32 h [1.28–1.36])
+bootstrap: pool mid lower median 3026 s [95 % 2936–3114] (0.84 h [0.82–0.86])
+bootstrap: pool mid upper median 3461 s [95 % 3349–3691] (0.96 h [0.93–1.03])
+bootstrap: pool mid sim median 3040 s [95 % 2948–3167] (0.84 h [0.82–0.88])
+bootstrap: pool opt lower median 2566 s [95 % 2490–2641] (0.71 h [0.69–0.73])
+bootstrap: pool opt upper median 3308 s [95 % 3201–3528] (0.92 h [0.89–0.98])
+bootstrap: pool opt sim median 2580 s [95 % 2502–2670] (0.72 h [0.69–0.74])
+bootstrap: pool coldcas lower median 3026 s [95 % 2936–3114] (0.84 h [0.82–0.86])
+bootstrap: pool coldcas upper median 8383 s [95 % 8271–8607] (2.33 h [2.30–2.39])
+bootstrap: pool coldcas sim median 3823 s [95 % 3697–3964] (1.06 h [1.03–1.10])
+
+## final link sensitivity (L = duration of node `headless_shell`)
+L=600 cold: T1 194784 Tinf 1078 p12 [16232,17310] sim 16782 | mid [10381,12691] sim 10925 | opt [8804,12131] sim 9180 | coldcas [10381,34536] sim 13859
+L=600 remaining: T1 57313 Tinf 637 p12 [4776,5414] sim 5326 | mid [3055,4122] sim 3584 | opt [2591,3939] sim 2943 | coldcas [3055,9059] sim 4577
+L=1800 cold: T1 195984 Tinf 2278 p12 [16332,18610] sim 17982 | mid [10445,14226] sim 12039 | opt [8858,13597] sim 9924 | coldcas [10445,36071] sim 14974
+L=1800 remaining: T1 58513 Tinf 1837 p12 [4876,6714] sim 6526 | mid [3119,5657] sim 4698 | opt [2645,5406] sim 3687 | coldcas [3119,10594] sim 5692
+L=3600 cold: T1 197784 Tinf 4078 p12 [16482,20560] sim 19782 | mid [10541,16529] sim 13711 | opt [8940,15798] sim 11041 | coldcas [10541,38373] sim 16645
+L=3600 remaining: T1 60313 Tinf 3637 p12 [5026,8664] sim 8326 | mid [3377,7959] sim 6370 | opt [2726,7607] sim 4804 | coldcas [3377,12897] sim 7363
+
+## CPU efficiency run1 (child rusage utime+stime, per-minute bins, n=176 min)
+effective cores: mean 8.02 [95 % block-bootstrap(15 min) 7.54–8.54], median 8.44, IQR 7.80–8.81
+eta = cores/12: mean 0.669 [0.629–0.712]; rho = sum cpu / sum slot-time = 0.605
+15-min means: 6.0 6.7 8.7 8.8 8.8 7.4 8.1 8.6 8.6 8.6 8.3 7.7
+run1 slot-time raw 140339 s, normalised to 12-way 127095 s (10011 of 29714 steps scaled by 12/c)
+
+## hindcast run1: 29714 steps present in current graph, actual span 10576 s (2.94 h)
+run1 subgraph: T1 127095 s (35.30 h) Tinf 438 s (0.12 h) bounds p=12 [10591, 11029] s; actual inside bounds: false
+sim FIFO p=12 measured w: predicted span 10735 s (2.98 h) (error +1.5 %), action-count fraction error max 0.373 mean 0.209; work-fraction error max 0.003 mean 0.002
+sim CP   p=12 measured w: predicted span 10591 s (2.94 h) (error +0.1 %), action-count fraction error max 0.642 mean 0.473; work-fraction error max 0.004 mean 0.001
+CV (50 % durations imputed, 20 reps, FIFO): span error median +1.6 % [min +0.1, max +3.9], curve max-error median 0.364 [max 0.370]
+
+## cache: hits 3/3, Wilson 95 % [0.438, 1.000], hit cost (duration) mean 0.178 s n=3
+h=0.438: T1 112195 Tinf 286 p12 [9350,9635] sim 9362 | mid [5980,6921] sim 6011 | opt [5071,6617] sim 5110 | coldcas [5980,28878] sim 8231
+h=0.950: T1 16539 Tinf 45 p12 [1378,1423] sim 1391 | mid [881,1066] sim 912 | opt [748,1021] sim 785 | coldcas [881,23186] sim 1420
+h=1.000: T1 7188 Tinf 29 p12 [599,629] sim 612 | mid [383,504] sim 413 | opt [325,484] sim 361 | coldcas [383,22638] sim 1015
