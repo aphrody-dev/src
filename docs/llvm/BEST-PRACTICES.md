@@ -1,6 +1,6 @@
 # Pratiques LLVM transposables à src (Rust + bun) — 2026-11-12
 
-Sources LLVM : voir ECOSYSTEM.md ([GH], [DP], [CS], [TG], [C7]). État src : lecture le 2026-11-12 de `C:\src\README.md`, `AGENTS.md`, `Cargo.toml`, `crates/*/Cargo.toml`, `crates/ay/src/*`, `docs/ARCHITECTURE-ROOT.md`, `C:\labs\docs\ROOT-ARCHITECTURE.md` [SRC]. Rien n'a été compilé ni testé.
+Sources LLVM : voir ECOSYSTEM.md ([GH], [DP], [CS], [TG], [C7]). État src : lecture le 2026-11-12 de `C:\src\README.md`, `AGENTS.md`, `Cargo.toml`, `crates/*/Cargo.toml`, `crates/ay/src/*`, `docs/ARCHITECTURE-ROOT.md`, `C:\labs\docs\ARCHITECTURE.md` [SRC]. Rien n'a été compilé ni testé.
 
 ## État src mesuré [SRC]
 

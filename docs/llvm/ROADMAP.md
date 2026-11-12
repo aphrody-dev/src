@@ -1,6 +1,6 @@
 # Feuille de route `ay` façon LLVM (2026-11-12)
 
-Préalable : fin de la restructuration nt-03 de `C:\src` et merge labs (ROOT-ARCHITECTURE.md phases 1–3). Exécution et mesures sur prd/fr2 uniquement. Base : cargo 805 tests, bun 45 (ARCHITECTURE-ROOT.md §6).
+Préalable : fin de la restructuration nt-03 de `C:\src` et merge labs (ARCHITECTURE.md phases 1–3). Exécution et mesures sur prd/fr2 uniquement. Base : cargo 805 tests, bun 45 (ARCHITECTURE-ROOT.md §6).
 
 | # | Phase | Contenu | Critère de sortie mesurable |
 |---|---|---|---|

@@ -55,7 +55,7 @@ just verify-all      # Run Bun, Cargo, and Go + 3-way FFI test suites end-to-end
 
 ## Labs (merged from `C:\labs`, 2026-11-12)
 
-Aphrody Labs (`aphrody-labs/labs`): self-hosted Vercel-like platform and `aphrody` single binary (V8 JS runtime, Next.js/Tailwind/shadcn compatibility, native renderer). Target architecture: [docs/ROOT-ARCHITECTURE.md](docs/ROOT-ARCHITECTURE.md).
+Aphrody Labs (`aphrody-labs/labs`): self-hosted Vercel-like platform and `aphrody` single binary (V8 JS runtime, Next.js/Tailwind/shadcn compatibility, native renderer). Target architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 | Path | Content |
 |---|---|

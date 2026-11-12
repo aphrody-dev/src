@@ -1,6 +1,6 @@
 # `ay` façon LLVM — conception (2026-11-12)
 
-Contraintes : noms de package conservés (seuls les dossiers changent), `identity.toml` seule source des noms (ROOT-ARCHITECTURE.md §Identité), dossiers plats `crates/<couche>-<nom>`, zéro duplication, rien compilé sur le PC. Ne pas toucher `C:\src` tant que nt-03 restructure.
+Contraintes : noms de package conservés (seuls les dossiers changent), `identity.toml` seule source des noms (ARCHITECTURE.md §Identité), dossiers plats `crates/<couche>-<nom>`, zéro duplication, rien compilé sur le PC. Ne pas toucher `C:\src` tant que nt-03 restructure.
 
 ## 1. Driver multicall
 
@@ -117,6 +117,6 @@ crates/depot-ay/tests/lit/driver/   argv0.test, help.test, unknown-tool.test
 | ffi | crates/ffi | crates/depot-capi | 3 | — |
 | aphrody | crates/ay | crates/depot-ay | 4 | build.rs + tools.toml + dispatch argv0 |
 
-Hors périmètre `ay` (inchangés ici) : `aphrody-design-*`, `gamescope-*`, `unix-*`, `ring3-agent`, `dx12-winui-core`, etc. — leur couche suit ROOT-ARCHITECTURE.md.
+Hors périmètre `ay` (inchangés ici) : `aphrody-design-*`, `gamescope-*`, `unix-*`, `ring3-agent`, `dx12-winui-core`, etc. — leur couche suit ARCHITECTURE.md.
 
 Renommer un dossier = mettre à jour `[workspace.dependencies] path`, les `path = "../x"` (ex. `crates/ay/Cargo.toml` utilise encore `path` direct pour depot-gclient, depot-vpython, remote, sys, up, rt → passer en `.workspace = true`), `src.lock.json`/MAINTAINERS via `ay lock`. Un dossier par PR.
