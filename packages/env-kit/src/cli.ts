@@ -6,6 +6,7 @@ import { join, resolve } from "node:path";
 import { syncAllEditorConfigs } from "./editors";
 import { GOOGLE_SCOPES, googleOAuthLoopback } from "./google-auth.ts";
 import { gmailProfile, listMessages, sendMessage } from "./gmail.ts";
+import { contextEnv, detectContext, exportLines } from "./google-context.ts";
 import { formatIdentities, whoami } from "./whoami";
 import {
   buildAphrodyIamBindingsPlan,
@@ -304,6 +305,7 @@ function printHelp(): void {
 
 Usage:
   env-kit whoami [--json]               Who every configured credential belongs to (parallel, masked)
+  env-kit gcloud-context [--apply|--export]  Detect project/account/key from the current repo
   env-kit google-auth <gmail|calendar|drive>  One-click OAuth: approve in the browser, token to vault
   env-kit gmail <status|list|send>      Gmail automation (send needs --yes)
   env-kit doctor                       Audit masked status of all credentials, ACLs, and editors
@@ -453,6 +455,41 @@ ${formatIdentities(ids)}`);
       return 1;
     }
     setCredentialEverywhere(envPath, "GITHUB_TOKEN", tok);
+    return 0;
+  }
+
+  if (cmd === "gcloud-context") {
+    loadMonorepoEnv({ envPath, override: false, injectProcessEnv: true });
+    const ctx = detectContext(process.cwd());
+    const envObj = contextEnv(ctx, process.env);
+    if (argv.includes("--apply")) {
+      // Switch the gcloud CLI config too, so ad hoc `gcloud` calls match the detected context.
+      try {
+        spawnSync(
+          "gcloud",
+          ["config", "configurations", "activate", ctx.name],
+          { stdio: "ignore" },
+        );
+      } catch {}
+      process.stdout.write(`${exportLines(envObj)}\n`);
+      console.error(
+        `[env-kit] context ${ctx.name}: project ${ctx.project}, account ${ctx.account}`,
+      );
+      return 0;
+    }
+    if (argv.includes("--export")) {
+      process.stdout.write(`${exportLines(envObj)}\n`);
+      return 0;
+    }
+    console.log(`context: ${ctx.name}`);
+    console.log(`  project: ${ctx.project} (#${ctx.projectNumber})`);
+    console.log(`  account: ${ctx.account}`);
+    console.log(
+      `  credentials: ${envObj.GOOGLE_APPLICATION_CREDENTIALS ?? "(ADC, no key file)"}`,
+    );
+    console.log(
+      'run `eval "$(env-kit gcloud-context --apply)"` to apply to the current shell',
+    );
     return 0;
   }
 
