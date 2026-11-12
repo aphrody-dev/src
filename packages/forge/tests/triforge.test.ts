@@ -16,10 +16,13 @@ import {
   synthesizeRepoUrls,
 } from "../src/triforge.ts";
 
+const SUBMODULES = parseGitmodules(readFileSync(srcPath(".gitmodules"), "utf-8")).length;
+const REPOS = SUBMODULES + 1;
+
 describe("Tri-Forge Repository Inventory & URL Synthesis", () => {
-  test("discovers all 6 canonical repositories (root src + 5 submodules)", () => {
+  test("discovers root src + every .gitmodules submodule", () => {
     const specs = discoverTriForgeInventory();
-    expect(specs.length).toBe(6);
+    expect(specs.length).toBe(REPOS);
     expect(CANONICAL_MONOREPO_SUBMODULES.length).toBe(6);
 
     const names = specs.map((s) => s.name);
@@ -56,14 +59,14 @@ describe("Tri-Forge Repository Inventory & URL Synthesis", () => {
   test("parses .gitmodules cleanly", () => {
     const raw = readFileSync(srcPath(".gitmodules"), "utf-8");
     const parsed = parseGitmodules(raw);
-    expect(parsed.length).toBe(5);
+    expect(parsed.length).toBe(SUBMODULES);
     expect(parsed.some((p) => p.cleanName === "shenron")).toBe(true);
     expect(parsed.some((p) => p.cleanName === "rust-stack")).toBe(true);
   });
 
-  test("audits remotes across all 6 repositories without mutating in read-only mode", () => {
+  test("audits remotes across all repositories without mutating in read-only mode", () => {
     const audit = auditAndConfigureRemotes({ apply: false });
-    expect(audit.length).toBe(6);
+    expect(audit.length).toBe(REPOS);
     const stackEntry = audit.find((e) => e.name === "rust-stack");
     expect(stackEntry).toBeDefined();
     expect(stackEntry?.exists).toBe(true);
@@ -73,7 +76,7 @@ describe("Tri-Forge Repository Inventory & URL Synthesis", () => {
   test("gitlab-init dry-run produces deterministic provisioning plan", async () => {
     const plan = await initializeGitLabForge({ dryRun: true });
     expect(plan.mode).toBe("provisioning-plan");
-    expect(plan.projectsPlanned).toBe(6);
+    expect(plan.projectsPlanned).toBe(REPOS);
     expect(plan.protectedBranches).toEqual(["main", "dev"]);
     expect(plan.orgOwnerEmail).toBe("contact@aphrody.com");
   });
@@ -83,7 +86,7 @@ describe("Tri-Forge Repository Inventory & URL Synthesis", () => {
     expect(plan.mode).toBe("dry-run");
     expect(plan.gcpProjectId).toBe("aphrody");
     expect(plan.gcpProjectNumber).toBe("468000409790");
-    expect(plan.repositoriesPlanned).toBe(6);
+    expect(plan.repositoriesPlanned).toBe(REPOS);
     expect(plan.commands.length).toBeGreaterThanOrEqual(9);
   });
 
@@ -134,7 +137,8 @@ describe("Sovereign GitLab Infra, .gitlab-ci.yml & cloudbuild.yaml Validation", 
       "utf-8",
     );
     const pkg = JSON.parse(pkgRaw);
-    expect(Object.keys(pkg.dependencies || {}).length).toBe(0);
+    // Zero third-party deps: only workspace packages of this monorepo.
+    expect(Object.values(pkg.dependencies || {}).every((v) => String(v).startsWith("workspace:"))).toBe(true);
     expect(Object.keys(pkg.devDependencies || {}).length).toBe(0);
     expect(pkgRaw.includes("bunx")).toBe(false);
   });

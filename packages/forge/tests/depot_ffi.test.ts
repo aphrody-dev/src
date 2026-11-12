@@ -21,7 +21,7 @@ describe("Depot Native Rust FFI Bridge (depot_ffi.dll)", () => {
   it("calls ffiGixStatus to retrieve repository telemetry", () => {
     const status = ffiGixStatus(SRC_ROOT);
     expect(status).not.toBeNull();
-    expect(status.branch).toBe("main");
+    expect(status.branch).toBe(Bun.spawnSync(["git", "rev-parse", "--abbrev-ref", "HEAD"], { cwd: SRC_ROOT }).stdout.toString().trim());
     expect(status.tracked_entry_count).toBeGreaterThan(0);
   });
 

@@ -35,3 +35,6 @@ ropey.workspace = true
 cc = "1.2"
 serde_json.workspace = true
 toml.workspace = true
+
+[dev-dependencies]
+toml.workspace = true

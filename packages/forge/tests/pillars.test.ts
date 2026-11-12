@@ -1,6 +1,6 @@
 import { SRC_ROOT, srcPath } from "../src/root.ts";
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import {
   auditFourPillars,
   parseAospRepoManifestProjects,
@@ -51,7 +51,10 @@ describe("4-Pillar VCS Governance (Git + Chromium + Kernel + AOSP)", () => {
     const report = auditFourPillars(SRC_ROOT);
     expect(report.danglingJunctions.length).toBe(0);
     expect(report.pillars.git.healthy).toBe(true);
-    expect(report.pillars.chromium.healthy).toBe(true);
+    // The Chromium checkout lives on fr1 only (fleet roles); elsewhere the pillar must report absence, not health.
+    expect(report.pillars.chromium.healthy).toBe(
+      existsSync(srcPath("third_party", "chromium", "src")) && existsSync(srcPath("third_party", "depot_tools")),
+    );
     expect(report.pillars.kernel.healthy).toBe(true);
     expect(report.pillars.aosp.healthy).toBe(true);
     expect(report.allHealthy).toBe(true);
