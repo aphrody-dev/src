@@ -30,6 +30,13 @@
         "chromium-bun": "./src/cli.ts",
       },
     },
+    "packages/core": {
+      "name": "@aphrody/core",
+      "version": "0.1.0",
+      "bin": {
+        "ay-index": "./src/cli.ts",
+      },
+    },
     "packages/env-kit": {
       "name": "@aphrody/env-kit",
       "version": "1.0.0",
@@ -49,6 +56,9 @@
       "version": "1.1.0",
       "bin": {
         "frg": "src/cli.ts",
+      },
+      "dependencies": {
+        "@aphrody/core": "workspace:*",
       },
     },
     "packages/google-design": {
@@ -83,6 +93,8 @@
     "@aphrody/bun-plugins": ["@aphrody/bun-plugins@workspace:packages/bun-plugins"],
 
     "@aphrody/chromium-bun": ["@aphrody/chromium-bun@workspace:packages/chromium-bun"],
+
+    "@aphrody/core": ["@aphrody/core@workspace:packages/core"],
 
     "@aphrody/env-kit": ["@aphrody/env-kit@workspace:packages/env-kit"],
 
