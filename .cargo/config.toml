@@ -1,0 +1,26 @@
+# Repo-wide cargo settings for the root workspace. Measurements: docs/BUILD_SPEED.md.
+# Credentials never go here; they stay in $CARGO_HOME.
+
+[build]
+# Disable the sccache wrapper set in ~/.cargo/config.toml for this repo: it made
+# incremental builds 2-2.6x slower, gave no clean-build gain, and fails web-sys
+# wasm builds with os error 206 (sccache re-spawns rustc with the full command line).
+# A RUSTC_WRAPPER environment variable still wins over this key.
+rustc-wrapper = ""
+
+[unstable]
+# Nightly only (ignored on stable). Unify features across the whole workspace so
+# `cargo build -p X` / `cargo test -p X` reuse the dependency artifacts of
+# `cargo build --workspace` instead of compiling a second feature set.
+feature-unification = true
+
+[resolver]
+feature-unification = "workspace"
+
+[target.x86_64-pc-windows-msvc]
+# rust-lld ships with the toolchain (lib/rustlib/<host>/bin) and links the
+# multi-binary crates about 10% faster than link.exe.
+linker = "rust-lld.exe"
+
+# Linux: nothing to set. x86_64-unknown-linux-gnu already links with the bundled
+# rust-lld on nightly. Alpine musl builds keep the default cc linker.

@@ -33,6 +33,7 @@ pub static SEMVER_OR_CALVER_RE: LazyLock<Regex> = LazyLock::new(|| {
 
 pub const ALLOWED_ROOT_PHYSICAL_DIRS: &[&str] = &[
     ".agents",
+    ".cargo",
     ".claude",
     ".coordkit-bus",
     ".gemini",

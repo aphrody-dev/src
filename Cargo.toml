@@ -119,11 +119,18 @@ windows-sys = { version = "0.59.0", features = [
 ] }
 zerocopy = { version = "0.8.20", features = ["derive"] }
 
+# Edit-compile loop profile. Measurements and rejected levers: docs/BUILD_SPEED.md.
 [profile.dev]
 opt-level = 0
 debug = 1
+# Only takes effect on Linux/macOS (no objcopy pass, faster links); MSVC always emits a PDB.
 split-debuginfo = "unpacked"
 incremental = true
+
+# No debuginfo for crates.io dependencies: 17% smaller target/, less I/O. Workspace
+# crates keep line tables and locals for the debugger.
+[profile.dev.package."*"]
+debug = false
 
 # One release profile for every member: fat LTO, single codegen unit, abort on panic.
 [profile.release]

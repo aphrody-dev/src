@@ -19,6 +19,10 @@ graphify-out/
 # Allowlist: the root repo is the manifest of the monorepo (units are submodules, upstreams are pinned in src.lock.json)
 /*
 !/.agents/
+# Repo-wide cargo build settings only; credentials stay in $CARGO_HOME, never here.
+!/.cargo/
+/.cargo/*
+!/.cargo/config.toml
 !/.claude/
 /.claude/skills
 /.claude/settings.local.json
