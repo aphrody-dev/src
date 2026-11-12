@@ -221,7 +221,7 @@ impl RenderTarget {
 
         device
             .poll(wgpu::PollType::Wait {
-                submission_index: submission,
+                submission_index: Some(submission),
                 timeout: None,
             })
             .map_err(|e| CorelibError::Gpu(format!("GPU poll failed: {e}")))?;
