@@ -9,11 +9,11 @@ Inspiré de NT (HAL sous l'Executive, sous les sous-systèmes) et des components
 | Couche | Rôle (analogue) | Contenu actuel |
 |---|---|---|
 | L0 toolchain | compilateurs, pins (LLVM partagé, rustc nightly, bun 1.4.4) | `rust-toolchain.toml`, `tools/`, `third_party/` (hors graphe first-party) |
-| L1 base | `//base`, `//net` | `crates/core`, `corelib`, `net`, `sys`, `depot-core`, `depot-cas`, `lore-base`, `lore-io`, `lore-error-set(-macro)`, `lore-macro`, `aphrody-design-shared`, `aphrody-design-tokens`, `gamescope-core` ; `packages/core`, `net`, `machine`, `runtime-adapter` |
-| L2 plateforme | HAL : Windows, Linux, Cloudflare, Vercel, C ABI de base | `core-capi`, `dx12-winui-core`, `unix-*`, `remote`, `lore-credential`, `lore-fuse`, `steam-depot`, `gamescope-wgsl`, `smithay-wayland-wire`, `hypr-tiler`, `cosmic-compat` ; `infra/*` |
-| L3 services | Executive : VCS, build, design, web | `crates/*` par défaut : `lore*` (stockage, révision, transport, serveur, backends aws/hashicorp), `depot-*` (gclient, cipd, vpython, re, graph...), `xtask`, `up`, `rt`, `archguard`, `factory`, `conformance`, `bench`, `next`, `react`, `ui`, design ; `packages/*` par défaut |
+| L1 base | `//base` : primitives portables, sans `cfg(target_os)` ni windows-rs, sans service | `crates/core`, `corelib`, `depot-core`, `depot-cas`, `lore-base`, `lore-io`, `lore-error-set(-macro)`, `lore-macro`, `aphrody-design-shared`, `aphrody-design-tokens`, `gamescope-core` |
+| L2 plateforme | HAL : Windows, Linux, Cloudflare, Vercel, réseau, C ABI de base | `sys`, `net`, `core-capi`, `dx12-winui-core`, `unix-*`, `remote`, `lore-credential`, `lore-fuse`, `steam-depot`, `gamescope-wgsl`, `smithay-wayland-wire`, `hypr-tiler`, `cosmic-compat` ; `packages/core` (bun:ffi sur core-capi), `net`, `machine`, `runtime-adapter` ; `infra/*` |
+| L3 services | Executive : VCS, build, design, web | `crates/*` par défaut : `lore*` (stockage, révision, transport, serveur, backends aws/hashicorp), `depot-*` (gclient, cipd, vpython, re, graph...), `xtask`, `up`, `rt`, `archguard`, `factory`, `conformance`, `bench`, `next`, `react`, `ui`, design ; C ABI de services `ffi`, `lore-capi` ; `packages/*` par défaut |
 | L4 agent | sous-système agent | `agent/` (core, research, mcp, agent-context, agent-py ; ses L0-L7 internes sont des sous-couches), `crates/ring3-agent`, `plugins/` |
-| L5 surfaces | embedders (`//chrome`) | CLIs : `ay`, `aphrody-cli`, `depot-cli`, `lore-client`, `gamescope-cli`, `wslg-cli` ; bindings de services `ffi`, `lore-capi` ; `agent/packages/gateway`, `tui` ; `apps/*`, `browser/` |
+| L5 surfaces | embedders (`//chrome`) | CLIs : `ay`, `aphrody-cli`, `depot-cli`, `lore-client`, `gamescope-cli`, `wslg-cli` ; `agent/packages/gateway`, `tui` ; `apps/*`, `browser/` |
 
 La liste exacte vient de `just checkdeps --graph` ; ce tableau est un résumé.
 
@@ -21,16 +21,20 @@ La liste exacte vient de `just checkdeps --graph` ; ce tableau est un résumé.
 
 - Vers le bas : toujours permis.
 - Latéral (même couche) : permis, cycles interdits.
-- Vers le haut : interdit, sauf `+chemin` dans un `DEPS.rules` (exception assumée) ou `!chemin` (dette ticketée, avertissement).
+- Vers le haut : interdit. Seul `!chemin` (dette ticketée, avertissement) le tolère ; `+chemin` ne sert qu'à relever un `-` plus large et ne franchit jamais une couche vers le haut.
 - `-chemin` interdit une arête même descendante.
 - Unité sans couche : erreur.
+- Les cycles sont cherchés sur tout le graphe (toutes couches) ; un cycle n'est rétrogradé en avertissement que si l'une de ses arêtes porte un `!`.
+- Les `[dev-dependencies]` (tests, benches) sont exemptées ; `[dependencies]` et `[build-dependencies]` comptent.
 
-Placement des C ABI : une C ABI se place une couche au-dessus de ce qu'elle expose (`core-capi` en L2 sur `core` L1 ; `ffi` et `lore-capi` en L5 car elles exposent des services L3).
+Placement des C ABI : une C ABI de base va en L2 (frontière plateforme : `core-capi`, et `packages/core` qui la charge) ; une C ABI de service reste dans la couche du service exposé (`ffi`, `lore-capi` en L3), donc utilisable par L4. L5 est réservé aux binaires et surfaces finales.
+
+Arêtes invisibles dans les manifestes (bun:ffi `dlopen`, pyo3) : déclarées par `use chemin` dans le `DEPS.rules` du consommateur (`packages/core` : `use crates/core-capi`) ; elles entrent dans les couches, les cycles et `just affected`.
 
 Mise en application :
-- `DEPS.rules` par répertoire (`layer = N`, `+`, `!`, `-`), hérité vers le bas, sémantique de `buildtools/checkdeps` de Chromium. Les lignes `sous/dossier: directive` d'un parent couvrent les sous-modules où src n'écrit pas (`agent/`, `apps/*` ; règles dans `/DEPS.rules`).
+- `DEPS.rules` par répertoire (`layer = N`, `+`, `!`, `-`, `use`), hérité vers le bas ; format maison adapté de `buildtools/checkdeps` de Chromium (préfixes et héritage repris, `layer` et `use` ajoutés). Les lignes `sous/dossier: directive` d'un parent couvrent les sous-modules où src n'écrit pas (`agent/`, `apps/*` ; règles dans `/DEPS.rules`).
 - Arêtes lues dans les manifestes : dépendances `path` / `workspace = true` de Cargo, `@aphrody/*` / `workspace:` / `file:` de package.json.
-- Gate : `bun scripts/checkdeps.ts` (`just checkdeps`, étape CI « Layered dependency gate », inclus dans `just check`). Archguard ARCH-017 garde un contrôle grossier par domaine (voir checkdeps-002).
+- Gate : `bun scripts/checkdeps.ts` (`just checkdeps`, étape CI « Layered dependency gate », inclus dans `just check`). Archguard ARCH-017 garde les frontières de domaine (voir checkdeps-002).
 - Propriété : `MAINTAINERS` (format kernel, M: = agent ou skill propriétaire), `just maintainer <chemin>`.
 
 ## 3. Graphe de tâches
@@ -39,7 +43,7 @@ Choix : `just` + bun workspaces + cargo, sans turbo (raisons : PHILOSOPHY.md §6
 
 - `just affected [ref]` : unités modifiées depuis `ref` plus dépendants transitifs (équivalent de `turbo --filter=...[ref]`).
 - `just test-affected [ref]` : `cargo test -p` sur les crates touchées, `bun test` sur les packages touchés.
-- `just check` : `bun fmt --check`, checkdeps, archguard.
+- `just check` : `bun fmt --check`, `cargo fmt --check`, `bun check -b` (typecheck TS), checkdeps, archguard. La compilation (`cargo check`/`cargo test`) tourne en CI sur runner, pas sur le poste (règle : pas de build local).
 - Cache : sccache local pour cargo. Cache distant R2 : taskgraph-001.
 
 ## 4. Racine du dépôt
@@ -50,7 +54,10 @@ Cargo.lock
 package.json        workspaces bun
 bun.lock
 rust-toolchain.toml nightly épinglée
-.cargo/config.toml  vendored-sources, cranelift dev, rust-lld
+.cargo/config.toml  vendored-sources, cranelift dev (sans cdylib ni LTO), rust-lld
+identity.toml       noms renommables (source unique, §6)
+src.lock.json       verrou généré ; DEPS en est dérivé (`ay manifests`)
+uv.lock             Python (agent/, sous-module)
 justfile            point d'entrée unique
 DEPS                gclient : dépendances externes épinglées (40 caractères)
 DEPS.rules          racine des règles de couches (checkdeps)
@@ -62,19 +69,21 @@ crates/ packages/ apps/ agent/ third_party/ infra/ tools/ docs/ scripts/
 
 À fondre ailleurs : Dockerfile, compose.yaml, cloudbuild.yaml, flake.nix, deploy.ps1/.sh, install.ps1/.sh, graphify-out/, var/ ; deploy.toml, tools.toml, depot-artifacts.toml, dist-workspace.toml vers infra/ ou Cargo.toml. Conflit noté : l'ancienne cible retirait MAINTAINERS de la racine ; la directive du 2026-11-12 le garde (format kernel) et prime.
 
-`apps/` = dépôts déployables épinglés par DEPS, avec leurs propres gates (checkdeps n'en contrôle que la racine). `third_party/` = upstream, une copie par projet, verrouillée dans `src.lock.json`, sans patch local.
+`apps/` et `third_party/` sont exclus du workspace Cargo (`[workspace] exclude`). `apps/` = dépôts déployables épinglés par DEPS, avec leurs propres gates : checkdeps n'inspecte que leur unité racine, pas leur intérieur. `third_party/` = upstream, une copie par projet, verrouillée dans `src.lock.json`, sans patch local.
 
 ## 5. Bibliothèque commune (core)
 
 | Pilier | Où | Rôle |
 |---|---|---|
 | tree-sitter | `crates/core` (`aphrody-core`, L1) | parse multi-langage, symboles/appels/imports, requêtes, index, BLAKE3 |
-| LLVM | `crates/core-capi` (cdylib, L2) | C ABI `core_*`, construite avec la toolchain LLVM partagée (LTO inter-langages) |
+| LLVM | `crates/core-capi` (cdylib, L2) | C ABI `core_*`, construite en release avec rustc + clang sur le LLVM partagé ; la LTO inter-langages s'arrête à la cdylib (Rust + C de tree-sitter), jamais à travers bun:ffi |
 | bun:ffi | `packages/core` (`@aphrody/core`, L1) | `dlopen` typé, `CString` + `core_free`, `JSCallback`, store `bun:sqlite` |
 
-C ABI (`core_abi_version() == 1`) : `core_free`, `core_languages`, `core_parse_json`, `core_query_json`, `core_blake3_hex`, `core_index_json`, `core_index_each`. Sorties JSON, erreurs `{"error": ...}`. En-tête : `cbindgen --config crates/core-capi/cbindgen.toml crates/core-capi -o crates/core-capi/include/aphrody_core.h`. On ajoute des symboles sans en casser ; un changement incompatible incrémente `core_abi_version`.
+C ABI (`core_abi_version() == 1`) : `core_free`, `core_languages`, `core_parse_json`, `core_query_json`, `core_blake3_hex`, `core_index_json`, `core_index_each`. Sorties JSON, erreurs `{"error": ...}`. En-tête : `cbindgen --config crates/core-capi/cbindgen.toml crates/core-capi -o crates/core-capi/include/aphrody_core.h`. On ajoute des symboles sans en casser ; un changement incompatible incrémente `core_abi_version`. `@aphrody/core` ouvre la bibliothèque en deux temps : résoudre `core_abi_version` seul, refuser si la version diffère, puis seulement lier le reste de la table (TICKET abi-001 si ce n'est pas encore le cas).
 
-Grammaires : 13 avec extracteur dédié ; les autres découvertes par `crates/core/build.rs` (`third_party/ECOSYSTEM.toml` ou `third_party/tree-sitter-*`, symboles `aphrody_grammar_<nom>*`). `APHRODY_GRAMMARS=0` désactive. Index : `bun packages/core/src/cli.ts index [root]` vers `var/index/core.db`.
+Distribution : `dlopen` ne charge pas une bibliothèque depuis la mémoire d'un exécutable `bun build --compile` ; la cdylib est donc livrée à côté du binaire ou extraite vers un cache disque vérifié par BLAKE3 (pas de `/tmp` noexec). Le binaire `ay` (Rust) lie `crates/core` statiquement et n'a pas ce problème.
+
+Grammaires : 13 avec extracteur dédié ; les autres découvertes par `crates/core/build.rs` (`third_party/ECOSYSTEM.toml` ou `third_party/tree-sitter-*`, symboles `aphrody_grammar_<nom>*`). `APHRODY_GRAMMARS=0` désactive. Index : `bun packages/core/src/cli.ts index [root]` vers `var/index/core.db` (cible : `XDG_CACHE_HOME` / `%LOCALAPPDATA%`, var/ devant quitter la racine). Les préfixes `aphrody_*`/`APHRODY_*` des symboles C et variables sont des noms figés hors `ay identity apply` : TICKET identity-001 (les neutraliser en `core_*`/`SRC_*`).
 
 ## 6. Identité renommable et multiplateforme
 
@@ -95,8 +104,11 @@ Grammaires : 13 avec extracteur dédié ; les autres découvertes par `crates/co
 | Ticket | Constat | Correction |
 |---|---|---|
 | checkdeps-001 | `agent/packages/core/src/cli.ts` importe gateway, tui, research : arêtes montantes L4 vers L5 et cycles | déplacer l'entrée CLI dans un package surface `agent/packages/cli` (L5) ; règles `!` dans `/DEPS.rules` d'ici là |
-| checkdeps-002 | ARCH-017 d'archguard double checkdeps avec un modèle plus pauvre | retirer ARCH-017, faire appeler checkdeps par `ay arch check` |
-| checkdeps-003 | `apps/rosegriffon` : cycle `rg-db` <-> `rg-types` | à corriger dans le dépôt rosegriffon |
+| checkdeps-002 | ARCH-017 d'archguard double checkdeps pour les couches mais porte aussi les frontières de domaine | traduire ces frontières en règles `-` (ex. L3 services système sans `dx12-winui-core`/`steam-depot`, agent sans `next`/`react`) avant de retirer ARCH-017 et d'appeler checkdeps depuis `ay arch check` |
+| checkdeps-003 | `apps/rosegriffon` : cycle `rg-db` <-> `rg-types`, vu par un passage manuel de checkdeps à profondeur 3 (hors gate src) | à corriger dans le dépôt rosegriffon, par son propre gate |
+| checkdeps-004 | Python (`agent/pyproject.toml`, uv) hors checkdeps et test-affected | lire pyproject.toml, ajouter `uv run pytest` à test-affected |
+| pin-001 | épinglage multiple : DEPS, src.lock.json, sous-modules, vendored-sources | une seule source (src.lock.json), DEPS et .gitmodules générés |
+| toolchain-001 | cranelift (dev) incompatible avec la LTO LLVM et limité sur windows-msvc | cranelift seulement en dev hors cdylib ; trancher clang-cl vs cl.exe (conflit ouvert) |
 | taskgraph-001 | cache distant R2 pour sccache non configuré | backend S3 de sccache vers R2 sur les runners, après lecture de la doc sccache |
 
 ## Annexe A : architecture produit web (labs v0, ex-ROOT-ARCHITECTURE.md)
