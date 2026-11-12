@@ -1,11 +1,13 @@
 //! `ay`: the monorepo's multicall CLI. Each command forwards its arguments to the library
 //! that owns the logic (archguard, xtk, depot-cli, stack-bench) or to an external engine
 //! (`src-deploy`, `gamescope-rs`). See docs/NAMING.md for the command table.
+//! `ay build` drives cargo itself (see [`build`]).
 
 use clap::{Parser, Subcommand};
 use std::path::PathBuf;
 use std::process::Command;
 
+pub mod build;
 mod exec;
 
 /// Arguments forwarded verbatim to the command's own parser (including `--help`).
@@ -54,6 +56,8 @@ pub enum Cmd {
     /// Gamescope mode (runs the `gamescope-rs` binary)
     #[command(disable_help_flag = true)]
     Scope(Rest),
+    /// Build the workspace for a cross-compilation preset (--list shows toolchain status)
+    Build(build::BuildArgs),
 }
 
 /// Depot subcommands that live under `ay graph`.
@@ -67,6 +71,7 @@ pub enum Route {
     Depot(&'static str, Vec<String>),
     Bench(Vec<String>),
     External(&'static str, Vec<String>),
+    Build(build::BuildArgs),
 }
 
 fn prefixed(head: &[&str], rest: &[String]) -> Vec<String> {
@@ -104,6 +109,7 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Deploy(r) => Route::External("src-deploy", r.args),
         Cmd::Bench(r) => Route::Bench(r.args),
         Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
+        Cmd::Build(b) => Route::Build(b),
     }
 }
 
@@ -114,6 +120,7 @@ fn run_route(route: Route) -> i32 {
         Route::Depot(name, args) => depot_cli::run(name, &args),
         Route::Bench(args) => run_bench(&args),
         Route::External(program, args) => exec::run_external(program, &args),
+        Route::Build(args) => build::run(args),
     }
 }
 
@@ -212,6 +219,17 @@ mod tests {
     fn external_engines() {
         assert_eq!(parse("deploy up --all"), Route::External("src-deploy", v(&["up", "--all"])));
         assert_eq!(parse("scope serve-web"), Route::External("gamescope-rs", v(&["serve-web"])));
+    }
+
+    #[test]
+    fn build_parses_targets_and_cargo_args() {
+        let Route::Build(b) = parse("build -t wasm32 --target linux-musl --release -- -p ffi") else {
+            panic!("not a build route");
+        };
+        assert_eq!(b.targets, v(&["wasm32", "linux-musl"]));
+        assert!(b.release && !b.list && !b.dry_run);
+        assert_eq!(b.cargo_args, v(&["-p", "ffi"]));
+        assert_eq!(run(&v(&["build", "--target", "nope-nope", "--dry-run"])), 2);
     }
 
     #[test]

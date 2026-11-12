@@ -54,6 +54,10 @@ worktrees target="crates/depot-core":
 artifacts-verify manifest="depot-artifacts.toml":
     ay git artifacts verify "{{manifest}}"
 
+# Build the workspace for a cross-compilation preset (usage: just build target=wasm32, just build linux-musl; `ay build --list` shows presets and missing toolchains)
+build target="":
+    ay build {{ if trim_start_match(target, "target=") == "" { "" } else { "--target " + trim_start_match(target, "target=") } }}
+
 # Build the ay CLI (fat LTO release) and install it into ~/.local/bin
 install-ay:
     cargo install --path "{{root}}/crates/ay" --root "{{home_directory()}}/.local" --force --locked --no-track

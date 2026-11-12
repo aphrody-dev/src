@@ -32,6 +32,8 @@ ay doctor | ay lock | ay manifests [verify]   # toolchain doctor, src.lock.json 
 ay git <cmd>                  # worktree, fork, slim [--all], clone, gix, forge, audit, maintainer, depot_tools shims
 ay ingest <path> / ay graph <path>   # repository digest / tree-sitter code graph (build, query, path, explain, mcp)
 ay deploy ... / ay bench ...  # Go src-deploy engine / Windows benchmark suite
+ay build --list               # cross-compilation presets and which Rust targets / native toolchains are missing
+ay build -t wasm32 -t linux-musl --release   # or: just build target=wasm32
 just verify-all               # ay arch check + ay doctor + bun + cargo + go suites
 just graph third_party/bun/src bun   # AST graph into graphify-out/bun
 just lock                     # regenerate src.lock.json, DEPS, .repo manifest, MAINTAINERS
