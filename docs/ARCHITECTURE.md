@@ -9,11 +9,11 @@ Inspiré de NT (HAL sous l'Executive, sous les sous-systèmes) et des components
 | Couche | Rôle (analogue) | Contenu actuel |
 |---|---|---|
 | L0 toolchain | compilateurs, pins (LLVM partagé, rustc nightly, bun 1.4.4) | `rust-toolchain.toml`, `tools/`, `third_party/` (hors graphe first-party) |
-| L1 base | `//base` : primitives portables, sans `cfg(target_os)` ni windows-rs, sans service | `crates/core`, `corelib`, `depot-core`, `depot-cas`, `lore-base`, `lore-io`, `lore-error-set(-macro)`, `lore-macro`, `aphrody-design-shared`, `aphrody-design-tokens`, `gamescope-core` |
-| L2 plateforme | HAL : Windows, Linux, Cloudflare, Vercel, réseau, C ABI de base | `sys`, `net`, `core-capi`, `dx12-winui-core`, `unix-*`, `remote`, `lore-credential`, `lore-fuse`, `steam-depot`, `gamescope-wgsl`, `smithay-wayland-wire`, `hypr-tiler`, `cosmic-compat` ; `packages/core` (bun:ffi sur core-capi), `net`, `machine`, `runtime-adapter` ; `infra/*` |
+| L1 base | `//base` : primitives portables, sans `cfg(target_os)` ni windows-rs, sans service | `crates/core`, `corelib`, `depot-core`, `depot-cas`, `lore-base`, `lore-io`, `lore-error-set(-macro)`, `lore-macro`, `aphrody-design-shared`, `aphrody-design-tokens`, `gamescope-core`, `tv-core`, `tv-i18n` |
+| L2 plateforme | HAL : Windows, Linux, Cloudflare, Vercel, réseau, C ABI de base | `sys`, `net`, `core-capi`, `dx12-winui-core`, `unix-*`, `remote`, `lore-credential`, `lore-fuse`, `steam-depot`, `gamescope-wgsl`, `smithay-wayland-wire`, `hypr-tiler`, `cosmic-compat`, `tv-ffmpeg` (FFmpeg libav* en liaison dynamique) ; `packages/core` (bun:ffi sur core-capi), `net`, `machine`, `runtime-adapter` ; `infra/*` |
 | L3 services | Executive : VCS, build, design, web | `crates/*` par défaut : `lore*` (stockage, révision, transport, serveur, backends aws/hashicorp), `depot-*` (gclient, cipd, vpython, re, graph...), `xtask`, `up`, `rt`, `archguard`, `factory`, `conformance`, `bench`, `next`, `react`, `ui`, design ; C ABI de services `ffi`, `lore-capi` ; `packages/*` par défaut |
 | L4 agent | sous-système agent | `agent/` (core, research, mcp, agent-context, agent-py ; ses L0-L7 internes sont des sous-couches), `crates/ring3-agent`, `plugins/` |
-| L5 surfaces | embedders (`//chrome`) | CLIs : `ay`, `aphrody-cli`, `depot-cli`, `lore-client`, `gamescope-cli`, `wslg-cli` ; `agent/packages/gateway`, `tui` ; `apps/*`, `browser/` |
+| L5 surfaces | embedders (`//chrome`) | CLIs : `ay`, `aphrody-cli`, `depot-cli`, `lore-client`, `gamescope-cli`, `wslg-cli`, `tv-cli` ; `agent/packages/gateway`, `tui` ; `apps/*` (dont `apps/nt`), `browser/` |
 
 La liste exacte vient de `just checkdeps --graph` ; ce tableau est un résumé.
 
@@ -51,6 +51,7 @@ Choix : `just` + bun workspaces + cargo, sans turbo (raisons : PHILOSOPHY.md §6
 ```
 Cargo.toml          un seul workspace ; [workspace.dependencies] = une version par crate
 Cargo.lock
+deny.toml           politique cargo-deny (licences, bans, sources ; §11)
 package.json        workspaces bun
 bun.lock
 rust-toolchain.toml nightly épinglée
@@ -62,14 +63,13 @@ justfile            point d'entrée unique
 DEPS                gclient : dépendances externes épinglées (40 caractères)
 DEPS.rules          racine des règles de couches (checkdeps)
 MAINTAINERS         propriétaires par sous-système
-.lore/ .loreignore  VCS
 README.md AGENTS.md CLAUDE.md LICENSE-*
 crates/ packages/ apps/ agent/ third_party/ infra/ tools/ docs/ scripts/
 ```
 
 À fondre ailleurs : Dockerfile, compose.yaml, cloudbuild.yaml, flake.nix, deploy.ps1/.sh, install.ps1/.sh, graphify-out/, var/ ; deploy.toml, tools.toml, depot-artifacts.toml, dist-workspace.toml vers infra/ ou Cargo.toml. Conflit noté : l'ancienne cible retirait MAINTAINERS de la racine ; la directive du 2026-11-12 le garde (format kernel) et prime.
 
-`apps/` et `third_party/` sont exclus du workspace Cargo (`[workspace] exclude`). `apps/` = dépôts déployables épinglés par DEPS, avec leurs propres gates : checkdeps n'inspecte que leur unité racine, pas leur intérieur. `third_party/` = upstream, une copie par projet, verrouillée dans `src.lock.json`, sans patch local.
+`apps/` et `third_party/` sont exclus du workspace Cargo (`[workspace] exclude`). `apps/` = produits déployables, sous-modules épinglés par DEPS (rosegriffon, shenron, r2b, auto) ou arbres fusionnés (`apps/nt`, ex-`aphrody-labs/nt`, CI `.github/workflows/nt.yml`), avec leurs propres gates : checkdeps n'inspecte que leur unité racine, pas leur intérieur. `third_party/` = upstream, une copie par projet, verrouillée dans `src.lock.json`, sans patch local.
 
 ## 5. Bibliothèque commune (core)
 
@@ -403,9 +403,10 @@ candidates --(candidate parser)--> {variants[], utility, value, modifier, import
 - **Allowed dependency licenses**: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, Zlib, Unicode-3.0, CC0-1.0, Unlicense, and MPL-2.0 under the rule below.
 - **MPL-2.0** (lightningcss, stylo, selectors, cssparser, servo): used unmodified, as registry dependencies only. No MPL file is copied, patched or vendored into this repo. If a fix is needed, it goes upstream and the pin is bumped. A `[patch]` entry against an MPL crate is forbidden.
 - **Denied**: GPL, LGPL, AGPL (any version), SSPL, BUSL and other non-OSI licenses, plus any code whose license GitHub reports as NOASSERTION, unless a manual review clears it and the review is recorded here.
+- **Reviewed exception (2026-11-13)**: `crates/tv-*` (media domain, merged from `C:\Users\aphro\tv`) are LGPL-2.1-or-later because `tv-ffmpeg` links FFmpeg libav* dynamically through `ffmpeg-next` (WTFPL). Allowed per crate in `deny.toml` `[licenses] exceptions`; only `tv-*` crates may depend on `tv-ffmpeg`.
 - **Study-only**: Bun (`oven-sh/bun`). GitHub reports NOASSERTION (`repos.tsv`). Its `LICENSE.md` at `43850629` says Bun itself is MIT but statically links LGPL-2 JavaScriptCore/WebKit and bundles other C/C++ code, so the tree is mixed. Contributors may read it and describe the ideas, but must not copy, translate line by line or vendor its code. The same applies to Zed/GPUI (NOASSERTION).
 - **Test suites as oracles**: upstream suites are fetched at pinned commits into the ignored `conformance/upstream/` and run there. They are not committed, so their licenses (Test262 BSD-style, WPT 3-Clause BSD, Bun NOASSERTION) do not enter the source tree.
-- **Enforcement**: `cargo-deny` (`deny.toml`, added in M0) with `licenses`, `bans` (no `openssl-sys`, which keeps the TLS stack on rustls) and `sources` (crates.io, plus `vendor/` path patches) runs before every change is submitted to Lore.
+- **Enforcement**: `cargo-deny` (`deny.toml`, added in M0) with `licenses`, `bans` (no `openssl-sys`, which keeps the TLS stack on rustls) and `sources` (crates.io, the `aphrody-dev` git forks, plus `third_party/patches/` path patches) runs in CI before merge to main.
 
 ### 12. Cross-cutting decisions
 

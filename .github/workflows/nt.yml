@@ -1,0 +1,128 @@
+# CI apps/nt (fusionné depuis aphrody-labs/nt) : toute compilation se fait ici (aucune compilation sur le poste du propriétaire).
+# Windows : coque WinUI 3 (NativeAOT, non empaquetée + MSIX signé par un certificat de test), sonde D3D12 (C++23 import std,
+# vcpkg), échantillon WinUI en Rust (windows-reactor), scène GPU. Linux : lint et scène GPU.
+# interop : .NET 11 -> bun sans node-api-dotnet (NativeAOT + CoreCLR/hostfxr), liaisons générées, tests et mesures.
+# Versions des actions relevées le 2026-11-12 (gh api repos/<action>/releases/latest).
+name: nt
+on:
+  push: { branches: [main], paths: ["apps/nt/**", ".github/workflows/nt.yml"] }
+  pull_request: { paths: ["apps/nt/**", ".github/workflows/nt.yml"] }
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+permissions: { contents: read }
+defaults:
+  run: { working-directory: apps/nt }
+env:
+  GH_TOKEN: ${{ github.token }}
+jobs:
+  windows:
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 60
+    # packages: write : cache binaire vcpkg sur GitHub Packages (NuGet).
+    permissions: { contents: read, packages: write }
+    env:
+      # Learn « Binary caching configuration » : NuGet recommandé pour GitHub Packages ; x-gha est retiré de vcpkg.
+      VCPKG_FEED: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+      VCPKG_DISABLE_METRICS: "1"
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with: { global-json-file: apps/nt/global.json }
+      - uses: oven-sh/setup-bun@v2
+      - uses: taiki-e/install-action@v2
+        with: { tool: just }
+      - uses: mozilla-actions/sccache-action@v0.0.11
+      # DXC, Agility SDK, niubash (shell des recettes just, ajouté au PATH), CMake 4.5.0 et Ninja 1.13.2 (sonde import std).
+      - run: bun sdk/tools/fetch-tools.ts
+      - run: just lint
+      - run: just web
+      # Cache vcpkg (Learn « Set up a vcpkg binary cache using GitHub Packages ») dans un nuget.config dédié, fournisseur
+      # nugetconfig (Learn « Binary caching configuration ») : ajoutée au nuget.config de l'utilisateur, la source cassait la
+      # restauration .NET en gestion centrale des paquets (NU1507 : 2 sources sans mappage), run 43282716395.
+      - name: vcpkg binary cache (GitHub Packages)
+        shell: bash
+        run: |
+          cfg="$RUNNER_TEMP/vcpkg-nuget.config"
+          printf '%s\n' '<?xml version="1.0" encoding="utf-8"?>' '<configuration><packageSources><clear /></packageSources></configuration>' > "$cfg"
+          nuget=$("$VCPKG_INSTALLATION_ROOT/vcpkg.exe" fetch nuget | tail -n 1)
+          "$nuget" sources add -ConfigFile "$cfg" -Source "$VCPKG_FEED" -StorePasswordInClearText -Name GitHubPackages \
+            -UserName "${{ github.repository_owner }}" -Password "${{ secrets.GITHUB_TOKEN }}"
+          "$nuget" setapikey "${{ secrets.GITHUB_TOKEN }}" -Source "$VCPKG_FEED" -ConfigFile "$cfg"
+          "$nuget" config -Set defaultPushSource="$VCPKG_FEED" -ConfigFile "$cfg"
+          echo "VCPKG_BINARY_SOURCES=clear;nugetconfig,$cfg,readwrite" >> "$GITHUB_ENV"
+      - run: just probe
+      - run: just app
+      # Certificat de test MSIX généré à chaque exécution (Learn « Create a certificate for package signing »), jamais versionné :
+      # sujet = Publisher de Package.appxmanifest ; la clé reste dans RUNNER_TEMP, seul le .cer public est publié.
+      - name: MSIX test certificate
+        shell: pwsh
+        run: |
+          $pass = [guid]::NewGuid().ToString('N')
+          Write-Output "::add-mask::$pass"
+          $cert = New-SelfSignedCertificate -Type Custom -KeyUsage DigitalSignature -CertStoreLocation 'Cert:\CurrentUser\My' `
+            -TextExtension @('2.5.29.37={text}1.3.6.1.5.5.7.3.3', '2.5.29.19={text}') -Subject 'CN=aphrody-labs' -FriendlyName 'nt CI test'
+          $pfx = Join-Path $env:RUNNER_TEMP 'nt-ci-test.pfx'
+          Export-PfxCertificate -Cert $cert -FilePath $pfx -Password (ConvertTo-SecureString $pass -AsPlainText -Force) | Out-Null
+          New-Item -ItemType Directory -Force target/dotnet/msix | Out-Null
+          Export-Certificate -Cert $cert -FilePath target/dotnet/msix/nt-ci-test.cer | Out-Null
+          "NT_CERT=$pfx" >> $env:GITHUB_ENV
+          "NT_CERT_PASSWORD=$pass" >> $env:GITHUB_ENV
+      - run: just msix
+      - name: winui-rs (windows-reactor)
+        env: { RUSTC_WRAPPER: sccache, SCCACHE_GHA_ENABLED: "true" }
+        run: just winui-rs
+      - uses: actions/upload-artifact@v7
+        with:
+          name: nt-windows-x64
+          path: |
+            apps/nt/target/web/
+            apps/nt/target/dotnet/publish/Nt.App/release_win-x64/
+            apps/nt/target/dotnet/msix/**/*.msix
+            apps/nt/target/dotnet/msix/nt-ci-test.cer
+            apps/nt/target/cmake/nt-gpu-probe/windows/nt-gpu-probe.exe
+            apps/nt/target/cmake/nt-gpu-probe/windows/D3D12/
+            apps/nt/target/cargo/release/reactor-winui-hello.exe
+          if-no-files-found: error
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+      - uses: taiki-e/install-action@v2
+        with: { tool: just }
+      - run: just lint
+      - run: just web
+  interop:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2025-vs2026, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with: { global-json-file: apps/nt/global.json }
+      - uses: oven-sh/setup-bun@v2
+      - uses: taiki-e/install-action@v2
+        with: { tool: just }
+      # niubash : shell des recettes just sous Windows.
+      - if: runner.os == 'Windows'
+        run: bun sdk/tools/fetch-tools.ts
+      # NativeAOT sous Linux : clang et zlib (Learn « Native AOT deployment », prérequis).
+      - if: runner.os == 'Linux'
+        run: sudo apt-get install -y --no-install-recommends clang zlib1g-dev
+      - run: just interop
+      - run: just test-interop
+      - run: just bench-interop
+      - uses: actions/upload-artifact@v7
+        with:
+          name: interop-${{ runner.os }}
+          path: |
+            apps/nt/target/dotnet-ffi/
+            apps/nt/target/bench/
+          if-no-files-found: error
