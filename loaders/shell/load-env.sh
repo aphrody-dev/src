@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # POSIX / Bash / Zsh sourceable loader for C:/src/.env or /src/.env
-# Usage: . C:/src/env-kit/loaders/shell/load-env.sh
+# Usage: . C:/src/packages/env-kit/loaders/shell/load-env.sh
 # Never echoes secret values. Preserves already-set non-empty environment variables unless ENV_KIT_OVERRIDE=1.
 
 _env_kit_load() {

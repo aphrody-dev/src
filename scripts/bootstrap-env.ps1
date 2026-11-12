@@ -46,7 +46,7 @@ Set-UserEnvIfMissingOrTarget -Name 'GH_TOKEN' -Value $ghToken
 # 3. Figma credentials & local Material Icons dir
 $figmaVal = Get-NonEmptyEnv 'FIGMA_ACCESS_TOKEN'
 if (-not $figmaVal) { $figmaVal = Get-NonEmptyEnv 'FIGMA_TOKEN' }
-$figmaIconsDir = 'C:/src/google-design/upstream/material-design-icons'
+$figmaIconsDir = 'C:/src/packages/google-design/upstream/material-design-icons'
 if ($figmaVal) {
   Set-UserEnvIfMissingOrTarget -Name 'FIGMA_ACCESS_TOKEN' -Value $figmaVal -Force
   Set-UserEnvIfMissingOrTarget -Name 'FIGMA_TOKEN' -Value $figmaVal -Force
@@ -126,8 +126,8 @@ if (-not $vulkanSdk) { $vulkanSdk = 'C:\VulkanSDK\1.4.363.0' }
 # 9. Go & Lua
 $goPath = Get-NonEmptyEnv 'GOPATH'
 if (-not $goPath) { $goPath = 'C:\Users\aphro\go' }
-$luaPath = 'C:\src\env-kit\loaders\lua\?.lua;C:\src\env-kit\loaders\lua\?\init.lua;;'
-$luaCPath = 'C:\src\env-kit\loaders\lua\?.dll;;'
+$luaPath = 'C:\src\packages\env-kit\loaders\lua\?.lua;C:\src\packages\env-kit\loaders\lua\?\init.lua;;'
+$luaCPath = 'C:\src\packages\env-kit\loaders\lua\?.dll;;'
 Set-UserEnvIfMissingOrTarget -Name 'LUA_PATH' -Value $luaPath -Force
 Set-UserEnvIfMissingOrTarget -Name 'LUA_CPATH' -Value $luaCPath -Force
 
