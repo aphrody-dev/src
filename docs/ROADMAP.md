@@ -8,6 +8,9 @@ Done (2026-11-12)
 - Scheduler + HEARTBEAT.md heartbeat (`agent schedule`, `agent heartbeat`); Hermes skill linter, usage, stale/archive curation, `skill_view`.
 - TUI on `@earendil-works/pi-tui` (`agent tui`), multi-turn sessions.
 - Gateway (`agent gateway`, packages/gateway): WebSocket sessions, OpenAI-compatible chat, A2A agent card + message/send, channel webhooks; skills hub (`agent skills search/install`, ClawHub + GitHub); native bash resolution from the windows-native patches; TUI e2e through ConPTY.
+- Hermes bridge: crates/agent-context (Rust, same SQLite schema) + crates/agent-py (pyo3 `agent_core`) + python/hermes_agent_memory (Hermes MemoryProvider `agent`, entry point hermes_agent.memory_providers). Verified on prd: TS writes, Python reads, and the reverse. Context fusion: weighted RRF with tuned weights, porter stemming.
+- shenron-chat-v2 on prd restarted with --jinja: raw tool calls work, but the LoRA model does not drive the agent loop (it claims success without calling tools).
+- CI green on windows-latest + ubuntu-latest.
 - legacy/ dissolved and deleted (context7 + fact-check tools in research).
 - `local:` provider verified against llama-server on prd (container auto-llm, model auto-extraction, --jinja) via ssh tunnel: read_file + write_file, 3 steps. shenron-chat-v2 (no --jinja) answers but emits no tool calls.
 - Deep research: `agent research <outline.yaml>` (one subagent per item, batch_size, results/<item>.json, TS validator = port of validate_json.py kept in `python/research_ref`, results fed to memory). Real item passes both validators.

@@ -16,7 +16,7 @@ Status: done / partial / todo / skip (out of scope: macOS/Apple-only, org ops, f
 | openclaw/openclaw (agent loop, tools, memory, sessions) | packages/core (all reads through core/context.ts) | partial (loop, tools, memory, skills, heartbeat, home, context) |
 | openclaw/openclaw (gateway, channels, plugins SDK) | packages/gateway, packages/plugins | todo |
 | openclaw/openclaw docs/reference/templates | packages/core/templates/home | done |
-| NousResearch/hermes-agent agent/, tools/ (memory, skills, learning loop, cron, compression) | packages/core + python/hermes | partial (skill lint/usage/curation, cron, memory) |
+| NousResearch/hermes-agent agent/, tools/ (memory, skills, learning loop, cron, compression) | packages/core + python/hermes_agent_memory (pyo3 agent_core) | partial (skill lint/usage/curation, cron, memory provider on the shared store, skills hub) |
 | NousResearch/hermes-agent acp_adapter | packages/gateway (ACP) | todo |
 | NousResearch/hermes-agent SOUL / persona | templates/home/SOUL.md | done |
 | openclaw/openclaw-windows-node, openclaw-windows-packaging (C#) | crates/windows (windows-rs) + MSIX in packaging/ | todo |
