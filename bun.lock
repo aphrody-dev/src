@@ -12,41 +12,6 @@
       "name": "@aphrody/infra-ffi-bridge",
       "version": "1.27.0",
     },
-    "infra/mesh-vn": {
-      "name": "@aphrody/mesh-vn",
-      "version": "1.0.0",
-      "bin": {
-        "net": "./src/cli.ts",
-      },
-    },
-    "packages/agy": {
-      "name": "@aphrody/agy",
-      "version": "2.0.0",
-      "bin": {
-        "agy-studio": "./src/cli.ts",
-      },
-    },
-    "packages/ai-os": {
-      "name": "@aphrody/ai-os",
-      "version": "2.1.0",
-      "bin": {
-        "ai-os": "./src/cli.ts",
-      },
-    },
-    "packages/ai-triad": {
-      "name": "@aphrody/ai-triad",
-      "version": "1.0.0",
-      "bin": {
-        "triad": "./src/cli.ts",
-      },
-    },
-    "packages/brain": {
-      "name": "@aphrody/brain",
-      "version": "0.1.0",
-      "bin": {
-        "brain": "./src/cli.ts",
-      },
-    },
     "packages/bun-parity": {
       "name": "@aphrody/bun-parity",
       "version": "1.0.0",
@@ -93,19 +58,15 @@
         "gds": "./cli.ts",
       },
     },
-    "packages/knowledge-engine": {
-      "name": "@aphrody/knowledge-engine",
-      "version": "1.0.0",
-      "bin": {
-        "ske": "./src/cli.ts",
-        "knowledge-engine": "./src/cli.ts",
-      },
+    "packages/machine": {
+      "name": "@aphrody/machine",
+      "version": "0.1.0",
     },
-    "packages/pi-opencode": {
-      "name": "@aphrody/pi-opencode",
-      "version": "1.0.0",
+    "packages/shell-matrix": {
+      "name": "@aphrody/shell-matrix",
+      "version": "0.1.0",
       "bin": {
-        "pi-opencode": "./src/cli.ts",
+        "shell-matrix": "./src/cli.ts",
       },
     },
     "packages/wck": {
@@ -117,14 +78,6 @@
     },
   },
   "packages": {
-    "@aphrody/agy": ["@aphrody/agy@workspace:packages/agy"],
-
-    "@aphrody/ai-os": ["@aphrody/ai-os@workspace:packages/ai-os"],
-
-    "@aphrody/ai-triad": ["@aphrody/ai-triad@workspace:packages/ai-triad"],
-
-    "@aphrody/brain": ["@aphrody/brain@workspace:packages/brain"],
-
     "@aphrody/bun-parity": ["@aphrody/bun-parity@workspace:packages/bun-parity"],
 
     "@aphrody/bun-plugins": ["@aphrody/bun-plugins@workspace:packages/bun-plugins"],
@@ -141,11 +94,9 @@
 
     "@aphrody/infra-ffi-bridge": ["@aphrody/infra-ffi-bridge@workspace:infra/ffi-bridge"],
 
-    "@aphrody/knowledge-engine": ["@aphrody/knowledge-engine@workspace:packages/knowledge-engine"],
+    "@aphrody/machine": ["@aphrody/machine@workspace:packages/machine"],
 
-    "@aphrody/mesh-vn": ["@aphrody/mesh-vn@workspace:infra/mesh-vn"],
-
-    "@aphrody/pi-opencode": ["@aphrody/pi-opencode@workspace:packages/pi-opencode"],
+    "@aphrody/shell-matrix": ["@aphrody/shell-matrix@workspace:packages/shell-matrix"],
 
     "@aphrody/wck": ["@aphrody/wck@workspace:packages/wck"],
 

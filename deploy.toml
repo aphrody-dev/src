@@ -110,7 +110,7 @@ blue_port = 14100
 green_port = 24100
 
 [services.ai-triad]
-path = "C:/src/agent/legacy/pi-opencode"
+path = "C:/src/agent/packages/mcp"
 runtime = "bun-fullstack"
 region = "us-google-egress"
 google_egress = true

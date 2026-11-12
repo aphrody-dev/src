@@ -5,7 +5,6 @@
   "description": "Aphrody Sovereign Monorepo Root - Linux/Git/Chromium/depot_tools/Bun-v1.4.4 Workspace Architecture",
   "workspaces": [
     "packages/*",
-    "infra/mesh-vn",
     "infra/ffi-bridge"
   ],
   "scripts": {

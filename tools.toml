@@ -559,10 +559,10 @@ run = ["go", "build", "-o", "{bin}/src-deploy{exe}", "./cmd/src-deploy"]
 creates = "{bin}/src-deploy{exe}"
 
 [[step]]
-name = "triad"
-when = "{repo}/agent/legacy/ai-triad/src/cli.ts"
-run = ["bun", "build", "--compile", "{repo}/agent/legacy/ai-triad/src/cli.ts", "--outfile", "{bin}/triad{exe}"]
-creates = "{bin}/triad{exe}"
+name = "agent"
+when = "{repo}/agent/packages/core/src/cli.ts"
+run = ["bun", "build", "--compile", "{repo}/agent/packages/core/src/cli.ts", "--outfile", "{bin}/agent{exe}"]
+creates = "{bin}/agent{exe}"
 
 # frg as an AOT binary instead of the former frg.cmd / bash shim.
 [[step]]
