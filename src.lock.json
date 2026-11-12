@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-11-12T04:52:58.8510529+01:00",
+  "generated_at": "2026-11-12T07:22:16.9307041+01:00",
   "hardware": {
     "os": "Windows NT (x86_64)",
     "cpu": "Intel Core i7-13700F (Raptor Lake sm_89)",
@@ -8,7 +8,6 @@
   },
   "toolchains": {
     "agy": "1.5.5",
-    "archguard": "archguard v0.1.0 (Rust 2024 Sovereign Monorepo Architecture Gate)",
     "bun": "1.4.4",
     "cargo": "cargo 1.101.0-nightly (31d3246e0 2026-10-27)",
     "cl.exe": "MSVC 14.51 (x86_64)",
@@ -26,7 +25,7 @@
     "zig": "0.17.0"
   },
   "pillars": {
-    "git_superproject_commit": "7d33be38a2ee4374238113a5585db649b5c82453",
+    "git_superproject_commit": "ae8833a9e04389b4e6621cf52c5e82a98972b8a5",
     "chromium_src_commit": "4c7244a405d326e284710231ff609168dceb9044",
     "linux_kernel_commit": "7475ea8b58616b33c04afb976cf0fbaad9dd63fb",
     "aosp_manifest_commit": "1ed30a827f1156dc831083e6cf999d6bd9deae18"
@@ -35,7 +34,7 @@
     "apps/rosegriffon": {
       "path": "C:\\src\\apps\\rosegriffon",
       "url": "https://github.com/aphrody-labs/rosegriffon.git",
-      "commit": "5951254f64879de2661257b18c92783601b0e528",
+      "commit": "da739f23831fc7602ea4bf067f464ace9972de93",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -52,7 +51,7 @@
     "apps/shenron": {
       "path": "C:\\src\\apps\\shenron",
       "url": "https://github.com/aphrody-labs/shenron.git",
-      "commit": "358935cfbeb210b9732ba54a06b89beed03ef5b6",
+      "commit": "e9d40698e2a69132b2448088f19d19ed8e6914d6",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -68,7 +67,7 @@
     "crates/bench": {
       "path": "C:\\src\\crates\\bench",
       "url": "https://github.com/aphrody-dev/bench.git",
-      "commit": "a3c7c1168ccbce3fc468d13489284080292bb98a",
+      "commit": "6b0c980b99139cf69cc9d391143afda675732570",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -84,7 +83,7 @@
     "crates/ring3-agent": {
       "path": "C:\\src\\crates\\ring3-agent",
       "url": "https://github.com/aphrody-dev/ring3-agent.git",
-      "commit": "390e9867117e9c3da9dd943d7f10c9def16a2d0f",
+      "commit": "d282118ea23d9d20da4a73d9b574376702b01b6b",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -100,7 +99,7 @@
     "crates/rust-stack": {
       "path": "C:\\src\\crates\\rust-stack",
       "url": "https://github.com/aphrody-dev/rust-stack.git",
-      "commit": "098565de91e6182646c0ab6085d5919bc0d84ae7",
+      "commit": "0652a8d2f24f3d773b5a91a621c4fee4e322c5be",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -113,15 +112,35 @@
       },
       "sparse_paths": null
     },
-    "infra/mesh-vn": {
-      "path": "C:\\src\\infra\\mesh-vn",
-      "url": "https://github.com/aphrody-dev/mesh-vn.git",
-      "commit": "5d850084b702faacd99f4c07d09a4385ee89b8b0",
+    "packages/bun-plugins": {
+      "path": "C:\\src\\packages\\bun-plugins",
+      "url": "https://github.com/aphrody-dev/src.git",
+      "commit": "ae8833a9e04389b4e6621cf52c5e82a98972b8a5",
       "branch": "main",
-      "engine": "git",
+      "engine": "jj",
       "pillar": "git",
       "remotes": {
-        "origin": "https://github.com/aphrody-dev/mesh-vn.git"
+        "all": "https://github.com/aphrody-dev/src.git",
+        "gitlab": "https://gitlab.com/aphrody-dev/src.git",
+        "gitlab-self": "https://git.aphrody.com/aphrody/src.git",
+        "google": "https://source.developers.google.com/p/aphrody/r/src",
+        "origin": "https://github.com/aphrody-dev/src.git"
+      },
+      "sparse_paths": null
+    },
+    "packages/forge": {
+      "path": "C:\\src\\packages\\forge",
+      "url": "https://github.com/aphrody-dev/src.git",
+      "commit": "ae8833a9e04389b4e6621cf52c5e82a98972b8a5",
+      "branch": "main",
+      "engine": "jj",
+      "pillar": "git",
+      "remotes": {
+        "all": "https://github.com/aphrody-dev/src.git",
+        "gitlab": "https://gitlab.com/aphrody-dev/src.git",
+        "gitlab-self": "https://git.aphrody.com/aphrody/src.git",
+        "google": "https://source.developers.google.com/p/aphrody/r/src",
+        "origin": "https://github.com/aphrody-dev/src.git"
       },
       "sparse_paths": null
     },
@@ -533,6 +552,26 @@
       },
       "sparse_paths": null
     },
+    "third_party/cargo": {
+      "path": "C:\\src\\third_party\\cargo",
+      "url": "https://github.com/rust-lang/cargo.git",
+      "commit": "31d3246e0e8d3a80d4a90b54aa48ff180adb408b",
+      "branch": "detached",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/rust-lang/cargo.git"
+      },
+      "sparse_paths": [
+        "/*",
+        "!/*/",
+        "/crates/",
+        "!/crates/*/",
+        "/crates/cargo-util/",
+        "/crates/cargo-util-schemas/",
+        "/src/"
+      ]
+    },
     "third_party/chromium/src": {
       "path": "C:\\src\\third_party\\chromium\\src",
       "url": "https://chromium.googlesource.com/chromium/src.git",
@@ -769,6 +808,55 @@
         "/source/"
       ]
     },
+    "third_party/gcc": {
+      "path": "C:\\src\\third_party\\gcc",
+      "url": "https://gcc.gnu.org/git/gcc.git",
+      "commit": "3c632b99e2192ac7cd65a95a1cb049cc48ea350e",
+      "branch": "detached",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://gcc.gnu.org/git/gcc.git"
+      },
+      "sparse_paths": [
+        "/gcc/common.opt",
+        "/gcc/gcc.cc",
+        "/gcc/doc/invoke.texi",
+        "/gcc/config/gnu-user.h",
+        "/gcc/config/linux.h",
+        "/gcc/config/i386/linux64.h",
+        "/gcc/config/i386/gnu-user64.h",
+        "/gcc/BASE-VER",
+        "/gcc/collect2.cc",
+        "/gcc/configure.ac",
+        "/gcc/config/linux.cc"
+      ]
+    },
+    "third_party/glibc": {
+      "path": "C:\\src\\third_party\\glibc",
+      "url": "https://sourceware.org/git/glibc.git",
+      "commit": "c3a3a9808ad3ab4a3336836833f83288b672ccbf",
+      "branch": "detached",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://sourceware.org/git/glibc.git"
+      },
+      "sparse_paths": [
+        "/NEWS",
+        "/version.h",
+        "/csu/",
+        "/nptl/Versions",
+        "/stdlib/Versions",
+        "/elf/Versions",
+        "/misc/Versions",
+        "/dlfcn/Versions",
+        "/libio/Versions",
+        "/string/Versions",
+        "/rt/Versions",
+        "/resolv/Versions"
+      ]
+    },
     "third_party/go-ecosystem/caddy": {
       "path": "C:\\src\\third_party\\go-ecosystem\\caddy",
       "url": "https://github.com/caddyserver/caddy.git",
@@ -977,6 +1065,41 @@
         "/kernel/sched/",
         "/rust/",
         "/scripts/"
+      ]
+    },
+    "third_party/llvm-project": {
+      "path": "C:\\src\\third_party\\llvm-project",
+      "url": "https://github.com/llvm/llvm-project.git",
+      "commit": "392dfff97d29b59d77e5cac6d4b6ef2585fe7117",
+      "branch": "detached",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/llvm/llvm-project.git"
+      },
+      "sparse_paths": [
+        "/*",
+        "!/*/",
+        "/lld/",
+        "!/lld/*/",
+        "/llvm/",
+        "!/llvm/*/",
+        "/llvm/include/",
+        "!/llvm/include/*/",
+        "/llvm/include/llvm/",
+        "!/llvm/include/llvm/*/",
+        "/llvm/lib/",
+        "!/llvm/lib/*/",
+        "/lld/COFF/",
+        "/lld/Common/",
+        "/lld/ELF/",
+        "/lld/docs/",
+        "/lld/include/",
+        "/llvm/include/llvm/LTO/",
+        "/llvm/include/llvm/Support/",
+        "/llvm/lib/LTO/",
+        "/llvm/lib/Passes/",
+        "/llvm/lib/Support/"
       ]
     },
     "third_party/locally-uncensored": {
@@ -1200,6 +1323,64 @@
       },
       "sparse_paths": null
     },
+    "third_party/rust": {
+      "path": "C:\\src\\third_party\\rust",
+      "url": "https://github.com/rust-lang/rust.git",
+      "commit": "708c94ef093ecc42fb8851e17d8383d999727abc",
+      "branch": "detached",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/rust-lang/rust.git"
+      },
+      "sparse_paths": [
+        "/*",
+        "!/*/",
+        "/compiler/",
+        "!/compiler/*/",
+        "/compiler/rustc_codegen_llvm/",
+        "!/compiler/rustc_codegen_llvm/*/",
+        "/compiler/rustc_codegen_ssa/",
+        "!/compiler/rustc_codegen_ssa/*/",
+        "/compiler/rustc_codegen_ssa/src/",
+        "!/compiler/rustc_codegen_ssa/src/*/",
+        "/compiler/rustc_metadata/",
+        "!/compiler/rustc_metadata/*/",
+        "/compiler/rustc_middle/",
+        "!/compiler/rustc_middle/*/",
+        "/compiler/rustc_middle/src/",
+        "!/compiler/rustc_middle/src/*/",
+        "/compiler/rustc_target/",
+        "!/compiler/rustc_target/*/",
+        "/compiler/rustc_target/src/",
+        "!/compiler/rustc_target/src/*/",
+        "/src/",
+        "!/src/*/",
+        "/src/bootstrap/",
+        "!/src/bootstrap/*/",
+        "/src/bootstrap/src/",
+        "!/src/bootstrap/src/*/",
+        "/src/doc/",
+        "!/src/doc/*/",
+        "/src/doc/rustc/",
+        "!/src/doc/rustc/*/",
+        "/compiler/rustc_codegen_cranelift/",
+        "/compiler/rustc_codegen_llvm/src/",
+        "/compiler/rustc_codegen_ssa/src/back/",
+        "/compiler/rustc_driver_impl/",
+        "/compiler/rustc_incremental/",
+        "/compiler/rustc_interface/",
+        "/compiler/rustc_metadata/src/",
+        "/compiler/rustc_middle/src/query/",
+        "/compiler/rustc_query_impl/",
+        "/compiler/rustc_query_system/",
+        "/compiler/rustc_session/",
+        "/compiler/rustc_target/src/spec/",
+        "/src/bootstrap/src/core/",
+        "/src/doc/rustc/src/",
+        "/src/doc/unstable-book/"
+      ]
+    },
     "third_party/rust-ecosystem/async-openai": {
       "path": "C:\\src\\third_party\\rust-ecosystem\\async-openai",
       "url": "https://github.com/64bit/async-openai.git",
@@ -1341,6 +1522,237 @@
       "pillar": "git",
       "remotes": {
         "origin": "https://github.com/tensorzero/tensorzero.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/depotdownloader": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\depotdownloader",
+      "url": "https://github.com/SteamRE/DepotDownloader.git",
+      "commit": "1847160f18122838e691ab9be83e92fdc6779d6a",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/SteamRE/DepotDownloader.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/lancache-dns": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\lancache-dns",
+      "url": "https://github.com/lancachenet/lancache-dns.git",
+      "commit": "86e86a0eed5daed51c67f27d663a179653c90955",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/lancachenet/lancache-dns.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/lancache-monolithic": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\lancache-monolithic",
+      "url": "https://github.com/lancachenet/monolithic.git",
+      "commit": "f7057caff38bed4d5981114ad895792e2e230b99",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/lancachenet/monolithic.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/node-steam-session": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\node-steam-session",
+      "url": "https://github.com/DoctorMcKay/node-steam-session.git",
+      "commit": "3ac0f34fd964b3f886ba18ef4824ac43c942e030",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/DoctorMcKay/node-steam-session.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/node-steam-user": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\node-steam-user",
+      "url": "https://github.com/DoctorMcKay/node-steam-user.git",
+      "commit": "02818bd08090b58ff54f1d9ce0073319b8e1eef7",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/DoctorMcKay/node-steam-user.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/steam-lancache-prefill": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steam-lancache-prefill",
+      "url": "https://github.com/tpill90/steam-lancache-prefill.git",
+      "commit": "84ab0fcf8967be69d63e4f6160857966584c4e84",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/tpill90/steam-lancache-prefill.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/steam-protobufs": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steam-protobufs",
+      "url": "https://github.com/SteamTracking/Protobufs.git",
+      "commit": "01c423cd60e1ebff7e798f50d3b388d9e6d9fd32",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/SteamTracking/Protobufs.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/steam-rs": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steam-rs",
+      "url": "https://github.com/garhow/steam-rs.git",
+      "commit": "e61e0e74422e69e7976a1361dec05d455470fcae",
+      "branch": "main",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/garhow/steam-rs.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/steam-vent": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steam-vent",
+      "url": "https://codeberg.org/steam-vent/steam-vent.git",
+      "commit": "a9e8164ccd8a7b537da59a652093b0318f416105",
+      "branch": "main",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://codeberg.org/steam-vent/steam-vent.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/steamappinfo": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steamappinfo",
+      "url": "https://github.com/xPaw/SteamAppInfo.git",
+      "commit": "32a4912a9b49679cfc6a7c6f7988b39ba86b267a",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/xPaw/SteamAppInfo.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/steamctl": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steamctl",
+      "url": "https://github.com/ValvePython/steamctl.git",
+      "commit": "274a8db0ccedb7cf1f80546581916874c20dc317",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/ValvePython/steamctl.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/steamkit": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steamkit",
+      "url": "https://github.com/SteamRE/SteamKit.git",
+      "commit": "7c6e2f0309aa2d33c0769d18cf799450c0d02f91",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/SteamRE/SteamKit.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/steamlocate-rs": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steamlocate-rs",
+      "url": "https://github.com/WilliamVenner/steamlocate-rs.git",
+      "commit": "d740b423aee82e8e742595d0cdb4edcc91c24216",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/WilliamVenner/steamlocate-rs.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/steamroom": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steamroom",
+      "url": "https://github.com/landaire/steamroom.git",
+      "commit": "21ba4f8b2117bd72f85b0f3ecde8825a8ca8f128",
+      "branch": "main",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/landaire/steamroom.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/steamtracking": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steamtracking",
+      "url": "https://github.com/SteamTracking/SteamTracking.git",
+      "commit": "5ac8059e326268232f8bf80ba49e75d9cea69ed5",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/SteamTracking/SteamTracking.git"
+      },
+      "sparse_paths": [
+        "/*",
+        "!/*/"
+      ]
+    },
+    "third_party/steam-ecosystem/steamworks-rs": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\steamworks-rs",
+      "url": "https://github.com/Noxime/steamworks-rs.git",
+      "commit": "d8114185613be4dbfe4897c8484d0b2670fd3cd7",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/Noxime/steamworks-rs.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/valvekeyvalue": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\valvekeyvalue",
+      "url": "https://github.com/ValveResourceFormat/ValveKeyValue.git",
+      "commit": "5149a2b1fe72bea1b2fac1b8b24e11c1755c9ece",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/ValveResourceFormat/ValveKeyValue.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/valvepython-steam": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\valvepython-steam",
+      "url": "https://github.com/ValvePython/steam.git",
+      "commit": "26166e047b66a7be10bdf3c90e2e14de9283ab5a",
+      "branch": "master",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/ValvePython/steam.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/steam-ecosystem/vdf-rs": {
+      "path": "C:\\src\\third_party\\steam-ecosystem\\vdf-rs",
+      "url": "https://codeberg.org/CosmicHarper/vdf-rs.git",
+      "commit": "c19bed30f80a5a8839b04066f02172e9229444b8",
+      "branch": "main",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://codeberg.org/CosmicHarper/vdf-rs.git"
       },
       "sparse_paths": null
     },

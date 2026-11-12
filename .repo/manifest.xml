@@ -11,12 +11,14 @@
   <remote name="github" fetch="https://github.com/" />
 
   <default remote="aphrody" revision="main" sync-j="8" sync-c="true" />
-  <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="5951254f64879de2661257b18c92783601b0e528" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="apps/shenron" name="shenron" remote="aphrody-labs" revision="358935cfbeb210b9732ba54a06b89beed03ef5b6" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="crates/bench" name="bench" remote="aphrody" revision="a3c7c1168ccbce3fc468d13489284080292bb98a" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="crates/ring3-agent" name="ring3-agent" remote="aphrody" revision="390e9867117e9c3da9dd943d7f10c9def16a2d0f" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="crates/rust-stack" name="rust-stack" remote="aphrody" revision="098565de91e6182646c0ab6085d5919bc0d84ae7" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="infra/mesh-vn" name="mesh-vn" remote="aphrody" revision="5d850084b702faacd99f4c07d09a4385ee89b8b0" upstream="main" groups="monorepo,first-party,sovereign" />
+
+  <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="da739f23831fc7602ea4bf067f464ace9972de93" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="apps/shenron" name="shenron" remote="aphrody-labs" revision="e9d40698e2a69132b2448088f19d19ed8e6914d6" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="crates/bench" name="bench" remote="aphrody" revision="6b0c980b99139cf69cc9d391143afda675732570" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="crates/ring3-agent" name="ring3-agent" remote="aphrody" revision="d282118ea23d9d20da4a73d9b574376702b01b6b" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="crates/rust-stack" name="rust-stack" remote="aphrody" revision="0652a8d2f24f3d773b5a91a621c4fee4e322c5be" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/bun-plugins" name="src" remote="aphrody" revision="ae8833a9e04389b4e6621cf52c5e82a98972b8a5" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/forge" name="src" remote="aphrody" revision="ae8833a9e04389b4e6621cf52c5e82a98972b8a5" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="third_party/agent-browser" name="agent-browser" remote="aphrody" revision="d129226078e0fc8ee5dec48fbc96a46df5d0aafd" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/agent-desktop" name="agent-desktop" remote="aphrody" revision="8e8dd7cbefe6d4421a0147aee0aad78dc6ace2b4" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/ai-ecosystem/antigravity-sdk-python" name="antigravity-sdk-python" remote="aphrody" revision="75ba22bd00afae2f46393ff31f30c3f0df52982f" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
@@ -48,6 +50,7 @@
   <project path="third_party/cachyos/cachyos-wsl" name="CachyOS/cachyos-wsl" remote="github" revision="2cedd88a388677bdb1dc0adb080d5ac7bc4805b5" upstream="cachyos" groups="kernel,gki,distro,sovereign" clone-depth="1" />
   <project path="third_party/cachyos/kernel-patches" name="CachyOS/kernel-patches" remote="github" revision="706b5652a82404eb2a75c79da3b726eec07a5642" upstream="master" groups="kernel,gki,distro,sovereign" clone-depth="1" />
   <project path="third_party/cachyos/pkg-manage-util" name="CachyOS/pkg-manage-util" remote="github" revision="8b49ff7e5490eacba3a7830263c1f7b4fc7114ba" upstream="develop" groups="kernel,gki,distro,sovereign" clone-depth="1" />
+  <project path="third_party/cargo" name="rust-lang/cargo" remote="github" revision="31d3246e0e8d3a80d4a90b54aa48ff180adb408b" upstream="detached" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/chromium/src" name="chromium/src" remote="chromium" revision="4c7244a405d326e284710231ff609168dceb9044" upstream="detached" groups="chromium,browser,sovereign" clone-depth="1" />
   <project path="third_party/cloudflare/boringtun" name="cloudflare/boringtun" remote="github" revision="6dcc889a95ad82400932f785d874421d70308195" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/cloudflare/cloudflared" name="cloudflare/cloudflared" remote="github" revision="095f3caf1dd9084cfe063ca40a4e5b0709e53e5b" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
@@ -80,6 +83,7 @@
   <project path="third_party/google-ecosystem/stitch-skills" name="google-labs-code/stitch-skills" remote="github" revision="0337446dadde6f8c94210444e2aa9d546126480f" upstream="main" groups="aosp,pdk,sovereign" clone-depth="1" />
   <project path="third_party/heretic" name="p-e-w/heretic" remote="github" revision="a14b8543537b50ce8db4db7eaae4eb295d5d5142" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/linux" name="torvalds/linux" remote="kernel" revision="7475ea8b58616b33c04afb976cf0fbaad9dd63fb" upstream="detached" groups="kernel,gki,distro,sovereign" clone-depth="1" />
+  <project path="third_party/llvm-project" name="llvm/llvm-project" remote="github" revision="392dfff97d29b59d77e5cac6d4b6ef2585fe7117" upstream="detached" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/locally-uncensored" name="PurpleDoubleD/locally-uncensored" remote="github" revision="3dff4291f8ad5a86078679e23c7a0a2cd2adf9b3" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/longbridge/gpui-component" name="longbridge/gpui-component" remote="github" revision="6808964c3a5e0ef970e47b696e8a800575cb21a7" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/microsoft/FluidFramework" name="microsoft/FluidFramework" remote="github" revision="99c702811376dc0bddb236a18b4df8bfb471410e" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
@@ -97,6 +101,7 @@
   <project path="third_party/opentui" name="opentui" remote="aphrody" revision="4d40024a7b9f58d320aad211c22ab7e5f0665d87" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/pi" name="earendil-works/pi" remote="github" revision="750d6210308eb4ef4fa393dce7b7490be8234eeb" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/ralph" name="snarktank/ralph" remote="github" revision="6c53cb0b831ebe8739c6a003e22af14902d8b0b5" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/rust" name="rust-lang/rust" remote="github" revision="708c94ef093ecc42fb8851e17d8383d999727abc" upstream="detached" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/rust-ecosystem/async-openai" name="64bit/async-openai" remote="github" revision="e4daebb3ef3f4b89df9fbab5fb319bff077dcfce" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/rust-ecosystem/axum-login" name="maxcountryman/axum-login" remote="github" revision="151c72d7a1b4646830f86b4332e6bd6e34d719a7" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/rust-ecosystem/better-auth-rs" name="better-auth-rs/better-auth-rs" remote="github" revision="23c89f4e51999fe5767804879c82c60249cf9f84" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
@@ -109,6 +114,23 @@
   <project path="third_party/rust-ecosystem/shadcn-ui-rs" name="RustForWeb/shadcn-ui" remote="github" revision="21a6cf5d49b135a0ea3f7591a19a6153c87a2fa1" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/rust-ecosystem/tabby" name="TabbyML/tabby" remote="github" revision="21b29048d7bcf6b94f9f482f2d0fd05efadfd19f" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/rust-ecosystem/tensorzero" name="tensorzero/tensorzero" remote="github" revision="62eb8f63e8ec62018d70420dbf1a8c5d1c026315" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/depotdownloader" name="SteamRE/DepotDownloader" remote="github" revision="1847160f18122838e691ab9be83e92fdc6779d6a" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/lancache-dns" name="lancachenet/lancache-dns" remote="github" revision="86e86a0eed5daed51c67f27d663a179653c90955" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/lancache-monolithic" name="lancachenet/monolithic" remote="github" revision="f7057caff38bed4d5981114ad895792e2e230b99" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/node-steam-session" name="DoctorMcKay/node-steam-session" remote="github" revision="3ac0f34fd964b3f886ba18ef4824ac43c942e030" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/node-steam-user" name="DoctorMcKay/node-steam-user" remote="github" revision="02818bd08090b58ff54f1d9ce0073319b8e1eef7" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/steam-lancache-prefill" name="tpill90/steam-lancache-prefill" remote="github" revision="84ab0fcf8967be69d63e4f6160857966584c4e84" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/steam-protobufs" name="SteamTracking/Protobufs" remote="github" revision="01c423cd60e1ebff7e798f50d3b388d9e6d9fd32" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/steam-rs" name="garhow/steam-rs" remote="github" revision="e61e0e74422e69e7976a1361dec05d455470fcae" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/steamappinfo" name="xPaw/SteamAppInfo" remote="github" revision="32a4912a9b49679cfc6a7c6f7988b39ba86b267a" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/steamctl" name="ValvePython/steamctl" remote="github" revision="274a8db0ccedb7cf1f80546581916874c20dc317" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/steamkit" name="SteamRE/SteamKit" remote="github" revision="7c6e2f0309aa2d33c0769d18cf799450c0d02f91" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/steamlocate-rs" name="WilliamVenner/steamlocate-rs" remote="github" revision="d740b423aee82e8e742595d0cdb4edcc91c24216" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/steamroom" name="landaire/steamroom" remote="github" revision="21ba4f8b2117bd72f85b0f3ecde8825a8ca8f128" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/steamtracking" name="SteamTracking/SteamTracking" remote="github" revision="5ac8059e326268232f8bf80ba49e75d9cea69ed5" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/steamworks-rs" name="Noxime/steamworks-rs" remote="github" revision="d8114185613be4dbfe4897c8484d0b2670fd3cd7" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/valvekeyvalue" name="ValveResourceFormat/ValveKeyValue" remote="github" revision="5149a2b1fe72bea1b2fac1b8b24e11c1755c9ece" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/steam-ecosystem/valvepython-steam" name="ValvePython/steam" remote="github" revision="26166e047b66a7be10bdf3c90e2e14de9283ab5a" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/storytold/RuntimeAudioImporter" name="storytold/RuntimeAudioImporter" remote="github" revision="2ecfcee44daccc6dcffd7533f7455fa2f5498c33" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/storytold/artcraft" name="storytold/artcraft" remote="github" revision="83aad5eb544e7f98b924f9b3652cfdb0a1023f47" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/storytold/hanashi-graphics-demo" name="storytold/hanashi-graphics-demo" remote="github" revision="86ffdb51a880023fe999c40b9519ee425c746cba" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
