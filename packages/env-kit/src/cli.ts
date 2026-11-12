@@ -4,6 +4,8 @@ import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 import { syncAllEditorConfigs } from "./editors";
+import { GOOGLE_SCOPES, googleOAuthLoopback } from "./google-auth.ts";
+import { gmailProfile, listMessages, sendMessage } from "./gmail.ts";
 import { formatIdentities, whoami } from "./whoami";
 import {
   buildAphrodyIamBindingsPlan,
@@ -302,6 +304,8 @@ function printHelp(): void {
 
 Usage:
   env-kit whoami [--json]               Who every configured credential belongs to (parallel, masked)
+  env-kit google-auth <gmail|calendar|drive>  One-click OAuth: approve in the browser, token to vault
+  env-kit gmail <status|list|send>      Gmail automation (send needs --yes)
   env-kit doctor                       Audit masked status of all credentials, ACLs, and editors
   env-kit accounts status [--json]     Inspect 3-principal gcloud configs, rclone, and org provider surfaces
   env-kit accounts init-gcloud         Idempotently initialize ai-yoyo, owner-yohan, org-contact, sa-automation
@@ -450,6 +454,110 @@ ${formatIdentities(ids)}`);
     }
     setCredentialEverywhere(envPath, "GITHUB_TOKEN", tok);
     return 0;
+  }
+
+  if (cmd === "google-auth") {
+    const surface = argv[1] ?? "gmail";
+    const scopes = GOOGLE_SCOPES[surface];
+    if (!scopes) {
+      console.error(
+        `Usage: env-kit google-auth <${Object.keys(GOOGLE_SCOPES).join("|")}>`,
+      );
+      return 1;
+    }
+    loadMonorepoEnv({ envPath, override: false, injectProcessEnv: true });
+    const clientId = process.env.GOOGLE_INSTALLED_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_INSTALLED_CLIENT_SECRET;
+    if (!clientId || !clientSecret) {
+      console.error(
+        "[env-kit] GOOGLE_INSTALLED_CLIENT_ID/SECRET (desktop OAuth client) are required.",
+      );
+      return 1;
+    }
+    console.log(
+      `[env-kit] Opening Google consent for ${surface}; approve in the browser (no password is typed here).`,
+    );
+    try {
+      const tokens = await googleOAuthLoopback({
+        clientId,
+        clientSecret,
+        scopes,
+        openBrowser: (url) =>
+          spawnSync(
+            process.platform === "win32" ? "cmd" : "open",
+            process.platform === "win32" ? ["/c", "start", "", url] : [url],
+            { stdio: "ignore" },
+          ),
+      });
+      setCredentialEverywhere(
+        envPath,
+        `GOOGLE_${surface.toUpperCase()}_REFRESH_TOKEN`,
+        tokens.refresh_token,
+      );
+      console.log(
+        `[env-kit] Stored GOOGLE_${surface.toUpperCase()}_REFRESH_TOKEN in the vault.`,
+      );
+      return 0;
+    } catch (err) {
+      console.error(`[env-kit] google-auth failed: ${(err as Error).message}`);
+      return 1;
+    }
+  }
+
+  if (cmd === "gmail") {
+    loadMonorepoEnv({ envPath, override: false, injectProcessEnv: true });
+    const creds = {
+      clientId: process.env.GOOGLE_INSTALLED_CLIENT_ID ?? "",
+      clientSecret: process.env.GOOGLE_INSTALLED_CLIENT_SECRET ?? "",
+      refreshToken: process.env.GOOGLE_GMAIL_REFRESH_TOKEN ?? "",
+    };
+    if (!creds.refreshToken) {
+      console.error(
+        "[env-kit] No Gmail token. Run `env-kit google-auth gmail` first.",
+      );
+      return 1;
+    }
+    const sub = argv[1] ?? "status";
+    try {
+      if (sub === "status") {
+        const p = await gmailProfile(creds);
+        console.log(`gmail ${p.email}: ${p.unread} unread / ${p.total} total`);
+        return 0;
+      }
+      if (sub === "list") {
+        const query = argv.slice(2).join(" ") || "is:unread newer_than:7d";
+        for (const m of await listMessages(creds, query))
+          console.log(
+            `  ${m.date.slice(0, 16).padEnd(16)} ${m.from.slice(0, 32).padEnd(32)} ${m.subject}`,
+          );
+        return 0;
+      }
+      if (sub === "send") {
+        const to = argv[2];
+        const subject = argv[3];
+        const body = argv.slice(4).join(" ");
+        if (!to || !subject || !body || !argv.includes("--yes")) {
+          console.error(
+            "Usage: env-kit gmail send <to> <subject> <body...> --yes  (sending needs explicit --yes)",
+          );
+          return 1;
+        }
+        const { id } = await sendMessage(
+          creds,
+          { to, subject, body: body.replace(" --yes", "") },
+          true,
+        );
+        console.log(`gmail sent id=${id}`);
+        return 0;
+      }
+      console.error(
+        "Usage: env-kit gmail <status|list [query]|send <to> <subject> <body> --yes>",
+      );
+      return 1;
+    } catch (err) {
+      console.error(`[env-kit] gmail failed: ${(err as Error).message}`);
+      return 1;
+    }
   }
 
   if (cmd === "dev-vars") {
