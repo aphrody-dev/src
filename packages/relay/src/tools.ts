@@ -194,6 +194,17 @@ export const TOOLS: Tool[] = [
     run: (a) => notebookAsk(String(a.notebook), String(a.prompt)),
   },
   {
+    name: "figma_ask",
+    description:
+      "Figma through Claude Code's Figma remote MCP (https://mcp.figma.com/mcp, OAuth done once in /mcp): design context, variables, Code Connect, canvas writes. Only Figma tools are allowed.",
+    inputSchema: obj(
+      { prompt: str("Task on a Figma file or frame (include its URL)") },
+      ["prompt"],
+    ),
+    readOnly: false,
+    run: (a) => claudeWithTools(String(a.prompt), ["mcp__figma"]),
+  },
+  {
     name: "gemini_cli_ask",
     description:
       "Ask Gemini through Gemini CLI headless (plan mode), without the browser.",

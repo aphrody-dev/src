@@ -13,6 +13,31 @@ type Conf = {
   env?: Record<string, string>;
   url?: string;
   headers?: Record<string, string>;
+  /** En-têtes calculés à chaque appel (jeton OAuth à courte durée). */
+  dynamicHeaders?: () => Promise<Record<string, string>>;
+};
+
+// Serveurs MCP distants de Google intégrés au relais, authentifiés par le jeton OAuth du compte gcloud actif
+// (aucune clé d'API) : Stitch (https://stitch.googleapis.com/mcp, extension officielle gemini-cli-extensions/stitch).
+// Projet de facturation : RELAY_GCP_QUOTA_PROJECT, sinon le projet gcloud courant.
+const gcloudToken = async () => {
+  const run = (a: string[]) =>
+    Bun.spawnSync(["gcloud", ...a])
+      .stdout.toString()
+      .trim();
+  return {
+    authorization: `Bearer ${run(["auth", "print-access-token"])}`,
+    "x-goog-user-project":
+      Bun.env.RELAY_GCP_QUOTA_PROJECT ??
+      run(["config", "get-value", "project"]),
+  };
+};
+const BUILTIN: Record<string, Conf> = {
+  stitch: {
+    type: "http",
+    url: "https://stitch.googleapis.com/mcp",
+    dynamicHeaders: gcloudToken,
+  },
 };
 type Remote = {
   name: string;
@@ -23,12 +48,16 @@ type Remote = {
 
 export async function userServers(): Promise<Record<string, Conf>> {
   const f = Bun.file(join(homedir(), ".claude.json"));
-  if (!(await f.exists())) return {};
+  if (!(await f.exists()))
+    return Bun.env.RELAY_BUILTIN_MCP === "0" ? {} : BUILTIN;
   const all = ((await f.json()).mcpServers ?? {}) as Record<string, Conf>;
   // Le relais lui-même est enregistré comme serveur « relay » : pas de boucle.
-  return Object.fromEntries(
-    Object.entries(all).filter(([n]) => n !== "relay" && /^[\w.-]+$/.test(n)),
-  );
+  return {
+    ...(Bun.env.RELAY_BUILTIN_MCP === "0" ? {} : BUILTIN),
+    ...Object.fromEntries(
+      Object.entries(all).filter(([n]) => n !== "relay" && /^[\w.-]+$/.test(n)),
+    ),
+  };
 }
 
 class StdioServer {
@@ -112,6 +141,7 @@ class HttpServer {
         accept: "application/json, text/event-stream",
         "mcp-protocol-version": "2025-11-25",
         ...(this.conf.headers ?? {}),
+        ...((await this.conf.dynamicHeaders?.()) ?? {}),
       },
       body: JSON.stringify({ jsonrpc: "2.0", id: ++this.seq, method, params }),
     });
