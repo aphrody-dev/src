@@ -73,3 +73,10 @@ Status: done / partial / todo / skip (out of scope: macOS/Apple-only, org ops, f
 | NousResearch/NemoClaw (OpenClaw in NVIDIA OpenShell) | sandbox backend | todo |
 | NousResearch/RL, tinker-atropos, vllm, lighteval, Hermes-Function-Calling | inference/training, out of agent core | skip |
 | NousResearch/autonovel, pokemon-agent, cline, nousflash-agents, local_generative_agents, agent-governance-toolkit, hermes-paperclip-adapter | examples / evaluate | skip |
+
+## OpenClaw bun-native status (2026-11-12, fork branch `bun-native`, 52bfe78ce)
+
+- `bun pm migrate` rejects the pnpm 12 lockfile (two YAML documents; then NonExistentWorkspaceDependency, oven-sh/bun#23026, although every link target exists). Fallback in `scripts/bun-migrate.ts`: workspaces/overrides/patches/trusted deps go from pnpm-workspace.yaml into package.json; the 1331 packages pnpm resolved to a single version are pinned as overrides; nested `a>b` overrides are dropped (bun overrides are global).
+- `bun install` on prd: OK (1701 installs) with `bunfig.toml` `[run] bun = true` (node -> bun) and the preinstall guard accepting Bun 1.4.4+.
+- `bun run build` on prd: blocked. TypeScript 7 native API (`typescript/sync`, SyncRpcChannel) reads `child.stdout._handle.fd`, a Node internal Bun does not expose. Options: patch typescript (patchedDependencies) to use a FIFO on POSIX like its Windows named-pipe path, or add `_handle.fd` to Bun's child_process in aphrody-labs/bun.
+- Not started: replacing tsx/vitest/esbuild per package.
