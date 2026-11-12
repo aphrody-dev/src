@@ -87,7 +87,7 @@ function getNativeSystem1Ffi(): NativeSystem1Ffi | null {
   if (ffiCache !== undefined) return ffiCache;
   const candidates = [
     "C:/Users/aphro/.local/bin/sovereign_polyglot_ffi.dll",
-    "C:/src/ai-os/native/sovereign-polyglot-ffi/target/release/sovereign_polyglot_ffi.dll",
+    "C:/src/packages/ai-os/native/sovereign-polyglot-ffi/target/release/sovereign_polyglot_ffi.dll",
   ];
   const found = candidates.find((c) => existsSync(c));
   if (!found) {
@@ -182,7 +182,7 @@ let cachedWeights: {
   packed: Uint8Array;
 } | null = null;
 
-function loadTrainedBunMdxModel(aiOsRoot = "C:/src/ai-os") {
+function loadTrainedBunMdxModel(aiOsRoot = "C:/src/packages/ai-os") {
   if (cachedWeights) return cachedWeights;
   const binPath = resolve(aiOsRoot, "models/bun-system1-b158.bin");
   const metaPath = resolve(aiOsRoot, "models/bun-system1-b158.meta.json");

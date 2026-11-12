@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 
 describe("Sovereign VCS Metadata Engine", () => {
   test("extracts current repository metadata", () => {
-    const meta = getVcsMetadata(resolve("C:\\src\\vcs\\forge"));
+    const meta = getVcsMetadata(resolve("C:\\src\\third_party\\vcs\\forge"));
 
     expect(meta.commitSha).toBeDefined();
     expect(meta.shortSha.length).toBe(8);
