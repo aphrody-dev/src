@@ -68,7 +68,10 @@ export class YoloModuleGraph {
     const glob = new Bun.Glob("**/*.{ts,css,html,json}");
     const discovered: ModuleNodeRecord[] = [];
 
-    for (const rawRel of glob.scanSync({ cwd: this.rootDir, onlyFiles: true })) {
+    for (const rawRel of glob.scanSync({
+      cwd: this.rootDir,
+      onlyFiles: true,
+    })) {
       const relPath = rawRel.replace(/\\/g, "/");
       if (
         relPath.startsWith("dist/") ||
@@ -89,7 +92,9 @@ export class YoloModuleGraph {
       const blake3Hash = hasher.digest("hex");
 
       const ext = relPath.split(".").pop()?.toLowerCase() ?? "ts";
-      const kind = (ext === "css" || ext === "html" || ext === "json" ? ext : "ts") as ModuleNodeRecord["kind"];
+      const kind = (
+        ext === "css" || ext === "html" || ext === "json" ? ext : "ts"
+      ) as ModuleNodeRecord["kind"];
 
       let exportsList: string[] = [];
       let importsList: Array<{ specifier: string; kind: string }> = [];
@@ -108,7 +113,8 @@ export class YoloModuleGraph {
         }
       } else if (kind === "html") {
         for (const match of source.matchAll(/(?:src|href)=["']([^"']+)["']/g)) {
-          if (match[1]) importsList.push({ specifier: match[1], kind: "asset-ref" });
+          if (match[1])
+            importsList.push({ specifier: match[1], kind: "asset-ref" });
         }
       }
 
@@ -175,7 +181,9 @@ export class YoloModuleGraph {
       >("SELECT * FROM modules ORDER BY rel_path ASC")
       .all();
 
-    const edgeCountRow = this.db.query<{ c: number }, []>("SELECT COUNT(*) AS c FROM edges").get();
+    const edgeCountRow = this.db
+      .query<{ c: number }, []>("SELECT COUNT(*) AS c FROM edges")
+      .get();
 
     let totalBytes = 0;
     let totalLines = 0;
@@ -189,13 +197,17 @@ export class YoloModuleGraph {
         lines: r.lines,
         blake3Hash: r.blake3_hash,
         exports: JSON.parse(r.exports_json) as string[],
-        imports: JSON.parse(r.imports_json) as Array<{ specifier: string; kind: string }>,
+        imports: JSON.parse(r.imports_json) as Array<{
+          specifier: string;
+          kind: string;
+        }>,
         scannedAt: r.scanned_at,
       };
     });
 
     return {
-      rootDir: relative("C:/src", this.rootDir).replace(/\\/g, "/") || this.rootDir,
+      rootDir:
+        relative("C:/src", this.rootDir).replace(/\\/g, "/") || this.rootDir,
       totalModules: modules.length,
       totalBytes,
       totalLines,

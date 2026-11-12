@@ -26,15 +26,56 @@ export interface BunPrimitivesReport {
 // Hand-assembled minimal WebAssembly module: (func (export "dot4") (param i32 i32 i32 i32) (result i32)
 // returns a*c + b*d)
 const WASM_DOT4_BYTES = new Uint8Array([
-  0x00, 0x61, 0x73, 0x6d, // magic "\0asm"
-  0x01, 0x00, 0x00, 0x00, // version 1
-  0x01, 0x09, 0x01, 0x60, 0x04, 0x7f, 0x7f, 0x7f, 0x7f, 0x01, 0x7f, // type (i32,i32,i32,i32)->i32
-  0x03, 0x02, 0x01, 0x00, // func section
-  0x07, 0x08, 0x01, 0x04, 0x64, 0x6f, 0x74, 0x34, 0x00, 0x00, // export "dot4"
-  0x0a, 0x0f, 0x01, 0x0d, 0x00, // code section (15B), 1 func, body (13B), 0 locals
-  0x20, 0x00, 0x20, 0x02, 0x6c, // local.get 0, local.get 2, i32.mul
-  0x20, 0x01, 0x20, 0x03, 0x6c, // local.get 1, local.get 3, i32.mul
-  0x6a, 0x0b, // i32.add, end
+  0x00,
+  0x61,
+  0x73,
+  0x6d, // magic "\0asm"
+  0x01,
+  0x00,
+  0x00,
+  0x00, // version 1
+  0x01,
+  0x09,
+  0x01,
+  0x60,
+  0x04,
+  0x7f,
+  0x7f,
+  0x7f,
+  0x7f,
+  0x01,
+  0x7f, // type (i32,i32,i32,i32)->i32
+  0x03,
+  0x02,
+  0x01,
+  0x00, // func section
+  0x07,
+  0x08,
+  0x01,
+  0x04,
+  0x64,
+  0x6f,
+  0x74,
+  0x34,
+  0x00,
+  0x00, // export "dot4"
+  0x0a,
+  0x0f,
+  0x01,
+  0x0d,
+  0x00, // code section (15B), 1 func, body (13B), 0 locals
+  0x20,
+  0x00,
+  0x20,
+  0x02,
+  0x6c, // local.get 0, local.get 2, i32.mul
+  0x20,
+  0x01,
+  0x20,
+  0x03,
+  0x6c, // local.get 1, local.get 3, i32.mul
+  0x6a,
+  0x0b, // i32.add, end
 ]);
 
 export async function runBunFullstackDiagnostics(): Promise<BunPrimitivesReport> {
@@ -62,8 +103,15 @@ export async function runBunFullstackDiagnostics(): Promise<BunPrimitivesReport>
     const t0 = performance.now();
     const db = new Database(":memory:");
     db.exec("CREATE VIRTUAL TABLE docs USING fts5(title, body);");
-    db.query("INSERT INTO docs VALUES (?1, ?2)").run("Bun Full-Rust Runtime", "Zero-copy SQLite WAL and HTMLRewriter");
-    const hit = db.query<{ title: string }, [string]>("SELECT title FROM docs WHERE docs MATCH ?1").get("SQLite");
+    db.query("INSERT INTO docs VALUES (?1, ?2)").run(
+      "Bun Full-Rust Runtime",
+      "Zero-copy SQLite WAL and HTMLRewriter",
+    );
+    const hit = db
+      .query<{ title: string }, [string]>(
+        "SELECT title FROM docs WHERE docs MATCH ?1",
+      )
+      .get("SQLite");
     db.close();
     items.push({
       id: "sqlite-fts5",
@@ -111,14 +159,18 @@ export async function runBunFullstackDiagnostics(): Promise<BunPrimitivesReport>
   // 5. Bun.gzipSync & Bun.deflateSync
   {
     const t0 = performance.now();
-    const raw = new TextEncoder().encode("Material Design 3 HCT Token Stream ".repeat(64));
+    const raw = new TextEncoder().encode(
+      "Material Design 3 HCT Token Stream ".repeat(64),
+    );
     const gz = Bun.gzipSync(raw);
     const unzipped = Bun.gunzipSync(gz);
     items.push({
       id: "compression",
       api: "Bun.gzipSync / deflateSync",
       durationMs: round2(performance.now() - t0),
-      verified: unzipped.byteLength === raw.byteLength && gz.byteLength < raw.byteLength / 4,
+      verified:
+        unzipped.byteLength === raw.byteLength &&
+        gz.byteLength < raw.byteLength / 4,
       detail: `${raw.byteLength}B -> ${gz.byteLength}B (${Math.round((gz.byteLength / raw.byteLength) * 100)}% ratio)`,
     });
   }
@@ -161,7 +213,12 @@ export async function runBunFullstackDiagnostics(): Promise<BunPrimitivesReport>
     const t0 = performance.now();
     const mod = new WebAssembly.Module(WASM_DOT4_BYTES);
     const inst = new WebAssembly.Instance(mod);
-    const dot4 = inst.exports.dot4 as (a: number, b: number, c: number, d: number) => number;
+    const dot4 = inst.exports.dot4 as (
+      a: number,
+      b: number,
+      c: number,
+      d: number,
+    ) => number;
     const val = dot4(7, 5, 6, 8); // 42 + 40 = 82
     items.push({
       id: "wasm-kernel",

@@ -40,21 +40,27 @@ function decorateNavIcons(): void {
     icons: iconTerminal,
     cluster: iconSearch,
   };
-  for (const btn of document.querySelectorAll<HTMLButtonElement>(".nav-tab[data-panel]")) {
+  for (const btn of document.querySelectorAll<HTMLButtonElement>(
+    ".nav-tab[data-panel]",
+  )) {
     const panel = btn.dataset.panel || "";
     const svg = iconMap[panel];
     if (svg) {
-      const span = document.createElement("span");
-      span.innerHTML = svg;
-      span.style.display = "inline-flex";
-      btn.prepend(span);
+      const slot = btn.querySelector<HTMLElement>(".nav-icon-slot");
+      if (slot) {
+        slot.innerHTML = svg;
+      }
     }
   }
 }
 
 function setupNavigation(): void {
-  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>(".nav-tab[data-panel]"));
-  const panels = Array.from(document.querySelectorAll<HTMLElement>(".stage-panel"));
+  const tabs = Array.from(
+    document.querySelectorAll<HTMLButtonElement>(".nav-tab[data-panel]"),
+  );
+  const panels = Array.from(
+    document.querySelectorAll<HTMLElement>(".stage-panel"),
+  );
 
   const activate = (targetId: string) => {
     for (const tab of tabs) {
@@ -80,7 +86,9 @@ function setupNavigation(): void {
 
 function setupThemeAndSeed(): void {
   const toggleBtn = document.getElementById("theme-toggle-btn");
-  const seedInput = document.getElementById("seed-color-input") as HTMLInputElement | null;
+  const seedInput = document.getElementById(
+    "seed-color-input",
+  ) as HTMLInputElement | null;
 
   toggleBtn?.addEventListener("click", () => {
     const html = document.documentElement;
@@ -102,7 +110,9 @@ function setupThemeAndSeed(): void {
 function setupPetControls(): void {
   const pet = document.getElementById("yolo-pet") as AphrodyPetElement | null;
   const badge = document.getElementById("pet-status-badge");
-  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>("#pet-controls .chip-btn"));
+  const buttons = Array.from(
+    document.querySelectorAll<HTMLButtonElement>("#pet-controls .chip-btn"),
+  );
   if (!pet) return;
 
   for (const btn of buttons) {
@@ -164,7 +174,12 @@ async function loadPrimitives(): Promise<void> {
   const res = await fetch("/api/primitives");
   if (!res.ok) return;
   const report = (await res.json()) as {
-    items: Array<{ api: string; durationMs: number; verified: boolean; detail: string }>;
+    items: Array<{
+      api: string;
+      durationMs: number;
+      verified: boolean;
+      detail: string;
+    }>;
   };
 
   grid.innerHTML = report.items
@@ -185,7 +200,9 @@ async function loadIcons(filter: string): Promise<void> {
   if (!grid) return;
   const res = await fetch(`/api/icons?q=${encodeURIComponent(filter)}`);
   if (!res.ok) return;
-  const data = (await res.json()) as { icons: Array<{ name: string; svg: string }> };
+  const data = (await res.json()) as {
+    icons: Array<{ name: string; svg: string }>;
+  };
 
   grid.innerHTML = data.icons
     .map(
@@ -198,7 +215,9 @@ async function loadIcons(filter: string): Promise<void> {
 }
 
 async function runClusterSearch(): Promise<void> {
-  const input = document.getElementById("cluster-query-input") as HTMLInputElement | null;
+  const input = document.getElementById(
+    "cluster-query-input",
+  ) as HTMLInputElement | null;
   const nodesGrid = document.getElementById("cluster-nodes-grid");
   const stack = document.getElementById("cluster-results-stack");
   if (!nodesGrid || !stack) return;
@@ -212,7 +231,13 @@ async function runClusterSearch(): Promise<void> {
   if (healthRes.ok) {
     const health = (await healthRes.json()) as {
       nodes: Array<{
-        spec: { id: string; publicIp: string; wireguardIp: string; role: string; allowNonGoogleWorkloads: boolean };
+        spec: {
+          id: string;
+          publicIp: string;
+          wireguardIp: string;
+          role: string;
+          allowNonGoogleWorkloads: boolean;
+        };
         indexedDocs: number;
       }>;
     };
@@ -236,7 +261,13 @@ async function runClusterSearch(): Promise<void> {
   if (searchRes.ok) {
     const result = (await searchRes.json()) as {
       tookMs: number;
-      hits: Array<{ url: string; title: string; snippet: string; rrfScore: number; sources: string[] }>;
+      hits: Array<{
+        url: string;
+        title: string;
+        snippet: string;
+        rrfScore: number;
+        sources: string[];
+      }>;
     };
     stack.innerHTML = result.hits
       .map(
@@ -261,19 +292,27 @@ function escapeHtml(s: string): string {
 function bootstrap(): void {
   const ssr = readSsrState();
   const bunVerEl = document.getElementById("kpi-bun-ver");
-  if (bunVerEl && ssr.bunVersion) bunVerEl.textContent = `Bun ${ssr.bunVersion}`;
+  if (bunVerEl && ssr.bunVersion)
+    bunVerEl.textContent = `Bun ${ssr.bunVersion}`;
   const modEl = document.getElementById("kpi-mod-count");
-  if (modEl && typeof ssr.moduleCount === "number") modEl.textContent = `${ssr.moduleCount} files`;
+  if (modEl && typeof ssr.moduleCount === "number")
+    modEl.textContent = `${ssr.moduleCount} files`;
 
   decorateNavIcons();
   setupNavigation();
   setupThemeAndSeed();
   setupPetControls();
 
-  document.getElementById("rescan-graph-btn")?.addEventListener("click", () => void loadGraph(true));
-  document.getElementById("run-primitives-btn")?.addEventListener("click", () => void loadPrimitives());
+  document
+    .getElementById("rescan-graph-btn")
+    ?.addEventListener("click", () => void loadGraph(true));
+  document
+    .getElementById("run-primitives-btn")
+    ?.addEventListener("click", () => void loadPrimitives());
 
-  const iconInput = document.getElementById("icon-filter-input") as HTMLInputElement | null;
+  const iconInput = document.getElementById(
+    "icon-filter-input",
+  ) as HTMLInputElement | null;
   iconInput?.addEventListener("input", () => void loadIcons(iconInput.value));
 
   const clusterForm = document.getElementById("cluster-search-form");

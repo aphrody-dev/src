@@ -25,9 +25,15 @@ export function buildM3InlineThemeCss(seedHex = "#1A73E8"): string {
   return exportWebCss(theme);
 }
 
-export function renderSsrDocument(rawHtml: string, options: YoloSsrRenderOptions): string {
+export function renderSsrDocument(
+  rawHtml: string,
+  options: YoloSsrRenderOptions,
+): string {
   const inlineThemeCss = buildM3InlineThemeCss(options.seedHex);
-  const safeJson = JSON.stringify(options.initialState).replace(/</g, "\\u003c");
+  const safeJson = JSON.stringify(options.initialState).replace(
+    /</g,
+    "\\u003c",
+  );
 
   const rewriter = new HTMLRewriter()
     .on("link[rel='canonical']", {

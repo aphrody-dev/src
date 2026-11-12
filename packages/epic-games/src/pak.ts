@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // Unreal Engine .pak archive reader, FPakInfo footer & FPakEntry record parser
 
-export const PAK_FILE_MAGIC = 0x5A6F12E1;
+export const PAK_FILE_MAGIC = 0x5a6f12e1;
 
 export interface PakInfoSummary {
   magic: number;
@@ -46,7 +46,11 @@ export function readUnrealFString(
   buffer: Uint8Array,
   offset: number,
 ): { value: string; nextOffset: number } {
-  const view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+  const view = new DataView(
+    buffer.buffer,
+    buffer.byteOffset,
+    buffer.byteLength,
+  );
   const rawLen = view.getInt32(offset, true);
   let cursor = offset + 4;
   if (rawLen === 0) return { value: "", nextOffset: cursor };
@@ -62,7 +66,9 @@ export function readUnrealFString(
   const byteCount = charCount * 2;
   const slice = buffer.subarray(cursor, cursor + byteCount);
   const end =
-    slice.length >= 2 && slice[slice.length - 2] === 0 && slice[slice.length - 1] === 0
+    slice.length >= 2 &&
+    slice[slice.length - 2] === 0 &&
+    slice[slice.length - 1] === 0
       ? slice.length - 2
       : slice.length;
   return {
@@ -79,7 +85,11 @@ export function parsePakFooter(buffer: Uint8Array): PakInfoSummary {
     throw new Error("Buffer too short for FPakInfo");
   }
 
-  const view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+  const view = new DataView(
+    buffer.buffer,
+    buffer.byteOffset,
+    buffer.byteLength,
+  );
   const searchStart = Math.max(0, buffer.length - 256);
   let magicPos = -1;
 

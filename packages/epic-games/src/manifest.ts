@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 // Pure-Bun Epic Games Store Binary Manifest (.manifest) & Chunk (.chunk) Decoder
 
-export const EGS_MANIFEST_MAGIC = 0x0B83C027;
-export const EGS_CHUNK_MAGIC = 0xB1FE3AA2;
+export const EGS_MANIFEST_MAGIC = 0x0b83c027;
+export const EGS_CHUNK_MAGIC = 0xb1fe3aa2;
 
 export interface EgsManifestMeta {
   magic: number;
@@ -50,11 +50,21 @@ export function parseEgsManifestHeader(buffer: Uint8Array): EgsManifestMeta {
     throw new Error("Buffer too short for EGS manifest header");
   }
 
-  const view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+  const view = new DataView(
+    buffer.buffer,
+    buffer.byteOffset,
+    buffer.byteLength,
+  );
   const magic = view.getUint32(0, true);
 
-  if (magic !== EGS_MANIFEST_MAGIC && magic !== 0x0B83C026 && magic !== 0x44BEC00C) {
-    throw new Error(`Invalid EGS manifest magic: 0x${magic.toString(16).toUpperCase()}`);
+  if (
+    magic !== EGS_MANIFEST_MAGIC &&
+    magic !== 0x0b83c026 &&
+    magic !== 0x44bec00c
+  ) {
+    throw new Error(
+      `Invalid EGS manifest magic: 0x${magic.toString(16).toUpperCase()}`,
+    );
   }
 
   // Standard 41-byte FManifestHeader layout when buffer >= 41 bytes, else compact 16-byte header
@@ -101,10 +111,16 @@ export function decodeEgsChunkContainer(
   if (buffer.length < 41) {
     throw new Error("Buffer too short for EGS chunk header");
   }
-  const view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+  const view = new DataView(
+    buffer.buffer,
+    buffer.byteOffset,
+    buffer.byteLength,
+  );
   const magic = view.getUint32(0, true);
   if (magic !== EGS_CHUNK_MAGIC) {
-    throw new Error(`Invalid EGS chunk magic: 0x${magic.toString(16).toUpperCase()}`);
+    throw new Error(
+      `Invalid EGS chunk magic: 0x${magic.toString(16).toUpperCase()}`,
+    );
   }
   const version = view.getUint32(4, true);
   const headerSize = view.getUint32(8, true);
@@ -125,7 +141,9 @@ export function decodeEgsChunkContainer(
 
   let sha1Verified = true;
   if (expectedSha1Hex) {
-    const actualSha1 = new Bun.CryptoHasher("sha1").update(payload).digest("hex");
+    const actualSha1 = new Bun.CryptoHasher("sha1")
+      .update(payload)
+      .digest("hex");
     sha1Verified = actualSha1.toLowerCase() === expectedSha1Hex.toLowerCase();
   }
 
@@ -190,7 +208,11 @@ export function encodeEgsChunkContainer(
 /**
  * Format standard EGS chunk CDN URL
  */
-export function formatEgsChunkUrl(cdnBaseUrl: string, hash: string, guid: string): string {
+export function formatEgsChunkUrl(
+  cdnBaseUrl: string,
+  hash: string,
+  guid: string,
+): string {
   const hashPrefix = hash.substring(0, 2);
   const cleanBase = cdnBaseUrl.replace(/\/+$/, "");
   return `${cleanBase}/ChunksV4/${hashPrefix}/${guid}.chunk`;

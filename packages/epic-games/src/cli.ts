@@ -13,7 +13,9 @@ async function main() {
   if (command === "inspect") {
     const filePath = args[1];
     if (!filePath) {
-      console.error("Usage: egs inspect <file.pak | file.uasset | file.manifest>");
+      console.error(
+        "Usage: egs inspect <file.pak | file.uasset | file.manifest>",
+      );
       process.exit(1);
     }
 
@@ -63,7 +65,9 @@ async function main() {
   } else {
     console.log("Sovereign Epic Games & Unreal Engine CLI (egs)");
     console.log("Commands:");
-    console.log("  inspect <file>   Inspect .pak, .uasset, or .manifest file metadata");
+    console.log(
+      "  inspect <file>   Inspect .pak, .uasset, or .manifest file metadata",
+    );
   }
 }
 

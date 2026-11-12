@@ -12,10 +12,5 @@
     "noEmit": true,
     "types": ["bun"]
   },
-  "include": [
-    "src/**/*",
-    "server.ts",
-    "build.ts",
-    "tests/**/*"
-  ]
+  "include": ["src/**/*", "server.ts", "build.ts", "tests/**/*"]
 }

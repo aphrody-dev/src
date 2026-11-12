@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // Unreal Engine .uasset FPackageFileSummary & FNameEntrySerialized Table Parser
 
-export const PACKAGE_FILE_TAG = 0x9E2A83C1;
+export const PACKAGE_FILE_TAG = 0x9e2a83c1;
 
 export interface UAssetSummary {
   tag: number;
@@ -25,11 +25,17 @@ export function parseUAssetSummary(buffer: Uint8Array): UAssetSummary {
     throw new Error("Buffer too short for UAsset summary");
   }
 
-  const view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+  const view = new DataView(
+    buffer.buffer,
+    buffer.byteOffset,
+    buffer.byteLength,
+  );
   const tag = view.getUint32(0, true);
 
   if (tag !== PACKAGE_FILE_TAG) {
-    throw new Error(`Invalid PACKAGE_FILE_TAG: expected 0x9E2A83C1, got 0x${tag.toString(16).toUpperCase()}`);
+    throw new Error(
+      `Invalid PACKAGE_FILE_TAG: expected 0x9E2A83C1, got 0x${tag.toString(16).toUpperCase()}`,
+    );
   }
 
   const legacyFileVersion = view.getInt32(4, true);
@@ -77,7 +83,11 @@ export function parseUAssetNameTable(
   nameCount: number,
   hasCasePreservingHashes = true,
 ): string[] {
-  const view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+  const view = new DataView(
+    buffer.buffer,
+    buffer.byteOffset,
+    buffer.byteLength,
+  );
   const names: string[] = [];
   let cursor = nameOffset;
 
@@ -87,14 +97,17 @@ export function parseUAssetNameTable(
     let str = "";
     if (rawLen > 0) {
       const slice = buffer.subarray(cursor, cursor + rawLen);
-      const end = slice[slice.length - 1] === 0 ? slice.length - 1 : slice.length;
+      const end =
+        slice[slice.length - 1] === 0 ? slice.length - 1 : slice.length;
       str = new TextDecoder("utf-8").decode(slice.subarray(0, end));
       cursor += rawLen;
     } else if (rawLen < 0) {
       const byteLen = -rawLen * 2;
       const slice = buffer.subarray(cursor, cursor + byteLen);
       const end =
-        slice.length >= 2 && slice[slice.length - 2] === 0 && slice[slice.length - 1] === 0
+        slice.length >= 2 &&
+        slice[slice.length - 2] === 0 &&
+        slice[slice.length - 1] === 0
           ? slice.length - 2
           : slice.length;
       str = new TextDecoder("utf-16le").decode(slice.subarray(0, end));

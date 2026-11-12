@@ -2,7 +2,10 @@
 <html lang="en" data-theme="light">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     <title>Yolo — Reproducible Fullstack Aphrody Bun v1.4.4 Framework</title>
     <meta
       name="description"
@@ -26,39 +29,74 @@
         />
         <div class="brand-titles">
           <span class="brand-name">Yolo Framework</span>
-          <span class="brand-meta">Bun v1.4.4 Full-Rust · Material Design 3</span>
+          <span class="brand-meta"
+            >Bun v1.4.4 Full-Rust · Material Design 3</span
+          >
         </div>
       </div>
 
       <nav class="primary-tabs" aria-label="Framework sections">
-        <button type="button" class="nav-tab is-active" data-panel="overview">Overview &amp; Pet</button>
-        <button type="button" class="nav-tab" data-panel="graph">AST Module Graph</button>
-        <button type="button" class="nav-tab" data-panel="primitives">Bun Primitives</button>
-        <button type="button" class="nav-tab" data-panel="icons">M3 Symbols</button>
-        <button type="button" class="nav-tab" data-panel="cluster">3-VPS Search</button>
+        <button type="button" class="nav-tab is-active" data-panel="overview">
+          <span class="nav-icon-slot" aria-hidden="true"></span
+          ><span>Overview &amp; Pet</span>
+        </button>
+        <button type="button" class="nav-tab" data-panel="graph">
+          <span class="nav-icon-slot" aria-hidden="true"></span
+          ><span>AST Module Graph</span>
+        </button>
+        <button type="button" class="nav-tab" data-panel="primitives">
+          <span class="nav-icon-slot" aria-hidden="true"></span
+          ><span>Bun Primitives</span>
+        </button>
+        <button type="button" class="nav-tab" data-panel="icons">
+          <span class="nav-icon-slot" aria-hidden="true"></span
+          ><span>M3 Symbols</span>
+        </button>
+        <button type="button" class="nav-tab" data-panel="cluster">
+          <span class="nav-icon-slot" aria-hidden="true"></span
+          ><span>3-VPS Search</span>
+        </button>
       </nav>
 
       <div class="header-actions">
         <label class="seed-picker-label" for="seed-color-input">
           <span>HCT Seed</span>
-          <input id="seed-color-input" type="color" value="#1a73e8" aria-label="Material 3 HCT seed color" />
+          <input
+            id="seed-color-input"
+            type="color"
+            value="#1a73e8"
+            aria-label="Material 3 HCT seed color"
+          />
         </label>
-        <button type="button" id="theme-toggle-btn" class="action-btn" aria-label="Switch color scheme">
+        <button
+          type="button"
+          id="theme-toggle-btn"
+          class="action-btn"
+          aria-label="Switch color scheme"
+        >
           Dark Theme
         </button>
       </div>
     </header>
 
     <main class="main-stage" id="main-content">
-      <section class="stage-panel is-visible" id="panel-overview" aria-labelledby="heading-overview">
+      <section
+        class="stage-panel is-visible"
+        id="panel-overview"
+        aria-labelledby="heading-overview"
+      >
         <div class="hero-grid">
           <div class="hero-copy card-surface">
             <p class="eyebrow">Sovereign Fullstack Architecture</p>
-            <h1 id="heading-overview">Zero-Dependency Bun v1.4.4 Stack with Google M3 Precision</h1>
+            <h1 id="heading-overview">
+              Zero-Dependency Bun v1.4.4 Stack with Google M3 Precision
+            </h1>
             <p class="lead-text">
-              Every request streams through native C-speed <code>HTMLRewriter</code> with per-request CSP nonces,
-              69-role Material Design 3 HCT color tokens, pre-indexed <code>.yolo/graph.sqlite</code> AST edges,
-              and distributed 3-VPS Reciprocal Rank Fusion search.
+              Every request streams through native C-speed
+              <code>HTMLRewriter</code> with per-request CSP nonces, 69-role
+              Material Design 3 HCT color tokens, pre-indexed
+              <code>.yolo/graph.sqlite</code> AST edges, and distributed 3-VPS
+              Reciprocal Rank Fusion search.
             </p>
             <div class="kpi-strip" id="overview-kpis">
               <div class="kpi-box">
@@ -71,7 +109,9 @@
               </div>
               <div class="kpi-box">
                 <span class="kpi-label">Cluster Nodes</span>
-                <strong class="kpi-value" id="kpi-node-count">3 VPS (EU + US)</strong>
+                <strong class="kpi-value" id="kpi-node-count"
+                  >3 VPS (EU + US)</strong
+                >
               </div>
               <div class="kpi-box">
                 <span class="kpi-label">Dependencies</span>
@@ -80,10 +120,15 @@
             </div>
           </div>
 
-          <div class="pet-studio card-surface" aria-label="Aphrody Pet Companion Studio">
+          <div
+            class="pet-studio card-surface"
+            aria-label="Aphrody Pet Companion Studio"
+          >
             <div class="section-head">
               <h2>Aphrody Pet Codex v2</h2>
-              <span class="badge-pill" id="pet-status-badge">idle · 16-way gaze</span>
+              <span class="badge-pill" id="pet-status-badge"
+                >idle · 16-way gaze</span
+              >
             </div>
             <div class="pet-stage-box">
               <aphrody-pet
@@ -94,28 +139,72 @@
               ></aphrody-pet>
             </div>
             <p class="helper-text">
-              Move pointer near the companion to trigger 16-direction gaze tracking, or select a deterministic Codex state or one-shot animation:
+              Move pointer near the companion to trigger 16-direction gaze
+              tracking, or select a deterministic Codex state or one-shot
+              animation:
             </p>
-            <div class="chip-group" id="pet-controls" role="group" aria-label="Pet animation controls">
-              <button type="button" class="chip-btn is-selected" data-pet-mode="ambient">Ambient</button>
-              <button type="button" class="chip-btn" data-pet-state="working">Working</button>
-              <button type="button" class="chip-btn" data-pet-state="thinking">Thinking</button>
-              <button type="button" class="chip-btn" data-pet-state="sleeping">Sleeping</button>
-              <button type="button" class="chip-btn" data-pet-play="waving">Wave</button>
-              <button type="button" class="chip-btn" data-pet-play="celebrating">Celebrate</button>
+            <div
+              class="chip-group"
+              id="pet-controls"
+              role="group"
+              aria-label="Pet animation controls"
+            >
+              <button
+                type="button"
+                class="chip-btn is-selected"
+                data-pet-mode="ambient"
+              >
+                Ambient
+              </button>
+              <button type="button" class="chip-btn" data-pet-state="working">
+                Working
+              </button>
+              <button type="button" class="chip-btn" data-pet-state="thinking">
+                Thinking
+              </button>
+              <button type="button" class="chip-btn" data-pet-state="sleeping">
+                Sleeping
+              </button>
+              <button type="button" class="chip-btn" data-pet-play="waving">
+                Wave
+              </button>
+              <button
+                type="button"
+                class="chip-btn"
+                data-pet-play="celebrating"
+              >
+                Celebrate
+              </button>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="stage-panel" id="panel-graph" aria-labelledby="heading-graph" hidden>
+      <section
+        class="stage-panel"
+        id="panel-graph"
+        aria-labelledby="heading-graph"
+        hidden
+      >
         <div class="card-surface">
           <div class="section-head">
             <div>
-              <h2 id="heading-graph">SQLite WAL AST Module Graph (<code>.yolo/graph.sqlite</code>)</h2>
-              <p class="helper-text">Scanned with <code>Bun.Glob</code> + <code>Bun.Transpiler.scan()</code> + <code>Bun.CryptoHasher("blake2b256")</code>.</p>
+              <h2 id="heading-graph">
+                SQLite WAL AST Module Graph (<code>.yolo/graph.sqlite</code>)
+              </h2>
+              <p class="helper-text">
+                Scanned with <code>Bun.Glob</code> +
+                <code>Bun.Transpiler.scan()</code> +
+                <code>Bun.CryptoHasher("blake2b256")</code>.
+              </p>
             </div>
-            <button type="button" id="rescan-graph-btn" class="action-btn primary-btn">Rescan AST</button>
+            <button
+              type="button"
+              id="rescan-graph-btn"
+              class="action-btn primary-btn"
+            >
+              Rescan AST
+            </button>
           </div>
           <div class="table-wrap">
             <table class="data-table" aria-label="Scanned fullstack modules">
@@ -135,25 +224,53 @@
         </div>
       </section>
 
-      <section class="stage-panel" id="panel-primitives" aria-labelledby="heading-primitives" hidden>
+      <section
+        class="stage-panel"
+        id="panel-primitives"
+        aria-labelledby="heading-primitives"
+        hidden
+      >
         <div class="card-surface">
           <div class="section-head">
             <div>
-              <h2 id="heading-primitives">Native Bun v1.4.4 Full-Rust Primitives Verification</h2>
-              <p class="helper-text">Live server-side execution of SQLite FTS5, Argon2id, Blake2b, HTMLRewriter, Transpiler, and binary WASM.</p>
+              <h2 id="heading-primitives">
+                Native Bun v1.4.4 Full-Rust Primitives Verification
+              </h2>
+              <p class="helper-text">
+                Live server-side execution of SQLite FTS5, Argon2id, Blake2b,
+                HTMLRewriter, Transpiler, and binary WASM.
+              </p>
             </div>
-            <button type="button" id="run-primitives-btn" class="action-btn primary-btn">Run Diagnostics</button>
+            <button
+              type="button"
+              id="run-primitives-btn"
+              class="action-btn primary-btn"
+            >
+              Run Diagnostics
+            </button>
           </div>
           <div class="cards-grid" id="primitives-grid"></div>
         </div>
       </section>
 
-      <section class="stage-panel" id="panel-icons" aria-labelledby="heading-icons" hidden>
+      <section
+        class="stage-panel"
+        id="panel-icons"
+        aria-labelledby="heading-icons"
+        hidden
+      >
         <div class="card-surface">
           <div class="section-head">
             <div>
-              <h2 id="heading-icons">Optimized Material Design 3 Symbols &amp; Virtual Loader</h2>
-              <p class="helper-text">Bundled via <code>m3:icon/&lt;style&gt;/&lt;name&gt;</code> &amp; <code>optimizeSvgMarkup()</code> with zero runtime icon font bloat.</p>
+              <h2 id="heading-icons">
+                Optimized Material Design 3 Symbols &amp; Virtual Loader
+              </h2>
+              <p class="helper-text">
+                Bundled via
+                <code>m3:icon/&lt;style&gt;/&lt;name&gt;</code> &amp;
+                <code>optimizeSvgMarkup()</code> with zero runtime icon font
+                bloat.
+              </p>
             </div>
             <input
               id="icon-filter-input"
@@ -167,13 +284,22 @@
         </div>
       </section>
 
-      <section class="stage-panel" id="panel-cluster" aria-labelledby="heading-cluster" hidden>
+      <section
+        class="stage-panel"
+        id="panel-cluster"
+        aria-labelledby="heading-cluster"
+        hidden
+      >
         <div class="card-surface">
           <div class="section-head">
             <div>
-              <h2 id="heading-cluster">3-VPS Datacenter Search &amp; WireGuard Mesh Inspector</h2>
+              <h2 id="heading-cluster">
+                3-VPS Datacenter Search &amp; WireGuard Mesh Inspector
+              </h2>
               <p class="helper-text">
-                Reciprocal Rank Fusion (<code>RRF k=60</code>) across <code>fr1</code> (OVH Edge), <code>fr2</code> (OVH Headless Chromium Crawler), and <code>usa</code> (Strict Google Egress).
+                Reciprocal Rank Fusion (<code>RRF k=60</code>) across
+                <code>fr1</code> (OVH Edge), <code>fr2</code> (OVH Headless
+                Chromium Crawler), and <code>usa</code> (Strict Google Egress).
               </p>
             </div>
           </div>
@@ -186,7 +312,9 @@
               placeholder="Query 3-VPS RRF Search Cluster..."
               aria-label="Search query"
             />
-            <button type="submit" class="action-btn primary-btn">Execute RRF Query</button>
+            <button type="submit" class="action-btn primary-btn">
+              Execute RRF Query
+            </button>
           </form>
           <div class="nodes-grid" id="cluster-nodes-grid"></div>
           <div class="results-stack" id="cluster-results-stack"></div>
@@ -195,11 +323,16 @@
     </main>
 
     <footer class="site-footer" role="contentinfo">
-      <span>Aphrody Sovereign Engineering · Pure Bun v1.4.4 Full-Rust · Zero External Dependencies</span>
+      <span
+        >Aphrody Sovereign Engineering · Pure Bun v1.4.4 Full-Rust · Zero
+        External Dependencies</span
+      >
       <a href="https://aphrody.com/" class="footer-link">aphrody.com</a>
     </footer>
 
-    <script id="yolo-ssr-state" type="application/json">{}</script>
+    <script id="yolo-ssr-state" type="application/json">
+      {}
+    </script>
     <script type="module" src="/app.js"></script>
   </body>
 </html>

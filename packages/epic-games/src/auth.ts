@@ -11,14 +11,18 @@ export interface EpicOAuthToken {
   client_id: string;
 }
 
-export const EPIC_AUTH_URL = "https://account-public-service-prod03.ol.epicgames.com/account/api/oauth/token";
+export const EPIC_AUTH_URL =
+  "https://account-public-service-prod03.ol.epicgames.com/account/api/oauth/token";
 export const EPIC_LAUNCHER_CLIENT_ID = "34a02cf8f4414e29b15921876da3abc9";
 export const EPIC_LAUNCHER_SECRET = "daafbccc7377450399f881958042b885";
 
 /**
  * Generate HTTP Basic Auth header for Epic Games API
  */
-export function getEpicBasicAuth(clientId = EPIC_LAUNCHER_CLIENT_ID, secret = EPIC_LAUNCHER_SECRET): string {
+export function getEpicBasicAuth(
+  clientId = EPIC_LAUNCHER_CLIENT_ID,
+  secret = EPIC_LAUNCHER_SECRET,
+): string {
   const credentials = `${clientId}:${secret}`;
   return `Basic ${Buffer.from(credentials).toString("base64")}`;
 }
@@ -26,7 +30,10 @@ export function getEpicBasicAuth(clientId = EPIC_LAUNCHER_CLIENT_ID, secret = EP
 /**
  * Exchange an Epic Games authorization code or exchange code for an OAuth2 token
  */
-export async function exchangeEpicCode(code: string, isExchangeCode = true): Promise<EpicOAuthToken> {
+export async function exchangeEpicCode(
+  code: string,
+  isExchangeCode = true,
+): Promise<EpicOAuthToken> {
   const grantType = isExchangeCode ? "exchange_code" : "authorization_code";
   const paramName = isExchangeCode ? "exchange_code" : "code";
 
@@ -45,7 +52,9 @@ export async function exchangeEpicCode(code: string, isExchangeCode = true): Pro
 
   if (!res.ok) {
     const errorText = await res.text();
-    throw new Error(`Epic OAuth token exchange failed (${res.status}): ${errorText}`);
+    throw new Error(
+      `Epic OAuth token exchange failed (${res.status}): ${errorText}`,
+    );
   }
 
   return (await res.json()) as EpicOAuthToken;

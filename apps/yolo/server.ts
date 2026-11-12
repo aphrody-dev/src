@@ -62,13 +62,19 @@ export interface YoloServerHandle {
   close(): void;
 }
 
-export async function startYoloServer(options?: { port?: number; autoBuild?: boolean }): Promise<YoloServerHandle> {
+export async function startYoloServer(options?: {
+  port?: number;
+  autoBuild?: boolean;
+}): Promise<YoloServerHandle> {
   if ((options?.autoBuild ?? true) && !existsSync(join(DIST_DIR, "app.js"))) {
     await buildYoloApp();
   }
 
   const htmlTemplate = readFileSync(join(DIST_DIR, "index.html"), "utf8");
-  const graph = new YoloModuleGraph(APP_ROOT, join(APP_ROOT, ".yolo/graph.sqlite"));
+  const graph = new YoloModuleGraph(
+    APP_ROOT,
+    join(APP_ROOT, ".yolo/graph.sqlite"),
+  );
   let cachedGraph = graph.scanProject();
   const cluster = new ThreeVpsSearchCluster({ allowPrivateCrawl: false });
 
@@ -91,15 +97,26 @@ export async function startYoloServer(options?: { port?: number; autoBuild?: boo
       }
 
       if (path === "/robots.txt") {
-        return new Response("User-agent: *\nAllow: /\nSitemap: https://yolo.aphrody.com/sitemap.xml\n", {
-          headers: { "Content-Type": "text/plain; charset=utf-8", ...securityHeaders() },
-        });
+        return new Response(
+          "User-agent: *\nAllow: /\nSitemap: https://yolo.aphrody.com/sitemap.xml\n",
+          {
+            headers: {
+              "Content-Type": "text/plain; charset=utf-8",
+              ...securityHeaders(),
+            },
+          },
+        );
       }
 
       if (path === "/sitemap.xml") {
         return new Response(
           `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://yolo.aphrody.com/</loc></url></urlset>`,
-          { headers: { "Content-Type": "application/xml; charset=utf-8", ...securityHeaders() } },
+          {
+            headers: {
+              "Content-Type": "application/xml; charset=utf-8",
+              ...securityHeaders(),
+            },
+          },
         );
       }
 
@@ -117,13 +134,19 @@ export async function startYoloServer(options?: { port?: number; autoBuild?: boo
 
       if (path === "/api/theme") {
         const seed = url.searchParams.get("seed") || "#1A73E8";
-        return Response.json({ seed, css: buildM3InlineThemeCss(seed) }, { headers: securityHeaders() });
+        return Response.json(
+          { seed, css: buildM3InlineThemeCss(seed) },
+          { headers: securityHeaders() },
+        );
       }
 
       if (path === "/api/icons") {
         const q = url.searchParams.get("q") || "";
         const icons = searchM3Icons(q).slice(0, 24);
-        return Response.json({ count: icons.length, icons }, { headers: securityHeaders() });
+        return Response.json(
+          { count: icons.length, icons },
+          { headers: securityHeaders() },
+        );
       }
 
       if (path === "/api/cluster/health") {
@@ -174,10 +197,15 @@ export async function startYoloServer(options?: { port?: number; autoBuild?: boo
       }
 
       // Static asset serving from dist/ with path traversal guard & br/gzip negotiation
-      const safeRel = normalize(path).replace(/^(\.\.(\/|\\|$))+/, "").replace(/^[/\\]+/, "");
+      const safeRel = normalize(path)
+        .replace(/^(\.\.(\/|\\|$))+/, "")
+        .replace(/^[/\\]+/, "");
       const targetPath = join(DIST_DIR, safeRel);
       if (!targetPath.startsWith(DIST_DIR) || !existsSync(targetPath)) {
-        return new Response("Not Found", { status: 404, headers: securityHeaders() });
+        return new Response("Not Found", {
+          status: 404,
+          headers: securityHeaders(),
+        });
       }
 
       const ext = extname(targetPath).toLowerCase();
@@ -232,6 +260,9 @@ export async function startYoloServer(options?: { port?: number; autoBuild?: boo
 }
 
 if (import.meta.main) {
-  const handle = await startYoloServer();
-  console.log(`[yolo] Fullstack Aphrody Bun v${Bun.version} server listening on http://127.0.0.1:${handle.port}`);
+  void startYoloServer().then((handle) => {
+    console.log(
+      `[yolo] Fullstack Aphrody Bun v${Bun.version} server listening on http://127.0.0.1:${handle.port}`,
+    );
+  });
 }

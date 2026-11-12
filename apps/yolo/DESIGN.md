@@ -77,14 +77,14 @@ components:
     textColor: "{colors.on-primary}"
     typography: "{typography.title-md}"
     rounded: "{rounded.sm}"
-    padding: "10px 20px"
+    padding: "8px 20px"
     height: "40px"
   button-secondary:
     backgroundColor: "{colors.surface-container-low}"
     textColor: "{colors.on-surface}"
     typography: "{typography.title-md}"
     rounded: "{rounded.sm}"
-    padding: "10px 20px"
+    padding: "8px 20px"
     height: "40px"
   panel-surface:
     backgroundColor: "{colors.surface-container-lowest}"
@@ -108,17 +108,17 @@ Yolo Fullstack Framework operates in `operate` mode with generalist architectura
 
 ```yaml
 colors:
-  seed: '#1a73e8'
-  primary: '#435e91'
-  onPrimary: '#ffffff'
-  primaryContainer: '#d8e2ff'
-  surface: '#f9f9ff'
-  surfaceContainer: '#ededf4'
-  onSurface: '#1a1b20'
-  outlineVariant: '#c4c6d0'
-  darkPrimary: '#adc7ff'
-  darkSurface: '#111318'
-  darkOnSurface: '#e2e2e9'
+  seed: "#1a73e8"
+  primary: "#435e91"
+  onPrimary: "#ffffff"
+  primaryContainer: "#d8e2ff"
+  surface: "#f9f9ff"
+  surfaceContainer: "#ededf4"
+  onSurface: "#1a1b20"
+  outlineVariant: "#c4c6d0"
+  darkPrimary: "#adc7ff"
+  darkSurface: "#111318"
+  darkOnSurface: "#e2e2e9"
 ```
 
 - **Primary (#435e91)**: Reserved for the single highest-priority action per viewport and active selection indicators.
@@ -129,10 +129,10 @@ colors:
 
 ```yaml
 typography:
-  display: 'Space Grotesk, 48px/56px, weight 600, tracking -0.025em'
-  headline: 'Space Grotesk, 28px/36px, weight 600, tracking -0.015em'
-  body: 'Inter, 15px/24px, weight 400, measure 65ch-72ch'
-  mono: 'JetBrains Mono, 13px/20px, weight 500, tabular-nums'
+  display: "Space Grotesk, 48px/56px, weight 600, tracking -0.025em"
+  headline: "Space Grotesk, 28px/36px, weight 600, tracking -0.015em"
+  body: "Inter, 15px/24px, weight 400, measure 65ch-72ch"
+  mono: "JetBrains Mono, 13px/20px, weight 500, tabular-nums"
 ```
 
 - Keep long-form reading measure between `65ch` and `75ch`.

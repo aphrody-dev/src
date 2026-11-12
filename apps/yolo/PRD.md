@@ -1,13 +1,13 @@
 # Cahier des Charges Technique (PRD) — Yolo Fullstack Framework
 
-| Champ / Field | Specification |
-|:--------------|:--------------|
-| **Identifiant / Slug** | `yolo-fullstack-framework` |
-| **Domaine / Surface** | `yolo.aphrody.com` |
-| **Mode d'Usage (Impeccable)** | `operate` |
-| **Proprietaire / Owner** | Aphrody Sovereign Engineering (`contact@aphrody.com`) |
-| **Couleur Racine (HCT Seed)** | `#1a73e8` (`tonal_spot`) |
-| **Runtime & Verification** | Bun v1.4.4 Full-Rust, `gds verify`, `gds audit-slop`, Lighthouse / `wck` 100/100 |
+| Champ / Field                 | Specification                                                                    |
+| :---------------------------- | :------------------------------------------------------------------------------- |
+| **Identifiant / Slug**        | `yolo-fullstack-framework`                                                       |
+| **Domaine / Surface**         | `yolo.aphrody.com`                                                               |
+| **Mode d'Usage (Impeccable)** | `operate`                                                                        |
+| **Proprietaire / Owner**      | Aphrody Sovereign Engineering (`contact@aphrody.com`)                            |
+| **Couleur Racine (HCT Seed)** | `#1a73e8` (`tonal_spot`)                                                         |
+| **Runtime & Verification**    | Bun v1.4.4 Full-Rust, `gds verify`, `gds audit-slop`, Lighthouse / `wck` 100/100 |
 
 ## 1. Objectif Produit & Positionnement / Product Scope
 
@@ -54,11 +54,11 @@ Reproducible fullstack Aphrody Bun v1.4.4 framework exploiting Bun.serve, HTMLRe
 
 ## 5. Budgets de Performance & Criteres d'Acceptation / Lighthouse & WCK 100/100
 
-| Metrique / Gate | Cible Stricte | Commande de Verification |
-|:----------------|:--------------|:-------------------------|
-| **First Contentful Paint (FCP)** | `<= 600 ms` | `wck` / Lighthouse |
-| **Largest Contentful Paint (LCP)** | `<= 1200 ms` | `wck` / Lighthouse |
-| **Interaction to Next Paint (INP)** | `<= 50 ms` | `wck` / Performance |
-| **Cumulative Layout Shift (CLS)** | `0.00` | Metriques `size-adjust` OFL |
-| **Conformite Design System** | `>= 90 / 100`, `0` erreur | `gds verify` |
-| **Audit Anti-Slop (Prose & CSS)** | `clean: true`, `100 / 100` | `gds audit-slop` |
+| Metrique / Gate                     | Cible Stricte              | Commande de Verification    |
+| :---------------------------------- | :------------------------- | :-------------------------- |
+| **First Contentful Paint (FCP)**    | `<= 600 ms`                | `wck` / Lighthouse          |
+| **Largest Contentful Paint (LCP)**  | `<= 1200 ms`               | `wck` / Lighthouse          |
+| **Interaction to Next Paint (INP)** | `<= 50 ms`                 | `wck` / Performance         |
+| **Cumulative Layout Shift (CLS)**   | `0.00`                     | Metriques `size-adjust` OFL |
+| **Conformite Design System**        | `>= 90 / 100`, `0` erreur  | `gds verify`                |
+| **Audit Anti-Slop (Prose & CSS)**   | `clean: true`, `100 / 100` | `gds audit-slop`            |

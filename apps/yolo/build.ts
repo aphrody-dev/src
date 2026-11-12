@@ -4,7 +4,14 @@
  * Bundles client TypeScript with m3IconPlugin + iconsPlugin + m3TokensPlugin,
  * minifies CSS/HTML, builds .yolo/graph.sqlite AST module graph, and enforces WCK 14KB/30KB budgets.
  */
-import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 import { brotliCompressSync, constants as zlibConstants } from "node:zlib";
 import {
@@ -18,7 +25,7 @@ const APP_ROOT = import.meta.dir;
 const DIST_DIR = join(APP_ROOT, "dist");
 const DESIGN_ASSETS = join(APP_ROOT, "../../packages/google-design/assets");
 
-const BRAND_MARK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none"><rect width="32" height="32" rx="8" fill="#0B57D0"/><path d="M16 6L25 25H20.8L18.9 20.6H13.1L11.2 25H7L16 6ZM14.5 17.2H17.5L16 13.4L14.5 17.2Z" fill="#FFFFFF"/></svg>`;
+const BRAND_MARK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none"><rect width="24" height="24" rx="6" fill="#0B57D0"/><path d="M12 4.5L18.8 18.8H15.6L14.2 15.5H9.8L8.4 18.8H5.2L12 4.5ZM10.9 12.9H13.1L12 10.1L10.9 12.9Z" fill="#FFFFFF"/></svg>`;
 
 function minifyCss(css: string): string {
   return css
@@ -29,7 +36,11 @@ function minifyCss(css: string): string {
     .trim();
 }
 
-function precompressFile(filePath: string): { raw: number; gz: number; br: number } {
+function precompressFile(filePath: string): {
+  raw: number;
+  gz: number;
+  br: number;
+} {
   const buf = new Uint8Array(readFileSync(filePath));
   const gz = Bun.gzipSync(buf, { level: 9 });
   const br = brotliCompressSync(buf, {
@@ -51,7 +62,10 @@ export async function buildYoloApp(): Promise<{
   mkdirSync(join(DIST_DIR, "assets/pets/sprites"), { recursive: true });
 
   // 1. Scan AST module graph into .yolo/graph.sqlite
-  const graph = new YoloModuleGraph(APP_ROOT, join(APP_ROOT, ".yolo/graph.sqlite"));
+  const graph = new YoloModuleGraph(
+    APP_ROOT,
+    join(APP_ROOT, ".yolo/graph.sqlite"),
+  );
   const summary = graph.scanProject();
   graph.close();
 
@@ -80,10 +94,22 @@ export async function buildYoloApp(): Promise<{
   writeFileSync(join(DIST_DIR, "assets/brand-mark.svg"), BRAND_MARK_SVG);
 
   const assetPairs: Array<[string, string]> = [
-    [join(DESIGN_ASSETS, "fonts/GoogleSansFlex-latin.woff2"), join(DIST_DIR, "assets/fonts/GoogleSansFlex-latin.woff2")],
-    [join(DESIGN_ASSETS, "fonts/GoogleSansCode-latin.woff2"), join(DIST_DIR, "assets/fonts/GoogleSansCode-latin.woff2")],
-    [join(DESIGN_ASSETS, "pets/sprites/spritesheet.webp"), join(DIST_DIR, "assets/pets/sprites/spritesheet.webp")],
-    [join(DESIGN_ASSETS, "pets/sprites/spritesheet.png"), join(DIST_DIR, "assets/pets/sprites/spritesheet.png")],
+    [
+      join(DESIGN_ASSETS, "fonts/GoogleSansFlex-latin.woff2"),
+      join(DIST_DIR, "assets/fonts/GoogleSansFlex-latin.woff2"),
+    ],
+    [
+      join(DESIGN_ASSETS, "fonts/GoogleSansCode-latin.woff2"),
+      join(DIST_DIR, "assets/fonts/GoogleSansCode-latin.woff2"),
+    ],
+    [
+      join(DESIGN_ASSETS, "pets/sprites/spritesheet.webp"),
+      join(DIST_DIR, "assets/pets/sprites/spritesheet.webp"),
+    ],
+    [
+      join(DESIGN_ASSETS, "pets/sprites/spritesheet.png"),
+      join(DIST_DIR, "assets/pets/sprites/spritesheet.png"),
+    ],
     [join(DESIGN_ASSETS, "brand/favicon.ico"), join(DIST_DIR, "favicon.ico")],
   ];
 
@@ -114,8 +140,9 @@ export async function buildYoloApp(): Promise<{
 }
 
 if (import.meta.main) {
-  const stats = await buildYoloApp();
-  console.log(
-    `[yolo build] OK — modules=${stats.moduleCount} html.gz=${stats.htmlGzBytes}B style.css.gz=${stats.cssGzBytes}B app.js.gz=${stats.jsGzBytes}B`,
-  );
+  void buildYoloApp().then((stats) => {
+    console.log(
+      `[yolo build] OK — modules=${stats.moduleCount} html.gz=${stats.htmlGzBytes}B style.css.gz=${stats.cssGzBytes}B app.js.gz=${stats.jsGzBytes}B`,
+    );
+  });
 }

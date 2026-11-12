@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 // Easy Anti-Cheat (EAC) CDN endpoints, Settings.json parser, and integrity catalog verifier
 
-export const EAC_MODULES_CDN_BASE = "https://modules-cdn.eac-prod.on.epicgames.com/modules";
+export const EAC_MODULES_CDN_BASE =
+  "https://modules-cdn.eac-prod.on.epicgames.com/modules";
 
 export interface EacGameConfig {
   gameId: string;
@@ -21,7 +22,10 @@ export interface EacIntegrityEntry {
 /**
  * Format official EAC client module download URL
  */
-export function formatEacModuleUrl(gameGuid: string, platform = "win64"): string {
+export function formatEacModuleUrl(
+  gameGuid: string,
+  platform = "win64",
+): string {
   const cleanGuid = gameGuid.toLowerCase().replace(/[^a-z0-9]/g, "");
   return `${EAC_MODULES_CDN_BASE}/${cleanGuid}/${platform}/eac_module.bin`;
 }
