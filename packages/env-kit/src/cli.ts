@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 import { syncAllEditorConfigs } from "./editors";
+import { formatIdentities, whoami } from "./whoami";
 import {
   buildAphrodyIamBindingsPlan,
   formatAccountsStatusReport,
@@ -300,6 +301,7 @@ function printHelp(): void {
   console.log(`env-kit — Sovereign Multi-Language Environment & Secret Manager
 
 Usage:
+  env-kit whoami [--json]               Who every configured credential belongs to (parallel, masked)
   env-kit doctor                       Audit masked status of all credentials, ACLs, and editors
   env-kit accounts status [--json]     Inspect 3-principal gcloud configs, rclone, and org provider surfaces
   env-kit accounts init-gcloud         Idempotently initialize ai-yoyo, owner-yohan, org-contact, sa-automation
@@ -387,6 +389,16 @@ export async function main(
 
   if (cmd === "doctor") {
     return runDoctor(envPath);
+  }
+
+  if (cmd === "whoami") {
+    loadMonorepoEnv({ envPath, override: false, injectProcessEnv: true });
+    const ids = await whoami(process.env);
+    if (argv.includes("--json")) console.log(JSON.stringify(ids, null, 2));
+    else
+      console.log(`--- Identity (credentials -> owner, secrets never printed) ---
+${formatIdentities(ids)}`);
+    return ids.some((i) => i.status === "invalid") ? 1 : 0;
   }
 
   if (cmd === "accounts") {
