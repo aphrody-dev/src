@@ -168,7 +168,7 @@ impl CodeParser {
                 .unwrap_or_else(|| format!("fn_{}", sanitize_id(&call.callee)));
 
             // Add placeholder node if not defined
-            if !graph.nodes.iter().any(|n| n.id == target_id) {
+            if !graph.has_node(&target_id) {
                 graph.add_node(GraphNode {
                     id: target_id.clone(),
                     label: format!("{}()", call.callee),

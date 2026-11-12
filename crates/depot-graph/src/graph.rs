@@ -51,6 +51,12 @@ pub struct CodeGraph {
     pub graph: HashMap<String, String>,
     pub nodes: Vec<GraphNode>,
     pub edges: Vec<GraphEdge>,
+    /// id -> position in `nodes`. Rebuilt lazily when `nodes` is mutated directly
+    /// or the graph was deserialized.
+    #[serde(skip)]
+    node_index: HashMap<String, usize>,
+    #[serde(skip)]
+    edge_keys: HashSet<(String, String, String)>,
 }
 
 impl Default for CodeGraph {
@@ -61,6 +67,8 @@ impl Default for CodeGraph {
             graph: HashMap::new(),
             nodes: Vec::new(),
             edges: Vec::new(),
+            node_index: HashMap::new(),
+            edge_keys: HashSet::new(),
         }
     }
 }
@@ -70,22 +78,42 @@ impl CodeGraph {
         Self::default()
     }
 
+    fn sync_indexes(&mut self) {
+        if self.node_index.len() != self.nodes.len() {
+            self.node_index = self.nodes.iter().enumerate().map(|(i, n)| (n.id.clone(), i)).collect();
+        }
+        if self.edge_keys.len() != self.edges.len() {
+            self.edge_keys = self
+                .edges
+                .iter()
+                .map(|e| (e.source.clone(), e.target.clone(), e.relation.clone()))
+                .collect();
+        }
+    }
+
+    pub fn has_node(&mut self, id: &str) -> bool {
+        self.sync_indexes();
+        self.node_index.contains_key(id)
+    }
+
     pub fn add_node(&mut self, node: GraphNode) {
-        if let Some(existing) = self.nodes.iter_mut().find(|n| n.id == node.id) {
+        self.sync_indexes();
+        if let Some(&i) = self.node_index.get(&node.id) {
             // merge signature if missing
+            let existing = &mut self.nodes[i];
             if existing.signature.is_none() && node.signature.is_some() {
                 existing.signature = node.signature;
             }
         } else {
+            self.node_index.insert(node.id.clone(), self.nodes.len());
             self.nodes.push(node);
         }
     }
 
     pub fn add_edge(&mut self, edge: GraphEdge) {
-        let exists = self.edges.iter().any(|e| {
-            e.source == edge.source && e.target == edge.target && e.relation == edge.relation
-        });
-        if !exists {
+        self.sync_indexes();
+        let key = (edge.source.clone(), edge.target.clone(), edge.relation.clone());
+        if self.edge_keys.insert(key) {
             self.edges.push(edge);
         }
     }

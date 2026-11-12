@@ -52,6 +52,27 @@ mod tests {
     use super::*;
 
     #[test]
+    fn deep_nesting_does_not_overflow_stack_and_keeps_scopes() {
+        // 50k nested blocks overflowed the former recursive walker on a 1 MiB stack.
+        let depth = 50_000;
+        let code = format!(
+            "fn outer() {{ {}inner_call();{} }}
+fn sibling() {{ other_call(); }}",
+            "{ ".repeat(depth),
+            " }".repeat(depth)
+        );
+        let handle = std::thread::Builder::new()
+            .stack_size(1 << 20)
+            .spawn(move || TreeSitterEngine::parse_str(SupportedLanguage::Rust, "deep.rs", &code).unwrap())
+            .unwrap();
+        let summary = handle.join().expect("walker must not overflow the stack");
+        let inner = summary.calls.iter().find(|c| c.callee == "inner_call").unwrap();
+        assert_eq!(inner.caller_scope.as_deref(), Some("outer"));
+        let other = summary.calls.iter().find(|c| c.callee == "other_call").unwrap();
+        assert_eq!(other.caller_scope.as_deref(), Some("sibling"));
+    }
+
+    #[test]
     fn test_rust_ast_extraction() {
         let code = r#"
 pub struct EngineConfig {

@@ -20,7 +20,7 @@ impl DepotTools {
     pub fn detect() -> DepotToolsInfo {
         let standard_paths = [
             PathBuf::from(r"C:\src\third_party\depot_tools"),
-            PathBuf::from(r"C:\src\depot_tools"),
+            PathBuf::from(r"C:\src\third_party\depot_tools"),
             PathBuf::from(r"C:\depot_tools"),
         ];
 

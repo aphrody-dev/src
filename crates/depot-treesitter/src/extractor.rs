@@ -73,8 +73,12 @@ fn extract_signature(node: &Node, bytes: &[u8]) -> Option<String> {
     }
 }
 
+/// Pre-order traversal driven by a `TreeCursor` with an explicit scope stack.
+/// Iterative on purpose: generated sources (Bun, Chromium) nest deep enough to
+/// overflow the native stack with a recursive walk.
+#[allow(clippy::too_many_arguments)]
 fn walk_node(
-    node: Node,
+    root: Node,
     lang: SupportedLanguage,
     bytes: &[u8],
     scope_stack: &mut Vec<String>,
@@ -83,6 +87,42 @@ fn walk_node(
     imports: &mut Vec<AstImport>,
     errors: &mut usize,
 ) {
+    let mut cursor = root.walk();
+    // One entry per node on the current path: did entering it push a scope?
+    let mut pushed: Vec<bool> = Vec::new();
+    loop {
+        let node = cursor.node();
+        pushed.push(visit_node(node, lang, bytes, scope_stack, symbols, calls, imports, errors));
+        if cursor.goto_first_child() {
+            continue;
+        }
+        loop {
+            if pushed.pop().unwrap_or(false) {
+                scope_stack.pop();
+            }
+            if cursor.goto_next_sibling() {
+                break;
+            }
+            if !cursor.goto_parent() {
+                return;
+            }
+        }
+    }
+}
+
+/// Records symbols, calls and imports for a single node. Returns `true` when the
+/// node opened a new scope (already pushed onto `scope_stack`).
+#[allow(clippy::too_many_arguments)]
+fn visit_node(
+    node: Node,
+    lang: SupportedLanguage,
+    bytes: &[u8],
+    scope_stack: &mut Vec<String>,
+    symbols: &mut Vec<AstSymbol>,
+    calls: &mut Vec<AstCall>,
+    imports: &mut Vec<AstImport>,
+    errors: &mut usize,
+) -> bool {
     if node.is_error() || node.is_missing() {
         *errors += 1;
     }
@@ -692,26 +732,11 @@ fn walk_node(
         _ => {}
     }
 
-    if let Some(ref scope) = pushed_scope {
-        scope_stack.push(scope.clone());
-    }
-
-    // Recurse children
-    let mut cursor = node.walk();
-    for child in node.children(&mut cursor) {
-        walk_node(
-            child,
-            lang,
-            bytes,
-            scope_stack,
-            symbols,
-            calls,
-            imports,
-            errors,
-        );
-    }
-
-    if pushed_scope.is_some() {
-        scope_stack.pop();
+    match pushed_scope {
+        Some(scope) => {
+            scope_stack.push(scope);
+            true
+        }
+        None => false,
     }
 }

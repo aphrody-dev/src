@@ -9,13 +9,13 @@ Modern large-scale development environments—spanning multi-gigabyte codebases 
 1. **Repository Weight & Object Bloat**: Full Git clones download gigabytes of historical object trees and binary blobs, choking disk I/O, network bandwidth, and filesystem monitoring.
 2. **LLM Context Window Inefficiency**: Large Language Models (LLMs) cannot ingest raw 100,000-file repositories without deterministic filtering, smart token budgeting, structural AST summarization, and noise elimination (lockfiles, build artifacts, compiled binaries).
 
-The **Depot** ecosystem (`C:\src\depot`) unifies Google's **`depot_tools`**, **Unreal Engine's CDN binary artifact architecture**, **Microsoft Git Scalar**, **Jujutsu (`jj`)**, **`gitoxide` (`gix`)**, **`gitingest`**, and **`graphify`** into a high-performance, native Rust 2024 monorepo with `justfile` automation.
+The **Depot** ecosystem (`C:\src\crates\depot`) unifies Google's **`depot_tools`**, **Unreal Engine's CDN binary artifact architecture**, **Microsoft Git Scalar**, **Jujutsu (`jj`)**, **`gitoxide` (`gix`)**, **`gitingest`**, and **`graphify`** into a high-performance, native Rust 2024 monorepo with `justfile` automation.
 
 ---
 
 ## 2. Deep Dive: Google `depot_tools` Architecture
 
-`C:\src\depot_tools` powers Google's Chromium, V8, WebRTC, Skia, Dawn, and ANGLE ecosystems. Its core components operate as follows:
+`C:\src\third_party\depot_tools` powers Google's Chromium, V8, WebRTC, Skia, Dawn, and ANGLE ecosystems. Its core components operate as follows:
 
 ### 2.1 Multiverse Management: `gclient` and `DEPS`
 Unlike Git submodules which record fixed Git tree hashes directly in the parent tree object, Google's `gclient` uses Python-evaluated declarative manifest files named `DEPS`:
@@ -94,10 +94,10 @@ Depot uses `blake3` instead of SHA-1 or SHA-256 for artifact verification:
 
 ## 5. Unified `depot` System Architecture
 
-The monorepo at `C:\src\depot` is structured into four specialized crates:
+The monorepo at `C:\src\crates\depot` is structured into four specialized crates:
 
 ```
-C:\src\depot\
+C:\src\crates\depot\
 ├── Cargo.toml                  # Cargo 2024 workspace root
 ├── ARCHITECTURE.md             # This comprehensive study
 ├── justfile                    # Master justfile automation
@@ -131,24 +131,24 @@ C:\src\depot\
 
 ## 6. Verification & Operational Guide
 
-All binaries are installed into `C:\src\depot_tools` as shims (`depot.bat`, `gitingest.bat`, `depot-graph.bat`), making them immediately available system-wide on PATH:
+All binaries are installed into `C:\src\third_party\depot_tools` as shims (`depot.bat`, `gitingest.bat`, `depot-graph.bat`), making them immediately available system-wide on PATH:
 
 ### 6.1 Codebase Ingestion for LLMs (`depot ingest` / `gitingest`)
 ```bash
 # Ingest depot crates with a 15,000 token budget
-depot ingest C:\src\depot\crates --max-tokens 15000 --format markdown
+depot ingest C:\src\crates\depot\crates --max-tokens 15000 --format markdown
 
 # Or use the standalone gitingest binary
-gitingest C:\src\depot --format markdown --output digest.md
+gitingest C:\src\crates\depot --format markdown --output digest.md
 ```
 
 ### 6.2 Knowledge Graph Generation (`depot graph` / `depot-graph`)
 ```bash
 # Build graph.json, GRAPH_REPORT.md, and ARCHITECTURE.mermaid
-depot graph build C:\src\depot\crates --out-dir C:\src\depot\graphify-out
+depot graph build C:\src\crates\depot\crates --out-dir C:\src\crates\depot\graphify-out
 
 # Query symbol dependencies in milliseconds
-depot graph query Worktree C:\src\depot
+depot graph query Worktree C:\src\crates\depot
 ```
 
 ### 6.3 Windows-Safe Worktrees for Parallel LLM Agents (`depot worktree`)
@@ -163,7 +163,7 @@ depot worktree add C:\src\depot-agent-1 agent-branch --new
 ### 6.4 Git Weight Reduction (`depot slim` / `depot clone`)
 ```bash
 # Optimize an existing repository with Scalar-grade flags
-depot slim C:\src\depot
+depot slim C:\src\crates\depot
 
 # Clone any massive repository with minimal weight (blobless, no-tags, single-branch)
 depot clone https://github.com/casey/just.git C:\src\just-slim
@@ -172,10 +172,10 @@ depot clone https://github.com/casey/just.git C:\src\just-slim
 ### 6.5 Binary Artifact Verification (`depot artifacts`)
 ```bash
 # Compute Blake3 hash for any file
-depot artifacts hash C:\src\depot\Cargo.toml
+depot artifacts hash C:\src\crates\depot\Cargo.toml
 
 # Verify all project artifacts against depot-artifacts.toml
-depot artifacts verify C:\src\depot\depot-artifacts.toml
+depot artifacts verify C:\src\crates\depot\depot-artifacts.toml
 ```
 
 ### 6.6 depot_tools Pass-Through
