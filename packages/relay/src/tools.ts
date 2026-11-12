@@ -2,7 +2,13 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { claude, claudeWithTools, gemini, geminiCli } from "./backends.ts";
+import {
+  claude,
+  claudeWithTools,
+  gemini,
+  geminiCli,
+  notebookAsk,
+} from "./backends.ts";
 
 export type Tool = {
   name: string;
@@ -166,6 +172,17 @@ export const TOOLS: Tool[] = [
           ]
         ).map((x) => `mcp__claude_ai_${x}`),
       ),
+  },
+  {
+    name: "notebook_ask",
+    description:
+      "Ask a NotebookLM (Gemini Notebook) notebook grounded on its sources, in the relay browser.",
+    inputSchema: obj(
+      { notebook: str("Notebook id or URL"), prompt: str("Question") },
+      ["notebook", "prompt"],
+    ),
+    readOnly: false,
+    run: (a) => notebookAsk(String(a.notebook), String(a.prompt)),
   },
   {
     name: "gemini_cli_ask",

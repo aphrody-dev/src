@@ -2,10 +2,12 @@
 // (sauf carte d'agent A2A) :
 //   HTTP   POST /rpc (relais natif)  POST /mcp (MCP Streamable HTTP)  POST /a2a (A2A 1.0)  GET /.well-known/agent-card.json
 //   WS     /ws : JSON-RPC du relais natif, un message par trame
+//   WebMCP GET /webmcp?token=… : outils exposés à l agent du navigateur (document.modelContext)
 //   TCP    RELAY_TCP_PORT : JSON-RPC délimité par lignes (NDJSON) ; TLS sur RELAY_TLS_PORT si RELAY_TLS_CERT/KEY sont définis
 import { existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { relayHome } from "./cdp.ts";
+import { webmcpPage } from "./webmcp.ts";
 import {
   a2aRpc,
   agentCard,
@@ -37,8 +39,28 @@ export async function serve() {
     const a = req.headers.get("authorization") ?? "";
     return (
       a === `Bearer ${token}` ||
-      new URL(req.url).searchParams.get("token") === token
+      new URL(req.url).searchParams.get("token") === token ||
+      (req.headers.get("cookie") ?? "").split(/;\s*/).includes(`relay=${token}`)
     );
+  };
+  // Page WebMCP : ouverte une fois avec ?token=…, le jeton passe en cookie HttpOnly et quitte l'URL.
+  const webmcp = async (req: Request) => {
+    const u = new URL(req.url);
+    if (u.searchParams.get("token") === token)
+      return new Response(null, {
+        status: 303,
+        headers: {
+          location: "/webmcp",
+          "set-cookie": `relay=${token}; HttpOnly; SameSite=Strict; Path=/`,
+        },
+      });
+    if (!authed(req)) return deny();
+    return new Response(await webmcpPage(), {
+      headers: {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "no-store",
+      },
+    });
   };
   const deny = () =>
     new Response("jeton requis (Authorization: Bearer)", { status: 401 });
@@ -59,6 +81,7 @@ export async function serve() {
       "/health": () =>
         Response.json({ name: "aphrody-relay", version: VERSION }),
       "/rpc": { POST: rpc(nativeRpc) },
+      "/webmcp": webmcp,
       "/mcp": {
         POST: rpc(mcpRpc),
         GET: () => new Response(null, { status: 405 }),
@@ -93,7 +116,7 @@ export async function serve() {
     },
     async data(s: any, chunk: Buffer) {
       const st = s.data as Sock;
-      st.buf += chunk.toString("utf8");
+      st.buf += Buffer.from(chunk).toString("utf8");
       let i: number;
       while ((i = st.buf.indexOf("\n")) >= 0) {
         const line = st.buf.slice(0, i).trim();

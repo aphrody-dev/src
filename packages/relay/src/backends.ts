@@ -140,6 +140,73 @@ async function cli(
   return { text, engine, ms: Math.round(performance.now() - t0) };
 }
 
+// NotebookLM (devenu « Gemini Notebook », notebook.google.com) : sélecteurs relevés le 2026-11-13 —
+// textarea[aria-label="Query box"], button[aria-label="Submit"], réponse = dernier chat-message .to-user-container
+// (bloc thinking-chain-view exclu) ; aller-retour mesuré : 22,5 s.
+const NOTEBOOK = "https://notebook.google.com/";
+export function notebookAsk(
+  notebook: string,
+  prompt: string,
+  timeoutMs = 300_000,
+): Promise<Answer> {
+  return serial(async () => {
+    const t0 = performance.now();
+    await launchBrowser(true);
+    const tab = await Tab.open(NOTEBOOK, NOTEBOOK);
+    try {
+      await tab.navigate(
+        notebook.startsWith("http")
+          ? notebook
+          : `${NOTEBOOK}notebook/${notebook}`,
+      );
+      const out = await tab.eval<
+        { text: string } | { error: string }
+      >(`(async () => {
+        let ta;
+        for (let i = 0; i < 100 && !ta; i++) {
+          if (location.host.startsWith('accounts.')) return { error: 'login' };
+          ta = document.querySelector('textarea[aria-label="Query box"]');
+          if (!ta) await new Promise(r => setTimeout(r, 150));
+        }
+        if (!ta) return { error: 'zone de question introuvable' };
+        const before = document.querySelectorAll('chat-message').length;
+        ta.focus();
+        ta.value = ${JSON.stringify(prompt)};
+        ta.dispatchEvent(new Event('input', { bubbles: true }));
+        await new Promise(r => setTimeout(r, 300));
+        document.querySelector('button[aria-label="Submit"]')?.click();
+        const t0 = performance.now();
+        let last = '', stable = 0;
+        while (performance.now() - t0 < ${timeoutMs}) {
+          await new Promise(r => setTimeout(r, 700));
+          const ms = document.querySelectorAll('chat-message');
+          if (ms.length <= before + 1) continue;
+          const c = ms[ms.length - 1].querySelector('.to-user-container')?.cloneNode(true);
+          c?.querySelectorAll('thinking-chain-view').forEach(e => e.remove());
+          const txt = c?.innerText?.trim() ?? '';
+          if (txt && txt === last) { if (++stable >= 3) return { text: txt }; } else stable = 0;
+          last = txt;
+        }
+        return { error: 'pas de réponse' };
+      })()`);
+      if ("error" in out)
+        throw new Error(
+          out.error === "login"
+            ? "NotebookLM : session Google absente (relay login)"
+            : `NotebookLM : ${out.error}`,
+        );
+      return {
+        text: out.text,
+        engine: "notebooklm",
+        chat: notebook,
+        ms: Math.round(performance.now() - t0),
+      };
+    } finally {
+      tab.close();
+    }
+  });
+}
+
 export const geminiCli = (prompt: string, model?: string) =>
   cli(
     "gemini-cli",
