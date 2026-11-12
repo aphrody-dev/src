@@ -1,0 +1,18 @@
+[package]
+name = "depot-cas"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository = "https://github.com/aphrody-dev/depot"
+description = "Content-addressed artifact store for depot tooling, after Lore: FastCDC v2020 fragments (32/64/256 KiB), blake3 ids, zstd, sha256 file index"
+publish = false
+
+[dependencies]
+blake3.workspace = true
+# Same chunker and parameters as EpicGames/lore (lore-storage/src/chunker.rs).
+fastcdc = "3.2.1"
+sha2 = "0.11"
+zstd = "0.14"
+
+[dev-dependencies]
+tempfile = "3"

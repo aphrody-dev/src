@@ -28,7 +28,7 @@ revisions, and `ay gclient sync` (below) reports what differs (247 deps: 100 up 
 | Python parser | [`ruff_python_parser`](https://github.com/astral-sh/ruff) published as `rustpython-ruff_python_parser` 0.16.10; `rustpython-parser` 0.4.0 (older grammar, pulls `malachite` bigints) | Reused: Ruff's parser |
 | vpython | Upstream `vpython3` (luci-go) is already uv-backed: specs are `vpython.toml` or PEP 723 blocks locked by `<spec>.uv.lock`; depot_tools ships `uv` in `.cipd_bin/uv` | Reused: `ay vpy` runs the same specs on the system `uv` and hands Chromium-index locks to upstream `vpython3` |
 | CIPD client | Official Go client (`.cipd_client.exe`, `cipd_client_version` pinned) | Reused: `ay cipd` and `ay gclient sync --cipd` run it; no Rust CIPD client |
-| Ninja | [`n2`](https://github.com/evmar/n2) (not on crates.io, not installed here); Kitware `ninja` 1.13.2 in `~/.local/bin` | Reused: `ay ninja` prefers `n2`, then `ninja`; Siso dirs go to upstream `autoninja` |
+| Ninja | [`n2`](https://github.com/evmar/n2) (`aphrody-dev/n2`, `third_party/build/n2`, built into `~/.local/bin/n2.exe`); Kitware `ninja` (`aphrody-dev/ninja`, `third_party/build/ninja`) | Reused: `ay ninja` prefers `n2`, then `ninja`; Siso dirs go to upstream `autoninja` |
 | gn, siso, clang | Upstream binaries from CIPD (`buildtools/<platform>/gn`, `third_party/siso`, `third_party/llvm-build`) | Kept upstream; `ay gn` finds the checkout's binary |
 | git operations | `gix` 0.61 library (workspace), `gix`/`ein` CLI v0.61.0 and `jj` 0.46 (installed by `install.ps1`, jj configured there); gitoxide main is 0.90.0 (`third_party/vcs/gitoxide`) | Reused: gix for clone/fetch/checkout and read paths; jj for push/rebase/Gerrit upload |
 | Gerrit REST | `gerrit-rust` 0.1.24, `libgerrit` 0.2.8 on crates.io; `jj gerrit upload` in jj 0.46 | Not written yet; `ay cl upload` should wrap `jj gerrit upload` (see Remaining) |
@@ -60,7 +60,7 @@ mostly detected (`ay git info`, `packages/forge/src/pillars.ts`) or probed for v
 | reclient wrappers | removed upstream | 0 | (replaced by Siso) | none | none | nothing to do |
 | `presubmit_support.py`, `presubmit_canned_checks.py` | Python | 2,827 + 4,230 | `git cl presubmit`, CQ checks, `PRESUBMIT.py` API | archguard's 50 MB rule mirrors one check | stays Python, run through uv (`uv run --no-project`) | upstream |
 | `gerrit_util.py`, `gerrit_client.py` | Python | 2,931 + 957 | Gerrit REST for `git cl` | none | ureq calls inside `ay cl` | not started |
-| `gsutil.py`, `download_from_google_storage.py` | Python | 464 + 1,118 | GCS objects in DEPS (`dep_type: gcs`), sha1 downloads | none | planned: plain HTTPS GET of public buckets with sha256 check in `ay gclient sync --gcs` | listed by the planner, not downloaded |
+| `gsutil.py`, `download_from_google_storage.py` | Python | 464 + 1,118 | GCS objects in DEPS (`dep_type: gcs`), sha1 downloads | none | `ay gclient sync` (`depot_gclient::gcs`): HTTPS GET of public buckets, sha256 and size check, tar.xz/gz and zip extraction with upstream safety rules, same marker files; objects go through the `depot-cas` store | done |
 | `ensure_bootstrap`, `bootstrap/` | bash + Python | 72 + 842 | First-run Python and git bootstrap on Windows | none | not needed: `ay up` installs toolchains, uv provides Python | not ported |
 | `win_toolchain/` | Python | 1,503 | Hermetic MSVC toolchain for Googlers (`DEPOT_TOOLS_WIN_TOOLCHAIN`) | none | stays upstream; outside Google, local VS is used | upstream |
 | `update_depot_tools` | bash/bat | 132 + 72 | Self-update on every invocation | disabled by `ay` (`DEPOT_TOOLS_UPDATE=0`) | `ay lock` pins depot_tools in `src.lock.json` | replaced by pinning |
@@ -142,6 +142,27 @@ repository root, `PATH`, then `C:\depot_tools` (the hard-coded duplicate `C:\src
 runs wrappers by full path and sets `DEPOT_TOOLS_UPDATE=0`. `build_tools::use_siso` reproduces
 autoninja's choice (`args.gn`, `.sisoenv` plus `.gn` / `gclient_args.gni` / `.siso_deps`, unless
 `.ninja_deps`); `gn_path` follows gn.py's `FindGnTool` order.
+
+## Lore: what we take
+
+[EpicGames/lore](https://github.com/EpicGames/lore) (MIT, `aphrody-dev/lore`, `third_party/vcs/lore`) is a centralized, content-addressed VCS for code plus large binaries. Its client and server stay a separate tool; depot_tools takes its storage model, not its protocol, so Git and gclient stay the wire formats.
+
+| Lore idea | Lore source | Here |
+|---|---|---|
+| FastCDC v2020 fragments, 32/64/256 KiB, normalization 1 | `lore-storage/src/chunker.rs`, `lore-base/src/types` | `crates/depot-cas`, same parameters, test asserts whole-buffer boundaries |
+| blake3 fragment ids, immutable store, zstd level 6 | `lore-storage/src/{hash,compress,immutable_store}.rs` | `fragments/<2>/<64 hex>` zstd frames, atomic rename, never rewritten |
+| Sparse, on-demand hydration | `lore-fuse`, `lore-revision` | GCS objects hydrate from the store by sha256 with no network; next: CIPD packages and `ay up` archives |
+| Dedup across versions | fragment store | sysroot and clang pins share fragments between rolls and between checkouts |
+
+Measured on `third_party/chromium` (Windows, debug `ay`): clang (53 MB) and the Rust toolchain (428 MB) downloaded and extracted in 3 m 33 s; removing `llvm-build/Release+Asserts` and syncing again hydrates it from the store in 17 s with no network. `_content_names` is byte-identical to Python `json.dumps(tarfile.getnames())` for both, so upstream `gclient sync` sees the objects as current. Store: `%LOCALAPPDATA%\depot_tools\cas`, override with `DEPOT_CAS`.
+
+## LLVM and build toolchain forks
+
+| Upstream | Fork | Rust counterpart | Use |
+|---|---|---|---|
+| llvm/llvm-project | `aphrody-dev/llvm-project` (`third_party/llvm-project`, origin = fork, upstream = llvm) | cranelift (`aphrody-dev/wasmtime`), rustc_codegen_cranelift | Chromium uses its own clang pin from GCS (`chromium-browser-clang`), synced by `ay gclient sync` |
+| lld | same | wild (`aphrody-dev/wild`, `third_party/build/wild`, ELF only) | fast Linux links on fr1 |
+| ninja-build/ninja | `aphrody-dev/ninja` | n2 (`aphrody-dev/n2`) | `ay ninja` |
 
 ## Replacing Git for Windows
 

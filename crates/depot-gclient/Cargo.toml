@@ -14,3 +14,13 @@ ruff_text_size = { package = "rustpython-ruff_text_size", version = "0.16.10" }
 gix = { workspace = true, features = ["blocking-network-client", "blocking-http-transport-reqwest-rust-tls"] }
 clap.workspace = true
 depot-core.workspace = true
+depot-cas.workspace = true
+ureq = "3"
+tar = "0.4.46"
+flate2 = "1.1"
+lzma-rust2 = { version = "0.25", default-features = false, features = ["std", "xz"] }
+zip = { version = "9", default-features = false, features = ["deflate"] }
+
+[dev-dependencies]
+tempfile = "3"
+lzma-rust2 = { version = "0.25", default-features = false, features = ["std", "xz", "encoder"] }

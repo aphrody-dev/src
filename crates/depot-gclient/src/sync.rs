@@ -44,6 +44,8 @@ pub struct PlanItem {
     /// The depot_tools git cache mirror for `url`, when it exists.
     pub mirror: Option<PathBuf>,
     pub action: Action,
+    /// The object, for `Action::Gcs`.
+    pub gcs: Option<crate::gcs::GcsObject>,
 }
 
 /// `git_cache.Mirror.UrlToCacheDir`.
@@ -117,10 +119,34 @@ pub fn plan(client: &Client, opts: &PlanOptions) -> Vec<PlanItem> {
             current,
             mirror,
             action,
+            gcs: None,
         };
         match &n.kind {
             DepKind::Cipd { .. } => out.push(item(Action::Cipd, full, None, None, None)),
-            DepKind::Gcs { .. } => out.push(item(Action::Gcs, full, None, None, None)),
+            DepKind::Gcs {
+                bucket,
+                object_name,
+                sha256sum,
+                size_bytes,
+                output_file,
+            } => {
+                let obj = crate::gcs::GcsObject {
+                    bucket: bucket.clone(),
+                    object_name: object_name.clone(),
+                    sha256sum: sha256sum.clone(),
+                    size_bytes: *size_bytes,
+                    output_file: output_file.clone(),
+                };
+                let action = match obj.download_needed(&path) {
+                    Ok(false) => Action::UpToDate,
+                    Ok(true) => Action::Gcs,
+                    Err(e) => Action::Blocked(e.to_string()),
+                };
+                out.push(PlanItem {
+                    gcs: Some(obj),
+                    ..item(action, full, None, None, None)
+                });
+            }
             DepKind::Root => {}
             DepKind::Git => {
                 let (url, rev) = split_url_revision(&full);
@@ -215,7 +241,12 @@ pub struct Done {
 pub fn execute(plan: &[PlanItem], jobs: usize, log: &(dyn Fn(&str) + Sync)) -> Vec<Done> {
     let work: Vec<&PlanItem> = plan
         .iter()
-        .filter(|p| matches!(p.action, Action::Clone | Action::Fetch | Action::Checkout))
+        .filter(|p| {
+            matches!(
+                p.action,
+                Action::Clone | Action::Fetch | Action::Checkout | Action::Gcs
+            )
+        })
         .collect();
     // Depth = how many other work items contain this path.
     let depth = |p: &PlanItem| {
@@ -258,7 +289,19 @@ fn gerr(e: impl std::fmt::Display) -> Error {
     Error::new(e.to_string())
 }
 
+/// The content-addressed store shared by every GCS download of this process
+/// (`depot_cas::default_root`); `None` when it cannot be opened (downloads still work).
+fn cas() -> Option<&'static depot_cas::Store> {
+    static STORE: std::sync::OnceLock<Option<depot_cas::Store>> = std::sync::OnceLock::new();
+    STORE
+        .get_or_init(|| depot_cas::Store::open(depot_cas::default_root()).ok())
+        .as_ref()
+}
+
 fn sync_one(item: &PlanItem) -> Result<String> {
+    if let (Action::Gcs, Some(obj)) = (&item.action, &item.gcs) {
+        return crate::gcs::sync_object(obj, &item.path, cas());
+    }
     let fresh = item.action == Action::Clone;
     if fresh && item.revision.is_none() {
         // A solution or branch-tracking dep: a regular clone of the default branch.

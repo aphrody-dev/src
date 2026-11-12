@@ -2637,6 +2637,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "depot-cas"
+version = "0.2.0"
+dependencies = [
+ "blake3",
+ "fastcdc",
+ "sha2 0.11.0",
+ "tempfile",
+ "zstd",
+]
+
+[[package]]
 name = "depot-cli"
 version = "0.2.0"
 dependencies = [
@@ -2685,11 +2696,18 @@ name = "depot-gclient"
 version = "0.2.0"
 dependencies = [
  "clap",
+ "depot-cas",
  "depot-core",
+ "flate2",
  "gix",
+ "lzma-rust2 0.25.0",
  "rustpython-ruff_python_ast",
  "rustpython-ruff_python_parser",
  "rustpython-ruff_text_size",
+ "tar",
+ "tempfile",
+ "ureq 3.5.1",
+ "zip",
 ]
 
 [[package]]
@@ -3231,6 +3249,12 @@ name = "fallible-streaming-iterator"
 version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7360491ce676a36bf9bb3c56c1aa791658183a54d2744120f27285738d90465a"
+
+[[package]]
+name = "fastcdc"
+version = "3.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bf51ceb43e96afbfe4dd5c6f6082af5dfd60e220820b8123792d61963f2ce6bc"
 
 [[package]]
 name = "faster-hex"

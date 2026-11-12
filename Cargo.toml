@@ -28,6 +28,7 @@ aphrody-design-tokens = { path = "crates/aphrody-design-tokens" }
 corelib = { package = "sovereign-corelib", path = "crates/corelib", default-features = false }
 depot-cli = { path = "crates/depot-cli" }
 depot-core = { path = "crates/depot-core" }
+depot-cas = { path = "crates/depot-cas" }
 depot-treesitter = { path = "crates/depot-treesitter" }
 depot-re = { path = "crates/depot-re" }
 depot-migrate = { path = "crates/depot-migrate" }

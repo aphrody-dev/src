@@ -14,6 +14,7 @@ pub mod deps;
 pub mod edit;
 pub mod eval;
 pub mod fetch;
+pub mod gcs;
 pub mod sync;
 pub mod tree;
 pub mod value;
