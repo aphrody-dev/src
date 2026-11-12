@@ -65,3 +65,5 @@ graphify-out/
 infra/winnt-sdk/**/bin/
 infra/winnt-sdk/**/obj/
 
+packages/pi-opencode/native/*.dll
+packages/ai-os/submodules/

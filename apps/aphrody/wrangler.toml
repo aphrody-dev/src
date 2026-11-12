@@ -1,0 +1,18 @@
+name = "aphrody"
+main = "edge/worker.ts"
+compatibility_date = "2026-11-01"
+
+# Static site from ./dist (built by `bun run build`). The Worker only proxies the
+# dynamic endpoints (/api/*, /g/*, /search) to the Bun origin given by ORIGIN_URL.
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+html_handling = "drop-trailing-slash"
+not_found_handling = "404-page"
+run_worker_first = ["/api/*", "/g/*", "/search"]
+
+[vars]
+ORIGIN_URL = ""
+
+# Headers (HSTS, immutable chunk caching, CSP, Link preload) are emitted into
+# dist/_headers by the build, so they follow the configured Google ids.

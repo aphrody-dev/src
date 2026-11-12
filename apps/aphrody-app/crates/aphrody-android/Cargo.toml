@@ -1,0 +1,13 @@
+[package]
+name = "aphrody-android"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Android NativeActivity shell around aphrody-core"
+
+[lib]
+name = "aphrody_app"
+crate-type = ["cdylib"]
+
+[dependencies]
+aphrody-core.workspace = true

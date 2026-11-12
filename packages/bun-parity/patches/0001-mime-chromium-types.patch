@@ -1,0 +1,15 @@
+diff --git a/src/http_types/mime_type_list.txt b/src/http_types/mime_type_list.txt
+index db99ee08ec..431e9c1e76 100644
+--- a/src/http_types/mime_type_list.txt
++++ b/src/http_types/mime_type_list.txt
+@@ -2298,4 +2298,8 @@ application/vnd.openxmlformats-officedocument.presentationml.template.main+xml
+ application/vnd.openxmlformats-officedocument.wordprocessingml.websettings+xml
+ application/vnd.openxmlformats-officedocument.presentationml.commentauthors+xml
+ application/vnd.openxmlformats-officedocument.presentationml.slideshow.main+xml
+-application/vnd.openxmlformats-officedocument.spreadsheetml.revisionheaders+xml
+\ No newline at end of file
++application/vnd.openxmlformats-officedocument.spreadsheetml.revisionheaders+xml
++image/jxl
++text/wgsl
++application/vnd.bun.aot
++audio/opus

@@ -1,0 +1,19 @@
+{
+  "name": "@aphrody/web",
+  "version": "1.0.0",
+  "description": "aphrody.com - Aphrody brand homepage, search with package catalog, and runtime benchmarks, in pure Bun web standards",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun run build.ts",
+    "build:aot": "bun build --compile --minify --bytecode server.ts --outfile C:/Users/aphro/.local/bin/aphrody-web.exe",
+    "dev": "bun run server.ts",
+    "start": "bun run server.ts",
+    "test": "bun test",
+    "pm": "bun run pm.ts",
+    "fmt": "bun fmt",
+    "check": "bun check"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

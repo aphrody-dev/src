@@ -1,0 +1,155 @@
+/* Aphrody M3 layer shared by every page: skip link, focus ring, buttons, topic chips,
+   FAQ, no-JS search form and consent banner. Concatenated after style.css and the
+   generated --m3-* token variables. Page-only rules live in src/seo/page-css.ts. */
+
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -100px;
+  z-index: 2147483001;
+  padding: 12px 20px;
+  border-radius: 9999px;
+  background: var(--m3-primary);
+  color: var(--m3-onPrimary);
+  font-weight: 500;
+}
+.skip-link:focus {
+  top: 8px;
+}
+
+:where(a, button, input, summary):focus-visible {
+  outline: 3px solid var(--m3-primary);
+  outline-offset: 2px;
+}
+@supports (height: 100dvh) {
+}
+.note {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  margin: 8px 0;
+}
+.seo-hub ul,
+.actions {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+.seo-hub a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px solid var(--m3-outlineVariant);
+  border-radius: 8px;
+  color: var(--text-color);
+}
+.seo-hub a:hover {
+  background: var(--m3-surfaceContainer);
+}
+.seo-faq summary {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.seo-faq p {
+  padding: 0 0 12px;
+}
+
+.m3-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--m3-primary);
+  color: var(--m3-onPrimary);
+  font:
+    500 14px/20px Roboto,
+    Arial,
+    sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+}
+.m3-btn:hover {
+  filter: brightness(1.1);
+}
+.m3-btn-tonal {
+  background: var(--m3-secondaryContainer);
+  color: var(--m3-onSecondaryContainer);
+}
+.m3-btn-text {
+  background: transparent;
+  color: var(--m3-primary);
+}
+
+.ns-search {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0;
+}
+.ns-search label {
+  flex: 0 0 100%;
+  font-weight: 500;
+}
+.ns-search input[type="search"] {
+  flex: 1 1 280px;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid var(--m3-outlineVariant);
+  border-radius: 28px;
+  background: transparent;
+  color: var(--text-color);
+  font:
+    16px Roboto,
+    Arial,
+    sans-serif;
+}
+
+.consent-banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2147483000;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding: 16px max(24px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+  border-radius: 28px 28px 0 0;
+  background: var(--m3-surfaceContainer);
+  color: var(--m3-onSurface);
+  box-shadow: 0 -2px 6px 2px rgba(0, 0, 0, 0.15);
+  animation: cb-in 0.25s ease-out;
+}
+.consent-banner p {
+  flex: 1 1 320px;
+  font-size: 14px;
+  line-height: 20px;
+}
+.consent-actions {
+  display: flex;
+  gap: 8px;
+}
+@keyframes cb-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .consent-banner {
+    animation: none;
+  }
+}

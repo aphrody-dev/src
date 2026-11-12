@@ -1,0 +1,20 @@
+{
+  "name": "@aphrody/chromium-bun",
+  "version": "2.1.0",
+  "description": "Sovereign Bun v1.4.4 + Chromium Browser Engine, CDP Automation, SSRF/Shields Crawler & 3-VPS Datacenter RRF Search Cluster",
+  "type": "module",
+  "main": "src/index.ts",
+  "bin": {
+    "chromium-bun": "./src/cli.ts"
+  },
+  "scripts": {
+    "start": "bun run src/cli.ts",
+    "bench": "bun run src/benchmarks/runner.ts",
+    "inspect": "bun run src/audit/chromium-inspector.ts",
+    "test": "bun test",
+    "check": "bun check",
+    "fmt": "bun fmt"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

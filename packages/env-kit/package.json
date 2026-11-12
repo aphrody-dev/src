@@ -1,0 +1,21 @@
+{
+  "name": "@aphrody/env-kit",
+  "version": "1.0.0",
+  "description": "Zero-dependency cross-language environment sharing, secret redaction, 3-principal Google Cloud IAM, and editor/agent sync toolkit for C:/src",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "bin": {
+    "env-kit": "./src/cli.ts"
+  },
+  "scripts": {
+    "check": "bun check",
+    "fmt": "bun fmt",
+    "fmt:check": "bun fmt --check",
+    "test": "bun test",
+    "doctor": "bun run src/cli.ts doctor",
+    "accounts": "bun run src/cli.ts accounts status"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

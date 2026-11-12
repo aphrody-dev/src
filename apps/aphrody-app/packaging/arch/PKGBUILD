@@ -1,0 +1,21 @@
+# PKGBUILD for Arch Linux / CachyOS
+pkgname=aphrody-app
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Pure Rust WebGPU/WGSL Wayland tiling desktop shell, OPFS/WAL store, Fluid sync and WebMCP host"
+arch=('x86_64' 'aarch64')
+url="https://aphrody.app"
+license=('MIT')
+depends=()
+makedepends=('cargo' 'rustc')
+
+build() {
+  cd "$startdir/../.."
+  cargo build --release --locked -p aphrody-host
+}
+
+package() {
+  cd "$startdir/../.."
+  install -Dm755 "target/release/aphrody-app" "$pkgdir/usr/bin/aphrody-app"
+  install -Dm644 "packaging/wayland/aphrody-app.desktop" "$pkgdir/usr/share/wayland-sessions/aphrody-app.desktop"
+}

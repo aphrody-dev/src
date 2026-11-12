@@ -1,0 +1,9 @@
+target/
+/dist/
+*.keystore
+*.jks
+*.idsig
+.env
+/scratch/
+
+/tools/bin/

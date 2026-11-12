@@ -1,0 +1,8 @@
+# Dependencies
+node_modules/
+
+# Bun cache
+.bun/
+
+# Test output
+*.log
