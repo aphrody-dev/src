@@ -1,7 +1,6 @@
-// @aphrody/forge: Zero-copy FFI bridge to depot_ffi.dll (pure Rust 2024 C-ABI)
+// @aphrody/forge: Zero-copy FFI bridge to the depot_* symbols of aphrody_ffi (crates/ffi, Rust 2024 C ABI)
 import { dlopen, FFIType, CString, ptr } from "bun:ffi";
-import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { findAphrodyFfi } from "./native_lib.ts";
 
 export interface DepotGixTelemetry {
   workdir: string;
@@ -36,20 +35,7 @@ let ffiLib: any = null;
 function loadDepotFfi() {
   if (ffiLib !== null) return ffiLib;
 
-  const candidates = [
-    join(process.env.USERPROFILE || "C:/Users/aphro", ".local/bin/depot_ffi.dll"),
-    "C:/src/crates/depot/target/release/depot_ffi.dll",
-    "C:/src/crates/depot/target/debug/depot_ffi.dll",
-  ];
-
-  let dllPath = "";
-  for (const c of candidates) {
-    if (existsSync(c)) {
-      dllPath = c;
-      break;
-    }
-  }
-
+  const dllPath = findAphrodyFfi();
   if (!dllPath) {
     ffiLib = false;
     return false;

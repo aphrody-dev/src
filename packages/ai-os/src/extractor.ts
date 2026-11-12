@@ -151,17 +151,17 @@ const SOVEREIGN_TARGETS: Array<{ name: string; path: string; role: string }> = [
   },
   {
     name: "wayland",
-    path: "C:/src/crates/wayland",
+    path: "C:/src/crates/smithay-wayland-wire",
     role: "Sovereign compositor & DirectX 12 / Vulkan / WGPU surface presentation layer",
   },
   {
     name: "gamescope-rs",
-    path: "C:/src/crates/gamescope-rs",
+    path: "C:/src/crates/gamescope-core",
     role: "High-refresh Rust frame-pacing, DRM/DXGI capture & micro-compositor",
   },
   {
     name: "unix",
-    path: "C:/src/crates/unix",
+    path: "C:/src/crates/unix-distro",
     role: "Native NT + POSIX syscall substrate, Win32 process/job/pipe management & GPU hooks",
   },
   {
@@ -196,7 +196,7 @@ const SOVEREIGN_TARGETS: Array<{ name: string; path: string; role: string }> = [
   },
   {
     name: "depot",
-    path: "C:/src/crates/depot",
+    path: "C:/src/crates/depot-core",
     role: "Rust build-graph orchestrator, artifact cache & Cargo workspace accelerator",
   },
 ];
@@ -222,7 +222,7 @@ function classifyCargoCrate(
     if (crateName === "agent-desktop-windows") {
       return {
         action: "INTEGRATE_INTO_TARGET",
-        target: "C:/src/crates/wayland + C:/src/crates/gamescope-rs + C:/src/crates/unix",
+        target: "C:/src/crates/smithay-wayland-wire + C:/src/crates/gamescope-core + C:/src/crates/unix-distro",
         rationale:
           "Unify UIAutomation + WinRT Graphics.Capture + Direct3D11/DXGI window capture with sovereign DX12/NT surface pipeline",
       };
@@ -230,7 +230,7 @@ function classifyCargoCrate(
     if (crateName === "agent-desktop-linux") {
       return {
         action: "INTEGRATE_INTO_TARGET",
-        target: "C:/src/crates/wayland + C:/src/crates/gamescope-rs",
+        target: "C:/src/crates/smithay-wayland-wire + C:/src/crates/gamescope-core",
         rationale:
           "Fuse AT-SPI2 zbus accessibility tree + X11/Wayland surface capture with sovereign Wayland compositor",
       };
@@ -281,7 +281,7 @@ function classifyCargoCrate(
   ) {
     return {
       action: "INTEGRATE_INTO_TARGET",
-      target: "C:/src/crates/unix + C:/src/crates/wayland + C:/src/crates/ring3-agent",
+      target: "C:/src/crates/unix-distro + C:/src/crates/smithay-wayland-wire + C:/src/crates/ring3-agent",
       rationale:
         "Align Windows NT / WinRT / UIAutomation / DXGI crates on unified windows-sys 0.61+ ABI across sovereign Rust crates",
     };
@@ -294,7 +294,7 @@ function classifyCargoCrate(
   ) {
     return {
       action: "INTEGRATE_INTO_TARGET",
-      target: "C:/src/crates/wayland + C:/src/crates/gamescope-rs",
+      target: "C:/src/crates/smithay-wayland-wire + C:/src/crates/gamescope-core",
       rationale:
         "Share Linux X11/Wayland/DBus AT-SPI2 bindings with sovereign Linux 7.4 compositor stack",
     };
@@ -328,7 +328,7 @@ function classifyCargoCrate(
   ) {
     return {
       action: "INTEGRATE_INTO_TARGET",
-      target: "C:/src/crates/gamescope-rs + C:/src/packages/wck",
+      target: "C:/src/crates/gamescope-core + C:/src/packages/wck",
       rationale:
         "Share SIMD-accelerated frame/screenshot encoding across desktop capture and visual regression gates",
     };
@@ -439,7 +439,7 @@ function classifyNpmPackage(name: string): DispositionMapping {
   ) {
     return {
       action: "REPLACE_WITH_BUN_OR_SOVEREIGN_RUST",
-      target: "C:/src/packages/pi-opencode + C:/src/crates/unix + Bun.$",
+      target: "C:/src/packages/pi-opencode + C:/src/crates/unix-distro + Bun.$",
       rationale:
         "Use native Bun.$ shell, OpenCode Rust PTY, and sovereign worktree isolation",
     };
@@ -570,7 +570,7 @@ function classifySourceFile(
         category: "rust-crate",
         disposition: {
           action: "INTEGRATE_INTO_TARGET",
-          target: "C:/src/crates/wayland + C:/src/crates/gamescope-rs + C:/src/crates/unix",
+          target: "C:/src/crates/smithay-wayland-wire + C:/src/crates/gamescope-core + C:/src/crates/unix-distro",
           rationale:
             "Unify Windows UIAutomation + WinRT Graphics.Capture + D3D11 with sovereign NT/DX12 stack",
         },

@@ -628,7 +628,7 @@ export function startForgeServer(port: number = 4000) {
         return Response.json({
           ffi_available: available,
           abi_version: available ? getDepotAbiVersion() : null,
-          engine: "Rust 2024 (depot_ffi.dll)",
+          engine: "Rust 2024 (aphrody_ffi)",
         });
       }
 

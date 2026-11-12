@@ -499,7 +499,7 @@ export async function executeMcpTool(
             ? { path: ffi.dllPath, abiVersion: ffi.abiVersion, loaded: true }
             : { loaded: false },
           wckDir: existsSync("C:/src/packages/wck"),
-          depotDir: existsSync("C:/src/crates/depot"),
+          depotDir: existsSync("C:/src/crates/depot-core"),
           ring3AgentDir: existsSync("C:/src/crates/ring3-agent"),
           rosegriffonDir: existsSync("C:/src/apps/rosegriffon"),
           nieBin: existsSync(join(homedir(), ".local", "bin", "nie.exe")),
@@ -557,7 +557,7 @@ export async function executeMcpTool(
         };
       }
       if (sub === "depot") {
-        const cargoToml = "C:/src/crates/depot/Cargo.toml";
+        const cargoToml = "C:/src/crates/depot-core/Cargo.toml";
         const exists = existsSync(cargoToml);
         return {
           content: [

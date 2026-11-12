@@ -112,7 +112,7 @@ export const SENTINEL_TARGETS: readonly SentinelTargetSpec[] = [
     name: "Rust uutils/coreutils",
     endpoint: "https://api.github.com/repos/uutils/coreutils/releases/latest",
     kind: "github-releases",
-    localMirrorPath: "C:/src/crates/unix",
+    localMirrorPath: "C:/src/crates/unix-distro",
   },
 
   // 3. Windows 11 Insiders & Rust Windows SDK

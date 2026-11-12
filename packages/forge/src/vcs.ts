@@ -355,7 +355,7 @@ export function getRepoDiff(repoPath: string, commit?: string): string {
   if (commit) {
     return safeExec(`git show ${commit} --stat -p`, repoPath);
   }
-  return safeExec("git diff HEAD", repoPath) || safeExec("git diff", repoPath);
+  return safeExec("git diff HEAD -- .", repoPath) || safeExec("git diff", repoPath);
 }
 
 export function slimRepo(repoPath: string): {
@@ -390,9 +390,9 @@ export function createPatchBundle(
     baseSha = headSha;
   }
 
-  let patchRaw = safeExec(`git diff ${baseSha}..${headSha}`, repoPath);
+  let patchRaw = safeExec(`git diff ${baseSha}..${headSha} -- .`, repoPath);
   if (!patchRaw) {
-    patchRaw = safeExec("git diff HEAD", repoPath);
+    patchRaw = safeExec("git diff HEAD -- .", repoPath);
   }
   if (!patchRaw) {
     patchRaw = `# Forge Empty Patch for ${repoName}\n`;
@@ -402,7 +402,7 @@ export function createPatchBundle(
   const compressed = zstdCompress(patchRaw);
   const hash = blake3(compressed);
 
-  const status = safeExec("git status --porcelain", repoPath);
+  const status = safeExec("git status --porcelain -- .", repoPath);
   const filesCount = status ? status.split(/\r?\n/).filter(Boolean).length : 1;
 
   return {

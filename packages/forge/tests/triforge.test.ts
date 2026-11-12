@@ -16,23 +16,16 @@ import {
 } from "../src/triforge.ts";
 
 describe("Tri-Forge Repository Inventory & URL Synthesis", () => {
-  test("discovers all 26 canonical repositories (root src + 25 submodules)", () => {
+  test("discovers all 6 canonical repositories (root src + 5 submodules)", () => {
     const specs = discoverTriForgeInventory();
-    expect(specs.length).toBe(26);
-    expect(CANONICAL_MONOREPO_SUBMODULES.length).toBe(26);
+    expect(specs.length).toBe(6);
+    expect(CANONICAL_MONOREPO_SUBMODULES.length).toBe(6);
 
     const names = specs.map((s) => s.name);
     expect(names[0]).toBe("src");
-    expect(names).toContain("aphrody");
-    expect(names).toContain("aphrody-app");
-    expect(names).toContain("shenron");
-    expect(names).toContain("rosegriffon");
-    expect(names).toContain("ai-os");
-    expect(names).toContain("forge");
-    expect(names).toContain("google-design");
-    expect(names).toContain("unix");
-    expect(names).toContain("wayland");
-    expect(names).toContain("infra");
+    for (const n of ["shenron", "rosegriffon", "bench", "ring3-agent", "rust-stack"]) {
+      expect(names).toContain(n);
+    }
 
     // Clean unprefixed names (no slashes)
     for (const s of specs) {
@@ -62,25 +55,24 @@ describe("Tri-Forge Repository Inventory & URL Synthesis", () => {
   test("parses .gitmodules cleanly", () => {
     const raw = readFileSync("C:\\src\\.gitmodules", "utf-8");
     const parsed = parseGitmodules(raw);
-    expect(parsed.length).toBe(25);
-    expect(parsed.some((p) => p.cleanName === "forge")).toBe(true);
-    expect(parsed.some((p) => p.cleanName === "unix")).toBe(true);
-    expect(parsed.some((p) => p.cleanName === "infra")).toBe(true);
+    expect(parsed.length).toBe(5);
+    expect(parsed.some((p) => p.cleanName === "shenron")).toBe(true);
+    expect(parsed.some((p) => p.cleanName === "rust-stack")).toBe(true);
   });
 
-  test("audits remotes across all 26 repositories without mutating in read-only mode", () => {
+  test("audits remotes across all 6 repositories without mutating in read-only mode", () => {
     const audit = auditAndConfigureRemotes({ apply: false });
-    expect(audit.length).toBe(26);
-    const forgeEntry = audit.find((e) => e.name === "forge");
-    expect(forgeEntry).toBeDefined();
-    expect(forgeEntry?.exists).toBe(true);
-    expect(forgeEntry?.originAligned).toBe(true);
+    expect(audit.length).toBe(6);
+    const stackEntry = audit.find((e) => e.name === "rust-stack");
+    expect(stackEntry).toBeDefined();
+    expect(stackEntry?.exists).toBe(true);
+    expect(stackEntry?.originAligned).toBe(true);
   });
 
   test("gitlab-init dry-run produces deterministic provisioning plan", async () => {
     const plan = await initializeGitLabForge({ dryRun: true });
     expect(plan.mode).toBe("provisioning-plan");
-    expect(plan.projectsPlanned).toBe(26);
+    expect(plan.projectsPlanned).toBe(6);
     expect(plan.protectedBranches).toEqual(["main", "dev"]);
     expect(plan.orgOwnerEmail).toBe("contact@aphrody.com");
   });
@@ -90,18 +82,18 @@ describe("Tri-Forge Repository Inventory & URL Synthesis", () => {
     expect(plan.mode).toBe("dry-run");
     expect(plan.gcpProjectId).toBe("aphrody");
     expect(plan.gcpProjectNumber).toBe("468000409790");
-    expect(plan.repositoriesPlanned).toBe(26);
-    expect(plan.commands.length).toBeGreaterThanOrEqual(29);
+    expect(plan.repositoriesPlanned).toBe(6);
+    expect(plan.commands.length).toBeGreaterThanOrEqual(9);
   });
 
   test("tri-sync dry-run validates forge targets cleanly", () => {
     const syncRes = executeTriSync({
       dryRun: true,
       forge: "github",
-      repoFilter: "forge",
+      repoFilter: "rust-stack",
     });
     expect(syncRes.length).toBe(1);
-    expect(syncRes[0]?.repo).toBe("forge");
+    expect(syncRes[0]?.repo).toBe("rust-stack");
     expect(syncRes[0]?.perForge["github"]?.status).toBe("dry-run");
   });
 });

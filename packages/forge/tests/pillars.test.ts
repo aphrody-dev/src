@@ -11,14 +11,14 @@ import { scanMonorepoRepos } from "../src/vcs.ts";
 describe("4-Pillar VCS Governance (Git + Chromium + Kernel + AOSP)", () => {
   test("scanMonorepoRepos skips root NTFS junctions and scans canonical tiers only", () => {
     const repos = scanMonorepoRepos("C:\\src", { fast: true });
-    expect(repos.length).toBeGreaterThanOrEqual(25);
+    expect(repos.length).toBeGreaterThanOrEqual(6);
     const names = repos.map((r) => r.name);
     expect(names).toContain("src");
-    expect(names).toContain("apps/aphrody");
-    expect(names).toContain("packages/forge");
-    expect(names).toContain("crates/depot");
-    expect(names).toContain("crates/xtask");
-    expect(names).toContain("infra");
+    expect(names).toContain("apps/shenron");
+    expect(names).toContain("apps/rosegriffon");
+    expect(names).toContain("crates/rust-stack");
+    expect(names).toContain("crates/bench");
+    expect(names).toContain("crates/ring3-agent");
     // Root junctions like `bun`, `linux`, `chromium`, `vcs`, `vercel` must never be duplicated as top-level entries
     expect(names).not.toContain("bun");
     expect(names).not.toContain("linux");

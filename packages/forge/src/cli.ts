@@ -78,7 +78,7 @@ async function main() {
     case "depot": {
       const sub = args[1] || "status";
       if (!isFfiAvailable()) {
-        console.error("Error: depot_ffi.dll not found or failed to load");
+        console.error("Error: aphrody_ffi (crates/ffi) not found or failed to load");
         process.exit(1);
       }
       switch (sub) {

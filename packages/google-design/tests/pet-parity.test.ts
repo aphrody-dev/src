@@ -21,7 +21,7 @@ import {
 
 const PARITE_FIXTURE_PATH = join(
   import.meta.dir,
-  "../../../crates/design-system/crates/aphrody-design-identity/tests/fixtures/parite-web.json",
+  "../../../crates/aphrody-design-identity/tests/fixtures/parite-web.json",
 );
 
 type TickRow = [number, string, string | null, number | null, number | null];

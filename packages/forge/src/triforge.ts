@@ -60,7 +60,7 @@ export function getDefaultTriForgeConfig(
 }
 
 /**
- * Canonical 26-repository inventory for C:\src (root `src` + 25 submodules).
+ * Canonical 6-repository inventory for C:\src (root `src` + 5 submodules). Everything else lives in the root repo.
  * All repositories use clean unprefixed names under `aphrody-dev/<name>`.
  */
 export const CANONICAL_MONOREPO_SUBMODULES: ReadonlyArray<{
@@ -69,39 +69,11 @@ export const CANONICAL_MONOREPO_SUBMODULES: ReadonlyArray<{
   tier: TriForgeRepoSpec["tier"];
 }> = [
   { name: "src", relPath: ".", tier: "root" },
-  { name: "aphrody", relPath: "apps/aphrody", tier: "apps" },
-  { name: "aphrody-app", relPath: "apps/aphrody-app", tier: "apps" },
   { name: "shenron", relPath: "apps/shenron", tier: "apps" },
   { name: "rosegriffon", relPath: "apps/rosegriffon", tier: "apps" },
-  { name: "ai-os", relPath: "packages/ai-os", tier: "packages" },
-  { name: "ai-triad", relPath: "packages/ai-triad", tier: "packages" },
-  { name: "brain", relPath: "packages/brain", tier: "packages" },
-  { name: "bun-parity", relPath: "packages/bun-parity", tier: "packages" },
-  { name: "bun-plugins", relPath: "packages/bun-plugins", tier: "packages" },
-  { name: "chromium-bun", relPath: "packages/chromium-bun", tier: "packages" },
-  { name: "env-kit", relPath: "packages/env-kit", tier: "packages" },
-  { name: "forge", relPath: "packages/forge", tier: "packages" },
-  {
-    name: "google-design",
-    relPath: "packages/google-design",
-    tier: "packages",
-  },
-  {
-    name: "knowledge-engine",
-    relPath: "packages/knowledge-engine",
-    tier: "packages",
-  },
-  { name: "pi-opencode", relPath: "packages/pi-opencode", tier: "packages" },
-  { name: "wck", relPath: "packages/wck", tier: "packages" },
   { name: "bench", relPath: "crates/bench", tier: "crates" },
-  { name: "depot", relPath: "crates/depot", tier: "crates" },
-  { name: "gamescope-rs", relPath: "crates/gamescope-rs", tier: "crates" },
   { name: "ring3-agent", relPath: "crates/ring3-agent", tier: "crates" },
   { name: "rust-stack", relPath: "crates/rust-stack", tier: "crates" },
-  { name: "unix", relPath: "crates/unix", tier: "crates" },
-  { name: "wayland", relPath: "crates/wayland", tier: "crates" },
-  { name: "xtask", relPath: "crates/xtask", tier: "crates" },
-  { name: "infra", relPath: "infra", tier: "infra" },
 ];
 
 /**

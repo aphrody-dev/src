@@ -1,14 +1,8 @@
-// Bun FFI bridge to depot_ffi.dll (Native Rust 2024 Engine)
+// Bun FFI bridge to the depot_* symbols of aphrody_ffi (crates/ffi, Rust 2024 C ABI)
 import { dlopen, FFIType, CString } from "bun:ffi";
-import { existsSync } from "node:fs";
+import { APHRODY_FFI_FILE, findAphrodyFfi } from "./native_lib.ts";
 
-const candidatePaths = [
-  "C:\\src\\crates\\depot\\target\\release\\depot_ffi.dll",
-  "C:\\Users\\aphro\\.local\\bin\\depot_ffi.dll",
-  "depot_ffi.dll",
-];
-
-const libPath = candidatePaths.find((p) => existsSync(p)) || candidatePaths[0];
+const libPath = findAphrodyFfi() ?? APHRODY_FFI_FILE;
 
 let lib: any = null;
 
