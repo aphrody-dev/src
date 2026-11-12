@@ -487,7 +487,17 @@ ________ running '{}' in '{}'",
             let done = sync::execute(&plan, jobs, &|line| println!("{line}"));
             let failed = done.iter().filter(|d| d.result.is_err()).count();
             if cipd && plan.iter().any(|p| p.action == Action::Cipd) {
-                let ensure = sync::cipd_ensure_file(&c, &plan);
+                // `cipd ensure` makes the root match the file exactly, so the file always lists
+                // every CIPD package of the tree: a `--only` subset would uninstall the rest.
+                let all = sync::plan(
+                    &c,
+                    &PlanOptions {
+                        only: Vec::new(),
+                        include_solutions: true,
+                        populate_cache: false,
+                    },
+                );
+                let ensure = sync::cipd_ensure_file(&c, &all);
                 let file = c.root_dir.join(".cipd").join("ay_ensure_file.txt");
                 std::fs::create_dir_all(file.parent().unwrap_or(&c.root_dir))?;
                 std::fs::write(&file, ensure)?;
@@ -510,13 +520,17 @@ ________ running '{}' in '{}'",
 /// The official CIPD client from depot_tools (`.cipd_client` / `cipd`).
 pub fn run_cipd(args: &[&str]) -> i32 {
     let args: Vec<String> = args.iter().map(|s| s.to_string()).collect();
-    match depot_core::DepotTools::run_passthrough("cipd", &args) {
-        Ok(c) => c,
-        Err(e) => {
-            eprintln!("cipd: {e}");
-            127
-        }
-    }
+    // `ensure` in Rust through the shared store (crates/depot-cipd); the rest on the Go client.
+    depot_cipd::cli::run(
+        &args,
+        &|a| match depot_core::DepotTools::run_passthrough("cipd", a) {
+            Ok(c) => c,
+            Err(e) => {
+                eprintln!("cipd: {e}");
+                127
+            }
+        },
+    )
 }
 
 fn fetch_cmd(f: Fetch) -> Result<i32> {

@@ -15,6 +15,7 @@ gix = { workspace = true, features = ["blocking-network-client", "blocking-http-
 clap.workspace = true
 depot-core.workspace = true
 depot-cas.workspace = true
+depot-cipd.workspace = true
 ureq = "3"
 serde_json.workspace = true
 tar = "0.4.46"

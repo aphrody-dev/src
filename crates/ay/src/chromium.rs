@@ -12,6 +12,7 @@ pub enum Tool {
     Cipd,
     Ninja,
     Gn,
+    Cl,
 }
 
 pub fn run(tool: Tool, args: &[String]) -> i32 {
@@ -28,5 +29,6 @@ pub fn run(tool: Tool, args: &[String]) -> i32 {
         }),
         Tool::Ninja => depot_core::build_tools::run_ninja(args),
         Tool::Gn => depot_core::build_tools::run_gn(args),
+        Tool::Cl => depot_gclient::cl::run_cl("ay cl", args),
     }
 }

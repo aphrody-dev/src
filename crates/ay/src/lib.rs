@@ -70,6 +70,9 @@ pub enum Cmd {
     /// vpython on uv: run Python in a vpython.toml / PEP 723 environment
     #[command(disable_help_flag = true)]
     Vpy(Rest),
+    /// git cl on jj and Gerrit REST: upload, status, issue
+    #[command(disable_help_flag = true)]
+    Cl(Rest),
     /// Official CIPD client from depot_tools
     #[command(disable_help_flag = true)]
     Cipd(Rest),
@@ -160,6 +163,7 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Gclient(r) => Route::Chromium(chromium::Tool::Gclient, r.args),
         Cmd::Fetch(r) => Route::Chromium(chromium::Tool::Fetch, r.args),
         Cmd::Vpy(r) => Route::Chromium(chromium::Tool::Vpy, r.args),
+        Cmd::Cl(r) => Route::Chromium(chromium::Tool::Cl, r.args),
         Cmd::Cipd(r) => Route::Chromium(chromium::Tool::Cipd, r.args),
         Cmd::Ninja(r) => Route::Chromium(chromium::Tool::Ninja, r.args),
         Cmd::Gn(r) => Route::Chromium(chromium::Tool::Gn, r.args),

@@ -2733,6 +2733,7 @@ version = "0.2.0"
 dependencies = [
  "clap",
  "depot-cas",
+ "depot-cipd",
  "depot-core",
  "flate2",
  "gix",
