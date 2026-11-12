@@ -560,8 +560,8 @@ creates = "{bin}/src-deploy{exe}"
 
 [[step]]
 name = "triad"
-when = "{repo}/packages/ai-triad/src/cli.ts"
-run = ["bun", "build", "--compile", "{repo}/packages/ai-triad/src/cli.ts", "--outfile", "{bin}/triad{exe}"]
+when = "{repo}/agent/legacy/ai-triad/src/cli.ts"
+run = ["bun", "build", "--compile", "{repo}/agent/legacy/ai-triad/src/cli.ts", "--outfile", "{bin}/triad{exe}"]
 creates = "{bin}/triad{exe}"
 
 # frg as an AOT binary instead of the former frg.cmd / bash shim.

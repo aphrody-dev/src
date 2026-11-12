@@ -13,7 +13,7 @@
     "fmt:check": "bun fmt --check",
     "arch": "archguard check --strict",
     "doctor": "archguard check --strict && xtk doctor && env-kit doctor && triad doctor && src-deploy doctor",
-    "test:packages": "bun test packages/ai-triad packages/env-kit packages/pi-opencode packages/ai-os/tests packages/wck packages/knowledge-engine packages/epic-games",
+    "test:packages": "bun test packages/env-kit packages/wck packages/epic-games",
     "deploy": "src-deploy up --all --dry-run",
     "deploy:live": "src-deploy up --all"
   },

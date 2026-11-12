@@ -34,6 +34,7 @@ graphify-out/
 !/docs/
 !/apps/
 !/packages/
+!/agent
 !/crates/
 !/infra/
 !/tools/
@@ -73,8 +74,6 @@ graphify-out/
 infra/winnt-sdk/**/bin/
 infra/winnt-sdk/**/obj/
 
-packages/pi-opencode/native/*.dll
-packages/ai-os/submodules/
 # third_party clones stay untracked (pinned in src.lock.json); only the ecosystem manifest is versioned.
 !/third_party/
 /third_party/*

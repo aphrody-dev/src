@@ -26,3 +26,6 @@
 	path = apps/auto
 	url = https://github.com/aphrody-labs/auto.git
 	branch = main
+[submodule "agent"]
+	path = agent
+	url = https://github.com/aphrody-labs/agent.git
