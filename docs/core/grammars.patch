@@ -1,0 +1,29 @@
+diff --git a/crates/core/build.rs b/crates/core/build.rs
+index 595f920..d4d3f26 100644
+--- a/crates/core/build.rs
++++ b/crates/core/build.rs
+@@ -107,7 +107,7 @@ struct GrammarSrc {
+ fn grammars_in(repo: &Path) -> Vec<GrammarSrc> {
+     let meta = repo.join("tree-sitter.json");
+     println!("cargo:rerun-if-changed={}", meta.display());
+-    let Ok(text) = std::fs::read_to_string(&meta) else { return Vec::new() };
++    let Ok(text) = std::fs::read_to_string(&meta) else { return legacy_grammar(repo).into_iter().collect() };
+     let Ok(json) = serde_json::from_str::<serde_json::Value>(&text) else { return Vec::new() };
+     let strs = |v: Option<&serde_json::Value>| -> Vec<String> {
+         match v {
+@@ -173,3 +173,15 @@ fn emit(g: &GrammarSrc, decls: &mut String, code: &mut String) {
+         g.name, g.file_types, g.ident
+     );
+ }
++
++/// Grammars predating `tree-sitter.json` (ABI <= 14 era): name from the directory
++/// (`tree-sitter-<name>`), committed `src/parser.c`, file types left empty (match by name).
++fn legacy_grammar(repo: &Path) -> Option<GrammarSrc> {
++    let src = repo.join("src");
++    if !src.join("parser.c").is_file() {
++        return None;
++    }
++    let name = repo.file_name()?.to_str()?.strip_prefix("tree-sitter-")?.to_string();
++    let tags = Some(repo.join("queries/tags.scm")).filter(|p| p.is_file());
++    Some(GrammarSrc { ident: name.replace(['-', '.'], "_"), name, src, file_types: Vec::new(), tags })
++}

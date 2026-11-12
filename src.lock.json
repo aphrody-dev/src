@@ -301,6 +301,45 @@
             },
             "sparse_paths": null
         },
+        "third_party/SPIRV-Headers": {
+            "path": "C:src\\third_party\\SPIRV-Headers",
+            "url": "https://github.com/KhronosGroup/SPIRV-Headers.git",
+            "commit": "6efe5ae6b7c6ad29da3f2cc3f164b9c3d72b78b1",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/KhronosGroup/SPIRV-Headers.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/SPIRV-LLVM-Translator": {
+            "path": "C:src\\third_party\\SPIRV-LLVM-Translator",
+            "url": "https://github.com/KhronosGroup/SPIRV-LLVM-Translator.git",
+            "commit": "dcdce7a823c89208045e1a710499b44e4721a0d9",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/KhronosGroup/SPIRV-LLVM-Translator.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/SPIRV-Tools": {
+            "path": "C:src\\third_party\\SPIRV-Tools",
+            "url": "https://github.com/KhronosGroup/SPIRV-Tools.git",
+            "commit": "a567f833434dbd7456ddf3d320c330d7a0272d41",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/KhronosGroup/SPIRV-Tools.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
         "third_party/TypeChat": {
             "path": "C:\\src\\third_party\\TypeChat",
             "url": "https://github.com/microsoft/TypeChat.git",
@@ -954,6 +993,19 @@
             },
             "sparse_paths": null
         },
+        "third_party/circt": {
+            "path": "C:src\\third_party\\circt",
+            "url": "https://github.com/llvm/circt.git",
+            "commit": "94f1f0e80284e179ac91ff736421976e74097840",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/llvm/circt.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
         "third_party/claude-agent-sdk-python": {
             "path": "C:\\src\\third_party\\claude-agent-sdk-python",
             "url": "https://github.com/anthropics/claude-agent-sdk-python.git",
@@ -1097,6 +1149,19 @@
                 "origin": "https://github.com/tartley/colorama.git"
             },
             "sparse_paths": null
+        },
+        "third_party/coreboot": {
+            "path": "C:src\\third_party\\coreboot",
+            "url": "https://github.com/coreboot/coreboot.git",
+            "commit": "ac1b1b332b3dec3916c35fbb53d79fef4c46dfc6",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/coreboot/coreboot.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
         },
         "third_party/coreutils": {
             "path": "C:\\src\\third_party\\coreutils",
@@ -1320,6 +1385,19 @@
                 "upstream": "https://github.com/microsoft/edit.git"
             },
             "sparse_paths": null
+        },
+        "third_party/edk2": {
+            "path": "C:src\\third_party\\edk2",
+            "url": "https://github.com/tianocore/edk2.git",
+            "commit": "d560b504564d0089c5c97af30799b89b3babc1c6",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tianocore/edk2.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
         },
         "third_party/ffmpeg": {
             "path": "C:\\src\\third_party\\ffmpeg",
@@ -2155,8 +2233,24 @@
                 "/llvm/include/llvm/Support/",
                 "/llvm/lib/LTO/",
                 "/llvm/lib/Passes/",
-                "/llvm/lib/Support/"
+                "/llvm/lib/Support/",
+                "/llvm/lib/Target/",
+                "/llvm/lib/TargetParser/",
+                "/llvm/include/llvm/TargetParser/"
             ]
+        },
+        "third_party/llvm-test-suite": {
+            "path": "C:src\\third_party\\llvm-test-suite",
+            "url": "https://github.com/llvm/llvm-test-suite.git",
+            "commit": "19b349c5aa391729e688f9b4b53ded177e1531cb",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/llvm/llvm-test-suite.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
         },
         "third_party/locally-uncensored": {
             "path": "C:\\src\\third_party\\locally-uncensored",
@@ -2220,6 +2314,19 @@
                 "origin": "https://github.com/mdn/content.git"
             },
             "sparse_paths": null
+        },
+        "third_party/mesa": {
+            "path": "C:src\\third_party\\mesa",
+            "url": "https://gitlab.freedesktop.org/mesa/mesa.git",
+            "commit": "17d26bc65e7370c5e8a64c84239e0e435b047b0c",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://gitlab.freedesktop.org/mesa/mesa.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
         },
         "third_party/microsoft-ui-xaml": {
             "path": "C:\\src\\third_party\\microsoft-ui-xaml",
@@ -3612,6 +3719,58 @@
             },
             "sparse_paths": null
         },
+        "third_party/tree-sitter-agda": {
+            "path": "C:src\\third_party\\tree-sitter-agda",
+            "url": "https://github.com/tree-sitter/tree-sitter-agda.git",
+            "commit": "e8d47a6987effe34d5595baf321d82d3519a8527",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter/tree-sitter-agda.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-arduino": {
+            "path": "C:src\\third_party\\tree-sitter-arduino",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-arduino.git",
+            "commit": "11dd46c9ae25135c473c0003a133bb06a484af0c",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-arduino.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-asm": {
+            "path": "C:src\\third_party\\tree-sitter-asm",
+            "url": "https://github.com/RubixDev/tree-sitter-asm.git",
+            "commit": "839741fef4dab5128952334624905c82b40c7133",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/RubixDev/tree-sitter-asm.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-astro": {
+            "path": "C:src\\third_party\\tree-sitter-astro",
+            "url": "https://github.com/virchau13/tree-sitter-astro.git",
+            "commit": "213f6e6973d9b456c6e50e86f19f66877e7ef0ee",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/virchau13/tree-sitter-astro.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
         "third_party/tree-sitter-bash": {
             "path": "C:\\src\\third_party\\tree-sitter-bash",
             "url": "https://github.com/tree-sitter/tree-sitter-bash.git",
@@ -3624,6 +3783,32 @@
             },
             "sparse_paths": null
         },
+        "third_party/tree-sitter-bicep": {
+            "path": "C:src\\third_party\\tree-sitter-bicep",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-bicep.git",
+            "commit": "bff59884307c0ab009bd5e81afd9324b46a6c0f9",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-bicep.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-bitbake": {
+            "path": "C:src\\third_party\\tree-sitter-bitbake",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-bitbake.git",
+            "commit": "a5d04fdb5a69a02b8fa8eb5525a60dfb5309b73b",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-bitbake.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
         "third_party/tree-sitter-c": {
             "path": "C:\\src\\third_party\\tree-sitter-c",
             "url": "https://github.com/tree-sitter/tree-sitter-c.git",
@@ -3635,6 +3820,97 @@
                 "origin": "https://github.com/tree-sitter/tree-sitter-c.git"
             },
             "sparse_paths": null
+        },
+        "third_party/tree-sitter-c-sharp": {
+            "path": "C:src\\third_party\\tree-sitter-c-sharp",
+            "url": "https://github.com/tree-sitter/tree-sitter-c-sharp.git",
+            "commit": "8c0abe0b84a3681d3e6852ce2e2a1eecb4f731c5",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter/tree-sitter-c-sharp.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-cairo": {
+            "path": "C:src\\third_party\\tree-sitter-cairo",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-cairo.git",
+            "commit": "6238f609bea233040fe927858156dee5515a0745",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-cairo.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-capnp": {
+            "path": "C:src\\third_party\\tree-sitter-capnp",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-capnp.git",
+            "commit": "7b0883c03e5edd34ef7bcf703194204299d7099f",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-capnp.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-chatito": {
+            "path": "C:src\\third_party\\tree-sitter-chatito",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-chatito.git",
+            "commit": "c0ed82c665b732395073f635c74c300f09530a7f",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-chatito.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-cmake": {
+            "path": "C:src\\third_party\\tree-sitter-cmake",
+            "url": "https://github.com/uyha/tree-sitter-cmake.git",
+            "commit": "a3ec2b2144daf7132e7ee824d8cab9610523d10f",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/uyha/tree-sitter-cmake.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-commonlisp": {
+            "path": "C:src\\third_party\\tree-sitter-commonlisp",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-commonlisp.git",
+            "commit": "32323509b3d9fe96607d151c2da2c9009eb13a2f",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-commonlisp.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-cpon": {
+            "path": "C:src\\third_party\\tree-sitter-cpon",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-cpon.git",
+            "commit": "594289eadfec719198e560f9d7fd243c4db678d5",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-cpon.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
         },
         "third_party/tree-sitter-cpp": {
             "path": "C:\\src\\third_party\\tree-sitter-cpp",
@@ -3660,6 +3936,253 @@
             },
             "sparse_paths": null
         },
+        "third_party/tree-sitter-cst": {
+            "path": "C:src\\third_party\\tree-sitter-cst",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-cst.git",
+            "commit": "d58f8a6a4fb60789fab750e86b1976cffc1528e1",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-cst.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-csv": {
+            "path": "C:src\\third_party\\tree-sitter-csv",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-csv.git",
+            "commit": "f6bf6e35eb0b95fbadea4bb39cb9709507fcb181",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-csv.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-cuda": {
+            "path": "C:src\\third_party\\tree-sitter-cuda",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-cuda.git",
+            "commit": "d58080a327756e4d1d16ec329ba7cb2048f6c6cd",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-cuda.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-cyberchef": {
+            "path": "C:src\\third_party\\tree-sitter-cyberchef",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-cyberchef.git",
+            "commit": "8bad395b98253324085b4b5227b14d4988f374b7",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-cyberchef.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-dart": {
+            "path": "C:src\\third_party\\tree-sitter-dart",
+            "url": "https://github.com/UserNobody14/tree-sitter-dart.git",
+            "commit": "0038280b774b65c1b89ba7fec50624d8baed9fe1",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/UserNobody14/tree-sitter-dart.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-devicetree": {
+            "path": "C:src\\third_party\\tree-sitter-devicetree",
+            "url": "https://github.com/joelspadin/tree-sitter-devicetree.git",
+            "commit": "e78bf56f206cb47bee28a217423acb651e076848",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/joelspadin/tree-sitter-devicetree.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-diff": {
+            "path": "C:src\\third_party\\tree-sitter-diff",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-diff.git",
+            "commit": "ada384ac7bfc1307f32de474620120add29998fb",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-diff.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-dockerfile": {
+            "path": "C:src\\third_party\\tree-sitter-dockerfile",
+            "url": "https://github.com/camdencheek/tree-sitter-dockerfile.git",
+            "commit": "971acdd908568b4531b0ba28a445bf0bb720aba5",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/camdencheek/tree-sitter-dockerfile.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-doxygen": {
+            "path": "C:src\\third_party\\tree-sitter-doxygen",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-doxygen.git",
+            "commit": "6069b1815b139080d6c562b5ff9ae2296cbc6602",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-doxygen.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-elixir": {
+            "path": "C:src\\third_party\\tree-sitter-elixir",
+            "url": "https://github.com/elixir-lang/tree-sitter-elixir.git",
+            "commit": "cb32ccbe17c67037b09e31bf9beb22cdae6ed8e9",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/elixir-lang/tree-sitter-elixir.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-embedded-template": {
+            "path": "C:src\\third_party\\tree-sitter-embedded-template",
+            "url": "https://github.com/tree-sitter/tree-sitter-embedded-template.git",
+            "commit": "3499d85f0a0d937c507a4a65368f2f63772786e1",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter/tree-sitter-embedded-template.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-erlang": {
+            "path": "C:src\\third_party\\tree-sitter-erlang",
+            "url": "https://github.com/WhatsApp/tree-sitter-erlang.git",
+            "commit": "62c82e67b73e13f3ef06e4c8c07ff035a8235d30",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/WhatsApp/tree-sitter-erlang.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-firrtl": {
+            "path": "C:src\\third_party\\tree-sitter-firrtl",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-firrtl.git",
+            "commit": "8503d3a0fe0f9e427863cb0055699ff2d29ae5f5",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-firrtl.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-fluent": {
+            "path": "C:src\\third_party\\tree-sitter-fluent",
+            "url": "https://github.com/tree-sitter/tree-sitter-fluent.git",
+            "commit": "858fdd6f1e81992e00d3541bfb31bac9365d7a47",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter/tree-sitter-fluent.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-fortran": {
+            "path": "C:src\\third_party\\tree-sitter-fortran",
+            "url": "https://github.com/stadelmanma/tree-sitter-fortran.git",
+            "commit": "d05165a6f0bd044ba1f89865927a752dd5168e66",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/stadelmanma/tree-sitter-fortran.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-func": {
+            "path": "C:src\\third_party\\tree-sitter-func",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-func.git",
+            "commit": "f780ca55e65e7d7360d0229331763e16c452fc98",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-func.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-gitattributes": {
+            "path": "C:src\\third_party\\tree-sitter-gitattributes",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-gitattributes.git",
+            "commit": "1b7af09d45b579f9f288453b95ad555f1f431645",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-gitattributes.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-glsl": {
+            "path": "C:src\\third_party\\tree-sitter-glsl",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-glsl.git",
+            "commit": "24a6c8ef698e4480fecf8340d771fbcb5de8fbb4",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-glsl.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-gn": {
+            "path": "C:src\\third_party\\tree-sitter-gn",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-gn.git",
+            "commit": "bc06955bc1e3c9ff8e9b2b2a55b38b94da923c05",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-gn.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
         "third_party/tree-sitter-go": {
             "path": "C:\\src\\third_party\\tree-sitter-go",
             "url": "https://github.com/tree-sitter/tree-sitter-go.git",
@@ -3671,6 +4194,110 @@
                 "origin": "https://github.com/tree-sitter/tree-sitter-go.git"
             },
             "sparse_paths": null
+        },
+        "third_party/tree-sitter-go-sum": {
+            "path": "C:src\\third_party\\tree-sitter-go-sum",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-go-sum.git",
+            "commit": "27816eb6b7315746ae9fcf711e4e1396dc1cf237",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-go-sum.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-gpg-config": {
+            "path": "C:src\\third_party\\tree-sitter-gpg-config",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-gpg-config.git",
+            "commit": "4024eb268c59204280f8ac71ef146b8ff5e737f6",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-gpg-config.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-graphql": {
+            "path": "C:src\\third_party\\tree-sitter-graphql",
+            "url": "https://github.com/bkegley/tree-sitter-graphql.git",
+            "commit": "5e66e961eee421786bdda8495ed1db045e06b5fe",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/bkegley/tree-sitter-graphql.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-gstlaunch": {
+            "path": "C:src\\third_party\\tree-sitter-gstlaunch",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-gstlaunch.git",
+            "commit": "549aef253fd38a53995cda1bf55c501174372bf7",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-gstlaunch.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-hare": {
+            "path": "C:src\\third_party\\tree-sitter-hare",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-hare.git",
+            "commit": "eed7ddf6a66b596906aa8ca3d40521b8278adc6f",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-hare.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-haskell": {
+            "path": "C:src\\third_party\\tree-sitter-haskell",
+            "url": "https://github.com/tree-sitter/tree-sitter-haskell.git",
+            "commit": "97288e585b0bd44199720280d067fa35bacd81ff",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter/tree-sitter-haskell.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-hcl": {
+            "path": "C:src\\third_party\\tree-sitter-hcl",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-hcl.git",
+            "commit": "64ad62785d442eb4d45df3a1764962dafd5bc98b",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-hcl.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-hlsl": {
+            "path": "C:src\\third_party\\tree-sitter-hlsl",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-hlsl.git",
+            "commit": "bab9111922d53d43668fabb61869bec51bbcb915",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-hlsl.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
         },
         "third_party/tree-sitter-html": {
             "path": "C:\\src\\third_party\\tree-sitter-html",
@@ -3684,6 +4311,45 @@
             },
             "sparse_paths": null
         },
+        "third_party/tree-sitter-hyprlang": {
+            "path": "C:src\\third_party\\tree-sitter-hyprlang",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang.git",
+            "commit": "cecd6b748107d9da1f7b4ca03ef95f1f71d93b8f",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-ispc": {
+            "path": "C:src\\third_party\\tree-sitter-ispc",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-ispc.git",
+            "commit": "ba1bb38ac8ddfa6aa7571cbfe9b4d029f7f77447",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-ispc.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-java": {
+            "path": "C:src\\third_party\\tree-sitter-java",
+            "url": "https://github.com/tree-sitter/tree-sitter-java.git",
+            "commit": "e10607b45ff745f5f876bfa3e94fbcc6b44bdc11",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter/tree-sitter-java.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
         "third_party/tree-sitter-javascript": {
             "path": "C:\\src\\third_party\\tree-sitter-javascript",
             "url": "https://github.com/tree-sitter/tree-sitter-javascript.git",
@@ -3695,6 +4361,19 @@
                 "origin": "https://github.com/tree-sitter/tree-sitter-javascript.git"
             },
             "sparse_paths": null
+        },
+        "third_party/tree-sitter-jsdoc": {
+            "path": "C:src\\third_party\\tree-sitter-jsdoc",
+            "url": "https://github.com/tree-sitter/tree-sitter-jsdoc.git",
+            "commit": "658d18dcdddb75c760363faa4963427a7c6b52db",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter/tree-sitter-jsdoc.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
         },
         "third_party/tree-sitter-json": {
             "path": "C:\\src\\third_party\\tree-sitter-json",
@@ -3708,6 +4387,84 @@
             },
             "sparse_paths": null
         },
+        "third_party/tree-sitter-julia": {
+            "path": "C:src\\third_party\\tree-sitter-julia",
+            "url": "https://github.com/tree-sitter/tree-sitter-julia.git",
+            "commit": "e0f9dcd180fdcfcfa8d79a3531e11d99e79321d3",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter/tree-sitter-julia.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-kconfig": {
+            "path": "C:src\\third_party\\tree-sitter-kconfig",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-kconfig.git",
+            "commit": "9ac99fe4c0c27a35dc6f757cef534c646e944881",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-kconfig.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-kdl": {
+            "path": "C:src\\third_party\\tree-sitter-kdl",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-kdl.git",
+            "commit": "e8ff98a113e175b84b92ec2096820517c1e10a66",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-kdl.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-kotlin": {
+            "path": "C:src\\third_party\\tree-sitter-kotlin",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-kotlin.git",
+            "commit": "3dea6dfa9c0129deb7c4315afbda806c85c41667",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-kotlin.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-linkerscript": {
+            "path": "C:src\\third_party\\tree-sitter-linkerscript",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-linkerscript.git",
+            "commit": "f99011a3554213b654985a4b0a65b3b032ec4621",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-linkerscript.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-llvm": {
+            "path": "C:src\\third_party\\tree-sitter-llvm",
+            "url": "https://github.com/benwilliamgraham/tree-sitter-llvm.git",
+            "commit": "2914786ae6774d4c4e25a230f4afe16aa68fe1c1",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/benwilliamgraham/tree-sitter-llvm.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
         "third_party/tree-sitter-lua": {
             "path": "C:\\src\\third_party\\tree-sitter-lua",
             "url": "https://github.com/tree-sitter-grammars/tree-sitter-lua.git",
@@ -3719,6 +4476,331 @@
                 "origin": "https://github.com/tree-sitter-grammars/tree-sitter-lua.git"
             },
             "sparse_paths": null
+        },
+        "third_party/tree-sitter-luadoc": {
+            "path": "C:src\\third_party\\tree-sitter-luadoc",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-luadoc.git",
+            "commit": "4d04632a3a398b78af52e83be074883e722f40be",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-luadoc.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-luap": {
+            "path": "C:src\\third_party\\tree-sitter-luap",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-luap.git",
+            "commit": "c134aaec6acf4fa95fe4aa0dc9aba3eacdbbe55a",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-luap.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-luau": {
+            "path": "C:src\\third_party\\tree-sitter-luau",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-luau.git",
+            "commit": "a8914d6c1fc5131f8e1c13f769fa704c9f5eb02f",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-luau.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-make": {
+            "path": "C:src\\third_party\\tree-sitter-make",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-make.git",
+            "commit": "70613f3d812cbabbd7f38d104d60a409c4008b43",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-make.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-markdown": {
+            "path": "C:src\\third_party\\tree-sitter-markdown",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-markdown.git",
+            "commit": "41ff24a6c775492c543b09228aeb98d1cd2b3a0f",
+            "branch": "split_parser",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-markdown.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-meson": {
+            "path": "C:src\\third_party\\tree-sitter-meson",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-meson.git",
+            "commit": "aa8d472034956f94f51f2ef2cbfec4cc07efbfde",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-meson.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-move": {
+            "path": "C:src\\third_party\\tree-sitter-move",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-move.git",
+            "commit": "b8ca25518749be10562455fd081a3dab30b93b8b",
+            "branch": "saving",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-move.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-ninja": {
+            "path": "C:src\\third_party\\tree-sitter-ninja",
+            "url": "https://github.com/alemuller/tree-sitter-ninja.git",
+            "commit": "0a95cfdc0745b6ae82f60d3a339b37f19b7b9267",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/alemuller/tree-sitter-ninja.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-nix": {
+            "path": "C:src\\third_party\\tree-sitter-nix",
+            "url": "https://github.com/nix-community/tree-sitter-nix.git",
+            "commit": "21daff7ec37b01539eddd1e0ac468d2070c2ed5c",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/nix-community/tree-sitter-nix.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-nqc": {
+            "path": "C:src\\third_party\\tree-sitter-nqc",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-nqc.git",
+            "commit": "14e6da1627aaef21d2b2aa0c37d04269766dcc1d",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-nqc.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-nu": {
+            "path": "C:src\\third_party\\tree-sitter-nu",
+            "url": "https://github.com/nushell/tree-sitter-nu.git",
+            "commit": "0c3f6dfbc30d7713dcbb15b10954f2dee86ef63c",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/nushell/tree-sitter-nu.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-objc": {
+            "path": "C:src\\third_party\\tree-sitter-objc",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-objc.git",
+            "commit": "181a81b8f23a2d593e7ab4259981f50122909fda",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-objc.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-ocaml": {
+            "path": "C:src\\third_party\\tree-sitter-ocaml",
+            "url": "https://github.com/tree-sitter/tree-sitter-ocaml.git",
+            "commit": "a1c562e73ab787dcc69fdc2e5510c53bbce5364f",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter/tree-sitter-ocaml.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-odin": {
+            "path": "C:src\\third_party\\tree-sitter-odin",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-odin.git",
+            "commit": "d2ca8efb4487e156a60d5bd6db2598b872629403",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-odin.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-pem": {
+            "path": "C:src\\third_party\\tree-sitter-pem",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-pem.git",
+            "commit": "e525b177a229b1154fd81bc0691f943028d9e685",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-pem.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-php": {
+            "path": "C:src\\third_party\\tree-sitter-php",
+            "url": "https://github.com/tree-sitter/tree-sitter-php.git",
+            "commit": "58d5643086ae60e93a3746cca648363ee97c8761",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter/tree-sitter-php.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-po": {
+            "path": "C:src\\third_party\\tree-sitter-po",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-po.git",
+            "commit": "bd860a0f57f697162bf28e576674be9c1500db5e",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-po.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-poe-filter": {
+            "path": "C:src\\third_party\\tree-sitter-poe-filter",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-poe-filter.git",
+            "commit": "205a7d576984feb38a9fc2d8cfe729617f9e0548",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-poe-filter.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-pony": {
+            "path": "C:src\\third_party\\tree-sitter-pony",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-pony.git",
+            "commit": "73ff874ae4c9e9b45462673cbc0a1e350e2522a7",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-pony.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-powershell": {
+            "path": "C:src\\third_party\\tree-sitter-powershell",
+            "url": "https://github.com/airbus-cert/tree-sitter-powershell.git",
+            "commit": "65ea6919e816a7ac142acec7ee72757f89db8439",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/airbus-cert/tree-sitter-powershell.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-printf": {
+            "path": "C:src\\third_party\\tree-sitter-printf",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-printf.git",
+            "commit": "ec4e5674573d5554fccb87a887c97d4aec489da7",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-printf.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-properties": {
+            "path": "C:src\\third_party\\tree-sitter-properties",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-properties.git",
+            "commit": "6310671b24d4e04b803577b1c675d765cbd5773b",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-properties.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-proto": {
+            "path": "C:src\\third_party\\tree-sitter-proto",
+            "url": "https://github.com/coder3101/tree-sitter-proto.git",
+            "commit": "18366491f37d43d6d5d02cbb1e79b650b5728145",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/coder3101/tree-sitter-proto.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-puppet": {
+            "path": "C:src\\third_party\\tree-sitter-puppet",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-puppet.git",
+            "commit": "15f192929b7d317f5914de2b4accd37b349182a6",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-puppet.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-pymanifest": {
+            "path": "C:src\\third_party\\tree-sitter-pymanifest",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-pymanifest.git",
+            "commit": "debbdb83fe6356adc7261c41c69b45ba49c97294",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-pymanifest.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
         },
         "third_party/tree-sitter-python": {
             "path": "C:\\src\\third_party\\tree-sitter-python",
@@ -3732,6 +4814,136 @@
             },
             "sparse_paths": null
         },
+        "third_party/tree-sitter-ql": {
+            "path": "C:src\\third_party\\tree-sitter-ql",
+            "url": "https://github.com/tree-sitter/tree-sitter-ql.git",
+            "commit": "d9d6c853caf0f882e6371e4d4da5817c48c8a8d8",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter/tree-sitter-ql.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-qmldir": {
+            "path": "C:src\\third_party\\tree-sitter-qmldir",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-qmldir.git",
+            "commit": "c57e00865a1a6f1cca83340d6dad91f13df55479",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-qmldir.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-query": {
+            "path": "C:src\\third_party\\tree-sitter-query",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-query.git",
+            "commit": "8e9e223812ff30854fbc912adbec696ba5f0e023",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-query.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-r": {
+            "path": "C:src\\third_party\\tree-sitter-r",
+            "url": "https://github.com/r-lib/tree-sitter-r.git",
+            "commit": "58a22794466c0fc15b0d3b40531db751593721e8",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/r-lib/tree-sitter-r.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-re2c": {
+            "path": "C:src\\third_party\\tree-sitter-re2c",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-re2c.git",
+            "commit": "c18a3c2f4b6665e35b7e50d6048ea3cff770c572",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-re2c.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-readline": {
+            "path": "C:src\\third_party\\tree-sitter-readline",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-readline.git",
+            "commit": "6b744c527aebd12e46a5ecb3aebdb8d621a8e83e",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-readline.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-regex": {
+            "path": "C:src\\third_party\\tree-sitter-regex",
+            "url": "https://github.com/tree-sitter/tree-sitter-regex.git",
+            "commit": "b2ac15e27fce703d2f37a79ccd94a5c0cbe9720b",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter/tree-sitter-regex.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-requirements": {
+            "path": "C:src\\third_party\\tree-sitter-requirements",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-requirements.git",
+            "commit": "2c3bb291f497258ba417d052faa14a2dfee6d401",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-requirements.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-ron": {
+            "path": "C:src\\third_party\\tree-sitter-ron",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-ron.git",
+            "commit": "78938553b93075e638035f624973083451b29055",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-ron.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-ruby": {
+            "path": "C:src\\third_party\\tree-sitter-ruby",
+            "url": "https://github.com/tree-sitter/tree-sitter-ruby.git",
+            "commit": "ad907a69da0c8a4f7a943a7fe012712208da6dee",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter/tree-sitter-ruby.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
         "third_party/tree-sitter-rust": {
             "path": "C:\\src\\third_party\\tree-sitter-rust",
             "url": "https://github.com/tree-sitter/tree-sitter-rust.git",
@@ -3744,6 +4956,214 @@
             },
             "sparse_paths": null
         },
+        "third_party/tree-sitter-scala": {
+            "path": "C:src\\third_party\\tree-sitter-scala",
+            "url": "https://github.com/tree-sitter/tree-sitter-scala.git",
+            "commit": "98dea7544f25f2f5e90354687f3fb9489b784183",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter/tree-sitter-scala.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-scheme": {
+            "path": "C:src\\third_party\\tree-sitter-scheme",
+            "url": "https://github.com/6cdh/tree-sitter-scheme.git",
+            "commit": "45c72463ac4260ef6e07d1c0642ed43d4e9957b4",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/6cdh/tree-sitter-scheme.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-scss": {
+            "path": "C:src\\third_party\\tree-sitter-scss",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-scss.git",
+            "commit": "5da5ba71a558b007b352c505bfcd9095ae337022",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-scss.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-slang": {
+            "path": "C:src\\third_party\\tree-sitter-slang",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-slang.git",
+            "commit": "1dbcc4abc7b3cdd663eb03d93031167d6ed19f56",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-slang.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-smali": {
+            "path": "C:src\\third_party\\tree-sitter-smali",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-smali.git",
+            "commit": "fdfa6a1febc43c7467aa7e937b87b607956f2346",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-smali.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-sql": {
+            "path": "C:src\\third_party\\tree-sitter-sql",
+            "url": "https://github.com/DerekStride/tree-sitter-sql.git",
+            "commit": "4cd7224bfcf1fee23227c4d626760341c9b26772",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/DerekStride/tree-sitter-sql.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-squirrel": {
+            "path": "C:src\\third_party\\tree-sitter-squirrel",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-squirrel.git",
+            "commit": "072c969749e66f000dba35a33c387650e203e96e",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-squirrel.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-ssh-config": {
+            "path": "C:src\\third_party\\tree-sitter-ssh-config",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-ssh-config.git",
+            "commit": "0c35b243392268f48fd096607da192d76c843398",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-ssh-config.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-starlark": {
+            "path": "C:src\\third_party\\tree-sitter-starlark",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-starlark.git",
+            "commit": "a453dbf3ba433db0e5ec621a38a7e59d72e4dc69",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-starlark.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-svelte": {
+            "path": "C:src\\third_party\\tree-sitter-svelte",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-svelte.git",
+            "commit": "ae5199db47757f785e43a14b332118a5474de1a2",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-svelte.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-swift": {
+            "path": "C:src\\third_party\\tree-sitter-swift",
+            "url": "https://github.com/alex-pinkus/tree-sitter-swift.git",
+            "commit": "3697c2b910e86b6886a15cc64affb90a89e5711c",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/alex-pinkus/tree-sitter-swift.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-tablegen": {
+            "path": "C:src\\third_party\\tree-sitter-tablegen",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-tablegen.git",
+            "commit": "b1170880c61355aaf38fc06f4af7d3c55abdabc4",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-tablegen.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-tcl": {
+            "path": "C:src\\third_party\\tree-sitter-tcl",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-tcl.git",
+            "commit": "90e87ed495a04fd0bf18db4be12b7033cd7402f6",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-tcl.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-test": {
+            "path": "C:src\\third_party\\tree-sitter-test",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-test.git",
+            "commit": "76b419f178da018c29d3004fcbf14f755649eb58",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-test.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-thrift": {
+            "path": "C:src\\third_party\\tree-sitter-thrift",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-thrift.git",
+            "commit": "68fd0d80943a828d9e6f49c58a74be1e9ca142cf",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-thrift.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-toml": {
+            "path": "C:src\\third_party\\tree-sitter-toml",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-toml.git",
+            "commit": "64b56832c2cffe41758f28e05c756a3a98d16f41",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-toml.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
         "third_party/tree-sitter-typescript": {
             "path": "C:\\src\\third_party\\tree-sitter-typescript",
             "url": "https://github.com/tree-sitter/tree-sitter-typescript.git",
@@ -3755,6 +5175,201 @@
                 "origin": "https://github.com/tree-sitter/tree-sitter-typescript.git"
             },
             "sparse_paths": null
+        },
+        "third_party/tree-sitter-udev": {
+            "path": "C:src\\third_party\\tree-sitter-udev",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-udev.git",
+            "commit": "2fcb563a4d56a6b8e8c129252325fc6335e4acbf",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-udev.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-ungrammar": {
+            "path": "C:src\\third_party\\tree-sitter-ungrammar",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-ungrammar.git",
+            "commit": "debd26fed283d80456ebafa33a06957b0c52e451",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-ungrammar.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-uxntal": {
+            "path": "C:src\\third_party\\tree-sitter-uxntal",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-uxntal.git",
+            "commit": "ad9b638b914095320de85d59c49ab271603af048",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-uxntal.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-verilog": {
+            "path": "C:src\\third_party\\tree-sitter-verilog",
+            "url": "https://github.com/tree-sitter/tree-sitter-verilog.git",
+            "commit": "227d277b6a1a5e2bf818d6206935722a7503de08",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter/tree-sitter-verilog.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-vhdl": {
+            "path": "C:src\\third_party\\tree-sitter-vhdl",
+            "url": "https://github.com/jpt13653903/tree-sitter-vhdl.git",
+            "commit": "0d5d60b269c7f9861c2bada7cef58fe62e6e7879",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/jpt13653903/tree-sitter-vhdl.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-vim": {
+            "path": "C:src\\third_party\\tree-sitter-vim",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-vim.git",
+            "commit": "039c8d0aa1deae00ddeb0374dd70bcc0ec56938d",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-vim.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-vue": {
+            "path": "C:src\\third_party\\tree-sitter-vue",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-vue.git",
+            "commit": "ce8011a414fdf8091f4e4071752efc376f4afb08",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-vue.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-wgsl": {
+            "path": "C:src\\third_party\\tree-sitter-wgsl",
+            "url": "https://github.com/szebniok/tree-sitter-wgsl.git",
+            "commit": "40259f3c77ea856841a4e0c4c807705f3e4a2b65",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/szebniok/tree-sitter-wgsl.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-wgsl-bevy": {
+            "path": "C:src\\third_party\\tree-sitter-wgsl-bevy",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-wgsl-bevy.git",
+            "commit": "d9306a798ede627001a8e5752f775858c8edd7e4",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-wgsl-bevy.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-xcompose": {
+            "path": "C:src\\third_party\\tree-sitter-xcompose",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-xcompose.git",
+            "commit": "a51d6366f041dbefec4da39a7eb3168a9b1cbc0e",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-xcompose.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-xml": {
+            "path": "C:src\\third_party\\tree-sitter-xml",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-xml.git",
+            "commit": "5000ae8f22d11fbe93939b05c1e37cf21117162d",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-xml.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-yaml": {
+            "path": "C:src\\third_party\\tree-sitter-yaml",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-yaml.git",
+            "commit": "a1c4812a73ec5e089de8e441fdea3a921e8d5079",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-yaml.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-yuck": {
+            "path": "C:src\\third_party\\tree-sitter-yuck",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-yuck.git",
+            "commit": "6c60112b3b3e739fb1ca4a8ea4bea2b6ffe11318",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-yuck.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/tree-sitter-zig": {
+            "path": "C:src\\third_party\\tree-sitter-zig",
+            "url": "https://github.com/tree-sitter-grammars/tree-sitter-zig.git",
+            "commit": "6479aa13f32f701c383083d8b28360ebd682fb7d",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/tree-sitter-grammars/tree-sitter-zig.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
+        },
+        "third_party/triton": {
+            "path": "C:src\\third_party\\triton",
+            "url": "https://github.com/triton-lang/triton.git",
+            "commit": "8a439de83a8a691b59df4a962e6c5e4962abc9c8",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/triton-lang/triton.git"
+            },
+            "sparse_paths": null,
+            "depth": 1
         },
         "third_party/truststore": {
             "path": "C:\\src\\third_party\\truststore",
