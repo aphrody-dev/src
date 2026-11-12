@@ -33,6 +33,7 @@ serde_json.workspace = true
 sys = { path = "../sys" }
 xtk.workspace = true
 up = { package = "aphrody-up", path = "../up" }
+rt = { package = "aphrody-rt", path = "../rt" }
 # `ay self-update` against the dist releases (blocking API, no async runtime in ay itself).
 axoupdater = { version = "0.10", features = ["blocking"] }
 

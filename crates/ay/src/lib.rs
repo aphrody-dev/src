@@ -61,6 +61,9 @@ pub enum Cmd {
     /// Pure-Rust SSH (russh): exec <host|all|a,b> -- cmd, cp, hosts, check
     #[command(disable_help_flag = true)]
     Ssh(Rest),
+    /// Runtimes: Python engines (uv, RustPython), Bun versions, package managers, PyTorch
+    #[command(disable_help_flag = true)]
+    Rt(Rest),
     /// gclient in Rust: revinfo, getdep, setdep, sync (gitoxide), hooks, root
     #[command(disable_help_flag = true)]
     Gclient(Rest),
@@ -117,6 +120,7 @@ pub enum Route {
     Bench(Vec<String>),
     External(&'static str, Vec<String>),
     Ssh(Vec<String>),
+    Rt(Vec<String>),
     Chromium(chromium::Tool, Vec<String>),
     Build(build::BuildArgs),
     Sys(SysArgs),
@@ -160,6 +164,7 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Bench(r) => Route::Bench(r.args),
         Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
         Cmd::Ssh(r) => Route::Ssh(r.args),
+        Cmd::Rt(r) => Route::Rt(r.args),
         Cmd::Gclient(r) => Route::Chromium(chromium::Tool::Gclient, r.args),
         Cmd::Fetch(r) => Route::Chromium(chromium::Tool::Fetch, r.args),
         Cmd::Vpy(r) => Route::Chromium(chromium::Tool::Vpy, r.args),
@@ -198,6 +203,7 @@ fn run_route(route: Route) -> i32 {
         Route::Bench(args) => run_bench(&args),
         Route::External(program, args) => exec::run_external(program, &args),
         Route::Ssh(args) => remote::run("ay ssh", &args, &repo_root()),
+        Route::Rt(args) => rt::run("ay rt", &args),
         Route::Chromium(tool, args) => chromium::run(tool, &args),
         Route::Build(args) => build::run(args),
         Route::Sys(args) => run_sys(args),

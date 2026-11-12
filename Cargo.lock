@@ -219,6 +219,7 @@ name = "aphrody"
 version = "0.2.0"
 dependencies = [
  "aphrody-remote",
+ "aphrody-rt",
  "aphrody-up",
  "archguard",
  "axoupdater",
@@ -337,6 +338,15 @@ dependencies = [
  "sha1",
  "tokio",
  "toml",
+]
+
+[[package]]
+name = "aphrody-rt"
+version = "0.2.0"
+dependencies = [
+ "aphrody-up",
+ "clap",
+ "serde_json",
 ]
 
 [[package]]
