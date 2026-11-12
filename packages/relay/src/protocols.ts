@@ -3,6 +3,7 @@
 //   - MCP Streamable HTTP, double époque : 2025-11-25 (initialize) et 2026-07-28 (server/discover, sans état,
 //     _meta par requête, resultType, ttlMs/cacheScope) — spec modelcontextprotocol@2026-07-28 ;
 //   - A2A 1.0.1 (JSON-RPC, SendMessage, carte d'agent /.well-known/agent-card.json, supportedInterfaces).
+import { hubCall, hubTools } from "./mcp-hub.ts";
 import { TOOLS, toolByName } from "./tools.ts";
 
 export const VERSION = "0.1.0";
@@ -44,6 +45,7 @@ const text = (v: unknown) =>
 
 async function call(name: string, args: unknown) {
   const t = toolByName.get(name);
+  if (!t && name.includes("__")) return hubCall(name, args);
   if (!t)
     throw Object.assign(new Error(`outil inconnu : ${name}`), { code: -32601 });
   return t.run(args ?? {});
@@ -53,10 +55,10 @@ async function call(name: string, args: unknown) {
 export async function nativeRpc(r: Req): Promise<Res | null> {
   try {
     if (r.method === "tools/list")
-      return ok(
-        r.id,
-        TOOLS.map(({ run, ...t }) => t),
-      );
+      return ok(r.id, [
+        ...TOOLS.map(({ run, ...t }) => t),
+        ...(r.params?.hub === false ? [] : await hubTools()),
+      ]);
     const v = await call(r.method, r.params);
     return r.id === undefined ? null : ok(r.id, v);
   } catch (e: any) {
@@ -65,13 +67,21 @@ export async function nativeRpc(r: Req): Promise<Res | null> {
 }
 
 const serverInfo = { name: "aphrody-relay", version: VERSION };
-const mcpTools = () =>
-  TOOLS.map((t) => ({
+// Outils propres puis outils des serveurs MCP utilisateur agrégés (<serveur>__<outil>), ordre déterministe.
+const mcpTools = async () => [
+  ...TOOLS.map((t) => ({
     name: t.name,
     description: t.description,
     inputSchema: t.inputSchema,
     annotations: { readOnlyHint: t.readOnly, openWorldHint: !t.readOnly },
-  }));
+  })),
+  ...(Bun.env.RELAY_HUB === "0"
+    ? []
+    : (await hubTools()).map(({ server, ...t }) => ({
+        ...t,
+        description: `[${server}] ${t.description ?? ""}`,
+      }))),
+];
 
 export async function mcpRpc(r: Req): Promise<Res | null> {
   const modern = r.params?._meta?.["io.modelcontextprotocol/protocolVersion"];
@@ -113,13 +123,17 @@ export async function mcpRpc(r: Req): Promise<Res | null> {
         return ok(
           r.id,
           complete({
-            tools: mcpTools(),
+            tools: await mcpTools(),
             ...(modern ? { ttlMs: 3_600_000, cacheScope: "private" } : {}),
           }),
         );
       case "tools/call": {
         try {
-          const v = await call(String(r.params?.name), r.params?.arguments);
+          const name = String(r.params?.name);
+          const v = await call(name, r.params?.arguments);
+          // Outil d'un serveur agrégé : son résultat MCP est renvoyé tel quel.
+          if (!toolByName.has(name))
+            return ok(r.id, complete(v as Record<string, unknown>));
           return ok(
             r.id,
             complete({

@@ -97,16 +97,34 @@ export function geminiWeb(
   });
 }
 
+// Une clé d'API Anthropic dans l'environnement prime sur la connexion claude.ai et désactive ses connecteurs (Gmail,
+// Drive…) ; GOOGLE_GENAI_USE_VERTEXAI envoie Gemini CLI vers Vertex au lieu du compte Google. Retirées pour ces moteurs.
+const without = (...keys: string[]) =>
+  Object.fromEntries(
+    Object.entries(process.env).filter(([k]) => !keys.includes(k)),
+  ) as Record<string, string>;
+const CLAUDE_ENV = () =>
+  without(
+    "ANTHROPIC_API_KEY",
+    "ANTHROPIC_AUTH_TOKEN",
+    "ANTHROPIC_CUSTOM_HEADERS",
+    "ANTHROPIC_SERVICE_ACCOUNT_ID",
+    "ANTHROPIC_WORKSPACE_ID",
+  );
+const GEMINI_ENV = () => without("GOOGLE_GENAI_USE_VERTEXAI");
+
 async function cli(
   engine: string,
   argv: string[],
   pick: (j: any) => string,
+  env?: Record<string, string>,
 ): Promise<Answer> {
   const t0 = performance.now();
   const p = Bun.spawn(argv, {
     stdout: "pipe",
     stderr: "pipe",
     stdin: "ignore",
+    ...(env ? { env } : {}),
   });
   const [out, err, code] = await Promise.all([
     new Response(p.stdout).text(),
@@ -137,6 +155,28 @@ export const geminiCli = (prompt: string, model?: string) =>
       ...(model ? ["-m", model] : []),
     ],
     (j) => String(j.response ?? j.text ?? ""),
+    GEMINI_ENV(),
+  );
+
+/** Claude Code headless limité aux outils listés (ex. connecteurs claude.ai Google), sans autre permission. */
+export const claudeWithTools = (prompt: string, tools: string[]) =>
+  cli(
+    "claude",
+    [
+      "claude",
+      "-p",
+      prompt,
+      "--output-format",
+      "json",
+      "--permission-mode",
+      "dontAsk",
+      "--allowedTools",
+      tools.join(","),
+      "--disallowedTools",
+      "mcp__relay",
+    ],
+    (j) => String(j.result ?? ""),
+    CLAUDE_ENV(),
   );
 
 export const claude = (prompt: string, model?: string) =>

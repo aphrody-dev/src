@@ -2,7 +2,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { claude, gemini, geminiCli } from "./backends.ts";
+import { claude, claudeWithTools, gemini, geminiCli } from "./backends.ts";
 
 export type Tool = {
   name: string;
@@ -109,6 +109,46 @@ export const TOOLS: Tool[] = [
     ),
     readOnly: false,
     run: (a) => claude(String(a.prompt), a.model),
+  },
+  {
+    name: "workspace_ask",
+    description:
+      "Google Workspace through Claude Code's claude.ai connectors (Gmail, Calendar, Drive, Docs, Slides, Sheets): read, write plans and design documents. Only those connector tools are allowed.",
+    inputSchema: obj(
+      {
+        prompt: str("Task for Gmail/Calendar/Drive/Docs/Slides/Sheets"),
+        apps: {
+          type: "array",
+          items: {
+            type: "string",
+            enum: [
+              "Gmail",
+              "Google_Calendar",
+              "Google_Drive",
+              "Google_Docs",
+              "Google_Slides",
+              "Google_Sheets",
+            ],
+          },
+        },
+      },
+      ["prompt"],
+    ),
+    readOnly: false,
+    run: (a) =>
+      claudeWithTools(
+        String(a.prompt),
+        (
+          (a.apps as string[] | undefined) ?? [
+            "Gmail",
+            "Google_Calendar",
+            "Google_Drive",
+            "Google_Docs",
+            "Google_Slides",
+            "Google_Sheets",
+          ]
+        ).map((x) => `mcp__claude_ai_${x}`),
+      ),
   },
   {
     name: "gemini_cli_ask",
