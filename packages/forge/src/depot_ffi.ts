@@ -46,11 +46,11 @@ function getLib() {
         returns: FFIType.ptr,
       },
       depot_re_audit_bytes_json: {
-        args: [FFIType.cstring, FFIType.ptr, FFIType.usize],
+        args: [FFIType.cstring, FFIType.ptr, FFIType.u64],
         returns: FFIType.ptr,
       },
       depot_lua52_transcode_hex: {
-        args: [FFIType.ptr, FFIType.usize, FFIType.u8, FFIType.u8],
+        args: [FFIType.ptr, FFIType.u64, FFIType.u8, FFIType.u8],
         returns: FFIType.ptr,
       },
     });
@@ -102,19 +102,40 @@ export function ffiJustRecipes(justfilePath: string = "justfile") {
 
 export function ffiTreeSitterSymbols(filePath: string, content: string) {
   const l = getLib();
-  const raw = l.symbols.depot_treesitter_symbols_json(toBuffer(filePath), toBuffer(content));
+  const raw = l.symbols.depot_treesitter_symbols_json(
+    toBuffer(filePath),
+    toBuffer(content),
+  );
   return callJson(raw);
 }
 
-export function ffiIngestCodebase(rootDir: string = ".", maxTokens: number = 0, outlineOnly: boolean = false) {
+export function ffiIngestCodebase(
+  rootDir: string = ".",
+  maxTokens: number = 0,
+  outlineOnly: boolean = false,
+) {
   const l = getLib();
-  const raw = l.symbols.depot_ingest_json(toBuffer(rootDir), maxTokens, outlineOnly);
+  const raw = l.symbols.depot_ingest_json(
+    toBuffer(rootDir),
+    maxTokens,
+    outlineOnly,
+  );
   return callJson(raw);
 }
 
-export function ffiGraphQuery(graphDir: string = ".", term: string, dfs: boolean = false, maxTokens: number = 2000) {
+export function ffiGraphQuery(
+  graphDir: string = ".",
+  term: string,
+  dfs: boolean = false,
+  maxTokens: number = 2000,
+) {
   const l = getLib();
-  const raw = l.symbols.depot_graph_query_json(toBuffer(graphDir), toBuffer(term), dfs, maxTokens);
+  const raw = l.symbols.depot_graph_query_json(
+    toBuffer(graphDir),
+    toBuffer(term),
+    dfs,
+    maxTokens,
+  );
   return callJson(raw);
 }
 
@@ -132,12 +153,25 @@ export function ffiReAudit(path: string) {
 
 export function ffiReAuditBytes(label: string, bytes: Uint8Array) {
   const l = getLib();
-  const raw = l.symbols.depot_re_audit_bytes_json(toBuffer(label), bytes, bytes.length);
+  const raw = l.symbols.depot_re_audit_bytes_json(
+    toBuffer(label),
+    bytes,
+    bytes.length,
+  );
   return callJson(raw);
 }
 
-export function ffiLuaTranscode(bytes: Uint8Array, targetInt: number = 4, targetSizeT: number = 4) {
+export function ffiLuaTranscode(
+  bytes: Uint8Array,
+  targetInt: number = 4,
+  targetSizeT: number = 4,
+) {
   const l = getLib();
-  const raw = l.symbols.depot_lua52_transcode_hex(bytes, bytes.length, targetInt, targetSizeT);
+  const raw = l.symbols.depot_lua52_transcode_hex(
+    bytes,
+    bytes.length,
+    targetInt,
+    targetSizeT,
+  );
   return callJson(raw);
 }

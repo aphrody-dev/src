@@ -22,33 +22,33 @@ const lib = dlopen(dllPath, {
     returns: FFIType.u32,
   },
   rs_blake3_hex: {
-    args: [FFIType.ptr, FFIType.usize, FFIType.ptr, FFIType.usize],
+    args: [FFIType.ptr, FFIType.u64, FFIType.ptr, FFIType.u64],
     returns: FFIType.i32,
   },
   rs_auth_issue_jwt: {
     args: [
       FFIType.ptr,
-      FFIType.usize,
-      FFIType.ptr,
-      FFIType.usize,
       FFIType.u64,
       FFIType.ptr,
-      FFIType.usize,
+      FFIType.u64,
+      FFIType.u64,
+      FFIType.ptr,
+      FFIType.u64,
     ],
     returns: FFIType.i32,
   },
   rs_auth_verify_jwt: {
-    args: [FFIType.ptr, FFIType.usize, FFIType.ptr, FFIType.usize],
+    args: [FFIType.ptr, FFIType.u64, FFIType.ptr, FFIType.u64],
     returns: FFIType.i32,
   },
   rs_ui_render_card: {
     args: [
       FFIType.ptr,
-      FFIType.usize,
+      FFIType.u64,
       FFIType.ptr,
-      FFIType.usize,
+      FFIType.u64,
       FFIType.ptr,
-      FFIType.usize,
+      FFIType.u64,
     ],
     returns: FFIType.i32,
   },
@@ -79,7 +79,12 @@ describe("rust_stack_ffi.dll zero-copy C-ABI interop", () => {
     const iterations = 50_000;
     const t0 = Bun.nanoseconds();
     for (let i = 0; i < iterations; i++) {
-      lib.symbols.rs_blake3_hex(ptr(input), input.byteLength, ptr(out), out.byteLength);
+      lib.symbols.rs_blake3_hex(
+        ptr(input),
+        input.byteLength,
+        ptr(out),
+        out.byteLength,
+      );
     }
     const elapsedNs = Bun.nanoseconds() - t0;
     const nsPerCall = elapsedNs / iterations;

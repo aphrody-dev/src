@@ -8,7 +8,9 @@ describe("Bun Plugins - Lua Plugin", () => {
     expect(plugin.name).toBe("bun-plugin-lua");
     expect(typeof plugin.setup).toBe("function");
 
-    let filter: RegExp | null = null;
+    // Cast keeps the declared type: TS does not see the assignment inside the callback
+    // and would otherwise narrow `filter` to `null` (then `never` after the check).
+    let filter = null as RegExp | null;
     plugin.setup({
       onLoad(opts: { filter: RegExp }) {
         filter = opts.filter;

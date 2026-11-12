@@ -136,7 +136,11 @@ export function decodeEgsChunkContainer(
   // StoredAs bit 0 = zlib/deflate compressed
   const payload =
     (storedAs & 0x01) !== 0
-      ? new Uint8Array(Bun.inflateSync(rawBody.subarray(2, rawBody.length - 4)))
+      ? new Uint8Array(
+          Bun.inflateSync(
+            rawBody.subarray(2, rawBody.length - 4) as Uint8Array<ArrayBuffer>,
+          ),
+        )
       : rawBody;
 
   let sha1Verified = true;
@@ -172,7 +176,7 @@ export function encodeEgsChunkContainer(
   let storedAs = 0;
   if (compress) {
     storedAs = 1;
-    const deflated = Bun.deflateSync(payload);
+    const deflated = Bun.deflateSync(payload as Uint8Array<ArrayBuffer>);
     // Wrap in RFC 1950 zlib stream (CMF=0x78, FLG=0x9C + Adler32 trailer)
     let s1 = 1;
     let s2 = 0;

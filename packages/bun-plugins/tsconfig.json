@@ -11,5 +11,7 @@
     "types": ["bun"]
   },
   "include": ["**/*.ts"],
-  "exclude": ["node_modules"]
+  // bun-native.d.ts is the ambient header for packages without @types/bun; this
+  // package loads @types/bun, and both together clash (e.g. Buffer.toString overloads).
+  "exclude": ["node_modules", "bun-native.d.ts"]
 }
