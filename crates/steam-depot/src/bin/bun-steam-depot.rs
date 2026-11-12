@@ -21,7 +21,7 @@ use bun_steam::depot::options::{
     GuardCodeFuture, SteamDownloadOptions, SteamGuardKind, SteamGuardProvider, TransferOptions,
 };
 use bun_steam::depot::session::{NeedsLogin, SteamSession};
-use bun_steam::depot::token_backend::{self, StoreKind, TokenBackend};
+use bun_steam::depot::token_backend::{self, StoreKind, StoredToken, TokenBackend};
 use clap::{Args, Parser, Subcommand};
 
 const EXIT_NEEDS_LOGIN: u8 = 2;
@@ -51,6 +51,9 @@ enum Cmd {
         #[arg(env = "STEAM_ACCOUNT_NAME")]
         user: String,
     },
+    /// One-time QR login: prints the Steam QR challenge as `svg <markup>` on stdout, waits for the
+    /// Steam mobile app to approve it, then stores the refresh token. No password is ever typed.
+    LoginQr,
     /// Download or update the app into the target directory (resumable, skips valid files).
     Update(Target),
     /// Same as `update` with every existing file hashed against the manifest (steamcmd `validate`).
@@ -148,6 +151,7 @@ async fn run(cli: Cli) -> Result<ExitCode> {
     let store = token_backend::open(kind, token_file(&cli))?;
     match &cli.cmd {
         Cmd::Login { user } => login(store, user).await,
+        Cmd::LoginQr => login_qr(store).await,
         Cmd::Update(t) => download(store, t, false).await,
         Cmd::Verify(t) => download(store, t, true).await,
         Cmd::List(t) => list(store, t).await,
@@ -337,4 +341,30 @@ fn prompt_secret(msg: &str) -> Result<String> {
     {
         prompt_line(msg)
     }
+}
+
+async fn login_qr(store: Arc<dyn TokenBackend>) -> Result<ExitCode> {
+    let flow = steamroom_client::login::LoginBuilder::new()
+        .device_name("rosegriffon steam-depot")
+        .with_qr()
+        .begin()
+        .await?;
+    let svg = qrcode::QrCode::new(flow.challenge_url().as_bytes())?
+        .render::<qrcode::render::svg::Color<'_>>()
+        .min_dimensions(320, 320)
+        .build();
+    // One line, so a launcher can read it without ever printing the challenge itself.
+    println!("svg {}", svg.replace('\n', ""));
+    std::io::stdout().flush()?;
+    let approved = flow.wait_for_scan().await?;
+    let tokens = approved.tokens();
+    let account = tokens
+        .account_name
+        .clone()
+        .context("Steam returned no account name")?;
+    store
+        .save(&StoredToken::new(account, tokens.refresh_token.clone(), None))
+        .await?;
+    eprintln!("login ok, token stored in `{}`", store.kind().as_str());
+    status(store).await
 }

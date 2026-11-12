@@ -30,10 +30,11 @@ default = []
 depot = [
     "dep:anyhow", "dep:bytes", "dep:clap", "dep:dirs-next", "dep:hex",
     "dep:steamroom", "dep:steamroom-client", "dep:tokio", "dep:tracing",
-    "dep:tracing-subscriber", "dep:zip", "dep:reqwest", "dep:libc"
+    "dep:tracing-subscriber", "dep:zip", "dep:reqwest", "dep:libc", "dep:qrcode"
 ]
 
 [dependencies]
+qrcode = { version = "0.14.1", default-features = false, features = ["svg"], optional = true }
 serde = { version = "1.0.228", default-features = false, features = ["derive", "std"] }
 serde_json = { version = "1.0.154", default-features = false, features = ["std"] }
 thiserror = { version = "2.0.21", default-features = false }
