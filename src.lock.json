@@ -26,7 +26,7 @@
   },
   "pillars": {
     "git_superproject_commit": "97fc330f4f04cb1e325bd0fa0f69fd528d32442d",
-    "chromium_src_commit": "4c7244a405d326e284710231ff609168dceb9044",
+    "chromium_src_commit": "ef68a767a544b5544e46944e4b3be15e9ce0b6d4",
     "linux_kernel_commit": "7475ea8b58616b33c04afb976cf0fbaad9dd63fb",
     "aosp_manifest_commit": "1ed30a827f1156dc831083e6cf999d6bd9deae18"
   },
@@ -575,7 +575,7 @@
     "third_party/chromium/src": {
       "path": "C:\\src\\third_party\\chromium\\src",
       "url": "https://chromium.googlesource.com/chromium/src.git",
-      "commit": "4c7244a405d326e284710231ff609168dceb9044",
+      "commit": "ef68a767a544b5544e46944e4b3be15e9ce0b6d4",
       "branch": "detached",
       "engine": "git",
       "pillar": "chromium",
@@ -611,7 +611,7 @@
     "third_party/depot_tools": {
       "path": "C:\\src\\third_party\\depot_tools",
       "url": "https://chromium.googlesource.com/chromium/tools/depot_tools.git",
-      "commit": "289a37bda3d848cfe16e6c1c599741ed3890ab55",
+      "commit": "1afcf0756e47f3a6ee82d7736b9fcda2d57b268e",
       "branch": "detached",
       "engine": "git",
       "pillar": "chromium",
