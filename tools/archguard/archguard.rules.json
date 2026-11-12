@@ -44,7 +44,7 @@
     },
     "graph": {
       "layers": [
-        { "level": 0, "name": "Layer 0: Native Kernel & Primitives", "path": "crates/unix" },
+        { "level": 0, "name": "Layer 0: Native Kernel & Primitives", "path": "crates/unix-*" },
         { "level": 1, "name": "Layer 1: Systems & Infra Foundations", "paths": ["crates/*", "infra/*"] },
         { "level": 2, "name": "Layer 2: Sovereign Polyglot Packages", "path": "packages/*" },
         { "level": 3, "name": "Layer 3: User Applications & Tools", "paths": ["apps/*", "tools/*"] }

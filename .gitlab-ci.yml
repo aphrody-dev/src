@@ -67,8 +67,7 @@ build-rust-unix-wayland:
   script:
     - cargo run --manifest-path tools/archguard/Cargo.toml -- check --strict --root .
     - cargo test --manifest-path tools/archguard/Cargo.toml
-    - cargo check --manifest-path crates/unix/Cargo.toml --all-targets
-    - cargo check --manifest-path crates/wayland/Cargo.toml --all-targets
+    - cargo check --workspace --all-targets
 
 build-go-infra:
   stage: build-bun-rust-go
@@ -93,8 +92,7 @@ test-rust-unix-wayland:
   tags:
     - archlinux-pkgctl
   script:
-    - cargo test --manifest-path crates/unix/Cargo.toml
-    - cargo test --manifest-path crates/wayland/Cargo.toml
+    - cargo test --workspace
 
 # 4. Arch Linux + CachyOS v3 + Omarchy Package (.pkg.tar.zst) & WSL2 Rootfs Build
 arch-cachyos-omarchy-pkgctl:

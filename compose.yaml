@@ -13,7 +13,7 @@ x-args: &args
   GO_VERSION: ${GO_VERSION:-1.27.0}
   RUST_TOOLCHAIN: ${RUST_TOOLCHAIN:-nightly}
   JUST_VERSION: ${JUST_VERSION:-1.58.0}
-  CLI_UNITS: ${CLI_UNITS:-tools/archguard crates/xtask crates/depot}
+  CLI_UNITS: ${CLI_UNITS:-tools/archguard crates/xtask crates/depot-cli}
 
 x-workspace: &workspace
   working_dir: /src

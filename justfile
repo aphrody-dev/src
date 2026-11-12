@@ -30,37 +30,37 @@ env-doctor:
 info:
     depot info
 
-# Ingest any codebase (usage: just ingest crates/depot, just ingest third_party/chromium)
-ingest target="crates/depot" format="markdown" max_tokens="20000":
+# Ingest any codebase (usage: just ingest crates/depot-core, just ingest third_party/chromium)
+ingest target="crates/depot-core" format="markdown" max_tokens="20000":
     depot ingest "{{root}}/{{target}}" --format "{{format}}" --max-tokens {{max_tokens}}
 
 # Build AST knowledge graph for any repo into graphify-out/<name> (usage: just graph third_party/bun/src bun)
-graph target="crates/depot" name="":
+graph target="crates/depot-core" name="":
     depot graph build "{{root}}/{{target}}" --out-dir "{{root}}/graphify-out/{{ if name == "" { file_name(target) } else { name } }}"
 
 # Query AST graph symbols across codebases
-graph-query term target="crates/depot":
+graph-query term target="crates/depot-core":
     depot graph query "{{term}}" "{{root}}/{{target}}"
 
 # Optimize repository with Git Scalar / blobless optimizations
-slim target="crates/depot":
+slim target="crates/depot-core":
     depot slim "{{root}}/{{target}}"
 
 # List active worktrees for a repo
-worktrees target="crates/depot":
+worktrees target="crates/depot-core":
     depot worktree list "{{root}}/{{target}}"
 
 # Verify content-addressed Blake3 binary artifacts
 artifacts-verify:
-    depot artifacts verify "{{root}}/crates/depot/depot-artifacts.toml"
+    depot artifacts verify "{{root}}/crates/depot-core/depot-artifacts.toml"
 
 # Build all depot release binaries
 build-depot:
-    just -f "{{root}}/crates/depot/justfile" build
+    just -f "{{root}}/crates/depot-core/justfile" build
 
 # Reinstall depot shims into third_party/depot_tools
 install-shims:
-    just -f "{{root}}/crates/depot/justfile" install-shims
+    just -f "{{root}}/crates/depot-core/justfile" install-shims
 
 # Byte-level Git and Scalar optimization across all repos
 slim-all:

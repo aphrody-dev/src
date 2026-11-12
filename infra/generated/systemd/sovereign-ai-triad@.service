@@ -1,0 +1,28 @@
+# Hardened systemd unit for ai-triad (Blue/Green template: @blue -> 14200, @green -> 24200)
+[Unit]
+Description=Sovereign Service ai-triad (%i slot)
+After=network-online.target wireguard-wg0.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+StateDirectory=sovereign/ai-triad-%i
+WorkingDirectory=/opt/sovereign/ai-triad/current-%i
+EnvironmentFile=-/etc/sovereign/ai-triad.env
+EnvironmentFile=-/etc/sovereign/ai-triad-%i.port.env
+ExecStart=/opt/sovereign/ai-triad/current-%i/ai-triad
+Restart=always
+RestartSec=2s
+MemoryMax=1G
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

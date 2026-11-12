@@ -64,7 +64,15 @@ T:	git https://chromium.googlesource.com/chromium/tools/depot_tools.git
 T:	git https://github.com/aphrody-dev/chromium-bun.git
 T:	git https://github.com/aphrody-dev/depot.git
 F:	DEPS
-F:	crates/depot/
+F:	crates/depot-cli/
+F:	crates/depot-core/
+F:	crates/depot-ffi/
+F:	crates/depot-forge/
+F:	crates/depot-graph/
+F:	crates/depot-ingest/
+F:	crates/depot-migrate/
+F:	crates/depot-re/
+F:	crates/depot-treesitter/
 F:	packages/chromium-bun/
 F:	third_party/chromium/
 F:	third_party/depot_tools/
@@ -88,8 +96,15 @@ S:	Supported
 W:	https://about.aphrody.com
 T:	git https://github.com/aphrody-dev/wayland.git
 T:	git https://github.com/aphrody-dev/gamescope-rs.git
-F:	crates/gamescope-rs/
-F:	crates/wayland/
+F:	crates/gamescope-cli/
+F:	crates/gamescope-core/
+F:	crates/gamescope-web-wasm/
+F:	crates/gamescope-wgsl/
+F:	crates/wslg-cli/
+F:	crates/hypr-tiler/
+F:	crates/cosmic-compat/
+F:	crates/dx12-winui-core/
+F:	crates/smithay-wayland-wire/
 F:	third_party/wgpu/
 F:	third_party/winit/
 
@@ -104,7 +119,10 @@ T:	git https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
 T:	git https://github.com/aphrody-dev/unix.git
 T:	quilt docs/patches/
 F:	MAINTAINERS
-F:	crates/unix/
+F:	crates/unix-cachyos/
+F:	crates/unix-distro/
+F:	crates/unix-omarchy/
+F:	crates/unix-uutils/
 F:	docs/linux-kernel-story/
 F:	docs/patches/
 F:	packages/knowledge-engine/

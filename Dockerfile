@@ -15,7 +15,7 @@ ARG RUST_TOOLCHAIN=nightly
 ARG JUST_VERSION=1.58.0
 # Units compiled into the images. Units with path deps into third_party/ (crates/rust-stack -> wgpu)
 # need the full checkout: build them inside `dev`, where the repo is mounted.
-ARG CLI_UNITS="tools/archguard crates/xtask crates/depot"
+ARG CLI_UNITS="tools/archguard crates/xtask crates/depot-cli"
 
 FROM oven/bun:${BUN_VERSION}-alpine AS bun-alpine
 FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS go-alpine

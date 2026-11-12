@@ -1,0 +1,93 @@
+# Sovereign GitLab CE Omnibus + Arch/CachyOS/Omarchy CI Runner Stack
+# Target Host: OVH FR2 VPS (git.aphrody.com / registry.aphrody.com) via WireGuard + MASQUE Mesh
+# Organization Principal: contact@aphrody.com
+
+name: aphrody-gitlab-sovereign
+
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:17.8.2-ce.0
+    container_name: aphrody-gitlab
+    hostname: git.aphrody.com
+    restart: unless-stopped
+    shm_size: "512m"
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        from_file "/etc/gitlab/gitlab.custom.rb"
+      GITLAB_ROOT_EMAIL: "contact@aphrody.com"
+      GITLAB_ROOT_PASSWORD: "${GITLAB_ROOT_PASSWORD:?GITLAB_ROOT_PASSWORD must be provided via environment}"
+      TZ: "Europe/Paris"
+    ports:
+      - "127.0.0.1:8929:8929"
+      - "127.0.0.1:5050:5050"
+      - "2224:22"
+    volumes:
+      - ./gitlab.rb:/etc/gitlab/gitlab.custom.rb:ro
+      - gitlab_config:/etc/gitlab
+      - gitlab_logs:/var/log/gitlab
+      - gitlab_data:/var/opt/gitlab
+    networks:
+      - gitlab_mesh
+    healthcheck:
+      test: ["CMD", "/opt/gitlab/bin/gitlab-healthcheck", "--fail", "--max-time", "10"]
+      interval: 45s
+      timeout: 15s
+      retries: 10
+      start_period: 180s
+
+  gitlab-runner-docker:
+    image: gitlab/gitlab-runner:alpine-v17.8.0
+    container_name: aphrody-gitlab-runner-docker
+    restart: unless-stopped
+    depends_on:
+      gitlab:
+        condition: service_healthy
+    environment:
+      CI_SERVER_URL: "https://git.aphrody.com"
+      RUNNER_NAME: "aphrody-fr2-docker-executor"
+      RUNNER_EXECUTOR: "docker"
+      DOCKER_IMAGE: "oven/bun:latest"
+      RUNNER_TAG_LIST: "docker,bun,rust,go,wck"
+    volumes:
+      - gitlab_runner_docker_config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - gitlab_mesh
+
+  gitlab-runner-arch-pkgctl:
+    build:
+      context: ./arch-ci
+      dockerfile: Dockerfile.arch-builder
+    image: registry.aphrody.com/aphrody/arch-builder:latest
+    container_name: aphrody-gitlab-runner-archlinux-pkgctl
+    privileged: true
+    restart: unless-stopped
+    depends_on:
+      gitlab:
+        condition: service_healthy
+    environment:
+      CI_SERVER_URL: "https://git.aphrody.com"
+      RUNNER_NAME: "aphrody-fr2-archlinux-pkgctl"
+      RUNNER_EXECUTOR: "shell"
+      RUNNER_TAG_LIST: "archlinux-pkgctl,cachyos,omarchy,wsl2"
+      PACKAGER: "Aphrody Release Engineering <contact@aphrody.com>"
+    entrypoint: ["/usr/local/bin/arch-runner-entrypoint.sh"]
+    volumes:
+      - gitlab_runner_arch_config:/etc/gitlab-runner
+      - arch_pacman_cache:/var/cache/pacman/pkg
+      - arch_pkgdest:/var/cache/makepkg/pkg
+    networks:
+      - gitlab_mesh
+
+volumes:
+  gitlab_config:
+  gitlab_logs:
+  gitlab_data:
+  gitlab_runner_docker_config:
+  gitlab_runner_arch_config:
+  arch_pacman_cache:
+  arch_pkgdest:
+
+networks:
+  gitlab_mesh:
+    driver: bridge

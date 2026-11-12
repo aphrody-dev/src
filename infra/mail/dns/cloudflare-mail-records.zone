@@ -1,0 +1,40 @@
+; BIND Zone Export for aphrody.com â€” Sovereign Mail & Google Workspace Suite
+; Generated deterministically by C:/src/infra/mesh-vn/src/cloudflare-mail-dns.ts
+$ORIGIN aphrody.com.
+$TTL 3600
+
+; Sovereign Stalwart Mail primary node (OVH fr1)
+mail.aphrody.com.                      300    IN A     51.77.147.152
+
+; Sovereign Stalwart Mail warm standby node (OVH fr2)
+mx2.aphrody.com.                       300    IN A     51.255.162.6
+
+; HTTPS host serving /.well-known/mta-sts.txt
+mta-sts.aphrody.com.                   3600   IN CNAME aphrody.com.
+
+; Primary MX: Sovereign Stalwart Mail Server (OVH fr1)
+aphrody.com.                           3600   IN MX    10 mail.aphrody.com.
+
+; Secondary / Split-Delivery MX: Google Workspace (contact@aphrody.com)
+aphrody.com.                           3600   IN MX    20 smtp.google.com.
+
+; Unified SPF authorizing OVH Stalwart (fr1/fr2) + Google Workspace
+aphrody.com.                           3600   IN TXT   "v=spf1 mx a:mail.aphrody.com ip4:51.77.147.152 ip4:51.255.162.6 include:_spf.google.com ~all"
+
+; Primary DKIM Ed25519 public key (Stalwart s1-ed25519)
+s1-ed25519._domainkey.aphrody.com.     3600   IN TXT   "v=DKIM1; k=ed25519; p=REPLACE_WITH_STALWART_ED25519_PUBKEY_BASE64"
+
+; Compatibility DKIM RSA-2048 public key (Stalwart s2-rsa)
+s2-rsa._domainkey.aphrody.com.         3600   IN TXT   "v=DKIM1; k=rsa; p=REPLACE_WITH_STALWART_RSA2048_PUBKEY_BASE64"
+
+; DMARC quarantine policy with aggregate & forensic reporting
+_dmarc.aphrody.com.                    3600   IN TXT   "v=DMARC1; p=quarantine; rua=mailto:dmarc@aphrody.com; ruf=mailto:dmarc@aphrody.com; fo=1"
+
+; RFC 8461 MTA-STS policy version signal
+_mta-sts.aphrody.com.                  3600   IN TXT   "v=STSv1; id=20261111T000000Z"
+
+; RFC 8460 SMTP TLS Reporting (TLS-RPT)
+_smtp._tls.aphrody.com.                3600   IN TXT   "v=TLSRPTv1; rua=mailto:dmarc@aphrody.com"
+
+; BIMI brand indicator SVG Tiny PS monogram for aphrody.com
+default._bimi.aphrody.com.             3600   IN TXT   "v=BIMI1; l=https://aphrody.com/assets/brand/aphrody-monogram-bimi.svg; a="

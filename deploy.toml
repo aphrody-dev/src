@@ -94,7 +94,7 @@ blue_port = 14000
 green_port = 24000
 
 [services.rust-stack]
-path = "C:/src/crates/depot"
+path = "C:/src/crates/depot-cli"
 runtime = "rust-daemon"
 region = "eu-fr"
 nodes = ["fr1", "fr2"]

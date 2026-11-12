@@ -1,0 +1,20 @@
+[package]
+name = "depot-ffi"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository = "https://github.com/aphrody-dev/depot"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+depot-core.workspace = true
+depot-treesitter.workspace = true
+depot-re.workspace = true
+depot-migrate.workspace = true
+depot-forge.workspace = true
+depot-ingest.workspace = true
+depot-graph.workspace = true
+serde.workspace = true
+serde_json.workspace = true

@@ -17,14 +17,8 @@
   <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="5951254f64879de2661257b18c92783601b0e528" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="apps/shenron" name="shenron" remote="aphrody-labs" revision="358935cfbeb210b9732ba54a06b89beed03ef5b6" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/bench" name="bench" remote="aphrody" revision="a3c7c1168ccbce3fc468d13489284080292bb98a" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="crates/depot" name="depot" remote="aphrody" revision="a448c16a7628b1a2d1f02abf2a99875fa8360b9a" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="crates/gamescope-rs" name="gamescope-rs" remote="aphrody" revision="7a77c8da4678043a7ce71015892c83a04f6d1a9e" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/ring3-agent" name="ring3-agent" remote="aphrody" revision="390e9867117e9c3da9dd943d7f10c9def16a2d0f" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/rust-stack" name="rust-stack" remote="aphrody" revision="098565de91e6182646c0ab6085d5919bc0d84ae7" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="crates/unix" name="unix" remote="aphrody" revision="61d29aab5b7edfbe149c91c23b79ef0786976dfb" upstream="main" groups="kernel,gki,distro,sovereign" />
-  <project path="crates/wayland" name="wayland" remote="aphrody" revision="891e89c87f29c9df9e1ca0e90047045fcd38f528" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="crates/xtask" name="xtask" remote="aphrody" revision="84ace1bd8d3b2b5038b98bc0990eb0ae65a5b992" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="infra" name="infra" remote="aphrody" revision="46f7fee90279a9b605096c4f5cd655b97b4341e3" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="infra/mesh-vn" name="mesh-vn" remote="aphrody" revision="5d850084b702faacd99f4c07d09a4385ee89b8b0" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/ai-os" name="ai-os" remote="aphrody" revision="3c5a599ac50f17499dbbe5657e35741cc1e51799" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="packages/ai-triad" name="ai-triad" remote="aphrody" revision="95575713577973f577f157946beb3c4205e774e1" upstream="main" groups="monorepo,first-party,sovereign" />

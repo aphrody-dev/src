@@ -1,0 +1,28 @@
+# Hardened systemd unit for rosegriffon (Blue/Green template: @blue -> 13320, @green -> 23320)
+[Unit]
+Description=Sovereign Service rosegriffon (%i slot)
+After=network-online.target wireguard-wg0.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+StateDirectory=sovereign/rosegriffon-%i
+WorkingDirectory=/opt/sovereign/rosegriffon/current-%i
+EnvironmentFile=-/etc/sovereign/rosegriffon.env
+EnvironmentFile=-/etc/sovereign/rosegriffon-%i.port.env
+ExecStart=/opt/sovereign/rosegriffon/current-%i/rosegriffon
+Restart=always
+RestartSec=2s
+MemoryMax=1G
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

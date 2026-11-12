@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+.credentials.json
+.dev.vars
+*.exe
+*.dll
+*.h
+target/
+node_modules/
+mesh-vn/

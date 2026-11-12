@@ -113,38 +113,6 @@
       },
       "sparse_paths": null
     },
-    "crates/depot": {
-      "path": "C:\\src\\crates\\depot",
-      "url": "https://github.com/aphrody-dev/depot.git",
-      "commit": "a448c16a7628b1a2d1f02abf2a99875fa8360b9a",
-      "branch": "main",
-      "engine": "git",
-      "pillar": "git",
-      "remotes": {
-        "all": "https://github.com/aphrody-dev/depot.git",
-        "gitlab": "https://gitlab.com/aphrody-dev/depot.git",
-        "gitlab-self": "https://git.aphrody.com/aphrody/depot.git",
-        "google": "https://source.developers.google.com/p/aphrody/r/depot",
-        "origin": "https://github.com/aphrody-dev/depot.git"
-      },
-      "sparse_paths": null
-    },
-    "crates/gamescope-rs": {
-      "path": "C:\\src\\crates\\gamescope-rs",
-      "url": "https://github.com/aphrody-dev/gamescope-rs.git",
-      "commit": "7a77c8da4678043a7ce71015892c83a04f6d1a9e",
-      "branch": "main",
-      "engine": "git",
-      "pillar": "git",
-      "remotes": {
-        "all": "https://github.com/aphrody-dev/gamescope-rs.git",
-        "gitlab": "https://gitlab.com/aphrody-dev/gamescope-rs.git",
-        "gitlab-self": "https://git.aphrody.com/aphrody/gamescope-rs.git",
-        "google": "https://source.developers.google.com/p/aphrody/r/gamescope-rs",
-        "origin": "https://github.com/aphrody-dev/gamescope-rs.git"
-      },
-      "sparse_paths": null
-    },
     "crates/ring3-agent": {
       "path": "C:\\src\\crates\\ring3-agent",
       "url": "https://github.com/aphrody-dev/ring3-agent.git",
@@ -174,70 +142,6 @@
         "gitlab-self": "https://git.aphrody.com/aphrody/rust-stack.git",
         "google": "https://source.developers.google.com/p/aphrody/r/rust-stack",
         "origin": "https://github.com/aphrody-dev/rust-stack.git"
-      },
-      "sparse_paths": null
-    },
-    "crates/unix": {
-      "path": "C:\\src\\crates\\unix",
-      "url": "https://github.com/aphrody-dev/unix.git",
-      "commit": "61d29aab5b7edfbe149c91c23b79ef0786976dfb",
-      "branch": "main",
-      "engine": "git",
-      "pillar": "linux-kernel",
-      "remotes": {
-        "all": "https://github.com/aphrody-dev/unix.git",
-        "gitlab": "https://gitlab.com/aphrody-dev/unix.git",
-        "gitlab-self": "https://git.aphrody.com/aphrody/unix.git",
-        "google": "https://source.developers.google.com/p/aphrody/r/unix",
-        "origin": "https://github.com/aphrody-dev/unix.git"
-      },
-      "sparse_paths": null
-    },
-    "crates/wayland": {
-      "path": "C:\\src\\crates\\wayland",
-      "url": "https://github.com/aphrody-dev/wayland.git",
-      "commit": "891e89c87f29c9df9e1ca0e90047045fcd38f528",
-      "branch": "main",
-      "engine": "git",
-      "pillar": "git",
-      "remotes": {
-        "all": "https://github.com/aphrody-dev/wayland.git",
-        "gitlab": "https://gitlab.com/aphrody-dev/wayland.git",
-        "gitlab-self": "https://git.aphrody.com/aphrody/wayland.git",
-        "google": "https://source.developers.google.com/p/aphrody/r/wayland",
-        "origin": "https://github.com/aphrody-dev/wayland.git"
-      },
-      "sparse_paths": null
-    },
-    "crates/xtask": {
-      "path": "C:\\src\\crates\\xtask",
-      "url": "https://github.com/aphrody-dev/xtask.git",
-      "commit": "84ace1bd8d3b2b5038b98bc0990eb0ae65a5b992",
-      "branch": "main",
-      "engine": "jj",
-      "pillar": "git",
-      "remotes": {
-        "all": "https://github.com/aphrody-dev/xtask.git",
-        "gitlab": "https://gitlab.com/aphrody-dev/xtask.git",
-        "gitlab-self": "https://git.aphrody.com/aphrody/xtask.git",
-        "google": "https://source.developers.google.com/p/aphrody/r/xtask",
-        "origin": "https://github.com/aphrody-dev/xtask.git"
-      },
-      "sparse_paths": null
-    },
-    "infra": {
-      "path": "C:\\src\\infra",
-      "url": "https://github.com/aphrody-dev/infra.git",
-      "commit": "46f7fee90279a9b605096c4f5cd655b97b4341e3",
-      "branch": "main",
-      "engine": "git",
-      "pillar": "git",
-      "remotes": {
-        "all": "https://github.com/aphrody-dev/infra.git",
-        "gitlab": "https://gitlab.com/aphrody-dev/infra.git",
-        "gitlab-self": "https://git.aphrody.com/aphrody/infra.git",
-        "google": "https://source.developers.google.com/p/aphrody/r/infra",
-        "origin": "https://github.com/aphrody-dev/infra.git"
       },
       "sparse_paths": null
     },

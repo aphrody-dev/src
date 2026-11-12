@@ -60,3 +60,8 @@ graphify-out/
 !/src.lock.json
 !/.gitlab-ci.yml
 !/cloudbuild.yaml
+
+# .NET build output (infra/winnt-sdk)
+infra/winnt-sdk/**/bin/
+infra/winnt-sdk/**/obj/
+

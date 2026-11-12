@@ -1,0 +1,218 @@
+# ==============================================================================
+# Stalwart Mail Server v0.11+ Hardened Configuration for mail.aphrody.com
+# 100% Pure-Rust All-in-One JMAP / IMAP4rev2 / SMTP / ManageSieve Engine
+# Primary Node: OVH fr1 (51.77.147.152) | Standby Node: OVH fr2 (51.255.162.6)
+# ==============================================================================
+
+[server]
+hostname = "mail.aphrody.com"
+max-connections = 8192
+
+[server.tls]
+enable = true
+implicit = false
+timeout = "30s"
+certificate = "default"
+ignore-client-order = true
+# Enforce TLS 1.3 primary + modern TLS 1.2 ECDHE AEAD fallback for legacy MTA peers
+protocols = ["TLSv1.3", "TLSv1.2"]
+
+[certificate."default"]
+acme = "letsencrypt"
+domains = ["mail.aphrody.com", "mta-sts.aphrody.com"]
+default = true
+
+[acme."letsencrypt"]
+directory = "https://acme-v02.api.letsencrypt.org/directory"
+challenge = "dns-01"
+contact = ["security@aphrody.com", "contact@aphrody.com"]
+domains = ["mail.aphrody.com", "mta-sts.aphrody.com"]
+provider = "cloudflare"
+secret = "%{env:CLOUDFLARE_API_TOKEN}%"
+cache = "%{BASE_PATH}%/data/acme"
+renew-before = "30d"
+
+# --- Listeners ---
+[server.listener."smtp"]
+bind = ["[::]:25"]
+protocol = "smtp"
+
+[server.listener."submissions"]
+bind = ["[::]:465"]
+protocol = "smtp"
+tls.implicit = true
+
+[server.listener."submission"]
+bind = ["[::]:587"]
+protocol = "smtp"
+tls.implicit = false
+
+[server.listener."imaps"]
+bind = ["[::]:993"]
+protocol = "imap"
+tls.implicit = true
+
+[server.listener."sieve"]
+bind = ["[::]:4190"]
+protocol = "managesieve"
+tls.implicit = false
+
+[server.listener."https"]
+bind = ["[::]:443"]
+protocol = "http"
+tls.implicit = true
+
+[server.listener."http-local"]
+bind = ["127.0.0.1:8080"]
+protocol = "http"
+tls.implicit = false
+
+# --- Embedded RocksDB / FJall High-Throughput Rust Storage ---
+[storage]
+data = "rocksdb"
+fts = "rocksdb"
+blob = "fs"
+lookup = "rocksdb"
+directory = "internal"
+
+[store."rocksdb"]
+type = "rocksdb"
+path = "%{BASE_PATH}%/data/index"
+compression = "lz4"
+
+[store."fs"]
+type = "fs"
+path = "%{BASE_PATH}%/blobs"
+
+[directory."internal"]
+type = "internal"
+store = "rocksdb"
+
+# --- JMAP API & HTTP Endpoints (Programmatic Transactional & Org Sending) ---
+[http]
+url = "'https://mail.aphrody.com'"
+use-x-forwarded = true
+hsts = true
+
+[jmap.session.rate-limit]
+concurrent = 32
+requests = "1200/1m"
+
+# --- Dual DKIM Signing (Ed25519 Primary + RSA-2048 Compatibility) ---
+[signature."ed25519-aphrody"]
+private-key = "%{file:/opt/stalwart-mail/data/dkim/aphrody.ed25519.key}%"
+domain = "aphrody.com"
+selector = "s1-ed25519"
+headers = ["From", "To", "Cc", "Date", "Subject", "Message-ID", "Reply-To", "MIME-Version", "Content-Type"]
+algorithm = "ed25519-sha256"
+canonicalization = "relaxed/relaxed"
+expire = "10d"
+set-body-length = false
+report = true
+
+[signature."rsa2048-aphrody"]
+private-key = "%{file:/opt/stalwart-mail/data/dkim/aphrody.rsa2048.key}%"
+domain = "aphrody.com"
+selector = "s2-rsa"
+headers = ["From", "To", "Cc", "Date", "Subject", "Message-ID", "Reply-To", "MIME-Version", "Content-Type"]
+algorithm = "rsa-sha256"
+canonicalization = "relaxed/relaxed"
+expire = "10d"
+set-body-length = false
+report = true
+
+[auth.dkim]
+sign = [
+  { if = "listener != 'smtp' && sender_domain == 'aphrody.com'", then = "['ed25519-aphrody', 'rsa2048-aphrody']" },
+  { else = false }
+]
+verify = "relaxed"
+
+# --- Inbound Authentication: SPF, DMARC, ARC, Dane & MTA-STS ---
+[auth.spf.verify]
+ehlo = "relaxed"
+mail-from = "relaxed"
+
+[auth.dmarc.verify]
+policy = "relaxed"
+
+[auth.arc]
+seal = ["rsa2048-aphrody"]
+verify = "relaxed"
+
+[queue.outbound.tls]
+dane = "optional"
+mta-sts = "optional"
+starttls = "optional"
+
+# --- Rate Limiting & Abuse Guard ---
+[session.throttle."inbound-ip"]
+key = ["remote_ip"]
+rate = "60/1m"
+concurrency = 10
+
+[session.throttle."authenticated-sender"]
+match = "authenticated_as != ''"
+key = ["authenticated_as"]
+rate = "300/1h"
+concurrency = 16
+
+# --- Built-In Pure-Rust Spam, Phishing & Malware Filter ---
+[spam-filter]
+enabled = true
+header = "X-Spam-Status"
+classify-threshold = 5.0
+discard-threshold = 15.0
+phishing-protection = true
+homograph-protection = true
+url-redirection-check = true
+
+# --- Canonical Mailboxes, Aliases & Google Workspace Split-Delivery ---
+# Canonical addresses on aphrody.com:
+#   - contact@aphrody.com   (Org Master Identity; supports dual-delivery / split-delivery with Google Workspace)
+#   - noreply@aphrody.com   (Transactional outbound sender for Supabase, GitLab, Apps; inbound auto-rejected/aliased)
+#   - security@aphrody.com  (Vulnerability disclosure, ACME notices, TLS-RPT / DMARC security reports -> contact@aphrody.com)
+#   - ai@aphrody.com        (Autonomous NHITL notifications -> contact@aphrody.com & yoyo.aphrody@gmail.com)
+#   - dmarc@aphrody.com     (DMARC rua/ruf + SMTP TLS-RPT aggregate sink)
+
+[queue.route."local-stalwart"]
+type = "local"
+
+[queue.route."google-workspace-split"]
+type = "mx"
+address = "aspmx.l.google.com"
+port = 25
+tls.implicit = false
+tls.allow-invalid-certs = false
+
+[queue.strategy]
+route = [
+  { if = "rcpt == 'workspace-copy@aphrody.com'", then = "'google-workspace-split'" },
+  { if = "rcpt_domain == 'aphrody.com'", then = "'local-stalwart'" },
+  { else = "'mx'" }
+]
+
+[session.rcpt]
+directory = "'internal'"
+relay = [
+  { if = "authenticated_as != ''", then = true },
+  { else = false }
+]
+rewrite = [
+  { if = "rcpt == 'security@aphrody.com'", then = "'contact@aphrody.com'" },
+  { if = "rcpt == 'ai@aphrody.com'", then = "'contact@aphrody.com'" },
+  { if = "rcpt == 'postmaster@aphrody.com'", then = "'contact@aphrody.com'" },
+  { if = "rcpt == 'abuse@aphrody.com'", then = "'contact@aphrody.com'" },
+  { else = false }
+]
+
+# --- Admin Bootstrap ---
+[authentication.fallback-admin]
+user = "%{env:STALWART_ADMIN_USER}%"
+secret = "%{env:STALWART_ADMIN_PASSWORD}%"
+
+[tracer."stdout"]
+type = "stdout"
+level = "info"
+ansi = false
+enable = true

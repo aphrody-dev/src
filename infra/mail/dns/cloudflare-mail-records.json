@@ -1,0 +1,100 @@
+[
+  {
+    "type": "A",
+    "name": "mail.aphrody.com",
+    "content": "51.77.147.152",
+    "ttl": 300,
+    "proxied": false,
+    "comment": "Sovereign Stalwart Mail primary node (OVH fr1)"
+  },
+  {
+    "type": "A",
+    "name": "mx2.aphrody.com",
+    "content": "51.255.162.6",
+    "ttl": 300,
+    "proxied": false,
+    "comment": "Sovereign Stalwart Mail warm standby node (OVH fr2)"
+  },
+  {
+    "type": "CNAME",
+    "name": "mta-sts.aphrody.com",
+    "content": "aphrody.com",
+    "ttl": 3600,
+    "proxied": true,
+    "comment": "HTTPS host serving /.well-known/mta-sts.txt"
+  },
+  {
+    "type": "MX",
+    "name": "aphrody.com",
+    "content": "mail.aphrody.com",
+    "priority": 10,
+    "ttl": 3600,
+    "proxied": false,
+    "comment": "Primary MX: Sovereign Stalwart Mail Server (OVH fr1)"
+  },
+  {
+    "type": "MX",
+    "name": "aphrody.com",
+    "content": "smtp.google.com",
+    "priority": 20,
+    "ttl": 3600,
+    "proxied": false,
+    "comment": "Secondary / Split-Delivery MX: Google Workspace (contact@aphrody.com)"
+  },
+  {
+    "type": "TXT",
+    "name": "aphrody.com",
+    "content": "v=spf1 mx a:mail.aphrody.com ip4:51.77.147.152 ip4:51.255.162.6 include:_spf.google.com ~all",
+    "ttl": 3600,
+    "proxied": false,
+    "comment": "Unified SPF authorizing OVH Stalwart (fr1/fr2) + Google Workspace"
+  },
+  {
+    "type": "TXT",
+    "name": "s1-ed25519._domainkey.aphrody.com",
+    "content": "v=DKIM1; k=ed25519; p=REPLACE_WITH_STALWART_ED25519_PUBKEY_BASE64",
+    "ttl": 3600,
+    "proxied": false,
+    "comment": "Primary DKIM Ed25519 public key (Stalwart s1-ed25519)"
+  },
+  {
+    "type": "TXT",
+    "name": "s2-rsa._domainkey.aphrody.com",
+    "content": "v=DKIM1; k=rsa; p=REPLACE_WITH_STALWART_RSA2048_PUBKEY_BASE64",
+    "ttl": 3600,
+    "proxied": false,
+    "comment": "Compatibility DKIM RSA-2048 public key (Stalwart s2-rsa)"
+  },
+  {
+    "type": "TXT",
+    "name": "_dmarc.aphrody.com",
+    "content": "v=DMARC1; p=quarantine; rua=mailto:dmarc@aphrody.com; ruf=mailto:dmarc@aphrody.com; fo=1",
+    "ttl": 3600,
+    "proxied": false,
+    "comment": "DMARC quarantine policy with aggregate & forensic reporting"
+  },
+  {
+    "type": "TXT",
+    "name": "_mta-sts.aphrody.com",
+    "content": "v=STSv1; id=20261111T000000Z",
+    "ttl": 3600,
+    "proxied": false,
+    "comment": "RFC 8461 MTA-STS policy version signal"
+  },
+  {
+    "type": "TXT",
+    "name": "_smtp._tls.aphrody.com",
+    "content": "v=TLSRPTv1; rua=mailto:dmarc@aphrody.com",
+    "ttl": 3600,
+    "proxied": false,
+    "comment": "RFC 8460 SMTP TLS Reporting (TLS-RPT)"
+  },
+  {
+    "type": "TXT",
+    "name": "default._bimi.aphrody.com",
+    "content": "v=BIMI1; l=https://aphrody.com/assets/brand/aphrody-monogram-bimi.svg; a=",
+    "ttl": 3600,
+    "proxied": false,
+    "comment": "BIMI brand indicator SVG Tiny PS monogram for aphrody.com"
+  }
+]

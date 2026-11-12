@@ -454,7 +454,7 @@ fn detects_upward_layer_dependency_and_cycles_in_graph_arch_017() {
 fn generates_architecture_graph_mermaid_dot_and_json() {
     let ws = TempWorkspace::new("graph_export");
     ws.write(
-        "crates/unix/Cargo.toml",
+        "crates/unix-uutils/Cargo.toml",
         "[package]\nname = \"unix\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
     );
     ws.write(

@@ -1,0 +1,94 @@
+# Sovereign Arch Linux + CachyOS v3 + devtools (pkgctl) + Rust + Bun CI Builder
+# Builds aphrody-omarchy-cachyos .pkg.tar.zst packages and WSL2 (.wsl / .tar.zst) rootfs images
+
+FROM archlinux:base-devel
+
+LABEL org.opencontainers.image.title="aphrody-arch-cachyos-builder" \
+      org.opencontainers.image.description="Arch Linux + CachyOS v3 + pkgctl + Rust + Bun CI container for aphrody-omarchy-cachyos" \
+      org.opencontainers.image.authors="contact@aphrody.com" \
+      org.opencontainers.image.source="https://git.aphrody.com/aphrody/infra"
+
+ENV LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    CARGO_HOME=/opt/cargo \
+    RUSTUP_HOME=/opt/rustup \
+    BUN_INSTALL=/opt/bun \
+    PATH="/opt/bun/bin:/opt/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin"
+
+# 1. Enable ParallelDownloads, Color, and CachyOS x86-64-v3 repository
+RUN pacman-key --init && \
+    pacman-key --populate archlinux && \
+    pacman-key --recv-keys F3B607488DB35A47 --keyserver keyserver.ubuntu.com && \
+    pacman-key --lsign-key F3B607488DB35A47 && \
+    pacman -U --noconfirm \
+      'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-keyring-20240331-1-any.pkg.tar.zst' \
+      'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-mirrorlist-22-1-any.pkg.tar.zst' \
+      'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-v3-mirrorlist-22-1-any.pkg.tar.zst' && \
+    sed -i 's/^#ParallelDownloads.*/ParallelDownloads = 16/' /etc/pacman.conf && \
+    printf "\n[cachyos-v3]\nInclude = /etc/pacman.d/cachyos-v3-mirrorlist\n\n[cachyos-core-v3]\nInclude = /etc/pacman.d/cachyos-v3-mirrorlist\n\n[cachyos-extra-v3]\nInclude = /etc/pacman.d/cachyos-v3-mirrorlist\n\n[cachyos]\nInclude = /etc/pacman.d/cachyos-mirrorlist\n" >> /etc/pacman.conf
+
+# 2. Install Arch devtools (pkgctl), mkinitcpio, arch-install-scripts, GitLab Runner, Go, Wayland/WSLg headers, and zstd
+RUN pacman -Syu --noconfirm --needed \
+      devtools \
+      namcap \
+      arch-install-scripts \
+      mkinitcpio \
+      squashfs-tools \
+      dosfstools \
+      libisoburn \
+      git \
+      git-lfs \
+      github-cli \
+      glab \
+      gitlab-runner \
+      jq \
+      curl \
+      unzip \
+      zstd \
+      xz \
+      btrfs-progs \
+      clang \
+      lld \
+      llvm \
+      cmake \
+      ninja \
+      pkgconf \
+      go \
+      rustup \
+      wayland \
+      wayland-protocols \
+      libxkbcommon \
+      pixman \
+      seatd \
+      mesa \
+      vulkan-headers \
+      vulkan-icd-loader && \
+    pacman -Scc --noconfirm
+
+# 3. Configure non-root builder user required by makepkg / pkgctl
+RUN useradd -m -G wheel -s /bin/bash builder && \
+    echo "builder ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/builder && \
+    chmod 0440 /etc/sudoers.d/builder && \
+    mkdir -p /var/cache/makepkg/pkg /var/cache/makepkg/src /opt/cargo /opt/rustup /opt/bun && \
+    chown -R builder:builder /var/cache/makepkg /opt/cargo /opt/rustup /opt/bun
+
+# 4. Tune makepkg.conf for x86-64-v3 + LTO + multi-threaded zstd (.pkg.tar.zst)
+RUN sed -i 's/^CFLAGS=.*/CFLAGS="-march=x86-64-v3 -mtune=generic -O3 -pipe -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=3 -Wformat -Werror=format-security"/' /etc/makepkg.conf && \
+    sed -i 's/^CXXFLAGS=.*/CXXFLAGS="$CFLAGS -Wp,-D_GLIBCXX_ASSERTIONS"/' /etc/makepkg.conf && \
+    sed -i 's/^#MAKEFLAGS=.*/MAKEFLAGS="-j$(nproc)"/' /etc/makepkg.conf && \
+    sed -i 's/^COMPRESSZST=.*/COMPRESSZST=(zstd -c -T0 --ultra -20 -)/' /etc/makepkg.conf && \
+    echo 'PKGDEST=/var/cache/makepkg/pkg' >> /etc/makepkg.conf && \
+    echo 'SRCDEST=/var/cache/makepkg/src' >> /etc/makepkg.conf
+
+# 5. Install Rust stable toolchain and Bun Full-Rust runtime
+USER builder
+RUN rustup default stable && \
+    rustup component add rustfmt clippy && \
+    curl -fsSL https://bun.sh/install | BUN_INSTALL=/opt/bun bash
+
+USER root
+RUN printf '#!/usr/bin/env bash\nset -euo pipefail\nif [[ -n "${RUNNER_REGISTRATION_TOKEN:-}" && ! -f /etc/gitlab-runner/config.toml ]]; then\n  gitlab-runner register --non-interactive \\\n    --url "${CI_SERVER_URL:-https://git.aphrody.com}" \\\n    --registration-token "${RUNNER_REGISTRATION_TOKEN}" \\\n    --executor "${RUNNER_EXECUTOR:-shell}" \\\n    --name "${RUNNER_NAME:-aphrody-archlinux-pkgctl}" \\\n    --tag-list "${RUNNER_TAG_LIST:-archlinux-pkgctl,cachyos,omarchy,wsl2}"\nfi\nexec gitlab-runner run --user=builder --working-directory=/home/builder\n' > /usr/local/bin/arch-runner-entrypoint.sh && \
+    chmod +x /usr/local/bin/arch-runner-entrypoint.sh
+
+WORKDIR /workspace
+CMD ["/bin/bash"]

@@ -1,0 +1,17 @@
+[package]
+name = "infra_ffi_bridge"
+version = "1.27.0"
+edition = "2024"
+description = "Direct Rust -> Go 1.27 (`infra_go.dll`) Native C-ABI FFI Bridge via Win32 LoadLibraryA / GetProcAddress"
+license = "MIT"
+publish = false
+
+[lib]
+name = "infra_ffi_bridge"
+path = "src/lib.rs"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = [
+  "Win32_Foundation",
+  "Win32_System_LibraryLoader",
+] }

@@ -1,28 +1,17 @@
 # Root Cargo workspace for every first-party Rust crate in this repository.
-# Crates that live in git submodules (crates/depot, crates/xtask, ...) are members too;
-# their submodules keep the sources, this manifest owns dependencies, profiles and the lock.
+# Every first-party crate sits one level below crates/ and is a member through the glob.
 # See docs/CONSOLIDATION_PLAN.md.
 [workspace]
 resolver = "3"
 members = [
   "tools/archguard",
-  "crates/corelib",
-  "crates/aphrody-design-*",
-  "crates/bench",
-  "crates/ring3-agent",
-  "crates/rust-stack",
-  "crates/xtask",
-  "crates/depot/crates/*",
-  "crates/gamescope-rs/crates/*",
+  "crates/*",
 ]
-# crates/unix and crates/wayland keep their own workspaces until they are restructured and join.
 exclude = [
   "third_party",
   "apps",
   "packages",
   "infra",
-  "crates/unix",
-  "crates/wayland",
 ]
 
 [workspace.package]
@@ -30,28 +19,50 @@ version = "0.2.0"
 edition = "2024"
 rust-version = "1.85"
 license = "MIT OR Apache-2.0"
+authors = ["aphrody-dev"]
 
 [workspace.dependencies]
 # First-party crates
 aphrody-design-shared = { path = "crates/aphrody-design-shared" }
 aphrody-design-tokens = { path = "crates/aphrody-design-tokens" }
-depot-core = { path = "crates/depot/crates/depot-core" }
-depot-treesitter = { path = "crates/depot/crates/depot-treesitter" }
-depot-re = { path = "crates/depot/crates/depot-re" }
-depot-migrate = { path = "crates/depot/crates/depot-migrate" }
-depot-forge = { path = "crates/depot/crates/depot-forge" }
-depot-ingest = { path = "crates/depot/crates/depot-ingest" }
-depot-graph = { path = "crates/depot/crates/depot-graph" }
-gamescope-core = { path = "crates/gamescope-rs/crates/gamescope-core" }
-gamescope-wgsl = { path = "crates/gamescope-rs/crates/gamescope-wgsl" }
+depot-core = { path = "crates/depot-core" }
+depot-treesitter = { path = "crates/depot-treesitter" }
+depot-re = { path = "crates/depot-re" }
+depot-migrate = { path = "crates/depot-migrate" }
+depot-forge = { path = "crates/depot-forge" }
+depot-ingest = { path = "crates/depot-ingest" }
+depot-graph = { path = "crates/depot-graph" }
+gamescope-core = { path = "crates/gamescope-core" }
+gamescope-wgsl = { path = "crates/gamescope-wgsl" }
 
 # crates.io
+anyhow = "1.0"
+bitflags = "2.8"
+byteorder = "1.5"
+raw-cpuid = "11.2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+windows = { version = "0.62.2", features = [
+  "Win32_Foundation",
+  "Win32_Graphics_Direct3D",
+  "Win32_Graphics_Direct3D12",
+  "Win32_Graphics_Dxgi",
+  "Win32_Graphics_Dxgi_Common",
+  "Win32_Graphics_DirectComposition",
+  "Win32_System_Threading",
+  "Win32_Security",
+  "Win32_System_WinRT",
+  "Win32_System_WinRT_Composition",
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_Networking_WinSock",
+  "System",
+] }
 argh = "0.1.13"
 base64 = "0.22.1"
 bevy = { version = "0.18", default-features = false }
 blake3 = { version = "1.6.1", features = ["mmap", "rayon"] }
 bytemuck = { version = "1.22", features = ["derive"] }
-clap = { version = "4.5", features = ["derive"] }
+clap = { version = "4.5", features = ["derive", "env", "cargo"] }
 console_error_panic_hook = "0.1.7"
 egui = { version = "0.31", default-features = false }
 gix = { version = "0.61.0", default-features = false, features = ["default"] }

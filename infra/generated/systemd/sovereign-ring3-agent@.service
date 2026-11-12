@@ -1,0 +1,28 @@
+# Hardened systemd unit for ring3-agent (Blue/Green template: @blue -> 18080, @green -> 28080)
+[Unit]
+Description=Sovereign Service ring3-agent (%i slot)
+After=network-online.target wireguard-wg0.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+StateDirectory=sovereign/ring3-agent-%i
+WorkingDirectory=/opt/sovereign/ring3-agent/current-%i
+EnvironmentFile=-/etc/sovereign/ring3-agent.env
+EnvironmentFile=-/etc/sovereign/ring3-agent-%i.port.env
+ExecStart=/opt/sovereign/ring3-agent/current-%i/ring3-agent
+Restart=always
+RestartSec=2s
+MemoryMax=4G
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

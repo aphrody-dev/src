@@ -149,6 +149,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.104"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "330a5ed07fa54e4702c9d6c4174f74427fc0ef6e214bbd677ae50a5099946470"
+
+[[package]]
 name = "aphrody-design-emit"
 version = "0.2.0"
 dependencies = [
@@ -225,6 +231,16 @@ dependencies = [
  "image",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "aphrody-omarchy"
+version = "0.2.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "thiserror 2.0.21",
+ "unix-cachyos",
 ]
 
 [[package]]
@@ -1791,6 +1807,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "cosmic-compat"
+version = "0.2.0"
+dependencies = [
+ "bitflags 2.13.2",
+ "hypr-tiler",
+ "serde",
+ "smithay-wayland-wire",
+ "thiserror 2.0.21",
+ "tracing",
+]
+
+[[package]]
 name = "cosmic-text"
 version = "0.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2311,6 +2339,16 @@ name = "dunce"
 version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "92773504d58c093f6de2459af4af33faa518c13451eb8f2b5698ed3d36e7c813"
+
+[[package]]
+name = "dx12-winui-core"
+version = "0.2.0"
+dependencies = [
+ "thiserror 2.0.21",
+ "tracing",
+ "tracing-subscriber",
+ "windows 0.62.2",
+]
 
 [[package]]
 name = "ecolor"
@@ -4033,6 +4071,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "hypr-tiler"
+version = "0.2.0"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "iced-x86"
 version = "1.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5663,6 +5708,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a611d15b50743feb4c76b7d03edcb0e64f399c26961e4efe6975bc398be6aa3d"
 
 [[package]]
+name = "raw-cpuid"
+version = "11.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "498cd0dc59d73224351ee52a95fee0f1a617a2eae0e7d9d720cc622c73a54186"
+dependencies = [
+ "bitflags 2.13.2",
+]
+
+[[package]]
 name = "raw-window-handle"
 version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6346,6 +6400,17 @@ dependencies = [
  "wayland-protocols-wlr",
  "wayland-scanner",
  "xkeysym",
+]
+
+[[package]]
+name = "smithay-wayland-wire"
+version = "0.2.0"
+dependencies = [
+ "byteorder",
+ "dx12-winui-core",
+ "thiserror 2.0.21",
+ "tracing",
+ "windows 0.62.2",
 ]
 
 [[package]]
@@ -7231,6 +7296,37 @@ name = "unicode-xid"
 version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ebc1c04c71510c7f702b52b7c350734c9ff1295c464a03335b00bb84fc54f853"
+
+[[package]]
+name = "unix-cachyos"
+version = "0.2.0"
+dependencies = [
+ "raw-cpuid",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.21",
+]
+
+[[package]]
+name = "unix-distro"
+version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "aphrody-omarchy",
+ "clap",
+ "serde",
+ "serde_json",
+ "unix-cachyos",
+ "unix-uutils",
+]
+
+[[package]]
+name = "unix-uutils"
+version = "0.2.0"
+dependencies = [
+ "serde",
+ "thiserror 2.0.21",
+]
 
 [[package]]
 name = "untrusted"
@@ -8264,6 +8360,23 @@ name = "writeable"
 version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3ad82d2a33cdc9674dc7465672f271e096168fcdbe0f799d9e6db8c5892679dc"
+
+[[package]]
+name = "wslg-cli"
+version = "0.2.0"
+dependencies = [
+ "clap",
+ "cosmic-compat",
+ "dx12-winui-core",
+ "hypr-tiler",
+ "serde",
+ "serde_json",
+ "smithay-wayland-wire",
+ "thiserror 2.0.21",
+ "tracing",
+ "tracing-subscriber",
+ "windows 0.62.2",
+]
 
 [[package]]
 name = "x11-dl"
