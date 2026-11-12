@@ -1,0 +1,32 @@
+# Verify on every push and pull request, on the fr1 build runner (never on a laptop).
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: [self-hosted, fr1]
+    timeout-minutes: 60
+    env:
+      RUSTC_WRAPPER: ""
+      CARGO_TERM_COLOR: never
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.SUBMODULES_TOKEN || github.token }}
+          submodules: false
+      - name: Rust (ay and its libraries)
+        run: |
+          cargo build -p aphrody
+          cargo test -p aphrody -p depot-gclient -p depot-cas -p depot-cipd -p aphrody-up -p aphrody-rt -p archguard
+      - name: Architecture gate
+        run: target/debug/ay arch check --strict
+      - name: Go deploy engine
+        run: go -C infra test ./...
+      - name: Bun
+        run: bun test packages/env-kit

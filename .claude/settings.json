@@ -1,33 +1,21 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "outputStyle": "Proactive",
   "env": {
-    "AGENT_GUARD": "off"
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "BASH_MAX_OUTPUT_LENGTH": "12000",
+    "MAX_MCP_OUTPUT_TOKENS": "8000"
   },
   "permissions": {
-    "allow": [
-      "Bash",
-      "PowerShell",
-      "Read",
-      "Edit",
-      "Write",
-      "NotebookEdit",
-      "WebFetch",
-      "WebSearch"
-    ],
-    "defaultMode": "bypassPermissions"
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash|PowerShell|Read|Write|Edit|NotebookEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun run \"$CLAUDE_PROJECT_DIR/.agents/scripts/pre-tool-guard.ts\"",
-            "timeout": 5
-          }
-        ]
-      }
+    "allow": ["Bash", "PowerShell", "Read", "Edit", "Write", "NotebookEdit", "WebFetch", "WebSearch"],
+    "deny": [
+      "Read(./.env)",
+      "Edit(./.env)",
+      "Write(./.env)",
+      "Edit(//C:/Windows/System32/**)",
+      "Write(//C:/Windows/System32/**)",
+      "Bash(git add .env)",
+      "Bash(git add -f .env)"
     ]
   },
   "enabledPlugins": {

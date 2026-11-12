@@ -147,6 +147,24 @@ fn android_clang(arch: &str) -> Option<PathBuf> {
     clang.is_file().then_some(clang)
 }
 
+/// On a Linux host with `wild` (davidlattimore/wild, aphrody-dev fork) and clang, link host
+/// builds with wild: `clang -fuse-ld` style via `--ld-path`. Respects an explicit linker or
+/// RUSTFLAGS set by the caller. `AY_NO_WILD=1` turns it off.
+fn wild_linker_env() -> Vec<(String, String)> {
+    if !cfg!(target_os = "linux") || std::env::var_os("AY_NO_WILD").is_some() || std::env::var_os("RUSTFLAGS").is_some() {
+        return Vec::new();
+    }
+    let triple = format!("{}-unknown-linux-gnu", std::env::consts::ARCH);
+    let linker_var = format!("CARGO_TARGET_{}_LINKER", env_key(&triple));
+    match (which("wild"), which("clang"), std::env::var_os(&linker_var)) {
+        (Some(wild), Some(clang), None) => vec![
+            (linker_var, clang.display().to_string()),
+            ("RUSTFLAGS".into(), format!("-C link-arg=--ld-path={}", wild.display())),
+        ],
+        _ => Vec::new(),
+    }
+}
+
 /// Marker in `NativeStatus::env`: run `cargo zigbuild` instead of `cargo build`.
 const ZIGBUILD: &str = "AY_CARGO_ZIGBUILD";
 
@@ -319,6 +337,9 @@ pub fn run(args: BuildArgs) -> i32 {
         let mut cmd = Command::new("cargo");
         cmd.arg("build").arg("--workspace").args(args.release.then_some("--release")).args(&args.cargo_args);
         cmd.current_dir(&workspace);
+        for (k, v) in wild_linker_env() {
+            cmd.env(k, v);
+        }
         if args.dry_run {
             println!("{cmd:?}");
             return 0;

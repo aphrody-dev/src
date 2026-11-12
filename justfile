@@ -125,6 +125,14 @@ deploy-plan:
     ay deploy plan --all
     ay deploy caddyfile
 
+# Headless Claude Code, no human in the loop (JSON result on stdout)
+agent prompt turns="100":
+    claude -p "{{prompt}}" --permission-mode bypassPermissions --output-format json --max-turns {{turns}}
+
+# Same, on the fr1 build runner through GitHub Actions (.github/workflows/claude.yml)
+agent-ci prompt:
+    gh workflow run claude.yml -R aphrody-dev/src -f prompt="{{prompt}}"
+
 # Format entire Bun workspace
 fmt:
     bun fmt
