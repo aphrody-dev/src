@@ -1,0 +1,22 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version: 1.4.4 }
+      - run: bun install --frozen-lockfile
+      - run: bun test packages
+  # Native builds (Rust/C++ on the shared Chromium LLVM toolchain) run on the prd self-hosted runner, never on the dev PC.
+  native:
+    if: github.event_name == 'push' && hashFiles('crates/*/Cargo.toml') != ''
+    runs-on: [self-hosted, prd]
+    steps:
+      - uses: actions/checkout@v5
+      - run: cargo build --workspace --release
