@@ -1,0 +1,16 @@
+# Revues Gemini (Carbon High) — index
+
+Chat : https://gemini.google.com/app/2844abe90b9638bf (2026-11-12). Les remarques de Gemini sont vérifiées avant correction ; celles réfutées sont marquées.
+
+| Doc | Score | Problèmes principaux | Statut |
+|---|---|---|---|
+| docs/compat/TARGETS.md | 7/20 | triples UEFI/SPIR-V Vulkan/WASI faux ; x86-64-v4 incomplet ; backends expérimentaux non distingués ; [V] = présence source, pas toolchain testé ; sections « sparse » vs « full checkout » contradictoires | corrigé (triples, v4, expérimentaux, sens de [V]) ; TODO : fusionner sections sparse/full, tiers de support, sysroots, pins SHA |
+| docs/ARCHITECTURE-ROOT.md | 8/20 | dédup forks GitHub limitée à la branche par défaut ; Cargo vendor offline + `[patch]` git ; interdiction des jonctions incompatible avec `bun install`/gclient ; invariant 2 (nom de package conservé) vs 5 (préfixe identity) ; découverte de racine par `Cargo.toml` le plus proche ; `CARGO_BIN_NAME` absent hors `[[bin]]` | corrigé (compte 309, limite dédup) ; réfuté : U+200B/NBSP absents du fichier ; TODO design : reste |
+| docs/infra/CLOUDFLARE-ONE.md | 7/20 | hairpin CF→fr2→CF au lieu d'ingress tunnel direct ; schéma `1<port>` déborde 65535 ; SSH Access non prêt (CA sshd, split tunnel 10/8) ; IP client mal décrite ; boucle CDN-Loop non testée | corrigé (chemins `C:\src-merge`, schéma de ports) ; réfuté : NBSP dans la commande de rollback ; TODO design : ingress direct prd, CA SSH, split tunnel |
+| third_party/ECOSYSTEM.toml | 4/20 | multi-grammaires (typescript/tsx, ocaml, markdown, php, xml, csv) ; `used_by` auto-référent ; manque SHA/SPDX/ABI | score biaisé : le résumé envoyé tronquait les guillemets et affirmait `crates/core` absent (créé pendant la session) ; TODO : revue sur le fichier brut |
+| agent/docs/ARCHITECTURE.md | 8/20 | `isStepCount` vs `stepCountIs` (AI SDK) ; incohérences avec FUSION.md | TODO : vérifier l'export dans la version `ai` du bun.lock (node_modules absents, non vérifiable) |
+| agent/docs/FUSION.md | 6/20 | pont Python ↔ bun:ffi impossible ; APIs Bun indisponibles sur Workers ; contradictions avec ARCHITECTURE.md | TODO design |
+| agent/packages/core/src/context.ts | 6/20 | LIMIT SQL avant filtrage de scope (famine) ; rappel sémantique limité aux 200 plus récents ; NaN si température ≤ 0 ou date future ; Float32Array non aligné ; spread `Math.hypot` ; injection Markdown via source/titre ; pas d'index ni busy_timeout | corrigé (agent eda0791 : température, date future, décodage aligné, hypot, assainissement source/titre) ; TODO : scope en SQL, index, busy_timeout, budget tokens |
+| docs/research/EDITORS-AGENTS-MATRIX.md | voir gemini-2026-11-12-editors-agents-matrix.md | | |
+
+Non revus (apparus pendant la session ou absents) : crates/core, packages/core, packages/runtime-adapter, docs/llvm/*, docs/CORE.md, docs/infra/HOSTING-POLICY.md, docs/ROOT-ARCHITECTURE.md (remplacé par ARCHITECTURE-ROOT.md).
