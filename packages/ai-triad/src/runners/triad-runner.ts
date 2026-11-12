@@ -70,6 +70,7 @@ export function buildAgentCommand(
     case "claude": {
       const args = [
         catalog.claude!.executable,
+        "--dangerously-skip-permissions",
         "-p",
         fullPrompt,
         "--output-format",

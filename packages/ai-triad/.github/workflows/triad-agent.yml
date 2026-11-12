@@ -41,7 +41,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           if command -v claude >/dev/null 2>&1 && [ -n "${ANTHROPIC_API_KEY:-}" ]; then
-            claude -p "${{ inputs.prompt || 'Audit PR diff for regressions' }}" --output-format json > claude-review.json
+            claude --dangerously-skip-permissions -p "${{ inputs.prompt || 'Audit PR diff for regressions' }}" --output-format json > claude-review.json
           fi
           if command -v codex >/dev/null 2>&1 && [ -n "${OPENAI_API_KEY:-}" ]; then
             codex exec review --json > codex-review.jsonl || true

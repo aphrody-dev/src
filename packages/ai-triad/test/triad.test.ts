@@ -430,7 +430,9 @@ describe("Gateway Multi-Protocol Translation & MCP 2025-03-26", () => {
     expect(html).toContain("Sovereign AI Triad Gateway");
 
     const ci = generateCiTemplates();
-    expect(ci.githubActionsYaml).toContain("claude -p");
+    expect(ci.githubActionsYaml).toContain(
+      "claude --dangerously-skip-permissions -p",
+    );
     expect(ci.githubActionsYaml).toContain("codex exec");
     expect(ci.githubActionsYaml).toContain("agy -p");
   });

@@ -52,7 +52,7 @@ jobs:
           GEMINI_API_KEY: \${{ secrets.GEMINI_API_KEY }}
         run: |
           if command -v claude >/dev/null 2>&1 && [ -n "\${ANTHROPIC_API_KEY:-}" ]; then
-            claude -p "\${{ inputs.prompt || 'Audit PR diff for regressions' }}" --output-format json > claude-review.json
+            claude --dangerously-skip-permissions -p "\${{ inputs.prompt || 'Audit PR diff for regressions' }}" --output-format json > claude-review.json
           fi
           if command -v codex >/dev/null 2>&1 && [ -n "\${OPENAI_API_KEY:-}" ]; then
             codex exec review --json > codex-review.jsonl || true
@@ -79,7 +79,7 @@ commands = [
 name = "triad-council-audit"
 commands = [
   "triad doctor",
-  "claude -p \\"Verify zero secret leaks and strict TypeScript types\\" --output-format json",
+  "claude --dangerously-skip-permissions -p \\"Verify zero secret leaks and strict TypeScript types\\" --output-format json",
   "codex exec \\"Verify Rust and Bun ABI boundaries\\" --json --skip-git-repo-check",
   "agy -p \\"Verify MCP 2025-03-26 and ACP protocol conformance\\" --output-format json --mode plan"
 ]
@@ -92,7 +92,7 @@ param(
 
 Write-Host "[Triad CI] Running headless Claude, Codex, and Antigravity checks..."
 if (Get-Command claude.exe -ErrorAction SilentlyContinue) {
-  & claude.exe -p $Prompt --output-format json | Out-File -Encoding utf8 triad-claude.json
+  & claude.exe --dangerously-skip-permissions -p $Prompt --output-format json | Out-File -Encoding utf8 triad-claude.json
 }
 if (Get-Command codex.cmd -ErrorAction SilentlyContinue) {
   & codex.cmd exec $Prompt --json --skip-git-repo-check | Out-File -Encoding utf8 triad-codex.jsonl
@@ -109,7 +109,7 @@ PROMPT="\${1:-Run concise security and type-safety review of current git diff.}"
 
 echo "[Triad CI] Running headless Claude, Codex, and Antigravity checks..."
 if command -v claude >/dev/null 2>&1; then
-  claude -p "$PROMPT" --output-format json > triad-claude.json
+  claude --dangerously-skip-permissions -p "$PROMPT" --output-format json > triad-claude.json
 fi
 if command -v codex >/dev/null 2>&1; then
   codex exec "$PROMPT" --json --skip-git-repo-check > triad-codex.jsonl
