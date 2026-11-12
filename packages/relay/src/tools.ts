@@ -20,9 +20,13 @@ const obj = (props: Record<string, unknown>, required: string[] = []) => ({
   additionalProperties: false,
 });
 
-/** Alias ssh de ~/.ssh/config (Host sans joker). */
+// Config ssh de l utilisateur (RELAY_SSH_CONFIG quand le relais tourne en service, sinon ~/.ssh/config).
+const sshConfig = () =>
+  Bun.env.RELAY_SSH_CONFIG ?? join(homedir(), ".ssh", "config");
+
+/** Alias ssh de la config utilisateur (Host sans joker). */
 export function sshHosts(): string[] {
-  const f = join(homedir(), ".ssh", "config");
+  const f = sshConfig();
   if (!existsSync(f)) return [];
   const t = readFileSync(f, "utf8");
   return [
@@ -35,9 +39,22 @@ export function sshHosts(): string[] {
 }
 
 const ssh = async (host: string, cmd: string, timeout = 15000) => {
-  if (!sshHosts().includes(host)) throw new Error(`hôte ssh inconnu : ${host}`);
+  if (!sshHosts().includes(host))
+    throw new Error(
+      `hôte ssh inconnu : ${host} (config ${sshConfig()}, ${sshHosts().length} alias)`,
+    );
   const p = Bun.spawn(
-    ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=6", host, cmd],
+    [
+      "ssh",
+      "-F",
+      sshConfig(),
+      "-o",
+      "BatchMode=yes",
+      "-o",
+      "ConnectTimeout=6",
+      host,
+      cmd,
+    ],
     { stdout: "pipe", stderr: "pipe" },
   );
   const kill = setTimeout(() => p.kill(), timeout);
