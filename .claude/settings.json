@@ -19,7 +19,9 @@
     "ralph-loop@anthropic-plugin-directory": true,
     "security-guidance@anthropic-plugin-directory": true,
     "playwright@anthropic-plugin-directory": true,
-    "plugin-dev@anthropic-plugin-directory": true
+    "plugin-dev@anthropic-plugin-directory": true,
+    "cloudflare@anthropic-plugin-directory": true,
+    "github@claude-plugins-official": true
   },
   "env": {
     "AGENT_GUARD": "off"

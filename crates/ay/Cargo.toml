@@ -19,6 +19,8 @@ path = "src/lib.rs"
 archguard.workspace = true
 clap.workspace = true
 depot-cli.workspace = true
+serde_json.workspace = true
+sys = { path = "../sys" }
 xtk.workspace = true
 
 # The benchmark suite measures Win32 APIs; `ay bench` reports unsupported elsewhere.

@@ -58,6 +58,21 @@ pub enum Cmd {
     Scope(Rest),
     /// Build the workspace for a cross-compilation preset (--list shows toolchain status)
     Build(build::BuildArgs),
+    /// Machine profile: OS, firmware/SMBIOS, CPUID, PCI, GPUs, disks, virtualization, toolchains
+    Sys(SysArgs),
+}
+
+#[derive(clap::Args, Debug, PartialEq, Default)]
+pub struct SysArgs {
+    /// Full profile as JSON (schema `sys::SCHEMA_VERSION`)
+    #[arg(long)]
+    pub json: bool,
+    /// Keep serials, UUIDs and public addresses (local use only, never agent context)
+    #[arg(long)]
+    pub ids: bool,
+    /// Skip probing toolchain versions
+    #[arg(long)]
+    pub no_tools: bool,
 }
 
 /// Depot subcommands that live under `ay graph`.
@@ -72,6 +87,7 @@ pub enum Route {
     Bench(Vec<String>),
     External(&'static str, Vec<String>),
     Build(build::BuildArgs),
+    Sys(SysArgs),
 }
 
 fn prefixed(head: &[&str], rest: &[String]) -> Vec<String> {
@@ -110,7 +126,24 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Bench(r) => Route::Bench(r.args),
         Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
         Cmd::Build(b) => Route::Build(b),
+        Cmd::Sys(s) => Route::Sys(s),
     }
+}
+
+fn run_sys(a: SysArgs) -> i32 {
+    let profile = sys::probe(sys::Options { skip_toolchains: a.no_tools, include_identifiers: a.ids });
+    if a.json {
+        match serde_json::to_string_pretty(&profile) {
+            Ok(s) => println!("{s}"),
+            Err(e) => {
+                eprintln!("ay sys: {e}");
+                return 1;
+            }
+        }
+    } else {
+        print!("{}", profile.summary());
+    }
+    0
 }
 
 fn run_route(route: Route) -> i32 {
@@ -121,6 +154,7 @@ fn run_route(route: Route) -> i32 {
         Route::Bench(args) => run_bench(&args),
         Route::External(program, args) => exec::run_external(program, &args),
         Route::Build(args) => build::run(args),
+        Route::Sys(args) => run_sys(args),
     }
 }
 
@@ -230,6 +264,12 @@ mod tests {
         assert!(b.release && !b.list && !b.dry_run);
         assert_eq!(b.cargo_args, v(&["-p", "ffi"]));
         assert_eq!(run(&v(&["build", "--target", "nope-nope", "--dry-run"])), 2);
+    }
+
+    #[test]
+    fn sys_flags() {
+        assert_eq!(parse("sys --json --no-tools"), Route::Sys(SysArgs { json: true, ids: false, no_tools: true }));
+        assert_eq!(parse("sys"), Route::Sys(SysArgs::default()));
     }
 
     #[test]

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "hostinger": {
+      "command": "bun",
+      "args": ["${USERPROFILE}/.bun/install/global/node_modules/hostinger-api-mcp/src/servers/all.js"],
+      "env": {
+        "DEBUG": "false",
+        "HOSTINGER_API_TOKEN": "${HOSTINGER_API_TOKEN}"
+      }
+    }
+  }
+}

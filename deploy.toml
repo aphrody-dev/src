@@ -1,5 +1,7 @@
 # =============================================================================
-# Sovereign Multi-Cloud & Self-Hosted Deployment Manifest (`C:\src\deploy.toml`)
+# Multi-cloud and self-hosted deployment manifest. Node roles (2026-11-12, owner decision):
+#   usa (ssh prd) = all production, fr1 (ssh vps) = builds and heavy storage,
+#   fr2 (ssh cdn) = assets, CDN, cron jobs, cloud/VPS sync. See docs/INFRA_MATRIX.md.
 # Engine: `src-deploy` / `dpl` (Go 1.27 + Zig CGO + Rust + Bun v1.4.4 FFI)
 # =============================================================================
 
@@ -23,7 +25,8 @@ provider = "ovhcloud"
 public_ip = "51.77.147.152"
 mesh_ip = "10.200.77.1"
 region = "eu-fr"
-role = "primary-eu-production-edge"
+role = "build-and-heavy-storage"
+ssh_alias = "vps"
 ssh_user = "ubuntu"
 
 [nodes.fr2]
@@ -31,7 +34,8 @@ provider = "ovhcloud"
 public_ip = "51.255.162.6"
 mesh_ip = "10.200.77.3"
 region = "eu-fr"
-role = "eu-ha-replica-postgres-r2-ollama"
+role = "cdn-assets-cron-cloud-sync"
+ssh_alias = "cdn"
 ssh_user = "ubuntu"
 
 [nodes.usa]
@@ -39,9 +43,10 @@ provider = "hostinger"
 public_ip = "72.60.186.43"
 mesh_ip = "10.200.77.5"
 region = "us-google-egress"
-role = "strict-google-gemini-egress-only"
+role = "production"
+ssh_alias = "prd"
 ssh_user = "root"
-allow_non_google_workloads = false
+allow_non_google_workloads = true
 
 [cloud]
 cloudflare_account_id = "ca22c1a51a145f919b54afa18d936516"
@@ -53,7 +58,7 @@ ollama_models = ["qwen3-coder", "deepseek-r1", "gemma4"]
 path = "C:/src/apps/aphrody"
 runtime = "bun-fullstack"
 region = "eu-fr"
-nodes = ["fr1", "fr2"]
+nodes = ["usa"]
 domains = ["aphrody.com", "www.aphrody.com"]
 port = 3000
 blue_port = 13000
@@ -65,7 +70,7 @@ verify_gate = "wck check C:/src/apps/aphrody"
 path = "C:/src/apps/shenron"
 runtime = "bun-fullstack"
 region = "eu-fr"
-nodes = ["fr1", "fr2"]
+nodes = ["usa"]
 domains = ["dragonballfr.com", "www.dragonballfr.com", "tv.dragonballfr.com"]
 port = 3100
 blue_port = 13100
@@ -76,7 +81,7 @@ r2_bucket = "shenron-cdn"
 path = "C:/src/apps/rosegriffon"
 runtime = "bun-fullstack"
 region = "eu-fr"
-nodes = ["fr1", "fr2"]
+nodes = ["usa"]
 domains = ["rosegriffon.fr", "www.rosegriffon.fr"]
 port = 3320
 blue_port = 13320
@@ -87,7 +92,7 @@ r2_bucket = "rosegriffon-media"
 path = "C:/src/packages/ai-os"
 runtime = "bun-fullstack"
 region = "eu-fr"
-nodes = ["fr1", "fr2"]
+nodes = ["usa"]
 domains = ["ai.aphrody.com"]
 port = 4000
 blue_port = 14000
@@ -97,7 +102,7 @@ green_port = 24000
 path = "C:/src/crates/depot-cli"
 runtime = "rust-daemon"
 region = "eu-fr"
-nodes = ["fr1", "fr2"]
+nodes = ["usa"]
 domains = ["depot.internal.aphrody.com"]
 port = 4100
 blue_port = 14100
@@ -108,7 +113,7 @@ path = "C:/src/packages/pi-opencode"
 runtime = "bun-fullstack"
 region = "us-google-egress"
 google_egress = true
-nodes = ["usa", "fr2"]
+nodes = ["usa"]
 domains = ["gemini-egress.internal.aphrody.com", "triad.aphrody.com"]
 port = 4200
 blue_port = 14200
@@ -118,7 +123,7 @@ green_port = 24200
 path = "C:/src/crates/ring3-agent"
 runtime = "rust-daemon"
 region = "eu-fr"
-nodes = ["fr2", "fr1"]
+nodes = ["usa"]
 domains = ["r3d.internal.aphrody.com"]
 port = 8080
 blue_port = 18080
@@ -128,7 +133,7 @@ green_port = 28080
 path = "C:/src/apps/yolo"
 runtime = "bun-fullstack"
 region = "eu-fr"
-nodes = ["fr1", "fr2"]
+nodes = ["usa"]
 domains = ["yolo.aphrody.com", "yolo.aphrody.app"]
 port = 3092
 blue_port = 13092
