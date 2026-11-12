@@ -1,4 +1,5 @@
 // Outils du relais, partagés par toutes les surfaces (JSON-RPC HTTP/WebSocket/TCP/TLS, MCP, A2A, ACP).
+import { listModels, llmAsk } from "./models.ts";
 import { accountsSync } from "./accounts.ts";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
@@ -173,6 +174,29 @@ export const TOOLS: Tool[] = [
           ]
         ).map((x) => `mcp__claude_ai_${x}`),
       ),
+  },
+  {
+    name: "llm_models",
+    description:
+      "Models of every active provider, discovered live (Ollama, OpenAI-compatible local servers such as llama.cpp/vLLM/mistral.rs/LiteLLM, OpenRouter, Hugging Face, Vercel AI Gateway, Cloudflare Workers AI, Antigravity, Claude). Nothing hardcoded.",
+    inputSchema: obj({ filter: str("Regex on provider/model id (optional)") }),
+    readOnly: true,
+    run: (a) => listModels(a.filter),
+  },
+  {
+    name: "llm_ask",
+    description:
+      "Ask any discovered model, addressed as provider/model (see llm_models).",
+    inputSchema: obj(
+      {
+        model: str("provider/model from llm_models"),
+        prompt: str("Prompt"),
+        system: str("System prompt (optional)"),
+      },
+      ["model", "prompt"],
+    ),
+    readOnly: false,
+    run: (a) => llmAsk(String(a.model), String(a.prompt), a.system),
   },
   {
     name: "accounts_sync",
