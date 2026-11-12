@@ -50,6 +50,15 @@ switch (cmd) {
     console.log(a.text);
     break;
   }
+  case "recon":
+    console.log(
+      JSON.stringify(
+        await (await import("./recon.ts")).recon(rest[0]),
+        null,
+        1,
+      ),
+    );
+    break;
   case "inspect":
     await import("./inspect.ts");
     break;
@@ -80,7 +89,7 @@ switch (cmd) {
   }
   default:
     console.error(
-      "usage : relay serve | browser [--headful] | login | ask <prompt> [--claude|--web] | review <fichier> | inspect | acp | token | mcp-add",
+      "usage : relay serve | browser [--headful] | login | ask <prompt> [--claude|--web] | review <fichier> | inspect | recon [url] | acp | token | mcp-add",
     );
     process.exit(2);
 }
