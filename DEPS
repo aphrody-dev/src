@@ -20,13 +20,13 @@ vars = {
 }
 
 deps = {
-  'apps/rosegriffon': 'https://github.com/aphrody-labs/rosegriffon.git@70d7c593512384608d525b036106c8ea528defa2',
+  'apps/rosegriffon': 'https://github.com/aphrody-labs/rosegriffon.git@93ffcef0926247fc3cb2bd6fca22d99bb66e3f27',
   'apps/shenron': 'https://github.com/aphrody-labs/shenron.git@e9d40698e2a69132b2448088f19d19ed8e6914d6',
   'crates/bench': 'https://github.com/aphrody-dev/bench.git@6b0c980b99139cf69cc9d391143afda675732570',
   'crates/ring3-agent': 'https://github.com/aphrody-dev/ring3-agent.git@d282118ea23d9d20da4a73d9b574376702b01b6b',
   'crates/rust-stack': 'https://github.com/aphrody-dev/rust-stack.git@0652a8d2f24f3d773b5a91a621c4fee4e322c5be',
-  'packages/bun-plugins': 'https://github.com/aphrody-dev/src.git@6c4079ba5261a254b943b2715cdc91bb4a13244e',
-  'packages/forge': 'https://github.com/aphrody-dev/src.git@6c4079ba5261a254b943b2715cdc91bb4a13244e',
+  'packages/bun-plugins': 'https://github.com/aphrody-dev/src.git@97fc330f4f04cb1e325bd0fa0f69fd528d32442d',
+  'packages/forge': 'https://github.com/aphrody-dev/src.git@97fc330f4f04cb1e325bd0fa0f69fd528d32442d',
   'third_party/agent-browser': 'https://github.com/aphrody-dev/agent-browser.git@d129226078e0fc8ee5dec48fbc96a46df5d0aafd',
   'third_party/agent-desktop': 'https://github.com/aphrody-dev/agent-desktop.git@8e8dd7cbefe6d4421a0147aee0aad78dc6ace2b4',
   'third_party/ai-ecosystem/antigravity-sdk-python': 'https://github.com/aphrody-dev/antigravity-sdk-python.git@75ba22bd00afae2f46393ff31f30c3f0df52982f',

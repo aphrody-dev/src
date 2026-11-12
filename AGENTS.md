@@ -40,3 +40,10 @@ Managed via `env-kit accounts` with isolated `gcloud` named configurations shari
 - **Offline docs**: `third_party/docs-ecosystem/` (Docker, Kubernetes, nix.dev, Arch/Alpine image repos), pinned in `src.lock.json`, refreshed by `just docs-sync`.
 - **Agent autonomy**: agents run unrestricted by default. The shared PreToolUse guard `.agents/scripts/pre-tool-guard.ts` serves both `agy` (`.agents/hooks.json`) and Claude Code (`.claude/settings.json`) and is controlled by `AGENT_GUARD=off|warn|enforce` (default `off`).
 - **Skills**: `.agents/skills/` is the single source of truth. Claude Code reads it through the `.claude/skills` junction created by `install.ps1` (on Unix: `ln -s ../.agents/skills .claude/skills`).
+
+## 6. Steam Ecosystem Knowledge (`steam` plugin)
+
+- **Source**: `apps/rosegriffon/plugins/steam` (Claude Code plugin, local marketplace `apps/rosegriffon/.claude-plugin/marketplace.json`, enabled as `steam@rosegriffon-plugins`).
+- **Skills for every agent**: mirrored as `.agents/skills/steam-*` (steam-web-api, steam-auth, steam-ids-and-urls, steam-content-cdn, steam-client-windows, steam-linux-proton, steam-community-tools, steam-local-inspect). Edit them in the plugin, then re-copy the `skills/*` directories here (paths `${CLAUDE_PLUGIN_ROOT}` become `apps/rosegriffon/plugins/steam`).
+- **MCP for any client**: `bun run apps/rosegriffon/plugins/steam/servers/steam-mcp.ts` (stdio, no dependencies). Tools: `web_api_call` (uses `STEAM_WEB_API_KEY` when set), `store_appdetails`, `resolve_steamid`, `local_apps`, `read_vdf`, `app_paths`, `steamdb_link` (links only).
+- **Local CLI**: `bun run apps/rosegriffon/plugins/steam/scripts/steam-inspect.ts apps|app|paths|appinfo|vdf`.

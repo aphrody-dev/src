@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-11-12T07:34:26.9762645+01:00",
+  "generated_at": "2026-11-12T07:59:04.9426927+01:00",
   "hardware": {
     "os": "Windows NT (x86_64)",
     "cpu": "Intel Core i7-13700F (Raptor Lake sm_89)",
@@ -25,7 +25,7 @@
     "zig": "0.17.0"
   },
   "pillars": {
-    "git_superproject_commit": "6c4079ba5261a254b943b2715cdc91bb4a13244e",
+    "git_superproject_commit": "97fc330f4f04cb1e325bd0fa0f69fd528d32442d",
     "chromium_src_commit": "4c7244a405d326e284710231ff609168dceb9044",
     "linux_kernel_commit": "7475ea8b58616b33c04afb976cf0fbaad9dd63fb",
     "aosp_manifest_commit": "1ed30a827f1156dc831083e6cf999d6bd9deae18"
@@ -34,7 +34,7 @@
     "apps/rosegriffon": {
       "path": "C:\\src\\apps\\rosegriffon",
       "url": "https://github.com/aphrody-labs/rosegriffon.git",
-      "commit": "70d7c593512384608d525b036106c8ea528defa2",
+      "commit": "93ffcef0926247fc3cb2bd6fca22d99bb66e3f27",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -115,7 +115,7 @@
     "packages/bun-plugins": {
       "path": "C:\\src\\packages\\bun-plugins",
       "url": "https://github.com/aphrody-dev/src.git",
-      "commit": "6c4079ba5261a254b943b2715cdc91bb4a13244e",
+      "commit": "97fc330f4f04cb1e325bd0fa0f69fd528d32442d",
       "branch": "main",
       "engine": "jj",
       "pillar": "git",
@@ -131,7 +131,7 @@
     "packages/forge": {
       "path": "C:\\src\\packages\\forge",
       "url": "https://github.com/aphrody-dev/src.git",
-      "commit": "6c4079ba5261a254b943b2715cdc91bb4a13244e",
+      "commit": "97fc330f4f04cb1e325bd0fa0f69fd528d32442d",
       "branch": "main",
       "engine": "jj",
       "pillar": "git",

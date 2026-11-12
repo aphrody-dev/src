@@ -12,13 +12,13 @@
 
   <default remote="aphrody" revision="main" sync-j="8" sync-c="true" />
 
-  <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="70d7c593512384608d525b036106c8ea528defa2" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="93ffcef0926247fc3cb2bd6fca22d99bb66e3f27" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="apps/shenron" name="shenron" remote="aphrody-labs" revision="e9d40698e2a69132b2448088f19d19ed8e6914d6" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/bench" name="bench" remote="aphrody" revision="6b0c980b99139cf69cc9d391143afda675732570" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/ring3-agent" name="ring3-agent" remote="aphrody" revision="d282118ea23d9d20da4a73d9b574376702b01b6b" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/rust-stack" name="rust-stack" remote="aphrody" revision="0652a8d2f24f3d773b5a91a621c4fee4e322c5be" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/bun-plugins" name="src" remote="aphrody" revision="6c4079ba5261a254b943b2715cdc91bb4a13244e" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/forge" name="src" remote="aphrody" revision="6c4079ba5261a254b943b2715cdc91bb4a13244e" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/bun-plugins" name="src" remote="aphrody" revision="97fc330f4f04cb1e325bd0fa0f69fd528d32442d" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/forge" name="src" remote="aphrody" revision="97fc330f4f04cb1e325bd0fa0f69fd528d32442d" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="third_party/agent-browser" name="agent-browser" remote="aphrody" revision="d129226078e0fc8ee5dec48fbc96a46df5d0aafd" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/agent-desktop" name="agent-desktop" remote="aphrody" revision="8e8dd7cbefe6d4421a0147aee0aad78dc6ace2b4" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/ai-ecosystem/antigravity-sdk-python" name="antigravity-sdk-python" remote="aphrody" revision="75ba22bd00afae2f46393ff31f30c3f0df52982f" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
