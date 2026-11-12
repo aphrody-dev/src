@@ -8,6 +8,7 @@ Done (2026-11-12)
 - Scheduler + HEARTBEAT.md heartbeat (`agent schedule`, `agent heartbeat`); Hermes skill linter, usage, stale/archive curation, `skill_view`.
 - TUI on `@earendil-works/pi-tui` (`agent tui`), multi-turn sessions.
 - legacy/ dissolved and deleted (context7 + fact-check tools in research).
+- `local:` provider verified against llama-server on prd (container auto-llm, model auto-extraction, --jinja) via ssh tunnel: read_file + write_file, 3 steps. shenron-chat-v2 (no --jinja) answers but emits no tool calls.
 - Deep research: `agent research <outline.yaml>` (one subagent per item, batch_size, results/<item>.json, TS validator = port of validate_json.py kept in `python/research_ref`, results fed to memory). Real item passes both validators.
 
 Next
