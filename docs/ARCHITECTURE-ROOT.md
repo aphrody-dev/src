@@ -33,7 +33,7 @@ Cible commune avec la session labs (référence : `labs/docs/ROOT-ARCHITECTURE.m
 ├── package.json  bun.lock  bunfig.toml  tsconfig.json
 ├── justfile  src.lock.json  README.md  AGENTS.md  CLAUDE.md  LICENSE-*
 ├── crates/<couche>-<nom>   Rust : sys-, shell-, browser-, desktop-, agent-, vcs-, depot-, design-, nt-
-├── packages/<nom>          bun : machine, shell-matrix, nt-web-host, env-kit, forge…
+├── packages/<nom>          bun : machine, shell-matrix, nt, env-kit, forge…
 ├── apps/<nom>              binaires et sites déployables
 ├── third_party/<nom>       amonts à plat, verrouillés (src.lock.json), non versionnés
 ├── infra/                  Go, fleet, chromium-factory (scripts → crates/browser-factory)
@@ -44,7 +44,7 @@ Cible commune avec la session labs (référence : `labs/docs/ROOT-ARCHITECTURE.m
 
 | Rôle                   | Couches                             | Pièces                                                                                                                                                                     |
 | ---------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| OS pour agents         | `sys-`, `nt-`, `desktop-`, `agent-` | `nt-kernel` (no_std, ABI C), hôtes WebGPU/D3D12, `agent-desktop` (UIA, SendInput, capture, MCP), `ring3-agent`, `apm`, `packages/machine` (poste reproductible, élévation) |
+| OS pour agents         | `sys-`, `nt-`, `desktop-`, `agent-` | modèle du vrai NT du poste (ntdll, NTFS, PE, UI Automation) rendu GPU (WebGPU, D3D12), `agent-desktop` (UIA, SendInput, capture, MCP), `ring3-agent`, `apm`, `packages/machine` (poste reproductible, élévation) |
 | Compatibilité NT/Linux | `third_party`                       | `LiberNT` (+ remote `reactos`), `linux` (kernel.org), `wine` (gitlab.winehq.org), `mingw-w64` (SourceForge), `windows-rs`, `windows-drivers-rs`, `litebox`, `openvmm`      |
 | Navigateur             | `browser-`                          | `chromium` (unité gclient indivisible), `infra/chromium-factory`, channels, conformance, `webui`, `blitz`, `agent-browser` (session labs)                                  |
 | Shell                  | `shell-`                            | `niubash`, `rubash`, `brush`, `oils` (port Windows), Coreutils, `packages/shell-matrix`, `packages/machine/shell.dsc.winget`                                               |
@@ -54,11 +54,9 @@ Cible commune avec la session labs (référence : `labs/docs/ROOT-ARCHITECTURE.m
 
 | Origine                                | Destination                                                            | Note                                                                                                 |
 | -------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `nt/src/rust/nt-*`                     | `crates/nt-*`                                                          | profils `wasm` et `release` fusionnés à la racine                                                    |
-| `nt/src/web`                           | `packages/nt-web-host`                                                 | WebGPU + Bun.serve                                                                                   |
-| `nt/src/dotnet`, `nt/src/cpp`          | à côté de leur ABI Rust (`crates/nt-ffi`)                              | .NET 11 NativeAOT, C++23 CMake                                                                       |
+| `nt` (aphrody-labs/nt, purgé le 2026-11-12) | `packages/nt` (coque web, outils hôte bun) + `apps/nt-app` (WinUI 3) | cœur Rust = monorepo windows-rs (fork aphrody-labs, branches `nt/monorepo`, `nt/wasm`) → `third_party/windows-rs` |
 | `nt/docs`                              | `docs/nt`, `docs/ms`, `docs/bun`, `docs/research`                      | dédupliqués avec l'existant                                                                          |
-| `nt/vendor` (36 clones)                | supprimé, sauf LiberNT → `third_party/LiberNT` (déplacé le 2026-11-12) | les autres existent déjà dans `third_party`                                                          |
+| `nt/vendor` (35 clones) | supprimé le 2026-11-12 (sans modification locale) ; LiberNT déplacé dans `third_party/LiberNT` | doublons de `third_party` |
 | `labs/crates/*`                        | `crates/*`                                                             | merge par la session labs (worktree `merge/labs`) : dependencies, profils, cargo-features, `[patch]` |
 | `labs/vendor/{glob-match,quinn-proto}` | forks + `[patch.crates-io]`                                            |                                                                                                      |
 | `labs/browser/factory`                 | `infra/chromium-factory`                                               |                                                                                                      |
@@ -81,5 +79,5 @@ Cible commune avec la session labs (référence : `labs/docs/ROOT-ARCHITECTURE.m
 1. Base de référence (fait le 2026-11-12, avant la consigne « pas de build sur le PC ») : 9/9 étapes vertes, cargo 805 tests OK, bun 45 OK (`var/baseline-verify-all.log`).
 2. Merge labs (session labs) → vérification sur prd/fr2.
 3. third_party à plat + dédup → `ay lock`.
-4. nt → `crates/nt-*` + `packages/nt-web-host` + `docs/` → vérification, banc 4K WebGPU/D3D12 inchangé.
+4. nt → `packages/nt` + `apps/nt-app` ; cœur Rust via le monorepo windows-rs (`third_party/windows-rs`, branches nt/*) → vérification, mesure d'affichage réelle (?report=1).
 5. `identity.toml` + `ay identity` ; `.sh`/`.ps1` restants → recettes `just` vers Rust/bun (`forks-aphrody-labs.sh` déjà remplacé par `packages/machine/src/forks.ts`).
