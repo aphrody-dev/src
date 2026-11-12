@@ -1,4 +1,7 @@
 // Cadrage des protocoles (sans moteur : seuls les outils en lecture et les erreurs sont appelés).
+// Sans agrégation : aucun serveur MCP externe lancé pendant les tests.
+process.env.RELAY_HUB = "0";
+process.env.RELAY_BUILTIN_MCP = "0";
 import { expect, test } from "bun:test";
 import {
   a2aRpc,

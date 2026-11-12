@@ -95,15 +95,15 @@ static partial class Native
 
     [LibraryImport("userenv.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    static partial bool CreateEnvironmentBlock(out nint env, SafeKernelHandle token, [MarshalAs(UnmanagedType.Bool)] bool inherit);
+    private static partial bool CreateEnvironmentBlock(out nint env, SafeKernelHandle token, [MarshalAs(UnmanagedType.Bool)] bool inherit);
 
     [LibraryImport("userenv.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    static partial bool DestroyEnvironmentBlock(nint env);
+    private static partial bool DestroyEnvironmentBlock(nint env);
 
     [LibraryImport("advapi32.dll", EntryPoint = "CreateProcessAsUserW", SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    static partial bool CreateProcessAsUser(SafeKernelHandle token, string? app, [MarshalAs(UnmanagedType.LPWStr)] string cmd, nint pa, nint ta,
+    private static partial bool CreateProcessAsUser(SafeKernelHandle token, string? app, [MarshalAs(UnmanagedType.LPWStr)] string cmd, nint pa, nint ta,
         [MarshalAs(UnmanagedType.Bool)] bool inherit, uint flags, nint env, string? cwd, ref STARTUPINFOW si, out PROCESS_INFORMATION pi);
 
     [LibraryImport("kernel32.dll")]
@@ -119,7 +119,7 @@ static partial class Native
 
     [LibraryImport("kernel32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    static partial bool CloseHandle(nint h);
+    private static partial bool CloseHandle(nint h);
 
     /// Lance `cmd` avec le jeton et le bloc d'environnement de l'utilisateur, plus les variables du relais.
     public static PROCESS_INFORMATION StartAsUser(SafeKernelHandle token, string cmd, (string k, string? v)[] extra)

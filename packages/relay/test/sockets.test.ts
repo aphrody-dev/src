@@ -5,6 +5,7 @@ process.env.RELAY_TOKEN = "jeton-de-test";
 process.env.RELAY_PORT = "0";
 process.env.RELAY_TCP_PORT = "0";
 process.env.RELAY_HUB = "0";
+process.env.RELAY_BUILTIN_MCP = "0";
 const tlsCert = process.env.RELAY_TEST_TLS_CERT;
 const tlsKey = process.env.RELAY_TEST_TLS_KEY;
 if (tlsCert && tlsKey)
