@@ -29,12 +29,28 @@ const home = values.home ?? Bun.env.AGENT_HOME ?? join(homedir(), ".agent");
 const [cmd, sub, ...rest] = positionals;
 const usage = () => {
   console.error(
-    "usage: agent run <task> | schedule add <name> <task> --every 1h | schedule list | heartbeat [--once] | skills lint|curate | research <outline.yaml> [--validate] | tui",
+    "usage: agent init | run <task> | context <query> | schedule add <name> <task> --every 1h | schedule list | heartbeat [--once] | skills lint|curate | research <outline.yaml> [--validate] | tui",
   );
   process.exit(2);
 };
 
 switch (cmd) {
+  case "init": {
+    const { init } = await import("./home");
+    for (const p of await init(home)) console.log(`created ${p}`);
+    console.log(`home: ${home}`);
+    break;
+  }
+  case "context": {
+    const q = [sub, ...rest].filter(Boolean).join(" ");
+    if (!q) usage();
+    const { Memory } = await import("./memory");
+    const m = new Memory(join(home, "memory.sqlite"));
+    for (const s of await m.ctx.select(q, { redact: Bun.env }))
+      console.log(`${s.score.toFixed(3)} ${s.id} [${Object.entries(s.heads).map(([h, v]) => `${h}=${v.toFixed(2)}`).join(" ")}] ${(s.title ?? s.text).slice(0, 80)}`);
+    m.close();
+    break;
+  }
   case "run": {
     const task = [sub, ...rest].filter(Boolean).join(" ");
     if (!task) usage();

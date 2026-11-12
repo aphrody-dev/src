@@ -45,7 +45,7 @@ test("agent run: tools, memory, skill", async () => {
   expect(await Bun.file(join(cwd, "hello.txt")).text()).toBe("hi from agent");
 
   const mem = new Memory(join(home, "memory.sqlite"));
-  expect(mem.search("greetings")).toContain("user prefers greetings in hello.txt");
+  expect(await mem.search("greetings")).toContain("user prefers greetings in hello.txt");
   mem.close();
   const skills = await new Skills(join(home, "skills")).list();
   expect(skills.map((s) => s.name)).toEqual(["write-greeting"]);

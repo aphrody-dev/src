@@ -45,6 +45,7 @@ test.skipIf(!existsSync(REF))("research: fan-out, results written, validated, fe
   expect(r.passed).toBe(3);
   expect(existsSync(join(dir, "results", "Alan_Turing.json"))).toBe(true);
   const m = new Memory(join(home, "memory.sqlite"));
-  expect(m.search("Turing").length).toBeGreaterThan(0);
+  const hits = await m.ctx.select("Alan Turing era", { sources: ["research"], k: 3 });
+  expect(hits[0]?.id).toStartWith("research:ai_foundations_to_agi/Alan_Turing#");
   m.close();
 });

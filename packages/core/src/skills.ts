@@ -3,6 +3,7 @@
 // active -> stale -> archived curation). Usage lives in <dir>/.usage.json.
 import { existsSync, mkdirSync, readdirSync, renameSync } from "node:fs";
 import { join } from "node:path";
+import type { Context } from "./context";
 import { type LintFinding, lintContent, parseSkill } from "./skill-lint";
 
 export type Skill = { name: string; description: string; body: string; path: string };
@@ -23,8 +24,20 @@ export class SkillLintError extends Error {
 }
 
 export class Skills {
-  constructor(readonly dir: string) {
+  constructor(
+    readonly dir: string,
+    readonly ctx?: Context,
+  ) {
     mkdirSync(dir, { recursive: true });
+  }
+
+  /** Index active skills into Context (source "skill"), drop archived ones. Skill reads go through Context.select. */
+  async sync() {
+    if (!this.ctx) return;
+    const active = await this.list();
+    await this.ctx.ingest(active.map((s) => ({ id: `skill:${s.name}`, source: "skill", scope: "skills", title: s.name, text: s.description })));
+    const names = new Set(active.map((s) => `skill:${s.name}`));
+    for (const e of this.ctx.list({ sources: ["skill"] })) if (!names.has(e.id)) this.ctx.remove(e.id);
   }
 
   private get usageFile() {
@@ -54,6 +67,7 @@ export class Skills {
     const u = await this.usage();
     u[id] = { uses: 0, createdAt: new Date().toISOString(), state: "active", ...(u[id] && { uses: u[id].uses }) };
     await this.saveUsage(u);
+    await this.ctx?.ingest({ id: `skill:${id}`, source: "skill", scope: "skills", title: id, text: desc });
     return { name: id, description: desc, body: text, path, warnings: findings };
   }
 
@@ -100,6 +114,7 @@ export class Skills {
           renameSync(from, join(this.dir, ".archive", name));
         }
         rec.state = changed[name] = "archived";
+        this.ctx?.remove(`skill:${name}`);
       } else if (idle >= staleDays && rec.state !== "stale") rec.state = changed[name] = "stale";
     }
     await this.saveUsage(u);

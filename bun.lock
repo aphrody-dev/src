@@ -41,6 +41,9 @@
         "ai": "^7.0.170",
         "zod": "^4.6.7",
       },
+      "devDependencies": {
+        "workers-ai-provider": "^4.0.1",
+      },
     },
     "packages/tui": {
       "name": "@aphrody/agent-tui",

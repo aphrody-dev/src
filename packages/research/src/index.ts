@@ -21,6 +21,20 @@ export type Fields = { schema_version?: string; required_fields: Field[] };
 
 export const UNCERTAIN = "[uncertain]";
 
+/** Encoder input: one Context entry per (item, field); id `research:<topic>/<item>#<field>`, scope `research:<topic>`. */
+export function researchEntries(topic: string, data: Record<string, unknown>) {
+  const item = String(data.name ?? "item");
+  return Object.entries(data)
+    .filter(([k, v]) => k !== "uncertain" && k !== "name" && v !== undefined && v !== "")
+    .map(([field, v]) => ({
+      id: `research:${topic}/${fileName(item)}#${field}`,
+      source: "research" as const,
+      scope: `research:${topic}`,
+      title: `${item} / ${field}`,
+      text: Array.isArray(v) ? v.join("\n") : String(v),
+    }));
+}
+
 export const fileName = (name: string) =>
   name
     .normalize("NFKD")
@@ -168,11 +182,7 @@ export async function research(o: ResearchOptions) {
       );
       for (const d of done) {
         if (d.ok && d.data && memory) {
-          const summary = Object.entries(d.data)
-            .filter(([k]) => k !== "uncertain")
-            .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join("; ") : v}`)
-            .join("\n");
-          memory.add(`research ${outline.topic} / ${d.item}\n${summary}`.slice(0, 20_000), `research:${outline.topic}`);
+          await memory.ctx.ingest(researchEntries(outline.topic, d.data));
         }
         const e = { item: d.item, ok: d.ok, path: d.path, errors: d.errors };
         results.push(e);

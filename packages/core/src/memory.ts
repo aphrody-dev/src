@@ -1,53 +1,38 @@
-// Persistent memory (semantics of Hermes memory_tool/memory_manager, MIT, Nous Research): bun:sqlite + FTS5.
-import { Database } from "bun:sqlite";
+// Persistent memory (Hermes memory_tool/memory_manager semantics, MIT, Nous Research).
+// Storage and recall go through Context (attention-style selection); this class is the memory-scoped view.
+import { Context, type Embedder } from "./context";
+import { resolveEmbedder } from "./model";
 
 export class Memory {
-  readonly db: Database;
-  constructor(path: string) {
-    this.db = new Database(path, { create: true });
-    this.db.run("PRAGMA journal_mode=WAL");
-    this.db.run(
-      "CREATE TABLE IF NOT EXISTS memory(id INTEGER PRIMARY KEY, scope TEXT NOT NULL, content TEXT NOT NULL, at TEXT NOT NULL DEFAULT (datetime('now')))",
-    );
-    this.db.run("CREATE VIRTUAL TABLE IF NOT EXISTS memory_fts USING fts5(content, content='memory', content_rowid='id')");
-    this.db.run(
-      "CREATE TRIGGER IF NOT EXISTS memory_ai AFTER INSERT ON memory BEGIN INSERT INTO memory_fts(rowid, content) VALUES (new.id, new.content); END",
-    );
-    this.db.run(
+  readonly ctx: Context;
+  constructor(path: string, embedder: Embedder | undefined = resolveEmbedder()) {
+    this.ctx = new Context(path, embedder);
+    this.ctx.db.run(
       "CREATE TABLE IF NOT EXISTS runs(id INTEGER PRIMARY KEY, task TEXT, result TEXT, steps INTEGER, at TEXT DEFAULT (datetime('now')))",
     );
+    this.ctx.db.run("CREATE TABLE IF NOT EXISTS memory_seq(n INTEGER PRIMARY KEY AUTOINCREMENT, at INTEGER)");
   }
 
-  add(content: string, scope = "user"): number {
-    return Number(this.db.query("INSERT INTO memory(scope, content) VALUES (?, ?)").run(scope, content).lastInsertRowid);
+  async add(content: string, scope = "user"): Promise<number> {
+    const n = Number(this.ctx.db.query("INSERT INTO memory_seq(at) VALUES (?)").run(Date.now()).lastInsertRowid);
+    await this.ctx.ingest({ id: `memory:${n}`, source: "memory", scope, text: content });
+    return n;
   }
 
-  search(q: string, limit = 8): string[] {
-    const terms = q
-      .match(/\w+/g)
-      ?.map((t) => `"${t}"`)
-      .join(" OR ");
-    if (!terms) return [];
-    return this.db
-      .query<{ content: string }, [string, number]>(
-        "SELECT m.content FROM memory_fts f JOIN memory m ON m.id = f.rowid WHERE memory_fts MATCH ? ORDER BY rank LIMIT ?",
-      )
-      .all(terms, limit)
-      .map((r) => r.content);
+  async search(q: string, limit = 8, scopes?: string[]): Promise<string[]> {
+    const r = await this.ctx.select(q, { sources: ["memory"], scopes, k: limit, budgetTokens: 1e9, weights: { recency: 0.05 } });
+    return r.map((x) => x.text);
   }
 
   recent(limit = 8): string[] {
-    return this.db
-      .query<{ content: string }, [number]>("SELECT content FROM memory ORDER BY id DESC LIMIT ?")
-      .all(limit)
-      .map((r) => r.content);
+    return this.ctx.list({ sources: ["memory"] }, limit).map((e) => e.text);
   }
 
   logRun(task: string, result: string, steps: number) {
-    this.db.query("INSERT INTO runs(task, result, steps) VALUES (?, ?, ?)").run(task, result, steps);
+    this.ctx.db.query("INSERT INTO runs(task, result, steps) VALUES (?, ?, ?)").run(task, result, steps);
   }
 
   close() {
-    this.db.close();
+    this.ctx.close();
   }
 }

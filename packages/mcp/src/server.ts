@@ -18,12 +18,12 @@ export function createServer(home = Bun.env.AGENT_HOME ?? join(homedir(), ".agen
   server.registerTool(
     "memory_search",
     { description: "Full-text search of agent long-term memory.", inputSchema: { query: z.string() } },
-    async ({ query }) => text(memory.search(query).join("\n")),
+    async ({ query }) => text((await memory.search(query)).join("\n")),
   );
   server.registerTool(
     "memory_add",
     { description: "Persist a fact to agent memory.", inputSchema: { content: z.string() } },
-    async ({ content }) => text(`memory #${memory.add(content)}`),
+    async ({ content }) => text(`memory #${await memory.add(content)}`),
   );
   server.registerTool("skills_list", { description: "List agent skills (SKILL.md)." }, async () =>
     text((await skills.list()).map((s) => `${s.name}: ${s.description}`).join("\n")),

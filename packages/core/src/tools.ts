@@ -39,7 +39,7 @@ export function makeTools(ctx: ToolCtx) {
     memory_add: tool({
       description: "Persist a durable fact or preference to long-term memory.",
       inputSchema: z.object({ content: z.string(), scope: z.string().optional() }),
-      execute: async ({ content, scope }) => `memory #${ctx.memory.add(content, scope)}`,
+      execute: async ({ content, scope }) => `memory #${await ctx.memory.add(content, scope)}`,
     }),
     memory_search: tool({
       description: "Full-text search of long-term memory.",

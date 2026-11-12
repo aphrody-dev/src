@@ -78,3 +78,30 @@ L = legacy src packages. Approach: SDK = native vendor SDK, FORK = code from our
 | 0006 | Native builds on the prd runner with the Chromium LLVM toolchain; GitHub-hosted CI runs bun tests only. |
 | 0007 | Windows native first (no WSL); Linux second; Cloudflare/Vercel through runtime-adapter. |
 | 0008 | Product name only in `identity.toml`. |
+
+## Context (attention-style selection)
+
+Design rules: C:\src\var\data\ai_foundations_to_agi\attention_is_all_you_need_full_llm_markdown.md §7. Module `packages/core/src/context.ts`.
+
+| Transformer | Implementation |
+|---|---|
+| encoder | `Context.ingest`: memories, skills (`Skills.sync`), research results (`researchEntries`, one entry per item x field), MEMORY.md, code chunks with symbols |
+| multi-head Q·K | heads run in parallel: lexical (FTS5 bm25), semantic (embeddings: hash offline, Workers AI bge-m3, llama.cpp), structural (symbol overlap; crates/core graph next), recency (half-life) |
+| scaling + softmax | per-head standardization, linear merge in logit space (weights = W^O, `config.json`), one softmax over candidates |
+| masking | `Mask` (scopes, sources, predicate) applied before scoring; `redactText` on every selected entry |
+| top-k, O(n²) bound | candidate cap (200), top-k under a token budget |
+| KV-cache | embeddings cached by (embedder, sha256(text)) in `kv`; static persona prefix first in the system prompt so provider prompt caches hit |
+| decoder cross-attention | `run()` selects context for the task and puts it after the persona prefix; memory_search, skills and research reads all go through `select()` |
+| FFN per position | `agent research` items run as independent parallel workers (batch_size) |
+
+Bench (`bun packages/research/bench/retrieval.ts [--workers-ai]`, 39 entries, 30 queries, Windows PC, 2026-11-12):
+
+| embedder | head config | P@1 | R@5 | MRR | ms/query |
+|---|---|---|---|---|---|
+| hash512 | lexical | 0.200 | 0.533 | 0.343 | 1.4 |
+| hash512 | merged | 0.133 | 0.533 | 0.306 | 2.1 |
+| bge-m3 (Workers AI) | semantic | 0.200 | 0.800 | 0.423 | 228 cold, about 2 cached |
+| bge-m3 (Workers AI) | merged 0.5/0.5 | 0.167 | 0.733 | 0.371 | 2.5 |
+
+Queries reuse each item's description for all of its fields, so P@1 is low by construction; R@5 is the metric to watch.
+Next: learn head weights on a labeled set, structural head from crates/core (tree-sitter), and a hierarchical summary layer for large n.
