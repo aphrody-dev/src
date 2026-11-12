@@ -79,7 +79,7 @@ F:	crates/depot-graph/
 F:	crates/depot-ingest/
 F:	crates/depot-migrate/
 F:	crates/depot-re/
-F:	crates/depot-treesitter/
+F:	crates/core/
 F:	packages/chromium-bun/
 F:	third_party/chromium/
 F:	third_party/depot_tools/

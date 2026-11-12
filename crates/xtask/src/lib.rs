@@ -733,7 +733,7 @@ pub fn render_kernel_maintainers() -> String {
                 "crates/depot-ingest/",
                 "crates/depot-migrate/",
                 "crates/depot-re/",
-                "crates/aphrody-core/",
+                "crates/core/",
                 "packages/chromium-bun/",
                 "third_party/chromium/",
                 "third_party/depot_tools/",

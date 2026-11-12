@@ -24,7 +24,7 @@ export const PILLARS: Pillar[] = [
     needles: ["tree_sitter", "aphrody_core", "web-tree-sitter", "TreeSitterEngine"],
     sources: [
       { url: "https://tree-sitter.github.io/tree-sitter/", verified: true },
-      { url: "https://tree-sitter.github.io/tree-sitter/using-parsers/queries/", verified: true },
+      { url: "https://tree-sitter.github.io/tree-sitter/using-parsers/queries/", verified: false },
     ],
     localClones: ["third_party/tree-sitter", "third_party/tree-sitter-*"],
     summary:
@@ -35,8 +35,8 @@ export const PILLARS: Pillar[] = [
     title: "Toolchain LLVM partagée (clang/lld/rustc) dans src",
     needles: ["llvm", "clang", "lld", "inkwell", "cc::Build"],
     sources: [
-      { url: "https://llvm.org/docs/", verified: true },
-      { url: "https://llvm.org/docs/LinkTimeOptimization.html", verified: false },
+      { url: "https://llvm.org/docs/ (LLVM 24.0.0git)", verified: false },
+      { url: "https://llvm.org/docs/LinkTimeOptimization.html", verified: true },
     ],
     localClones: ["third_party/llvm-project"],
     summary:
