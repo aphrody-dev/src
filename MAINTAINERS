@@ -4,6 +4,7 @@ List of maintainers (C:\src Sovereign Monorepo)
 Descriptions of section entries and preferred order
 ---------------------------------------------------
 	M:	*Mail* patches to: FullName <address@domain>
+		 In this tree M: may name an owning agent or skill (agent:NAME, skill:NAME) before the address.
 	L:	*Mailing list* that is relevant to this area
 	S:	*Status* (Supported, Maintained, Odd Fixes, Orphan, Obsolete)
 	W:	*Web-page* with status/info
@@ -208,6 +209,45 @@ F:	packages/ai-triad/
 F:	packages/brain/
 F:	packages/knowledge-engine/
 F:	packages/pi-opencode/
+
+LAYER L1 BASE (crates/core, net, sys, design tokens, lore-base/io, depot-core/cas)
+M:	skill:bun agent:claude <contact@aphrody.com>
+S:	Supported
+F:	crates/core/
+F:	crates/corelib/
+F:	crates/net/
+F:	crates/sys/
+F:	crates/depot-core/
+F:	crates/depot-cas/
+F:	crates/lore-base/
+F:	crates/lore-io/
+F:	packages/core/
+F:	packages/net/
+
+LAYER L2 PLATFORM ABSTRACTION (Windows, Linux, Cloudflare, Vercel, C ABI)
+M:	skill:microsoft skill:windows-machine agent:claude <contact@aphrody.com>
+S:	Supported
+F:	crates/core-capi/
+F:	crates/dx12-winui-core/
+F:	crates/unix-*/
+F:	crates/remote/
+F:	infra/ffi-bridge/
+F:	packages/runtime-adapter/
+
+LAYER L4 AGENT
+M:	agent:claude skill:claude-api <contact@aphrody.com>
+S:	Supported
+F:	agent/
+F:	crates/ring3-agent/
+
+LAYER RULES, CHECKDEPS & TASK GRAPH
+M:	agent:claude skill:bun <contact@aphrody.com>
+S:	Supported
+F:	DEPS.rules
+F:	scripts/checkdeps.ts
+F:	docs/ARCHITECTURE.md
+F:	docs/PHILOSOPHY.md
+F:	justfile
 
 THE REST
 M:	Aphrody Engineering <contact@aphrody.com>
