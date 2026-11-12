@@ -9,7 +9,7 @@ Relais local entre Claude Code et Gemini (gemini.google.com piloté par CDP, ou 
 | A2A          | `GET /.well-known/agent-card.json`, `POST /a2a`                                                               | A2A 1.0.1, `SendMessage`                                                                |
 | ACP          | `relay acp` (stdio)                                                                                           | Agent Client Protocol v1 (schema-v1.31.0)                                               |
 
-Outils : `gemini_ask`, `notebook_ask`, `workspace_ask`, `figma_ask`, `accounts_sync`, plus les outils agrégés (`<serveur>__<outil>`) des serveurs MCP utilisateur et de Stitch (https://stitch.googleapis.com/mcp, jeton OAuth gcloud) ;, `gemini_review`, `gemini_cli_ask`, `claude_ask` (Claude Code headless, mode plan), `fleet_status` (alias ssh, unités tunnels/VPN/proxy), `claude_inventory`, `gcloud_accounts`.
+Outils : `gemini_ask`, `notebook_ask`, `workspace_ask`, `figma_ask`, `accounts_sync`, plus les outils agrégés (`<serveur>__<outil>`) des serveurs MCP utilisateur et de Stitch (https://stitch.googleapis.com/mcp, jeton OAuth gcloud) ;, `gemini_review`, `agy_ask` (Antigravity CLI), `claude_ask` (Claude Code headless, mode plan), `fleet_status` (alias ssh, unités tunnels/VPN/proxy), `claude_inventory`, `gcloud_accounts`.
 
 ## Mise en route (Windows)
 
@@ -21,7 +21,7 @@ bun packages/relay/src/cli.ts mcp-add    # Claude Code : serveur MCP « relay »
 bun packages/relay/src/cli.ts ask "…"    # test
 ```
 
-Linux : `services/relay-systemd/aphrody-relay.service` (unité utilisateur, `RELAY_GEMINI=cli`).
+Linux : `services/relay-systemd/aphrody-relay.service` (unité utilisateur, Antigravity CLI `agy`).
 
 Revue automatique : le hook `src/hook.ts` (PostToolUse Bash, asynchrone, dans `~/.claude/settings.json`) soumet chaque `git commit` d'un dépôt de `SRC_ROOT` à `gemini_review` et archive le verdict dans `docs/reviews/auto/<sha>.md`. Revue de livrables à la demande : workflow `src/.claude/workflows/gemini-review.js`.
 

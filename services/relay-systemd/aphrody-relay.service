@@ -9,7 +9,7 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-Environment=RELAY_GEMINI=cli
+Environment=RELAY_GEMINI=agy
 Environment=RELAY_PORT=8790
 Environment=RELAY_TCP_PORT=8791
 Environment=SRC_ROOT=%h/src

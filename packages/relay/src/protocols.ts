@@ -204,7 +204,7 @@ export async function a2aRpc(r: Req): Promise<Res | null> {
   const skill = String(
     m.metadata?.skill ?? r.params?.metadata?.skill ?? "gemini_ask",
   );
-  if (!/^(gemini_ask|claude_ask|gemini_cli_ask|gemini_review)$/.test(skill))
+  if (!/^(gemini_ask|claude_ask|agy_ask|gemini_review)$/.test(skill))
     return fail(r.id, -32602, `skill inconnu : ${skill}`);
   try {
     const v: any = await call(

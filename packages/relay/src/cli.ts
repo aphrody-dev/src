@@ -3,7 +3,7 @@
 //   relay serve                  HTTP (rpc, mcp, a2a, ws), TCP, TLS
 //   relay browser [--headful]    Chrome du relais (profil dédié, CDP 127.0.0.1:RELAY_CDP_PORT)
 //   relay login                  Chrome du relais visible : connexion Google une fois (saisie par l'utilisateur)
-//   relay ask <prompt…>          question à Gemini (web, sinon CLI) ; --claude pour Claude Code headless
+//   relay ask <prompt…>          question à Gemini (Antigravity, --web : gemini.google.com) ; --claude pour Claude Code headless
 //   relay review <fichier>       revue Gemini notée /20 d'un fichier
 //   relay inspect                relevé des sélecteurs Gemini (diagnostic)
 //   relay acp                    agent ACP sur stdio
@@ -36,7 +36,7 @@ switch (cmd) {
   case "ask": {
     const a = flag("--claude")
       ? await claude(words)
-      : await gemini(words, { engine: flag("--cli") ? "cli" : undefined });
+      : await gemini(words, { engine: flag("--web") ? "web" : undefined });
     console.log(a.text);
     console.error(`[${a.engine} ${a.ms} ms${a.chat ? ` ${a.chat}` : ""}]`);
     break;
@@ -80,7 +80,7 @@ switch (cmd) {
   }
   default:
     console.error(
-      "usage : relay serve | browser [--headful] | login | ask <prompt> [--claude|--cli] | review <fichier> | inspect | acp | token | mcp-add",
+      "usage : relay serve | browser [--headful] | login | ask <prompt> [--claude|--web] | review <fichier> | inspect | acp | token | mcp-add",
     );
     process.exit(2);
 }

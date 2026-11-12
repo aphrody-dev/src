@@ -7,7 +7,7 @@ import {
   claude,
   claudeWithTools,
   gemini,
-  geminiCli,
+  agy,
   notebookAsk,
 } from "./backends.ts";
 
@@ -97,7 +97,7 @@ export const TOOLS: Tool[] = [
       {
         prompt: str("Prompt"),
         chat: str("Existing chat id or URL (optional)"),
-        engine: { type: "string", enum: ["web", "cli"] },
+        engine: { type: "string", enum: ["agy", "web"] },
       },
       ["prompt"],
     ),
@@ -250,12 +250,19 @@ export const TOOLS: Tool[] = [
     run: (a) => claudeWithTools(String(a.prompt), ["mcp__figma"]),
   },
   {
-    name: "gemini_cli_ask",
+    name: "agy_ask",
     description:
-      "Ask Gemini through Gemini CLI headless (plan mode), without the browser.",
-    inputSchema: obj({ prompt: str("Prompt") }, ["prompt"]),
+      "Ask Antigravity (agy CLI, Gemini 4 models) headless in plan mode; optional model and conversation id to continue.",
+    inputSchema: obj(
+      {
+        prompt: str("Prompt"),
+        model: str("e.g. gemini-4-carbon-high (optional)"),
+        conversation: str("Conversation id to continue (optional)"),
+      },
+      ["prompt"],
+    ),
     readOnly: false,
-    run: (a) => geminiCli(String(a.prompt)),
+    run: (a) => agy(String(a.prompt), a.model, a.conversation),
   },
   {
     name: "fleet_status",
