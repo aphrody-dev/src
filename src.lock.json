@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-11-12T07:22:16.9307041+01:00",
+  "generated_at": "2026-11-12T07:34:26.9762645+01:00",
   "hardware": {
     "os": "Windows NT (x86_64)",
     "cpu": "Intel Core i7-13700F (Raptor Lake sm_89)",
@@ -25,7 +25,7 @@
     "zig": "0.17.0"
   },
   "pillars": {
-    "git_superproject_commit": "ae8833a9e04389b4e6621cf52c5e82a98972b8a5",
+    "git_superproject_commit": "6c4079ba5261a254b943b2715cdc91bb4a13244e",
     "chromium_src_commit": "4c7244a405d326e284710231ff609168dceb9044",
     "linux_kernel_commit": "7475ea8b58616b33c04afb976cf0fbaad9dd63fb",
     "aosp_manifest_commit": "1ed30a827f1156dc831083e6cf999d6bd9deae18"
@@ -34,7 +34,7 @@
     "apps/rosegriffon": {
       "path": "C:\\src\\apps\\rosegriffon",
       "url": "https://github.com/aphrody-labs/rosegriffon.git",
-      "commit": "da739f23831fc7602ea4bf067f464ace9972de93",
+      "commit": "70d7c593512384608d525b036106c8ea528defa2",
       "branch": "main",
       "engine": "git",
       "pillar": "git",
@@ -115,7 +115,7 @@
     "packages/bun-plugins": {
       "path": "C:\\src\\packages\\bun-plugins",
       "url": "https://github.com/aphrody-dev/src.git",
-      "commit": "ae8833a9e04389b4e6621cf52c5e82a98972b8a5",
+      "commit": "6c4079ba5261a254b943b2715cdc91bb4a13244e",
       "branch": "main",
       "engine": "jj",
       "pillar": "git",
@@ -131,7 +131,7 @@
     "packages/forge": {
       "path": "C:\\src\\packages\\forge",
       "url": "https://github.com/aphrody-dev/src.git",
-      "commit": "ae8833a9e04389b4e6621cf52c5e82a98972b8a5",
+      "commit": "6c4079ba5261a254b943b2715cdc91bb4a13244e",
       "branch": "main",
       "engine": "jj",
       "pillar": "git",
@@ -1010,6 +1010,78 @@
       "pillar": "git",
       "remotes": {
         "origin": "https://github.com/p-e-w/heretic.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/hostinger-api": {
+      "path": "C:\\src\\third_party\\hostinger-api",
+      "url": "https://github.com/hostinger/api.git",
+      "commit": "076a6521424a202a8bdca4c368d1b6a567ecaba9",
+      "branch": "main",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/hostinger/api.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/hostinger-api-cli": {
+      "path": "C:\\src\\third_party\\hostinger-api-cli",
+      "url": "https://github.com/hostinger/api-cli.git",
+      "commit": "6528a8004bb59859a8e859968a58ce1fd1e2f6e1",
+      "branch": "main",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/hostinger/api-cli.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/hostinger-api-mcp-server": {
+      "path": "C:\\src\\third_party\\hostinger-api-mcp-server",
+      "url": "https://github.com/hostinger/api-mcp-server.git",
+      "commit": "e1fa6858729a8bd2c06df95a7c87c8b81eecd593",
+      "branch": "main",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/hostinger/api-mcp-server.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/hostinger-api-typescript-sdk": {
+      "path": "C:\\src\\third_party\\hostinger-api-typescript-sdk",
+      "url": "https://github.com/hostinger/api-typescript-sdk.git",
+      "commit": "7492d50d63c59ac24edea1f1a5fb6c6eb116678e",
+      "branch": "main",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/hostinger/api-typescript-sdk.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/hostinger-claude-plugin": {
+      "path": "C:\\src\\third_party\\hostinger-claude-plugin",
+      "url": "https://github.com/hostinger/claude-plugin.git",
+      "commit": "413bad4df76c92afa8f9e159206c7f49697c627e",
+      "branch": "main",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/hostinger/claude-plugin.git"
+      },
+      "sparse_paths": null
+    },
+    "third_party/hostinger-hostinger-agent-skills": {
+      "path": "C:\\src\\third_party\\hostinger-hostinger-agent-skills",
+      "url": "https://github.com/hostinger/hostinger-agent-skills.git",
+      "commit": "d950a084183860a87b4c4d2fec8a5bad324f5349",
+      "branch": "main",
+      "engine": "git",
+      "pillar": "git",
+      "remotes": {
+        "origin": "https://github.com/hostinger/hostinger-agent-skills.git"
       },
       "sparse_paths": null
     },

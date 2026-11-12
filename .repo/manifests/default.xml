@@ -12,13 +12,13 @@
 
   <default remote="aphrody" revision="main" sync-j="8" sync-c="true" />
 
-  <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="da739f23831fc7602ea4bf067f464ace9972de93" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="apps/rosegriffon" name="rosegriffon" remote="aphrody-labs" revision="70d7c593512384608d525b036106c8ea528defa2" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="apps/shenron" name="shenron" remote="aphrody-labs" revision="e9d40698e2a69132b2448088f19d19ed8e6914d6" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/bench" name="bench" remote="aphrody" revision="6b0c980b99139cf69cc9d391143afda675732570" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/ring3-agent" name="ring3-agent" remote="aphrody" revision="d282118ea23d9d20da4a73d9b574376702b01b6b" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="crates/rust-stack" name="rust-stack" remote="aphrody" revision="0652a8d2f24f3d773b5a91a621c4fee4e322c5be" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/bun-plugins" name="src" remote="aphrody" revision="ae8833a9e04389b4e6621cf52c5e82a98972b8a5" upstream="main" groups="monorepo,first-party,sovereign" />
-  <project path="packages/forge" name="src" remote="aphrody" revision="ae8833a9e04389b4e6621cf52c5e82a98972b8a5" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/bun-plugins" name="src" remote="aphrody" revision="6c4079ba5261a254b943b2715cdc91bb4a13244e" upstream="main" groups="monorepo,first-party,sovereign" />
+  <project path="packages/forge" name="src" remote="aphrody" revision="6c4079ba5261a254b943b2715cdc91bb4a13244e" upstream="main" groups="monorepo,first-party,sovereign" />
   <project path="third_party/agent-browser" name="agent-browser" remote="aphrody" revision="d129226078e0fc8ee5dec48fbc96a46df5d0aafd" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/agent-desktop" name="agent-desktop" remote="aphrody" revision="8e8dd7cbefe6d4421a0147aee0aad78dc6ace2b4" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/ai-ecosystem/antigravity-sdk-python" name="antigravity-sdk-python" remote="aphrody" revision="75ba22bd00afae2f46393ff31f30c3f0df52982f" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
@@ -82,6 +82,12 @@
   <project path="third_party/google-ecosystem/jules-skills" name="google-labs-code/jules-skills" remote="github" revision="7a76d3bfcf4258ee437d65b5d12e54b51c395de5" upstream="main" groups="aosp,pdk,sovereign" clone-depth="1" />
   <project path="third_party/google-ecosystem/stitch-skills" name="google-labs-code/stitch-skills" remote="github" revision="0337446dadde6f8c94210444e2aa9d546126480f" upstream="main" groups="aosp,pdk,sovereign" clone-depth="1" />
   <project path="third_party/heretic" name="p-e-w/heretic" remote="github" revision="a14b8543537b50ce8db4db7eaae4eb295d5d5142" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/hostinger-api" name="hostinger/api" remote="github" revision="076a6521424a202a8bdca4c368d1b6a567ecaba9" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/hostinger-api-cli" name="hostinger/api-cli" remote="github" revision="6528a8004bb59859a8e859968a58ce1fd1e2f6e1" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/hostinger-api-mcp-server" name="hostinger/api-mcp-server" remote="github" revision="e1fa6858729a8bd2c06df95a7c87c8b81eecd593" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/hostinger-api-typescript-sdk" name="hostinger/api-typescript-sdk" remote="github" revision="7492d50d63c59ac24edea1f1a5fb6c6eb116678e" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/hostinger-claude-plugin" name="hostinger/claude-plugin" remote="github" revision="413bad4df76c92afa8f9e159206c7f49697c627e" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
+  <project path="third_party/hostinger-hostinger-agent-skills" name="hostinger/hostinger-agent-skills" remote="github" revision="d950a084183860a87b4c4d2fec8a5bad324f5349" upstream="main" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/linux" name="torvalds/linux" remote="kernel" revision="7475ea8b58616b33c04afb976cf0fbaad9dd63fb" upstream="detached" groups="kernel,gki,distro,sovereign" clone-depth="1" />
   <project path="third_party/llvm-project" name="llvm/llvm-project" remote="github" revision="392dfff97d29b59d77e5cac6d4b6ef2585fe7117" upstream="detached" groups="monorepo,first-party,sovereign" clone-depth="1" />
   <project path="third_party/locally-uncensored" name="PurpleDoubleD/locally-uncensored" remote="github" revision="3dff4291f8ad5a86078679e23c7a0a2cd2adf9b3" upstream="master" groups="monorepo,first-party,sovereign" clone-depth="1" />
