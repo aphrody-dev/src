@@ -10,3 +10,4 @@ export { isSecretKey, parseDotEnv, redactSecret, redactText } from "./secrets";
 export { aiEmbedder, Context, type Embedder, type Entry, estimateTokens, hashEmbedder, type Mask, renderContext, type Scored, type SelectOptions, type Source } from "./context";
 export { DEFAULT_CONFIG, indexHomeDocs, init, layout, loadConfig, persona, PERSONA_FILES, TEMPLATES } from "./home";
 export { clawhub, defaultSources, github, type HubSkill, type HubSource, hubInstall, hubSearch } from "./hub";
+export { resolveBash } from "./shell";

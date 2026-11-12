@@ -14,11 +14,20 @@
       "dependencies": {
         "@ai-sdk/anthropic": "^4.0.102",
         "@ai-sdk/openai-compatible": "^3.0.90",
+        "@aphrody/agent-gateway": "workspace:*",
         "@aphrody/agent-research": "workspace:*",
         "@aphrody/agent-tui": "workspace:*",
         "ai": "^7.0.170",
         "workers-ai-provider": "^4.0.1",
         "zod": "^4.6.7",
+      },
+    },
+    "packages/gateway": {
+      "name": "@aphrody/agent-gateway",
+      "version": "0.1.0",
+      "dependencies": {
+        "@aphrody/agent-core": "workspace:*",
+        "ai": "^7.0.170",
       },
     },
     "packages/mcp": {
@@ -69,6 +78,8 @@
     "@ai-sdk/provider-utils": ["@ai-sdk/provider-utils@5.0.79", "", { "dependencies": { "@ai-sdk/provider": "4.0.37", "@standard-schema/spec": "^1.1.0", "@workflow/serde": "4.1.0", "eventsource-parser": "^3.0.8", "undici": "^7.29.1" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-IYu6MT0NDE3JFWBWEJWAXjhskHTSj6NfRp9FuEAOcyS2Jrj3qBePu7OEoXVmoCWT3pYPgrF4DBKzjjjOMRyw9Q=="],
 
     "@aphrody/agent-core": ["@aphrody/agent-core@workspace:packages/core"],
+
+    "@aphrody/agent-gateway": ["@aphrody/agent-gateway@workspace:packages/gateway"],
 
     "@aphrody/agent-mcp": ["@aphrody/agent-mcp@workspace:packages/mcp"],
 

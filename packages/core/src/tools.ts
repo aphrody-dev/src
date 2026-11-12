@@ -4,6 +4,7 @@ import { isAbsolute, relative, resolve } from "node:path";
 import { z } from "zod";
 import type { Memory } from "./memory";
 import { redactText } from "./secrets";
+import { resolveBash } from "./shell";
 import type { Skills } from "./skills";
 
 export type ToolCtx = { cwd: string; memory: Memory; skills: Skills; allowShell: boolean };
@@ -28,11 +29,19 @@ export function makeTools(ctx: ToolCtx) {
       execute: async ({ path, content }) => `wrote ${await Bun.write(inside(ctx.cwd, path), content)} bytes`,
     }),
     shell: tool({
-      description: "Run a command (argv form, no shell) in the workspace; returns exit code and output.",
-      inputSchema: z.object({ argv: z.array(z.string()).min(1) }),
-      execute: async ({ argv }) => {
+      description:
+        "Run a command in the workspace: `argv` (no shell) or `script` (bash script, native bash on Windows). Returns exit code and output.",
+      inputSchema: z.object({ argv: z.array(z.string()).min(1).optional(), script: z.string().optional() }),
+      execute: async ({ argv, script }) => {
         if (!ctx.allowShell) return "shell disabled (pass --allow-shell)";
-        const p = Bun.spawnSync(argv, { cwd: ctx.cwd, stdout: "pipe", stderr: "pipe" });
+        let cmd = argv;
+        if (script) {
+          const bash = resolveBash();
+          if (!bash) return "no native bash found (set AGENT_BASH)";
+          cmd = [bash, "-c", script];
+        }
+        if (!cmd) return "give argv or script";
+        const p = Bun.spawnSync(cmd, { cwd: ctx.cwd, stdout: "pipe", stderr: "pipe" });
         return redactText(`exit=${p.exitCode}\n${p.stdout.toString()}${p.stderr.toString()}`, Bun.env).slice(0, 16_000);
       },
     }),

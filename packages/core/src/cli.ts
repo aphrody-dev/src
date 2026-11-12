@@ -29,7 +29,7 @@ const home = values.home ?? Bun.env.AGENT_HOME ?? join(homedir(), ".agent");
 const [cmd, sub, ...rest] = positionals;
 const usage = () => {
   console.error(
-    "usage: agent init | run <task> | context <query> | schedule add <name> <task> --every 1h | schedule list | heartbeat [--once] | skills lint|curate|search <q>|install [clawhub:|github/owner/repo:]<ref> | research <outline.yaml> [--validate] | tui",
+    "usage: agent init | run <task> | context <query> | schedule add <name> <task> --every 1h | schedule list | heartbeat [--once] | skills lint|curate|search <q>|install [clawhub:|github/owner/repo:]<ref> | research <outline.yaml> [--validate] | gateway | tui",
   );
   process.exit(2);
 };
@@ -137,6 +137,13 @@ switch (cmd) {
     });
     console.error(`[research] ${out.topic}: ${out.passed}/${out.results.length} passed, results in ${out.outDir}`);
     process.exit(out.passed === out.results.length ? 0 : 1);
+  }
+  case "gateway": {
+    const { createGateway } = await import("@aphrody/agent-gateway");
+    const g = createGateway({ home, model: resolveModel(values.model), port: Number(Bun.env.AGENT_PORT ?? 4000), hostname: Bun.env.AGENT_HOST, token: Bun.env.AGENT_GATEWAY_TOKEN, allowShell: values["allow-shell"] });
+    console.log(`gateway on ${g.url}`);
+    await new Promise(() => {});
+    break;
   }
   case "tui": {
     const { startTui } = await import("@aphrody/agent-tui");
