@@ -1,0 +1,65 @@
+# Migration Vercel + Cloudflare (2026-11-12)
+
+Source de vérité hôtes/IP : `C:\src\deploy.toml` (`[nodes.*]`). Workers : `C:\src\infra\fleet\workers\`. Secrets : Workers secrets / Vercel env uniquement.
+Relevé live 2026-11-12 (ssh cdn/prd, API Cloudflare). Zones CF : aphrody.com, aphrody.app, dragonballfr.com, rosegriffon.fr (hors périmètre), 3dland.tech (pending).
+
+## Vhosts fr2 (/etc/nginx/sites)
+
+| Vhost | Actuel | Cible | État / rollback |
+|---|---|---|---|
+| creator.aphrody.com | statique 132M sur fr2 (CF proxy) | Worker `creator-aphrody-com` + R2 `aphrody-dist/sites/creator.aphrody.com` | voir § creator |
+| api.aphrody.com | gateway : JSON OpenAPI statique + proxy vers prd :8083/8788/8790/8791/8794/8796/8797/29030 | statique -> Worker ; proxys restent tant que les backends prd existent | backends tous absents (502) le 12/11 : rien à migrer côté backend, à reconstruire en Functions/Workers par service |
+| aphrody.com, *.aphrody.com | proxy prd:3000 (DNS-only vers fr2) | Vercel (app Next/Bun) quand l'app existe | prd:3000 n'écoute pas -> 502 aujourd'hui ; Worker `yolo-aphrody-com` existe déjà |
+| aphrody.app, *.aphrody.app | proxy prd:3010 | Worker `aphrody-app` (existe déjà) | prd:3010 n'écoute pas -> 502 |
+| cdn.aphrody.com | proxy fonts prd:8796 | R2 `aphrody-assets` + Worker | backend absent ; à faire quand les fonts sont en R2 |
+| downloads.aphrody.com | proxy prd:8797 | R2 `aphrody-dist` + même Worker r2-site | backend absent (502) |
+| omar.aphrody.com | proxy 127.0.0.1:8793 sur fr2 | — | rien n'écoute (502) ; candidat suppression |
+| rpbey.fr | statique 8K sur fr2 | Pages/Worker | DNS chez OVH, A = 51.77.147.152 (fr1, pas fr2) : rapport seulement |
+| rosegriffon.fr | proxy rg_prod_stack | — | hors périmètre (session rosegriffon-52) |
+
+## Services/timers/conteneurs
+
+| Hôte | Élément | Classe | Raison |
+|---|---|---|---|
+| prd | loreserver, lore-r2-backup.timer | VPS | serveur VCS long-running + sync R2 |
+| prd | shenron-bot, shenron-gateway, shenron-chat/compute/embed, shenron-postgres/redis, shenron-cloudflared | VPS | bot long-running, docker, DB |
+| prd | shenron-site | Vercel/Workers possible | site ; dépend gateway/DB, à découpler d'abord |
+| prd | shenron-cdn-origin, shenron-dbfr-backup, shenron-container-backup, auto-sauvegarde | VPS | accès disque local/DB |
+| prd | shenron-cloudflare-s3-renew, shenron-cloudflare-audit | CF Cron Trigger possible | appels API stateless ; écrit des creds locaux -> reste VPS tant que consommateur local |
+| prd | auto-* (api, worker, web, llm, s3, postgres, tunnel) | VPS | docker + LLM + Postgres ; auto-web -> Vercel possible plus tard |
+| prd | aphrody-gpu-depot, wii-os-shenron, agent-relay-broker, commons-relay, llama-server | VPS | GPU/long-running/websocket |
+| prd | fleet-health, fleet-wg-failover@fr2 | VPS | mesh WireGuard |
+| prd | rg-*, rosegriffon-* | — | hors périmètre |
+| prd | certbot-renew, archlinux-keyring-wkd-sync, shadow | VPS | système |
+| fr2 | nginx, certbot | VPS (rétrécit) | edge restant pour api/rosegriffon |
+| fr2 | nativelink-worker, earlyoom | VPS | builds |
+| fr2 | crontab `yolo-clean.sh` 04:17 | VPS -> systemd timer | nettoyage disque local ; unité : `infra/fleet/systemd/yolo-clean.*` |
+| fr2 | upki-fetch.timer, fleet-wg-failover@prd | VPS | système/mesh |
+| fr1 | Chromium/LLVM | VPS | builds |
+
+## creator.aphrody.com
+
+- Upload : `rclone copy /tmp/mig/creator.aphrody.com r2:aphrody-dist/sites/creator.aphrody.com` depuis prd (dry-run d'abord).
+- Preview : `https://creator-aphrody-com.aphrody-labs.workers.dev/`.
+- Bascule : custom domain Worker `creator.aphrody.com` (remplace l'enregistrement DNS proxifié vers fr2).
+- Basculé 2026-11-12 19:0x UTC (CNAME creator -> aphrody.com proxied supprimé, custom domain Worker id 89c639a5…). Vérifié : /, /health, SPA, zip Range 206.
+- Rollback : `DELETE /accounts/{acct}/workers/domains/89c639a5198ef828cc555e146aa0cfd5acb45794` puis recréer `CNAME creator aphrody.com proxied` (vhost fr2 intact).
+
+## Restes codés en dur
+
+- `packages/chromium-bun/src/search/cluster-3vps.ts` : lit `deploy.toml` (fait).
+- `apps/shenron/deploy/cloudflare/cdn-worker.ts` (ALLOWED_GARAGE_ORIGINS), `cdn-origin.ts`, `crates/remote` (tests), `packages/env-kit/src/accounts.ts`, `infra/internal/providers/vps.go`, `apps/shenron/scripts/**` : à passer en vars Worker / lecture deploy.toml. `apps/rosegriffon/**` : hors périmètre.
+
+## Bascule 2026-11-12 (backends prd absents)
+
+Build sur prd (`/srv/build/src` = clone `bdc8b25`, `bun run build` / `aphrody-app build-dist`), upload `rclone copy` depuis prd. Workers déployés via API (MCP), scripts `infra/fleet/workers/{r2-site,api-gateway}` (r2-site applique désormais `<PREFIX>/_headers` ; PREFIX vide = racine du bucket). Previews `https://<worker>.aphrody-labs.workers.dev` vérifiées avant DNS, prod revérifiée (DoH 1.1.1.1).
+
+| Hôte | Worker / données | Rollback (une ligne) |
+|---|---|---|
+| aphrody.com | route `aphrody.com/*` (id 01bf0381…) -> `aphrody-com`, R2 `aphrody-dist/sites/aphrody.com` (statique ; /api /g /search non servis : backend Bun absent) ; A apex passé proxied pour garder l'origine fr2 des CNAME proxifiés | `DELETE /zones/{com}/workers/routes/01bf03811ef6415ebcdda290f960d1e6` + `PATCH dns_records/30ddf6bf… proxied=false` |
+| www.aphrody.com | custom domain 0c4bb370… -> `aphrody-com` | `DELETE /accounts/{acct}/workers/domains/0c4bb370372b848968b9fe9472bafefe1deba346` + `CNAME www aphrody.com` DNS-only |
+| aphrody.app, www | custom domains cbec3013…, 2c161891… réaffectés de `aphrody-webos` à `aphrody-app-site`, R2 `sites/aphrody.app` (SPA wasm, COOP/COEP via _headers) | `PUT /accounts/{acct}/workers/domains {hostname, service:"aphrody-webos", override_existing_origin:true}` (x2) |
+| downloads.aphrody.com | custom domain 35c2a0e7… -> `downloads-aphrody-com`, R2 `aphrody-dist/aphrody` (manifest, zip, SHA256SUMS, cli-wasm) ; install.sh/ps1 introuvables (aucune source) -> 404 | `DELETE …/workers/domains/35c2a0e787d45120dfda48957282334fce8ba8a7` + `CNAME downloads aphrody.com` DNS-only |
+| cdn.aphrody.com | custom domain abe53392… -> `cdn-aphrody-com`, racine R2 `aphrody-assets` ; API fonts css2/icon (:8796) sans source -> 404 | `DELETE …/workers/domains/abe53392bb5c4f6d2a92ccf3c1ce36974b215f26` + `CNAME cdn aphrody.com` DNS-only |
+| api.aphrody.com | custom domain 44de011d… -> `api-aphrody-com` : /v1/health, catalogue OpenAPI (R2 `sites/api.aphrody.com/v1/openapi`, copié de fr2 `/srv/www/aphrody-api`), /v1/downloads/* -> R2 ; autres /v1/<svc>/ = 503 problem+json (aucune unit systemd à restaurer dans infra/fleet) | `DELETE …/workers/domains/44de011d5ebee56c80eb6a47bc2117ae14604455` + `A api 51.255.162.6` et `AAAA api 2001:41d0:305:2100::a461` proxied |
+| omar.aphrody.com | **supprimé** : CNAME proxied d4e42425… et vhost fr2 `/etc/nginx/sites/omar.aphrody.com.conf` (nginx -t OK, reload) | `CNAME omar aphrody.com proxied` (vhost : proxy 127.0.0.1:8793, rien n'y écoutait) |

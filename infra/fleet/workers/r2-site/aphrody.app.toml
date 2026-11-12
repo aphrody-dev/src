@@ -1,0 +1,12 @@
+# Worker "aphrody-app-site" (script = ./worker.js). Deployed via Cloudflare API (MCP), no secrets.
+name = "aphrody-app-site"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+routes = [{ pattern = "aphrody.app", custom_domain = true }]
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "aphrody-dist"
+[vars]
+PREFIX = "sites/aphrody.app"
+SERVICE = "aphrody-app"
+SPA = "1"

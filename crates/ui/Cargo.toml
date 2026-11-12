@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "ui"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Headless UI contracts (Base UI equivalent): WAI-ARIA tree, focus scopes, roving tabindex, type-ahead, interaction states, Material 3 controls, token-driven paint parts."
+publish = false
+
+[dependencies]
+aphrody-design-tokens = { path = "../aphrody-design-tokens", features = ["serde"] }
+aphrody-design-shared = { path = "../aphrody-design-shared" }
+taffy = { workspace = true }
+serde = { workspace = true, features = ["derive"] }

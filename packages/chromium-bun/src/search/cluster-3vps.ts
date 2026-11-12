@@ -2,10 +2,11 @@
 /**
  * 3-VPS Sovereign Datacenter Search Cluster Coordinator (fr1 + fr2 + usa)
  * Models the exact WireGuard/MASQUE 10.200.77.0/24 cluster defined in C:\src\deploy.toml:
- *   - fr1 (51.77.147.152 / 10.200.77.1, OVH EU): Primary Search Edge Ingress, Autocomplete & BM25 Shard 0
- *   - fr2 (51.255.162.6  / 10.200.77.3, OVH EU): Headless Chromium CDP Crawler Pool, Spacedrive & BM25 Shard 1
- *   - usa (72.60.186.43  / 10.200.77.5, Hostinger US): Strict Google Search / Gemini Grounding Egress ONLY
+ *   - fr1 (deploy.toml nodes.*.public_ip / mesh_ip, OVH EU): Primary Search Edge Ingress, Autocomplete & BM25 Shard 0
+ *   - fr2 (deploy.toml nodes.*.public_ip / mesh_ip, OVH EU): Headless Chromium CDP Crawler Pool, Spacedrive & BM25 Shard 1
+ *   - usa (deploy.toml nodes.*.public_ip / mesh_ip, Hostinger US): Strict Google Search / Gemini Grounding Egress ONLY
  */
+import fleet from "../../../../deploy.toml";
 import { ChromiumBunCrawler, type CrawlPageResult } from "./crawler.ts";
 import {
   APHRODY_TOP1_SUBDOMAIN_CATALOG,
@@ -38,8 +39,8 @@ export const THREE_VPS_CLUSTER_TOPOLOGY: Record<
     id: "fr1",
     provider: "ovh",
     region: "eu-fr",
-    publicIp: "51.77.147.152",
-    wireguardIp: "10.200.77.1",
+    publicIp: fleet.nodes.fr1.public_ip,
+    wireguardIp: fleet.nodes.fr1.mesh_ip,
     role: "primary-eu-production-edge",
     allowNonGoogleWorkloads: true,
     services: [
@@ -54,8 +55,8 @@ export const THREE_VPS_CLUSTER_TOPOLOGY: Record<
     id: "fr2",
     provider: "ovh",
     region: "eu-fr",
-    publicIp: "51.255.162.6",
-    wireguardIp: "10.200.77.3",
+    publicIp: fleet.nodes.fr2.public_ip,
+    wireguardIp: fleet.nodes.fr2.mesh_ip,
     role: "eu-ha-replica-chromium-crawler",
     allowNonGoogleWorkloads: true,
     services: [
@@ -69,8 +70,8 @@ export const THREE_VPS_CLUSTER_TOPOLOGY: Record<
     id: "usa",
     provider: "hostinger",
     region: "us-google-egress",
-    publicIp: "72.60.186.43",
-    wireguardIp: "10.200.77.5",
+    publicIp: fleet.nodes.usa.public_ip,
+    wireguardIp: fleet.nodes.usa.mesh_ip,
     role: "strict-google-gemini-egress-only",
     allowNonGoogleWorkloads: false,
     services: ["google-custom-search-egress", "gemini-grounding-proxy"],

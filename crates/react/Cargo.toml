@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "react"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "React/JSX component analysis (OXC): hooks, props, RSC boundaries, React Native bridge, theme bridge."
+publish = false
+autoexamples = false
+
+[dependencies]
+oxc_allocator = "0.155"
+oxc_ast = "0.155"
+oxc_parser = "0.155"
+oxc_span = "0.155"
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+aphrody-design-layout = { path = "../aphrody-design-layout" }
+aphrody-design-shared = { path = "../aphrody-design-shared" }
+aphrody-design-tokens = { path = "../aphrody-design-tokens" }

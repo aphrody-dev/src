@@ -256,6 +256,13 @@ pub struct Done {
 /// Run the git items of `plan` with up to `jobs` threads. Nested checkouts run after the
 /// checkouts that contain them.
 pub fn execute(plan: &[PlanItem], jobs: usize, log: &(dyn Fn(&str) + Sync)) -> Vec<Done> {
+    // gix runs the filters of the git config (`filter.lfs.process` after `git lfs install`).
+    // googlesource mirrors do not serve LFS (HTTP 405), and gclient checkouts keep LFS
+    // pointers as plain git without git-lfs does; git-lfs honors this variable.
+    if std::env::var_os("GIT_LFS_SKIP_SMUDGE").is_none() {
+        // SAFETY: set before any worker thread or filter process is started.
+        unsafe { std::env::set_var("GIT_LFS_SKIP_SMUDGE", "1") };
+    }
     let work: Vec<&PlanItem> = plan
         .iter()
         .filter(|p| {

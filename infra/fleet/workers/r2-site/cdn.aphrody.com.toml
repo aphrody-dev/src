@@ -1,0 +1,12 @@
+# Worker "cdn-aphrody-com" (script = ./worker.js). Deployed via Cloudflare API (MCP), no secrets.
+name = "cdn-aphrody-com"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+routes = [{ pattern = "cdn.aphrody.com", custom_domain = true }]
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "aphrody-assets"
+[vars]
+PREFIX = ""
+SERVICE = "aphrody-cdn"
+SPA = "0"
