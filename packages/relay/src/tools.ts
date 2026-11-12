@@ -1,4 +1,5 @@
 // Outils du relais, partagés par toutes les surfaces (JSON-RPC HTTP/WebSocket/TCP/TLS, MCP, A2A, ACP).
+import { accountsSync } from "./accounts.ts";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
@@ -172,6 +173,14 @@ export const TOOLS: Tool[] = [
           ]
         ).map((x) => `mcp__claude_ai_${x}`),
       ),
+  },
+  {
+    name: "accounts_sync",
+    description:
+      "Owner sync of the owner's accounts (contact@aphrody.com, yohanpierre15@gmail.com, yoyo.aphrody@gmail.com) on GitHub orgs, gcloud projects and Cloudflare accounts. apply=false (default) only reports the gap.",
+    inputSchema: obj({ apply: { type: "boolean" } }),
+    readOnly: false,
+    run: (a) => accountsSync(Boolean(a.apply)),
   },
   {
     name: "notebook_ask",
