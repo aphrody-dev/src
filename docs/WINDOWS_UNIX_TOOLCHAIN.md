@@ -53,25 +53,58 @@ Generated configuration follows the documented keys only:
 Memory and processor counts are derived from the probed host or passed as flags; nothing is hardcoded
 to one machine.
 
-## 4. Replacing WSLg
+## 4. Wayland on Windows and the web (replacing WSLg)
 
-WSLg runs Weston (Wayland compositor) plus an RDP channel to show Linux windows on the Windows
-desktop; Linux GPU access goes through `/dev/dxg` and Mesa's d3d12 driver
-(https://learn.microsoft.com/windows/wsl/tutorials/gpu-compute, `MESA_D3D12_DEFAULT_ADAPTER_NAME`).
-Constraints that shape any replacement:
+Goal: the same Wayland compositor and protocol stack runs natively on Linux, on Windows 11 and in the
+browser (wasm32), with no regression against upstream behaviour. Today WSLg runs Weston in the Linux
+guest plus an RDP channel; Linux GPU access goes through `/dev/dxg` and Mesa's d3d12 driver
+(https://learn.microsoft.com/windows/wsl/tutorials/gpu-compute).
 
-- **The compositor must run in the Linux guest.** Smithay's backends (drm, udev, libinput, gbm, egl)
-  are Linux-only, and Windows `AF_UNIX` does not pass file descriptors, which Wayland requires.
-- **Hyper-V sockets carry streams only.** Microsoft documents them as "Data stream only" and "No block
-  memory (not the best for backup/video)". They suit control and input traffic, not zero-copy frames.
-  The Linux guest is addressed with the VSOCK template GUID `00000000-facb-11e6-bd58-64006a7986d3`,
-  where the first field is the port.
-  Source: https://learn.microsoft.com/windows-server/virtualization/hyper-v/make-integration-service
-- **The host side is a presenter**, not a compositor: a Windows process that receives frames and input
-  and shows them with DXGI/D3D12 and DirectComposition.
+What ties Wayland to Unix, and the replacement for each:
 
-`crates/wayland` holds the pieces that exist today (layout engine, wire codec, D3D12/DXGI host code);
-its README lists what is not implemented yet.
+| Unix dependency | Where | Windows replacement | Web replacement |
+|---|---|---|---|
+| `AF_UNIX` stream socket | libwayland, `wayland-backend`, smithay `src/wayland/socket.rs` | Windows `AF_UNIX` (stream only) or named pipes | `WebSocket` / `MessagePort` |
+| fd passing (`SCM_RIGHTS`) for `wl_shm` pools, dmabuf, keymaps, data transfer | protocol args of type `fd` | Handle passing: sender `DuplicateHandle`s into the peer and sends the value | Transferable `ArrayBuffer` / `SharedArrayBuffer` |
+| `mmap` of shm pools | `wl_shm` | `CreateFileMapping` / `MapViewOfFile` | wasm memory views |
+| epoll/calloop event loop | smithay, calloop | IOCP (mio already supports it) | browser event loop |
+| drm/gbm/egl/libinput backends | smithay `backend_*` | wgpu (DX12) renderer + winit input | wgpu (WebGPU) renderer + winit web input |
+| XWayland | `src/xwayland` | out of scope until the core passes conformance | out of scope |
+
+The fd/handle difference stays inside the transport layer, so the object model, protocol
+dispatch and compositor logic are shared across all three platforms. One renderer (wgpu: DX12 on
+Windows, Vulkan on Linux, WebGPU in the browser) replaces the GLES/pixman pair.
+
+Clients inside a WSL guest cannot hand fds or handles to the Windows host. They connect over Hyper-V
+sockets, and their shm buffers are copied over the stream. Microsoft describes these sockets as
+"Data stream only" and "No block memory", so this is the slow path, not zero-copy. The Linux guest is
+addressed with the VSOCK template GUID `00000000-facb-11e6-bd58-64006a7986d3`, where the first field
+is the port
+(https://learn.microsoft.com/windows-server/virtualization/hyper-v/make-integration-service).
+
+**No regression, proven by tests:**
+
+- **Baseline:** wlcs (Canonical's Wayland Conformance Test Suite) runs against smithay's `anvil` on
+  Linux, using `third_party/wayland-2026/smithay/compile_wlcs.sh` and `wlcs_anvil/`.
+- **Linux port:** wlcs runs against the ported compositor on Linux. It must match the baseline pass list.
+- **Windows and web:** the same protocol scenarios are replayed over the Windows and web transports
+  through a wlcs-equivalent harness. wlcs itself loads compositors as Linux shared objects, so it
+  cannot run there directly.
+- **Every platform:** protocol XML from wayland and wayland-protocols drives code generation, so the
+  object model never diverges between platforms.
+
+Order of work:
+
+1. Transport trait with Unix, Windows and web implementations, plus handle-passing tests.
+2. Platform-independent object model on top of it.
+3. wgpu renderer.
+4. winit input and output.
+5. wlcs parity on Linux.
+6. Windows and web parity harness.
+
+The existing first-party pieces (layout engine, wire codec, D3D12/DXGI host code) live in
+`crates/hypr-tiler`, `crates/smithay-wayland-wire`, `crates/dx12-winui-core`, `crates/cosmic-compat`
+and `crates/wslg-cli` and will be folded into this design.
 
 ## 5. Rules
 
