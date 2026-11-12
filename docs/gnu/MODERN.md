@@ -1,0 +1,53 @@
+# Équivalents modernes et réécritures (2026-11-12)
+
+Versions des projets : `gh api repos/<r>/releases/latest` (2026-11-12) ; pour les dépôts sans release, tag le plus récent [NV : ordre des tags non garanti]. Paquets : Arch core/extra et Ubuntu stonking (voir DISTROS.md). « Compat » = compatibilité mesurée ; quand aucune mesure n'existe, l'entrée est notée [NV].
+
+## Mesure de référence : uutils coreutils face à la suite de tests GNU
+`uutils/coreutils-tracking/gnu-result.json`, dernière entrée **2026-11-12 11:51 UTC**, sha `1bcd89bc` : total 719, **pass 676 (94,0 %)**, fail 29, skip 12, error 2. En avril 2021, c'était 139/624. Release 0.12.0 (2026-09-17). C'est cette version qu'Ubuntu 26.10 installe par défaut (`rust-coreutils 0.12.0-1ubuntu2`).
+Il n'existe pas de tracker équivalent publié pour findutils, diffutils, sed ou grep [NV : chacun a sa propre CI, nous n'avons pas extrait de taux].
+
+## Matrice
+| GNU | Remplaçant | Lang. | Version (date) | Maturité | Compat / tests | Distros |
+|---|---|---|---|---|---|---|
+| coreutils 9.12 | uutils coreutils | Rust | 0.12.0 (2026-09-17) | production | GNU 94,0 % (676/719) | Ubuntu défaut ; Arch extra |
+| findutils 4.11.0 | uutils findutils | Rust | 0.11.0 (2026-11-02) | beta | [NV] | Ubuntu universe `rust-findutils` |
+| findutils (interactif) | fd | Rust | 10.5.2 (2026-11-07) | production | syntaxe propre | Arch extra |
+| diffutils 3.12 | uutils diffutils | Rust | v0.6.0 (2026-10-23) | beta | [NV] | Ubuntu universe `rust-diffutils` |
+| sed 4.10 | uutils sed | Rust | 0.3.0 (2026-10-18) | alpha/beta | [NV] | Ubuntu universe `rust-sed` |
+| grep 3.12 | uutils grep | Rust | 0.2.0 (2026-08-27) | alpha | [NV] | `rust-grep` universe [NV : identité du paquet] |
+| grep (interactif) | ripgrep | Rust | 15.2.0 (2026-07-15) | production | pas POSIX | Arch extra |
+| tar 1.35 | bsdtar (libarchive) | C | 3.8.11 (2026-10-30) | production | formats tar/pax/cpio/zip | Arch core (dep pacman), Windows 11 natif |
+| tar | uutils tar | Rust | pas de release | pré-alpha | — | — |
+| bash 5.3 | brush | Rust | 0.4.0 (2026-05-03) ; main e9d45efe | beta | shell-matrix 31/34 (docs/shell/MATRIX.md) | Arch extra 0.4.0 |
+| bash | oils (osh) | C++ | 0.38.0 (Arch) | beta | suite spec [NV] | Arch extra |
+| bash (interactif) | nushell | Rust | 0.117.0 (2026-11-10) | production | non POSIX | — |
+| gcc 16.2.0 | LLVM clang | C++ | 23.1.5 (2026-11-03) ; Chromium 157 llvmorg-24-init | production | noyau LLVM=1, Chromium, Wine (compat/PLAN.md) | Arch extra clang 23.1.4 |
+| binutils 2.47 (ld.bfd) | lld | C++ | 23.1.x | production | ELF/COFF/Mach-O/wasm | Arch extra |
+| binutils (ld) | mold | C++ | 3.0.0 (2026-10-05) | production (ELF) | — | Arch extra |
+| binutils (ld) | wild | Rust | 0.11.0 (2026-10-24) | beta (ELF Linux) | — | Arch extra |
+| binutils (ar/objcopy/strip) | llvm-ar/objcopy/strip | C++ | 23.1.x | production | drop-in | — |
+| gdb | lldb | C++ | 23.1.x | production | — | Arch extra |
+| glibc 2.44 | musl | C | 1.2.6 (Arch) | production | ABI distincte | Arch extra |
+| glibc | llvm-libc | C++ | dans LLVM 23 | alpha (overlay) | [NV] | — |
+| make 4.4.1 | ninja / samurai | C++/C | 1.13.2 (2025-11-20) / 1.3 | production | — | Arch extra |
+| make (tâches) | just | Rust | 1.59.0 (2026-10-15) | production | ce n'est pas un make | Arch extra |
+| autoconf/automake/libtool | meson / CMake | Python/C++ | meson 1.12.1 (2026-09-22) | production | — | Arch extra |
+| gnupg 2.5.24 / 2.4.9 | Sequoia (sq, sqv, chameleon) | Rust | sq 1.5.0 (2026-10-06), openpgp 2.4.2, chameleon 0.13.1 | production (sq/sqv), beta (chameleon) | apt Ubuntu utilise sqv | Ubuntu main sqv ; Arch extra |
+| gnupg (chiffrement) | age / rage | Go/Rust | 1.3.2 (2026-08-29) / 0.12.1 | production | pas OpenPGP | Arch extra |
+| gnutls 3.8.13 | rustls | Rust | 0.23.46 (2026-10-14) | production | API différente | — |
+| gnutls | BoringSSL (Chromium) / OpenSSL 4.1.0 | C | 2026-10-23 (OpenSSL) | production | — | — |
+| nettle / libgcrypt | RustCrypto / aws-lc-rs / ring | Rust | — | production | — | — |
+| gzip 1.15 | zlib-rs / zlib-ng / zstd | Rust/C | zlib-rs v0.6.8 ; zlib-ng 2.3.3 ; zstd 1.5.7 | production | zlib-rs : API zlib | — |
+| emacs 31.1 | Helix / Neovim / Zed | Rust/C | helix 25.07.1 ; neovim 0.12.6 | production | — | Arch extra |
+| screen | zellij / tmux | Rust/C | — | production | — | — |
+| groff / texinfo | mandoc / mdBook | C/Rust | — | production | man(7) | — |
+| wget | curl / wget2 | C | — | production | — | — |
+| guix | Nix | C++ | 2.35.6 (Arch) | production | — | Arch extra |
+| grub | systemd-boot / Limine / UKI | C | — | production | — | — |
+| indent / global | clang-format / clangd / ast-grep | C++/Rust | ast-grep 0.51.2 | production | — | — |
+| readline / ncurses | reedline / ratatui+crossterm | Rust | — | production | pas d'ABI | — |
+| gettext | Fluent / ICU MF2 | Rust/C++ | — | production | autre modèle | — |
+| time | hyperfine | Rust | — | production | — | — |
+
+## Non couverts
+Les quelque 280 paquets d'applications, jeux, sciences, multimédia et bureau n'ont pas d'équivalent pertinent pour notre stack. Ils figurent dans PACKAGES.md avec le verdict « drop (hors périmètre) » ou « keep upstream (à la demande) ».

@@ -1,0 +1,2080 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index c4da9cb..427c44d 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -21,47 +21,46 @@ edition = "2024"
+ rust-version = "1.85"
+ license = "MIT OR Apache-2.0"
+ authors = ["aphrody-dev"]
+-repository = "https://github.com/aphrody-labs/src"
++repository = "https://github.com/aphrody-dev/src"
+ homepage = "https://labs.aphrody.com"
+-publish = false
+ 
+ [workspace.dependencies]
+ # First-party crates
+-archguard = { path = "crates/archguard" }
+-aphrody-design-shared = { path = "crates/aphrody-design-shared" }
+-aphrody-design-tokens = { path = "crates/aphrody-design-tokens" }
+-corelib = { package = "sovereign-corelib", path = "crates/corelib", default-features = false }
+-depot-cli = { path = "crates/depot-cli" }
+-depot-core = { path = "crates/depot-core" }
+-depot-cas = { path = "crates/depot-cas" }
+-depot-cipd = { path = "crates/depot-cipd" }
+-depot-treesitter = { path = "crates/depot-treesitter" }
+-depot-re = { path = "crates/depot-re" }
+-depot-migrate = { path = "crates/depot-migrate" }
+-depot-forge = { path = "crates/depot-forge" }
+-depot-ingest = { path = "crates/depot-ingest" }
+-depot-graph = { path = "crates/depot-graph" }
+-gamescope-core = { path = "crates/gamescope-core" }
+-gamescope-wgsl = { path = "crates/gamescope-wgsl" }
+-stack-bench = { path = "crates/bench" }
+-xtk = { path = "crates/xtask" }
++archguard = { version = "0.1.0", path = "crates/archguard" }
++aphrody-design-shared = { version = "0.2.0", path = "crates/aphrody-design-shared" }
++aphrody-design-tokens = { version = "0.2.0", path = "crates/aphrody-design-tokens" }
++corelib = { version = "0.1.0", package = "sovereign-corelib", path = "crates/corelib", default-features = false }
++depot-cli = { version = "0.2.0", path = "crates/depot-cli" }
++depot-core = { version = "0.2.0", path = "crates/depot-core" }
++depot-cas = { version = "0.2.0", path = "crates/depot-cas" }
++depot-cipd = { version = "0.2.0", path = "crates/depot-cipd" }
++depot-treesitter = { version = "0.2.0", path = "crates/depot-treesitter" }
++depot-re = { version = "0.2.0", path = "crates/depot-re" }
++depot-migrate = { version = "0.2.0", path = "crates/depot-migrate" }
++depot-forge = { version = "0.2.0", path = "crates/depot-forge" }
++depot-ingest = { version = "0.2.0", path = "crates/depot-ingest" }
++depot-graph = { version = "0.2.0", path = "crates/depot-graph" }
++gamescope-core = { version = "0.1.0", path = "crates/gamescope-core" }
++gamescope-wgsl = { version = "0.1.0", path = "crates/gamescope-wgsl" }
++stack-bench = { version = "0.1.0", path = "crates/bench" }
++xtk = { version = "0.1.0", path = "crates/xtask" }
+ # Labs (merged from C:\labs): Lore VCS, APM, conformance harness, aphrody CLI
+-lore = { path = "crates/lore" }
+-lore-aws = { path = "crates/lore-aws" }
+-lore-base = { path = "crates/lore-base" }
+-lore-credential = { path = "crates/lore-credential" }
+-lore-error-set = { path = "crates/lore-error-set" }
+-lore-error-set-macro = { path = "crates/lore-error-set-macro" }
+-lore-hashicorp = { path = "crates/lore-hashicorp" }
+-lore-io = { path = "crates/lore-io" }
+-lore-macro = { path = "crates/lore-macro" }
+-lore-notification = { path = "crates/lore-notification" }
+-lore-proto = { path = "crates/lore-proto" }
+-lore-revision = { path = "crates/lore-revision" }
+-lore-server = { path = "crates/lore-server" }
+-lore-storage = { path = "crates/lore-storage" }
+-lore-telemetry = { path = "crates/lore-telemetry" }
+-lore-transport = { path = "crates/lore-transport" }
++lore = { version = "0.13.1-nightly", path = "crates/lore" , package = "aphrody-lore" }
++lore-aws = { version = "0.13.1-nightly", path = "crates/lore-aws" , package = "aphrody-lore-aws" }
++lore-base = { version = "0.13.1-nightly", path = "crates/lore-base" , package = "aphrody-lore-base" }
++lore-credential = { version = "0.13.1-nightly", path = "crates/lore-credential" , package = "aphrody-lore-credential" }
++lore-error-set = { version = "0.1.0", path = "crates/lore-error-set" , package = "aphrody-lore-error-set" }
++lore-error-set-macro = { version = "0.1.0", path = "crates/lore-error-set-macro" , package = "aphrody-lore-error-set-macro" }
++lore-hashicorp = { version = "0.13.1-nightly", path = "crates/lore-hashicorp" , package = "aphrody-lore-hashicorp" }
++lore-io = { version = "0.13.1-nightly", path = "crates/lore-io" , package = "aphrody-lore-io" }
++lore-macro = { version = "0.13.1-nightly", path = "crates/lore-macro" , package = "aphrody-lore-macro" }
++lore-notification = { version = "0.13.1-nightly", path = "crates/lore-notification" , package = "aphrody-lore-notification" }
++lore-proto = { version = "0.1.67", path = "crates/lore-proto" , package = "aphrody-lore-proto" }
++lore-revision = { version = "0.13.1-nightly", path = "crates/lore-revision" , package = "aphrody-lore-revision" }
++lore-server = { version = "0.13.1-nightly", path = "crates/lore-server" , package = "aphrody-lore-server" }
++lore-storage = { version = "0.13.1-nightly", path = "crates/lore-storage" , package = "aphrody-lore-storage" }
++lore-telemetry = { version = "0.13.1-nightly", path = "crates/lore-telemetry" , package = "aphrody-lore-telemetry" }
++lore-transport = { version = "0.13.1-nightly", path = "crates/lore-transport" , package = "aphrody-lore-transport" }
+ 
+ # crates.io. Keys shared by src and labs: labs exact pin (same or newer version), union of features.
+ anyhow = "=1.0.104"
+diff --git a/crates/aphrody-cli/Cargo.toml b/crates/aphrody-cli/Cargo.toml
+index 0d034d3..6b0beca 100644
+--- a/crates/aphrody-cli/Cargo.toml
++++ b/crates/aphrody-cli/Cargo.toml
+@@ -8,7 +8,6 @@ license.workspace = true
+ repository.workspace = true
+ homepage.workspace = true
+ authors.workspace = true
+-publish.workspace = true
+ 
+ [[bin]]
+ name = "aphrody"
+@@ -18,4 +17,4 @@ path = "src/main.rs"
+ workspace = true
+ 
+ [dependencies]
+-aphrody-conformance = { path = "../conformance" }
++aphrody-conformance = { version = "0.2.0", path = "../conformance" }
+diff --git a/crates/aphrody-design-identity/Cargo.toml b/crates/aphrody-design-identity/Cargo.toml
+index c4ad162..fcd5fd1 100644
+--- a/crates/aphrody-design-identity/Cargo.toml
++++ b/crates/aphrody-design-identity/Cargo.toml
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: Apache-2.0
+ [package]
++repository.workspace = true
+ name = "aphrody-design-identity"
+ version.workspace = true
+ edition.workspace = true
+@@ -12,7 +13,7 @@ default = ["fs"]
+ fs = []
+ 
+ [dependencies]
+-aphrody-design-sprite-sheet = { path = "../aphrody-design-sprite-sheet" }
++aphrody-design-sprite-sheet = { version = "0.2.0", path = "../aphrody-design-sprite-sheet" }
+ image = { version = "0.25", default-features = false, features = ["png", "webp"] }
+ png = "0.18"
+ serde.workspace = true
+diff --git a/crates/aphrody-design-layout/Cargo.toml b/crates/aphrody-design-layout/Cargo.toml
+index 20410f1..f804ca0 100644
+--- a/crates/aphrody-design-layout/Cargo.toml
++++ b/crates/aphrody-design-layout/Cargo.toml
+@@ -7,7 +7,6 @@ rust-version.workspace = true
+ license = "MIT OR Apache-2.0"
+ description = "One CSS + Tailwind v3/v4 layout engine for every Aphrody Design host: Lightning CSS + Tailwind utilities laid out by Taffy 0.15"
+ repository = "https://github.com/aphrody-dev/monorepo"
+-publish = false
+ 
+ [lints.rust]
+ unsafe_code = "forbid"
+diff --git a/crates/aphrody-design-sprite-sheet/Cargo.toml b/crates/aphrody-design-sprite-sheet/Cargo.toml
+index 57601e8..c44d02f 100644
+--- a/crates/aphrody-design-sprite-sheet/Cargo.toml
++++ b/crates/aphrody-design-sprite-sheet/Cargo.toml
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: Apache-2.0
+ [package]
++repository.workspace = true
+ name = "aphrody-design-sprite-sheet"
+ version.workspace = true
+ edition.workspace = true
+diff --git a/crates/apm/Cargo.toml b/crates/apm/Cargo.toml
+index 67bfd3f..edfc4dc 100644
+--- a/crates/apm/Cargo.toml
++++ b/crates/apm/Cargo.toml
+@@ -8,7 +8,6 @@ license.workspace = true
+ repository.workspace = true
+ homepage.workspace = true
+ authors.workspace = true
+-publish.workspace = true
+ 
+ [lib]
+ name = "aphrody_apm"
+diff --git a/crates/archguard/Cargo.toml b/crates/archguard/Cargo.toml
+index acd57bb..9c56460 100644
+--- a/crates/archguard/Cargo.toml
++++ b/crates/archguard/Cargo.toml
+@@ -1,11 +1,11 @@
+ [package]
++repository.workspace = true
+ name = "archguard"
+ version = "0.1.0"
+ edition = "2024"
+ authors = ["aphrody-dev <contact@aphrody.com>"]
+ description = "Monorepo architecture, domain-purity, boundary and hygiene gate (library behind `ay arch`)"
+ license = "MIT OR Apache-2.0"
+-publish = false
+ 
+ [lib]
+ name = "archguard"
+diff --git a/crates/ay/Cargo.toml b/crates/ay/Cargo.toml
+index 7aadab6..63fd577 100644
+--- a/crates/ay/Cargo.toml
++++ b/crates/ay/Cargo.toml
+@@ -1,11 +1,11 @@
+ [package]
++publish = false
+ name = "aphrody"
+ version.workspace = true
+ edition.workspace = true
+ license.workspace = true
+ authors.workspace = true
+ description = "ay: one multicall CLI for the Aphrody monorepo (arch gate, lock, git, ingest, graph, deploy, bench, build)"
+-publish = false
+ repository = "https://github.com/aphrody-dev/src"
+ 
+ # Released with dist (dist-workspace.toml); the only dist package in the workspace.
+@@ -26,14 +26,14 @@ clap.workspace = true
+ depot-cli.workspace = true
+ depot-cipd.workspace = true
+ depot-core.workspace = true
+-depot-gclient = { path = "../depot-gclient" }
+-depot-vpython = { path = "../depot-vpython" }
+-remote = { package = "aphrody-remote", path = "../remote" }
++depot-gclient = { version = "0.2.0", path = "../depot-gclient" }
++depot-vpython = { version = "0.2.0", path = "../depot-vpython" }
++remote = { version = "0.2.0", package = "aphrody-remote", path = "../remote" }
+ serde_json.workspace = true
+-sys = { path = "../sys" }
++sys = { version = "0.2.0", path = "../sys" , package = "aphrody-sys" }
+ xtk.workspace = true
+-up = { package = "aphrody-up", path = "../up" }
+-rt = { package = "aphrody-rt", path = "../rt" }
++up = { version = "0.2.0", package = "aphrody-up", path = "../up" }
++rt = { version = "0.2.0", package = "aphrody-rt", path = "../rt" }
+ # `ay self-update` against the dist releases (blocking API, no async runtime in ay itself).
+ axoupdater = { version = "0.10", features = ["blocking"] }
+ 
+diff --git a/crates/bench/Cargo.toml b/crates/bench/Cargo.toml
+index fc04cc4..4e6c7bf 100644
+--- a/crates/bench/Cargo.toml
++++ b/crates/bench/Cargo.toml
+@@ -1,9 +1,10 @@
+ [package]
++repository.workspace = true
++license.workspace = true
+ name = "stack-bench"
+ version = "0.1.0"
+ edition = "2024"
+ description = "Hardware and compiler benchmark suite behind `ay bench` (Windows)"
+-publish = false
+ 
+ [dependencies]
+ argh = "0.1.19"
+diff --git a/crates/conformance/Cargo.toml b/crates/conformance/Cargo.toml
+index 23c36c3..8f93e43 100644
+--- a/crates/conformance/Cargo.toml
++++ b/crates/conformance/Cargo.toml
+@@ -8,7 +8,6 @@ license.workspace = true
+ repository.workspace = true
+ homepage.workspace = true
+ authors.workspace = true
+-publish.workspace = true
+ 
+ [dependencies]
+ serde = { workspace = true, features = ["derive", "std"] }
+diff --git a/crates/corelib/Cargo.toml b/crates/corelib/Cargo.toml
+index 9f46741..0d695eb 100644
+--- a/crates/corelib/Cargo.toml
++++ b/crates/corelib/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++repository.workspace = true
+ name = "sovereign-corelib"
+ version = "0.1.0"
+ edition = "2024"
+diff --git a/crates/cosmic-compat/Cargo.toml b/crates/cosmic-compat/Cargo.toml
+index fed3ad9..939ca0b 100644
+--- a/crates/cosmic-compat/Cargo.toml
++++ b/crates/cosmic-compat/Cargo.toml
+@@ -1,4 +1,6 @@
+ [package]
++repository.workspace = true
++description = "cosmic-compat: part of the Aphrody monorepo"
+ name = "cosmic-compat"
+ version.workspace = true
+ edition.workspace = true
+@@ -6,8 +8,8 @@ authors.workspace = true
+ license.workspace = true
+ 
+ [dependencies]
+-smithay-wayland-wire = { path = "../smithay-wayland-wire" }
+-hypr-tiler = { path = "../hypr-tiler" }
++smithay-wayland-wire = { version = "0.2.0", path = "../smithay-wayland-wire" }
++hypr-tiler = { version = "0.2.0", path = "../hypr-tiler" }
+ tracing.workspace = true
+ thiserror.workspace = true
+ serde.workspace = true
+diff --git a/crates/depot-cas/Cargo.toml b/crates/depot-cas/Cargo.toml
+index 7550d3c..4dc8850 100644
+--- a/crates/depot-cas/Cargo.toml
++++ b/crates/depot-cas/Cargo.toml
+@@ -5,7 +5,6 @@ edition.workspace = true
+ license.workspace = true
+ repository = "https://github.com/aphrody-dev/depot"
+ description = "Content-addressed artifact store for depot tooling, after Lore: FastCDC v2020 fragments (32/64/256 KiB), blake3 ids, zstd, sha256 file index"
+-publish = false
+ 
+ [dependencies]
+ blake3.workspace = true
+diff --git a/crates/depot-cipd/Cargo.toml b/crates/depot-cipd/Cargo.toml
+index aec52e3..5f1bc62 100644
+--- a/crates/depot-cipd/Cargo.toml
++++ b/crates/depot-cipd/Cargo.toml
+@@ -5,7 +5,6 @@ edition.workspace = true
+ license.workspace = true
+ repository = "https://github.com/aphrody-dev/depot"
+ description = "CIPD client in Rust: `cipd ensure` with the luci-go site root layout, instances cached in depot-cas (`ay cipd ensure`)"
+-publish = false
+ 
+ [dependencies]
+ base64.workspace = true
+diff --git a/crates/depot-cli/Cargo.toml b/crates/depot-cli/Cargo.toml
+index 1093eae..018a759 100644
+--- a/crates/depot-cli/Cargo.toml
++++ b/crates/depot-cli/Cargo.toml
+@@ -5,7 +5,6 @@ edition.workspace = true
+ license.workspace = true
+ repository = "https://github.com/aphrody-dev/depot"
+ description = "depot command set (VCS, ingest, code graph, RE) behind `ay git`, `ay ingest` and `ay graph`"
+-publish = false
+ 
+ [lib]
+ name = "depot_cli"
+diff --git a/crates/depot-core/Cargo.toml b/crates/depot-core/Cargo.toml
+index 7900844..68d622c 100644
+--- a/crates/depot-core/Cargo.toml
++++ b/crates/depot-core/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++description = "depot-core: part of the Aphrody monorepo"
+ name = "depot-core"
+ version.workspace = true
+ edition.workspace = true
+diff --git a/crates/depot-forge/Cargo.toml b/crates/depot-forge/Cargo.toml
+index 71237bb..b9e4ffc 100644
+--- a/crates/depot-forge/Cargo.toml
++++ b/crates/depot-forge/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++description = "depot-forge: part of the Aphrody monorepo"
+ name = "depot-forge"
+ version.workspace = true
+ edition.workspace = true
+diff --git a/crates/depot-gclient/Cargo.toml b/crates/depot-gclient/Cargo.toml
+index aedf632..aeaa4cb 100644
+--- a/crates/depot-gclient/Cargo.toml
++++ b/crates/depot-gclient/Cargo.toml
+@@ -5,7 +5,6 @@ edition.workspace = true
+ license.workspace = true
+ repository = "https://github.com/aphrody-dev/depot"
+ description = "gclient in Rust: DEPS/.gclient evaluator, revinfo, getdep/setdep, sync planner on gix (`ay gclient`, `ay fetch`)"
+-publish = false
+ 
+ [dependencies]
+ ruff_python_parser = { package = "rustpython-ruff_python_parser", version = "0.16.10" }
+diff --git a/crates/depot-graph/Cargo.toml b/crates/depot-graph/Cargo.toml
+index abc7b82..349b68b 100644
+--- a/crates/depot-graph/Cargo.toml
++++ b/crates/depot-graph/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++description = "depot-graph: part of the Aphrody monorepo"
+ name = "depot-graph"
+ version.workspace = true
+ edition.workspace = true
+diff --git a/crates/depot-ingest/Cargo.toml b/crates/depot-ingest/Cargo.toml
+index cb835fc..9ae2f03 100644
+--- a/crates/depot-ingest/Cargo.toml
++++ b/crates/depot-ingest/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++description = "depot-ingest: part of the Aphrody monorepo"
+ name = "depot-ingest"
+ version.workspace = true
+ edition.workspace = true
+diff --git a/crates/depot-migrate/Cargo.toml b/crates/depot-migrate/Cargo.toml
+index d2d37bd..83f10c5 100644
+--- a/crates/depot-migrate/Cargo.toml
++++ b/crates/depot-migrate/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++description = "depot-migrate: part of the Aphrody monorepo"
+ name = "depot-migrate"
+ version.workspace = true
+ edition.workspace = true
+diff --git a/crates/depot-re/Cargo.toml b/crates/depot-re/Cargo.toml
+index d420fe6..5b24dff 100644
+--- a/crates/depot-re/Cargo.toml
++++ b/crates/depot-re/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++description = "depot-re: part of the Aphrody monorepo"
+ name = "depot-re"
+ version.workspace = true
+ edition.workspace = true
+diff --git a/crates/depot-treesitter/Cargo.toml b/crates/depot-treesitter/Cargo.toml
+index 3e08ea5..97cba83 100644
+--- a/crates/depot-treesitter/Cargo.toml
++++ b/crates/depot-treesitter/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++description = "depot-treesitter: part of the Aphrody monorepo"
+ name = "depot-treesitter"
+ version.workspace = true
+ edition.workspace = true
+diff --git a/crates/depot-vpython/Cargo.toml b/crates/depot-vpython/Cargo.toml
+index aa69299..1bb9cea 100644
+--- a/crates/depot-vpython/Cargo.toml
++++ b/crates/depot-vpython/Cargo.toml
+@@ -5,7 +5,6 @@ edition.workspace = true
+ license.workspace = true
+ repository = "https://github.com/aphrody-dev/depot"
+ description = "`ay vpy`: run Chromium vpython specs (vpython.toml + .uv.lock, PEP 723) on uv"
+-publish = false
+ 
+ [dependencies]
+ depot-core.workspace = true
+diff --git a/crates/dx12-winui-core/Cargo.toml b/crates/dx12-winui-core/Cargo.toml
+index b9ed6c1..11d0ea3 100644
+--- a/crates/dx12-winui-core/Cargo.toml
++++ b/crates/dx12-winui-core/Cargo.toml
+@@ -1,4 +1,6 @@
+ [package]
++repository.workspace = true
++description = "dx12-winui-core: part of the Aphrody monorepo"
+ name = "dx12-winui-core"
+ version.workspace = true
+ edition.workspace = true
+diff --git a/crates/ffi/Cargo.toml b/crates/ffi/Cargo.toml
+index 5439eff..b09880b 100644
+--- a/crates/ffi/Cargo.toml
++++ b/crates/ffi/Cargo.toml
+@@ -1,10 +1,10 @@
+ [package]
+-name = "ffi"
++repository.workspace = true
++name = "aphrody-ffi"
+ version.workspace = true
+ edition.workspace = true
+ license.workspace = true
+ description = "Stable C ABI over the depot and corelib web libraries (aphrody_ffi shared library)"
+-publish = false
+ 
+ [lib]
+ name = "aphrody_ffi"
+diff --git a/crates/gamescope-cli/Cargo.toml b/crates/gamescope-cli/Cargo.toml
+index 671be8b..32550aa 100644
+--- a/crates/gamescope-cli/Cargo.toml
++++ b/crates/gamescope-cli/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++repository.workspace = true
+ name = "gamescope-cli"
+ version = "0.1.0"
+ edition = "2024"
+diff --git a/crates/gamescope-core/Cargo.toml b/crates/gamescope-core/Cargo.toml
+index a181999..7ada108 100644
+--- a/crates/gamescope-core/Cargo.toml
++++ b/crates/gamescope-core/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++repository.workspace = true
+ name = "gamescope-core"
+ version = "0.1.0"
+ edition = "2024"
+diff --git a/crates/gamescope-web-wasm/Cargo.toml b/crates/gamescope-web-wasm/Cargo.toml
+index 448220c..2251a7e 100644
+--- a/crates/gamescope-web-wasm/Cargo.toml
++++ b/crates/gamescope-web-wasm/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++repository.workspace = true
+ name = "gamescope-web-wasm"
+ version = "0.1.0"
+ edition = "2024"
+diff --git a/crates/gamescope-wgsl/Cargo.toml b/crates/gamescope-wgsl/Cargo.toml
+index 3802412..fc089ce 100644
+--- a/crates/gamescope-wgsl/Cargo.toml
++++ b/crates/gamescope-wgsl/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++repository.workspace = true
+ name = "gamescope-wgsl"
+ version = "0.1.0"
+ edition = "2024"
+diff --git a/crates/hypr-tiler/Cargo.toml b/crates/hypr-tiler/Cargo.toml
+index 78c7a92..b371098 100644
+--- a/crates/hypr-tiler/Cargo.toml
++++ b/crates/hypr-tiler/Cargo.toml
+@@ -1,4 +1,6 @@
+ [package]
++repository.workspace = true
++description = "hypr-tiler: part of the Aphrody monorepo"
+ name = "hypr-tiler"
+ version.workspace = true
+ edition.workspace = true
+diff --git a/crates/lore-aws/Cargo.toml b/crates/lore-aws/Cargo.toml
+index 47aa62f..547f66b 100644
+--- a/crates/lore-aws/Cargo.toml
++++ b/crates/lore-aws/Cargo.toml
+@@ -1,8 +1,10 @@
+ [package]
+-name = "lore-aws"
++repository.workspace = true
++description = "Lore version control: lore-aws (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-aws"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ 
+ [dependencies]
+ async-trait = { workspace = true }
+@@ -36,7 +38,7 @@ lore-macro = { workspace = true }
+ lore-telemetry = { workspace = true }
+ 
+ [dev-dependencies]
+-lore-aws = { workspace = true, features = ["test-util"] }
++lore-aws = { path = ".", package = "aphrody-lore-aws",  features = ["test-util"]  }
+ mockall = { workspace = true }
+ rand = { workspace = true }
+ serial_test = "4.0.1"
+@@ -44,7 +46,7 @@ temp-env = { workspace = true }
+ tokio = { workspace = true, features = ["test-util"] }
+ tracing-test = { workspace = true }
+ uuid = { workspace = true }
+-lore-proto = { workspace = true }
++lore-proto = { path = "../lore-proto", package = "aphrody-lore-proto" }
+ 
+ [features]
+ default = []
+diff --git a/crates/lore-aws/LICENSE b/crates/lore-aws/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-aws/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-base/Cargo.toml b/crates/lore-base/Cargo.toml
+index 5c040ca..2de04d6 100644
+--- a/crates/lore-base/Cargo.toml
++++ b/crates/lore-base/Cargo.toml
+@@ -1,8 +1,10 @@
+ [package]
+-name = "lore-base"
++repository.workspace = true
++description = "Lore version control: lore-base (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-base"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ 
+ [lib]
+ name = "lore_base"
+@@ -69,7 +71,7 @@ windows-sys = { workspace = true, features = ["Win32_Foundation", "Win32_Storage
+ [dev-dependencies]
+ # The crate's tests, the unit tests and the lore-stamp tests included, are built against the
+ # library as other crates see it, without the `test` cfg, so they reach test_util through the feature.
+-lore-base = { path = ".", features = ["test-util"] }
++lore-base = { path = ".", features = ["test-util"] , package = "aphrody-lore-base" }
+ # Its serde integration: the non-self-describing format the identifier types' serde impls must
+ # round-trip through.
+ bitcode = { workspace = true, features = ["serde"] }
+diff --git a/crates/lore-base/LICENSE b/crates/lore-base/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-base/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-capi/Cargo.toml b/crates/lore-capi/Cargo.toml
+index 2d1411f..dc280a7 100644
+--- a/crates/lore-capi/Cargo.toml
++++ b/crates/lore-capi/Cargo.toml
+@@ -1,8 +1,10 @@
+ [package]
+-name = "lore-capi"
++repository.workspace = true
++description = "Lore version control: lore-capi (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-capi"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ 
+ # The C library, named `lore` so it builds as liblore.so, liblore.dylib or lore.dll, and liblore.a
+ # or lore.lib. The build script generates lore.h.
+@@ -13,7 +15,7 @@ test = false
+ doctest = false
+ 
+ [dependencies]
+-lore-library = { package = "lore", path = "../lore" }
++lore-library = { version = "0.13.1-nightly", package = "aphrody-lore", path = "../lore" }
+ 
+ [build-dependencies]
+ cbindgen = { version = "=0.29.2", default-features = false }
+diff --git a/crates/lore-capi/LICENSE b/crates/lore-capi/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-capi/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-chaos-client/Cargo.toml b/crates/lore-chaos-client/Cargo.toml
+index ba61983..6116180 100644
+--- a/crates/lore-chaos-client/Cargo.toml
++++ b/crates/lore-chaos-client/Cargo.toml
+@@ -1,8 +1,10 @@
+ [package]
+-name = "lore-chaos-client"
++repository.workspace = true
++description = "Lore version control: lore-chaos-client (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-chaos-client"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ 
+ [dependencies]
+ anyhow = { workspace = true }
+@@ -32,7 +34,7 @@ test = false
+ test-util = []
+ 
+ [dev-dependencies]
+-lore-chaos-client = { path = ".", features = ["test-util"] }
++lore-chaos-client = { path = ".", features = ["test-util"] , package = "aphrody-lore-chaos-client" }
+ 
+ [lints]
+ workspace = true
+diff --git a/crates/lore-chaos-client/LICENSE b/crates/lore-chaos-client/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-chaos-client/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-client/Cargo.toml b/crates/lore-client/Cargo.toml
+index 6e986e2..73b679a 100644
+--- a/crates/lore-client/Cargo.toml
++++ b/crates/lore-client/Cargo.toml
+@@ -1,8 +1,10 @@
+ [package]
+-name = "lore-client"
++repository.workspace = true
++description = "Lore version control: lore-client (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-client"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ 
+ [dependencies]
+ anstream = { workspace = true }
+@@ -32,7 +34,7 @@ oodle = ["lore/oodle"]
+ test-util = []
+ 
+ [dev-dependencies]
+-lore-client = { path = ".", features = ["test-util"] }
++lore-client = { path = ".", features = ["test-util"] , package = "aphrody-lore-client" }
+ 
+ [build-dependencies]
+ winresource = "0.1.34"
+diff --git a/crates/lore-client/LICENSE b/crates/lore-client/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-client/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-credential/Cargo.toml b/crates/lore-credential/Cargo.toml
+index feea735..6d36461 100644
+--- a/crates/lore-credential/Cargo.toml
++++ b/crates/lore-credential/Cargo.toml
+@@ -1,8 +1,10 @@
+ [package]
+-name = "lore-credential"
++repository.workspace = true
++description = "Lore version control: lore-credential (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-credential"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ 
+ [lib]
+ name = "lore_credential"
+@@ -27,8 +29,8 @@ url = { workspace = true }
+ [dev-dependencies]
+ ctor = { workspace = true }
+ dtor = { workspace = true }
+-lore-base = { workspace = true, features = ["test-util"] }
+-lore-credential = { workspace = true, features = ["test-util"] }
++lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
++lore-credential = { path = ".", package = "aphrody-lore-credential",  features = ["test-util"]  }
+ 
+ [features]
+ test-util = []
+diff --git a/crates/lore-credential/LICENSE b/crates/lore-credential/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-credential/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-error-set-macro/Cargo.toml b/crates/lore-error-set-macro/Cargo.toml
+index 9eb39f7..1b1c92c 100644
+--- a/crates/lore-error-set-macro/Cargo.toml
++++ b/crates/lore-error-set-macro/Cargo.toml
+@@ -1,9 +1,10 @@
+ [package]
+-name = "lore-error-set-macro"
++repository.workspace = true
++license = "MIT"
++name = "aphrody-lore-error-set-macro"
+ version = "0.1.0"
+ edition = "2021"
+ description = "Proc-macro crate for lore-error-set"
+-publish = false
+ 
+ [lib]
+ proc-macro = true
+diff --git a/crates/lore-error-set-macro/LICENSE b/crates/lore-error-set-macro/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-error-set-macro/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-error-set/Cargo.toml b/crates/lore-error-set/Cargo.toml
+index d610a78..b9a591c 100644
+--- a/crates/lore-error-set/Cargo.toml
++++ b/crates/lore-error-set/Cargo.toml
+@@ -1,9 +1,10 @@
+ [package]
+-name = "lore-error-set"
++repository.workspace = true
++license = "MIT"
++name = "aphrody-lore-error-set"
+ version = "0.1.0"
+ edition = "2021"
+ description = "Composable, traceable error handling for Rust"
+-publish = false
+ 
+ [features]
+ default = ["track-locations"]
+diff --git a/crates/lore-error-set/LICENSE b/crates/lore-error-set/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-error-set/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-fuse/Cargo.toml b/crates/lore-fuse/Cargo.toml
+index bbcc81a..3ab2df5 100644
+--- a/crates/lore-fuse/Cargo.toml
++++ b/crates/lore-fuse/Cargo.toml
+@@ -1,8 +1,10 @@
+ [package]
+-name = "lore-fuse"
++repository.workspace = true
++description = "Lore version control: lore-fuse (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-fuse"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ 
+ [lib]
+ name = "lore_fuse"
+@@ -20,8 +22,8 @@ parking_lot = { workspace = true }
+ thiserror = { workspace = true }
+ 
+ [dev-dependencies]
+-lore-base = { workspace = true, features = ["test-util"] }
+-lore-fuse = { path = ".", features = ["test-util"] }
++lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
++lore-fuse = { path = ".", features = ["test-util"] , package = "aphrody-lore-fuse" }
+ tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
+ 
+ [features]
+diff --git a/crates/lore-fuse/LICENSE b/crates/lore-fuse/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-fuse/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-hashicorp/Cargo.toml b/crates/lore-hashicorp/Cargo.toml
+index 5990679..037b6d5 100644
+--- a/crates/lore-hashicorp/Cargo.toml
++++ b/crates/lore-hashicorp/Cargo.toml
+@@ -1,8 +1,10 @@
+ [package]
+-name = "lore-hashicorp"
++repository.workspace = true
++description = "Lore version control: lore-hashicorp (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-hashicorp"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ 
+ [lib]
+ test = false
+@@ -20,7 +22,7 @@ lore-telemetry = { workspace = true }
+ urlencoding = { workspace = true }
+ 
+ [dev-dependencies]
+-lore-base = { workspace = true }
++lore-base = { path = "../lore-base", package = "aphrody-lore-base" }
+ mockall = { workspace = true }
+ rand = { workspace = true }
+ temp-env = { workspace = true }
+diff --git a/crates/lore-hashicorp/LICENSE b/crates/lore-hashicorp/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-hashicorp/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-integration-tests/Cargo.toml b/crates/lore-integration-tests/Cargo.toml
+index 9ce7c74..33294a0 100644
+--- a/crates/lore-integration-tests/Cargo.toml
++++ b/crates/lore-integration-tests/Cargo.toml
+@@ -1,8 +1,11 @@
+ [package]
+-name = "lore-integration-tests"
++publish = false
++repository.workspace = true
++description = "Lore version control: lore-integration-tests (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-integration-tests"
+ version = "0.1.0"
+ edition = "2024"
+-publish = false
+ # One target for the whole suite, declared below. Autodiscovery would compile
+ # every file in tests/ as a test binary of its own, and each is a module of that
+ # suite rather than a crate root.
+@@ -62,21 +65,21 @@ uuid = { workspace = true }
+ 
+ [dev-dependencies]
+ ctor = { workspace = true }
+-lore = { workspace = true, features = ["test-util"] }
+-lore-base = { workspace = true, features = ["test-util"] }
+-lore-server = { workspace = true }
+-lore-storage = { workspace = true, features = ["test-util"] }
++lore = { path = "../lore", package = "aphrody-lore",  features = ["test-util"]  }
++lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
++lore-server = { path = "../lore-server", package = "aphrody-lore-server" }
++lore-storage = { path = "../lore-storage", package = "aphrody-lore-storage",  features = ["test-util"]  }
+ # Here rather than under [dependencies]: a normal dependency's features apply to every build that
+ # includes this package, so a release build of the workspace would compile lore-revision's test
+ # access into every binary.
+-lore-revision = { workspace = true, features = ["test-util"] }
+-lore-transport = { workspace = true, features = ["test-util"] }
++lore-revision = { path = "../lore-revision", package = "aphrody-lore-revision",  features = ["test-util"]  }
++lore-transport = { path = "../lore-transport", package = "aphrody-lore-transport",  features = ["test-util"]  }
+ rcgen = { workspace = true }
+ serde = { workspace = true }
+ 
+ [target.'cfg(target_os = "linux")'.dev-dependencies]
+ libc = { workspace = true }
+-lore-fuse = { path = "../lore-fuse", features = ["test-util"] }
++lore-fuse = { path = "../lore-fuse", features = ["test-util"] , package = "aphrody-lore-fuse" }
+ 
+ [features]
+ integration_tests = ["lore-server/integration_tests"]
+diff --git a/crates/lore-integration-tests/LICENSE b/crates/lore-integration-tests/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-integration-tests/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-io/Cargo.toml b/crates/lore-io/Cargo.toml
+index 3a90707..b8fc94a 100644
+--- a/crates/lore-io/Cargo.toml
++++ b/crates/lore-io/Cargo.toml
+@@ -1,8 +1,10 @@
+ [package]
+-name = "lore-io"
++repository.workspace = true
++description = "Lore version control: lore-io (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-io"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ 
+ [lib]
+ name = "lore_io"
+@@ -56,8 +58,8 @@ windows-sys = { workspace = true, features = [
+ # tests in tests/unit. Dev-only, so the library's own dependency graph is unchanged.
+ [dev-dependencies]
+ futures = { workspace = true }
+-lore-base = { workspace = true, features = ["test-util"] }
+-lore-io = { workspace = true, features = ["test-util"] }
++lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
++lore-io = { path = ".", package = "aphrody-lore-io",  features = ["test-util"]  }
+ tokio = { workspace = true }
+ 
+ # A named pipe is the only thing a unit test can make defer on demand, and deferring is the whole
+diff --git a/crates/lore-io/LICENSE b/crates/lore-io/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-io/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-macro/Cargo.toml b/crates/lore-macro/Cargo.toml
+index bc82d4d..9a03305 100644
+--- a/crates/lore-macro/Cargo.toml
++++ b/crates/lore-macro/Cargo.toml
+@@ -1,8 +1,10 @@
+ [package]
+-name = "lore-macro"
++repository.workspace = true
++description = "Lore version control: lore-macro (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-macro"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ 
+ [lib]
+ name = "lore_macro"
+diff --git a/crates/lore-macro/LICENSE b/crates/lore-macro/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-macro/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-notification/Cargo.toml b/crates/lore-notification/Cargo.toml
+index bf38dbc..fd8135d 100644
+--- a/crates/lore-notification/Cargo.toml
++++ b/crates/lore-notification/Cargo.toml
+@@ -1,8 +1,10 @@
+ [package]
+-name = "lore-notification"
++repository.workspace = true
++description = "Lore version control: lore-notification (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-notification"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ 
+ [lib]
+ test = false
+@@ -24,7 +26,7 @@ lore-proto = { workspace = true }
+ test-util = []
+ 
+ [dev-dependencies]
+-lore-notification = { workspace = true, features = ["test-util"] }
++lore-notification = { path = ".", package = "aphrody-lore-notification",  features = ["test-util"]  }
+ 
+ [lints]
+ workspace = true
+diff --git a/crates/lore-notification/LICENSE b/crates/lore-notification/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-notification/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-proto/Cargo.toml b/crates/lore-proto/Cargo.toml
+index 212c95d..27266c5 100644
+--- a/crates/lore-proto/Cargo.toml
++++ b/crates/lore-proto/Cargo.toml
+@@ -1,9 +1,11 @@
+ [package]
+-name = "lore-proto"
++repository.workspace = true
++description = "Lore version control: lore-proto (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-proto"
+ # Crate version is used for proto-artifactory workflow
+ version = "0.1.67"
+ edition = "2024"
+-publish = false
+ 
+ [lib]
+ # The generated bindings hold no unit tests; the suites in tests/ are their own
+diff --git a/crates/lore-proto/LICENSE b/crates/lore-proto/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-proto/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-revision/Cargo.toml b/crates/lore-revision/Cargo.toml
+index cc137ba..6bca74e 100644
+--- a/crates/lore-revision/Cargo.toml
++++ b/crates/lore-revision/Cargo.toml
+@@ -1,8 +1,10 @@
+ [package]
+-name = "lore-revision"
++repository.workspace = true
++description = "Lore version control: lore-revision (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-revision"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ 
+ [lib]
+ name = "lore_revision"
+@@ -71,11 +73,11 @@ zerocopy = { workspace = true }
+ windows-sys = { workspace = true, features = ["Win32_Foundation", "Win32_Storage_ProjectedFileSystem", "Win32_Storage_FileSystem", "Win32_System_Diagnostics", "Win32_System_Diagnostics_Debug", "Win32_System_IO", "Win32_Security"] }
+ 
+ [target.'cfg(target_os = "linux")'.dependencies]
+-lore-fuse = { path = "../lore-fuse" }
++lore-fuse = { version = "0.13.1-nightly", path = "../lore-fuse" , package = "aphrody-lore-fuse" }
+ 
+ # `MockTransport`, for provider tests that need the dispatcher's reply path.
+ [target.'cfg(target_os = "linux")'.dev-dependencies]
+-lore-fuse = { path = "../lore-fuse", features = ["test-util"] }
++lore-fuse = { path = "../lore-fuse", features = ["test-util"] , package = "aphrody-lore-fuse" }
+ 
+ [[example]]
+ name = "state_bench"
+@@ -94,10 +96,10 @@ required-features = ["state-stress"]
+ ctor = { workspace = true }
+ dtor = { workspace = true }
+ keyring-core = { workspace = true }
+-lore-base = { workspace = true, features = ["test-util"] }
+-lore-revision = { workspace = true, features = ["test-util"] }
+-lore-storage = { workspace = true, features = ["test-util"] }
+-lore-transport = { workspace = true, features = ["test-util"] }
++lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
++lore-revision = { path = ".", package = "aphrody-lore-revision",  features = ["test-util"]  }
++lore-storage = { path = "../lore-storage", package = "aphrody-lore-storage",  features = ["test-util"]  }
++lore-transport = { path = "../lore-transport", package = "aphrody-lore-transport",  features = ["test-util"]  }
+ serde_json = { workspace = true }
+ serde = { workspace = true }
+ # `start_paused` for the tests that drive a polling loop on a virtual clock.
+diff --git a/crates/lore-revision/LICENSE b/crates/lore-revision/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-revision/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-server/Cargo.toml b/crates/lore-server/Cargo.toml
+index 77c1b3f..ee56064 100644
+--- a/crates/lore-server/Cargo.toml
++++ b/crates/lore-server/Cargo.toml
+@@ -1,8 +1,10 @@
+ [package]
+-name = "lore-server"
++repository.workspace = true
++description = "Lore version control: lore-server (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-server"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ autobins = false
+ 
+ # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+@@ -85,9 +87,9 @@ tonic-prost-build = { workspace = true }
+ [dev-dependencies]
+ # The unit-test binary's store policies, set before the harness starts; see tests/unit/main.rs.
+ ctor = { workspace = true }
+-lore-base = { workspace = true, features = ["test-util"] }
+-lore-credential = { workspace = true }
+-lore-storage = { workspace = true, features = ["test-util"] }
++lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
++lore-credential = { path = "../lore-credential", package = "aphrody-lore-credential" }
++lore-storage = { path = "../lore-storage", package = "aphrody-lore-storage",  features = ["test-util"]  }
+ axum-test = { version = "21.1.0", default-features = false }
+ rcgen = { workspace = true }
+ http-body = "1.1.0"
+@@ -98,9 +100,9 @@ opentelemetry_sdk = { workspace = true, features = ["testing"] }
+ temp-env = { workspace = true }
+ # `start_paused` for the tests that time push phases on a virtual clock.
+ tokio = { workspace = true, features = ["test-util"] }
+-lore-server = { workspace = true, features = ["test-util"] }
++lore-server = { path = ".", package = "aphrody-lore-server",  features = ["test-util"]  }
+ # The points where a test stops a branch write, to leave a restore stopped part way.
+-lore-revision = { workspace = true, features = ["test-util"] }
++lore-revision = { path = "../lore-revision", package = "aphrody-lore-revision",  features = ["test-util"]  }
+ 
+ [features]
+ default = []
+diff --git a/crates/lore-server/LICENSE b/crates/lore-server/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-server/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-storage/Cargo.toml b/crates/lore-storage/Cargo.toml
+index 2ad1ae1..dde7f65 100644
+--- a/crates/lore-storage/Cargo.toml
++++ b/crates/lore-storage/Cargo.toml
+@@ -1,8 +1,10 @@
+ [package]
+-name = "lore-storage"
++repository.workspace = true
++description = "Lore version control: lore-storage (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-storage"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ 
+ [lib]
+ name = "lore_storage"
+@@ -60,10 +62,10 @@ required-features = ["store-stress"]
+ 
+ [dev-dependencies]
+ # The shared test temp-directory helper.
+-lore-base = { workspace = true, features = ["test-util"] }
+-lore-storage = { workspace = true, features = ["test-util"] }
++lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
++lore-storage = { path = ".", package = "aphrody-lore-storage",  features = ["test-util"]  }
+ # A session over a stub peer, with no live connection behind it.
+-lore-transport = { workspace = true, features = ["test-util"] }
++lore-transport = { path = "../lore-transport", package = "aphrody-lore-transport",  features = ["test-util"]  }
+ # A paused clock, so retry back-off takes no real time.
+ tokio = { workspace = true, features = ["test-util"] }
+ 
+diff --git a/crates/lore-storage/LICENSE b/crates/lore-storage/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-storage/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-telemetry/Cargo.toml b/crates/lore-telemetry/Cargo.toml
+index e83e7f4..ff55f1f 100644
+--- a/crates/lore-telemetry/Cargo.toml
++++ b/crates/lore-telemetry/Cargo.toml
+@@ -1,8 +1,9 @@
+ [package]
+-name = "lore-telemetry"
++repository.workspace = true
++license = "MIT"
++name = "aphrody-lore-telemetry"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ description = "Telemetry and observability utilities for Lore"
+ 
+ [lib]
+diff --git a/crates/lore-telemetry/LICENSE b/crates/lore-telemetry/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-telemetry/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore-transport/Cargo.toml b/crates/lore-transport/Cargo.toml
+index 35770c3..0d46d67 100644
+--- a/crates/lore-transport/Cargo.toml
++++ b/crates/lore-transport/Cargo.toml
+@@ -1,8 +1,10 @@
+ [package]
+-name = "lore-transport"
++repository.workspace = true
++description = "Lore version control: lore-transport (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore-transport"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ 
+ [lib]
+ name = "lore_transport"
+@@ -68,8 +70,8 @@ axum = { workspace = true }
+ ctor = { workspace = true }
+ dtor = { workspace = true }
+ libc = { workspace = true }
+-lore-base = { workspace = true, features = ["test-util"] }
+-lore-transport = { workspace = true, features = ["test-util"] }
++lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
++lore-transport = { path = ".", package = "aphrody-lore-transport",  features = ["test-util"]  }
+ 
+ [features]
+ trace_log = ["lore-base/trace_log"]
+diff --git a/crates/lore-transport/LICENSE b/crates/lore-transport/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore-transport/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/lore/Cargo.toml b/crates/lore/Cargo.toml
+index 70a44f1..c97a786 100644
+--- a/crates/lore/Cargo.toml
++++ b/crates/lore/Cargo.toml
+@@ -1,8 +1,10 @@
+ [package]
+-name = "lore"
++repository.workspace = true
++description = "Lore version control: lore (absorbed from Epic Games Lore, MIT)"
++license = "MIT"
++name = "aphrody-lore"
+ edition = "2024"
+ version = "0.13.1-nightly"
+-publish = false
+ 
+ [lib]
+ name = "lore"
+@@ -54,15 +56,15 @@ state-stress = ["lore-revision/state-stress"]
+ async-trait = { workspace = true }
+ # The unit-test binary's process sandbox, set up before the harness starts; see tests/unit/main.rs.
+ ctor = { workspace = true }
+-lore-base = { workspace = true, features = ["test-util"] }
+-lore-storage = { workspace = true, features = ["test-util"] }
++lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
++lore-storage = { path = "../lore-storage", package = "aphrody-lore-storage",  features = ["test-util"]  }
+ # The tests that write node blocks directly (`NodeBlock::write_for_tests`).
+-lore-revision = { workspace = true, features = ["test-util"] }
++lore-revision = { path = "../lore-revision", package = "aphrody-lore-revision",  features = ["test-util"]  }
+ # The futures of the State node harness the C API's scenarios include.
+ pin-project = { workspace = true }
+ rand = { workspace = true }
+ serial_test = { workspace = true }
+-lore = { workspace = true, features = ["test-util"] }
++lore = { path = ".", package = "aphrody-lore",  features = ["test-util"]  }
+ 
+ [[example]]
+ name = "revision_tree_bench"
+diff --git a/crates/lore/LICENSE b/crates/lore/LICENSE
+new file mode 100644
+index 0000000..729d01e
+--- /dev/null
++++ b/crates/lore/LICENSE
+@@ -0,0 +1,18 @@
++MIT License
++
++Copyright (c) 2026 Epic Games, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++associated documentation files (the "Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
++following conditions:
++
++The above copyright notice and this permission notice shall be included in all copies or substantial
++portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
++LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
++EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++USE OR OTHER DEALINGS IN THE SOFTWARE.
+diff --git a/crates/remote/Cargo.toml b/crates/remote/Cargo.toml
+index b1902e6..d99f26b 100644
+--- a/crates/remote/Cargo.toml
++++ b/crates/remote/Cargo.toml
+@@ -1,10 +1,11 @@
+ [package]
++publish = false
++repository.workspace = true
+ name = "aphrody-remote"
+ description = "Pure-Rust SSH client for `ay ssh`: exec, sftp copy, fleet hosts and health check (russh, no OpenSSH binary)"
+ version.workspace = true
+ edition.workspace = true
+ license.workspace = true
+-publish = false
+ 
+ [lib]
+ name = "remote"
+diff --git a/crates/ring3-agent/Cargo.toml b/crates/ring3-agent/Cargo.toml
+index fb1db7e..c98eeb5 100644
+--- a/crates/ring3-agent/Cargo.toml
++++ b/crates/ring3-agent/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++repository.workspace = true
+ name = "ring3-agent"
+ version = "0.1.0"
+ edition = "2024"
+diff --git a/crates/rt/Cargo.toml b/crates/rt/Cargo.toml
+index 6f03150..41a6de3 100644
+--- a/crates/rt/Cargo.toml
++++ b/crates/rt/Cargo.toml
+@@ -5,12 +5,11 @@ edition.workspace = true
+ license.workspace = true
+ repository = "https://github.com/aphrody-dev/src"
+ description = "Runtime manager behind `ay rt`: Python engines and versions on uv (CPython, free-threaded, PyPy, GraalPy, Pyodide, RustPython), Bun versions and forks, package managers, PyTorch backends"
+-publish = false
+ 
+ [lib]
+ name = "rt"
+ 
+ [dependencies]
+ clap.workspace = true
+-up = { package = "aphrody-up", path = "../up" }
++up = { version = "0.2.0", package = "aphrody-up", path = "../up" }
+ serde_json.workspace = true
+diff --git a/crates/rust-stack/Cargo.toml b/crates/rust-stack/Cargo.toml
+index 29cf519..e730d8f 100644
+--- a/crates/rust-stack/Cargo.toml
++++ b/crates/rust-stack/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++repository.workspace = true
+ name = "rust-stack"
+ version = "0.1.0"
+ edition = "2024"
+@@ -31,4 +32,4 @@ serde_json = "1.0"
+ sha2 = "0.11"
+ tokio = { version = "1.54", default-features = false, features = ["rt-multi-thread", "macros", "net", "sync", "time", "io-util"] }
+ ureq = { version = "3.5", features = ["json"] }
+-corelib = { package = "sovereign-corelib", path = "../corelib" }
++corelib = { version = "0.1.0", package = "sovereign-corelib", path = "../corelib" }
+diff --git a/crates/smithay-wayland-wire/Cargo.toml b/crates/smithay-wayland-wire/Cargo.toml
+index ee775f2..6a74a14 100644
+--- a/crates/smithay-wayland-wire/Cargo.toml
++++ b/crates/smithay-wayland-wire/Cargo.toml
+@@ -1,4 +1,6 @@
+ [package]
++repository.workspace = true
++description = "smithay-wayland-wire: part of the Aphrody monorepo"
+ name = "smithay-wayland-wire"
+ version.workspace = true
+ edition.workspace = true
+@@ -6,7 +8,7 @@ authors.workspace = true
+ license.workspace = true
+ 
+ [dependencies]
+-dx12-winui-core = { path = "../dx12-winui-core" }
++dx12-winui-core = { version = "0.2.0", path = "../dx12-winui-core" }
+ byteorder.workspace = true
+ tracing.workspace = true
+ thiserror.workspace = true
+diff --git a/crates/steam-depot/Cargo.toml b/crates/steam-depot/Cargo.toml
+index 000f9e9..96a01a8 100644
+--- a/crates/steam-depot/Cargo.toml
++++ b/crates/steam-depot/Cargo.toml
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: Apache-2.0
+ [package]
++publish = false
+ name = "steam-depot"
+ version = "1.4.8"
+ edition = "2024"
+diff --git a/crates/sys/Cargo.toml b/crates/sys/Cargo.toml
+index 5d6dc83..cc6a7e5 100644
+--- a/crates/sys/Cargo.toml
++++ b/crates/sys/Cargo.toml
+@@ -1,10 +1,10 @@
+ [package]
+-name = "sys"
++repository.workspace = true
++name = "aphrody-sys"
+ description = "Low-level machine profile for `ay sys`: SMBIOS, CPUID, PCI, GPUs, storage, virtualization, toolchains"
+ version.workspace = true
+ edition.workspace = true
+ license.workspace = true
+-publish = false
+ 
+ [dependencies]
+ serde = { workspace = true }
+diff --git a/crates/unix-cachyos/Cargo.toml b/crates/unix-cachyos/Cargo.toml
+index d625c82..471c54f 100644
+--- a/crates/unix-cachyos/Cargo.toml
++++ b/crates/unix-cachyos/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++repository.workspace = true
+ name = "unix-cachyos"
+ version.workspace = true
+ edition.workspace = true
+diff --git a/crates/unix-distro/Cargo.toml b/crates/unix-distro/Cargo.toml
+index d35a73e..528f076 100644
+--- a/crates/unix-distro/Cargo.toml
++++ b/crates/unix-distro/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++repository.workspace = true
+ name = "unix-distro"
+ version.workspace = true
+ edition.workspace = true
+@@ -6,9 +7,9 @@ license.workspace = true
+ description = "Sovereign Unix Distribution & Omarchy/CachyOS/Arch WSL2 management CLI"
+ 
+ [dependencies]
+-unix-uutils = { path = "../unix-uutils" }
+-unix-cachyos = { path = "../unix-cachyos" }
+-aphrody-omarchy = { path = "../unix-omarchy" }
++unix-uutils = { version = "0.2.0", path = "../unix-uutils" }
++unix-cachyos = { version = "0.2.0", path = "../unix-cachyos" }
++aphrody-omarchy = { version = "0.2.0", path = "../unix-omarchy" }
+ serde.workspace = true
+ serde_json.workspace = true
+ clap.workspace = true
+diff --git a/crates/unix-omarchy/Cargo.toml b/crates/unix-omarchy/Cargo.toml
+index 5a13227..f83c203 100644
+--- a/crates/unix-omarchy/Cargo.toml
++++ b/crates/unix-omarchy/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++repository.workspace = true
+ name = "aphrody-omarchy"
+ version.workspace = true
+ edition.workspace = true
+@@ -6,7 +7,7 @@ license.workspace = true
+ description = "Sovereign Omarchy + CachyOS + Arch Linux GitLab fusion engine: Aether theme compiler, plugin marketplace scanner, PKGBUILD synthesizer, and native WSL2 distro builder"
+ 
+ [dependencies]
+-unix-cachyos = { path = "../unix-cachyos" }
++unix-cachyos = { version = "0.2.0", path = "../unix-cachyos" }
+ serde.workspace = true
+ serde_json.workspace = true
+ thiserror.workspace = true
+diff --git a/crates/unix-uutils/Cargo.toml b/crates/unix-uutils/Cargo.toml
+index d8a2e0e..3433767 100644
+--- a/crates/unix-uutils/Cargo.toml
++++ b/crates/unix-uutils/Cargo.toml
+@@ -1,4 +1,5 @@
+ [package]
++repository.workspace = true
+ name = "unix-uutils"
+ version.workspace = true
+ edition.workspace = true
+diff --git a/crates/up/Cargo.toml b/crates/up/Cargo.toml
+index b180b01..2a2f0af 100644
+--- a/crates/up/Cargo.toml
++++ b/crates/up/Cargo.toml
+@@ -1,11 +1,11 @@
+ [package]
++repository.workspace = true
+ name = "aphrody-up"
+ description = "Toolchain installer and updater behind `ay up`: tools.toml manifest, GitHub release and URL sources, sha256 checks, provider setup"
+ version.workspace = true
+ edition.workspace = true
+ license.workspace = true
+ authors.workspace = true
+-publish = false
+ 
+ [lib]
+ name = "up"
+diff --git a/crates/wslg-cli/Cargo.toml b/crates/wslg-cli/Cargo.toml
+index 7a71fce..c0f48e0 100644
+--- a/crates/wslg-cli/Cargo.toml
++++ b/crates/wslg-cli/Cargo.toml
+@@ -1,4 +1,6 @@
+ [package]
++repository.workspace = true
++description = "wslg-cli: part of the Aphrody monorepo"
+ name = "wslg-cli"
+ version.workspace = true
+ edition.workspace = true
+@@ -14,10 +16,10 @@ name = "wslg-cosmic-hypr"
+ path = "src/bin/wslg_cosmic_hypr.rs"
+ 
+ [dependencies]
+-dx12-winui-core = { path = "../dx12-winui-core" }
+-smithay-wayland-wire = { path = "../smithay-wayland-wire" }
+-hypr-tiler = { path = "../hypr-tiler" }
+-cosmic-compat = { path = "../cosmic-compat" }
++dx12-winui-core = { version = "0.2.0", path = "../dx12-winui-core" }
++smithay-wayland-wire = { version = "0.2.0", path = "../smithay-wayland-wire" }
++hypr-tiler = { version = "0.2.0", path = "../hypr-tiler" }
++cosmic-compat = { version = "0.2.0", path = "../cosmic-compat" }
+ clap.workspace = true
+ serde.workspace = true
+ serde_json.workspace = true
+diff --git a/crates/xtask/Cargo.toml b/crates/xtask/Cargo.toml
+index adc729d..90f456b 100644
+--- a/crates/xtask/Cargo.toml
++++ b/crates/xtask/Cargo.toml
+@@ -1,10 +1,11 @@
+ [package]
++repository.workspace = true
++license.workspace = true
+ name = "xtk"
+ version = "0.1.0"
+ edition = "2024"
+ authors = ["aphrody-dev <contact@aphrody.com>"]
+ description = "Monorepo maintenance library behind `ay doctor`, `ay lock`, `ay manifests` and `ay git slim --all`"
+-publish = false
+ 
+ [lib]
+ name = "xtk"
+diff --git a/packages/agy/package.json b/packages/agy/package.json
+index 6c13532..ba7f975 100644
+--- a/packages/agy/package.json
++++ b/packages/agy/package.json
+@@ -24,5 +24,11 @@
+     "fmt": "bun fmt"
+   },
+   "dependencies": {},
+-  "devDependencies": {}
++  "devDependencies": {},
++  "license": "MIT OR Apache-2.0",
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/aphrody-dev/src.git",
++    "directory": "packages/agy"
++  }
+ }
+diff --git a/packages/ai-os/package.json b/packages/ai-os/package.json
+index 2c4ea71..1a3d670 100644
+--- a/packages/ai-os/package.json
++++ b/packages/ai-os/package.json
+@@ -33,5 +33,11 @@
+     "fmt": "bun fmt"
+   },
+   "dependencies": {},
+-  "devDependencies": {}
++  "devDependencies": {},
++  "license": "MIT OR Apache-2.0",
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/aphrody-dev/src.git",
++    "directory": "packages/ai-os"
++  }
+ }
+diff --git a/packages/ai-triad/package.json b/packages/ai-triad/package.json
+index fa21613..1345e8d 100644
+--- a/packages/ai-triad/package.json
++++ b/packages/ai-triad/package.json
+@@ -21,5 +21,11 @@
+     "test": "bun test"
+   },
+   "dependencies": {},
+-  "devDependencies": {}
++  "devDependencies": {},
++  "license": "MIT OR Apache-2.0",
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/aphrody-dev/src.git",
++    "directory": "packages/ai-triad"
++  }
+ }
+diff --git a/packages/brain/package.json b/packages/brain/package.json
+index 57ac379..50b7b02 100644
+--- a/packages/brain/package.json
++++ b/packages/brain/package.json
+@@ -13,5 +13,11 @@
+     "fmt": "bun fmt"
+   },
+   "dependencies": {},
+-  "devDependencies": {}
++  "devDependencies": {},
++  "license": "MIT OR Apache-2.0",
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/aphrody-dev/src.git",
++    "directory": "packages/brain"
++  }
+ }
+diff --git a/packages/bun-parity/package.json b/packages/bun-parity/package.json
+index d3c56fe..261346c 100644
+--- a/packages/bun-parity/package.json
++++ b/packages/bun-parity/package.json
+@@ -29,5 +29,10 @@
+   "author": "Antigravity Engineering",
+   "license": "MIT",
+   "dependencies": {},
+-  "devDependencies": {}
++  "devDependencies": {},
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/aphrody-dev/src.git",
++    "directory": "packages/bun-parity"
++  }
+ }
+diff --git a/packages/bun-plugins/package.json b/packages/bun-plugins/package.json
+index c60424c..40fe1c9 100644
+--- a/packages/bun-plugins/package.json
++++ b/packages/bun-plugins/package.json
+@@ -10,5 +10,11 @@
+     "fmt": "bun fmt"
+   },
+   "dependencies": {},
+-  "devDependencies": {}
++  "devDependencies": {},
++  "license": "MIT OR Apache-2.0",
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/aphrody-dev/src.git",
++    "directory": "packages/bun-plugins"
++  }
+ }
+diff --git a/packages/chromium-bun/package.json b/packages/chromium-bun/package.json
+index ea1a4f4..b9f084a 100644
+--- a/packages/chromium-bun/package.json
++++ b/packages/chromium-bun/package.json
+@@ -16,5 +16,11 @@
+     "fmt": "bun fmt"
+   },
+   "dependencies": {},
+-  "devDependencies": {}
++  "devDependencies": {},
++  "license": "MIT OR Apache-2.0",
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/aphrody-dev/src.git",
++    "directory": "packages/chromium-bun"
++  }
+ }
+diff --git a/packages/env-kit/package.json b/packages/env-kit/package.json
+index 14ddf01..d7fe7eb 100644
+--- a/packages/env-kit/package.json
++++ b/packages/env-kit/package.json
+@@ -17,5 +17,11 @@
+     "accounts": "bun run src/cli.ts accounts status"
+   },
+   "dependencies": {},
+-  "devDependencies": {}
++  "devDependencies": {},
++  "license": "MIT OR Apache-2.0",
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/aphrody-dev/src.git",
++    "directory": "packages/env-kit"
++  }
+ }
+diff --git a/packages/epic-games/package.json b/packages/epic-games/package.json
+index b21965d..9a7903e 100644
+--- a/packages/epic-games/package.json
++++ b/packages/epic-games/package.json
+@@ -12,5 +12,12 @@
+     "inspect": "bun run src/cli.ts inspect"
+   },
+   "dependencies": {},
+-  "devDependencies": {}
++  "devDependencies": {},
++  "license": "MIT OR Apache-2.0",
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/aphrody-dev/src.git",
++    "directory": "packages/epic-games"
++  },
++  "private": true
+ }
+diff --git a/packages/forge/package.json b/packages/forge/package.json
+index b18ea30..eeae7a9 100644
+--- a/packages/forge/package.json
++++ b/packages/forge/package.json
+@@ -15,5 +15,11 @@
+     "test": "bun test"
+   },
+   "dependencies": {},
+-  "devDependencies": {}
++  "devDependencies": {},
++  "license": "MIT OR Apache-2.0",
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/aphrody-dev/src.git",
++    "directory": "packages/forge"
++  }
+ }
+diff --git a/packages/google-design/package.json b/packages/google-design/package.json
+index 3a69a9a..4863699 100644
+--- a/packages/google-design/package.json
++++ b/packages/google-design/package.json
+@@ -29,5 +29,11 @@
+     "assets": "bun run cli.ts assets --out dist/assets"
+   },
+   "dependencies": {},
+-  "devDependencies": {}
++  "devDependencies": {},
++  "license": "MIT OR Apache-2.0",
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/aphrody-dev/src.git",
++    "directory": "packages/google-design"
++  }
+ }
+diff --git a/packages/knowledge-engine/package.json b/packages/knowledge-engine/package.json
+index f81dc79..ab6dfac 100644
+--- a/packages/knowledge-engine/package.json
++++ b/packages/knowledge-engine/package.json
+@@ -23,5 +23,11 @@
+     "test": "bun test"
+   },
+   "dependencies": {},
+-  "devDependencies": {}
++  "devDependencies": {},
++  "license": "MIT OR Apache-2.0",
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/aphrody-dev/src.git",
++    "directory": "packages/knowledge-engine"
++  }
+ }
+diff --git a/packages/machine/package.json b/packages/machine/package.json
+index 2243523..44f1bbd 100644
+--- a/packages/machine/package.json
++++ b/packages/machine/package.json
+@@ -8,5 +8,11 @@
+     "check": "bun src/apply-user.ts --check",
+     "apply": "bun src/apply-user.ts",
+     "flatten": "bun src/flatten-third-party.ts"
++  },
++  "license": "MIT OR Apache-2.0",
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/aphrody-dev/src.git",
++    "directory": "packages/machine"
+   }
+ }
+diff --git a/packages/pi-opencode/package.json b/packages/pi-opencode/package.json
+index d7c2734..afa011d 100644
+--- a/packages/pi-opencode/package.json
++++ b/packages/pi-opencode/package.json
+@@ -22,5 +22,11 @@
+   },
+   "dependencies": {},
+   "devDependencies": {},
+-  "packageManager": "bun@1.4.4"
++  "packageManager": "bun@1.4.4",
++  "license": "MIT OR Apache-2.0",
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/aphrody-dev/src.git",
++    "directory": "packages/pi-opencode"
++  }
+ }
+diff --git a/packages/shell-matrix/package.json b/packages/shell-matrix/package.json
+index a8cadda..0df1a34 100644
+--- a/packages/shell-matrix/package.json
++++ b/packages/shell-matrix/package.json
+@@ -6,5 +6,11 @@
+   "private": true,
+   "bin": {
+     "shell-matrix": "./src/cli.ts"
++  },
++  "license": "MIT OR Apache-2.0",
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/aphrody-dev/src.git",
++    "directory": "packages/shell-matrix"
+   }
+ }
+diff --git a/packages/wck/package.json b/packages/wck/package.json
+index d78069a..7de89bd 100644
+--- a/packages/wck/package.json
++++ b/packages/wck/package.json
+@@ -13,5 +13,11 @@
+     "fmt": "bun fmt"
+   },
+   "dependencies": {},
+-  "devDependencies": {}
++  "devDependencies": {},
++  "license": "MIT OR Apache-2.0",
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/aphrody-dev/src.git",
++    "directory": "packages/wck"
++  }
+ }
