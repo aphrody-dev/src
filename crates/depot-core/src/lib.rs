@@ -1,8 +1,10 @@
+pub mod build_tools;
 pub mod artifacts;
 pub mod depot_tools;
 pub mod ecosystems;
 pub mod fork;
 pub mod git_slim;
+pub mod gitx;
 pub mod gix_engine;
 pub mod ignore;
 pub mod just_engine;

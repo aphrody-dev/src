@@ -1,0 +1,16 @@
+[package]
+name = "depot-gclient"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository = "https://github.com/aphrody-dev/depot"
+description = "gclient in Rust: DEPS/.gclient evaluator, revinfo, getdep/setdep, sync planner on gix (`ay gclient`, `ay fetch`)"
+publish = false
+
+[dependencies]
+ruff_python_parser = { package = "rustpython-ruff_python_parser", version = "0.16.10" }
+ruff_python_ast = { package = "rustpython-ruff_python_ast", version = "0.16.10" }
+ruff_text_size = { package = "rustpython-ruff_text_size", version = "0.16.10" }
+gix = { workspace = true, features = ["blocking-network-client", "blocking-http-transport-reqwest-rust-tls"] }
+clap.workspace = true
+depot-core.workspace = true

@@ -667,12 +667,20 @@ pub fn run(cmd: &str, args: &[String]) -> i32 {
 
     let mut raw_args: Vec<String> = std::iter::once(cmd.to_string()).chain(args.iter().cloned()).collect();
 
+    // `ay git rev-parse|branch|remote|rev-list|status|log|config` on gitoxide, no git binary.
+    if cmd == "ay git"
+        && let Some(code) = depot_core::gitx::run(args)
+    {
+        return code;
+    }
+
     // Check pass-through for depot_tools
     if raw_args.len() > 1 {
         let first = &raw_args[1];
         if matches!(
             first.as_str(),
-            "gclient" | "repo" | "cipd" | "fetch" | "autoninja" | "siso" | "gn" | "ninja"
+            // gclient, fetch, cipd, gn and ninja are top-level `ay` commands now.
+            "repo" | "autoninja" | "siso"
         ) {
             let passthrough_args = &raw_args[2..];
             match depot_core::DepotTools::run_passthrough(first, passthrough_args) {

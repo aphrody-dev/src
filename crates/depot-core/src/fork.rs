@@ -2,6 +2,8 @@ use std::path::Path;
 use std::process::Command;
 use serde::{Deserialize, Serialize};
 
+use crate::gitx;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ForkStatus {
     pub current_branch: String,
@@ -22,59 +24,18 @@ pub enum SyncStrategy {
 pub struct ForkManager;
 
 impl ForkManager {
+    /// Branch, remotes and ahead/behind counts, read with gitoxide.
     pub fn get_status(repo_path: &Path) -> Result<ForkStatus, String> {
-        // Current branch
-        let branch_out = Command::new("git")
-            .current_dir(repo_path)
-            .args(["rev-parse", "--abbrev-ref", "HEAD"])
-            .output()
-            .map_err(|e| format!("Failed to get branch: {}", e))?;
-        let current_branch = String::from_utf8_lossy(&branch_out.stdout).trim().to_string();
+        let current_branch = gitx::current_branch(repo_path)?.unwrap_or_else(|| "HEAD".into());
+        let remotes = gitx::remotes(repo_path)?;
+        let url_of = |n: &str| remotes.iter().find(|(name, _)| name == n).map(|(_, u)| u.clone());
+        let (origin_url, upstream_url) = (url_of("origin"), url_of("upstream"));
 
-        // Remotes
-        let remotes_out = Command::new("git")
-            .current_dir(repo_path)
-            .args(["remote", "-v"])
-            .output()
-            .map_err(|e| format!("Failed to get remotes: {}", e))?;
-        let remotes_text = String::from_utf8_lossy(&remotes_out.stdout);
-
-        let mut origin_url = None;
-        let mut upstream_url = None;
-
-        for line in remotes_text.lines() {
-            let parts: Vec<&str> = line.split_whitespace().collect();
-            if parts.len() >= 2 {
-                if parts[0] == "origin" && origin_url.is_none() {
-                    origin_url = Some(parts[1].to_string());
-                } else if parts[0] == "upstream" && upstream_url.is_none() {
-                    upstream_url = Some(parts[1].to_string());
-                }
-            }
-        }
-
-        // Ahead / Behind counts against upstream if configured, else origin
+        // Ahead / behind against upstream if configured, else origin.
         let target_remote = if upstream_url.is_some() { "upstream" } else { "origin" };
-        let rev_spec = format!("{}/{}...HEAD", target_remote, current_branch);
-
-        let rev_list = Command::new("git")
-            .current_dir(repo_path)
-            .args(["rev-list", "--left-right", "--count", &rev_spec])
-            .output();
-
-        let mut ahead_count = 0;
-        let mut behind_count = 0;
-
-        if let Ok(out) = rev_list {
-            if out.status.success() {
-                let counts = String::from_utf8_lossy(&out.stdout);
-                let parts: Vec<&str> = counts.split_whitespace().collect();
-                if parts.len() >= 2 {
-                    behind_count = parts[0].parse().unwrap_or(0);
-                    ahead_count = parts[1].parse().unwrap_or(0);
-                }
-            }
-        }
+        let (behind, ahead) =
+            gitx::left_right_count(repo_path, &format!("{target_remote}/{current_branch}"), "HEAD").unwrap_or((0, 0));
+        let (ahead_count, behind_count) = (ahead as u32, behind as u32);
 
         Ok(ForkStatus {
             current_branch,
@@ -87,13 +48,7 @@ impl ForkManager {
     }
 
     pub fn set_upstream(repo_path: &Path, url: &str) -> Result<(), String> {
-        // Check if upstream remote exists
-        let check = Command::new("git")
-            .current_dir(repo_path)
-            .args(["remote", "get-url", "upstream"])
-            .status();
-
-        let exists = check.map(|s| s.success()).unwrap_or(false);
+        let exists = gitx::remote_url(repo_path, "upstream")?.is_some();
 
         let status = if exists {
             Command::new("git")
@@ -120,14 +75,7 @@ impl ForkManager {
     ) -> Result<String, String> {
         let branch_name = match branch {
             Some(b) => b.to_string(),
-            None => {
-                let out = Command::new("git")
-                    .current_dir(repo_path)
-                    .args(["rev-parse", "--abbrev-ref", "HEAD"])
-                    .output()
-                    .map_err(|e| format!("Branch query failed: {}", e))?;
-                String::from_utf8_lossy(&out.stdout).trim().to_string()
-            }
+            None => gitx::current_branch(repo_path)?.unwrap_or_else(|| "HEAD".into()),
         };
 
         // Fetch upstream

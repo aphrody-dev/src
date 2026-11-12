@@ -1,6 +1,10 @@
-use std::path::PathBuf;
-use std::process::Command;
+//! Locate depot_tools and run its upstream entry points (the ones that stay upstream: `cipd`,
+//! `gn`, `siso`, `autoninja`, `fetch`, `gclient`, `repo`) by full path, so they work without
+//! depot_tools on `PATH`.
+
 use serde::{Deserialize, Serialize};
+use std::path::{Path, PathBuf};
+use std::process::Command;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DepotToolsInfo {
@@ -16,92 +20,80 @@ pub struct DepotToolsInfo {
 
 pub struct DepotTools;
 
+/// Candidate roots, most specific first: `$DEPOT_TOOLS_PATH`, `<$SRC_ROOT or the nearest
+/// ancestor with src.lock.json>/third_party/depot_tools`, a `PATH` entry holding gclient.py,
+/// `C:\depot_tools`.
+fn candidates() -> Vec<PathBuf> {
+    let mut out = Vec::new();
+    if let Some(p) = std::env::var_os("DEPOT_TOOLS_PATH") {
+        out.push(PathBuf::from(p));
+    }
+    let src_root = std::env::var_os("SRC_ROOT").filter(|v| !v.is_empty()).map(PathBuf::from).or_else(|| {
+        let cwd = std::env::current_dir().ok()?;
+        cwd.ancestors().find(|d| d.join("src.lock.json").is_file()).map(Path::to_path_buf)
+    });
+    if let Some(r) = src_root {
+        out.push(r.join("third_party").join("depot_tools"));
+    }
+    out.push(Path::new(env!("CARGO_MANIFEST_DIR")).join("../../third_party/depot_tools"));
+    if let Some(path) = std::env::var_os("PATH") {
+        out.extend(std::env::split_paths(&path));
+    }
+    if cfg!(windows) {
+        out.push(PathBuf::from(r"C:\depot_tools"));
+    }
+    out
+}
+
 impl DepotTools {
+    /// The depot_tools checkout to use, if any.
+    pub fn root() -> Option<PathBuf> {
+        candidates().into_iter().find(|p| p.join("gclient.py").is_file())
+    }
+
     pub fn detect() -> DepotToolsInfo {
-        let standard_paths = [
-            PathBuf::from(r"C:\src\third_party\depot_tools"),
-            PathBuf::from(r"C:\src\third_party\depot_tools"),
-            PathBuf::from(r"C:\depot_tools"),
-        ];
-
-        let mut root_path = None;
-        for path in &standard_paths {
-            if path.exists() && path.join("gclient.py").exists() {
-                root_path = Some(path.clone());
-                break;
-            }
-        }
-
-        // Check components
-        let gclient_found = root_path
-            .as_ref()
-            .map(|r| r.join("gclient.bat").exists() || r.join("gclient").exists())
-            .unwrap_or(false);
-
-        let repo_found = root_path
-            .as_ref()
-            .map(|r| r.join("repo").exists() || r.join("repo_launcher").exists())
-            .unwrap_or(false);
-
-        let cipd_found = root_path
-            .as_ref()
-            .map(|r| r.join("cipd.bat").exists() || r.join("cipd").exists())
-            .unwrap_or(false);
-
-        let autoninja_found = root_path
-            .as_ref()
-            .map(|r| r.join("autoninja.bat").exists() || r.join("autoninja").exists())
-            .unwrap_or(false);
-
-        let siso_found = root_path
-            .as_ref()
-            .map(|r| r.join("siso.bat").exists() || r.join("siso.py").exists())
-            .unwrap_or(false);
-
-        let fetch_found = root_path
-            .as_ref()
-            .map(|r| r.join("fetch.bat").exists() || r.join("fetch.py").exists())
-            .unwrap_or(false);
-
-        // Git cache dir check (standard local appdata path)
-        let cache_candidate = dirs_next_or_env();
-        let git_cache_dir = cache_candidate.filter(|p| p.exists());
-
+        let root_path = Self::root();
+        let has = |names: &[&str]| root_path.as_ref().is_some_and(|r| names.iter().any(|n| r.join(n).exists()));
         DepotToolsInfo {
+            gclient_found: has(&["gclient.bat", "gclient"]),
+            repo_found: has(&["repo", "repo_launcher"]),
+            cipd_found: has(&["cipd.bat", "cipd"]),
+            autoninja_found: has(&["autoninja.bat", "autoninja"]),
+            siso_found: has(&["siso.bat", "siso.py"]),
+            fetch_found: has(&["fetch.bat", "fetch.py"]),
+            git_cache_dir: git_cache_dir().filter(|p| p.exists()),
             root_path,
-            gclient_found,
-            repo_found,
-            cipd_found,
-            autoninja_found,
-            siso_found,
-            fetch_found,
-            git_cache_dir,
         }
     }
 
+    /// The wrapper script for `tool` inside depot_tools (`<tool>.bat` on Windows).
+    pub fn wrapper(tool: &str) -> Option<PathBuf> {
+        let root = Self::root()?;
+        let names: &[String] = if cfg!(windows) { &[format!("{tool}.bat"), tool.to_string()] } else { &[tool.to_string()] };
+        names.iter().map(|n| root.join(n)).find(|p| p.is_file())
+    }
+
+    /// Run a depot_tools entry point by full path with inherited stdio; returns its exit code.
     pub fn run_passthrough(tool: &str, args: &[String]) -> Result<i32, String> {
-        let mut cmd = if cfg!(windows) {
+        let wrapper = Self::wrapper(tool).ok_or_else(|| format!("{tool}: depot_tools not found (set DEPOT_TOOLS_PATH)"))?;
+        let mut cmd = if cfg!(windows) && wrapper.extension().is_some_and(|e| e.eq_ignore_ascii_case("bat")) {
             let mut c = Command::new("cmd");
-            c.arg("/C").arg(tool);
+            c.arg("/C").arg(&wrapper);
             c
         } else {
-            Command::new(tool)
+            Command::new(&wrapper)
         };
-
-        cmd.args(args);
-
-        let status = cmd
-            .status()
-            .map_err(|e| format!("Failed to execute {}: {}", tool, e))?;
-
+        // depot_tools wrappers must not update themselves under us.
+        cmd.args(args).env("DEPOT_TOOLS_UPDATE", "0");
+        let status = cmd.status().map_err(|e| format!("Failed to execute {}: {e}", wrapper.display()))?;
         Ok(status.code().unwrap_or(1))
     }
 }
 
-fn dirs_next_or_env() -> Option<PathBuf> {
-    if let Ok(appdata) = std::env::var("LOCALAPPDATA") {
-        let cache = PathBuf::from(appdata).join("depot_tools").join("git_cache");
-        return Some(cache);
+/// `$GIT_CACHE_PATH`, else depot_tools' default `%LOCALAPPDATA%\depot_tools\git_cache`.
+pub fn git_cache_dir() -> Option<PathBuf> {
+    if let Some(p) = std::env::var_os("GIT_CACHE_PATH") {
+        return Some(PathBuf::from(p));
     }
-    None
+    std::env::var_os("LOCALAPPDATA").map(|a| PathBuf::from(a).join("depot_tools").join("git_cache"))
 }
