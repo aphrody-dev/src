@@ -356,7 +356,9 @@ func SovereignTargets(monorepoRoot string) []SovereignTarget {
 		},
 		{
 			Alias:       "rust-stack",
-			Path:        filepath.Join(monorepoRoot, "crates", "depot"),
+			// crates/depot was flattened into crates/depot-* (5d7e803); its depot, xtask
+			// and archguard entry points now ship as subcommands of the `ay` binary.
+			Path:        filepath.Join(monorepoRoot, "crates", "ay"),
 			Description: "Sovereign Rust monorepo build/graph/artifact engine (depot + forge + xtask)",
 			Preset: func(s *ProjectSpec) {
 				s.Name = "rust-stack"
