@@ -34,16 +34,17 @@ Mesh: WireGuard + MASQUE overlay `10.200.77.0/24`, config generated in `infra/me
 As of 2026-11-12, aphrody.com, aphrody.app and their subdomains are still served from fr1. The
 per-domain cutover table is in `docs/AY_MIGRATION.md`.
 
-| Service                             | Runtime       | Domains                                   | Port (blue/green)  | R2 bucket         |
-| ----------------------------------- | ------------- | ----------------------------------------- | ------------------ | ----------------- |
-| aphrody                             | Bun fullstack | aphrody.com, www                          | 3000 (13000/23000) | aphrody-assets    |
-| shenron (community, maintained)     | Bun fullstack | dragonballfr.com, www, tv                 | 3100               | shenron-cdn       |
-| rosegriffon (community, maintained) | Bun fullstack | rosegriffon.fr, www                       | 3320               | rosegriffon-media |
-| ai-os                               | Bun fullstack | ai.aphrody.com                            | 4000               | -                 |
-| rust-stack / depot daemon           | Rust          | depot.internal.aphrody.com                | 4100               | -                 |
-| ai-triad                            | Bun fullstack | triad.aphrody.com, gemini-egress.internal | 4200               | -                 |
-| ring3-agent                         | Rust          | r3d.internal.aphrody.com                  | 8080               | -                 |
-| yolo                                | Bun fullstack | yolo.aphrody.com, yolo.aphrody.app        | 3092               | -                 |
+| Service                             | Runtime        | Domains                                   | Port (blue/green)  | R2 bucket          |
+| ----------------------------------- | -------------- | ----------------------------------------- | ------------------ | ------------------ |
+| aphrody                             | Bun fullstack  | aphrody.com, www                          | 3000 (13000/23000) | aphrody-assets     |
+| shenron (community, maintained)     | Bun fullstack  | dragonballfr.com, www, tv                 | 3100               | shenron-cdn        |
+| rosegriffon (community, maintained) | Bun fullstack  | rosegriffon.fr, www                       | 3320               | rosegriffon-media  |
+| ai-os                               | Bun fullstack  | ai.aphrody.com                            | 4000               | -                  |
+| rust-stack / depot daemon           | Rust           | depot.internal.aphrody.com                | 4100               | -                  |
+| ai-triad                            | Bun fullstack  | triad.aphrody.com, gemini-egress.internal | 4200               | -                  |
+| ring3-agent                         | Rust           | r3d.internal.aphrody.com                  | 8080               | -                  |
+| yolo                                | Bun fullstack  | yolo.aphrody.com, yolo.aphrody.app        | 3092               | -                  |
+| auto (on usa since 2026-11-12)      | Bun + Rust FFI | auto.aphrody.com (tunnel `auto-usa`)      | none (auto-prod)   | - (RustFS auto-s3) |
 
 Reverse proxy: Caddy, generated `infra/generated/Caddyfile`; systemd units in
 `infra/generated/systemd/`. Deploy engine: `ay deploy` (Go `src-deploy`, `infra/cmd/src-deploy`).
