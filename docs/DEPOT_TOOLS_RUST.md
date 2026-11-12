@@ -224,8 +224,7 @@ depot_tools' bundled 3.11 interpreter, for the upstream comparison tests.
 1. `ay cl status|upload`: Gerrit REST (`/changes/?q=owner:self+status:open`, credentials from
    `.gitcookies` or the keyring, never printed) and `jj gerrit upload` for pushing to
    `refs/for/main` with a `Change-Id` footer.
-2. `ay gclient runhooks`: hooks are listed with their condition; running them needs `vpython3` ->
-   `ay vpy` mapping and the hook cwd semantics.
+2. Done: `ay gclient runhooks [--hook name] [-n]` runs enabled hooks in gclient order with the upstream header and exit code 2 on failure; `vpython3` goes to `ay vpy` (`--upstream-vpython` to keep vpython3), `python3` to `uv run --no-project python`. Checked on chromium: 17 hooks, `landmines`, `lastchange`, `vpython3_common` run clean.
 3. Done: GCS downloads (`depot_gclient::gcs`) and `ay gclient sync --populate-cache` (pins fetched into the shared bare mirror with the `git_cache.Mirror` layout, kept by `refs/ay/pins/<id>`; checkouts borrow objects through alternates, jsoncpp: 80 KB `.git`). Existing mirrors can carry stale commit-graphs (jsoncpp did); delete and repopulate such a mirror.
 4. `ay gclient flatten`, `--snapshot`/`--actual` revinfo.
 5. Workspace gix 0.61 -> 0.90, then the remaining rows of the Git for Windows table.

@@ -93,6 +93,20 @@ enum Cmd {
         #[command(flatten)]
         tree: TreeArgs,
     },
+    /// Run the DEPS hooks whose condition holds, in gclient order (`gclient runhooks`)
+    Runhooks {
+        #[command(flatten)]
+        tree: TreeArgs,
+        /// Only hooks with these names (repeatable)
+        #[arg(long = "hook")]
+        names: Vec<String>,
+        /// Print the commands without running them
+        #[arg(short = 'n', long)]
+        dry_run: bool,
+        /// Run `vpython3` hooks with upstream vpython3 instead of `ay vpy`
+        #[arg(long)]
+        upstream_vpython: bool,
+    },
     /// Print the gclient root directory
     Root,
 }
@@ -354,6 +368,78 @@ fn gclient(cmd: Cmd) -> Result<i32> {
                     if cwd.is_empty() { "." } else { &cwd },
                     h.action.join(" ")
                 );
+            }
+            Ok(0)
+        }
+        Cmd::Runhooks {
+            tree,
+            names,
+            dry_run,
+            upstream_vpython,
+        } => {
+            let c = load(&tree, Vec::new())?;
+            let ay = std::env::current_exe()
+                .ok()
+                .filter(|p| p.file_stem().is_some_and(|s| s == "ay"));
+            for h in c.hooks() {
+                if !c.hook_enabled(h)?
+                    || (!names.is_empty() && !h.name.as_ref().is_some_and(|n| names.contains(n)))
+                {
+                    continue;
+                }
+                let Some((first, rest)) = h.action.split_first() else {
+                    continue;
+                };
+                let mut program = first.clone();
+                let mut args: Vec<String> = rest.to_vec();
+                if program == "vpython3" {
+                    match (&ay, upstream_vpython) {
+                        (Some(ay), false) => {
+                            program = ay.to_string_lossy().into_owned();
+                            args.insert(0, "vpy".into());
+                        }
+                        _ if cfg!(windows) => program.push_str(".bat"),
+                        _ => {}
+                    }
+                }
+                if program == "python3" || program == "python" {
+                    // depot_tools runs its bundled Python; uv provides it here.
+                    program = "uv".into();
+                    for (i, a) in ["run", "--no-project", "-q", "python"].iter().enumerate() {
+                        args.insert(i, (*a).into());
+                    }
+                }
+                // gclient_utils.CheckCallAndFilter header.
+                println!(
+                    "
+________ running '{}' in '{}'",
+                    h.action.join(" "),
+                    h.cwd.display()
+                );
+                if dry_run {
+                    continue;
+                }
+                let status = std::process::Command::new(&program)
+                    .args(&args)
+                    .current_dir(&h.cwd)
+                    .status();
+                match status {
+                    Ok(s) if s.success() => {}
+                    Ok(s) => {
+                        eprintln!(
+                            "Error: Command '{}' returned non-zero exit status {} in {}",
+                            h.action.join(" "),
+                            s.code().unwrap_or(1),
+                            h.cwd.display()
+                        );
+                        // Upstream exits 2 for a failed hook.
+                        return Ok(2);
+                    }
+                    Err(e) => {
+                        eprintln!("Error: {program}: {e}");
+                        return Ok(2);
+                    }
+                }
             }
             Ok(0)
         }
