@@ -1,0 +1,32 @@
+app-description = Video, görüntü, ses ve yayın araç seti
+cmd-probe = Bir dosyanın veya URL'nin akışlarını açıkla
+arg-source = Dosya yolu veya URL (HTTP, HLS, RTSP…)
+arg-json = Metin yerine JSON yazdır
+arg-lang = Arayüz dili
+label-format = Biçim
+label-duration = Süre
+label-bitrate = Bit hızı
+streams-count = { $count ->
+   *[other] { $count } akış
+}
+kind-video = Video
+kind-audio = Ses
+kind-subtitle = Altyazı
+kind-data = Veri
+kind-other = Diğer
+label-resolution = Çözünürlük
+label-frame-rate = Kare hızı
+label-pixel-format = Piksel biçimi
+label-dynamic-range = Dinamik aralık
+range-hdr = HDR
+range-sdr = SDR
+label-sample-rate = Örnekleme hızı
+label-channels = Kanallar
+label-language = Dil
+def-sd = SD
+def-hd = HD
+def-fullhd = Full HD
+def-uhd4k = 4K UHD
+def-uhd8k = 8K UHD
+label-error = Hata
+value-unknown = bilinmiyor

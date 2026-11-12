@@ -1,0 +1,32 @@
+app-description = 動画・画像・音声・ストリーミングのツールキット
+cmd-probe = ファイルまたは URL のストリームを表示
+arg-source = ファイルパスまたは URL（HTTP、HLS、RTSP…）
+arg-json = テキストの代わりに JSON を出力
+arg-lang = 表示言語
+label-format = フォーマット
+label-duration = 長さ
+label-bitrate = ビットレート
+streams-count = { $count ->
+   *[other] { $count } 個のストリーム
+}
+kind-video = 映像
+kind-audio = 音声
+kind-subtitle = 字幕
+kind-data = データ
+kind-other = その他
+label-resolution = 解像度
+label-frame-rate = フレームレート
+label-pixel-format = ピクセル形式
+label-dynamic-range = ダイナミックレンジ
+range-hdr = HDR
+range-sdr = SDR
+label-sample-rate = サンプリングレート
+label-channels = チャンネル
+label-language = 言語
+def-sd = SD
+def-hd = HD
+def-fullhd = フル HD
+def-uhd4k = 4K UHD
+def-uhd8k = 8K UHD
+label-error = エラー
+value-unknown = 不明

@@ -1,0 +1,32 @@
+app-description = 视频、图像、音频与流媒体工具集
+cmd-probe = 描述文件或 URL 的媒体流
+arg-source = 文件路径或 URL（HTTP、HLS、RTSP…）
+arg-json = 输出 JSON 而非文本
+arg-lang = 界面语言
+label-format = 格式
+label-duration = 时长
+label-bitrate = 码率
+streams-count = { $count ->
+   *[other] { $count } 个流
+}
+kind-video = 视频
+kind-audio = 音频
+kind-subtitle = 字幕
+kind-data = 数据
+kind-other = 其他
+label-resolution = 分辨率
+label-frame-rate = 帧率
+label-pixel-format = 像素格式
+label-dynamic-range = 动态范围
+range-hdr = HDR
+range-sdr = SDR
+label-sample-rate = 采样率
+label-channels = 声道
+label-language = 语言
+def-sd = 标清
+def-hd = 高清
+def-fullhd = 全高清
+def-uhd4k = 4K 超高清
+def-uhd8k = 8K 超高清
+label-error = 错误
+value-unknown = 未知

@@ -1,0 +1,12 @@
+[package]
+name = "tv-i18n"
+description = "Localisation Fluent du domaine média tv : 16 langues, pluriels CLDR, sens d'écriture."
+version.workspace = true
+edition.workspace = true
+license = "LGPL-2.1-or-later"
+repository.workspace = true
+
+[dependencies]
+fluent-templates.workspace = true
+unic-langid.workspace = true
+sys-locale.workspace = true

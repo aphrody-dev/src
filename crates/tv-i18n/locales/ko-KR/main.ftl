@@ -1,0 +1,32 @@
+app-description = 동영상, 이미지, 오디오, 스트리밍 도구 모음
+cmd-probe = 파일 또는 URL의 스트림 정보 표시
+arg-source = 파일 경로 또는 URL(HTTP, HLS, RTSP…)
+arg-json = 텍스트 대신 JSON 출력
+arg-lang = 인터페이스 언어
+label-format = 형식
+label-duration = 길이
+label-bitrate = 비트레이트
+streams-count = { $count ->
+   *[other] 스트림 { $count }개
+}
+kind-video = 비디오
+kind-audio = 오디오
+kind-subtitle = 자막
+kind-data = 데이터
+kind-other = 기타
+label-resolution = 해상도
+label-frame-rate = 프레임 속도
+label-pixel-format = 픽셀 형식
+label-dynamic-range = 다이내믹 레인지
+range-hdr = HDR
+range-sdr = SDR
+label-sample-rate = 샘플레이트
+label-channels = 채널
+label-language = 언어
+def-sd = SD
+def-hd = HD
+def-fullhd = 풀 HD
+def-uhd4k = 4K UHD
+def-uhd8k = 8K UHD
+label-error = 오류
+value-unknown = 알 수 없음

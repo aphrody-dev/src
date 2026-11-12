@@ -1,0 +1,42 @@
+---
+title: Environnement de build
+date: 2026-11-12
+---
+
+# Environnement de build
+
+État vérifié sur la machine le 12/11/2026.
+
+| Outil | Version | Emplacement | Rôle |
+|---|---|---|---|
+| Rust stable | 1.99.1 (13/10/2026) | rustup | Compilateur |
+| Rust nightly | 1.102.0 (11/11/2026) | rustup, par défaut | Fonctions instables |
+| LLVM / clang | installé | `C:\Program Files\LLVM` | bindgen |
+| NASM | 3.02 | `C:\Program Files\NASM` | Assembleur pour rav1e, dav1d |
+| pkgconf | 3.0.10 | `C:\Program Files\pkgconf-3.0.10` | Localisation des bibliothèques C |
+| GStreamer + devel | 1.28.8 | `C:\Program Files\gstreamer\1.0\msvc_x86_64` | Framework média piloté par gstreamer-rs |
+| Vulkan SDK | 1.4.363.0 | `C:\VulkanSDK\1.4.363.0` | Vulkan, Vulkan Video |
+| CUDA | 13.4 | `CUDA_PATH` | NVENC, NVDEC via cudarc |
+| meson, ninja, cmake | installés | `~/.local/bin`, winget | Builds C tiers |
+| sccache | 0.19.0 | `~/.cargo/bin` | Cache de compilation (`RUSTC_WRAPPER=sccache`) |
+| cargo-nextest, cargo-deny | installés | `~/.cargo/bin` | Tests, audit des licences et vulnérabilités |
+| FFmpeg | 9.0.2 | winget (Gyan) | Exécutables seulement, sans fichiers de développement |
+
+## Variables utilisateur ajoutées
+
+- `PKG_CONFIG=C:\Program Files\pkgconf-3.0.10\pkgconf.exe`
+- `PKG_CONFIG_PATH=C:\Program Files\gstreamer\1.0\msvc_x86_64\lib\pkgconfig`
+- `Path` : ajout de `NASM`, `pkgconf-3.0.10` et `gstreamer\1.0\msvc_x86_64\bin`
+
+Vérification : `pkgconf --modversion gstreamer-1.0 gstreamer-video-1.0 gstreamer-webrtc-1.0 gstreamer-app-1.0` renvoie `1.28.8.1`.
+
+Les nouveaux terminaux voient ces variables ; la session en cours de Claude Code garde l'ancien environnement.
+
+## Sources clonées
+
+- FFmpeg : `C:\src\third_party\ffmpeg`, branche `n9.1-dev`, commit `46d13a8385` du 12/11/2026. Analyse : [ffmpeg-analyse.mdx](./ffmpeg-analyse.mdx).
+
+## Manques connus
+
+- SDK NVIDIA Video Codec (en-têtes NVENC/NVDEC) : téléchargement réservé au compte développeur NVIDIA, non installé.
+- Fichiers de développement FFmpeg : non installés (choix Rust, voir [remplacant-ffmpeg-rust.mdx](./remplacant-ffmpeg-rust.mdx)).

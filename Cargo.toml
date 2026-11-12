@@ -62,9 +62,17 @@ lore-server = { version = "0.13.1-nightly", path = "crates/lore-server" , packag
 lore-storage = { version = "0.13.1-nightly", path = "crates/lore-storage" , package = "aphrody-lore-storage" }
 lore-telemetry = { version = "0.13.1-nightly", path = "crates/lore-telemetry" , package = "aphrody-lore-telemetry" }
 lore-transport = { version = "0.13.1-nightly", path = "crates/lore-transport" , package = "aphrody-lore-transport" }
+# Media (merged from C:\Users\aphro\tv)
+tv-core = { version = "0.2.0", path = "crates/tv-core" }
+tv-ffmpeg = { version = "0.2.0", path = "crates/tv-ffmpeg" }
+tv-i18n = { version = "0.2.0", path = "crates/tv-i18n" }
 
 # crates.io. Keys shared by src and labs: labs exact pin (same or newer version), union of features.
 anyhow = "=1.0.104"
+ffmpeg-next = "=9.1.0"
+fluent-templates = "=0.15.1"
+sys-locale = "=0.3.2"
+unic-langid = "=0.9.6"
 base64 = "=0.23.1"
 bitflags = "=2.13.2"
 blake3 = { version = "=1.8.7", features = ["mmap", "rayon"] }

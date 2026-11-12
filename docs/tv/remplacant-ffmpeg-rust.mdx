@@ -1,0 +1,117 @@
+---
+title: "Remplaçant Rust à FFmpeg — état au 12/11/2026"
+date: 2026-11-12
+---
+
+Méthode : versions, dates et licences crate issues de l'API crates.io ; étoiles, dernier push et licence dépôt issus de l'API GitHub ; arborescence gst-plugins-rs issue de l'API GitLab ; CVE issues de l'API NVD. Tout interrogé le 12/11/2026. « nv » = non vérifié. « Pur » = Rust pur d'après la nature du crate, sans audit des dépendances (nv au sens strict).
+
+## Défauts de FFmpeg
+
+| Point | Constat | Source |
+|---|---|---|
+| CVE | NVD, mot-clé « ffmpeg » : 19 CVE publiées de janv. à avr. 2025, 13 de janv. à avr. 2026 (ex. CVE-2026-33024 CVSS 9.1, CVE-2026-33482 CVSS 8.1). Le mot-clé peut aussi remonter des produits tiers | NVD API |
+| Licence LGPL/GPL | nv (ffmpeg.org/legal.html non consulté) | — |
+| ABI/API instable | nv | — |
+| Bindings Rust | ffmpeg-next 9.1.0 (11/11/2026), licence WTFPL, lie libav* en C | crates.io |
+
+## Tableau par fonction
+
+| Fonction | Crate | Version (date) | Étoiles / dernier push | Licence | Pur ? | Maturité |
+|---|---|---|---|---|---|---|
+| MP4/fMP4/CMAF | mp4-atom | 0.17.1 (04/11/2026) | 30 / 07/11/2026 | MIT OR Apache-2.0 | Pur | jeune, actif |
+| MP4 lecture | re_mp4 | 0.5.1 (08/07/2026) | 14 / 12/10/2026 | MIT | Pur | lecture (nv) |
+| MP4 | mp4 | 0.14.0 (01/08/2023) | nv | MIT | Pur | inactif |
+| Matroska/WebM démux | matroska-demuxer | 0.8.1 (07/08/2026) | 24 / 07/08/2026 | Zlib/MIT/Apache | Pur | démux seul |
+| WebM lecture/écriture | webm-iterable | 0.7.1 (28/08/2026) | nv | MIT | Pur | moyen |
+| Matroska métadonnées | matroska | 0.30.1 (15/04/2026) | nv | MIT/Apache | Pur | métadonnées |
+| MPEG-TS | mpeg2ts-reader | 0.18.2 (29/01/2025) | 64 / 01/10/2026 | MIT/Apache | Pur | lecture seule |
+| MPEG-TS live | gst-plugins-rs net/mpegtslive | 1.28.9 | — | nv | Rust + GStreamer C | — |
+| Conteneurs audio + décodeurs | symphonia | 0.6.1 (13/08/2026) | 3481 / 08/11/2026 | MPL-2.0 | Pur | mature |
+| HLS playlists | m3u8-rs | 6.0.1 (30/07/2026) | 127 / 30/07/2026 | MIT | Pur | mature |
+| DASH MPD | dash-mpd | 0.21.0 (04/10/2026) | 113 / 09/11/2026 | MIT | Pur (dépendances externes éventuelles : nv) | actif |
+| FLV | gst-plugins-rs mux/flavors | 1.28.9 | — | nv | Rust + GStreamer | — |
+| AV1 déc. | rav1d | 1.1.0 (07/05/2025) | 652 / 27/10/2026 | BSD-2-Clause | Rust (asm conservé : nv) | production (nv) |
+| AV1 déc. | dav1d (binding) | 0.11.1 (25/11/2025) | nv | MIT | lie libdav1d C | production |
+| H.264 déc./enc. | openh264 | 0.9.10 (10/11/2026) | 133 / 10/11/2026 | BSD-2-Clause (crates.io) | lie OpenH264 C | profils limités (nv) |
+| H.264 enc. | less-avc | 0.1.5 (29/08/2023) | nv | MIT/Apache | Pur | niche, inactif |
+| HEVC, VP9 logiciel | — | aucun crate Rust pur trouvé | — | — | — | manque |
+| VVC déc. | gst-plugins-rs video/vvdec | 1.28.9 | — | nv | lie vvdec C++ | — |
+| Vulkan Video | vk-video (smelter) | 0.3.1 (27/04/2026) | 752 / 12/11/2026 | MIT (crate) | Rust sur Vulkan | codecs et encodage : nv |
+| Vulkan brut | ash | 0.38.0+1.3.281 (01/04/2024) | nv | MIT OR Apache-2.0 | binding API | stable |
+| NVENC/NVDEC | nvidia-video-codec-sdk | 0.4.0 (15/09/2025) | 34 / 31/03/2026 | MIT | FFI SDK NVIDIA | expérimental |
+| CUDA | cudarc | 0.19.10 (24/09/2026) | 1242 / 24/09/2026 | MIT OR Apache-2.0 | FFI CUDA | mature |
+| D3D12 Video / Media Foundation | windows | 0.62.2 (06/10/2025) | nv | MIT OR Apache-2.0 | projection API Windows | aucune surcouche vidéo trouvée |
+| AV1 enc. | rav1e | 0.8.1 (16/06/2025) | 4165 / 06/11/2026 | BSD-2-Clause | Rust (+asm) | mature |
+| SVT-AV1 | svt-av1-rs | 0.1.0 (15/05/2020) | nv | MIT | binding C | abandonné |
+| x264 / x265 | x264 0.5.0 (04/12/2022), x265 0.0.0 (07/01/2023) | — | nv | MIT | binding C | abandonnés |
+| Opus | opus | 0.4.0 (23/08/2026) | nv | MIT/Apache | lie libopus C | stable |
+| Opus | unsafe-libopus | 0.2.0 (21/11/2024) | 21 / 21/11/2024 | BSD-3-Clause | Rust transpilé (unsafe) | inactif |
+| Resampling | rubato | 5.0.1 (01/10/2026) | 370 / 07/11/2026 | MIT OR Apache-2.0 | Pur | mature |
+| Redimensionnement | fast_image_resize | 6.1.0 (21/07/2026) | 468 / 25/10/2026 | MIT OR Apache-2.0 | Pur SIMD | mature |
+| YUV vers RGB | dcv-color-primitives | 1.0.0 (30/01/2026) | nv | MIT-0 | Pur | stable |
+| YUV vers RGB | yuvutils-rs | 0.8.3 (17/04/2025) | 131 / 12/11/2026 | BSD-3 OR Apache-2.0 | Pur | actif |
+| GPU (DX12/Vulkan/WebGPU) | wgpu | 30.0.1 (22/08/2026) | 18524 / 11/11/2026 | MIT OR Apache-2.0 | Pur | mature |
+| RTSP client | retina | 0.4.22 (12/11/2026) | 382 / 12/11/2026 | MIT OR Apache-2.0 | Pur | actif |
+| SRT | srt-tokio | 0.4.4 (31/05/2024) | dépôt déplacé : nv | Apache-2.0 | Pur | inactif |
+| WebRTC | str0m | 0.25.0 (03/11/2026) | 654 / 11/11/2026 | MIT OR Apache-2.0 | Pur (sans I/O) | actif |
+| WebRTC | webrtc | 0.21.1 (07/11/2026) | 5185 / 07/11/2026 | MIT/Apache | Pur | actif |
+| WHIP/WHEP | gst-plugins-rs net/webrtchttp | 1.28.9 | — | nv | Rust + GStreamer | — |
+| MoQ | moq-lite (moq-dev/moq) | 0.17.0 (20/05/2026) | 1607 / 12/11/2026 | MIT OR Apache-2.0 | Pur | spec en cours |
+| RTMP | rml_rtmp | 0.8.0 (29/04/2023) | nv | MIT | Pur | inactif |
+| Serveur RTMP/HTTP-FLV/HLS | xiu | 0.14.0 (16/10/2026) | 2338 / 16/10/2026 | MIT | Pur (nv) | actif |
+| Sous-titres SRT | srtlib | 0.2.0 (18/08/2024) | nv | MIT OR Apache-2.0 | Pur | basique |
+| CEA-608/708 | gst-plugins-rs video/closedcaption | 1.28.9 | — | nv | Rust + GStreamer | — |
+| Tags/métadonnées audio | lofty | 0.25.5 (25/10/2026) | 380 / 06/11/2026 | MIT OR Apache-2.0 | Pur | mature |
+
+## Frameworks
+
+| Projet | Version (date) | Étoiles / push | Nature |
+|---|---|---|---|
+| gstreamer (gstreamer-rs) | 0.25.4 (21/09/2026) | GitLab | bindings Rust du cœur C |
+| gst-plugins-rs | tag gstreamer-1.28.9 (06/11/2026) | GitLab | plugins écrits en Rust |
+| xiu | 0.14.0 | 2338 | serveur de streaming Rust |
+| ac-ffmpeg | 0.19.0 (16/05/2025) | 215 / 16/05/2025 | wrapper FFmpeg C, inactif |
+| oxideav | 0.0.6 (07/11/2026) | 5 / 07/11/2026 | « FFmpeg en Rust » embryonnaire, licence dépôt non détectée |
+| rust-av (av-format) | 0.7.1 (18/11/2024) | nv | inactif |
+
+Plugins gst-plugins-rs (API GitLab) :
+- video : cdg, closedcaption, colorlut, dav1d, ffv1, gif, gtk4, hsv, image, overlaycompositor, png, rav1e, skia, videofx, viuer, vvdec, webp
+- net : aws, dashsink2, deepgram, hlsmultivariantsink, hlssink3, icecast, mpegtslive, ndi, onvif, pcap, quinn, raptorq, reqwest, rtp, rtsp, udp, webrtc, webrtcbin2, webrtchttp
+- mux : flavors (FLV), isobmff (fMP4/CMAF)
+- audio : audiofx, audiomultimixer, audioparsers, claxon, csound, demucs, elevenlabs, hrtf, lewton, speechmatics, spotify, whisper
+
+## Conclusion
+
+(a) Aucun remplaçant unique en Rust. oxideav, seul « FFmpeg en Rust » trouvé, est embryonnaire (0.0.6, 5 étoiles). Le seul framework complet avec une API Rust est GStreamer + gst-plugins-rs, mais son cœur et beaucoup de codecs restent en C.
+
+(b) Architecture « full Rust » réaliste :
+- Rust pur : mp4-atom, matroska-demuxer + webm-iterable, mpeg2ts-reader, m3u8-rs, dash-mpd, symphonia, rav1e, rubato, fast_image_resize, yuvutils-rs ou dcv-color-primitives, wgpu (conversion et rendu sur DX12/Vulkan/WebGPU), retina, str0m, moq-lite, xiu, lofty, srtlib.
+- Rust (port) : rav1d pour le décodage AV1, à la place de dav1d.
+- Bindings minimaux : SDK NVIDIA (NVENC/NVDEC) via cudarc + nvidia-video-codec-sdk, ou vk-video (Vulkan Video) ; libopus via opus ; OpenH264 en repli logiciel H.264. Chaque binding lie une seule bibliothèque, jamais FFmpeg entier.
+
+(c) Manques sans solution Rust en novembre 2026 :
+- décodeurs logiciels HEVC, VP9 et VVC en Rust pur ;
+- encodeurs logiciels H.264/HEVC en Rust de niveau x264/x265 ;
+- surcouche Rust maintenue pour D3D12 Video ou Media Foundation (seulement windows-rs brut) ;
+- SRT maintenu (srt-tokio inactif depuis 05/2024) ;
+- muxer MPEG-TS Rust pur autonome (nv) ; sous-titres ASS/WebVTT complets (nv) ;
+- équivalent de libavfilter et de la couverture de formats FFmpeg.
+
+## Sources
+
+- crates.io : https://crates.io/api/v1/crates/mp4-atom (même schéma pour chaque crate cité)
+- https://github.com/memorysafety/rav1d
+- https://github.com/software-mansion/smelter
+- https://github.com/xiph/rav1e
+- https://github.com/moq-dev/moq
+- https://github.com/algesten/str0m
+- https://github.com/webrtc-rs/webrtc
+- https://github.com/scottlamb/retina
+- https://github.com/harlanc/xiu
+- https://github.com/OxideAV/oxideav
+- https://github.com/ViliamVadocz/nvidia-video-codec-sdk
+- https://github.com/chelsea0x3b/cudarc
+- https://github.com/pdeljanov/Symphonia
+- https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs
+- https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=ffmpeg
+- https://ffmpeg.org/security.html (non consulté)

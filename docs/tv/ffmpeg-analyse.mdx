@@ -1,0 +1,121 @@
+---
+title: Analyse du code FFmpeg
+date: 2026-11-12
+---
+
+# Analyse du code FFmpeg
+
+Clone : `C:\src\third_party\ffmpeg` depuis `https://git.ffmpeg.org/ffmpeg.git`. Dernier commit `46d13a8385` du 12/11/2026, branche de développement `n9.1-dev`. Tous les chiffres ci-dessous sont mesurés sur ce clone.
+
+## Taille
+
+- 111 Mo de sources, 11 216 fichiers, 128 837 commits.
+- 408 auteurs différents sur les 12 derniers mois.
+
+| Bibliothèque | Fichiers C/asm | Lignes |
+|---|---|---|
+| libavcodec | 2 717 | 1 165 560 |
+| libavfilter | 758 | 299 070 |
+| libavformat | 731 | 278 862 |
+| libavutil | 453 | 123 027 |
+| libswscale | 156 | 81 653 |
+| fftools | 50 | 42 799 |
+| libavdevice | 67 | 17 289 |
+| libswresample | 44 | 9 296 |
+| **Total** | **4 976** | **≈ 2 017 556** |
+
+## Composants déclarés
+
+| Type | Nombre |
+|---|---|
+| Décodeurs | 610 |
+| Filtres | 597 |
+| Démultiplexeurs | 372 |
+| Encodeurs | 273 |
+| Multiplexeurs | 190 |
+| Accélérations matérielles | 89 |
+| Analyseurs (parsers) | 69 |
+| Protocoles | 57 |
+| Filtres de flux binaire (bsf) | 55 |
+
+Fichiers d'accélération matérielle dans libavcodec : VAAPI 22, Vulkan 20, D3D12VA 13, NVDEC 11, DXVA2 9, QSV 13, AMF 7, NVENC 5, D3D11VA 2, Media Foundation 2, CUVID 1.
+
+## Défauts constatés dans le code
+
+- **Sécurité mémoire :** 759 commits sur 12 mois mentionnent un débordement, un accès hors limites, un use-after-free, un pointeur nul, de la mémoire non initialisée ou un cas trouvé par OSS-Fuzz. Recherche par mots-clés dans les messages : elle surestime ou sous-estime selon la rédaction des messages.
+- **Zones les plus touchées sur 12 mois :** démultiplexeur MP4/MOV (15), sortie swscale (8), muxer HLS (8), décodeur HEVC (8), démultiplexeur HLS (7), DASH (7), libcurl (6). Ce sont précisément les briques d'un lecteur IPTV.
+- **Exemples récents :** contrôles de bornes ajoutés dans le RPU Dolby Vision (`dovi_rpudec`, `dovi_rpuenc`), le tampon ITU-T T.35 d'AV1 (`cbs_av1`), le filtre `af_arnndn`.
+- **Licence :** LGPL par défaut, GPL avec `--enable-gpl`, et `--enable-nonfree` rend le binaire non redistribuable.
+- **Langage :** C et assembleur, environ 2 millions de lignes, sans garantie de sécurité mémoire.
+
+## Architecture et API
+
+| Bibliothèque | Version majeure (ABI) |
+|---|---|
+| libavcodec, libavformat, libavdevice | 63 |
+| libavutil | 61 |
+| libavfilter | 12 |
+| libswscale | 10 |
+| libswresample | 7 |
+
+- 1 015 en-têtes hors architecture, 12 macros `FF_API_*` (API en sursis), 44 marqueurs de dépréciation dans les en-têtes publics.
+- Build : `configure` de 8 883 lignes de shell, 312 options `--enable/--disable`, 102 bibliothèques externes possibles.
+- Assembleur SIMD par architecture :
+
+| Architecture | Fichiers | Lignes |
+|---|---|---|
+| x86 | 362 | 109 034 |
+| MIPS | 121 | 102 143 |
+| AArch64 | 157 | 63 306 |
+| LoongArch | 77 | 52 110 |
+| ARM 32 bits | 160 | 37 380 |
+| RISC-V | 143 | 16 902 |
+| PowerPC | 95 | 12 475 |
+
+- Tests : 124 fichiers FATE (3 145 lignes de cibles), 6 fuzzers (`target_dec`, `dem`, `enc`, `bsf`, `swr`, `sws`).
+- Dette : 1 222 `TODO/FIXME/XXX` ; 2 938 appels `memcpy/strcpy/sprintf/alloca`.
+- Fichier MAINTAINERS : 469 entrées.
+
+## Codecs modernes (registre `allcodecs.c`)
+
+| Codec | Décodage natif | Via bibliothèque externe | Encodage |
+|---|---|---|---|
+| AV1 | `av1` (matériel seulement) | libdav1d, libaom | libsvtav1, librav1e, libaom, NVENC, D3D12, Vulkan, AMF, QSV, VAAPI, MF |
+| VVC | `vvc` (logiciel) | – | libvvenc uniquement (option configure) |
+| HEVC | `hevc` | – | NVENC, D3D12, Vulkan, AMF, QSV, VAAPI, MF ; x265 en externe |
+| VP9 | `vp9` | libvpx | libvpx, VAAPI, QSV |
+| H.264 | `h264` | OpenH264 | NVENC, D3D12, Vulkan, AMF, QSV, VAAPI, MF ; x264 en externe |
+| APV | `apv` | – | liboapv, Vulkan |
+| Opus | `opus` | libopus | `opus`, libopus |
+| **AV2** | **aucun** | **aucun** | **aucun** |
+
+Le décodage AV1 logiciel passe par dav1d : le décodeur interne `av1` ne fait que du matériel.
+
+## Accélération matérielle par API
+
+| API | Codecs décodés |
+|---|---|
+| NVDEC | AV1, H.264, HEVC, MJPEG, MPEG-1/2/4, VC-1, VP8, VP9, WMV3 |
+| Vulkan | APV, AV1, DPX, FFV1, H.264, HEVC, ProRes, ProRes RAW, VP9 |
+| D3D12VA | AV1, H.264, HEVC, MPEG-2, VC-1, VP9, WMV3 |
+| D3D11VA | AV1, H.264, HEVC, MPEG-2, VC-1, VP9, WMV3 |
+| VAAPI (Linux) | + VVC, H.263, MJPEG, VP8 |
+
+VVC n'est décodé en matériel que par VAAPI. Aucun décodage VVC NVDEC, Vulkan ou D3D12.
+
+## Nouveautés 9.1 (Changelog)
+
+ASTC, encodeur AAC amélioré, encodeur APV Vulkan, filtre `vf_fruc_vulkan` (interpolation par flux optique NVIDIA), inférence ONNX zéro copie D3D12/DirectML, partitionnement de données H.264, LCEVC dans MPEG-TS.
+
+## CVE (page officielle ffmpeg.org/security.html)
+
+- 22 CVE de 2025 et 9 de 2026 corrigées dans les branches 8.x et 9.x. Lecture partielle de la page (100 000 premiers caractères sur 168 888).
+- Corrigées dans 9.0 : CVE-2026-8461, 12706, 30997, 30998, 30999, 66038, 70629, 70631.
+
+## Sur cette machine
+
+- `ffmpeg 9.0.2` (build Gyan, winget) : exécutables seulement, sans en-têtes ni `.lib`. Inutilisable tel quel pour lier `ffmpeg-next`.
+
+## Suite
+
+Remplaçant Rust : voir [remplacant-ffmpeg-rust.mdx](./remplacant-ffmpeg-rust.mdx), recherche en cours.

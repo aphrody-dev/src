@@ -1,0 +1,18 @@
+[package]
+name = "tv-cli"
+description = "Interface en ligne de commande du domaine média tv."
+version.workspace = true
+edition.workspace = true
+license = "LGPL-2.1-or-later"
+repository.workspace = true
+
+[[bin]]
+name = "tv"
+path = "src/main.rs"
+
+[dependencies]
+clap.workspace = true
+serde_json.workspace = true
+tv-core.workspace = true
+tv-ffmpeg.workspace = true
+tv-i18n.workspace = true
