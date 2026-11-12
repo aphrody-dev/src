@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 use depot_core::StyleExt;
-use depot_treesitter::TreeSitterEngine;
+use aphrody_core::TreeSitterEngine;
 
 pub fn run_ast_parse(file_path: PathBuf, json_output: bool) -> Result<(), String> {
     let content = std::fs::read_to_string(&file_path)

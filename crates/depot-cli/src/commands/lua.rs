@@ -6,7 +6,7 @@ use std::path::Path;
 use depot_core::StyleExt;
 use depot_migrate::transform_source;
 use depot_re::{audit_lua52_bytecode, transcode_lua52_bytecode};
-use depot_treesitter::{SupportedLanguage, TreeSitterEngine};
+use aphrody_core::{SupportedLanguage, TreeSitterEngine};
 
 pub fn run_lua_ast(file: &Path, output_json: bool) -> Result<(), String> {
     let source = std::fs::read_to_string(file)

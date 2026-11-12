@@ -14,6 +14,8 @@
     "build": "bun build --compile src/cli.ts --outfile dist/frg.exe",
     "test": "bun test"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@aphrody/core": "workspace:*"
+  },
   "devDependencies": {}
 }

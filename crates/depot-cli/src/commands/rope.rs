@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 use std::path::Path;
 use depot_core::StyleExt;
-use depot_treesitter::apply_helix_rope_edits;
+use aphrody_core::apply_helix_rope_edits;
 
 pub fn execute_rope(file: &Path, replacements: &[String]) -> Result<(), String> {
     println!("{}", format!("--- Depot Helix Rope Editor: {} ---", file.display()).cyan().bold());

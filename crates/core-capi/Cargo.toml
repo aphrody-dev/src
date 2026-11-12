@@ -1,0 +1,15 @@
+[package]
+name = "aphrody-core-capi"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "C ABI over aphrody-core (core_* symbols), loaded by packages/core through bun:ffi"
+publish = false
+
+[lib]
+name = "aphrody_core_capi"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+aphrody-core.workspace = true
+serde_json.workspace = true

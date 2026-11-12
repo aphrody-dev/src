@@ -14,7 +14,7 @@ crate-type = ["cdylib", "rlib"]
 default = ["depot", "web"]
 depot = [
   "dep:depot-core",
-  "dep:depot-treesitter",
+  "dep:aphrody-core",
   "dep:depot-re",
   "dep:depot-migrate",
   "dep:depot-forge",
@@ -26,7 +26,7 @@ web = ["dep:corelib"]
 [dependencies]
 corelib = { workspace = true, optional = true }
 depot-core = { workspace = true, optional = true }
-depot-treesitter = { workspace = true, optional = true }
+aphrody-core = { workspace = true, optional = true }
 depot-re = { workspace = true, optional = true }
 depot-migrate = { workspace = true, optional = true }
 depot-forge = { workspace = true, optional = true }

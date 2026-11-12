@@ -19,6 +19,22 @@ pub enum SupportedLanguage {
 }
 
 impl SupportedLanguage {
+    pub const ALL: [Self; 13] = [
+        Self::Rust,
+        Self::TypeScript,
+        Self::Tsx,
+        Self::JavaScript,
+        Self::Python,
+        Self::Go,
+        Self::C,
+        Self::Cpp,
+        Self::Json,
+        Self::Bash,
+        Self::Html,
+        Self::Css,
+        Self::Lua,
+    ];
+
     pub fn name(&self) -> &'static str {
         match self {
             Self::Rust => "rust",

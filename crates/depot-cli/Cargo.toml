@@ -13,7 +13,7 @@ path = "src/lib.rs"
 
 [dependencies]
 depot-core.workspace = true
-depot-treesitter.workspace = true
+aphrody-core.workspace = true
 depot-re.workspace = true
 depot-migrate.workspace = true
 depot-forge.workspace = true

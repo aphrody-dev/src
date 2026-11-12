@@ -1,7 +1,7 @@
 use std::path::Path;
 use serde::{Deserialize, Serialize};
 use depot_core::GixEngine;
-use depot_treesitter::TreeSitterEngine;
+use aphrody_core::TreeSitterEngine;
 
 use crate::scanner::IngestedFile;
 use crate::tokenizer::Tokenizer;

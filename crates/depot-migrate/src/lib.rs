@@ -12,7 +12,7 @@ pub use manifest::{generate_bunfig, sanitize_package_json};
 pub use rules::{CodemodRule, MIGRATION_RULES};
 pub use transformer::{TransformFinding, TransformResult, transform_source};
 
-use depot_treesitter::SupportedLanguage;
+use aphrody_core::SupportedLanguage;
 use ignore::WalkBuilder;
 use serde::{Deserialize, Serialize};
 use std::path::Path;

@@ -1,6 +1,6 @@
 use std::path::Path;
 use depot_core::JustEngine;
-use depot_treesitter::{SupportedLanguage, TreeSitterEngine};
+use aphrody_core::{SupportedLanguage, TreeSitterEngine};
 
 use crate::graph::{CodeGraph, EdgeProvenance, GraphEdge, GraphNode};
 

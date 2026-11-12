@@ -1,11 +1,18 @@
 [package]
-name = "depot-treesitter"
+name = "aphrody-core"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-repository = "https://github.com/aphrody-dev/depot"
+description = "Common lib: tree-sitter parsing, symbol/ref index, content hashing (BLAKE3)"
+
+[lib]
+name = "aphrody_core"
 
 [dependencies]
+blake3.workspace = true
+ignore.workspace = true
+rayon.workspace = true
+serde_json.workspace = true
 tree-sitter.workspace = true
 tree-sitter-language.workspace = true
 tree-sitter-rust.workspace = true
@@ -23,3 +30,8 @@ tree-sitter-lua.workspace = true
 serde.workspace = true
 streaming-iterator.workspace = true
 ropey.workspace = true
+
+[build-dependencies]
+cc = "1.2"
+serde_json.workspace = true
+toml.workspace = true

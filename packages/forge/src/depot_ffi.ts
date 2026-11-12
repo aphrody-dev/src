@@ -1,4 +1,5 @@
 // Bun FFI bridge to the depot_* symbols of aphrody_ffi (crates/ffi, Rust 2024 C ABI)
+import { parse } from "@aphrody/core";
 import { dlopen, FFIType, CString } from "bun:ffi";
 import { APHRODY_FFI_FILE, findAphrodyFfi } from "./native_lib.ts";
 
@@ -23,10 +24,6 @@ function getLib() {
       },
       depot_just_recipes_json: {
         args: [FFIType.cstring],
-        returns: FFIType.ptr,
-      },
-      depot_treesitter_symbols_json: {
-        args: [FFIType.cstring, FFIType.cstring],
         returns: FFIType.ptr,
       },
       depot_ingest_json: {
@@ -101,12 +98,7 @@ export function ffiJustRecipes(justfilePath: string = "justfile") {
 }
 
 export function ffiTreeSitterSymbols(filePath: string, content: string) {
-  const l = getLib();
-  const raw = l.symbols.depot_treesitter_symbols_json(
-    toBuffer(filePath),
-    toBuffer(content),
-  );
-  return callJson(raw);
+  return parse(filePath, content);
 }
 
 export function ffiIngestCodebase(

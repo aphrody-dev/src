@@ -1,10 +1,14 @@
 pub mod extractor;
+pub mod grammars;
+pub mod hash;
+pub mod index;
 pub mod languages;
 pub mod query;
 pub mod rope;
 pub mod symbols;
 
 pub use extractor::AstExtractor;
+pub use grammars::{GRAMMARS, Grammar};
 pub use languages::SupportedLanguage;
 pub use query::{QueryCaptureItem, QueryRunner};
 pub use rope::{RopeSession, apply_helix_rope_edits};
@@ -24,10 +28,25 @@ impl TreeSitterEngine {
         SupportedLanguage::from_path(path)
     }
 
+    /// True when a dedicated extractor or a registered third_party grammar handles `path`.
+    pub fn is_indexable(path: &Path) -> bool {
+        Self::detect_language(path).is_some() || Grammar::for_path(path).is_some()
+    }
+
+    /// Name of the grammar that handles `path` (dedicated extractor first, then registry).
+    pub fn language_name(path: &Path) -> Option<&'static str> {
+        Self::detect_language(path)
+            .map(|l| l.name())
+            .or_else(|| Grammar::for_path(path).map(|g| g.name))
+    }
+
+    /// Dedicated extractor when one exists, else the registry grammar through its tags.scm.
     pub fn parse_file(path: &Path, content: &str) -> Option<AstFileSummary> {
-        let lang = Self::detect_language(path)?;
         let path_str = path.to_string_lossy().replace('\\', "/");
-        AstExtractor::extract(lang, &path_str, content).ok()
+        match Self::detect_language(path) {
+            Some(lang) => AstExtractor::extract(lang, &path_str, content).ok(),
+            None => Grammar::for_path(path)?.extract(&path_str, content).ok(),
+        }
     }
 
     pub fn parse_str(

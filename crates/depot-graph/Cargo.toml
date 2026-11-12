@@ -7,7 +7,7 @@ repository = "https://github.com/aphrody-dev/depot"
 
 [dependencies]
 depot-core.workspace = true
-depot-treesitter.workspace = true
+aphrody-core.workspace = true
 ignore.workspace = true
 regex.workspace = true
 serde.workspace = true

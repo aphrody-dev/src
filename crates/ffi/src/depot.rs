@@ -9,7 +9,7 @@ use depot_graph::{build_graph_for_dir, GraphQuery, QueryOptions};
 use depot_ingest::{ingest_codebase, DigestFormat, IngestConfig};
 use depot_migrate::MigrateEngine;
 use depot_re::{ReEngine, transcode_lua52_bytecode};
-use depot_treesitter::{TreeSitterEngine, apply_helix_rope_edits};
+use aphrody_core::apply_helix_rope_edits;
 
 pub const DEPOT_ABI_VERSION: u32 = 20261111;
 
@@ -57,22 +57,6 @@ pub extern "C" fn depot_just_recipes_json(justfile_path_ptr: *const c_char) -> *
     match JustEngine::parse_file(path) {
         Ok(spec) => to_c_string(serde_json::to_string(&spec).unwrap_or_default()),
         Err(e) => to_c_string(json!({ "error": e }).to_string()),
-    }
-}
-
-#[unsafe(no_mangle)]
-pub extern "C" fn depot_treesitter_symbols_json(
-    file_path_ptr: *const c_char,
-    content_ptr: *const c_char,
-) -> *mut c_char {
-    let file_path = c_str_to_str(file_path_ptr);
-    let content = c_str_to_str(content_ptr);
-
-    let path = Path::new(file_path);
-    if let Some(summary) = TreeSitterEngine::parse_file(path, content) {
-        to_c_string(serde_json::to_string(&summary).unwrap_or_default())
-    } else {
-        to_c_string(json!({ "error": "Unsupported language or parse failed", "path": file_path }).to_string())
     }
 }
 
@@ -266,20 +250,6 @@ mod tests {
     }
 
     #[test]
-    fn test_treesitter_ffi() {
-        let code = CString::new("pub struct TestFFI;\n").unwrap();
-        let path = CString::new("src/test.rs").unwrap();
-
-        let res_ptr = depot_treesitter_symbols_json(path.as_ptr(), code.as_ptr());
-        assert!(!res_ptr.is_null());
-
-        let res_str = unsafe { CStr::from_ptr(res_ptr).to_str().unwrap() };
-        assert!(res_str.contains("TestFFI"));
-
-        depot_free_string(res_ptr);
-    }
-
-    #[test]
     fn test_helix_rope_ffi() {
         let code = CString::new("fn hello() { return 1; }").unwrap();
         let edits = CString::new(r#"[[3, 8, "world"], [20, 21, "42"]]"#).unwrap();
@@ -343,13 +313,5 @@ mod tests {
         assert!(trans_str.contains("\"ok\":true"));
         depot_free_string(trans_ptr);
 
-        // 4. Lua 5.2 Tree-Sitter AST FFI
-        let lua_file = CString::new("script.lua").unwrap();
-        let lua_src = CString::new("local _ENV = _ENV\nlocal function calc() goto done ::done:: return 1 end\n").unwrap();
-        let ts_ptr = depot_treesitter_symbols_json(lua_file.as_ptr(), lua_src.as_ptr());
-        let ts_str = unsafe { CStr::from_ptr(ts_ptr).to_str().unwrap() };
-        assert!(ts_str.contains("calc"));
-        assert!(ts_str.contains("done"));
-        depot_free_string(ts_ptr);
     }
 }

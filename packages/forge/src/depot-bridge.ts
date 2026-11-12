@@ -1,4 +1,5 @@
 // @aphrody/forge: Zero-copy FFI bridge to the depot_* symbols of aphrody_ffi (crates/ffi, Rust 2024 C ABI)
+import { parse } from "@aphrody/core";
 import { dlopen, FFIType, CString, ptr } from "bun:ffi";
 import { findAphrodyFfi } from "./native_lib.ts";
 
@@ -57,10 +58,6 @@ function loadDepotFfi() {
       },
       depot_just_recipes_json: {
         args: [FFIType.ptr],
-        returns: FFIType.ptr,
-      },
-      depot_treesitter_symbols_json: {
-        args: [FFIType.ptr, FFIType.ptr],
         returns: FFIType.ptr,
       },
       depot_ingest_json: {
@@ -127,11 +124,11 @@ export function depotJustRecipes(path: string = "justfile"): any {
 }
 
 export function depotTreeSitterSymbols(filePath: string, content: string): DepotTreeSitterSummary | null {
-  const lib = loadDepotFfi();
-  if (!lib) return null;
-  const fBuf = Buffer.from(`${filePath}\0`, "utf8");
-  const cBuf = Buffer.from(`${content}\0`, "utf8");
-  return callFfiString(lib.symbols.depot_treesitter_symbols_json, ptr(fBuf), ptr(cBuf));
+  try {
+    return parse(filePath, content) as unknown as DepotTreeSitterSummary;
+  } catch {
+    return null;
+  }
 }
 
 export function depotGraphQuery(graphDir: string, term: string, dfs: boolean = false, maxTokens: number = 2000): any {

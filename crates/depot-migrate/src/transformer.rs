@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //! AST-guided transformer using Tree-Sitter and Helix Rope transactional editing.
 
-use depot_treesitter::{RopeSession, SupportedLanguage};
+use aphrody_core::{RopeSession, SupportedLanguage};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
