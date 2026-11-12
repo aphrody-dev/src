@@ -20,6 +20,8 @@ jobs:
         with:
           token: ${{ secrets.SUBMODULES_TOKEN || github.token }}
           submodules: false
+      - name: Workspace submodules (crates/* only, not apps or third_party)
+        run: git submodule update --init --depth 1 crates/bench crates/ring3-agent crates/rust-stack
       - name: Rust (ay and its libraries)
         run: |
           cargo build -p aphrody
