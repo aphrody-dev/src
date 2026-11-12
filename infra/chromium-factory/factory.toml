@@ -21,19 +21,21 @@ local_jobs = 4                   # fr1 also runs a 10-slot worker
 remote_jobs = 26                 # ~1.5 x (10 + 4 + 3) worker slots
 
 [[workers]]
+addr = "10.200.77.1"
+local = true
 name = "fr1"                     # deploy after the F0 stop: deploy.sh worker 10.200.77.1 100000000000 10
 jobs = 10
 min_mem_gb = 26
 
 [[workers]]
 name = "prd"
-ssh = "prd"
+addr = "10.200.77.5"             # liveness = connection to worker_api (ss on fr1)
 jobs = 4                         # 8 cores but ~5 GiB MemAvailable next to its services
 min_mem_gb = 10
 
 [[workers]]
 name = "fr2"
-ssh = "fr2"
+addr = "10.200.77.3"
 jobs = 3                         # 6 cores / 11 GiB
 min_mem_gb = 8
 
