@@ -1,4 +1,6 @@
 [package]
+repository.workspace = true
+description = "cosmic-compat: part of the Aphrody monorepo"
 name = "cosmic-compat"
 version.workspace = true
 edition.workspace = true
@@ -6,8 +8,8 @@ authors.workspace = true
 license.workspace = true
 
 [dependencies]
-smithay-wayland-wire = { path = "../smithay-wayland-wire" }
-hypr-tiler = { path = "../hypr-tiler" }
+smithay-wayland-wire = { version = "0.2.0", path = "../smithay-wayland-wire" }
+hypr-tiler = { version = "0.2.0", path = "../hypr-tiler" }
 tracing.workspace = true
 thiserror.workspace = true
 serde.workspace = true

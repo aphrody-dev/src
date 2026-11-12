@@ -1,8 +1,10 @@
 [package]
-name = "lore-notification"
+repository.workspace = true
+description = "Lore version control: lore-notification (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore-notification"
 edition = "2024"
 version = "0.13.1-nightly"
-publish = false
 
 [lib]
 test = false
@@ -24,7 +26,7 @@ lore-proto = { workspace = true }
 test-util = []
 
 [dev-dependencies]
-lore-notification = { workspace = true, features = ["test-util"] }
+lore-notification = { path = ".", package = "aphrody-lore-notification",  features = ["test-util"]  }
 
 [lints]
 workspace = true

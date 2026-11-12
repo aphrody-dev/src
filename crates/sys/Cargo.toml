@@ -1,10 +1,10 @@
 [package]
-name = "sys"
+repository.workspace = true
+name = "aphrody-sys"
 description = "Low-level machine profile for `ay sys`: SMBIOS, CPUID, PCI, GPUs, storage, virtualization, toolchains"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-publish = false
 
 [dependencies]
 serde = { workspace = true }

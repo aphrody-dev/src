@@ -1,9 +1,10 @@
 [package]
-name = "lore-error-set"
+repository.workspace = true
+license = "MIT"
+name = "aphrody-lore-error-set"
 version = "0.1.0"
 edition = "2021"
 description = "Composable, traceable error handling for Rust"
-publish = false
 
 [features]
 default = ["track-locations"]

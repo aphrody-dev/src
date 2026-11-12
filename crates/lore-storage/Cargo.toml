@@ -1,8 +1,10 @@
 [package]
-name = "lore-storage"
+repository.workspace = true
+description = "Lore version control: lore-storage (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore-storage"
 edition = "2024"
 version = "0.13.1-nightly"
-publish = false
 
 [lib]
 name = "lore_storage"
@@ -60,10 +62,10 @@ required-features = ["store-stress"]
 
 [dev-dependencies]
 # The shared test temp-directory helper.
-lore-base = { workspace = true, features = ["test-util"] }
-lore-storage = { workspace = true, features = ["test-util"] }
+lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
+lore-storage = { path = ".", package = "aphrody-lore-storage",  features = ["test-util"]  }
 # A session over a stub peer, with no live connection behind it.
-lore-transport = { workspace = true, features = ["test-util"] }
+lore-transport = { path = "../lore-transport", package = "aphrody-lore-transport",  features = ["test-util"]  }
 # A paused clock, so retry back-off takes no real time.
 tokio = { workspace = true, features = ["test-util"] }
 

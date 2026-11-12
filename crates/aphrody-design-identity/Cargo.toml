@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 [package]
+repository.workspace = true
 name = "aphrody-design-identity"
 version.workspace = true
 edition.workspace = true
@@ -12,7 +13,7 @@ default = ["fs"]
 fs = []
 
 [dependencies]
-aphrody-design-sprite-sheet = { path = "../aphrody-design-sprite-sheet" }
+aphrody-design-sprite-sheet = { version = "0.2.0", path = "../aphrody-design-sprite-sheet" }
 image = { version = "0.25", default-features = false, features = ["png", "webp"] }
 png = "0.18"
 serde.workspace = true

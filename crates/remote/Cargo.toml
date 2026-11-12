@@ -1,10 +1,11 @@
 [package]
+publish = false
+repository.workspace = true
 name = "aphrody-remote"
 description = "Pure-Rust SSH client for `ay ssh`: exec, sftp copy, fleet hosts and health check (russh, no OpenSSH binary)"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-publish = false
 
 [lib]
 name = "remote"

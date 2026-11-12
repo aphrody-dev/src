@@ -1,4 +1,6 @@
 [package]
+repository.workspace = true
+description = "wslg-cli: part of the Aphrody monorepo"
 name = "wslg-cli"
 version.workspace = true
 edition.workspace = true
@@ -14,10 +16,10 @@ name = "wslg-cosmic-hypr"
 path = "src/bin/wslg_cosmic_hypr.rs"
 
 [dependencies]
-dx12-winui-core = { path = "../dx12-winui-core" }
-smithay-wayland-wire = { path = "../smithay-wayland-wire" }
-hypr-tiler = { path = "../hypr-tiler" }
-cosmic-compat = { path = "../cosmic-compat" }
+dx12-winui-core = { version = "0.2.0", path = "../dx12-winui-core" }
+smithay-wayland-wire = { version = "0.2.0", path = "../smithay-wayland-wire" }
+hypr-tiler = { version = "0.2.0", path = "../hypr-tiler" }
+cosmic-compat = { version = "0.2.0", path = "../cosmic-compat" }
 clap.workspace = true
 serde.workspace = true
 serde_json.workspace = true

@@ -1,8 +1,10 @@
 [package]
-name = "lore-client"
+repository.workspace = true
+description = "Lore version control: lore-client (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore-client"
 edition = "2024"
 version = "0.13.1-nightly"
-publish = false
 
 [dependencies]
 anstream = { workspace = true }
@@ -32,7 +34,7 @@ oodle = ["lore/oodle"]
 test-util = []
 
 [dev-dependencies]
-lore-client = { path = ".", features = ["test-util"] }
+lore-client = { path = ".", features = ["test-util"] , package = "aphrody-lore-client" }
 
 [build-dependencies]
 winresource = "0.1.34"

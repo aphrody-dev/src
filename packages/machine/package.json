@@ -8,5 +8,11 @@
     "check": "bun src/apply-user.ts --check",
     "apply": "bun src/apply-user.ts",
     "flatten": "bun src/flatten-third-party.ts"
+  },
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aphrody-dev/src.git",
+    "directory": "packages/machine"
   }
 }

@@ -1,8 +1,10 @@
 [package]
-name = "lore-credential"
+repository.workspace = true
+description = "Lore version control: lore-credential (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore-credential"
 edition = "2024"
 version = "0.13.1-nightly"
-publish = false
 
 [lib]
 name = "lore_credential"
@@ -27,8 +29,8 @@ url = { workspace = true }
 [dev-dependencies]
 ctor = { workspace = true }
 dtor = { workspace = true }
-lore-base = { workspace = true, features = ["test-util"] }
-lore-credential = { workspace = true, features = ["test-util"] }
+lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
+lore-credential = { path = ".", package = "aphrody-lore-credential",  features = ["test-util"]  }
 
 [features]
 test-util = []

@@ -1,4 +1,6 @@
 [package]
+repository.workspace = true
+description = "dx12-winui-core: part of the Aphrody monorepo"
 name = "dx12-winui-core"
 version.workspace = true
 edition.workspace = true

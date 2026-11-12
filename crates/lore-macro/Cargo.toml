@@ -1,8 +1,10 @@
 [package]
-name = "lore-macro"
+repository.workspace = true
+description = "Lore version control: lore-macro (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore-macro"
 edition = "2024"
 version = "0.13.1-nightly"
-publish = false
 
 [lib]
 name = "lore_macro"

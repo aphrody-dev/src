@@ -1,4 +1,5 @@
 [package]
+description = "depot-graph: part of the Aphrody monorepo"
 name = "depot-graph"
 version.workspace = true
 edition.workspace = true

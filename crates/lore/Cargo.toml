@@ -1,8 +1,10 @@
 [package]
-name = "lore"
+repository.workspace = true
+description = "Lore version control: lore (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore"
 edition = "2024"
 version = "0.13.1-nightly"
-publish = false
 
 [lib]
 name = "lore"
@@ -54,15 +56,15 @@ state-stress = ["lore-revision/state-stress"]
 async-trait = { workspace = true }
 # The unit-test binary's process sandbox, set up before the harness starts; see tests/unit/main.rs.
 ctor = { workspace = true }
-lore-base = { workspace = true, features = ["test-util"] }
-lore-storage = { workspace = true, features = ["test-util"] }
+lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
+lore-storage = { path = "../lore-storage", package = "aphrody-lore-storage",  features = ["test-util"]  }
 # The tests that write node blocks directly (`NodeBlock::write_for_tests`).
-lore-revision = { workspace = true, features = ["test-util"] }
+lore-revision = { path = "../lore-revision", package = "aphrody-lore-revision",  features = ["test-util"]  }
 # The futures of the State node harness the C API's scenarios include.
 pin-project = { workspace = true }
 rand = { workspace = true }
 serial_test = { workspace = true }
-lore = { workspace = true, features = ["test-util"] }
+lore = { path = ".", package = "aphrody-lore",  features = ["test-util"]  }
 
 [[example]]
 name = "revision_tree_bench"

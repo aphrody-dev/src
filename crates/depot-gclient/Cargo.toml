@@ -5,7 +5,6 @@ edition.workspace = true
 license.workspace = true
 repository = "https://github.com/aphrody-dev/depot"
 description = "gclient in Rust: DEPS/.gclient evaluator, revinfo, getdep/setdep, sync planner on gix (`ay gclient`, `ay fetch`)"
-publish = false
 
 [dependencies]
 ruff_python_parser = { package = "rustpython-ruff_python_parser", version = "0.16.10" }

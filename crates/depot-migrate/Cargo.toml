@@ -1,4 +1,5 @@
 [package]
+description = "depot-migrate: part of the Aphrody monorepo"
 name = "depot-migrate"
 version.workspace = true
 edition.workspace = true

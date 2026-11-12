@@ -1,8 +1,10 @@
 [package]
-name = "lore-server"
+repository.workspace = true
+description = "Lore version control: lore-server (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore-server"
 edition = "2024"
 version = "0.13.1-nightly"
-publish = false
 autobins = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -85,9 +87,9 @@ tonic-prost-build = { workspace = true }
 [dev-dependencies]
 # The unit-test binary's store policies, set before the harness starts; see tests/unit/main.rs.
 ctor = { workspace = true }
-lore-base = { workspace = true, features = ["test-util"] }
-lore-credential = { workspace = true }
-lore-storage = { workspace = true, features = ["test-util"] }
+lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
+lore-credential = { path = "../lore-credential", package = "aphrody-lore-credential" }
+lore-storage = { path = "../lore-storage", package = "aphrody-lore-storage",  features = ["test-util"]  }
 axum-test = { version = "21.1.0", default-features = false }
 rcgen = { workspace = true }
 http-body = "1.1.0"
@@ -98,9 +100,9 @@ opentelemetry_sdk = { workspace = true, features = ["testing"] }
 temp-env = { workspace = true }
 # `start_paused` for the tests that time push phases on a virtual clock.
 tokio = { workspace = true, features = ["test-util"] }
-lore-server = { workspace = true, features = ["test-util"] }
+lore-server = { path = ".", package = "aphrody-lore-server",  features = ["test-util"]  }
 # The points where a test stops a branch write, to leave a restore stopped part way.
-lore-revision = { workspace = true, features = ["test-util"] }
+lore-revision = { path = "../lore-revision", package = "aphrody-lore-revision",  features = ["test-util"]  }
 
 [features]
 default = []

@@ -1,8 +1,10 @@
 [package]
-name = "lore-aws"
+repository.workspace = true
+description = "Lore version control: lore-aws (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore-aws"
 edition = "2024"
 version = "0.13.1-nightly"
-publish = false
 
 [dependencies]
 async-trait = { workspace = true }
@@ -36,7 +38,7 @@ lore-macro = { workspace = true }
 lore-telemetry = { workspace = true }
 
 [dev-dependencies]
-lore-aws = { workspace = true, features = ["test-util"] }
+lore-aws = { path = ".", package = "aphrody-lore-aws",  features = ["test-util"]  }
 mockall = { workspace = true }
 rand = { workspace = true }
 serial_test = "4.0.1"
@@ -44,7 +46,7 @@ temp-env = { workspace = true }
 tokio = { workspace = true, features = ["test-util"] }
 tracing-test = { workspace = true }
 uuid = { workspace = true }
-lore-proto = { workspace = true }
+lore-proto = { path = "../lore-proto", package = "aphrody-lore-proto" }
 
 [features]
 default = []

@@ -1,8 +1,10 @@
 [package]
-name = "lore-io"
+repository.workspace = true
+description = "Lore version control: lore-io (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore-io"
 edition = "2024"
 version = "0.13.1-nightly"
-publish = false
 
 [lib]
 name = "lore_io"
@@ -56,8 +58,8 @@ windows-sys = { workspace = true, features = [
 # tests in tests/unit. Dev-only, so the library's own dependency graph is unchanged.
 [dev-dependencies]
 futures = { workspace = true }
-lore-base = { workspace = true, features = ["test-util"] }
-lore-io = { workspace = true, features = ["test-util"] }
+lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
+lore-io = { path = ".", package = "aphrody-lore-io",  features = ["test-util"]  }
 tokio = { workspace = true }
 
 # A named pipe is the only thing a unit test can make defer on demand, and deferring is the whole

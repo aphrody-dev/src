@@ -1,9 +1,10 @@
 [package]
-name = "lore-error-set-macro"
+repository.workspace = true
+license = "MIT"
+name = "aphrody-lore-error-set-macro"
 version = "0.1.0"
 edition = "2021"
 description = "Proc-macro crate for lore-error-set"
-publish = false
 
 [lib]
 proc-macro = true

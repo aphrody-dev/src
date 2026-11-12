@@ -1,8 +1,11 @@
 [package]
-name = "lore-integration-tests"
+publish = false
+repository.workspace = true
+description = "Lore version control: lore-integration-tests (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore-integration-tests"
 version = "0.1.0"
 edition = "2024"
-publish = false
 # One target for the whole suite, declared below. Autodiscovery would compile
 # every file in tests/ as a test binary of its own, and each is a module of that
 # suite rather than a crate root.
@@ -62,21 +65,21 @@ uuid = { workspace = true }
 
 [dev-dependencies]
 ctor = { workspace = true }
-lore = { workspace = true, features = ["test-util"] }
-lore-base = { workspace = true, features = ["test-util"] }
-lore-server = { workspace = true }
-lore-storage = { workspace = true, features = ["test-util"] }
+lore = { path = "../lore", package = "aphrody-lore",  features = ["test-util"]  }
+lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
+lore-server = { path = "../lore-server", package = "aphrody-lore-server" }
+lore-storage = { path = "../lore-storage", package = "aphrody-lore-storage",  features = ["test-util"]  }
 # Here rather than under [dependencies]: a normal dependency's features apply to every build that
 # includes this package, so a release build of the workspace would compile lore-revision's test
 # access into every binary.
-lore-revision = { workspace = true, features = ["test-util"] }
-lore-transport = { workspace = true, features = ["test-util"] }
+lore-revision = { path = "../lore-revision", package = "aphrody-lore-revision",  features = ["test-util"]  }
+lore-transport = { path = "../lore-transport", package = "aphrody-lore-transport",  features = ["test-util"]  }
 rcgen = { workspace = true }
 serde = { workspace = true }
 
 [target.'cfg(target_os = "linux")'.dev-dependencies]
 libc = { workspace = true }
-lore-fuse = { path = "../lore-fuse", features = ["test-util"] }
+lore-fuse = { path = "../lore-fuse", features = ["test-util"] , package = "aphrody-lore-fuse" }
 
 [features]
 integration_tests = ["lore-server/integration_tests"]

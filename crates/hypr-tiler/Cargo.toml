@@ -1,4 +1,6 @@
 [package]
+repository.workspace = true
+description = "hypr-tiler: part of the Aphrody monorepo"
 name = "hypr-tiler"
 version.workspace = true
 edition.workspace = true

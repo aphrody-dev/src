@@ -5,7 +5,6 @@ edition.workspace = true
 license.workspace = true
 repository = "https://github.com/aphrody-dev/depot"
 description = "CIPD client in Rust: `cipd ensure` with the luci-go site root layout, instances cached in depot-cas (`ay cipd ensure`)"
-publish = false
 
 [dependencies]
 base64.workspace = true

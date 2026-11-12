@@ -1,8 +1,9 @@
 [package]
-name = "lore-telemetry"
+repository.workspace = true
+license = "MIT"
+name = "aphrody-lore-telemetry"
 edition = "2024"
 version = "0.13.1-nightly"
-publish = false
 description = "Telemetry and observability utilities for Lore"
 
 [lib]

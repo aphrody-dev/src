@@ -1,8 +1,10 @@
 [package]
-name = "lore-transport"
+repository.workspace = true
+description = "Lore version control: lore-transport (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore-transport"
 edition = "2024"
 version = "0.13.1-nightly"
-publish = false
 
 [lib]
 name = "lore_transport"
@@ -68,8 +70,8 @@ axum = { workspace = true }
 ctor = { workspace = true }
 dtor = { workspace = true }
 libc = { workspace = true }
-lore-base = { workspace = true, features = ["test-util"] }
-lore-transport = { workspace = true, features = ["test-util"] }
+lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
+lore-transport = { path = ".", package = "aphrody-lore-transport",  features = ["test-util"]  }
 
 [features]
 trace_log = ["lore-base/trace_log"]

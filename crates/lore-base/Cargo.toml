@@ -1,8 +1,10 @@
 [package]
-name = "lore-base"
+repository.workspace = true
+description = "Lore version control: lore-base (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore-base"
 edition = "2024"
 version = "0.13.1-nightly"
-publish = false
 
 [lib]
 name = "lore_base"
@@ -69,7 +71,7 @@ windows-sys = { workspace = true, features = ["Win32_Foundation", "Win32_Storage
 [dev-dependencies]
 # The crate's tests, the unit tests and the lore-stamp tests included, are built against the
 # library as other crates see it, without the `test` cfg, so they reach test_util through the feature.
-lore-base = { path = ".", features = ["test-util"] }
+lore-base = { path = ".", features = ["test-util"] , package = "aphrody-lore-base" }
 # Its serde integration: the non-self-describing format the identifier types' serde impls must
 # round-trip through.
 bitcode = { workspace = true, features = ["serde"] }

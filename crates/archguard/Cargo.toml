@@ -1,11 +1,11 @@
 [package]
+repository.workspace = true
 name = "archguard"
 version = "0.1.0"
 edition = "2024"
 authors = ["aphrody-dev <contact@aphrody.com>"]
 description = "Monorepo architecture, domain-purity, boundary and hygiene gate (library behind `ay arch`)"
 license = "MIT OR Apache-2.0"
-publish = false
 
 [lib]
 name = "archguard"

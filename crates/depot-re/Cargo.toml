@@ -1,4 +1,5 @@
 [package]
+description = "depot-re: part of the Aphrody monorepo"
 name = "depot-re"
 version.workspace = true
 edition.workspace = true

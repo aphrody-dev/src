@@ -1,10 +1,11 @@
 [package]
+repository.workspace = true
+license.workspace = true
 name = "xtk"
 version = "0.1.0"
 edition = "2024"
 authors = ["aphrody-dev <contact@aphrody.com>"]
 description = "Monorepo maintenance library behind `ay doctor`, `ay lock`, `ay manifests` and `ay git slim --all`"
-publish = false
 
 [lib]
 name = "xtk"

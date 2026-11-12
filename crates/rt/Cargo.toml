@@ -5,12 +5,11 @@ edition.workspace = true
 license.workspace = true
 repository = "https://github.com/aphrody-dev/src"
 description = "Runtime manager behind `ay rt`: Python engines and versions on uv (CPython, free-threaded, PyPy, GraalPy, Pyodide, RustPython), Bun versions and forks, package managers, PyTorch backends"
-publish = false
 
 [lib]
 name = "rt"
 
 [dependencies]
 clap.workspace = true
-up = { package = "aphrody-up", path = "../up" }
+up = { version = "0.2.0", package = "aphrody-up", path = "../up" }
 serde_json.workspace = true

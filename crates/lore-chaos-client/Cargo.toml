@@ -1,8 +1,10 @@
 [package]
-name = "lore-chaos-client"
+repository.workspace = true
+description = "Lore version control: lore-chaos-client (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore-chaos-client"
 edition = "2024"
 version = "0.13.1-nightly"
-publish = false
 
 [dependencies]
 anyhow = { workspace = true }
@@ -32,7 +34,7 @@ test = false
 test-util = []
 
 [dev-dependencies]
-lore-chaos-client = { path = ".", features = ["test-util"] }
+lore-chaos-client = { path = ".", features = ["test-util"] , package = "aphrody-lore-chaos-client" }
 
 [lints]
 workspace = true

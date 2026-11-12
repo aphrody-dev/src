@@ -1,8 +1,10 @@
 [package]
-name = "lore-hashicorp"
+repository.workspace = true
+description = "Lore version control: lore-hashicorp (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore-hashicorp"
 edition = "2024"
 version = "0.13.1-nightly"
-publish = false
 
 [lib]
 test = false
@@ -20,7 +22,7 @@ lore-telemetry = { workspace = true }
 urlencoding = { workspace = true }
 
 [dev-dependencies]
-lore-base = { workspace = true }
+lore-base = { path = "../lore-base", package = "aphrody-lore-base" }
 mockall = { workspace = true }
 rand = { workspace = true }
 temp-env = { workspace = true }

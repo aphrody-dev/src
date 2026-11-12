@@ -1,11 +1,11 @@
 [package]
+repository.workspace = true
 name = "aphrody-up"
 description = "Toolchain installer and updater behind `ay up`: tools.toml manifest, GitHub release and URL sources, sha256 checks, provider setup"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 authors.workspace = true
-publish = false
 
 [lib]
 name = "up"

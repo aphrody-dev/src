@@ -1,11 +1,11 @@
 [package]
+publish = false
 name = "aphrody"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 authors.workspace = true
 description = "ay: one multicall CLI for the Aphrody monorepo (arch gate, lock, git, ingest, graph, deploy, bench, build)"
-publish = false
 repository = "https://github.com/aphrody-dev/src"
 
 # Released with dist (dist-workspace.toml); the only dist package in the workspace.
@@ -26,14 +26,14 @@ clap.workspace = true
 depot-cli.workspace = true
 depot-cipd.workspace = true
 depot-core.workspace = true
-depot-gclient = { path = "../depot-gclient" }
-depot-vpython = { path = "../depot-vpython" }
-remote = { package = "aphrody-remote", path = "../remote" }
+depot-gclient = { version = "0.2.0", path = "../depot-gclient" }
+depot-vpython = { version = "0.2.0", path = "../depot-vpython" }
+remote = { version = "0.2.0", package = "aphrody-remote", path = "../remote" }
 serde_json.workspace = true
-sys = { path = "../sys" }
+sys = { version = "0.2.0", path = "../sys" , package = "aphrody-sys" }
 xtk.workspace = true
-up = { package = "aphrody-up", path = "../up" }
-rt = { package = "aphrody-rt", path = "../rt" }
+up = { version = "0.2.0", package = "aphrody-up", path = "../up" }
+rt = { version = "0.2.0", package = "aphrody-rt", path = "../rt" }
 # `ay self-update` against the dist releases (blocking API, no async runtime in ay itself).
 axoupdater = { version = "0.10", features = ["blocking"] }
 

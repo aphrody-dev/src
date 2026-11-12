@@ -10,5 +10,11 @@
     "fmt": "bun fmt"
   },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {},
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aphrody-dev/src.git",
+    "directory": "packages/bun-plugins"
+  }
 }

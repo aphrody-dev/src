@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 [package]
+publish = false
 name = "steam-depot"
 version = "1.4.8"
 edition = "2024"

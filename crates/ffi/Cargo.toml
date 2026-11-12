@@ -1,10 +1,10 @@
 [package]
-name = "ffi"
+repository.workspace = true
+name = "aphrody-ffi"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 description = "Stable C ABI over the depot and corelib web libraries (aphrody_ffi shared library)"
-publish = false
 
 [lib]
 name = "aphrody_ffi"
