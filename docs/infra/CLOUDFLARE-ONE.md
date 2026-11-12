@@ -1,6 +1,6 @@
 # Cloudflare One : migration du mesh WireGuard (pilote `mig-`)
 
-État au 2026-11-12 ~19:25 UTC. Inventaire relevé en direct (ssh `wg show`, `ss -tlnp`, `nginx` sur fr1/fr2/prd) et via `cf` 1.0.0-beta.31. Contexte : `C:\src-merge\docs\infra\FLEET.md`, `C:\src-merge\infra\fleet\RUNBOOK.md`.
+État au 2026-11-12 ~19:25 UTC. Inventaire relevé en direct (ssh `wg show`, `ss -tlnp`, `nginx` sur fr1/fr2/prd) et via `cf` 1.0.0-beta.31. Contexte : `docs/infra/FLEET.md`, `infra/fleet/RUNBOOK.md`.
 
 ## Migration Assessment
 
@@ -63,7 +63,7 @@
 
 **Not migrated** : voir le tableau (backends éteints, pairs inconnus, PC sans WARP, rosegriffon, NativeLink).
 
-**Pilot plan** : (1) fait : downloads sur fr2 passe par le tunnel. (2) remettre les backends aphrody en marche sur prd, puis répéter le schéma « ingress + relais loopback `127.0.0.1:1<port>` + règle WAF » upstream par upstream. (3) installer WARP sur le PC (UAC), enrôler l'appareil, tester `ssh root@10.200.77.5` via `mig-prd-ssh`. (4) après 7 jours sans incident, faire passer les UI d'admin à `127.0.0.1`.
+**Pilot plan** : (1) fait : downloads sur fr2 passe par le tunnel. (2) remettre les backends aphrody en marche sur prd, puis répéter le schéma « ingress + relais loopback `127.0.0.1:<port relais>` (le préfixe « 1 » déborde 65535 pour 29030, 41337 : utiliser une plage dédiée hors `ip_local_port_range`, ex. 18000-18999) + règle WAF » upstream par upstream. (3) installer WARP sur le PC (UAC), enrôler l'appareil, tester `ssh root@10.200.77.5` via `mig-prd-ssh`. (4) après 7 jours sans incident, faire passer les UI d'admin à `127.0.0.1`.
 
 **Validation** : `curl https://mig-test.aphrody.com/` 200 ; mig-depot et mig-commons 302 vers `aphrody-labs.cloudflareaccess.com` ; mig-downloads 403 depuis le PC et 502 (origine) depuis fr2 ; tunnel `mig-prd` healthy avec 4 connexions ; ssh public vers prd OK après déploiement ; `nginx -t` OK sur fr2.
 

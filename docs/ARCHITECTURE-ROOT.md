@@ -66,7 +66,7 @@ Cible commune avec la session labs (référence : `labs/docs/ROOT-ARCHITECTURE.m
 
 ## 5. third_party à plat — plan vérifié (simulation 2026-11-12)
 
-- 320 dépôts → 309 projets amont : 277 déplacements, 10 doublons supprimés.
+- 320 dépôts → 309 projets amont : 277 déplacements, 10 doublons supprimés, 1 dossier vide retiré (320 − 10 − 1 = 309). Limite : la comparaison GitHub ne porte que sur la branche par défaut ; vérifier aussi branches, tags et amonts hors GitHub avant suppression.
   - Doublons détectés par l'API GitHub, en suivant le réseau de forks et le nombre de commits d'avance (« ahead »). Exemples : `cachyos/WSL` (fork de microsoft/WSL, 0 commit d'avance, 67 de retard) et `build/wild` (aphrody-dev, 0 d'avance).
   - Autres opérations : 3 jonctions retirées, 1 dossier vide, 2 fichiers isolés déplacés vers `var/`, 26 références suivies réécrites.
 - Nommage. Le nom est le dernier segment du chemin actuel, sans le préfixe `owner_`. Un nom générique garde son propriétaire (`lightpanda-io-browser`, `modelcontextprotocol-rust-sdk`). Les exceptions sont listées et justifiées dans le script.

@@ -22,7 +22,7 @@
 | x86-64-v1..v4 | X86 [V] | `-march=x86-64` (v1), `x86-64-v2` SSE4.2, `-v3` AVX2, `-v4` AVX512F+BW+CD+DQ+VL (X86TargetParser.cpp l.468-470 [V]) |
 | aarch64 | AArch64 [V] | Windows, Linux, macOS, Android |
 | riscv64 | RISCV [V] | `riscv64-unknown-linux-gnu`, RVA22/RVA23 via `-march` |
-| wasm32 / wasm64 | WebAssembly [V] | `wasm32-unknown-unknown`, `wasm32-`wasm-ld`,p1`, `wasm32-wasip2`, `wasm32-unknown-emscripten`; link `wasm-ld`\|wasi\|emscripten`, `wasm64-unknown-unknown` (memory64) |
+| wasm32 / wasm64 | WebAssembly [V] | `wasm32-unknown-unknown`, `wasm32-wasip1`, `wasm32-wasip2`, `wasm32-unknown-emscripten`, `wasm64-unknown-unknown` (memory64) ; link `wasm-ld` |
 | loongarch64, ppc64le, s390x | LoongArch/PowerPC/SystemZ [V] | bonus serveurs |
 
 ## GPU
