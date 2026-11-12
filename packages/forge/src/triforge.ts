@@ -1,4 +1,5 @@
 // Sovereign Tri-Forge (GitHub + GitLab + Google Git) & Arch/CachyOS/Omarchy Upstream Engine
+import { SRC_ROOT } from "./root.ts";
 import { existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -26,7 +27,7 @@ export interface TriForgeConfig {
 }
 
 export function getDefaultTriForgeConfig(
-  srcRoot: string = "C:\\src",
+  srcRoot: string = SRC_ROOT,
 ): TriForgeConfig {
   const gitlabBaseUrl = (
     process.env.GITLAB_BASE_URL || "https://gitlab.com"
@@ -1033,7 +1034,7 @@ export function checkAndSyncArchUpstreams(options?: {
   srcRoot?: string;
 }): UpstreamSyncStatus[] {
   const sync = options?.sync ?? false;
-  const srcRoot = options?.srcRoot ?? "C:\\src";
+  const srcRoot = options?.srcRoot ?? SRC_ROOT;
   const statuses: UpstreamSyncStatus[] = [];
 
   for (const upstream of ARCH_CACHY_OMARCHY_UPSTREAMS) {

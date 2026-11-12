@@ -1,3 +1,4 @@
+import { SRC_ROOT, srcPath } from "../src/root.ts";
 import { describe, expect, test } from "bun:test";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -34,7 +35,7 @@ describe("Tri-Forge Repository Inventory & URL Synthesis", () => {
   });
 
   test("synthesizes exact GitHub, GitLab, Self-Hosted GitLab, and Google Cloud Git URLs", () => {
-    const cfg = getDefaultTriForgeConfig("C:\\src");
+    const cfg = getDefaultTriForgeConfig(SRC_ROOT);
     const spec = synthesizeRepoUrls("forge", "packages/forge", cfg);
 
     expect(spec.name).toBe("forge");
@@ -53,7 +54,7 @@ describe("Tri-Forge Repository Inventory & URL Synthesis", () => {
   });
 
   test("parses .gitmodules cleanly", () => {
-    const raw = readFileSync("C:\\src\\.gitmodules", "utf-8");
+    const raw = readFileSync(srcPath(".gitmodules"), "utf-8");
     const parsed = parseGitmodules(raw);
     expect(parsed.length).toBe(5);
     expect(parsed.some((p) => p.cleanName === "shenron")).toBe(true);
@@ -129,7 +130,7 @@ describe("Arch Linux, CachyOS & Omarchy Upstream Registry", () => {
 describe("Sovereign GitLab Infra, .gitlab-ci.yml & cloudbuild.yaml Validation", () => {
   test("validates package.json zero-dependency contract", () => {
     const pkgRaw = readFileSync(
-      resolve("C:\\src\\packages\\forge\\package.json"),
+      resolve(srcPath("packages", "forge", "package.json")),
       "utf-8",
     );
     const pkg = JSON.parse(pkgRaw);
@@ -140,14 +141,14 @@ describe("Sovereign GitLab Infra, .gitlab-ci.yml & cloudbuild.yaml Validation", 
 
   test("validates C:\\src\\infra\\gitlab sovereign artifacts exist and obey zero-bunx", () => {
     const files = [
-      "C:\\src\\infra\\gitlab\\docker-compose.gitlab.yml",
-      "C:\\src\\infra\\gitlab\\gitlab.rb",
-      "C:\\src\\infra\\gitlab\\arch-ci\\Dockerfile.arch-builder",
-      "C:\\src\\infra\\gitlab\\setup-triforge.ps1",
-      "C:\\src\\infra\\gitlab\\setup-triforge.sh",
-      "C:\\src\\infra\\gitlab\\README.md",
-      "C:\\src\\.gitlab-ci.yml",
-      "C:\\src\\cloudbuild.yaml",
+      srcPath("infra", "gitlab", "docker-compose.gitlab.yml"),
+      srcPath("infra", "gitlab", "gitlab.rb"),
+      srcPath("infra", "gitlab", "arch-ci", "Dockerfile.arch-builder"),
+      srcPath("infra", "gitlab", "setup-triforge.ps1"),
+      srcPath("infra", "gitlab", "setup-triforge.sh"),
+      srcPath("infra", "gitlab", "README.md"),
+      srcPath(".gitlab-ci.yml"),
+      srcPath("cloudbuild.yaml"),
     ];
 
     for (const file of files) {
@@ -157,7 +158,7 @@ describe("Sovereign GitLab Infra, .gitlab-ci.yml & cloudbuild.yaml Validation", 
     }
 
     const compose = readFileSync(
-      "C:\\src\\infra\\gitlab\\docker-compose.gitlab.yml",
+      srcPath("infra", "gitlab", "docker-compose.gitlab.yml"),
       "utf-8",
     );
     expect(compose).toContain("git.aphrody.com");
@@ -165,7 +166,7 @@ describe("Sovereign GitLab Infra, .gitlab-ci.yml & cloudbuild.yaml Validation", 
     expect(compose).toContain("2224:22");
     expect(compose).toContain("archlinux-pkgctl");
 
-    const gitlabCi = readFileSync("C:\\src\\.gitlab-ci.yml", "utf-8");
+    const gitlabCi = readFileSync(srcPath(".gitlab-ci.yml"), "utf-8");
     expect(gitlabCi).toContain("lint-anti-slop");
     expect(gitlabCi).toContain("build-bun-rust-go");
     expect(gitlabCi).toContain("test-gate");
@@ -173,7 +174,7 @@ describe("Sovereign GitLab Infra, .gitlab-ci.yml & cloudbuild.yaml Validation", 
     expect(gitlabCi).toContain("wck-seo-100");
     expect(gitlabCi).toContain("triforge-mirror");
 
-    const cloudbuild = readFileSync("C:\\src\\cloudbuild.yaml", "utf-8");
+    const cloudbuild = readFileSync(srcPath("cloudbuild.yaml"), "utf-8");
     expect(cloudbuild).toContain("europe-west1");
     expect(cloudbuild).toContain("us-central1");
     expect(cloudbuild).toContain("bunos");

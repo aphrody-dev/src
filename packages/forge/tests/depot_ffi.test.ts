@@ -1,3 +1,4 @@
+import { SRC_ROOT, srcPath } from "../src/root.ts";
 import { describe, it, expect } from "bun:test";
 import {
   isFfiAvailable,
@@ -18,14 +19,14 @@ describe("Depot Native Rust FFI Bridge (depot_ffi.dll)", () => {
   });
 
   it("calls ffiGixStatus to retrieve repository telemetry", () => {
-    const status = ffiGixStatus("C:\\src");
+    const status = ffiGixStatus(SRC_ROOT);
     expect(status).not.toBeNull();
     expect(status.branch).toBe("main");
     expect(status.tracked_entry_count).toBeGreaterThan(0);
   });
 
   it("calls ffiJustRecipes to parse justfile via JustEngine", () => {
-    const recipes = ffiJustRecipes("C:\\src\\justfile");
+    const recipes = ffiJustRecipes(srcPath("justfile"));
     expect(recipes).not.toBeNull();
     expect(Array.isArray(recipes.recipes)).toBe(true);
     expect(recipes.recipes.some((r: any) => r.name === "ingest")).toBe(true);
@@ -41,14 +42,14 @@ describe("Depot Native Rust FFI Bridge (depot_ffi.dll)", () => {
   });
 
   it("calls ffiIngestCodebase to ingest code into JSON digest", () => {
-    const res = ffiIngestCodebase("C:\\src\\crates\\depot-core", 1000, true);
+    const res = ffiIngestCodebase(srcPath("crates", "depot-core"), 1000, true);
     expect(res).not.toBeNull();
     expect(res.stats).toBeDefined();
     expect(res.stats.total_files).toBeGreaterThan(0);
   });
 
   it("calls ffiGraphQuery to query symbol knowledge graph", () => {
-    const queryRes = ffiGraphQuery("C:\\src\\crates\\depot-core", "GixEngine", false, 500);
+    const queryRes = ffiGraphQuery(srcPath("crates", "depot-core"), "GixEngine", false, 500);
     expect(queryRes).not.toBeNull();
     expect(queryRes.term).toBe("GixEngine");
     expect(queryRes.context).toContain("GixEngine");

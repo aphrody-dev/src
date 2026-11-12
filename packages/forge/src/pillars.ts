@@ -1,3 +1,4 @@
+import { SRC_ROOT } from "./root.ts";
 import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -179,7 +180,7 @@ export function parseKernelMaintainersSubsystems(maintainersContent: string): Ar
   return subsystems;
 }
 
-export function auditFourPillars(srcRoot: string = "C:\\src"): FourPillarAuditReport {
+export function auditFourPillars(srcRoot: string = SRC_ROOT): FourPillarAuditReport {
   const root = resolve(srcRoot);
 
   // Scan root junctions

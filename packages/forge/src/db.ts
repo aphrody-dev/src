@@ -1,4 +1,5 @@
 // Sovereign SQLite Store for Forge Reviews, CI & Bundles
+import { srcPath } from "./root.ts";
 import { Database } from "bun:sqlite";
 import { existsSync, mkdirSync } from "node:fs";
 import { homedir } from "node:os";
@@ -16,8 +17,8 @@ function resolveDbPath(): string {
     metaDir.includes("/$bunfs/") ||
     metaDir.includes("\\$bunfs\\")
   ) {
-    if (existsSync("C:\\src\\packages\\forge")) {
-      return "C:\\src\\packages\\forge\\forge.sqlite";
+    if (existsSync(srcPath("packages", "forge"))) {
+      return srcPath("packages", "forge", "forge.sqlite");
     }
     const fallbackDir = join(homedir(), ".local", "share", "aphrody-forge");
     mkdirSync(fallbackDir, { recursive: true });

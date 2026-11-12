@@ -1,4 +1,5 @@
 // Sovereign Monorepo Forge: Web Dashboard & REST API Engine (Bun.serve)
+import { SRC_ROOT } from "./root.ts";
 import {
   scanMonorepoRepos,
   getRepoStacks,
@@ -501,7 +502,7 @@ export function startForgeServer(port: number = 4000) {
       }
 
       if (url.pathname === "/api/repos") {
-        const repos = scanMonorepoRepos("C:\\src");
+        const repos = scanMonorepoRepos(SRC_ROOT);
         return Response.json(repos);
       }
 

@@ -1,4 +1,5 @@
 // Sovereign VCS Adapter: Jujutsu (jj), Gitoxide (gix), and Git integration
+import { SRC_ROOT } from "./root.ts";
 import { existsSync, lstatSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { execSync } from "node:child_process";
@@ -185,7 +186,7 @@ function isReparseOrSymlink(p: string): boolean {
 }
 
 export function scanMonorepoRepos(
-  srcRoot: string = "C:\\src",
+  srcRoot: string = SRC_ROOT,
   options?: { includeThirdParty?: boolean; fast?: boolean },
 ): RepoInfo[] {
   const repos: RepoInfo[] = [];

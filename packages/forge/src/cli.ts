@@ -1,5 +1,6 @@
 #!/usr/bin/env bun
 // Sovereign Local Forge CLI: frg
+import { SRC_ROOT } from "./root.ts";
 import {
   scanMonorepoRepos,
   inspectRepo,
@@ -167,7 +168,7 @@ async function main() {
         });
       } else {
         console.log("Scanning C:\\src monorepo repositories...\n");
-        const repos = scanMonorepoRepos("C:\\src", { includeThirdParty });
+        const repos = scanMonorepoRepos(SRC_ROOT, { includeThirdParty });
         console.log(
           "REPO                      BRANCH             HEAD         STATUS         ENGINE",
         );
@@ -518,7 +519,7 @@ async function main() {
 
     case "pillars": {
       const asJson = args.includes("--json");
-      const report = auditFourPillars("C:\\src");
+      const report = auditFourPillars(SRC_ROOT);
       if (asJson) {
         console.log(JSON.stringify(report, null, 2));
         if (!report.allHealthy) process.exit(1);
