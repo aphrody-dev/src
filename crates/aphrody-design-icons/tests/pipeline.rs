@@ -12,11 +12,9 @@ use aphrody_design_icons::lock::{AssetLock, SourceFormat};
 use aphrody_design_icons::optimize::{OptimizeOptions, optimize};
 use aphrody_design_shared::YoloThemePreset;
 
+/// Crate directory: holds `catalog/` since the design crates were flattened into `crates/`.
 fn repo_root() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("../..")
-        .canonicalize()
-        .expect("repo root")
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
 }
 
 fn lock() -> AssetLock {

@@ -16,7 +16,11 @@ pub fn check_linux_hygiene(root: &Path, findings: &mut Vec<ArchFinding>) {
 
             for (idx, line) in content.lines().enumerate() {
                 let trimmed = line.trim();
-                if trimmed.is_empty() || trimmed.starts_with('#') || trimmed.starts_with('=') || trimmed.starts_with('-') {
+                if trimmed.is_empty()
+                    || trimmed.starts_with('#')
+                    || trimmed.starts_with('=')
+                    || trimmed.starts_with('-')
+                {
                     continue;
                 }
 
@@ -30,7 +34,15 @@ pub fn check_linux_hygiene(root: &Path, findings: &mut Vec<ArchFinding>) {
                 }
 
                 // If line does not start with a tag like M:, L:, S:, W:, T:, F:, X: it might be a section header
-                if !trimmed.contains(':') || (!trimmed.starts_with("M:") && !trimmed.starts_with("L:") && !trimmed.starts_with("S:") && !trimmed.starts_with("W:") && !trimmed.starts_with("T:") && !trimmed.starts_with("F:") && !trimmed.starts_with("X:")) {
+                if !trimmed.contains(':')
+                    || (!trimmed.starts_with("M:")
+                        && !trimmed.starts_with("L:")
+                        && !trimmed.starts_with("S:")
+                        && !trimmed.starts_with("W:")
+                        && !trimmed.starts_with("T:")
+                        && !trimmed.starts_with("F:")
+                        && !trimmed.starts_with("X:"))
+                {
                     current_section = trimmed.to_string();
                     continue;
                 }
@@ -45,7 +57,8 @@ pub fn check_linux_hygiene(root: &Path, findings: &mut Vec<ArchFinding>) {
                             continue;
                         }
                         let clean_val = val.trim_end_matches('/');
-                        let target = root.join(clean_val.replace('/', std::path::MAIN_SEPARATOR_STR));
+                        let target =
+                            root.join(clean_val.replace('/', std::path::MAIN_SEPARATOR_STR));
                         if !target.exists() {
                             findings.push(ArchFinding {
                                 rule_id: "ARCH-015".into(),
@@ -60,7 +73,8 @@ pub fn check_linux_hygiene(root: &Path, findings: &mut Vec<ArchFinding>) {
                             });
                         }
                     } else if tag == "S" {
-                        let allowed_status = ["Supported", "Maintained", "Odd Fixes", "Orphan", "Obsolete"];
+                        let allowed_status =
+                            ["Supported", "Maintained", "Odd Fixes", "Orphan", "Obsolete"];
                         if !allowed_status.contains(&val) {
                             findings.push(ArchFinding {
                                 rule_id: "ARCH-015".into(),

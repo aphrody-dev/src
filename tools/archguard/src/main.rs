@@ -1,5 +1,5 @@
 use archguard::{
-    build_monorepo_graph, format_human_report, run_audit, AuditConfig, RULES, VERSION,
+    AuditConfig, RULES, VERSION, build_monorepo_graph, format_human_report, run_audit,
 };
 use argh::FromArgs;
 use std::fs;
@@ -104,7 +104,10 @@ fn default_root() -> PathBuf {
         return PathBuf::from(root);
     }
     if let Ok(cwd) = std::env::current_dir() {
-        if let Some(found) = cwd.ancestors().find(|dir| dir.join("src.lock.json").is_file()) {
+        if let Some(found) = cwd
+            .ancestors()
+            .find(|dir| dir.join("src.lock.json").is_file())
+        {
             return found.to_path_buf();
         }
     }
@@ -137,7 +140,10 @@ fn main() {
                 );
             } else {
                 println!("ARCHGUARD v{VERSION} — Enforced Architectural Rules:");
-                println!("{:<10} {:<8} {:<36} {}", "RULE", "DEFAULT", "CATEGORY", "SUMMARY");
+                println!(
+                    "{:<10} {:<8} {:<36} {}",
+                    "RULE", "DEFAULT", "CATEGORY", "SUMMARY"
+                );
                 println!("{}", "-".repeat(110));
                 for rule in RULES {
                     println!(
@@ -151,7 +157,11 @@ fn main() {
             }
         }
         Some(SubCmd::Graph(g)) => {
-            let root_path = g.root.or(cli.root).map(PathBuf::from).unwrap_or_else(default_root);
+            let root_path = g
+                .root
+                .or(cli.root)
+                .map(PathBuf::from)
+                .unwrap_or_else(default_root);
             let graph = build_monorepo_graph(&root_path);
             let rendered = match g.format.to_ascii_lowercase().as_str() {
                 "dot" => graph.to_dot(),

@@ -1,6 +1,6 @@
 use crate::constants::{
-    collect_domain_files, find_first_emoji, is_reparse_point, normalize_rel,
-    AI_WRAPPER_SLOP_RE, SECRET_TOKEN_RE, SYSTEM32_MUTATION_RE,
+    AI_WRAPPER_SLOP_RE, SECRET_TOKEN_RE, SYSTEM32_MUTATION_RE, collect_domain_files,
+    find_first_emoji, is_reparse_point, normalize_rel,
 };
 use crate::models::{ArchFinding, Severity};
 use rayon::prelude::*;

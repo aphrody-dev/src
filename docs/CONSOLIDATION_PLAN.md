@@ -65,6 +65,8 @@ src artifacts {verify, hash, init}
 - 2026-11-12: unused `upstream/` reference clones deleted from crates/depot, crates/unix, crates/wayland and packages/google-design (icons and color utilities kept, they are read by code).
 - 2026-11-12: `crates/corelib`, `crates/gamescope-rs` (wgpu 30.0) and `crates/design-system` (taffy 0.15) build against crates.io instead of `third_party/`. corelib needed one change (`PollType::Wait.submission_index` is an `Option` in the released API). The `third_party/taffy` fork branch `feat/google-design-web-vitals` carries ~1,900 lines of first-party code (`google_design.rs`, `web_vitals.rs`) that no crate uses; it should move into `crates/design` or be dropped.
 
+- 2026-11-12: root Cargo workspace created (`C:/src/Cargo.toml`, resolver 3) with `tools/archguard`, `crates/corelib` and the seven design crates flattened from `crates/design-system/crates/*` to `crates/aphrody-design-*` (catalog moved to `crates/aphrody-design-icons/catalog/`, overview to `docs/DESIGN_SYSTEM.md`). One `Cargo.lock`, one fat-LTO release profile; 338 workspace tests pass. archguard learned workspace inheritance (ARCH-002, ARCH-013).
+
 ## Order of work (each step ends green: `cargo test --workspace`, `just verify-all`, `archguard check --strict`)
 
 1. Delete dead units and the `upstream/` reference clones (no first-party path dep points into them).

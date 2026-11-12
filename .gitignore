@@ -43,6 +43,8 @@ graphify-out/
 !/GEMINI.md
 !/README.md
 !/justfile
+!/Cargo.toml
+!/Cargo.lock
 !/Dockerfile
 !/compose.yaml
 !/.dockerignore

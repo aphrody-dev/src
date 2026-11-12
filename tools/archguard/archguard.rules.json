@@ -18,6 +18,7 @@
     "infra",
     "node_modules",
     "packages",
+    "target",
     "third_party",
     "tools",
     "var"

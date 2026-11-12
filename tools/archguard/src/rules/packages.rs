@@ -26,10 +26,7 @@ pub fn check_packages_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
         if !pkg_path.is_dir() || is_reparse_point(&pkg_path) {
             continue;
         }
-        let pkg_dir_name = pkg_path
-            .file_name()
-            .and_then(|n| n.to_str())
-            .unwrap_or("");
+        let pkg_dir_name = pkg_path.file_name().and_then(|n| n.to_str()).unwrap_or("");
         if pkg_dir_name.starts_with('.') {
             continue;
         }
@@ -43,7 +40,10 @@ pub fn check_packages_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                 path: normalize_rel(root, &pkg_path),
                 line: None,
                 message: format!("Missing `package.json` in package directory `{pkg_dir_name}`"),
-                remediation: format!("Create `@aphrody/{pkg_dir_name}` `package.json` in `{}`.", normalize_rel(root, &pkg_path)),
+                remediation: format!(
+                    "Create `@aphrody/{pkg_dir_name}` `package.json` in `{}`.",
+                    normalize_rel(root, &pkg_path)
+                ),
             });
             continue;
         }
@@ -60,8 +60,12 @@ pub fn check_packages_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                             severity: Severity::Error,
                             path: normalize_rel(root, &pkg_json),
                             line: None,
-                            message: format!("Package `{name}` lacks required `@aphrody/` monorepo scope prefix"),
-                            remediation: format!("Rename package to `@aphrody/{name}` in `package.json`."),
+                            message: format!(
+                                "Package `{name}` lacks required `@aphrody/` monorepo scope prefix"
+                            ),
+                            remediation: format!(
+                                "Rename package to `@aphrody/{name}` in `package.json`."
+                            ),
                         });
                     }
                 } else {
@@ -71,8 +75,12 @@ pub fn check_packages_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                         severity: Severity::Error,
                         path: normalize_rel(root, &pkg_json),
                         line: None,
-                        message: format!("Package `{pkg_dir_name}` has missing `name` field in `package.json`"),
-                        remediation: format!("Declare `\"name\": \"@aphrody/{pkg_dir_name}\"` in `package.json`."),
+                        message: format!(
+                            "Package `{pkg_dir_name}` has missing `name` field in `package.json`"
+                        ),
+                        remediation: format!(
+                            "Declare `\"name\": \"@aphrody/{pkg_dir_name}\"` in `package.json`."
+                        ),
                     });
                 }
 
@@ -81,7 +89,8 @@ pub fn check_packages_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                     if let Some(deps_map) = val.get(dep_field).and_then(|d| d.as_object()) {
                         for (dep_name, dep_ver) in deps_map {
                             let ver_str = dep_ver.as_str().unwrap_or("");
-                            let is_workspace = ver_str.starts_with("workspace:") || dep_name.starts_with("@aphrody/");
+                            let is_workspace = ver_str.starts_with("workspace:")
+                                || dep_name.starts_with("@aphrody/");
                             let is_approved_bun_types = dep_name == "@types/bun";
                             let is_approved_types = dep_name.starts_with("@types/");
 
@@ -108,7 +117,9 @@ pub fn check_packages_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                 if let Some(scripts) = val.get("scripts").and_then(|s| s.as_object()) {
                     for hook in ["postinstall", "preinstall"] {
                         if let Some(script_body) = scripts.get(hook).and_then(|b| b.as_str()) {
-                            if script_body.contains("node-gyp") || script_body.contains("npm rebuild") {
+                            if script_body.contains("node-gyp")
+                                || script_body.contains("npm rebuild")
+                            {
                                 findings.push(ArchFinding {
                                     rule_id: "ARCH-016".into(),
                                     category: "bun-speed-zero-glue-hygiene".into(),
@@ -136,8 +147,11 @@ pub fn check_packages_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                 severity: Severity::Error,
                 path: normalize_rel(root, &binding_gyp),
                 line: None,
-                message: format!("Forbidden node-gyp build descriptor `binding.gyp` in package `{pkg_dir_name}`"),
-                remediation: "Use pure Rust FFI or Bun native WASM/C bindings instead of node-gyp.".into(),
+                message: format!(
+                    "Forbidden node-gyp build descriptor `binding.gyp` in package `{pkg_dir_name}`"
+                ),
+                remediation: "Use pure Rust FFI or Bun native WASM/C bindings instead of node-gyp."
+                    .into(),
             });
         }
 
@@ -166,8 +180,13 @@ pub fn check_packages_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                 severity: Severity::Error,
                 path: normalize_rel(root, &root_cargo),
                 line: None,
-                message: format!("Root `Cargo.toml` found directly inside package `{pkg_dir_name}`"),
-                remediation: format!("Move `{}` into `native/`, `crates/`, or `rust-core/` within the package.", normalize_rel(root, &root_cargo)),
+                message: format!(
+                    "Root `Cargo.toml` found directly inside package `{pkg_dir_name}`"
+                ),
+                remediation: format!(
+                    "Move `{}` into `native/`, `crates/`, or `rust-core/` within the package.",
+                    normalize_rel(root, &root_cargo)
+                ),
             });
         }
 
@@ -180,7 +199,10 @@ pub fn check_packages_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                 path: normalize_rel(root, &root_go),
                 line: None,
                 message: format!("Root `go.mod` found directly inside package `{pkg_dir_name}`"),
-                remediation: format!("Move `{}` into `infra/` or isolated native subfolder.", normalize_rel(root, &root_go)),
+                remediation: format!(
+                    "Move `{}` into `infra/` or isolated native subfolder.",
+                    normalize_rel(root, &root_go)
+                ),
             });
         }
 

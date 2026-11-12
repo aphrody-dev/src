@@ -75,7 +75,11 @@ fn clean_minimal_monorepo_passes_with_zero_findings() {
         check_docs_emojis: true,
     });
 
-    assert!(report.clean, "expected clean report, got: {:?}", report.findings);
+    assert!(
+        report.clean,
+        "expected clean report, got: {:?}",
+        report.findings
+    );
     assert_eq!(report.error_count, 0);
     assert_eq!(report.warning_count, 0);
 }
@@ -107,7 +111,11 @@ fn detects_typescript_and_npm_files_inside_rust_crate_arch_001() {
         .iter()
         .filter(|f| f.rule_id == "ARCH-001")
         .collect();
-    assert_eq!(arch001.len(), 2, "should flag both crawler.ts and package.json");
+    assert_eq!(
+        arch001.len(),
+        2,
+        "should flag both crawler.ts and package.json"
+    );
     assert!(arch001.iter().all(|f| f.severity == Severity::Error));
 }
 
@@ -181,10 +189,7 @@ fn detects_rogue_root_directory_system32_mutation_secret_env_and_emojis() {
         "packages/leak/install.ps1",
         "Copy-Item ./foo.exe C:\\Windows\\System32\\foo.exe\n",
     );
-    ws.write(
-        "packages/leak/slop.md",
-        "# Bad Doc \u{1F680}\n",
-    );
+    ws.write("packages/leak/slop.md", "# Bad Doc \u{1F680}\n");
 
     let report = run_audit(&AuditConfig {
         root: ws.path().to_path_buf(),
@@ -195,9 +200,18 @@ fn detects_rogue_root_directory_system32_mutation_secret_env_and_emojis() {
 
     assert!(!report.clean);
     let ids: Vec<&str> = report.findings.iter().map(|f| f.rule_id.as_str()).collect();
-    assert!(ids.contains(&"ARCH-005"), "missing rogue root dir check: {ids:?}");
-    assert!(ids.contains(&"ARCH-007"), "missing System32 mutation check: {ids:?}");
-    assert!(ids.contains(&"ARCH-008"), "missing .env leak check: {ids:?}");
+    assert!(
+        ids.contains(&"ARCH-005"),
+        "missing rogue root dir check: {ids:?}"
+    );
+    assert!(
+        ids.contains(&"ARCH-007"),
+        "missing System32 mutation check: {ids:?}"
+    );
+    assert!(
+        ids.contains(&"ARCH-008"),
+        "missing .env leak check: {ids:?}"
+    );
     assert!(ids.contains(&"ARCH-009"), "missing emoji check: {ids:?}");
 }
 
@@ -272,8 +286,14 @@ fn detects_tools_domain_violations_and_stale_atlas_links_arch_011_012() {
     });
 
     let ids: Vec<&str> = report.findings.iter().map(|f| f.rule_id.as_str()).collect();
-    assert!(ids.contains(&"ARCH-011"), "expected ARCH-011 finding, got: {ids:?}");
-    assert!(ids.contains(&"ARCH-012"), "expected ARCH-012 finding, got: {ids:?}");
+    assert!(
+        ids.contains(&"ARCH-011"),
+        "expected ARCH-011 finding, got: {ids:?}"
+    );
+    assert!(
+        ids.contains(&"ARCH-012"),
+        "expected ARCH-012 finding, got: {ids:?}"
+    );
 }
 
 #[test]
@@ -302,7 +322,11 @@ fn detects_missing_or_invalid_version_in_package_or_crate_arch_013() {
         .iter()
         .filter(|f| f.rule_id == "ARCH-013")
         .collect();
-    assert_eq!(arch013.len(), 2, "expected 2 versioning findings, got: {arch013:?}");
+    assert_eq!(
+        arch013.len(),
+        2,
+        "expected 2 versioning findings, got: {arch013:?}"
+    );
 }
 
 #[test]
@@ -326,7 +350,10 @@ fn detects_chromium_deps_non_sha1_and_unnormalized_paths_arch_014() {
         .iter()
         .filter(|f| f.rule_id == "ARCH-014")
         .collect();
-    assert!(arch014.len() >= 2, "expected trailing slash and non-sha1 findings, got: {arch014:?}");
+    assert!(
+        arch014.len() >= 2,
+        "expected trailing slash and non-sha1 findings, got: {arch014:?}"
+    );
 }
 
 #[test]
@@ -336,10 +363,7 @@ fn detects_linux_maintainers_nonexistent_pattern_and_broken_patch_series_arch_01
         "MAINTAINERS",
         "FOO SUBSYSTEM\nM: John Doe <john@example.com>\nS: Supported\nF: crates/non_existent_folder/\n",
     );
-    ws.write(
-        "docs/patches/series",
-        "missing-patch.patch -p1\n",
-    );
+    ws.write("docs/patches/series", "missing-patch.patch -p1\n");
 
     let report = run_audit(&AuditConfig {
         root: ws.path().to_path_buf(),
@@ -354,7 +378,10 @@ fn detects_linux_maintainers_nonexistent_pattern_and_broken_patch_series_arch_01
         .iter()
         .filter(|f| f.rule_id == "ARCH-015")
         .collect();
-    assert!(arch015.len() >= 2, "expected MAINTAINERS F: and patch series findings, got: {arch015:?}");
+    assert!(
+        arch015.len() >= 2,
+        "expected MAINTAINERS F: and patch series findings, got: {arch015:?}"
+    );
 }
 
 #[test]
@@ -379,7 +406,11 @@ fn detects_bun_binding_gyp_and_legacy_postinstall_arch_016() {
         .iter()
         .filter(|f| f.rule_id == "ARCH-016")
         .collect();
-    assert_eq!(arch016.len(), 2, "expected binding.gyp and postinstall findings, got: {arch016:?}");
+    assert_eq!(
+        arch016.len(),
+        2,
+        "expected binding.gyp and postinstall findings, got: {arch016:?}"
+    );
 }
 
 #[test]
@@ -408,8 +439,15 @@ fn detects_upward_layer_dependency_and_cycles_in_graph_arch_017() {
         .iter()
         .filter(|f| f.rule_id == "ARCH-017")
         .collect();
-    assert!(!arch017.is_empty(), "expected cycle finding in ARCH-017, got: {arch017:?}");
-    assert!(arch017.iter().any(|f| f.message.contains("Cyclic dependency detected")));
+    assert!(
+        !arch017.is_empty(),
+        "expected cycle finding in ARCH-017, got: {arch017:?}"
+    );
+    assert!(
+        arch017
+            .iter()
+            .any(|f| f.message.contains("Cyclic dependency detected"))
+    );
 }
 
 #[test]

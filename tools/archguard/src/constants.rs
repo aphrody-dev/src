@@ -47,6 +47,7 @@ pub const ALLOWED_ROOT_PHYSICAL_DIRS: &[&str] = &[
     "infra",
     "node_modules",
     "packages",
+    "target",
     "third_party",
     "tools",
     "var",
@@ -166,7 +167,10 @@ pub fn contains_pictographic_emoji(ch: char) -> bool {
 pub fn find_first_emoji(text: &str) -> Option<(usize, char)> {
     for (idx, line) in text.lines().enumerate() {
         // Ignore regex character class definitions that intentionally match emojis
-        if line.contains("\\u{1F") || line.contains("Extended_Pictographic") || line.contains("0x1F300") {
+        if line.contains("\\u{1F")
+            || line.contains("Extended_Pictographic")
+            || line.contains("0x1F300")
+        {
             continue;
         }
         for ch in line.chars() {
@@ -180,6 +184,45 @@ pub fn find_first_emoji(text: &str) -> Option<(usize, char)> {
 
 pub fn should_skip_dir_name(name: &str) -> bool {
     SKIP_DIRS.contains(&name)
+}
+
+/// True when a crate manifest inherits `key` from the workspace
+/// (`key.workspace = true` or `key = { workspace = true }`).
+pub fn manifest_inherits(content: &str, key: &str) -> bool {
+    let dotted = format!("{key}.workspace=true");
+    let inline = format!("{key}={{workspace=true");
+    content.lines().any(|l| {
+        let t: String = l
+            .split('#')
+            .next()
+            .unwrap_or("")
+            .chars()
+            .filter(|c| !c.is_whitespace())
+            .collect();
+        t == dotted || t.starts_with(&inline)
+    })
+}
+
+/// Value of `key` in the `[workspace.package]` table of `<root>/Cargo.toml`, unquoted.
+pub fn workspace_package_value(root: &Path, key: &str) -> Option<String> {
+    let content = fs::read_to_string(root.join("Cargo.toml")).ok()?;
+    let mut in_table = false;
+    for line in content.lines() {
+        let t = line.trim();
+        if t.starts_with('[') {
+            in_table = t == "[workspace.package]";
+            continue;
+        }
+        if !in_table {
+            continue;
+        }
+        if let Some((k, v)) = t.split_once('=') {
+            if k.trim() == key {
+                return Some(v.trim().trim_matches('"').trim_matches('\'').to_string());
+            }
+        }
+    }
+    None
 }
 
 pub fn collect_domain_files(dir: &Path, out: &mut Vec<PathBuf>) {

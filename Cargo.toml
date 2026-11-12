@@ -1,13 +1,27 @@
+# Root Cargo workspace for the first-party Rust crates that live in this repository.
+# Units still kept as their own git submodules (crates/depot, crates/xtask, crates/unix, ...)
+# join one at a time; see docs/CONSOLIDATION_PLAN.md.
 [workspace]
-resolver = "2"
+resolver = "3"
 members = [
-    "crates/aphrody-design-shared",
-    "crates/aphrody-design-tokens",
-    "crates/aphrody-design-emit",
-    "crates/aphrody-design-layout",
-    "crates/aphrody-design-icons",
-    "crates/aphrody-design-sprite-sheet",
-    "crates/aphrody-design-identity",
+  "tools/archguard",
+  "crates/corelib",
+  "crates/aphrody-design-*",
+]
+# Submodule units keep their own manifests until they join (docs/CONSOLIDATION_PLAN.md).
+exclude = [
+  "third_party",
+  "apps",
+  "packages",
+  "infra",
+  "crates/bench",
+  "crates/depot",
+  "crates/gamescope-rs",
+  "crates/ring3-agent",
+  "crates/rust-stack",
+  "crates/unix",
+  "crates/wayland",
+  "crates/xtask",
 ]
 
 [workspace.package]
@@ -38,9 +52,10 @@ debug = 1
 split-debuginfo = "unpacked"
 incremental = true
 
+# One release profile for every member: fat LTO, single codegen unit, abort on panic.
 [profile.release]
 opt-level = 3
-lto = "thin"
+lto = "fat"
 codegen-units = 1
 panic = "abort"
-strip = true
+strip = "symbols"

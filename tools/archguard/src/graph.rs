@@ -296,7 +296,12 @@ pub fn build_monorepo_graph(root: &Path) -> MonorepoGraph {
                             }
                         }
                     }
-                    graph.add_node(id, label, normalize_rel(root, &p), MonorepoLayer::Layer2Packages);
+                    graph.add_node(
+                        id,
+                        label,
+                        normalize_rel(root, &p),
+                        MonorepoLayer::Layer2Packages,
+                    );
                 }
             }
         }
@@ -344,10 +349,18 @@ pub fn build_monorepo_graph(root: &Path) -> MonorepoGraph {
 
     // 2. Discover dependency edges
     let mut discovered_edges: Vec<(String, String)> = Vec::new();
-    let node_paths: Vec<(String, String)> = graph.nodes.iter().map(|(id, n)| (id.clone(), n.path.clone())).collect();
+    let node_paths: Vec<(String, String)> = graph
+        .nodes
+        .iter()
+        .map(|(id, n)| (id.clone(), n.path.clone()))
+        .collect();
 
     for (id, node_path) in &node_paths {
-        if id.starts_with("packages/") || id.starts_with("apps/") || id.starts_with("tools/") || id.starts_with("infra/") {
+        if id.starts_with("packages/")
+            || id.starts_with("apps/")
+            || id.starts_with("tools/")
+            || id.starts_with("infra/")
+        {
             let pkg_json = root.join(node_path).join("package.json");
             if let Ok(content) = fs::read_to_string(&pkg_json) {
                 if let Ok(val) = serde_json::from_str::<serde_json::Value>(&content) {

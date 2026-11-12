@@ -81,8 +81,10 @@ pub fn check_apps_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                 severity: Severity::Error,
                 path: normalize_rel(root, &nm),
                 line: None,
-                message: "Forbidden `node_modules` in `apps/aphrody` (Zero-NPM web platform)".into(),
-                remediation: "Delete `apps/aphrody/node_modules`; aphrody.com has zero dependencies.".into(),
+                message: "Forbidden `node_modules` in `apps/aphrody` (Zero-NPM web platform)"
+                    .into(),
+                remediation:
+                    "Delete `apps/aphrody/node_modules`; aphrody.com has zero dependencies.".into(),
             });
         }
 
@@ -94,7 +96,9 @@ pub fn check_apps_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                 severity: Severity::Error,
                 path: normalize_rel(root, &lock),
                 line: None,
-                message: "Forbidden isolated `bun.lock` in `apps/aphrody` (zero dependencies required)".into(),
+                message:
+                    "Forbidden isolated `bun.lock` in `apps/aphrody` (zero dependencies required)"
+                        .into(),
                 remediation: "Delete `apps/aphrody/bun.lock`.".into(),
             });
         }

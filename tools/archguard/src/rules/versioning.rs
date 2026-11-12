@@ -1,4 +1,7 @@
-use crate::constants::{is_reparse_point, normalize_rel, SEMVER_OR_CALVER_RE};
+use crate::constants::{
+    SEMVER_OR_CALVER_RE, is_reparse_point, manifest_inherits, normalize_rel,
+    workspace_package_value,
+};
 use crate::models::{ArchFinding, Severity};
 use serde_json::Value;
 use std::fs;
@@ -50,8 +53,11 @@ pub fn check_versioning_integrity(root: &Path, findings: &mut Vec<ArchFinding>) 
                             severity: Severity::Error,
                             path: "infra/go.mod".into(),
                             line: None,
-                            message: "infra/go.mod is missing `go 1.xx` toolchain version directive".into(),
-                            remediation: "Add `go 1.27` toolchain directive to `infra/go.mod`.".into(),
+                            message:
+                                "infra/go.mod is missing `go 1.xx` toolchain version directive"
+                                    .into(),
+                            remediation: "Add `go 1.27` toolchain directive to `infra/go.mod`."
+                                .into(),
                         });
                     }
                 }
@@ -91,6 +97,10 @@ pub fn check_versioning_integrity(root: &Path, findings: &mut Vec<ArchFinding>) 
                                 }
                                 break;
                             }
+                        }
+                        if !has_version && manifest_inherits(&content, "version") {
+                            has_version = workspace_package_value(root, "version")
+                                .is_some_and(|v| SEMVER_OR_CALVER_RE.is_match(&v));
                         }
                         if !has_version {
                             findings.push(ArchFinding {

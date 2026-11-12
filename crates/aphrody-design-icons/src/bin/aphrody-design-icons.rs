@@ -19,7 +19,7 @@ use aphrody_design_icons::{Error, aphrody_mark};
     about = "Aphrody Design icon and favicon pipeline"
 )]
 struct Cli {
-    /// Repository root (holds `catalog/assets.lock.toml`).
+    /// Directory holding `catalog/assets.lock.toml` (the aphrody-design-icons crate directory).
     #[arg(long, global = true, default_value = ".")]
     root: PathBuf,
     #[command(subcommand)]

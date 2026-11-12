@@ -23,7 +23,9 @@ bun check                     # typecheck
 bun test packages/env-kit     # test one package
 bun test packages/env-kit/tests/foo.test.ts -t "name"   # single test file / test name
 bun test ./.agents/scripts/pre-tool-guard.test.ts       # dot-dirs need an explicit ./ path
-cargo test --manifest-path crates/<crate>/Cargo.toml    # no root Cargo workspace; each crate is standalone
+cargo test --workspace         # root workspace: archguard, corelib, aphrody-design-* (one Cargo.lock, one target/)
+cargo test -p aphrody-design-tokens <test_name>
+cargo test --manifest-path crates/<unit>/Cargo.toml    # units not yet in the root workspace (depot, xtask, unix, ...)
 go -C infra test ./...        # Go deploy engine
 just archguard                # architecture / purity / hygiene gate
 just verify-all               # archguard + xtk doctor + bun + cargo + go suites
@@ -53,6 +55,7 @@ Most `apps/*` and `packages/*` are git submodules, and many are uninitialized in
 - **Deploy engine**: `infra/cmd/src-deploy` (Go) builds OCI images and drives Cloudflare, Caddy blue/green on `fr1`/`fr2`/`usa`, GCP Cloud Run, Vercel. Config is `deploy.toml`; the generated Caddyfile lives in `infra/generated/`.
 - **VCS governance**: `src.lock.json` is the source of truth; `DEPS` (Chromium gclient), `.repo/manifests/default.xml` (AOSP repo), and `MAINTAINERS` (kernel style) are generated from it by `xtk lock` / `xtk manifests`. Do not hand-edit them.
 - **One canonical path per unit**: there are no root aliases (the former `C:/src/bun`, `C:/src/chromium`, ... junctions were removed; the list is in `var/reorg/`). Always reference `third_party/<name>`, `packages/<name>`, `crates/<name>`, `apps/<name>`. `third_party/chromium` is a gclient solution (`.gclient`, cache in `%LOCALAPPDATA%/depot_tools/git_cache`); `third_party/bun` is the `aphrody-dev/bun` fork, a Rust Cargo workspace of ~130 crates under `src/` with its own `CLAUDE.md` (build with `bun bd`, never plain `bun test` there).
+- **Root Cargo workspace** (`Cargo.toml`): flat `crates/<name>` members sharing `[workspace.package]` (edition 2024), `[workspace.dependencies]`, and one release profile (fat LTO, 1 codegen unit, abort). Members inherit with `edition.workspace = true`; archguard accepts that only when the root value is compliant. Submodule units join one at a time per `docs/CONSOLIDATION_PLAN.md`.
 - **Tooling crates**: `crates/xtask` (`xtk`: doctor, lock, audits), `crates/depot` (depot_tools shims, ingest, tree-sitter AST graph in `depot-graph` + `depot-treesitter`), `tools/archguard` (rules `ARCH-001`..`ARCH-017` under `src/rules/`).
 - **Code graphs**: `graphify-out/GRAPH_REPORT.md` covers `packages/`; `graphify-out/bun/` covers Bun (`third_party/bun/src`, ~420k nodes). Each report records the commit it was built from; rebuild with `just graph <path> <name>` when stale. Query these before grepping `third_party/`.
 

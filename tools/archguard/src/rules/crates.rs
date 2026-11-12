@@ -1,5 +1,6 @@
 use crate::constants::{
-    should_skip_dir_name, CRATE_FORBIDDEN_EXTENSIONS, CRATE_FORBIDDEN_FILES, is_reparse_point, normalize_rel,
+    CRATE_FORBIDDEN_EXTENSIONS, CRATE_FORBIDDEN_FILES, is_reparse_point, manifest_inherits,
+    normalize_rel, should_skip_dir_name, workspace_package_value,
 };
 use crate::models::{ArchFinding, Severity};
 use std::fs;
@@ -35,7 +36,10 @@ pub fn check_crates_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                 path: normalize_rel(root, &nm),
                 line: None,
                 message: format!("Forbidden `node_modules` inside pure Rust crate `{crate_name}`"),
-                remediation: format!("Delete `{}` immediately; crates must remain 100% native Rust.", normalize_rel(root, &nm)),
+                remediation: format!(
+                    "Delete `{}` immediately; crates must remain 100% native Rust.",
+                    normalize_rel(root, &nm)
+                ),
             });
         }
 
@@ -49,16 +53,21 @@ pub fn check_crates_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                 path: normalize_rel(root, &crate_path),
                 line: None,
                 message: format!("Missing `Cargo.toml` in crate directory `{crate_name}`"),
-                remediation: format!("Create `Cargo.toml` with `edition = \"2024\"` in `{}`.", normalize_rel(root, &crate_path)),
+                remediation: format!(
+                    "Create `Cargo.toml` with `edition = \"2024\"` in `{}`.",
+                    normalize_rel(root, &crate_path)
+                ),
             });
         } else if let Ok(content) = fs::read_to_string(&cargo_toml) {
-            let is_virtual_workspace = content.contains("[workspace]") && !content.contains("[package]");
+            let is_virtual_workspace =
+                content.contains("[workspace]") && !content.contains("[package]");
             if !is_virtual_workspace {
                 // Check edition = "2024"
                 let has_edition_2024 = content.lines().any(|l| {
                     let trimmed = l.trim().replace(' ', "");
                     trimmed == "edition=\"2024\"" || trimmed == "edition='2024'"
-                });
+                }) || (manifest_inherits(&content, "edition")
+                    && workspace_package_value(root, "edition").as_deref() == Some("2024"));
                 if !has_edition_2024 {
                     findings.push(ArchFinding {
                         rule_id: "ARCH-002".into(),
@@ -81,7 +90,11 @@ pub fn check_crates_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
         for file in crate_files {
             let rel = normalize_rel(root, &file);
             let fname = file.file_name().and_then(|n| n.to_str()).unwrap_or("");
-            let ext = file.extension().and_then(|e| e.to_str()).unwrap_or("").to_ascii_lowercase();
+            let ext = file
+                .extension()
+                .and_then(|e| e.to_str())
+                .unwrap_or("")
+                .to_ascii_lowercase();
 
             if ext == "rs" {
                 has_rs_source = true;
@@ -122,7 +135,10 @@ pub fn check_crates_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                 path: normalize_rel(root, &crate_path),
                 line: None,
                 message: format!("Crate `{crate_name}` contains zero `.rs` Rust source files"),
-                remediation: format!("Add Rust source code under `{}/src/` or remove obsolete crate folder.", normalize_rel(root, &crate_path)),
+                remediation: format!(
+                    "Add Rust source code under `{}/src/` or remove obsolete crate folder.",
+                    normalize_rel(root, &crate_path)
+                ),
             });
         }
     }

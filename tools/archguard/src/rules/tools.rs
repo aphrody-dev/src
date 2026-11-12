@@ -16,10 +16,7 @@ pub fn check_tools_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
         if !tool_path.is_dir() || is_reparse_point(&tool_path) {
             continue;
         }
-        let tool_name = tool_path
-            .file_name()
-            .and_then(|n| n.to_str())
-            .unwrap_or("");
+        let tool_name = tool_path.file_name().and_then(|n| n.to_str()).unwrap_or("");
         if tool_name.starts_with('.') {
             continue;
         }
@@ -105,8 +102,12 @@ pub fn check_tools_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                             severity: Severity::Error,
                             path: normalize_rel(root, &pkg_json),
                             line: None,
-                            message: format!("Tool package `{name}` lacks required `@aphrody/` or `tool-` prefix"),
-                            remediation: format!("Rename `{name}` to `@aphrody/{tool_name}` in package.json."),
+                            message: format!(
+                                "Tool package `{name}` lacks required `@aphrody/` or `tool-` prefix"
+                            ),
+                            remediation: format!(
+                                "Rename `{name}` to `@aphrody/{tool_name}` in package.json."
+                            ),
                         });
                     }
                 }
@@ -121,8 +122,13 @@ pub fn check_tools_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                 severity: Severity::Error,
                 path: normalize_rel(root, &tool_path),
                 line: None,
-                message: format!("Missing required `README.md` documentation in tool `{tool_name}`"),
-                remediation: format!("Add a comprehensive `README.md` describing purpose, flags, and usage in `{}`.", normalize_rel(root, &tool_path)),
+                message: format!(
+                    "Missing required `README.md` documentation in tool `{tool_name}`"
+                ),
+                remediation: format!(
+                    "Add a comprehensive `README.md` describing purpose, flags, and usage in `{}`.",
+                    normalize_rel(root, &tool_path)
+                ),
             });
         }
 
@@ -135,7 +141,10 @@ pub fn check_tools_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                 path: normalize_rel(root, &tool_path),
                 line: None,
                 message: format!("Missing required `tests/` directory in tool `{tool_name}`"),
-                remediation: format!("Add deterministic integration tests under `{}/tests/`.", normalize_rel(root, &tool_path)),
+                remediation: format!(
+                    "Add deterministic integration tests under `{}/tests/`.",
+                    normalize_rel(root, &tool_path)
+                ),
             });
         }
     }

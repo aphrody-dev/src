@@ -26,7 +26,7 @@ pub mod report;
 pub mod rules;
 
 pub use constants::{is_reparse_point, normalize_rel};
-pub use graph::{build_monorepo_graph, GodNodeMetric, GraphNode, MonorepoGraph, MonorepoLayer};
+pub use graph::{GodNodeMetric, GraphNode, MonorepoGraph, MonorepoLayer, build_monorepo_graph};
 pub use models::{ArchFinding, AuditConfig, AuditReport, RuleSpec, Severity, VERSION};
 pub use report::format_human_report;
 pub use rules::RULES;

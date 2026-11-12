@@ -19,7 +19,7 @@ upstream = "https://github.com/aphrody-dev/monorepo"
 version = "0.8.0-alpha.3"
 attribution = "Original artwork by Aphrody / Aphrody Contributors, drawn on the Material Symbols 24 and 48 dp grids."
 fetch = "local"
-dir = "crates/aphrody-design-icons/assets/aphrody"
+dir = "assets/aphrody"
 priority = 0
 
 [set.icons]
@@ -38,7 +38,7 @@ attribution = "Material Symbols by Google LLC, licensed under the Apache License
 fetch = "github-raw"
 base_url = "https://raw.githubusercontent.com/google/material-design-icons/10ecc14790612ca8fd164e3f4ffe9c16fc50d5b7/"
 license_path = "LICENSE"
-dir = "crates/aphrody-design-icons/sources/material-symbols"
+dir = "sources/material-symbols"
 priority = 1
 
 [set.icons]
@@ -83,7 +83,7 @@ fetch = "submodule"
 submodule = "submodules/fluentui-system-icons"
 base_url = "https://raw.githubusercontent.com/yolo-rs/fluentui-system-icons/9bfae3d782fda4c8764f2128cec4d0dda160b283/"
 license_path = "LICENSE"
-dir = "crates/aphrody-design-icons/sources/fluent"
+dir = "sources/fluent"
 priority = 2
 
 [set.icons]
@@ -124,7 +124,7 @@ attribution = "Chromium vector icons, Copyright 2015-2026 The Chromium Authors, 
 fetch = "chromium"
 base_url = "https://chromium.googlesource.com/chromium/src/+/4c7244a405d326e284710231ff609168dceb9044/"
 license_path = "LICENSE"
-dir = "crates/aphrody-design-icons/sources/chromium"
+dir = "sources/chromium"
 priority = 3
 
 [set.icons]
@@ -165,7 +165,7 @@ fetch = "submodule"
 submodule = "submodules/libcosmic/cosmic-icons"
 base_url = "https://raw.githubusercontent.com/aphrody-labs/cosmic-icons/343c007f37cd71716e68f01c43ecf2764b7f7c47/"
 license_path = "LICENSE"
-dir = "crates/aphrody-design-icons/sources/cosmic"
+dir = "sources/cosmic"
 priority = 4
 
 [set.icons]

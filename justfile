@@ -136,7 +136,7 @@ verify-all:
     bun test "{{root}}/packages/env-kit" "{{root}}/packages/pi-opencode" "{{root}}/packages/ai-triad"
     bun test "{{root}}/.agents/scripts/pre-tool-guard.test.ts"
     cargo test --manifest-path "{{root}}/crates/rust-stack/Cargo.toml"
-    cargo test --manifest-path "{{root}}/tools/archguard/Cargo.toml"
+    cargo test --workspace --manifest-path "{{root}}/Cargo.toml"
     go -C "{{root}}/infra" test ./...
 
 # Build all container images (Arch dev + Alpine runtime); versions come from build args, see compose.yaml

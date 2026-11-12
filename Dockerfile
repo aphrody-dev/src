@@ -38,6 +38,8 @@ COPY --from=go-alpine /usr/local/go /usr/local/go
 RUN --mount=type=cache,target=/root/.cargo/registry \
     cargo install just --version "${JUST_VERSION}" --locked --root /opt
 WORKDIR /build
+# Root workspace manifest and lock: tools/archguard and crates/corelib are members of it.
+COPY Cargo.toml Cargo.lock ./
 COPY tools/ tools/
 COPY crates/ crates/
 COPY infra/ infra/

@@ -910,7 +910,7 @@ fn single_file_emit_matches_primary_file() {
 fn registry_entries_are_complete() {
     let path = concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/../../catalog/themes.registry.toml"
+        "/../aphrody-design-icons/catalog/themes.registry.toml"
     );
     let text = std::fs::read_to_string(path).expect("catalog/themes.registry.toml");
     let doc: toml::Table = text.parse().expect("registry TOML");

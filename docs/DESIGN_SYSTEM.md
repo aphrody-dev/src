@@ -1,4 +1,6 @@
-# Aphrody Design System (`crates/design-system`)
+# Aphrody Design System (`crates/aphrody-design-*`)
+
+The seven design crates are members of the root Cargo workspace (`C:/src/Cargo.toml`); the asset catalog lives in `crates/aphrody-design-icons/catalog/`.
 
 Pure-Rust (Edition 2024, `#![forbid(unsafe_code)]`) multi-surface design token, layout, theme-emitter, and vector icon workspace consolidated into `C:\src\crates\design-system`.
 

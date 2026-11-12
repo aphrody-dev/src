@@ -1,4 +1,4 @@
-use crate::constants::{is_reparse_point, normalize_rel, SKIP_DIRS};
+use crate::constants::{SKIP_DIRS, is_reparse_point, normalize_rel};
 use crate::models::{ArchFinding, Severity};
 use std::fs;
 use std::path::Path;
@@ -33,7 +33,10 @@ pub fn check_chromium_hygiene(root: &Path, findings: &mut Vec<ArchFinding>) {
                         let repo_str = repo_part.trim().trim_matches(['\'', '"', ',']);
 
                         // Validate target path hygiene
-                        if target.contains('\\') || target.starts_with("./") || target.ends_with('/') {
+                        if target.contains('\\')
+                            || target.starts_with("./")
+                            || target.ends_with('/')
+                        {
                             findings.push(ArchFinding {
                                 rule_id: "ARCH-014".into(),
                                 category: "chromium-deps-binary-hygiene".into(),
@@ -48,7 +51,8 @@ pub fn check_chromium_hygiene(root: &Path, findings: &mut Vec<ArchFinding>) {
                         // Validate git revision (must be 40-character SHA1 commit hash)
                         if let Some((_, rev)) = repo_str.rsplit_once('@') {
                             let rev_clean = rev.trim();
-                            let is_40_hex = rev_clean.len() == 40 && rev_clean.chars().all(|c| c.is_ascii_hexdigit());
+                            let is_40_hex = rev_clean.len() == 40
+                                && rev_clean.chars().all(|c| c.is_ascii_hexdigit());
                             if !is_40_hex && !rev_clean.is_empty() {
                                 findings.push(ArchFinding {
                                     rule_id: "ARCH-014".into(),
@@ -69,8 +73,12 @@ pub fn check_chromium_hygiene(root: &Path, findings: &mut Vec<ArchFinding>) {
                                 severity: Severity::Error,
                                 path: rel_deps.clone(),
                                 line: Some(idx + 1),
-                                message: format!("DEPS entry `{target}` lacks `@<commit_hash>` pin"),
-                                remediation: "Append `@<commit_hash>` to the repository URL in `DEPS`.".into(),
+                                message: format!(
+                                    "DEPS entry `{target}` lacks `@<commit_hash>` pin"
+                                ),
+                                remediation:
+                                    "Append `@<commit_hash>` to the repository URL in `DEPS`."
+                                        .into(),
                             });
                         }
                     }
@@ -97,10 +105,17 @@ pub fn check_chromium_hygiene(root: &Path, findings: &mut Vec<ArchFinding>) {
 
     for file in first_party_files {
         let rel = normalize_rel(root, &file);
-        let ext = file.extension().and_then(|e| e.to_str()).unwrap_or("").to_ascii_lowercase();
+        let ext = file
+            .extension()
+            .and_then(|e| e.to_str())
+            .unwrap_or("")
+            .to_ascii_lowercase();
 
         // Flag executable or archive blobs > 50 MB
-        if matches!(ext.as_str(), "exe" | "dll" | "so" | "dylib" | "pak" | "zip" | "tgz" | "tar") {
+        if matches!(
+            ext.as_str(),
+            "exe" | "dll" | "so" | "dylib" | "pak" | "zip" | "tgz" | "tar"
+        ) {
             if let Ok(meta) = file.metadata() {
                 let size_mb = meta.len() as f64 / (1024.0 * 1024.0);
                 if size_mb > 50.0 {

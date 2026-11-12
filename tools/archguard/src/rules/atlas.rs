@@ -1,4 +1,4 @@
-use crate::constants::{normalize_rel, FILE_URI_SRC_RE};
+use crate::constants::{FILE_URI_SRC_RE, normalize_rel};
 use crate::models::{ArchFinding, Severity};
 use std::fs;
 use std::path::Path;
