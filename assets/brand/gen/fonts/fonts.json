@@ -1,0 +1,228 @@
+{
+  "fonts": [
+    {
+      "axes": [
+        {
+          "default": 18.0,
+          "max": 144.0,
+          "min": 1.0,
+          "tag": "opsz"
+        },
+        {
+          "default": 100.0,
+          "max": 151.0,
+          "min": 25.0,
+          "tag": "wdth"
+        },
+        {
+          "default": 400.0,
+          "max": 1000.0,
+          "min": 1.0,
+          "tag": "wght"
+        },
+        {
+          "default": 0.0,
+          "max": 100.0,
+          "min": 0.0,
+          "tag": "ROND"
+        },
+        {
+          "default": 0.0,
+          "max": 0.0,
+          "min": -10.0,
+          "tag": "slnt"
+        }
+      ],
+      "bytes": 930912,
+      "family": "Google Sans Flex",
+      "file": "fonts/google-sans-flex.woff2",
+      "id": "google-sans-flex",
+      "license": "OFL-1.1",
+      "preload": false,
+      "source": "google/fonts ofl/googlesansflex/GoogleSansFlex[ROND,opsz,slnt,wdth,wght].ttf"
+    },
+    {
+      "axes": [
+        {
+          "default": 400.0,
+          "max": 800.0,
+          "min": 300.0,
+          "tag": "wght"
+        }
+      ],
+      "bytes": 31392,
+      "family": "Google Sans Code",
+      "file": "fonts/google-sans-code.woff2",
+      "id": "google-sans-code",
+      "license": "OFL-1.1",
+      "preload": false,
+      "source": "google/fonts ofl/googlesanscode/GoogleSansCode[wght].ttf"
+    },
+    {
+      "axes": [
+        {
+          "default": 14.0,
+          "max": 144.0,
+          "min": 8.0,
+          "tag": "opsz"
+        },
+        {
+          "default": 400.0,
+          "max": 1000.0,
+          "min": 100.0,
+          "tag": "wght"
+        },
+        {
+          "default": 0.0,
+          "max": 150.0,
+          "min": -200.0,
+          "tag": "GRAD"
+        },
+        {
+          "default": 100.0,
+          "max": 151.0,
+          "min": 25.0,
+          "tag": "wdth"
+        },
+        {
+          "default": 0.0,
+          "max": 0.0,
+          "min": -10.0,
+          "tag": "slnt"
+        },
+        {
+          "default": 96.0,
+          "max": 175.0,
+          "min": 27.0,
+          "tag": "XOPQ"
+        },
+        {
+          "default": 79.0,
+          "max": 135.0,
+          "min": 25.0,
+          "tag": "YOPQ"
+        },
+        {
+          "default": 468.0,
+          "max": 603.0,
+          "min": 323.0,
+          "tag": "XTRA"
+        },
+        {
+          "default": 712.0,
+          "max": 760.0,
+          "min": 528.0,
+          "tag": "YTUC"
+        },
+        {
+          "default": 514.0,
+          "max": 570.0,
+          "min": 416.0,
+          "tag": "YTLC"
+        },
+        {
+          "default": 750.0,
+          "max": 854.0,
+          "min": 649.0,
+          "tag": "YTAS"
+        },
+        {
+          "default": -203.0,
+          "max": -98.0,
+          "min": -305.0,
+          "tag": "YTDE"
+        },
+        {
+          "default": 738.0,
+          "max": 788.0,
+          "min": 560.0,
+          "tag": "YTFI"
+        }
+      ],
+      "bytes": 310424,
+      "family": "Roboto Flex",
+      "file": "fonts/roboto-flex.woff2",
+      "id": "roboto-flex",
+      "license": "OFL-1.1",
+      "preload": false,
+      "source": "google/fonts ofl/robotoflex/RobotoFlex[GRAD,XOPQ,XTRA,YOPQ,YTAS,YTDE,YTFI,YTLC,YTUC,opsz,slnt,wdth,wght].ttf"
+    },
+    {
+      "axes": [
+        {
+          "default": 14.0,
+          "max": 32.0,
+          "min": 14.0,
+          "tag": "opsz"
+        },
+        {
+          "default": 400.0,
+          "max": 900.0,
+          "min": 100.0,
+          "tag": "wght"
+        }
+      ],
+      "bytes": 69704,
+      "family": "Inter",
+      "file": "fonts/inter.woff2",
+      "id": "inter",
+      "license": "OFL-1.1",
+      "preload": false,
+      "source": "google/fonts ofl/inter/Inter[opsz,wght].ttf"
+    },
+    {
+      "axes": [
+        {
+          "default": 400.0,
+          "max": 900.0,
+          "min": 100.0,
+          "tag": "wght"
+        }
+      ],
+      "bytes": 27580,
+      "family": "Geist",
+      "file": "fonts/geist.woff2",
+      "id": "geist",
+      "license": "OFL-1.1",
+      "preload": false,
+      "source": "google/fonts ofl/geist/Geist[wght].ttf"
+    },
+    {
+      "axes": [
+        {
+          "default": 400.0,
+          "max": 900.0,
+          "min": 100.0,
+          "tag": "wght"
+        }
+      ],
+      "bytes": 22272,
+      "family": "Geist Mono",
+      "file": "fonts/geist-mono.woff2",
+      "id": "geist-mono",
+      "license": "OFL-1.1",
+      "preload": false,
+      "source": "google/fonts ofl/geistmono/GeistMono[wght].ttf"
+    },
+    {
+      "axes": [
+        {
+          "default": 400.0,
+          "max": 800.0,
+          "min": 200.0,
+          "tag": "wght"
+        }
+      ],
+      "bytes": 33264,
+      "family": "Atkinson Hyperlegible Next",
+      "file": "fonts/atkinson-hyperlegible-next.woff2",
+      "id": "atkinson-hyperlegible-next",
+      "license": "OFL-1.1",
+      "preload": true,
+      "source": "google/fonts ofl/atkinsonhyperlegiblenext/AtkinsonHyperlegibleNext[wght].ttf"
+    }
+  ],
+  "preload": [
+    "fonts/atkinson-hyperlegible-next.woff2"
+  ]
+}
