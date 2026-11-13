@@ -78,7 +78,8 @@ export async function pass(m: Manifest, o: AuthOptions, refresh: boolean) {
   const at = new Date().toISOString();
   // Valeurs du coffre à chaque passe : un jeton tourné ailleurs ne laisse pas une copie périmée dans l'environnement.
   for (const n of secretList()) {
-    const v = secretGet(n);
+    // Valeur sans fin de ligne : systemd-creds rend souvent un \n final, refusé dans un en-tête HTTP.
+    const v = secretGet(n)?.trim();
     if (v) process.env[n] = v;
   }
   // Rafraîchissement sans humain d'abord, puis la sonde qui fait foi.
