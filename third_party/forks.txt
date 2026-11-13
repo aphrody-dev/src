@@ -246,3 +246,6 @@ unixwin/.github Markdown
 unixwin/apt GoTemplate
 unixwin/unixwin.dev Astro
 unixwin/wpm-gui Svelte
+quinn-rs/quinn Rust
+devongovett/glob-match Rust
+oils-for-unix/oils Python

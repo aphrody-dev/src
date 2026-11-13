@@ -7,13 +7,13 @@ pour un patch Rust, un `[patch.crates-io]` git épinglé par `rev` sur ce fork.
 
 ## Avant / après
 
-Mesures sur `main` (avant : c2db628 ; après : commit de ce document).
+Mesures sur `main` (avant : f27d752 ; après : f1df189 puis le commit steamroom).
 
 | Mesure | Avant | Après |
 |---|---|---|
 | Fichiers suivis sous `third_party/` | 5 399 (70,0 Mo) | 7 (manifestes : `ECOSYSTEM.toml`, `forks.txt`, `vendor.lock`, …) |
 | Copies vendorisées | 3 : `third_party/oils` (5 327 fichiers), `third_party/patches/quinn-proto`, `third_party/patches/glob-match` | 0 |
-| Fichiers suivis (dépôt) | 10 511 | 5 115 |
+| Fichiers suivis (dépôt) | 10 519 | 5 129 |
 | Pack `.git` | 59 Mio | inchangé (historique conservé, pas de réécriture) |
 | Paquets `Cargo.lock` | 1 350 (lock en retard sur les manifestes) | 1 356 (lock aligné : `adblock` et sa chaîne) |
 | Crates Cargo en plusieurs versions / copies en trop | 114 / 127 | 114 / 127 (tous transitifs, voir plus bas) |
@@ -36,7 +36,9 @@ Mesures sur `main` (avant : c2db628 ; après : commit de ce document).
   `aphrody-labs/glob-match`, branche `aphrody/lore`, commit `2307a20a`, posé sur le tag `v0.2.1`.
   L'amont n'a plus rien publié depuis 2024-08 ; aucun remplaçant n'a la même sémantique.
 - `russh`, `sntrup761` (`[patch.crates-io]`) et `steamroom` (`crates/steam-depot`) passent de
-  `branch`/`tag` à `rev`. La branche reste en commentaire pour `ay lock --deps --bump`.
+  `branch`/`tag` à `rev`. La branche reste en commentaire pour `ay lock --deps --bump`. `sntrup761` et `steamroom` suivent leur transfert vers `aphrody-labs`.
+- `steamroom` passe à 0.2.1 (`aphrody-labs/steamroom`, tag `v0.2.1`, commit `b9868e9f`) : `zip` 9 au lieu de 8, ce qui
+  retire RUSTSEC-2026-0367, -0368, -0369 et -0429 du graphe.
 - `tools/lore` : `ty` remplace `pyright` dans le groupe `dev`. La roue `pyright` télécharge Node par
   `nodeenv`, ce qu'interdit la règle 7 de la politique.
 

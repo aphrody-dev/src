@@ -341,34 +341,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "aphrody-cluster"
-version = "0.2.0"
-dependencies = [
- "anyhow",
- "bytes",
- "clap",
- "h2",
- "http",
- "libc",
- "quinn",
- "rcgen",
- "ring",
- "rustls",
- "rustls-pki-types",
- "serde",
- "serde_json",
- "sysinfo",
- "time",
- "tokio",
- "tokio-rustls",
- "toml 1.2.1+spec-1.1.0",
- "tracing",
- "tracing-subscriber",
- "windows 0.62.2",
- "x509-parser",
-]
-
-[[package]]
 name = "aphrody-conformance"
 version = "0.2.0"
 dependencies = [
@@ -1260,7 +1232,7 @@ dependencies = [
  "toml 1.2.1+spec-1.1.0",
  "ubi",
  "ureq",
- "zip 9.5.1",
+ "zip",
 ]
 
 [[package]]
@@ -4596,7 +4568,7 @@ dependencies = [
  "sha2 0.11.1",
  "tempfile",
  "ureq",
- "zip 9.5.1",
+ "zip",
 ]
 
 [[package]]
@@ -4661,7 +4633,7 @@ dependencies = [
  "tar",
  "tempfile",
  "ureq",
- "zip 9.5.1",
+ "zip",
 ]
 
 [[package]]
@@ -12516,7 +12488,7 @@ dependencies = [
 [[package]]
 name = "sntrup761"
 version = "0.4.0"
-source = "git+https://github.com/aphrody-dev/sntrup761?rev=54e3a99495e974586085df0c86583eb7c606854e#54e3a99495e974586085df0c86583eb7c606854e"
+source = "git+https://github.com/aphrody-labs/sntrup761?rev=54e3a99495e974586085df0c86583eb7c606854e#54e3a99495e974586085df0c86583eb7c606854e"
 dependencies = [
  "rand 0.10.3",
  "rand_chacha 0.10.0",
@@ -12742,13 +12714,13 @@ dependencies = [
  "tracing",
  "tracing-subscriber",
  "windows 0.62.2",
- "zip 9.5.1",
+ "zip",
 ]
 
 [[package]]
 name = "steamroom"
-version = "0.2.0"
-source = "git+https://github.com/aphrody-dev/steamroom?rev=2bc5b67f2c703dff675711de7f565117bdfa6671#2bc5b67f2c703dff675711de7f565117bdfa6671"
+version = "0.2.1"
+source = "git+https://github.com/aphrody-labs/steamroom?rev=b9868e9fde09ae1879728b3769126fdc8b720e2f#b9868e9fde09ae1879728b3769126fdc8b720e2f"
 dependencies = [
  "adler",
  "aes 0.9.4",
@@ -12780,14 +12752,14 @@ dependencies = [
  "tokio-tungstenite 0.29.0",
  "tracing",
  "winnow 1.0.5",
- "zip 8.6.0",
+ "zip",
  "zstd 0.13.4",
 ]
 
 [[package]]
 name = "steamroom-client"
-version = "0.2.0"
-source = "git+https://github.com/aphrody-dev/steamroom?rev=2bc5b67f2c703dff675711de7f565117bdfa6671#2bc5b67f2c703dff675711de7f565117bdfa6671"
+version = "0.2.1"
+source = "git+https://github.com/aphrody-labs/steamroom?rev=b9868e9fde09ae1879728b3769126fdc8b720e2f#b9868e9fde09ae1879728b3769126fdc8b720e2f"
 dependencies = [
  "base64 0.22.1",
  "bytes",
@@ -12803,7 +12775,7 @@ dependencies = [
  "thiserror 2.0.21",
  "tokio",
  "tracing",
- "zip 8.6.0",
+ "zip",
 ]
 
 [[package]]
@@ -13983,12 +13955,6 @@ dependencies = [
 
 [[package]]
 name = "typed-path"
-version = "0.12.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "54ec2755506471f54baf5e4bb5499d8e510cc1caf271270e778a736bd2d7336c"
-
-[[package]]
-name = "typed-path"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9ce898823d8cd0f028662d2f349694b1af0a5cc9be83f1d213a00d3147445e1e"
@@ -14066,7 +14032,7 @@ dependencies = [
  "walkdir",
  "which",
  "xz2",
- "zip 9.5.1",
+ "zip",
  "zstd 0.14.3",
 ]
 
@@ -14253,14 +14219,6 @@ dependencies = [
  "serde",
  "serde_json",
  "unix-cachyos",
-]
-
-[[package]]
-name = "unix-uutils"
-version = "0.2.0"
-dependencies = [
- "serde",
- "thiserror 2.0.21",
 ]
 
 [[package]]
@@ -15892,20 +15850,6 @@ dependencies = [
 
 [[package]]
 name = "zip"
-version = "8.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2d04a6b5381502aa6087c94c669499eb1602eb9c5e8198e534de571f7154809b"
-dependencies = [
- "crc32fast",
- "flate2",
- "indexmap",
- "memchr",
- "typed-path 0.12.4",
- "zopfli",
-]
-
-[[package]]
-name = "zip"
 version = "9.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e3476fd497ac8af5b1ec7b51acab7bef380f7e8dd8e0487595bafd839417a302"
@@ -15925,7 +15869,7 @@ dependencies = [
  "nix 0.31.3",
  "pbkdf2 0.13.0",
  "sha1 0.11.0",
- "typed-path 0.13.0",
+ "typed-path",
  "windows-sys 0.61.2",
  "zeroize",
  "zopfli",

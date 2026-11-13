@@ -426,7 +426,7 @@ opt-level = 1
 # aphrody-dev forks: russh with sntrup761x25519-sha512 (OpenSSH hybrid PQ kex), pure-Rust sntrup761.
 # Every git source is pinned by rev (branch noted for `ay lock --deps --bump`); deny.toml allows only these repos.
 russh = { git = "https://github.com/aphrody-dev/russh", rev = "a9f644259fa57ddb2da0f980e6ae813b829f7ad4" } # aphrody/sntrup761
-sntrup761 = { git = "https://github.com/aphrody-dev/sntrup761", rev = "54e3a99495e974586085df0c86583eb7c606854e" } # aphrody/pure-rust
+sntrup761 = { git = "https://github.com/aphrody-labs/sntrup761", rev = "54e3a99495e974586085df0c86583eb7c606854e" } # aphrody/pure-rust
 # Lore patches (sites marked `LORE:`), formerly vendored in third_party/patches.
 # quinn-proto 0.11.19 + max_rtt, is_crypto, windowed BBR min_rtt, bounded BBR window.
 quinn-proto = { git = "https://github.com/aphrody-labs/quinn", rev = "6e76339be91de7b5784cca640307329d1cf372a2" } # aphrody/lore
