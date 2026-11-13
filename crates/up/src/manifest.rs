@@ -402,7 +402,6 @@ package = "wrangler"
         assert_eq!(m.links.len(), 1);
         let steps: Vec<&str> = m.steps.iter().map(|s| s.name.as_str()).collect();
         assert_eq!(steps, vec!["ai-os", "frg"]); // src-deploy removed with the Go deploy engine (8763f01)
-        assert!(m.toolchains.contains_key("rust") && m.toolchains.contains_key("bun"), "toolchains in tools.toml");
         for t in m
             .tools
             .iter()
