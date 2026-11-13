@@ -27,9 +27,12 @@ graphify-out/
 !/.cargo/config.toml
 !/.cargo/neoverse-512tvb.toml
 !/.claude/
+!/.claude-plugin/
 /.claude/skills
 /.claude/settings.local.json
 !/docs/
+# Brand sources and generated assets (assets/brand, `ay brand build`).
+!/assets/
 !/apps/
 !/packages/
 !/crates/

@@ -1,5 +1,5 @@
-# Manifeste versionné de l'outillage agent du PC (Claude Code, scope user). Toute installation passe ici ;
-# applier : packages/machine/src/apply-user.ts. Aucun secret : seulement le nom de la variable d'env
+# Manifeste versionné de l'outillage agent (Claude Code, Codex, agy, Gemini CLI ; PC et flotte). Toute installation passe ici ;
+# applier : packages/machine/src/toolchain.ts (via apply-user.ts sur le PC, aphrody-agents-sync.timer sur Linux). Aucun secret : seulement le nom de la variable d'env
 # (valeur dans le coffre env-kit, `env-kit secret set NOM` sur stdin, et l'env utilisateur Windows).
 
 # --- Audit Google / DeepMind / Chrome / Gemini / catalogues de skills (2026-11-13, docs/tooling/AI-TOOLING-AUDIT.md)
@@ -106,9 +106,128 @@ commit = "30ca60aa4bdc1beab040dae32e1c10e195ec9113"
 path = "ai"
 license = "MIT"
 
-[[claude.skill]]
-name = "web-design-guidelines"
-repo = "vercel-labs/agent-skills"
-commit = "1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62"
-path = "skills/web-design-guidelines"
-license = "MIT"
+
+# --- Socle cross-agent (2026-11-13, docs/infra/AGENT-TOOLCHAIN.md) ---
+# Hôtes : pc, prd, fr1, fr2 (`hosts` absent = tous). Racine src : C:/src (pc), /srv/src (Linux).
+# Placeholders : {src} racine du checkout, {home} HOME, {bin} ~/.local/bin.
+# Marketplace racine de src (.claude-plugin/marketplace.json, lue aussi par Codex et agy) :
+# aphrody-skills = .agents/skills (source unique), plus les forks aphrody-labs épinglés par sha.
+
+[[claude.marketplace]]
+name = "aphrody"
+path = "."
+
+[[claude.marketplace]]
+name = "claude-plugins-official"
+repo = "anthropics/claude-plugins-official"
+
+[[claude.marketplace]]
+name = "rosegriffon-plugins"
+path = "apps/rosegriffon"
+hosts = ["pc"]
+
+[[claude.plugin]]
+id = "aphrody-skills@aphrody"
+refresh = true          # copie du cache Claude rafraîchie quand le HEAD de src change
+
+[[claude.plugin]]
+id = "aphrody-nhitl@aphrody"
+refresh = true
+
+[[claude.plugin]]
+id = "vercel-agent-skills@aphrody"      # fork aphrody-labs/agent-skills@1a2c79d4e6c4
+
+[[claude.plugin]]
+id = "web-quality-skills@aphrody"       # fork aphrody-labs/web-quality-skills@afa8da942115 (Lighthouse, Web Vitals)
+
+[[claude.plugin]]
+id = "unreal-engine-skills-for-claude-code@aphrody"
+hosts = ["pc"]
+
+[[claude.plugin]]
+id = "github@claude-plugins-official"
+
+[[claude.plugin]]
+id = "clangd-lsp@claude-plugins-official"
+
+[[claude.plugin]]
+id = "rust-analyzer-lsp@claude-plugins-official"
+
+[[claude.plugin]]
+id = "typescript-lsp@claude-plugins-official"
+
+[[claude.plugin]]
+id = "math-proof@claude-plugins-official"
+state = "disabled"
+
+[[claude.plugin]]
+id = "cloudflare@anthropic-plugin-directory"
+
+[[claude.plugin]]
+id = "microsoft-docs@anthropic-plugin-directory"
+
+[[claude.plugin]]
+id = "context7@anthropic-plugin-directory"
+
+[[claude.plugin]]
+id = "resend@anthropic-plugin-directory"
+hosts = ["pc"]
+
+# MCP utilisateur. `secrets` : noms du coffre env-kit injectés au lancement par
+# `env-kit secret exec` (jamais dans settings ni argv) ; sans coffre sur l'hôte, l'entrée est ignorée.
+[[claude.mcp]]
+name = "relay"
+url = "http://127.0.0.1:8790/mcp"
+hosts = ["pc"]
+
+[[claude.mcp]]
+name = "figma"
+url = "https://mcp.figma.com/mcp"
+hosts = ["pc"]
+
+[[claude.mcp]]
+name = "agent-desktop"
+command = ["{bin}/agent-desktop.exe", "mcp", "--headed"]
+hosts = ["pc"]
+
+[[claude.mcp]]
+name = "agent-browser"
+command = ["{bin}/agent-browser.exe", "mcp"]
+hosts = ["pc"]
+
+[[claude.mcp]]
+name = "hostinger-api"
+command = ["bun", "x", "--bun", "@hostinger/mcp@3.38.3"]
+secrets = ["HOSTINGER_API_TOKEN"]
+hosts = ["pc"]
+
+# Skills propres à une machine (hors dépôt public) : contrôle de présence seul.
+[[skill.private]]
+name = "windows-machine"
+hosts = ["pc"]
+
+[[skill.private]]
+name = "chrome"
+hosts = ["pc"]
+
+[[skill.private]]
+name = "shell"
+hosts = ["pc"]
+
+# Autres agents : mêmes plugins depuis la marketplace racine (copie dans leur propre cache, aucun lien).
+[codex]
+marketplace = "aphrody"
+plugins = ["aphrody-skills@aphrody"]
+
+[agy]
+plugins = ["aphrody-skills@aphrody", "web-quality-skills@aphrody"]   # vercel-agent-skills : sans manifeste, refusé par agy
+
+[gemini]
+extensions = [".agents"]                # gemini extensions link {src}/.agents (CLI absent à ce jour)
+
+# Liens interdits : tout lien (symlink, jonction) vers une skill de src dans ces dossiers est retiré,
+# le plugin aphrody-skills la fournit déjà.
+[cleanup]
+link_dirs = ["{home}/.claude/skills", "{home}/.gemini/skills", "{home}/.agents/skills", "{home}/.codex/skills"]
+# Copies posées par [[claude.skill]] devenues doublons d'un plugin (web-design-guidelines : vercel-agent-skills).
+drop_skills = ["web-design-guidelines"]

@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
-# Remplacement reproductible de Git Bash et pwsh (preuves : C:\Users\aphro\nt\docs\research\shell-replacement.md).
+# Remplacement reproductible de Git Bash et pwsh (preuves : apps/nt/docs/research/shell-replacement.md).
 # Ressource DSC v3 native de winget 1.30.300 : Microsoft.WinGet/Package (schéma : `winget dscv3 package --schema`).
 # Appliquer : winget configure -f C:\src\configuration\shell.dsc.winget --accept-configuration-agreements
 $schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/2023/08/config/document.json

@@ -516,6 +516,10 @@ agents-install host:
     timeout 120 ssh {{host}} 'sudo sh -s' < "{{root}}/infra/agents/bootstrap-user.sh"
     timeout 1800 ssh agent@{{host}} 'sh -s' < "{{root}}/infra/agents/install.sh"
 
+# Outillage agent (infra/agents/toolchain.toml) : skills, plugins, MCP pour Claude Code, Codex, agy, Gemini CLI (usage: just agents-sync [--check])
+agents-sync *args:
+    bun "{{root}}/packages/machine/src/toolchain.ts" {{args}}
+
 # Install the runner on this Windows PC (scheduled tasks + psmux session)
 agents-install-pc:
     sh "{{root}}/infra/agents/install-pc.sh"
