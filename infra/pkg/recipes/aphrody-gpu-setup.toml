@@ -11,6 +11,10 @@ arch = "all"
 portage_category = "app-admin"
 targets = ["arch", "debian", "alpine", "portage", "nix", "docker"]
 
+[license_files]
+MIT = "LICENSE-MIT"
+"Apache-2.0" = "LICENSE-APACHE"
+
 [[files]]
 src = "infra/linux/gpu/nvidia.sh"
 dest = "/usr/libexec/aphrody/gpu-nvidia"
