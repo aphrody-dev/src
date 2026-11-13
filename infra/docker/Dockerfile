@@ -151,7 +151,7 @@ RUN set -eu; mkdir -p /out; \
     for app in aphrody; do \
       (cd "apps/$app" && bun run build.ts) && mkdir -p "/out/$app" && \
       bun build "apps/$app/server.ts" --target=bun --minify --outfile "/out/$app/server.js" && \
-      cp -r "apps/$app/dist" "/out/$app/dist" && mkdir -p "/out/$app/var" && { [ ! -d "apps/$app/public" ] || cp -r "apps/$app/public" "/out/$app/public"; }; \
+      cp -r "apps/$app/dist" "/out/$app/dist" && mkdir -p "/out/$app/var" && { [ ! -d "apps/$app/public" ] || cp -r "apps/$app/public" "/out/$app/public"; } || exit 1; \
     done; \
     bun build apps/r2-site/src/entry.vps.ts --target=bun --minify --outfile /out/r2-site/server.js; \
     mkdir -p /out/api-gateway && bun build infra/cloudflare/workers/api-gateway/selfhost.ts --target=bun --outfile /out/api-gateway/selfhost.js && \
