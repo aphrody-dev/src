@@ -1,0 +1,165 @@
+import { join, normalize, isAbsolute } from "node:path";
+import { existsSync, readdirSync, statSync } from "node:fs";
+
+/** SPDX identifiers whose terms allow redistribution in a public repository. */
+export const ALLOWED_LICENSES = new Set([
+  "CC0-1.0",
+  "MIT",
+  "Apache-2.0",
+  "ISC",
+  "OFL-1.1",
+  "Unlicense",
+  "0BSD",
+]);
+
+export const GIT_SIZE_CAP = 5 * 1024 * 1024;
+
+export type Storage = "git" | "remote";
+
+export interface Asset {
+  id: string;
+  kind: string;
+  path: string;
+  url: string;
+  license: string;
+  sha256: string;
+  author: string;
+  attribution: string;
+  storage: Storage;
+}
+
+export const libraryRoot = (root: string) => join(root, "assets", "library");
+
+export async function sha256(data: Uint8Array): Promise<string> {
+  const h = new Bun.CryptoHasher("sha256");
+  h.update(data);
+  return h.digest("hex");
+}
+
+export function parseManifest(text: string): Asset[] {
+  const doc = Bun.TOML.parse(text) as { asset?: Record<string, unknown>[] };
+  return (doc.asset ?? []).map((a) => ({
+    id: String(a.id ?? ""),
+    kind: String(a.kind ?? ""),
+    path: String(a.path ?? ""),
+    url: String(a.url ?? ""),
+    license: String(a.license ?? ""),
+    sha256: String(a.sha256 ?? ""),
+    author: String(a.author ?? ""),
+    attribution: String(a.attribution ?? ""),
+    storage: (a.storage ?? "git") as Storage,
+  }));
+}
+
+/** Static checks, no filesystem: every entry needs license, hash, source and a safe path. */
+export function checkEntries(assets: Asset[]): string[] {
+  const errs: string[] = [];
+  const ids = new Set<string>();
+  const paths = new Set<string>();
+  for (const a of assets) {
+    const w = a.id || "<no id>";
+    if (!a.id) errs.push("entry without id");
+    if (ids.has(a.id)) errs.push(`${w}: duplicate id`);
+    ids.add(a.id);
+    if (paths.has(a.path)) errs.push(`${w}: duplicate path`);
+    paths.add(a.path);
+    if (!a.license) errs.push(`${w}: missing SPDX license`);
+    else if (!ALLOWED_LICENSES.has(a.license))
+      errs.push(`${w}: license ${a.license} not allowed`);
+    if (!/^[0-9a-f]{64}$/.test(a.sha256))
+      errs.push(`${w}: missing or invalid sha256`);
+    if (!a.author) errs.push(`${w}: missing author`);
+    if (!a.attribution) errs.push(`${w}: missing attribution`);
+    if (!/^https:\/\//.test(a.url)) errs.push(`${w}: url must be https`);
+    if (a.storage !== "git" && a.storage !== "remote")
+      errs.push(`${w}: storage must be git or remote`);
+    const p = normalize(a.path).replaceAll("\\", "/");
+    if (
+      !a.path ||
+      isAbsolute(a.path) ||
+      p.startsWith("..") ||
+      p.includes("/../")
+    )
+      errs.push(`${w}: unsafe path`);
+  }
+  return errs;
+}
+
+function walk(dir: string, base = ""): string[] {
+  const out: string[] = [];
+  for (const n of readdirSync(dir)) {
+    const rel = base ? `${base}/${n}` : n;
+    if (statSync(join(dir, n)).isDirectory())
+      out.push(...walk(join(dir, n), rel));
+    else out.push(rel);
+  }
+  return out;
+}
+
+/** Full verification against the files on disk. */
+export async function verify(root: string, assets: Asset[]): Promise<string[]> {
+  const lib = libraryRoot(root);
+  const errs = checkEntries(assets);
+  for (const a of assets) {
+    const f = join(lib, a.path);
+    if (!existsSync(f)) {
+      if (a.storage === "git") errs.push(`${a.id}: file missing (${a.path})`);
+      continue;
+    }
+    const data = new Uint8Array(await Bun.file(f).arrayBuffer());
+    if (a.storage === "git" && data.length > GIT_SIZE_CAP)
+      errs.push(
+        `${a.id}: ${data.length} bytes exceeds the 5 MB git cap, use storage = "remote"`,
+      );
+    if ((await sha256(data)) !== a.sha256)
+      errs.push(`${a.id}: sha256 mismatch`);
+  }
+  if (existsSync(lib)) {
+    const known = new Set(assets.map((a) => a.path));
+    for (const f of walk(lib)) {
+      if (
+        ["manifest.toml", "ATTRIBUTION.md", ".gitignore"].includes(f) ||
+        f.startsWith("remote/")
+      )
+        continue;
+      if (!known.has(f)) errs.push(`unlisted file ${f}`);
+    }
+  }
+  return errs;
+}
+
+export async function fetchAsset(
+  root: string,
+  a: Asset,
+): Promise<"ok" | "cached"> {
+  const f = join(libraryRoot(root), a.path);
+  if (
+    existsSync(f) &&
+    (await sha256(new Uint8Array(await Bun.file(f).arrayBuffer()))) === a.sha256
+  )
+    return "cached";
+  const res = await fetch(a.url);
+  if (!res.ok) throw new Error(`${a.id}: HTTP ${res.status}`);
+  const data = new Uint8Array(await res.arrayBuffer());
+  if ((await sha256(data)) !== a.sha256)
+    throw new Error(`${a.id}: sha256 mismatch after download`);
+  await Bun.write(f, data);
+  return "ok";
+}
+
+/** Group entries by (license, attribution, author) for ATTRIBUTION.md. */
+export function renderAttribution(assets: Asset[]): string {
+  const groups = new Map<string, Asset[]>();
+  for (const a of assets) {
+    const k = `${a.license}\t${a.attribution.split(";")[0]}\t${a.author}`;
+    groups.set(k, [...(groups.get(k) ?? []), a]);
+  }
+  let out =
+    "# Attribution\n\nGenerated by `bun run packages/assets/src/cli.ts attribution` from `manifest.toml`. Every entry is redistributable (CC0-1.0, MIT, Apache-2.0).\n";
+  for (const [k, items] of [...groups].sort()) {
+    const [license, what, author] = k.split("\t");
+    out += `\n## ${what}\n\n- License: ${license}\n- Author: ${author}\n- Files: ${items.length} (${items[0]!.storage === "remote" ? "remote, not committed" : "committed"}); source ${new URL(items[0]!.url).host}\n`;
+    out += items.map((i) => `  - \`${i.path}\``).join("\n") + "\n";
+  }
+  return out;
+}
