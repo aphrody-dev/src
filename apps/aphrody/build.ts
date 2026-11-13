@@ -106,6 +106,23 @@ for (const i of productIcons(SRC_ROOT)) {
   emit(`icons/${i.id}.svg`, readFileSync(i.svg));
   emit(`icons/${i.id}.png`, readFileSync(i.png));
 }
+// Site icon set, social card and web font from `ay brand build` (assets/brand/gen, also on
+// cdn.aphrody.com/brand/v1): single source, no copy in public/.
+const BRAND_GEN = join(SRC_ROOT, "assets/brand/gen");
+for (const [from, to] of [
+  ["icons/aphrody/favicon.ico", "favicon.ico"],
+  ["icons/aphrody/icon.svg", "favicon.svg"],
+  ["icons/aphrody/icon.svg", "icon.svg"],
+  ["icons/aphrody/apple-touch-icon.png", "apple-touch-icon.png"],
+  ["icons/aphrody/icon-192.png", "icon-192.png"],
+  ["icons/aphrody/icon-512.png", "icon-512.png"],
+  ["icons/aphrody/maskable-512.png", "maskable-512.png"],
+  ["icons/aphrody/site.webmanifest", "site.webmanifest"],
+  ["og/aphrody.png", "og-image.png"],
+  ["fonts/atkinson-hyperlegible-next.woff2", "atkinson-next.woff2"],
+  ["fonts/atkinson-hyperlegible-next-OFL.txt", "atkinson-next-OFL.txt"],
+] as const)
+  emit(to, readFileSync(join(BRAND_GEN, from)));
 // Edge headers (Cloudflare Workers assets / Pages). Same policy as server.ts.
 emit(
   "_headers",
@@ -132,8 +149,7 @@ emit(
     "",
   ].join("\n"),
 );
-// favicon.*, apple-touch-icon.png, icon-*.png, site.webmanifest and og-image.png come from
-// public/, written by `ay brand build --deploy` (assets/brand).
+// public/: site-only files (captures in shots/); brand assets come from assets/brand/gen above.
 const publicDir = join(ROOT, "public");
 if (existsSync(publicDir)) {
   for (const f of readdirSync(publicDir))

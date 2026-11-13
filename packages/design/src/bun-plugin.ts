@@ -1,18 +1,24 @@
-// Plugin bun : `import svg from "m3:icon/<outlined|rounded|sharp>/<nom>?size=24&fill=1"` renvoie le SVG
-// Material Symbols (paquet @material-symbols/svg-400, Apache-2.0) en chaîne, colorié par currentColor.
+// Plugin bun : `import svg from "m3:icon/rounded/<nom>?size=24&fill=1"` renvoie le SVG Material Symbols
+// Rounded (Apache-2.0) en chaîne, colorié par currentColor. Source unique : la sortie de `ay brand build`
+// (assets/brand/gen/symbols/svg/, sous-ensemble [symbols] de brand.toml, optimisé par usvg) ; un nom
+// absent de brand.toml est une erreur de build, pas un téléchargement.
 import type { BunPlugin } from "bun";
 import { join } from "node:path";
-import { moduleDir } from "./modules.ts";
 
-const ROOT = moduleDir("@material-symbols/svg-400");
-const STYLES = new Set(["outlined", "rounded", "sharp"]);
+const ROOT = join(import.meta.dir, "..", "..", "..", "assets", "brand", "gen", "symbols", "svg");
 
 export async function symbolSvg(style: string, name: string, size = 24, fill = false): Promise<string> {
-  if (!STYLES.has(style) || !/^[a-z0-9_]+$/.test(name)) throw new Error(`symbole invalide : ${style}/${name}`);
-  const file = Bun.file(join(ROOT, style, `${name}${fill ? "-fill" : ""}.svg`));
-  if (!(await file.exists())) throw new Error(`symbole absent de @material-symbols/svg-400 : ${style}/${name}`);
+  if (style !== "rounded" || !/^[a-z0-9_]+$/.test(name)) throw new Error(`symbole invalide : ${style}/${name} (seul rounded est généré)`);
+  const file = Bun.file(join(ROOT, `${name}${fill ? "-fill" : ""}.svg`));
+  if (!(await file.exists())) throw new Error(`symbole absent de assets/brand/gen/symbols : ${name} (ajouter à [symbols] de brand.toml, puis ay brand build)`);
   const svg = await file.text();
-  return svg.replace(/ width="\d+" height="\d+"/, "").replace("<svg ", `<svg width="${size}" height="${size}" fill="currentColor" aria-hidden="true" `);
+  return svg.replace(/ width="\d+" height="\d+"/, ` width="${size}" height="${size}"`);
+}
+
+/** Noms des symboles générés (sous-ensemble [symbols] de brand.toml), triés. */
+export async function generatedSymbols(): Promise<string[]> {
+  const json = (await Bun.file(join(ROOT, "..", "symbols.json")).json()) as Record<string, unknown>;
+  return Object.keys(json).sort();
 }
 
 export const symbolsPlugin: BunPlugin = {

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}">
+  <!-- Aphrody wallpaper, original artwork (MIT OR Apache-2.0): dark M3 surface, a primary glow, the
+       speed bands of the social cards and the drawing of an org or product. Rendered by `ay brand build`
+       at every [[wallpaper]] size; placeholders {w} {h} {bg} {glow} {band} {accent} {mark}. -->
+  <defs>
+    <radialGradient id="glow" cx="68%" cy="40%" r="70%">
+      <stop offset="0" stop-color="{glow}" stop-opacity="0.95"/>
+      <stop offset="0.55" stop-color="{glow}" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="{bg}" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="band" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="{band}" stop-opacity="0"/>
+      <stop offset="1" stop-color="{band}" stop-opacity="0.45"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="{bg}"/>
+  <rect width="100%" height="100%" fill="url(#glow)"/>
+  <rect x="0" y="64%" width="100%" height="1.1%" fill="url(#band)"/>
+  <rect x="22%" y="67.5%" width="78%" height="0.6%" fill="url(#band)"/>
+  <rect x="46%" y="70%" width="54%" height="0.3%" fill="{accent}" opacity="0.55"/>
+  <svg x="56%" y="20%" width="24%" height="38%" viewBox="0 0 48 48">{mark}</svg>
+</svg>

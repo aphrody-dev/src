@@ -1147,6 +1147,64 @@ windows-x86_64 = { url = "https://github.com/caddyserver/caddy/releases/download
 linux-x86_64 = { url = "https://github.com/caddyserver/caddy/releases/download/v2.11.9/caddy_2.11.9_linux_amd64.tar.gz", sha256 = "5b8cb7faf8726a2028ad96a66e54e6e81e8f361bc6175e5d22bbd997cc5177fb" }
 linux-aarch64 = { url = "https://github.com/caddyserver/caddy/releases/download/v2.11.9/caddy_2.11.9_linux_arm64.tar.gz", sha256 = "5e377cff994fc9362a6fcf695c53f226cfca3a3ef85bd3a3687cf252d6310165" }
 
+[toolchain."harfbuzz"]
+version = "12.3"
+source = "distro"
+package = "libharfbuzz-bin"
+hosts = ["fr1"]
+why = "hb-subset/hb-shape: Latin and Material Symbols font subsets (ay brand build)"
+
+[toolchain."woff2"]
+version = "1.0.2"
+source = "distro"
+package = "woff2"
+hosts = ["fr1"]
+why = "woff2_compress (ay brand build)"
+
+[toolchain."libavif"]
+version = "1.4"
+source = "distro"
+package = "libavif-bin"
+hosts = ["fr1"]
+why = "avifenc (ay brand build)"
+
+[toolchain."libwebp"]
+version = "1.6"
+source = "distro"
+package = "webp"
+hosts = ["fr1"]
+why = "cwebp (ay brand build)"
+
+[toolchain."ffmpeg"]
+version = "8.1"
+source = "distro"
+package = "ffmpeg"
+hosts = ["fr1"]
+why = "SVT-AV1 and VP9 video, capture muxing (ay brand build, assets/brand/capture.ts)"
+
+[toolchain."binaryen"]
+version = "131"
+source = "distro"
+package = "binaryen"
+hosts = ["fr1"]
+why = "wasm-opt of gen/gpu/brand-gpu.wasm (ay brand build)"
+
+[toolchain."ktx-software"]
+version = "4.4.2"
+source = "github"
+repo = "KhronosGroup/KTX-Software"
+hosts = ["fr1"]
+why = "ktx create: KTX2 UASTC/zstd textures and HDR environment (ay brand build)"
+linux-x86_64 = { url = "https://github.com/KhronosGroup/KTX-Software/releases/download/v4.4.2/KTX-Software-4.4.2-Linux-x86_64.deb", sha256 = "ca635ed489d8bf54fac8d7687056c651193de0740830a7738cc034adc63e3027" }
+
+[toolchain."gltf-transform"]
+version = "4.5.1"
+source = "npm"
+package = "@gltf-transform/cli"
+hosts = ["fr1"]
+why = "glTF validation of gen/model/*.glb (assets/brand/check.ts)"
+note = "npm @gltf-transform/cli@4.5.1 integrity sha512-TNPU20U7caqUpyXdbqobQueUjWmrdEhsZeno77MGJJCyiV1EyrC5yOE+aFrpxPli45VSk6aNT0FHAed8LE7ecg=="
+
 [toolchain."nginx"]
 version = "1.29"
 source = "distro"
@@ -1171,4 +1229,5 @@ repo = "ggml-org/llama.cpp"
 hosts = ["pc", "image"]
 why = "ai-os local models (llama-server); image = upstream ghcr.io/ggml-org/llama.cpp:server-{version}"
 windows-x86_64 = { url = "https://github.com/ggml-org/llama.cpp/releases/download/b12317/llama-b12317-bin-win-vulkan-x64.zip", sha256 = "968a487604622f4194d0451d77a92b6a7cff1c29338e88841dd38472c81013ca" }
+
 # END toolchains

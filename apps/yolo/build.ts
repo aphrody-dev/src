@@ -19,7 +19,8 @@ import { YoloModuleGraph } from "./src/framework/graph.ts";
 
 const APP_ROOT = import.meta.dir;
 const DIST_DIR = join(APP_ROOT, "dist");
-const DESIGN_ASSETS = join(APP_ROOT, "../../packages/design/assets");
+// Fonts from `ay brand build` (assets/brand/gen/fonts: OFL, Latin subset, variable axes kept).
+const BRAND_FONTS = join(APP_ROOT, "../../assets/brand/gen/fonts");
 const BRAND_ICONS = join(APP_ROOT, "../../assets/brand/gen/icons/yolo");
 
 const BRAND_MARK_SVG = readFileSync(join(BRAND_ICONS, "icon.svg"), "utf8");
@@ -91,13 +92,15 @@ export async function buildYoloApp(): Promise<{
 
   const assetPairs: Array<[string, string]> = [
     [
-      join(DESIGN_ASSETS, "fonts/GoogleSansFlex-latin.woff2"),
+      join(BRAND_FONTS, "google-sans-flex.woff2"),
       join(DIST_DIR, "assets/fonts/GoogleSansFlex-latin.woff2"),
     ],
     [
-      join(DESIGN_ASSETS, "fonts/GoogleSansCode-latin.woff2"),
+      join(BRAND_FONTS, "google-sans-code.woff2"),
       join(DIST_DIR, "assets/fonts/GoogleSansCode-latin.woff2"),
     ],
+    [join(BRAND_FONTS, "google-sans-flex-OFL.txt"), join(DIST_DIR, "assets/fonts/GoogleSansFlex-OFL.txt")],
+    [join(BRAND_FONTS, "google-sans-code-OFL.txt"), join(DIST_DIR, "assets/fonts/GoogleSansCode-OFL.txt")],
     [join(BRAND_ICONS, "favicon.ico"), join(DIST_DIR, "favicon.ico")],
   ];
 

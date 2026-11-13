@@ -6,6 +6,13 @@ const SEC = {
   "strict-transport-security": "max-age=63072000",
   "referrer-policy": "strict-origin-when-cross-origin",
 };
+const BRAND = /^\/brand\/v\d+\//;
+const BRAND_HEADERS = [
+  ["cache-control", "public, max-age=31536000, immutable"],
+  ["access-control-allow-origin", "*"],
+  ["cross-origin-resource-policy", "cross-origin"],
+  ["timing-allow-origin", "*"],
+];
 const K = (k) => k.replace(/^\//, ""); // PREFIX "" = bucket root
 const RULES = new Map();
 async function rules(env, base) {
@@ -45,6 +52,9 @@ export default {
     const h = new Headers(SEC);
     obj.writeHttpMetadata(h);
     for (const r of await rules(env, base)) if (r.re.test(url.pathname)) for (const [k, v] of r.h) h.set(k, v);
+    // Brand CDN (assets/brand/gen, published by assets/brand/publish.ts): versioned paths never change,
+    // so they are immutable and readable cross-origin (web fonts, COEP pages such as aphrody.app).
+    if (BRAND.test(url.pathname)) for (const [k, v] of BRAND_HEADERS) h.set(k, v);
     h.set("etag", obj.httpEtag);
     h.set("accept-ranges", "bytes");
     if (!("body" in obj)) return new Response(null, { status: 304, headers: h });

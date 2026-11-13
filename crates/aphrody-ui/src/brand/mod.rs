@@ -21,6 +21,9 @@
 
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../packages/design/tokens/tokens.rs"));
 
+mod model;
+mod web;
+
 /// `0xRRGGBBAA` of tokens.rs to the `0xAARRGGBB` used here.
 const fn argb(rgba: u32) -> u32 {
     rgba.rotate_right(8)
@@ -521,6 +524,8 @@ pub struct Report {
     pub files: Vec<(String, u64)>,
     pub deployed: Vec<String>,
     pub warnings: Vec<String>,
+    /// sha256 of gen/manifest.json.
+    pub manifest_sha256: Option<String>,
 }
 
 struct Ctx<'a> {

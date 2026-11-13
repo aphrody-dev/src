@@ -100,9 +100,9 @@ pub fn manifest_webmanifest() -> String {
         + "\n"
 }
 
-/// Brand icon of aphrody.app, written to web/ by `ay brand build --deploy` (assets/brand).
+/// Brand icon of aphrody.app: assets/brand/gen/icons/aphrody-app (`ay brand build`), the single source of the icon set.
 pub fn icon_svg() -> &'static str {
-    include_str!("../../../web/favicon.svg")
+    include_str!("../../../../../assets/brand/gen/icons/aphrody-app/icon.svg")
 }
 
 pub fn headers_file() -> String {
@@ -180,12 +180,12 @@ pub fn build(o: &Opts) -> Result<Vec<(String, usize)>, String> {
         (".well-known/webmcp.json", webmcp.into_bytes()),
         ("manifest.webmanifest", manifest_webmanifest().into_bytes()),
         ("icon.svg", icon_svg().as_bytes().to_vec()),
-        ("favicon.ico", include_bytes!("../../../web/favicon.ico").to_vec()),
-        ("apple-touch-icon.png", include_bytes!("../../../web/apple-touch-icon.png").to_vec()),
-        ("icon-192.png", include_bytes!("../../../web/icon-192.png").to_vec()),
-        ("icon-512.png", include_bytes!("../../../web/icon-512.png").to_vec()),
-        ("maskable-512.png", include_bytes!("../../../web/maskable-512.png").to_vec()),
-        ("og-image.png", include_bytes!("../../../web/og-image.png").to_vec()),
+        ("favicon.ico", include_bytes!("../../../../../assets/brand/gen/icons/aphrody-app/favicon.ico").to_vec()),
+        ("apple-touch-icon.png", include_bytes!("../../../../../assets/brand/gen/icons/aphrody-app/apple-touch-icon.png").to_vec()),
+        ("icon-192.png", include_bytes!("../../../../../assets/brand/gen/icons/aphrody-app/icon-192.png").to_vec()),
+        ("icon-512.png", include_bytes!("../../../../../assets/brand/gen/icons/aphrody-app/icon-512.png").to_vec()),
+        ("maskable-512.png", include_bytes!("../../../../../assets/brand/gen/icons/aphrody-app/maskable-512.png").to_vec()),
+        ("og-image.png", include_bytes!("../../../../../assets/brand/gen/og/aphrody-app.png").to_vec()),
         ("_headers", headers_file().into_bytes()),
     ];
     let mut report = Vec::new();

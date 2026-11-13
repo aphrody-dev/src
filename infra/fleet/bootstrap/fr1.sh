@@ -9,7 +9,8 @@ LOCK=${LOCK:-$(cd "$(dirname "$0")/../../.." && pwd)/tools.toml}
 llvm_major=$(lock_get llvm version | cut -d. -f1)
 pkgs="clang-$llvm_major lld-$llvm_major llvm-$llvm_major llvm-$llvm_major-dev libclang-$llvm_major-dev
   cmake ninja-build python3 python3-venv git git-lfs pkg-config curl xz-utils zstd unzip build-essential
-  docker.io docker-buildx docker-compose-v2"
+  docker.io docker-buildx docker-compose-v2
+  libharfbuzz-bin woff2 libavif-bin webp ffmpeg binaryen"
 missing=$(for p in $pkgs; do dpkg-query -W -f='${Status}' "$p" 2>/dev/null | grep -q "ok installed" || echo "$p"; done)
 [ -z "$missing" ] || { log "apt: $missing"; $SUDO apt-get install -y --no-install-recommends $missing >/dev/null; }
 # clang/lld on PATH = the LLVM major rustc uses (cross-language LTO with Chromium's toolchain).
@@ -23,6 +24,12 @@ has_version "$(lock_get just version)" just --version || install_archive_bin jus
 has_version "$(lock_get cargo-zigbuild version)" cargo-zigbuild --version || install_archive_bin cargo-zigbuild cargo-zigbuild
 has_version "$(lock_get cargo-nextest version)" cargo-nextest nextest --version || install_archive_bin cargo-nextest cargo-nextest
 has_version "$(lock_get b3sum version)" b3sum --version || install_archive_bin b3sum b3sum_linux_x64_bin b3sum
+# Brand asset pipeline (ay brand build; apt above: hb-subset, woff2, avifenc, cwebp, ffmpeg, wasm-opt):
+# KTX-Software from its pinned release .deb, gltf-transform from npm through bun.
+if ! has_version "$(lock_get ktx-software version)" ktx --version; then
+  tmp=$(mktemp -d); fetch ktx-software "$tmp/ktx.deb"; $SUDO apt-get install -y "$tmp/ktx.deb" >/dev/null; rm -rf "$tmp"
+fi
+has_version "$(lock_get gltf-transform version)" gltf-transform --version || ! command -v bun >/dev/null || bun add -g "@gltf-transform/cli@$(lock_get gltf-transform version)" >/dev/null
 # protoc + its well-known types (google/protobuf/*.proto) from the same release zip: protoc resolves
 # <exe>/../include, so /usr/local/bin/protoc reads /usr/local/include (without it, imports of
 # google/protobuf/timestamp.proto failed on fr1, 2026-11-13).

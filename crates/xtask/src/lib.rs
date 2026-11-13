@@ -272,6 +272,33 @@ fn check_doctor() {
     } else {
         println!("Some toolchains are missing or not in PATH.\n");
     }
+    brand_doctor();
+}
+
+/// Encoders of `ay brand build` (crates/aphrody-ui brand::web), pinned in tools.toml and installed on fr1
+/// by infra/fleet/bootstrap/fr1.sh: the brand assets are built there, never on the PC, so a missing tool
+/// here is information, not a failure.
+fn brand_doctor() {
+    println!("=== BRAND ASSET PIPELINE (ay brand build, fr1) ===");
+    let tools = [
+        ("hb-subset", "hb-subset", vec!["--version"]),
+        ("hb-shape", "hb-shape", vec!["--version"]),
+        ("woff2", "sh", vec!["-c", "command -v woff2_compress"]),
+        ("avifenc", "avifenc", vec!["--version"]),
+        ("cwebp", "cwebp", vec!["-version"]),
+        ("ffmpeg", "ffmpeg", vec!["-version"]),
+        ("ktx", "ktx", vec!["--version"]),
+        ("wasm-opt", "wasm-opt", vec!["--version"]),
+        ("gltf-transform", "gltf-transform", vec!["--version"]),
+        ("chrome", "google-chrome", vec!["--version"]),
+        ("rclone", "rclone", vec!["version"]),
+    ];
+    for (name, prog, args) in tools {
+        let (n, ok, detail) = find_tool_version(name, prog, &args);
+        let detail = if detail.len() > 52 { format!("{}...", &detail[..49]) } else { detail };
+        println!("{:<14} {:<8} {}", n, if ok { "OK" } else { "fr1 only" }, detail);
+    }
+    println!();
 }
 
 pub fn is_reparse_point(path: &Path) -> bool {

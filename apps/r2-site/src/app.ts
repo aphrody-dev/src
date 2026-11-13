@@ -42,6 +42,14 @@ async function rules(ctx: Ctx, base: string) {
   RULES.set(base, r);
   return r;
 }
+/** Versioned brand assets (cdn.aphrody.com/brand/v<N>/): same headers as the Cloudflare worker. */
+export const BRAND = /^\/brand\/v\d+\//;
+export const BRAND_HEADERS: [string, string][] = [
+  ["cache-control", "public, max-age=31536000, immutable"],
+  ["access-control-allow-origin", "*"],
+  ["cross-origin-resource-policy", "cross-origin"],
+  ["timing-allow-origin", "*"],
+];
 const K = (k: string) => k.replace(/^\/+/, "");
 
 export default defineApp({
@@ -69,6 +77,8 @@ export default defineApp({
     const h = new Headers(SEC);
     if (obj.contentType) h.set("content-type", obj.contentType);
     for (const r of await rules(ctx, base)) if (r.re.test(url.pathname)) for (const [k, v] of r.h) h.set(k, v);
+    // Brand CDN (assets/brand/gen, assets/brand/publish.ts): versioned, immutable, cross-origin readable.
+    if (BRAND.test(url.pathname)) for (const [k, v] of BRAND_HEADERS) h.set(k, v);
     if (obj.etag) h.set("etag", obj.etag);
     h.set("accept-ranges", "bytes");
     if (obj.range && range && status === 200) {

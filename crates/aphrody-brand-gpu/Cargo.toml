@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "aphrody-brand-gpu"
+publish = false
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "Geometry of the Aphrody brand tile (rounded slab, UV-mapped face) and its animation matrices: the glTF mesh of `ay brand build` and, as wasm32 cdylib, the minimal WebGPU renderer of assets/brand/web/gpu.ts. No dependencies."
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[lints.rust]
+# The wasm exports need #[unsafe(no_mangle)] and the static buffers they return; nothing else is unsafe.
+unsafe_code = "deny"

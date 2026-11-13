@@ -14,6 +14,7 @@ test("schemeCss rejette une graine invalide", () => {
 test("Material Symbols : noms et SVG", async () => {
   expect((await symbolNames()).length).toBeGreaterThan(3000);
   expect((await searchSymbols("pets"))[0]).toBe("pets");
-  expect(await symbolSvg("rounded", "terminal", 18)).toMatch(/^<svg width="18" height="18"(?!.*width="48")/s);
+  expect(await symbolSvg("rounded", "terminal", 18)).toMatch(/^<svg [^>]*width="18" height="18"[^>]*fill="currentColor"/);
+  await expect(symbolSvg("outlined", "terminal")).rejects.toThrow();
   await expect(symbolSvg("rounded", "../x")).rejects.toThrow();
 });
