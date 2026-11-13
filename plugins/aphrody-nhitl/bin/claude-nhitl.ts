@@ -8,6 +8,7 @@
 //   --cwd <dir>          working directory (default: current)
 //   --model <m> --max-turns <n> --max-budget-usd <x> --add-dir <d> (repeatable) --append-system-prompt <t>
 //   --log-dir <dir>      where to tee the stream (default ~/.claude/learning/runs)
+//   --sandbox <wsl|native|off>  OS boundary (default: wsl on Windows, off elsewhere); --distro <name> for wsl
 //   --quiet              print only the final result text instead of the raw stream
 //
 // Contract for runners: stdout = Claude Code stream-json lines (last one is {"type":"result",...});
@@ -18,6 +19,7 @@
 // As root (Linux), Claude Code refuses bypassPermissions: claude runs as NHITL_RUN_AS (default
 // agent, the runner user of infra/agents) through runuser; IS_SANDBOX is never forced. No such user: exit 2.
 import { chownSync, mkdirSync } from "node:fs";
+import { resolveSandbox, sandboxSettings, wslArgv } from "../src/sandbox.ts";
 import { envWithoutDotenv, HOME, writeGoal } from "../src/lib.ts";
 
 const argv = Bun.argv.slice(2);
@@ -35,6 +37,8 @@ const valued = new Set([
   "log-dir",
   "append-system-prompt",
   "add-dir",
+  "sandbox",
+  "distro",
 ]);
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i]!;
@@ -59,7 +63,7 @@ if (opt.help || opt.h) {
   console.log(
     (await Bun.file(import.meta.path).text())
       .split("\n")
-      .slice(1, 15)
+      .slice(1, 16)
       .map((l) => l.replace(/^\/\/ ?/, ""))
       .join("\n"),
   );
@@ -148,6 +152,37 @@ for (const k of [
   if (typeof opt[k] === "string") args.push(`--${k}`, opt[k] as string);
 for (const d of addDirs) args.push("--add-dir", d);
 
+let sandbox;
+try {
+  sandbox = resolveSandbox(opt.sandbox as string | undefined, process.platform);
+} catch (e) {
+  console.error(`claude-nhitl: ${(e as Error).message}`);
+  process.exit(2);
+}
+if (sandbox !== "off") {
+  const roots = [cwd, ...addDirs];
+  args.push(
+    "--settings",
+    sandboxSettings({
+      writeRoots: roots,
+      protectedGit: roots.map((r) => `${r}/.git`),
+    }),
+  );
+}
+let spawnArgs = args;
+if (sandbox === "wsl") {
+  if (process.platform !== "win32" && !process.env.NHITL_WSL_FORCE) {
+    console.error("claude-nhitl: --sandbox wsl needs Windows (wsl.exe)");
+    process.exit(2);
+  }
+  spawnArgs = wslArgv({
+    distro: opt.distro as string | undefined,
+    cwd,
+    env: { NHITL_RUN: "1" },
+    claudeArgs: args,
+  });
+}
+
 function childEnv(): Record<string, string> {
   const e = envWithoutDotenv(
     process.env,
@@ -167,9 +202,9 @@ function childEnv(): Record<string, string> {
 }
 
 console.error(
-  `nhitl-run ${JSON.stringify({ sid, log: logPath, cwd, user: runAs?.name })}`,
+  `nhitl-run ${JSON.stringify({ sid, log: logPath, cwd, user: runAs?.name, sandbox })}`,
 );
-const child = Bun.spawn(args, {
+const child = Bun.spawn(spawnArgs, {
   cwd,
   stdin: "ignore",
   stdout: "pipe",
