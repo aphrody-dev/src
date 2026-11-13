@@ -1,0 +1,6 @@
+# bun install for the whole monorepo (docs/infra/CACHE.md): one hoisted node_modules at the root,
+# one bun.lock, packages hardlinked from the shared global cache (~/.bun/install/cache).
+[install]
+linker = "hoisted"
+exact = true
+saveTextLockfile = true

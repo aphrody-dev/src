@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "bun run build.ts",
-    "build:aot": "bun build --compile --minify --bytecode server.ts --outfile C:/Users/aphro/.local/bin/yolo.exe",
+    "build:aot": "bun build --compile --minify --bytecode server.ts --outfile $HOME/.local/bin/yolo",
     "dev": "bun run server.ts",
     "start": "bun run server.ts",
     "test": "bun test",

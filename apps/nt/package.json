@@ -3,16 +3,13 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@aphrody/ffi-bridge": "file:../../packages/ffi-bridge"
+    "@aphrody/ffi-bridge": "workspace:*"
   },
-  "workspaces": [
-    "modules/web"
-  ],
   "devDependencies": {
-    "@types/bun": "latest",
-    "@webgpu/types": "latest",
-    "tree-sitter-c": "0.24.1",
-    "tree-sitter-cpp": "0.23.4",
-    "web-tree-sitter": "0.27.2"
+    "@types/bun": "catalog:",
+    "@webgpu/types": "catalog:",
+    "tree-sitter-c": "catalog:",
+    "tree-sitter-cpp": "catalog:",
+    "web-tree-sitter": "catalog:"
   }
 }

@@ -8,9 +8,5 @@
     "start": "bun run src/entry.vps.ts",
     "test": "bun test",
     "check": "bun check"
-  },
-  "devDependencies": {
-    "cf": "^1.0.0-beta.31",
-    "wrangler": "^4.161.0"
   }
 }

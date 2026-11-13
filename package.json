@@ -5,10 +5,27 @@
   "description": "Aphrody Sovereign Monorepo Root - Linux/Git/Chromium/depot_tools/Bun-v1.4.4 Workspace Architecture",
   "workspaces": {
     "packages": [
-      "packages/*"
+      "packages/*",
+      "apps/aphrody",
+      "apps/r2-site",
+      "apps/yolo",
+      "apps/nt",
+      "apps/nt/modules/web",
+      "infra/cloudflare/workers/*"
     ],
     "catalog": {
-      "@types/bun": "1.4.4"
+      "@cloudflare/vite-plugin": "2.0.0-beta.v.16",
+      "@cloudflare/workers-types": "5.20261113.1",
+      "@material-symbols/svg-400": "0.49.0",
+      "@material/material-color-utilities": "0.4.0",
+      "@material/web": "2.5.0",
+      "@types/bun": "1.4.4",
+      "@webgpu/types": "0.1.74",
+      "material-symbols": "0.49.0",
+      "tree-sitter-c": "0.24.1",
+      "tree-sitter-cpp": "0.23.4",
+      "vite": "8.3.8",
+      "web-tree-sitter": "0.27.2"
     }
   },
   "scripts": {

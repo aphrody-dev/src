@@ -21,10 +21,10 @@
     "lint": "bun run ../google-design/src/design-md/cli.ts lint DESIGN.md"
   },
   "dependencies": {
-    "@material/material-color-utilities": "0.4.0",
-    "@material/web": "2.5.0",
-    "material-symbols": "0.49.0",
-    "@material-symbols/svg-400": "0.49.0"
+    "@material/material-color-utilities": "catalog:",
+    "@material/web": "catalog:",
+    "material-symbols": "catalog:",
+    "@material-symbols/svg-400": "catalog:"
   },
   "license": "MIT OR Apache-2.0"
 }

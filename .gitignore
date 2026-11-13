@@ -69,6 +69,7 @@ graphify-out/
 # Single monorepo version (docs/VERSIONING.md, ay release freeze).
 !/VERSION
 !/bun.lock
+!/bunfig.toml
 !/pyproject.toml
 !/uv.lock
 !/src.lock.json
