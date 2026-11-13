@@ -222,3 +222,10 @@ fmtlib/fmt C++
 open-source-parsers/jsoncpp C++
 CLIUtils/CLI11 C++
 commonmark/cmark C
+# Runtimes JS et GPU web (2026-11-13) ; matrice : ay rt matrix
+nodejs/node JavaScript
+denoland/deno Rust
+oven-sh/bun Rust
+mozilla-firefox/firefox C++
+google/dawn C++
+gfx-rs/wgpu Rust

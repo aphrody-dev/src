@@ -4,6 +4,12 @@
 //! and Pyodide builds; RustPython (no CPython) is built from the aphrody-dev fork with cargo.
 //! Bun versions, canary and forks live in `tools_dir/bun/<version>`. Version files use the
 //! formats other tools read: `.python-version` (uv, pyenv) and `.bun-version` (setup-bun).
+//! Node.js and Deno versions come live from nodejs.org/dist/index.json and the Deno GitHub
+//! releases (`js`); `matrix`, `detect` and `switch` combine runtimes with the browser and
+//! render engines of packages/chromium-bun/src/engines (`combo`).
+
+pub mod combo;
+pub mod js;
 
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -15,7 +21,7 @@ pub const RUSTPYTHON_REPO: &str = "https://github.com/aphrody-dev/RustPython";
 #[derive(Parser, Debug)]
 #[command(
     name = "ay rt",
-    about = "Runtimes: Python engines on uv and RustPython, Bun versions, package managers, PyTorch"
+    about = "Runtimes: Python on uv and RustPython, Node, Deno and Bun versions, engine combinations, package managers, PyTorch"
 )]
 struct Cli {
     #[command(subcommand)]
@@ -26,7 +32,34 @@ struct Cli {
 enum Cmd {
     /// Installed runtimes and the active ones
     Ls,
-    /// Install `python[@version]` or `bun[@version|canary]`
+    /// Versioned matrix: runtimes, JS engines, WebGPU, browsers and render engines (latest from the
+    /// official source, installed, active)
+    Matrix {
+        #[arg(long)]
+        json: bool,
+    },
+    /// What this project declares (.nvmrc, .node-version, .dvmrc, .bun-version, package.json
+    /// engines / packageManager, deno.json, bunfig.toml, .engine-version) and what it resolves to
+    Detect,
+    /// Install and activate a combination: `--runtime node@lts --engine chrome@beta --gpu dawn`
+    Switch {
+        /// runtime[@version|range|lts|latest], repeatable (node, deno, bun, python)
+        #[arg(long = "runtime")]
+        runtimes: Vec<String>,
+        /// engine id from `chromium-bun engines list` (chrome@<channel>, firefox@<channel>, servo, ...)
+        #[arg(long = "engine")]
+        engines: Vec<String>,
+        /// Require this WebGPU implementation (dawn, wgpu)
+        #[arg(long)]
+        gpu: Option<String>,
+        /// Take runtimes and engine from the project files, latest stable otherwise
+        #[arg(long)]
+        auto: bool,
+        /// Install only; do not write version files
+        #[arg(long)]
+        no_write: bool,
+    },
+    /// Install `python[@version]`, `bun[@version|canary]`, `node[@version|range|lts]`, `deno[@version]`
     Install {
         spec: String,
         /// Python engine: cpython, freethreaded, pypy, graalpy, pyodide, rustpython
@@ -115,7 +148,7 @@ fn exe(name: &str) -> String {
     }
 }
 
-fn status(program: &str, args: &[String]) -> Result<i32, String> {
+pub(crate) fn status(program: &str, args: &[String]) -> Result<i32, String> {
     Command::new(program)
         .args(args)
         .status()
@@ -137,7 +170,7 @@ fn rustpython_dir() -> Result<PathBuf, String> {
 }
 
 /// The `sha256:` digest GitHub records for a release asset.
-fn github_digest(repo: &str, tag: &str, asset: &str) -> Option<String> {
+pub(crate) fn github_digest(repo: &str, tag: &str, asset: &str) -> Option<String> {
     let url = format!("https://api.github.com/repos/{repo}/releases/tags/{tag}");
     let body = up::fetch::get(&url, &[]).ok()?;
     let v: serde_json::Value = serde_json::from_slice(&body).ok()?;
@@ -218,6 +251,28 @@ fn install_bun(version: &str, from: Option<&str>) -> Result<String, String> {
     ))
 }
 
+pub(crate) fn install_bun_version(version: &str) -> Result<String, String> {
+    install_bun(version, None)
+}
+
+/// `node`/`deno` request (project file when absent) -> installed binary, installing it if needed.
+fn js_bin(runtime: &str, want: Option<&str>) -> Result<PathBuf, String> {
+    let tools = tools_dir()?;
+    let dir = std::env::current_dir().map_err(|e| e.to_string())?;
+    let want = want
+        .map(str::to_string)
+        .or_else(|| js::project_request(&dir, runtime).map(|(v, _)| v))
+        .unwrap_or_else(|| "latest".into());
+    let (version, have) = combo::resolve(&tools, runtime, &want)?;
+    if !have {
+        eprintln!("{}", combo::install_runtime(&tools, runtime, &version)?);
+    }
+    Ok(js::runtime_bin(
+        &js::runtime_dir(&tools, runtime, &version),
+        runtime,
+    ))
+}
+
 fn install_rustpython(from: Option<&str>) -> Result<i32, String> {
     let root = rustpython_dir()?;
     let mut args: Vec<String> = vec![
@@ -283,7 +338,21 @@ fn ls() -> Result<i32, String> {
             );
         }
     }
-    for (file, what) in [(".python-version", "python"), (".bun-version", "bun")] {
+    let tools = tools_dir()?;
+    for rt in ["node", "deno"] {
+        println!("{rt}:");
+        for v in js::installed(&tools, rt) {
+            println!("  {:<11} {}", v, js::runtime_dir(&tools, rt, &v).display());
+        }
+    }
+    for (file, what) in [
+        (".python-version", "python"),
+        (".bun-version", "bun"),
+        (".nvmrc", "node"),
+        (".node-version", "node"),
+        (".dvmrc", "deno"),
+        (combo::ENGINE_FILE, "engine"),
+    ] {
         if let Ok(v) = std::fs::read_to_string(file) {
             println!("project {what}: {}", v.trim());
         }
@@ -302,6 +371,16 @@ pub fn run(name: &str, args: &[String]) -> i32 {
         };
     let r = match cli.cmd {
         Cmd::Ls => ls(),
+        Cmd::Matrix { json } => tools_dir().and_then(|t| combo::matrix(&t, json)),
+        Cmd::Detect => tools_dir().and_then(|t| combo::detect(&t)),
+        Cmd::Switch {
+            runtimes,
+            engines,
+            gpu,
+            auto,
+            no_write,
+        } => tools_dir()
+            .and_then(|t| combo::switch(&t, &runtimes, &engines, gpu.as_deref(), auto, !no_write)),
         Cmd::Install { spec, engine, from } => match split_spec(&spec) {
             ("python", _) if engine == "rustpython" => install_rustpython(from.as_deref()),
             ("python", v) => uv_request(&engine, v)
@@ -310,7 +389,12 @@ pub fn run(name: &str, args: &[String]) -> i32 {
                 println!("{m}");
                 0
             }),
-            (other, _) => Err(format!("unknown runtime {other} (python, bun)")),
+            (rt @ ("node" | "deno"), v) => tools_dir().and_then(|t| {
+                let (version, _) = combo::resolve(&t, rt, v.unwrap_or("latest"))?;
+                println!("{}", combo::install_runtime(&t, rt, &version)?);
+                Ok(0)
+            }),
+            (other, _) => Err(format!("unknown runtime {other} (python, bun, node, deno)")),
         },
         Cmd::Use {
             spec,
@@ -331,6 +415,8 @@ pub fn run(name: &str, args: &[String]) -> i32 {
                     .map(|_| 0)
                     .map_err(|e| e.to_string())
             }),
+            (rt @ ("node" | "deno"), Some(v)) => tools_dir()
+                .and_then(|t| combo::switch(&t, &[format!("{rt}@{v}")], &[], None, false, true)),
             (other, _) => Err(format!("cannot select {other}; give runtime@version")),
         },
         Cmd::Run { spec, engine, args } => match split_spec(&spec) {
@@ -350,6 +436,9 @@ pub fn run(name: &str, args: &[String]) -> i32 {
                 status("uv", &a)
             })(),
             ("bun", v) => bun_for(v).and_then(|b| status(&b.to_string_lossy(), &args)),
+            (rt @ ("node" | "deno"), v) => {
+                js_bin(rt, v).and_then(|b| status(&b.to_string_lossy(), &args))
+            }
             (other, _) => Err(format!("unknown runtime {other}")),
         },
         Cmd::Pm { lang, name } => match lang.as_str() {

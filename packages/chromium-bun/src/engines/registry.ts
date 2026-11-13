@@ -11,18 +11,23 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 
 export type EngineProtocol =
-  "cdp" | "webdriver" | "playwright" | "mcp" | "cli" | "library";
+  "cdp" | "bidi" | "webdriver" | "playwright" | "mcp" | "cli" | "library";
 
-export type CftBrowser = "chrome" | "chrome-headless-shell";
+export type CftBrowser = "chrome" | "chrome-headless-shell" | "firefox";
 export type CftChannel = "stable" | "beta" | "dev" | "canary";
+export type FirefoxChannel =
+  "stable" | "beta" | "devedition" | "nightly" | "esr";
+/** Moteur JavaScript embarqué et implémentation WebGPU, pour la matrice et les combinaisons. */
+export type JsEngine = "v8" | "javascriptcore" | "spidermonkey" | "none";
+export type GpuBackend = "dawn" | "wgpu" | "none";
 export type PlaywrightBrowser =
   "chromium" | "chromium-headless-shell" | "firefox" | "webkit";
 
 export type EngineInstall =
   /** Binaire de release épinglé dans tools.toml, installé par `ay up <tool>`. */
   | { via: "ay"; tool: string; bin: string }
-  /** Chrome for Testing par @puppeteer/browsers (API JSON officielle). */
-  | { via: "cft"; browser: CftBrowser; channel: CftChannel }
+  /** Chrome for Testing (API JSON officielle) ou Firefox (archives Mozilla) par @puppeteer/browsers. */
+  | { via: "cft"; browser: CftBrowser; channel: CftChannel | FirefoxChannel }
   /** Navigateurs Playwright (`playwright install`), cache partagé JS et Python. */
   | { via: "playwright"; browser: PlaywrightBrowser }
   /** Outil Python isolé par `uv tool install`. */
@@ -43,6 +48,12 @@ export interface Engine {
   /** Dossier relatif à la racine du dépôt (third_party/<nom>) ou null si le code amont n'y est pas. */
   readonly thirdParty: string | null;
   readonly install: EngineInstall;
+  /** Rôle dans la matrice quand le protocole ne suffit pas (bibliothèques de rendu, moteurs JS, WebGPU). */
+  readonly role?: "render" | "js-engine" | "gpu";
+  readonly js: JsEngine;
+  readonly gpu: GpuBackend;
+  /** Source officielle de la dernière version, interrogée par `engines matrix`. */
+  readonly latest?: Latest;
   /** argv (sans l'exécutable) qui expose le protocole sur 127.0.0.1:<port>. */
   serve?(port: number, profileDir: string): string[];
 }
@@ -95,7 +106,23 @@ const chromeFlags =
     "about:blank",
   ];
 
+export type Latest =
+  | { from: "cft"; channel: CftChannel }
+  | { from: "firefox"; channel: FirefoxChannel }
+  | { from: "github"; repo: string; prefix?: string }
+  | { from: "npm"; name: string }
+  | { from: "pypi"; name: string }
+  | { from: "crates"; name: string }
+  | { from: "playwright"; browser: PlaywrightBrowser };
+
 const CHANNELS: readonly CftChannel[] = ["stable", "beta", "dev", "canary"];
+const FIREFOX: readonly FirefoxChannel[] = [
+  "stable",
+  "beta",
+  "devedition",
+  "nightly",
+  "esr",
+];
 const gh = (r: string) => `https://github.com/${r}`;
 
 export const ENGINES: readonly Engine[] = [
@@ -108,6 +135,9 @@ export const ENGINES: readonly Engine[] = [
       upstream: gh("GoogleChromeLabs/chrome-for-testing"),
       thirdParty: "third_party/chrome-for-testing",
       install: { via: "cft", browser: "chrome", channel },
+      js: "v8",
+      gpu: "dawn",
+      latest: { from: "cft", channel },
       serve: chromeFlags(true),
     },
     {
@@ -118,11 +148,36 @@ export const ENGINES: readonly Engine[] = [
       upstream: gh("GoogleChromeLabs/chrome-for-testing"),
       thirdParty: "third_party/chrome-for-testing",
       install: { via: "cft", browser: "chrome-headless-shell", channel },
+      js: "v8",
+      gpu: "dawn",
+      latest: { from: "cft", channel },
       serve: chromeFlags(false),
     },
   ]),
+  ...FIREFOX.map((channel): Engine => ({
+    id: `firefox@${channel}`,
+    title: `Firefox (${channel})`,
+    language: "C++",
+    protocol: "bidi",
+    upstream: "https://github.com/mozilla-firefox/firefox",
+    thirdParty: "third_party/firefox",
+    install: { via: "cft", browser: "firefox", channel },
+    js: "spidermonkey",
+    gpu: "wgpu",
+    latest: { from: "firefox", channel },
+    serve: (port, profileDir) => [
+      "--headless",
+      `--remote-debugging-port=${port}`,
+      "--profile",
+      profileDir,
+      "--no-remote",
+      "about:blank",
+    ],
+  })),
   {
     id: "chromium",
+    js: "v8",
+    gpu: "dawn",
     title: "Chromium du dépôt (gclient, build fr1)",
     language: "C++",
     protocol: "cdp",
@@ -140,6 +195,8 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "chrome",
+    js: "v8",
+    gpu: "dawn",
     title: "Chrome ou Edge du système",
     language: "C++",
     protocol: "cdp",
@@ -158,12 +215,24 @@ export const ENGINES: readonly Engine[] = [
     upstream: gh("microsoft/playwright"),
     thirdParty: "third_party/playwright",
     install: { via: "playwright", browser },
+    js:
+      browser === "webkit"
+        ? "javascriptcore"
+        : browser === "firefox"
+          ? "spidermonkey"
+          : "v8",
+    gpu:
+      browser === "webkit" ? "none" : browser === "firefox" ? "wgpu" : "dawn",
+    latest: { from: "playwright", browser },
     ...(browser.startsWith("chromium")
       ? { serve: chromeFlags(browser === "chromium") }
       : {}),
   })),
   {
     id: "lightpanda",
+    js: "v8",
+    gpu: "none",
+    latest: { from: "github", repo: "lightpanda-io/browser", prefix: "" },
     title: "Lightpanda",
     language: "Zig",
     protocol: "cdp",
@@ -174,6 +243,9 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "obscura",
+    js: "v8",
+    gpu: "none",
+    latest: { from: "github", repo: "h4ckf0r0day/obscura" },
     title: "Obscura",
     language: "Rust",
     protocol: "cdp",
@@ -184,6 +256,9 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "servo",
+    js: "spidermonkey",
+    gpu: "wgpu",
+    latest: { from: "github", repo: "servo/servo" },
     title: "Servo",
     language: "Rust",
     protocol: "webdriver",
@@ -194,6 +269,10 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "blitz",
+    role: "render",
+    js: "none",
+    gpu: "wgpu",
+    latest: { from: "crates", name: "blitz" },
     title: "Blitz (HTML/CSS, Stylo + Taffy + anyrender)",
     language: "Rust",
     protocol: "library",
@@ -203,6 +282,9 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "javascriptcore",
+    role: "js-engine",
+    js: "javascriptcore",
+    gpu: "none",
     title: "JavaScriptCore de bun (oven-sh/WebKit)",
     language: "C++",
     protocol: "library",
@@ -212,6 +294,9 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "v8",
+    role: "js-engine",
+    js: "v8",
+    gpu: "none",
     title: "V8 du Chromium du dépôt",
     language: "C++",
     protocol: "library",
@@ -220,7 +305,35 @@ export const ENGINES: readonly Engine[] = [
     install: { via: "build", host: "fr1" },
   },
   {
+    id: "dawn",
+    role: "gpu",
+    title: "Dawn (WebGPU de Chromium)",
+    language: "C++",
+    protocol: "library",
+    upstream: gh("google/dawn"),
+    thirdParty: "third_party/dawn",
+    install: { via: "build", host: "fr1" },
+    js: "none",
+    gpu: "dawn",
+  },
+  {
+    id: "wgpu",
+    role: "gpu",
+    title: "wgpu (WebGPU de Firefox, Servo, Deno)",
+    language: "Rust",
+    protocol: "library",
+    upstream: gh("gfx-rs/wgpu"),
+    thirdParty: "third_party/wgpu",
+    install: { via: "dependency", registry: "crates", name: "wgpu" },
+    js: "none",
+    gpu: "wgpu",
+    latest: { from: "crates", name: "wgpu" },
+  },
+  {
     id: "agent-browser",
+    js: "none",
+    gpu: "none",
+    latest: { from: "github", repo: "vercel-labs/agent-browser" },
     title: "agent-browser (CLI et MCP)",
     language: "Rust",
     protocol: "cli",
@@ -230,6 +343,9 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "chrome-devtools-mcp",
+    js: "none",
+    gpu: "none",
+    latest: { from: "npm", name: "chrome-devtools-mcp" },
     title: "Chrome DevTools MCP",
     language: "TypeScript",
     protocol: "mcp",
@@ -243,6 +359,9 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "playwright-mcp",
+    js: "none",
+    gpu: "none",
+    latest: { from: "npm", name: "@playwright/mcp" },
     title: "Playwright MCP",
     language: "TypeScript",
     protocol: "mcp",
@@ -252,6 +371,9 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "playwright-python",
+    js: "none",
+    gpu: "none",
+    latest: { from: "pypi", name: "playwright" },
     title: "Playwright pour Python",
     language: "Python",
     protocol: "cli",
@@ -265,6 +387,9 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "crawlee-python",
+    js: "none",
+    gpu: "none",
+    latest: { from: "pypi", name: "crawlee" },
     title: "Crawlee pour Python",
     language: "Python",
     protocol: "cli",
@@ -278,6 +403,9 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "apify-cli",
+    js: "none",
+    gpu: "none",
+    latest: { from: "npm", name: "apify-cli" },
     title: "Apify CLI (plateforme Apify)",
     language: "TypeScript",
     protocol: "cli",
@@ -287,6 +415,9 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "crawlee",
+    js: "none",
+    gpu: "none",
+    latest: { from: "npm", name: "crawlee" },
     title: "Crawlee (JS)",
     language: "TypeScript",
     protocol: "library",
@@ -296,6 +427,9 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "puppeteer",
+    js: "none",
+    gpu: "none",
+    latest: { from: "npm", name: "puppeteer-core" },
     title: "Puppeteer",
     language: "TypeScript",
     protocol: "library",
@@ -305,6 +439,9 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "playwright",
+    js: "none",
+    gpu: "none",
+    latest: { from: "npm", name: "playwright-core" },
     title: "Playwright (JS)",
     language: "TypeScript",
     protocol: "library",
@@ -314,6 +451,9 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "apify-sdk",
+    js: "none",
+    gpu: "none",
+    latest: { from: "npm", name: "apify" },
     title: "Apify SDK (JS)",
     language: "TypeScript",
     protocol: "library",
@@ -323,6 +463,9 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "apify-sdk-python",
+    js: "none",
+    gpu: "none",
+    latest: { from: "pypi", name: "apify" },
     title: "Apify SDK (Python)",
     language: "Python",
     protocol: "library",
@@ -332,6 +475,9 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "apify-client",
+    js: "none",
+    gpu: "none",
+    latest: { from: "npm", name: "apify-client" },
     title: "Client API Apify (JS)",
     language: "TypeScript",
     protocol: "library",
@@ -341,6 +487,9 @@ export const ENGINES: readonly Engine[] = [
   },
   {
     id: "apify-client-python",
+    js: "none",
+    gpu: "none",
+    latest: { from: "pypi", name: "apify-client" },
     title: "Client API Apify (Python)",
     language: "Python",
     protocol: "library",

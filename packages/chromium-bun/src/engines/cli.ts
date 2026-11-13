@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
-// chromium-bun engines list | channels | path <id> | install [id...] | launch <id> [--port N]
+// chromium-bun engines list | matrix | channels | path <id> | install [id...] | launch <id> [--port N]
+// Exécutable seul (bun packages/chromium-bun/src/engines/cli.ts ...) sans charger le reste du paquet ; `ay rt` l'appelle ainsi.
 import { DEFAULT_INSTALL, installEngines } from "./install.ts";
 import { launchEngine } from "./launch.ts";
+import { engineMatrix } from "./matrix.ts";
 import {
   ENGINES,
   getEngine,
@@ -26,6 +28,23 @@ export async function runEnginesCommand(args: string[]): Promise<number> {
       }));
       if (rest.includes("--json")) console.log(JSON.stringify(rows, null, 2));
       else for (const r of rows) console.log(Object.values(r).join("\t"));
+      return 0;
+    }
+    case "matrix": {
+      const rows = await engineMatrix();
+      if (rest.includes("--json")) console.log(JSON.stringify(rows, null, 2));
+      else
+        for (const r of rows)
+          console.log(
+            [
+              r.id,
+              r.js,
+              r.gpu,
+              r.latest ?? "-",
+              r.installed ?? "-",
+              r.source ?? "-",
+            ].join("\t"),
+          );
       return 0;
     }
     case "channels": {
@@ -93,6 +112,7 @@ function usage(): number {
   console.error(
     [
       "chromium-bun engines list [--json]          registre, protocole, installation, exécutable résolu",
+      "chromium-bun engines matrix [--json]        dernière version (source officielle, en direct), installée, moteur JS, WebGPU",
       "chromium-bun engines channels               canaux Chrome for Testing (API JSON officielle) et cache local",
       "chromium-bun engines path <id>              exécutable du moteur (code 1 si absent)",
       "chromium-bun engines install [id...]        installation idempotente (ay up, CfT, Playwright, uv tool)",
@@ -101,3 +121,6 @@ function usage(): number {
   );
   return 2;
 }
+
+if (import.meta.main)
+  process.exitCode = await runEnginesCommand(process.argv.slice(2));

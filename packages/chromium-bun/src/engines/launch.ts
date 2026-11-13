@@ -17,7 +17,7 @@ export interface RunningEngine extends AsyncDisposable {
   readonly port: number;
   /** http://127.0.0.1:<port> : base CDP (/json/version) ou WebDriver (/status). */
   readonly endpoint: string;
-  /** Pour CDP : URL WebSocket du navigateur ; pour WebDriver : null. */
+  /** CDP : URL WebSocket du navigateur ; BiDi : ws://.../session ; WebDriver classique : null. */
   readonly webSocketDebuggerUrl: string | null;
   readonly version: string;
   connect(): Promise<ChromiumBunCdpClient>;
@@ -37,6 +37,14 @@ export function freePort(): number {
 }
 
 async function probe(engine: Engine, base: string) {
+  if (engine.protocol === "bidi") {
+    // Firefox : agent distant WebDriver BiDi, aucune route /json/version ; toute réponse HTTP vaut prêt.
+    await fetch(base, { signal: AbortSignal.timeout(800) });
+    return {
+      version: "webdriver-bidi",
+      ws: `${base.replace("http", "ws")}/session`,
+    };
+  }
   const url =
     engine.protocol === "webdriver" ? `${base}/status` : `${base}/json/version`;
   const r = await fetch(url, { signal: AbortSignal.timeout(800) });

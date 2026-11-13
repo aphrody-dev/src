@@ -2,3 +2,4 @@
 export * from "./registry.ts";
 export * from "./install.ts";
 export * from "./launch.ts";
+export * from "./matrix.ts";

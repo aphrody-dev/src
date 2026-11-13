@@ -183,6 +183,12 @@ const FORKS: Fork[] = [
       "12-tooling",
     ],
   },
+  // Node.js (V8) : binaires officiels par `ay rt` ; ici la source de lib/ et src/ seulement (dépôt de plusieurs Go).
+  {
+    name: "node",
+    upstream: gh("nodejs/node"),
+    sparse: ["lib", "src", "doc/api"],
+  },
   // JavaScriptCore de bun (fork oven-sh/WebKit, 13 Go) : moteur JS, WTF et bmalloc seulement.
   {
     name: "WebKit",

@@ -1117,6 +1117,7 @@ dependencies = [
 name = "aphrody-rt"
 version = "0.2.0"
 dependencies = [
+ "aphrody-conformance",
  "aphrody-up",
  "clap",
  "serde_json",
