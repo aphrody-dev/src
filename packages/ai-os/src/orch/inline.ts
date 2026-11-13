@@ -2,7 +2,7 @@
 // sur l'hôte : même adressage que la file (« cli[:modèle] » ou « fournisseur/modèle »), CLI en mode plan / bac à sable
 // lecture seule, sans ajout de repli interne (la bascule appartient à l'orchestrateur). Les étapes qui modifient des
 // fichiers passent toujours par la file du runner (commit borné aux chemins, contrôle d'acceptation).
-import { resolveExe } from "../llm/agents";
+import { resolveExe, viaFile } from "../llm/agents";
 import { llmAsk } from "../llm/model";
 import { classify, type FailClass } from "./classify";
 import { exec, type Host } from "./fleet";
@@ -22,12 +22,15 @@ function argvFor(
   model: string | undefined,
   prompt: string,
   winLocal: boolean,
+  local = winLocal,
 ): { argv: string[]; stdin?: string } | string {
   const m = (flag: string) => (model ? [flag, model] : []);
+  // agy lit des fichiers : en local, une consigne longue passe par un fichier privé (llm/agents.ts viaFile).
+  const file = cli === "agy" && local && prompt.length > 8000;
   // Ligne de commande Windows bornée : une consigne trop longue n'est jamais tronquée en silence, le moteur est écarté.
-  if (cli !== "claude" && winLocal && prompt.length > ARGV_MAX)
+  if (cli !== "claude" && !file && winLocal && prompt.length > ARGV_MAX)
     return `consigne de ${prompt.length} caractères : trop longue pour la ligne de commande Windows de ${cli}`;
-  const p = prompt;
+  const p = file ? viaFile(prompt) : prompt;
   switch (cli) {
     case "claude":
       return {
@@ -161,6 +164,7 @@ export async function inline(
     model || undefined,
     prompt,
     h.local && process.platform === "win32",
+    h.local,
   );
   if (typeof spec === "string")
     return { ok: false, text: spec, cls: "missing", ms: 0, tokens: 0 };

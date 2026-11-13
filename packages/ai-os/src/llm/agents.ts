@@ -1,4 +1,6 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 // Agents en ligne de commande servant de fournisseurs de modèles (Antigravity `agy`, Claude Code `claude`) :
 // partagés par le pont de modèles (models.ts) et le relais (relay/backends.ts). Exécution sans shell, délai borné.
@@ -85,6 +87,15 @@ export async function cli(
   return { text, engine, ms: Math.round(performance.now() - t0) };
 }
 
+/** Consigne longue pour un agent qui lit des fichiers (agy) : écrite dans un fichier temporaire privé, la ligne de
+ * commande ne porte que l'ordre de le lire (Windows : 32 767 caractères, ENAMETOOLONG ; Linux : 128 Kio par argument).
+ * Partagé par agy() et l'exécution directe de l'orchestrateur (orch/inline.ts). */
+export function viaFile(prompt: string): string {
+  const file = join(mkdtempSync(join(tmpdir(), "agy-")), "prompt.md");
+  writeFileSync(file, prompt, { mode: 0o600 });
+  return `Lis intégralement le fichier ${file} (${prompt.length} caractères) et réponds à la demande qu il contient, comme si son contenu était ce message.`;
+}
+
 /** Antigravity CLI headless (`agy -p … --output-format json --mode plan`, 1.5.7) : session Antigravity déjà ouverte,
  * modèles Gemini 4. Modèle demandé (argument ou RELAY_AGY_MODEL, ex. gemini-4-carbon-high) ; s'il est épuisé
  * (RESOURCE_EXHAUSTED, crédits insuffisants), nouvel essai avec le modèle par défaut du compte. Mesuré : 1,96 s. */
@@ -95,15 +106,7 @@ export async function agy(
 ): Promise<Answer> {
   // Windows caps a command line at 32767 characters (ENAMETOOLONG): a long prompt goes to a private temp file
   // and agy (an agent with file access) is told to read it. Mode plan: it reads, it does not edit.
-  let p = prompt;
-  if (prompt.length > 8000) {
-    const { mkdtempSync, writeFileSync } = await import("node:fs");
-    const { tmpdir } = await import("node:os");
-    const { join } = await import("node:path");
-    const file = join(mkdtempSync(join(tmpdir(), "agy-")), "prompt.md");
-    writeFileSync(file, prompt, { mode: 0o600 });
-    p = `Lis intégralement le fichier ${file} (${prompt.length} caractères) et réponds à la demande qu il contient, comme si son contenu était ce message.`;
-  }
+  const p = prompt.length > 8000 ? viaFile(prompt) : prompt;
   const argv = (m?: string) => [
     "agy",
     "-p",

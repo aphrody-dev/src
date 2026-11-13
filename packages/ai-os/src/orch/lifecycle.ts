@@ -1,7 +1,7 @@
 // Workflows reproductibles du cycle de vie de src, sans humain : ils ne figent ni moteur ni modèle (sélection par
 // select.ts), seulement les étapes, leurs hôtes et leurs garde-fous. Compilation et conteneurs sur prd uniquement
 // (nice -n 19, -j 4) ; le poste ne fait que formater, typer, tester en bun et juger.
-//   software : code -> fmt -> check/arch/clippy -> tests -> juges (Gemini web + Claude) -> correction -> build/docker
+//   software : code -> fmt -> check/arch/clippy -> tests -> tribunal (ai-os review) -> correction -> build/docker
 //              -> déploiement (dry-run sauf --apply) -> surveillance -> optimisation (étapes générées)
 //   design   : PRD + DESIGN.md (gds plan) -> gds verify -> wck 100/100 -> juge
 //   market   : brouillons rédigés et mis en file ; la publication est un effet externe retenu (policy.ts)
@@ -121,38 +121,33 @@ export function software(o: LifecycleOptions = {}): Workflow {
       onFail: "stop",
     },
     {
-      id: "judge-gemini",
+      // Tribunal à trois voix (src/review : Gemini et Claude en parallèle, juge neutre qui tranche), moteurs du
+      // registre avec repli, ancré sur les sources officielles Google et docs/reviews/CHECKLISTS.md ; verdicts
+      // docs/reviews/<voix>-<date>-<slug>.md et ligne d'INDEX.md écrits par l'outil.
+      id: "review",
       do: "tool",
       deps: ["diff"],
       hosts: ["pc"],
-      tool: "gemini_review",
-      args: { title: `${paths.join(", ")} (${day()})`, content: "{{diff}}" },
-      out: `docs/reviews/gemini-${day()}-${slug}.md`,
-      onFail: "continue",
-    },
-    {
-      id: "judge-claude",
-      do: "agent",
-      role: "reviewer",
-      deps: ["diff"],
-      needs: { context: 100_000, only: ["^claude(:|$)", "^anthropic/"] },
-      prompt:
-        "Juge strict de ce changement de src. Note /20, puis chaque défaut vérifiable (fichier:ligne, défaut, correction). Pas de compliments.\n\n{{diff}}",
-      out: `docs/reviews/claude-${day()}-${slug}.md`,
+      tool: "review",
+      args: {
+        title: `${paths.join(", ")} (${day()})`,
+        content: "{{diff}}",
+        slug,
+      },
       onFail: "continue",
     },
     {
       id: "fix",
       do: "agent",
       role: "coder",
-      deps: ["judge-gemini", "judge-claude"],
+      deps: ["review"],
       needs: { edit: true },
       prompt:
-        "Deux juges ont relu le changement. Vérifie chaque défaut dans le code ; corrige ceux qui sont réels, ignore les autres en le disant. Juge Gemini :\n{{judge-gemini}}\n\nJuge Claude :\n{{judge-claude}}",
+        "Le tribunal ai-os review (deux voix et un juge) a relu le changement. Vérifie chaque défaut retenu par le juge dans le code ; corrige ceux qui sont réels, ignore les autres en le disant. Rien à faire si le statut est « conforme ».\n\n{{review}}",
       check: "bun check && ay arch check --strict",
       commit: {
         paths: [...paths, "docs/reviews"],
-        message: msg("corrections des juges"),
+        message: msg("corrections du tribunal"),
       },
       onFail: "continue",
       budget_usd: 5,
@@ -240,12 +235,12 @@ export function design(product: string, o: { url?: string } = {}): Workflow {
         do: "tool",
         deps: ["gds", "wck"],
         hosts: ["pc"],
-        tool: "gemini_review",
+        tool: "review",
         args: {
           title: `${dir} design (${day()})`,
           content: "gds verify :\n{{gds}}\n\nwck :\n{{wck}}",
+          slug: `design-${product}`,
         },
-        out: `docs/reviews/gemini-${day()}-design-${product}.md`,
       },
     ],
   };

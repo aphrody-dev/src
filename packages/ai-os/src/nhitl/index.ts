@@ -11,7 +11,14 @@ import { srcRoot } from "../orch/fleet";
 export type Severity = "high" | "medium" | "low" | "info";
 export type Status = "open" | "fixed" | "inevitable";
 export type Source =
-  "transcript" | "settings" | "code" | "queue" | "docs" | "hook" | "ledger";
+  | "transcript"
+  | "settings"
+  | "code"
+  | "queue"
+  | "docs"
+  | "hook"
+  | "ledger"
+  | "review";
 
 export type Violation = {
   id: string;
@@ -156,6 +163,39 @@ export class Index {
           "INSERT INTO violation_fts SELECT id, source, location, category, excerpt, fix FROM violation WHERE source = ?",
         )
         .run(source);
+    })();
+  }
+
+  /** Upsert d'une seule entrée, sans toucher aux autres entrées de sa source (ai-os review : moteur absent). */
+  record(v: Violation) {
+    const now = new Date().toISOString();
+    this.db.transaction(() => {
+      this.db
+        .query(
+          `INSERT INTO violation VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+          ON CONFLICT(id) DO UPDATE SET excerpt=excluded.excerpt, fix=excluded.fix, status=excluded.status,
+          severity=excluded.severity, last_seen=excluded.last_seen`,
+        )
+        .run(
+          v.id,
+          v.source,
+          v.location,
+          v.category,
+          v.severity,
+          redact(v.excerpt),
+          v.fix,
+          v.status,
+          v.reason ?? null,
+          v.unit ?? null,
+          now,
+          now,
+        );
+      this.db.query("DELETE FROM violation_fts WHERE id = ?").run(v.id);
+      this.db
+        .query(
+          "INSERT INTO violation_fts SELECT id, source, location, category, excerpt, fix FROM violation WHERE id = ?",
+        )
+        .run(v.id);
     })();
   }
 

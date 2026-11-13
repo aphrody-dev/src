@@ -129,6 +129,42 @@ export const TOOLS: Tool[] = [
       ),
   },
   {
+    name: "review",
+    description:
+      "Three-voice review tribunal of src (ai-os review, docs/reviews/README.md): Gemini and Claude voices in parallel, then a neutral judge; engines from the model registry with fallback, grounded on official Google sources and the checklists of docs/reviews. Writes docs/reviews/<voice>-<date>-<slug>.md and the INDEX.md row. Target = paths, 'diff', A..B or a commit; or content + title (orchestrator step).",
+    inputSchema: obj({
+      targets: {
+        type: "array",
+        items: { type: "string" },
+        description: "Paths, 'diff', A..B, commit; '--' then path filters",
+      },
+      content: str("Content or unified diff to review (instead of targets)"),
+      title: str("What is reviewed"),
+      slug: str("Verdict file slug (optional)"),
+      voices: { type: "array", items: { type: "string" } },
+      threshold: { type: "number" },
+      fix: { type: "boolean", description: "Auto-fix loop (default false)" },
+    }),
+    readOnly: false,
+    run: async (a) => {
+      const { review } = await import("../review/index.ts");
+      const r = await review({
+        spec: a.content ? undefined : (a.targets as string[] | undefined),
+        content: a.content
+          ? { title: String(a.title ?? "contenu"), text: String(a.content) }
+          : undefined,
+        title: a.title,
+        slug: a.slug,
+        voices: a.voices,
+        threshold: a.threshold,
+        fix: a.fix === true,
+      });
+      // Verdict du juge en dernier : l'orchestrateur garde la fin de la sortie d'une étape.
+      const { verdict, ...rest } = r;
+      return { ...rest, verdict };
+    },
+  },
+  {
     name: "claude_ask",
     description:
       "Ask Claude Code headless (claude -p, plan mode: no edits), using the CLI's existing authentication.",

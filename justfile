@@ -191,6 +191,13 @@ nhitl-schedule:
 lifecycle *args:
     bun run --cwd "{{root}}/packages/ai-os" src/cli.ts orch lifecycle {{args}}
 
+# Three-voice review tribunal, no human (docs/reviews/README.md): Gemini + Claude in parallel, neutral judge decides;
+# verdicts in docs/reviews/<voice>-<date>-<slug>.md + INDEX.md. Usage: just review <paths|diff|A..B|commit> [-- paths]
+# [--voices gemini,claude,judge] [--threshold 16] [--fix] [--dry-run]. Arguments go through "$@", never interpolated.
+[positional-arguments]
+review *args:
+    bun run --cwd "{{root}}/packages/ai-os" src/cli.ts review "$@"
+
 # Windows service AphrodyRelay (elevated): exe = published artefact relay-service of .github/workflows/ai-os.yml
 [windows]
 relay-install exe:
