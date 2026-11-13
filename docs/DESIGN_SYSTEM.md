@@ -1,16 +1,10 @@
-# Aphrody Design System (`crates/aphrody-design-*`)
+# Aphrody design system (state 2026-11-13)
 
-> 2026-11-13 : le cœur Rust du design system est le crate unique `crates/aphrody-ui` (modules `color` = HCT/CAM16/palettes/schémas/contraste vérifiés contre les fixtures de `@material/material-color-utilities` 0.4.0 avec typo, forme, élévation, mouvement et state layers ; `components` = contrats M3 (états, variantes, ARIA, focus, mesures) ; `layout`, `shared`, `react`, `next`, `brand` avec le binaire `aphrody-brand`). Les tokens de marque viennent de `packages/design` (tokens.rs, tokens.css). Les anciens crates `aphrody-design-*`, `ui`, `react`, `next` et `aphrody-brand` y sont fusionnés. La suite décrit l ancien ensemble.
-
-> 2026-11-13 : le système de design unique est `packages/design` (tokens Material 3 via Material Color Utilities, Material Web, Material Symbols), voir `docs/ui/STACK.md` et `docs/ui/INVENTORY.md`. `aphrody-design-emit` est supprimé ; les autres crates sont en cours de retrait (plan dans INVENTORY).
-
-The remaining design crates are members of the root Cargo workspace (`C:/src/Cargo.toml`); the asset catalog lives in `crates/aphrody-design-icons/catalog/`.
-
-Pure-Rust (Edition 2024, `#![forbid(unsafe_code)]`) multi-surface design token, layout, theme-emitter, and vector icon workspace consolidated into `C:\src\crates\design-system`.
-
-## Workspace Crates
-
-- `aphrody-design-shared` — Zero-overhead foundation types (`RgbaColor`, 8 built-in theme presets including Neutral, Material Design 3, Fluent UI 2, Apple HIG Liquid Glass, Omarchy, Hyprland, Aphrody (marque originale d'assets/brand), and Chromium).
-- `aphrody-design-tokens` — `no_std`-capable Material Design 3 HCT/CAM16/Wu/WSMeans dynamic color engine, typography, elevation, motion, and variable font axes (`GoogleSansFlex`, `GoogleSansCode`).
-- `aphrody-design-layout` — LightningCSS + Tailwind v3/v4 utility parser lowered directly to `taffy` 0.15 flexbox/grid layout trees.
-- `aphrody-design-icons` — SVG and Chromium `.icon` DSL vector parser, normalized path IR, SVGO-equivalent optimizer, zstd icon bundle builder, multi-size ICO/PNG/PWA favicon renderer, and `catalog/assets.lock.toml` license verifier.
+- Tokens: `packages/design` (`DESIGN.md`, `tokens/tokens.json`, `tokens.css`, `tokens.rs`, `tokens.zig`, `ansi.json`, Figma variable files), Material 3 through Material Color Utilities. Sources and versions: `docs/ui/STACK.md`; surfaces: `docs/ui/INVENTORY.md`.
+- Rust core: `crates/aphrody-ui`, one crate with the modules `color` (HCT, CAM16, palettes, schemes, contrast, checked against `@material/material-color-utilities` 0.4.0 fixtures), `components` (Material 3 contracts: states, variants, ARIA, focus, measures), `layout` (CSS and Tailwind utilities lowered to `taffy`), `shared`, `react`, `next` and `brand` (binary `aphrody-brand`, `ay brand build`). `crates/aphrody-brand-gpu` holds the geometry shared with the wasm renderer.
+- Features of `aphrody-ui`: default `std`, `serde`, `layout`, `react`, `next`, `brand`; optional `image`, `embedded-fonts`, `bevy` (`layout::css_to_bevy_node`) and `egui` (`layout::to_egui`). A renderer can depend on it with `default-features = false`.
+- UI frameworks: free since the owner amendment of 2026-11-13 (`docs/ui/STACK.md`); the criteria are rendering quality, performance and function. Tokens stay the single source whatever the framework.
+- Removed: the crates `aphrody-design-shared`, `-tokens`, `-layout`, `-icons` and `-emit` no longer exist; their code was merged into `aphrody-ui`.
+- Reference specifications (not targets): `docs/design` (441 rewritten rules, sources and licenses in `sources.toml`) and the skills `material-3`, `google-design`, `vercel-geist`, `web-a11y-seo-cwv`, `webgpu-wasm-ui`.
+- Gate: Design-First Gate of `AGENTS.md` section 2 (`gds verify`, `wck`).
+- External system read for comparison: the Craft Apps have no shared token file, `craft-ui` takes application-supplied styles (`docs/games/ARTCRAFT.md`).

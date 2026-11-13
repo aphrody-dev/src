@@ -6,9 +6,9 @@ Compatible with **Google Antigravity (`agy`)**, **OpenAI Codex (`codex`)**, **An
 
 The repository root (`SRC_ROOT`) separates first-party code from upstream vendor trees (lists as of 2026-11-13, `ls` of each directory):
 
-- [`apps/`](apps) — products and maintained sites (`aphrody`, `aphrody-app`, `auto`, `l2l`, `nt`, `r2b`, `r2-site`, `rosegriffon`, `shenron`, `yolo`); `auto`, `r2b`, `rosegriffon`, `shenron` are the only git submodules.
-- [`packages/`](packages) — Bun 1.4.4 `@aphrody/*` packages (`ai-os`, `bun-parity`, `bun-plugins`, `chromium-bun`, `core`, `env-kit`, `forge`, `gaming`, `google-design`, `machine`, `net`, `runtime-adapter`, `shell-matrix`, `wck`).
-- [`crates/`](crates) — Rust 2024 crates in one flat workspace (`ay`, `archguard`, `xtask`, `depot-*`, `lore*`, `aphrody-design-*`, `corelib`, `core`, `core-capi`, `ffi`, `rust-stack`, `ring3-agent`, `gamescope-*`, `unix-*`, `tv-*`, `bench`, ...).
+- [`apps/`](apps) — products and maintained sites (`aphrody`, `aphrody-app`, `auto`, `l2l`, `nt`, `r2b`, `r2-site`, `rosegriffon`, `shenron`, `unixwin`, `yolo`); `auto`, `r2b`, `rosegriffon`, `shenron` are the only git submodules.
+- [`packages/`](packages) — Bun 1.4.4 `@aphrody/*` packages (`ai-os`, `bun-parity`, `bun-plugins`, `chromium-bun`, `core`, `deploy`, `design`, `env-kit`, `ffi-bridge`, `forge`, `gaming`, `google-design`, `linux`, `machine`, `net`, `release`, `runtime-adapter`, `shell-matrix`, `upstream`, `vault`, `wck`).
+- [`crates/`](crates) — Rust 2024 crates in one flat workspace (`ay`, `archguard`, `xtask`, `depot-*`, `lore*`, `aphrody-ui`, `corelib`, `core`, `core-capi`, `ffi`, `rust-stack`, `ring3-agent`, `gamescope-*`, `unix-*`, `tv-*`, `bench`, ...).
 - [`infra/`](infra) — fleet and deploy config assembled from upstream tools (`deploy.toml`, `docker`, `cluster`, `cloudflare`, `fleet`, `mesh-vn`, `gcloud`, `gitlab`, `mail`, `chromium-factory`; `docs/infra/UPSTREAM-STACK.md`).
 - [`third_party/`](third_party) — upstream checkouts and aphrody-labs forks, flat (`third_party/<name>`, list in `third_party/forks.txt`).
 

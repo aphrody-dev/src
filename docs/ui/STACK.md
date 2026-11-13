@@ -1,5 +1,7 @@
 # Pile UI cible du monorepo
 
+
+> Amendement du propriétaire, 2026-11-13 (après ce document) : le framework est libre (Bevy UI, craft-ui et egui, wgpu, iced, WinUI 3, Tauri, etc.) tant que le rendu est beau, optimisé et fonctionnel. Les quatre références ci-dessous restent des options documentées, plus une liste fermée.
 Décision du propriétaire, 2026-11-13 : toutes les UI actuelles sont rejetées sauf quatre références, GPUI (Zed), Microsoft WebUI, la « Vercel native Zig UI » et le vrai Material 3. Ce document cite les sources vues en direct le 2026-11-13 (`gh api`, registre npm, crates.io, context7, Microsoft Learn MCP, MCP Figma) et fixe la cible de chaque surface. Système de design : `packages/design`. Inventaire et plan : `docs/ui/INVENTORY.md`. Skill pour les agents : `.agents/skills/ui-system`.
 
 ## 1. GPUI (Zed)

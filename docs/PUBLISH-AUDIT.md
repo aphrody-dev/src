@@ -105,3 +105,5 @@ Vérification faite le 2026-11-12 via l'API crates.io et le registre npm, avec l
 8. Renommer `lore`, `ffi` et `sys` avant toute publication. Les autres noms de crates sont libres.
 9. Ne jamais commiter `third_party/` ni UnrealEngine dans un dépôt public. Relire `native_nt_gpu.lib`.
 10. Avant de rendre un dépôt public, relancer `gitleaks git --redact` dessus (la règle `extra.toml` peut être recréée à partir de la section 1).
+
+Mise à jour 2026-11-13 : `packages/epic-games` a été supprimé de l arbre (commit `2b1a28fe`). Les points qui le citent ne concernent plus que l historique git, où la valeur reste lisible.

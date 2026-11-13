@@ -302,6 +302,7 @@ Exit criteria:
 - Lore as the native VCS of every Aphrody repository, served by a self-hosted Lore server.
 - Self-hosted replacements for Epic online services and Unreal Engine features, built on the open-source Epic repositories (lore, zen, PixelStreamingInfrastructure, raddebugger) and the private Unreal Engine fork.
 - Conformance suites for this track are defined when the first crate lands.
+- Sources and tracking: `docs/epic/RESOURCES.md`, `docs/epic/TRACKING.md`. Games, creative suite and media upstreams: `docs/games/PLAN.md` (not started).
 
 ### Fabrique Chromium (piste prioritaire depuis 2026-11-12)
 

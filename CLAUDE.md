@@ -29,7 +29,6 @@ bun test ./.agents/scripts/pre-tool-guard.test.ts       # dot-dirs need an expli
 cargo test --workspace         # root workspace: every crates/* member (one Cargo.lock, one target/)
 cargo test -p aphrody-brand <test_name>
 cargo test -p aphrody         # the ay CLI (routing tests); -p archguard, -p xtk, -p depot-cli for the libraries behind it
-go -C infra test ./...        # Go deploy engine
 ay arch check --strict        # architecture / purity / hygiene gate (also: just archguard; ay arch graph, ay arch rules)
 ay doctor | ay lock | ay manifests [verify]   # toolchain doctor, src.lock.json + generated manifests
 ay git <cmd>                  # fork, slim [--all], clone, gix, forge, audit, maintainer, depot_tools shims
@@ -37,13 +36,13 @@ ay ingest <path> / ay graph <path>   # repository digest / tree-sitter code grap
 ay deploy <sub> / ay bench ... # just docker-<sub> (buildx bake + compose) / Windows benchmark suite
 ay build --list               # cross-compilation presets and which Rust targets / native toolchains are missing
 ay build -t wasm32 -t linux-musl --release   # or: just build target=wasm32
-just verify-all               # ay arch check + ay doctor + bun + cargo + go suites
+just verify-all               # ay arch check + ay doctor + bun suites, then ci.yml (Rust) on the commit
 just graph third_party/bun/src bun   # AST graph into graphify-out/bun
 just lock                     # src.lock.json from the checkout, then DEPS + .gitmodules derived from it
 just deploy [profile] [host]  # docker compose pull + up --wait (default core on prd); rollback SRC_TAG=<sha>
 ```
 
-Nothing compiles on the workstation: the `cargo`, `go` and `ay build` commands above run in CI (`ci.yml` Rust on the self-hosted fr1 runner, `judge.yml` fast gates on GitHub-hosted) or on fr1 (`ssh vps aphrody-heavy <cmd>`), the factory for every build, test, training and heavy agent; never on prd (production backends) or fr2 (edge). Never run bare `bun test` from the root: it walks `third_party/` (5M+ files, over a minute) before finding anything.
+Nothing compiles on the workstation: the `cargo` and `ay build` commands above run in CI (`ci.yml` Rust on the self-hosted fr1 runner, `judge.yml` fast gates on GitHub-hosted) or on fr1 (`ssh vps aphrody-heavy <cmd>`), the factory for every build, test, training and heavy agent; never on prd (production backends) or fr2 (edge). Never run bare `bun test` from the root: it walks `third_party/` (5M+ files, over a minute) before finding anything.
 
 The only git submodules are `apps/auto`, `apps/r2b`, `apps/rosegriffon` and `apps/shenron` (`git ls-files -s | grep ^160000`); they may be uninitialized in a fresh checkout (`git submodule status` shows `-`). Everything else, `packages/*` and `crates/*` included, is tracked flat in this repository. Commits inside a submodule are made in that submodule, then the superproject pointer is bumped and `just lock` re-run so `DEPS`/`src.lock.json` match.
 
@@ -60,12 +59,12 @@ The only git submodules are `apps/auto`, `apps/r2b`, `apps/rosegriffon` and `app
 
 - **Ownership**: Aphrody's own products are `apps/aphrody` (aphrody.com search and package catalog), `apps/aphrody-app` (aphrody.app) and `packages/ai-os`. `apps/shenron` (DBFR, dragonballfr.com) and `apps/rosegriffon` (rosegriffon.fr) are distinct community products that Aphrody is employed to maintain and uses as testbeds for Bun, Rust, design-stack evaluation and benchmarks: never present them as Aphrody products.
 - **Workspaces**: root `package.json` workspaces are `packages/*` (`infra/mesh-vn` aside, no bun package lives under `infra/`; `packages/ffi-bridge` binds the Rust cdylibs, `crates/dx12-hal` included). Packages expose `src/cli.ts`, run via `bun run --cwd packages/<pkg> src/cli.ts <cmd>` (what most `just` recipes wrap), and are AOT-compiled into `~/.local/bin`.
-- **FFI**: `crates/ffi` builds `aphrody_ffi` (`depot_*` and `aphrody_*` symbols, read by `packages/forge` via `bun:ffi`; symbol names are a stable contract). **Three-way FFI**: Rust (`crates/rust-stack` -> `rust_stack_ffi.dll`), Go (`infra/cshared` -> `infra_go.dll`), and Bun (`packages/ffi-bridge`, `bun:ffi`) call each other over a C ABI. Changing an exported signature on one side means updating the other two and running `just verify-all`.
+- **FFI**: `crates/ffi` builds `aphrody_ffi` (`depot_*` and `aphrody_*` symbols, read by `packages/forge` via `bun:ffi`; symbol names are a stable contract). `crates/rust-stack` builds `rust_stack_ffi` and `crates/core-capi` exposes `crates/core` through `include/aphrody_core.h`; Bun binds them with `bun:ffi` (`packages/ffi-bridge`, `packages/core`). No Go code remains under `infra/`. Changing an exported signature means updating the Bun binding and running `just verify-all`.
 - **Deploy**: upstream only (`docs/infra/UPSTREAM-STACK.md`): images by `docker buildx bake` in CI (`images.yml`) or on `fr1` (factory: builds, CI, training, heavy agents), pushed to `ghcr.io/aphrody-labs`; `docker compose up --wait` on `prd` (`usa` node, production backends only, no compilers) and `fr2` (edge only); Cloudflare via wrangler/`cf`. Config is `infra/deploy.toml`.
 - **VCS governance (pin-001)**: `src.lock.json` is the only pin; `DEPS` (gclient) and `.gitmodules` are derived from it by `ay manifests` (`ay manifests --check` / `just manifests-check` gate). Do not hand-edit them. `MAINTAINERS` (kernel format) is hand-maintained. Product names live in `identity.toml` (`just identity check`).
 - **One canonical path per unit**: there are no root aliases (the former `C:/src/bun`, `C:/src/chromium`, ... junctions were removed; the list is in `var/reorg/`). Always reference `third_party/<name>`, `packages/<name>`, `crates/<name>`, `apps/<name>`. `third_party/chromium` is a gclient solution (`.gclient`, cache in `%LOCALAPPDATA%/depot_tools/git_cache`); `third_party/bun` is the `aphrody-labs/bun` fork (default branch `main`), a Rust Cargo workspace of ~130 crates under `src/` with its own `CLAUDE.md` (build with `bun bd`, never plain `bun test` there).
 - **Root Cargo workspace** (`Cargo.toml`): flat `crates/<name>` members sharing `[workspace.package]` (edition 2024), `[workspace.dependencies]`, and one release profile (fat LTO, 1 codegen unit, abort). Members inherit with `edition.workspace = true`; archguard accepts that only when the root value is compliant.
-- **Tooling crates**: `crates/ay` (package `aphrody`, binary `ay`) is the repo tooling CLI (no `xtk`, `depot`, `archguard`, `gitingest` or `stack-bench` binaries any more); it routes to libraries: `crates/archguard` (`ay arch`, rules `ARCH-001`..`ARCH-017` under `src/rules/`), `crates/xtask` (lib `xtk`: `ay doctor`, `ay lock`, `ay manifests`, `ay git slim --all`, `ay git audit`), `crates/depot-cli` (`ay git`, `ay ingest`, `ay graph`; logic in `depot-core`, `depot-graph`, `depot-treesitter`, `depot-ingest`), `crates/bench` (`ay bench`).
+- **Tooling crates**: `crates/ay` (package `aphrody`, binary `ay`) is the repo tooling CLI (no `xtk`, `depot`, `archguard`, `gitingest` or `stack-bench` binaries any more); it routes to libraries: `crates/archguard` (`ay arch`, rules `ARCH-001`..`ARCH-017` under `src/rules/`), `crates/xtask` (lib `xtk`: `ay doctor`, `ay lock`, `ay manifests`, `ay git slim --all`, `ay git audit`), `crates/depot-cli` (`ay git`, `ay ingest`, `ay graph`; logic in `depot-core`, `depot-graph`, `depot-ingest`; tree-sitter grammars in `crates/core`), `crates/bench` (`ay bench`).
 - **Code graphs**: `graphify-out/GRAPH_REPORT.md` covers `packages/`; `graphify-out/bun/` covers Bun (`third_party/bun/src`, ~420k nodes). Each report records the commit it was built from; rebuild with `just graph <path> <name>` when stale. Query these before grepping `third_party/`.
 
 ## Agent Setup
@@ -82,6 +81,6 @@ Work end to end without waiting for confirmation.
 
 1. **Orient**: read `AGENTS.md`, the matching skill, and the graph report before touching an unfamiliar area. Fan out with Explore subagents for multi-directory searches; run independent searches and suites in parallel.
 2. **Use every tool available**: Context7 for any library/CLI API before writing against it; Microsoft Learn for Windows/PowerShell; the Vercel, Supabase, Neon MCPs for those platforms; `claude-in-chrome` to verify UI visually; `/code-review` and `/simplify` on your own diff; `/security-review` for auth, FFI, and deploy code.
-3. **Verify, never assume**: a change is done after `bun fmt`, `bun check`, the affected `bun test`, and the CI or prd run of `cargo test` / `go test` / `just archguard` pass. Report failures with their output.
+3. **Verify, never assume**: a change is done after `bun fmt`, `bun check`, the affected `bun test`, and the CI or fr1 run of `cargo test` / `just archguard` pass. Report failures with their output.
 4. **Learn from errors**: when a command or assumption fails for a non-obvious reason (wrong flag, submodule not initialized, archguard rule, shell quirk), save a `feedback` memory with cause and fix. Check memory before retrying a known-failing approach.
 5. **Keep improving**: after the task passes, refactor what you touched (duplication, dead code, missing tests) in a separate commit. For continuous unattended work use `/loop` or `/schedule`.

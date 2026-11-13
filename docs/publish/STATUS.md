@@ -30,3 +30,5 @@ Bilan : 13 dépôts privés inventoriés. 9 passés en public (5 propres, 3 corr
 La décision revient au propriétaire : repasser src en privé, ou corriger puis purger l'historique. Aucune action n'a été faite.
 
 La clé WireGuard de mesh-vn ne figure dans aucun commit de src (`git log --all -S` sur un clone mirror : 0 résultat).
+
+Mise à jour 2026-11-13 : `packages/epic-games` a été supprimé de l arbre (commit `2b1a28fe`). Les points qui le citent ne concernent plus que l historique git, où la valeur reste lisible.
