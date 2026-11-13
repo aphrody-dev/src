@@ -46,7 +46,8 @@ gate() {
         [ "$code" = 200 ] || { echo "service prioritaire $PRIO : HTTP $code"; return 1; }
       fi
       [ "$(mem_avail_mb)" -ge "$(mem_need_mb)" ] || { echo "mémoire disponible $(mem_avail_mb) Mio < $(mem_need_mb) Mio"; return 1; }
-      if [ "$own" = 0 ] && [ -n "${LOCK:-}" ]; then
+      # Nœud opportuniste : il ne tient jamais le verrou lourd et se retire dès qu'un travail lourd le prend.
+      if [ -n "${LOCK:-}" ]; then
         ( exec 9>"$LOCK"; flock -n 9 ) || { echo "verrou lourd $LOCK pris"; return 1; }
       fi ;;
     *) echo "gate inconnue : $GATE"; return 1 ;;
@@ -114,12 +115,8 @@ up() {
     --setenv=TAG="$TAG" --setenv=BIND="$BIND" --setenv=PORT="$PORT" --setenv=THREADS="${THREADS:-2}" \
     --setenv=GATE="${GATE:-always}" --setenv=PRIO="${PRIO:-}" --setenv=WATCH="${WATCH:-10}" \
     --setenv=MEM="${MEM:-2G}" --setenv=COORD="${COORD:-}"
-  # prd : le verrou lourd est tenu pendant toute la vie de l'unité (un seul travail lourd à la fois).
-  if [ -n "${LOCK:-}" ]; then
-    "$@" flock -n "$LOCK" sh "$ROOT/fabric/node.sh" watch
-  else
-    "$@" sh "$ROOT/fabric/node.sh" watch
-  fi
+  # prd : aucun verrou tenu ; watch teste le verrou lourd à chaque tick (gate) et cède la place.
+  "$@" sh "$ROOT/fabric/node.sh" watch
   sleep 2
   systemctl is-active --quiet "$UNIT" || { echo "échec : $(cat "$STATE" 2>/dev/null)"; journalctl -u "$UNIT" -n 20 --no-pager; exit 1; }
   echo "actif sur $BIND:$PORT"
