@@ -1,0 +1,72 @@
+# Manifeste versionné de l'outillage agent du PC (Claude Code, scope user). Toute installation passe ici ;
+# applier : packages/machine/src/apply-user.ts. Aucun secret : seulement le nom de la variable d'env
+# (valeur dans le coffre env-kit, `env-kit secret set NOM` sur stdin, et l'env utilisateur Windows).
+
+# --- Audit Google / DeepMind / Chrome / Gemini / catalogues de skills (2026-11-13, docs/tooling/AI-TOOLING-AUDIT.md)
+
+[[claude.marketplace]]
+name = "anthropic-agent-skills"
+repo = "anthropics/skills"
+commit = "2c5958ecac7c"
+
+[[claude.marketplace]]
+name = "google-plugins"
+repo = "google/skills"
+commit = "85f227ea6a8f"
+
+[[claude.marketplace]]
+name = "googlechrome"
+repo = "GoogleChrome/modern-web-guidance"
+commit = "4dd968349e54"
+
+[[claude.marketplace]]
+name = "gemini-skills"
+repo = "google-gemini/gemini-skills"
+commit = "87fb0173d36f"
+
+[[claude.marketplace]]
+name = "android-skills"
+repo = "android/skills"
+commit = "5815d27fda56"
+
+[[claude.plugin]]
+id = "document-skills@anthropic-agent-skills"
+scope = "user"
+
+[[claude.plugin]]
+id = "google-cloud-developer@google-plugins"   # skills gcloud + MCP HTTP developer-knowledge
+scope = "user"
+env = ["DEVELOPERKNOWLEDGE_API_KEY"]
+
+[[claude.plugin]]
+id = "modern-web-guidance@googlechrome"
+scope = "user"
+
+[[claude.plugin]]
+id = "gemini-skills@gemini-skills"
+scope = "user"
+
+[[claude.plugin]]
+id = "android-skills@android-skills"
+scope = "user"
+
+# Serveurs MCP stdio lancés par bun x (les plugins upstream utilisent npx : non installés).
+[[claude.mcp]]
+name = "chrome-devtools"
+scope = "user"
+command = ["bun", "x", "chrome-devtools-mcp@1.13.0"]
+source = "ChromeDevTools/chrome-devtools-mcp@1417f93ee3f8"
+
+[[claude.mcp]]
+name = "firebase"
+scope = "user"
+command = ["bun", "x", "firebase-tools@15.36.0", "mcp"]
+env = { IS_FIREBASE_MCP = "true" }
+source = "firebase/firebase-tools@450bcf337418"
+
+# Clé API GCP projet aphrody, restreinte à developerknowledge.googleapis.com (uid 334a6698-4c5b-41b9-b896-7f8f1494fa5b).
+[[secret]]
+name = "DEVELOPERKNOWLEDGE_API_KEY"
+store = "env-kit"
+user_env = true
+mint = "gcloud services api-keys get-key-string 334a6698-4c5b-41b9-b896-7f8f1494fa5b --project aphrody --account yolo-automation@aphrody.iam.gserviceaccount.com"
