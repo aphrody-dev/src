@@ -1,0 +1,10 @@
+[Unit]
+Description=Every 6 h: sync aphrody-labs Epic/Bevy forks with upstream
+
+[Timer]
+OnCalendar=*-*-* 00/6:41:00
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

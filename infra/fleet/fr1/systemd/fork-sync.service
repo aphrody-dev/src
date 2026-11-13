@@ -1,0 +1,9 @@
+[Unit]
+Description=Sync aphrody-labs Epic/Bevy forks with upstream (infra/fleet/bin/fork-sync.sh)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/fork-sync.sh
+TimeoutStartSec=900
