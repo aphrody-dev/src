@@ -4,7 +4,8 @@
 # the game wasm bundle and the aphrody site into /srv/artifacts/builds/<sha>/ (+ rclone to R2 bucket aphrody-dist when
 # the remote exists). Heavy steps go through aphrody-heavy (slot + load gate). Deploy afterwards:
 #   SRC_TAG=<sha> just deploy core prd ; SRC_TAG=<sha> just deploy edge fr2     (docs/infra/DEPLOY.md)
-#   build-all.sh [--no-sync] [--steps images,ay,wasm,site]    env: TARGETS="default yolo", PLATFORMS=linux/amd64, ARTIFACTS=/srv/artifacts
+#   build-all.sh [--no-sync] [--steps images,ay,wasm,site]    env: TARGETS=default, PLATFORMS=linux/amd64, ARTIFACTS=/srv/artifacts
+# yolo is not in the default set: its build needs assets/brand/gen (generated, outside the Docker context).
 # Windows-only products (apps/nt, unixwin, l2l) and the Craft Apps captures are out of scope here (nt.yml, game.yml, assets.yml).
 set -euo pipefail
 SRC=${SRC_CHECKOUT:-/srv/src}; ART=${ARTIFACTS:-/srv/artifacts}; STEPS=images,ay,wasm,site; SYNC=1
@@ -20,12 +21,12 @@ echo "$sha" > "$OUT/COMMIT"
 bun scripts/toolchain.ts install >/dev/null
 
 if step images; then
-  log "images: ${TARGETS:-default yolo} (${PLATFORMS:-linux/amd64})"
+  log "images: ${TARGETS:-default} (${PLATFORMS:-linux/amd64})"
   export DOCKER_CONFIG=$(mktemp -d); trap 'rm -rf "$DOCKER_CONFIG"' EXIT
   cp -a "$HOME/.docker/buildx" "$DOCKER_CONFIG/" 2>/dev/null || true
   gh auth token | docker login ghcr.io -u "$(gh api user --jq .login)" --password-stdin >/dev/null
   TAG=$sha REGISTRY=ghcr.io/aphrody-labs PLATFORMS=${PLATFORMS:-linux/amd64} PUSH_CACHE=true \
-    aphrody-heavy docker buildx bake --builder aphrody -f infra/docker/docker-bake.hcl --push --progress plain ${TARGETS:-default yolo} \
+    aphrody-heavy docker buildx bake --builder aphrody -f infra/docker/docker-bake.hcl --push --progress plain ${TARGETS:-default} \
     2>&1 | tail -40
   docker buildx imagetools inspect "ghcr.io/aphrody-labs/aphrody:$sha" >/dev/null && log "ghcr.io/aphrody-labs/*:$sha pushed"
 fi
