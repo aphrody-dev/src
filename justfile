@@ -11,7 +11,7 @@ set dotenv-load := false
 root := env("SRC_ROOT", justfile_directory())
 image := env("SRC_IMAGE", "aphrody/monorepo-dev:local")
 
-# Chaîne unixwin (niubash, rubash, WinuxCmd) : recettes unixwin-*
+# unixwin chain (niubash, rubash, WinuxCmd): unixwin-* recipes
 import "scripts/unixwin/unixwin.just"
 import "infra/cluster/cluster.just"
 
@@ -35,16 +35,16 @@ bun-docs *args:
 archguard:
     ay arch check --strict --root "{{root}}"
 
-# npm sans humain (docs/infra/NPM.md) : status|sync|inventory|align [--write]|login|trust|harden
+# npm without a human (docs/infra/NPM.md): status|sync|inventory|align [--write]|login|trust|harden
 npm cmd="status" *args:
     bun run "{{root}}/scripts/npm.ts" {{cmd}} {{args}}
 
-# Timer hebdomadaire : actions des npm-publish.yml (src, rosegriffon, shenron) remises au dernier SHA de leur majeure, commit sur main
+# Weekly timer: npm-publish.yml actions (src, rosegriffon, shenron) pinned back to the latest SHA of their major version, commit on main
 [windows]
 npm-pins-schedule:
     schtasks /Create /F /SC WEEKLY /D MON /ST 06:00 /TN aphrody-npm-pins /TR "conhost.exe --headless \"$(bun -e 'process.stdout.write(process.execPath)')\" run \"{{root}}/scripts/npm.ts\" pins --push"
 
-# Dry-run de publication npm en CI (trusted publishing OIDC, repli NPM_TOKEN) pour des dossiers de paquets
+# CI dry-run of npm publication (trusted publishing OIDC, NPM_TOKEN fallback) for package folders
 npm-publish-ci pkgs="packages/wck" dry="true":
     gh workflow run npm-publish.yml -R aphrody-labs/src -f packages="{{pkgs}}" -f dry_run={{dry}}
 
@@ -539,7 +539,7 @@ agents-install host:
     timeout 120 ssh {{host}} 'sudo sh -s' < "{{root}}/infra/agents/bootstrap-user.sh"
     timeout 1800 ssh agent@{{host}} 'sh -s' < "{{root}}/infra/agents/install.sh"
 
-# Outillage agent (infra/agents/toolchain.toml) : skills, plugins, MCP pour Claude Code, Codex, agy, Gemini CLI (usage: just agents-sync [--check])
+# Agent tooling (infra/agents/toolchain.toml): skills, plugins, MCP for Claude Code, Codex, agy, Gemini CLI (usage: just agents-sync [--check])
 agents-sync *args:
     bun "{{root}}/packages/machine/src/toolchain.ts" {{args}}
 
