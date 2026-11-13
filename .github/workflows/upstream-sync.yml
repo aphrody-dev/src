@@ -3,7 +3,8 @@
 #    whose upstream owner is EpicGames, bevyengine or a tracked community project (gh repo sync);
 # 2. regenerates docs/epic/snapshot.json (repos, branches, head commits, releases) from the
 #    GitHub GraphQL API and commits it on main when it changed.
-# GitHub-hosted runner only. Step 1 needs APHRODY_DEPLOY_TOKEN with contents:write on the forks;
+# GitHub-hosted runner only. Step 1 uses the aphrody-labs GitHub App token (contents+workflows:write on the forks;
+# APHRODY_DEPLOY_TOKEN is the aphrody.app deploy bearer, not a GitHub token);
 # step 2 uses the workflow token. Failed syncs fail the run after the snapshot is committed.
 name: upstream-sync
 on:
