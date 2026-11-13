@@ -58,13 +58,19 @@ let envValues: string[] | undefined;
 
 /** Extrait court sans secret : motifs de jetons connus, valeurs des variables d'environnement sensibles, 160 car. max. */
 export function redact(text: string, max = 160): string {
+  const s = scrub(text.replace(/\s+/g, " ").trim());
+  return s.length > max ? `${s.slice(0, max - 1)}…` : s;
+}
+
+/** Mêmes motifs que redact(), mise en forme conservée (ai-os review : contenu envoyé aux moteurs et archivé). */
+export function scrub(text: string): string {
   envValues ??= Object.entries(Bun.env)
     .filter(([k, v]) => SECRET_NAME.test(k) && v && v.length >= 12)
     .map(([, v]) => v!);
-  let s = text.replace(/\s+/g, " ").trim();
+  let s = text;
   for (const v of envValues) s = s.split(v).join("[secret]");
   for (const re of SECRET_RES) s = s.replace(re, "[secret]");
-  return s.length > max ? `${s.slice(0, max - 1)}…` : s;
+  return s;
 }
 
 export class Index {

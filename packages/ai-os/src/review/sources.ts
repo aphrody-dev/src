@@ -3,7 +3,13 @@
 // `gh api` pour GitHub, gitiles (`?format=JSON` / `?format=TEXT`) pour *.googlesource.com, jamais un navigateur.
 // Cache local <src>/var/review/sources/ (ignoré par git) : un fichier par source + index.json (commit source, date,
 // URL) ; rafraîchi au plus une fois par jour (REVIEW_SOURCES_TTL_MS), l'ancienne copie sert si le réseau manque.
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 
 export type SourceSpec = {
@@ -28,6 +34,13 @@ export type Fetcher = (
 ) => Promise<{ text: string; commit: string; url: string }>;
 
 const DAY = 864e5;
+
+/** Écriture atomique : fichier temporaire voisin puis rename (aucune copie à moitié écrite après un crash). */
+function atomic(path: string, text: string) {
+  const tmp = `${path}.${process.pid}.tmp`;
+  writeFileSync(tmp, text);
+  renameSync(tmp, path);
+}
 
 async function run(argv: string[], timeoutMs = 30_000) {
   const p = Bun.spawn(argv, {
@@ -84,7 +97,10 @@ export const officialFetch: Fetcher = async (s) => {
   }
   if (s.gitiles) {
     const base = s.gitiles.replace(/\/+$/, "");
-    if (!/^https:\/\/[\w.-]+\.googlesource\.com\//.test(base))
+    if (
+      !/^https:\/\/[\w.-]+\.googlesource\.com\//.test(base) ||
+      /\.\./.test(s.path)
+    )
       throw new Error(`source gitiles hors googlesource.com : ${s.id}`);
     const ref = s.ref ?? "HEAD";
     const log = await fetch(`${base}/+log/${ref}/${s.path}?format=JSON&n=1`, {
@@ -117,10 +133,14 @@ export class SourceCache {
     this.dir = join(root, "var", "review", "sources");
     mkdirSync(this.dir, { recursive: true });
     const f = join(this.dir, "index.json");
-    this.index = existsSync(f) ? JSON.parse(readFileSync(f, "utf8")) : {};
+    try {
+      this.index = existsSync(f) ? JSON.parse(readFileSync(f, "utf8")) : {};
+    } catch {
+      this.index = {}; // index corrompu : tout est relu depuis les dépôts officiels
+    }
   }
   private save() {
-    writeFileSync(
+    atomic(
       join(this.dir, "index.json"),
       `${JSON.stringify(this.index, null, 2)}\n`,
     );
@@ -134,8 +154,15 @@ export class SourceCache {
     force = false,
   ): Promise<{ text: string; meta: SourceMeta } | null> {
     const m = this.index[s.id];
-    const fresh =
-      m && !m.error && Date.now() - Date.parse(m.fetched) < this.ttlMs;
+    const age = m ? Date.now() - Date.parse(m.fetched) : Infinity;
+    if (
+      m?.error &&
+      !existsSync(this.file(s.id)) &&
+      age < Math.min(this.ttlMs, 3600_000) &&
+      !force
+    )
+      return null;
+    const fresh = m && !m.error && age < this.ttlMs;
     if (fresh && !force && existsSync(this.file(s.id)))
       return { text: readFileSync(this.file(s.id), "utf8"), meta: m };
     try {
@@ -147,7 +174,7 @@ export class SourceCache {
         fetched: new Date().toISOString(),
         bytes: r.text.length,
       };
-      writeFileSync(this.file(s.id), r.text);
+      atomic(this.file(s.id), r.text);
       this.index[s.id] = meta;
       this.save();
       return { text: r.text, meta };

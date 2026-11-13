@@ -47,7 +47,7 @@ export async function main(argv: string[]): Promise<number> {
     print(
       await new SourceCache(srcRoot()).refresh(
         loadConfig().sources,
-        values.force !== false,
+        values.force === true,
       ),
     );
     return 0;
@@ -87,6 +87,7 @@ export async function main(argv: string[]): Promise<number> {
       values.summary,
       `## ai-os review : ${r.status}, ${r.score ?? "?"}/20 (seuil ${r.threshold})\n\n${r.voices.map((v) => `- ${v.voice} : ${v.score ?? "?"}/20 (${v.provider ?? "aucun moteur"})`).join("\n")}\n\n${r.verdict}\n`,
     );
+  if (values["dry-run"]) return 0;
   return r.status === "sans moteur" ? 2 : r.ok ? 0 : 1;
 }
 

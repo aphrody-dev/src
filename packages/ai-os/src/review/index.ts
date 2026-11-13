@@ -12,7 +12,7 @@
 //     (docs/ALPHABET.md, « Arrêt et gel ») ; moteur absent = violation dans var/agents/nhitl.sqlite.
 import { existsSync, mkdirSync, readFileSync, statSync } from "node:fs";
 import { isAbsolute, join, relative, resolve } from "node:path";
-import { fingerprint, Index as Nhitl } from "../nhitl/index";
+import { fingerprint, Index as Nhitl, scrub } from "../nhitl/index";
 import { classify, type FailClass } from "../orch/classify";
 import { type Host, hosts as fleetHosts, srcRoot } from "../orch/fleet";
 import { Health } from "../orch/health";
@@ -52,6 +52,13 @@ export type Config = {
   sources: SourceSpec[];
 };
 
+const positive = (v: unknown, d: number) => {
+  const n = Number(v);
+  return typeof v === "string" && v.trim() !== "" && Number.isFinite(n) && n > 0
+    ? n
+    : d;
+};
+
 export const configPath = () =>
   Bun.env.REVIEW_CONFIG ??
   join(import.meta.dir, "..", "..", "config", "review.json");
@@ -71,6 +78,11 @@ export type Target = {
 };
 
 const REV = /^(?!-)[\w./~^@{}-]+$/;
+/** Fichiers de secrets jamais envoyés à un moteur, même suivis par git. */
+const SECRET_FILE =
+  /(^|\/)(\.env(\..*)?|.*\.(pem|key|p12|pfx)|id_(rsa|ed25519|ecdsa)|secrets?\.(env|json|toml|ya?ml))$/i;
+/** Slug de fichier de verdict : jamais de séparateur ni de .. (écriture confinée à docs/reviews). */
+export const SLUG = /^[a-z0-9][a-z0-9-]{0,63}$/;
 
 async function git(root: string, args: string[], allowFail = false) {
   const p = Bun.spawn(["git", "-C", root, ...args], {
@@ -104,7 +116,7 @@ export const diffFiles = (text: string) => [
 /** Chemins sous la racine uniquement (aucun absolu ni ..). */
 function inside(root: string, p: string): string {
   const rel = relative(resolve(root), resolve(root, p)).replace(/\\/g, "/");
-  if (!rel || rel.startsWith("..") || isAbsolute(rel))
+  if (!rel || rel === ".." || rel.startsWith("../") || isAbsolute(rel))
     throw new Error(`chemin hors de src : ${p}`);
   return rel;
 }
@@ -141,6 +153,7 @@ export async function collect(
   let text = "";
   let files: string[] = [];
   let kind: Target["kind"] = "paths";
+  const skipped: string[] = [];
   if (wantDiff || revs.length) {
     kind = wantDiff && !revs.length ? "diff" : "revs";
     if (wantDiff) {
@@ -165,7 +178,7 @@ export async function collect(
         "--stat",
         "--patch",
         "--no-color",
-        "--format=commit %H%nAuthor: %an%nDate: %cI%n%n    %s%n",
+        "--format=commit %h%nAuthor: %an%nDate: %cI%n%n    %s%n",
         r,
         ...filterArgs,
       ]);
@@ -211,7 +224,22 @@ export async function collect(
         );
       else files.push(p);
     }
+    const ignored = new Set(
+      (
+        await git(
+          root,
+          ["check-ignore", "--no-index", "--", ...new Set(files)],
+          true,
+        )
+      )
+        .split("\n")
+        .filter(Boolean),
+    );
     for (const f of [...new Set(files)]) {
+      if (ignored.has(f) || SECRET_FILE.test(f)) {
+        skipped.push(f);
+        continue;
+      }
       const body = o.ref
         ? await git(root, ["show", `${o.ref}:${f}`], true)
         : existsSync(join(root, f))
@@ -224,7 +252,11 @@ export async function collect(
         .join("\n")}\n`;
     }
   }
-  files = [...new Set(files)].sort();
+  files = [...new Set(files)].filter((f) => !skipped.includes(f)).sort();
+  if (skipped.length)
+    text += `\n[fichiers écartés (ignorés par git ou secrets) : ${skipped.join(", ")}]\n`;
+  // Aucun secret ne part vers un moteur ni dans un verdict archivé (motifs de nhitl/index.ts).
+  text = scrub(text);
   const truncated = Math.max(0, text.length - max);
   if (truncated)
     text = `${text.slice(0, max)}\n[tronqué : ${truncated} caractères omis ; revue partielle, le signaler]\n`;
@@ -264,7 +296,11 @@ export type Finding = {
 /** Lignes du tableau de défauts (| # | fichier:ligne | gravité | défaut | correction | source |). */
 export function parseFindings(text: string): Finding[] {
   const out: Finding[] = [];
-  for (const line of text.split(/\r?\n/)) {
+  // Seul le tableau qui suit « ## Défauts » compte (le juge a aussi un tableau de griefs).
+  const at = text.search(/^##\s*Défauts/m);
+  const body =
+    at >= 0 ? text.slice(at).replace(/\n##\s(?!\s*Défauts)[\s\S]*$/, "") : text;
+  for (const line of body.split(/\r?\n/)) {
     const c = line
       .trim()
       .replace(/^\||\|$/g, "")
@@ -422,7 +458,7 @@ export function cachedEngine(
   const call = o.call ?? inline;
   const ob = new Outbound({
     db: o.db ?? join(o.root ?? srcRoot(), "var", "review", "cache.sqlite"),
-    ttlMs: o.ttlMs ?? Number(Bun.env.REVIEW_CACHE_TTL_MS ?? 864e5),
+    ttlMs: o.ttlMs ?? positive(Bun.env.REVIEW_CACHE_TTL_MS, 864e5),
     mesh: { routes: new Map(), lbPorts: new Map() },
     fetch: (async (_url: unknown, init?: RequestInit) => {
       const { provider, prompt } = JSON.parse(String(init?.body));
@@ -431,7 +467,8 @@ export function cachedEngine(
       );
       const r = await call(h, provider, prompt, timeout);
       return new Response(JSON.stringify(r), {
-        status: r.ok ? 200 : 502,
+        // Une réponse sans note /20 n'est pas un verdict : jamais gardée en cache.
+        status: r.ok && parseScore(r.text) !== undefined ? 200 : 502,
         headers: { "content-type": "application/json" },
       });
     }) as typeof fetch,
@@ -529,7 +566,15 @@ async function runVoice(
     }
     let a: EngineAnswer;
     try {
-      a = await engine(p, prompt, left);
+      // Le premier moteur ne prend pas tout le budget de la voix : part égale, plancher 60 s.
+      a = await engine(
+        p,
+        prompt,
+        Math.min(
+          left,
+          Math.max(60_000, Math.floor(timeoutMs / providers.length)),
+        ),
+      );
     } catch (e: any) {
       const msg = String(e?.message ?? e);
       a = { ok: false, text: msg, cls: classify(msg), ms: 0 };
@@ -584,7 +629,9 @@ export const slugOf = (s: string) =>
     .replace(/^-|-$/g, "")
     .slice(0, 48) || "revue";
 
-export type Status = "conforme" | "à corriger" | "gelé" | "sans moteur";
+/** « incomplet » : note au seuil mais revue tronquée ou voix manquante ; jamais une porte franchie. */
+export type Status =
+  "conforme" | "à corriger" | "incomplet" | "gelé" | "sans moteur";
 
 export function verdictMarkdown(o: {
   r: VoiceResult;
@@ -825,6 +872,8 @@ export async function review(o: ReviewOptions = {}): Promise<ReviewResult> {
         ? target.files[0]!
         : commonDir(target.files) || target.title,
     );
+  if (!SLUG.test(slug))
+    throw new Error(`slug invalide : ${slug} (attendu ${SLUG.source})`);
   const outDir = o.out ?? join(root, "docs", "reviews");
   const indexed = resolve(outDir) === resolve(root, "docs", "reviews");
   const write = o.write ?? !o.dryRun;
@@ -937,8 +986,16 @@ export async function review(o: ReviewOptions = {}): Promise<ReviewResult> {
               provider: r.provider,
               cache: r.cache,
             });
-            const ix = nhitlIx();
-            if (ix) recordMissing(ix, host.id, n, r);
+            try {
+              const ix = nhitlIx();
+              if (ix) recordMissing(ix, host.id, n, r);
+            } catch (e: any) {
+              log({
+                ev: "nhitl",
+                voice: n,
+                error: String(e?.message ?? e).slice(0, 200),
+              });
+            }
           }),
         );
       const done = names.map((n) => results[n]!);
@@ -958,7 +1015,13 @@ export async function review(o: ReviewOptions = {}): Promise<ReviewResult> {
       const findings = decisive ? parseFindings(decisive.text) : [];
       if (o.dryRun) status = "à corriger";
       else if (score === undefined) status = "sans moteur";
-      else if (score >= threshold) status = "conforme";
+      else if (
+        score >= threshold &&
+        target.truncated === 0 &&
+        okVoices.length === done.length
+      )
+        status = "conforme";
+      else if (score >= threshold) status = "incomplet";
       else {
         if (score <= best) stale++;
         else {
@@ -1050,13 +1113,11 @@ export async function review(o: ReviewOptions = {}): Promise<ReviewResult> {
         break;
       }
       // Relecture sur main à jour : la correction a été commitée et poussée par le runner.
-      await git(root, ["fetch", "-q", "origin", "main"], true);
-      target = await advance(
-        target,
-        root,
-        cfg.max_bytes,
-        f.ref ?? "origin/main",
-      );
+      // Échec fermé : sans main à jour, la relecture porterait sur l'ancien code.
+      const ref = f.ref ?? "origin/main";
+      if (ref.startsWith("origin/"))
+        await git(root, ["fetch", "-q", "origin", ref.slice("origin/".length)]);
+      target = await advance(target, root, cfg.max_bytes, ref);
     }
   } finally {
     (health as Health | null)?.close?.();

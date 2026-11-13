@@ -3,6 +3,7 @@ import { llmAsk } from "../llm/model.ts";
 import { listModels } from "../llm/models.ts";
 import { AGENT_TOOLS } from "./agent-tools.ts";
 import { ORCH_TOOLS } from "./orch-tools.ts";
+import { GOOGLE_TOOLS } from "../google/tools.ts";
 import { accountsSync } from "./accounts.ts";
 import { outbound } from "./outbound.ts";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
@@ -148,6 +149,15 @@ export const TOOLS: Tool[] = [
     readOnly: false,
     run: async (a) => {
       const { review } = await import("../review/index.ts");
+      const th = a.threshold;
+      if (th !== undefined && !(Number.isFinite(th) && th > 0 && th <= 20))
+        throw new Error("threshold : nombre dans ]0, 20]");
+      if (
+        a.voices !== undefined &&
+        (!Array.isArray(a.voices) ||
+          a.voices.some((v: unknown) => typeof v !== "string"))
+      )
+        throw new Error("voices : liste de noms de voix");
       const r = await review({
         spec: a.content ? undefined : (a.targets as string[] | undefined),
         content: a.content
@@ -454,6 +464,6 @@ export const TOOLS: Tool[] = [
   },
 ];
 
-TOOLS.push(...AGENT_TOOLS, ...ORCH_TOOLS);
+TOOLS.push(...AGENT_TOOLS, ...ORCH_TOOLS, ...GOOGLE_TOOLS);
 
 export const toolByName = new Map(TOOLS.map((t) => [t.name, t]));

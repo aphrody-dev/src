@@ -1,16 +1,17 @@
 // ai-os review : notes au contrat des verdicts archivés, cible (chemins, plages, commit), ancrage (sources officielles
 // en cache, listes de contrôle), voix en parallèle puis juge, repli de moteur, cache sha256 + singleflight, NHITL,
 // boucle de correction gelée après deux tours sans progrès, branchement dans l'orchestrateur.
-import { expect, test } from "bun:test";
+import { afterAll, expect, test } from "bun:test";
 import {
   existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import {
   cachedEngine,
   collect,
@@ -38,8 +39,14 @@ const realConfig: Config = JSON.parse(
   readFileSync(join(import.meta.dir, "../../config/review.json"), "utf8"),
 );
 
+const temps: string[] = [];
+afterAll(() => {
+  for (const d of temps) rmSync(d, { recursive: true, force: true });
+});
+
 function repo() {
   const d = mkdtempSync(join(tmpdir(), "ai-os-review-"));
+  temps.push(d);
   const g = (...a: string[]) => {
     const p = Bun.spawnSync(["git", "-C", d, ...a], {
       env: {
@@ -213,7 +220,7 @@ test("tribunal : voix en parallèle, juge avec plaidoiries, repli, verdicts, IND
   expect(peak).toBe(2); // gemini et claude ensemble, juge ensuite
   expect(prompts.j).toContain("Plaidoirie de la voix Gemini");
   expect(prompts.j).toContain("Plaidoirie de la voix Claude");
-  expect(prompts.g).toContain("checklist");
+  expect(prompts.g).toContain("Object.hasOwn"); // section bun-ts de CHECKLISTS.md injectée
   expect(prompts.g).toContain("Keep CLs small");
   expect(r.score).toBe(13);
   expect(r.status).toBe("à corriger");
@@ -353,4 +360,47 @@ test("orchestrateur : le cycle software passe par le tribunal, consigne agy long
   const msg = viaFile("x".repeat(9000));
   const file = msg.match(/fichier (.+?) \(/)![1]!;
   expect(readFileSync(file, "utf8")).toHaveLength(9000);
+  rmSync(dirname(file), { recursive: true, force: true });
+});
+
+test("garde-fous : slug confiné, secrets écartés et expurgés, tableau des défauts seul, revue tronquée jamais conforme", async () => {
+  const { d, g } = repo();
+  writeFileSync(join(d, ".env"), "TOKEN=x\n");
+  writeFileSync(
+    join(d, "src", "k.ts"),
+    "const k = 'ghp_AAAAAAAAAAAAAAAAAAAAAAAAAAAA';\n",
+  );
+  g("add", "-f", ".env", "src/k.ts");
+  g("commit", "-q", "-m", "c");
+  const c = await collect([".", "--"], { root: d }).catch(() =>
+    collect(["src", ".env"], { root: d }),
+  );
+  expect(c.files).not.toContain(".env");
+  expect(c.text).not.toContain("ghp_AAAA");
+  expect(c.text).toContain("[secret]");
+  expect(
+    parseFindings(
+      "| # | a | b | c | d |\n| 1 | grief | x | y | z |\n## Défauts\n| # | f | g | d | c | s |\n| 1 | a.ts:1 | haute | vrai | fix | - |\n## Synthèse\n| 2 | x | y | z | w |",
+    ),
+  ).toHaveLength(1);
+  const engine: Engine = async () => ({
+    ok: true,
+    text: "Note : 19/20",
+    ms: 1,
+  });
+  const base = {
+    root: d,
+    config: { ...cfgFor(), max_bytes: 40 },
+    engine,
+    providers: async () => ["e"],
+    sources: null,
+    nhitl: null,
+    write: false,
+  };
+  await expect(
+    review({ ...base, spec: ["src/a.ts"], slug: "../../x" }),
+  ).rejects.toThrow(/slug invalide/);
+  const r = await review({ ...base, spec: ["src/a.ts"] });
+  expect(r.score).toBe(19);
+  expect(r.status).toBe("incomplet");
 });
