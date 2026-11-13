@@ -10,7 +10,7 @@ import { relayHome } from "../relay/cdp";
 import { srcRoot } from "../orch/fleet";
 
 const TOKEN = /sk-ant-oat01-[A-Za-z0-9_-]{60,}/;
-const DEVICE = /\b[A-Z0-9]{4}-[A-Z0-9]{4,5}\b/;
+const DEVICE = /\b[A-Z0-9]{4}-[A-Z0-9]{5}/; // 9 caractères ; sous ConPTY, le texte suivant est collé au code
 
 /** Cibles ssh des runners : prd par rebond fr2 (mesh WireGuard), fr2 direct. */
 const TARGETS: Record<string, string[]> = {
@@ -132,6 +132,10 @@ export async function login(
   if (cli === "codex") {
     const out: Record<string, unknown> = { cli };
     for (const h of hosts) {
+      if (h === "pc" || h === "local") {
+        out[h] = await codexLocal(waitMin);
+        continue;
+      }
       const st = ssh(
         h,
         "PATH=$HOME/.local/bin:$HOME/.bun/bin:$PATH codex login status 2>&1 | head -1",
@@ -164,5 +168,50 @@ export async function login(
     }
     return out;
   }
-  throw new Error("usage : ai-os nhitl login claude|codex [--hosts prd,fr2]");
+  throw new Error(
+    "usage : ai-os nhitl login claude|codex [--hosts prd,fr2,pc]",
+  );
+}
+
+/** Codex sur la machine locale : device-auth dans un PTY, code écrit dans <RELAY_HOME>/device-code.txt, page ouverte. */
+async function codexLocal(waitMin: number) {
+  const codex = Bun.which("codex");
+  if (!codex)
+    return { ok: false, error: "codex absent (bun add -g @openai/codex)" };
+  const status = () =>
+    Bun.spawnSync([codex, "login", "status"])
+      .stdout.toString()
+      .trim()
+      .split("\n")[0] ?? "";
+  if (/logged in/i.test(status()) && !/not logged/i.test(status()))
+    return { ok: true, status: status() };
+  let seen = "";
+  let code: string | undefined;
+  const term = new Bun.Terminal({
+    cols: 160,
+    rows: 40,
+    data(_t, d) {
+      seen += new TextDecoder()
+        .decode(d)
+        .replace(/\x1b\[[0-9;?]*[A-Za-z]/g, "");
+      if (!code && (code = DEVICE.exec(seen)?.[0])) {
+        mkdirSync(relayHome(), { recursive: true });
+        writeFileSync(join(relayHome(), "device-code.txt"), `${code}\n`);
+        Bun.spawn(
+          ["cmd", "/c", "start", "", "https://auth.openai.com/codex/device"],
+          { stdio: ["ignore", "ignore", "ignore"] },
+        );
+      }
+    },
+  });
+  const p = Bun.spawn([codex, "login", "--device-auth"], { terminal: term });
+  const timer = setTimeout(() => p.kill(), waitMin * 60_000);
+  const exit = await p.exited;
+  clearTimeout(timer);
+  term.close();
+  return {
+    ok: exit === 0,
+    status: status(),
+    device_code_file: code ? join(relayHome(), "device-code.txt") : null,
+  };
 }

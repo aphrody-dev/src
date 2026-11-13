@@ -2,11 +2,16 @@
 Description=Commons relay (migrated from fr1 2026-11-12)
 After=network-online.target wg-quick@vps.service
 Wants=network-online.target
+# Jeton du relais commons hors argv : identifiant systemd-creds (/etc/credstore.encrypted/commons-relay-token),
+# lu dans $CREDENTIALS_DIRECTORY puis passé à commons.relay.serve() en Python, jamais sur la ligne de commande.
+# Rotation : head -c 48 /dev/urandom | base64 | tr -d '\n+/=' | systemd-creds encrypt --name=commons-relay-token - /etc/credstore.encrypted/commons-relay-token
+# Clients : ~/.commons/secrets/vps-relay-token (PC, fr2), remote `fleet` sur http://10.200.77.5:8766.
 [Service]
 User=ubuntu
 Group=ubuntu
 Environment=HOME=/srv/commons-relay/home
-ExecStart=/bin/sh -c "exec /srv/commons-relay/bin/commons relay serve --host 10.200.77.5 --port 8766 --db /srv/commons-relay/state/relay.db --token \"$$(cat /srv/commons-relay/state/relay-token)\""
+LoadCredentialEncrypted=commons-relay-token
+ExecStart=/srv/commons-relay/tools/agent-commons/bin/python -c "import os; from commons.relay import serve; serve(host='10.200.77.5', port=8766, db='/srv/commons-relay/state/relay.db', token=open(os.path.join(os.environ['CREDENTIALS_DIRECTORY'], 'commons-relay-token')).read().strip())"
 Restart=always
 RestartSec=5
 Slice=fleet-apps.slice

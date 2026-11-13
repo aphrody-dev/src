@@ -32,17 +32,18 @@
       "location": "fr2:ubuntu codex",
       "category": "cli_login",
       "severity": "medium",
-      "status": "open",
-      "excerpt": "le binaire codex de fr2 n'est pas la CLI OpenAI (« Agent execution is not wired to a model/tool runtime »)",
-      "fix": "installer @openai/codex pour ubuntu sur fr2 puis ai-os nhitl login codex --hosts fr2"
+      "status": "fixed",
+      "excerpt": "le lien ~/.local/bin/codex pointait vers le multicall aphrody",
+      "fix": "lien retiré, bun add -g @openai/codex@0.167.2 (~/.bun/bin/codex)",
+      "reason": "codex login status = Logged in using ChatGPT"
     },
     {
       "location": "pc codex",
       "category": "cli_login",
       "severity": "medium",
       "status": "open",
-      "excerpt": "codex.cmd pointe vers un codex.exe absent, 401",
-      "fix": "réinstaller Codex sur le PC puis codex login --device-auth"
+      "excerpt": "codex.cmd (~/.local/bin) pointait vers un codex.exe absent",
+      "fix": "shim retiré, bun add -g @openai/codex@0.167.2 ; ai-os nhitl login codex --hosts pc : code d appareil dans <RELAY_HOME>/device-code.txt, page ouverte ; validation du propriétaire"
     },
     {
       "location": "prd/fr2 gh",
@@ -59,7 +60,7 @@
       "severity": "medium",
       "status": "open",
       "excerpt": "gcloud auth login contact@aphrody.com : consentement reçu pour le mauvais compte Google",
-      "fix": "relancé ; choisir contact@aphrody.com dans la page Google ouverte (clic final du propriétaire)"
+      "fix": "relancé avec BROWSER = ouverture du profil Chrome contact@aphrody.com et login_hint=contact@aphrody.com ; clic du propriétaire"
     },
     {
       "location": "pc npm",
@@ -73,10 +74,10 @@
       "location": "github org bunx-sh",
       "category": "owner_click",
       "severity": "low",
-      "status": "inevitable",
+      "status": "fixed",
       "excerpt": "création de l'organisation bunx-sh (nom libre au 2026-11-13)",
-      "fix": "page https://github.com/account/organizations/new?plan=free ouverte dans Chrome",
-      "reason": "aucune API de création d'organisation pour un compte utilisateur : clic du propriétaire"
+      "fix": "aucun : page de création fermée",
+      "reason": "abandonné par le propriétaire"
     },
     {
       "location": "github SUBMODULES_TOKEN",
@@ -90,10 +91,10 @@
       "location": "prd rg-steam-depot",
       "category": "owner_click",
       "severity": "medium",
-      "status": "inevitable",
+      "status": "fixed",
       "excerpt": "dépôts de l'app 2799860 refusés en anonyme ; image reconstruite avec steam-depot d098b41 (login-qr)",
       "fix": "bun scripts/steam-login.ts --qr (apps/rosegriffon) : QR affiché dans Chrome",
-      "reason": "approbation QR dans l'app Steam mobile du propriétaire, aucune autre voie sans mot de passe"
+      "reason": "2026-11-13 : QR approuvé par le propriétaire (image d098b41)"
     },
     {
       "location": "pc wireguard wg-win",
@@ -169,9 +170,10 @@
       "location": "prd commons-relay.service",
       "category": "secret_argv",
       "severity": "high",
-      "status": "open",
+      "status": "fixed",
       "excerpt": "jeton du relais commons passé en argv (--token, visible par ps)",
-      "fix": "LoadCredentialEncrypted + lecture du jeton depuis $CREDENTIALS_DIRECTORY, puis rotation du jeton"
+      "fix": "LoadCredentialEncrypted=commons-relay-token, jeton lu en Python depuis $CREDENTIALS_DIRECTORY (infra/fleet/prd/systemd/commons-relay.service) ; fichier en clair supprimé ; clients PC et fr2 mis à jour et repointés sur 10.200.77.5:8766",
+      "reason": "2026-11-13 : jeton tourné ; nouveau accepté, ancien refusé (401) ; plus de --token dans ps"
     },
     {
       "location": "crates/ay/src/ai.rs routes()",
