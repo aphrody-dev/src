@@ -29,7 +29,7 @@ type Ctx = { waitUntil(p: Promise<unknown>): void } | undefined;
 export const PREFIX = "/_aphrody/";
 export const METRICS = ["LCP", "INP", "CLS", "FCP", "TTFB"] as const;
 export const WIDTHS = [
-  64, 128, 256, 384, 640, 750, 828, 1080, 1200, 1920, 2048, 3840,
+  64, 128, 256, 384, 640, 750, 828, 1080, 1200, 1280, 1920, 2048, 3840,
 ];
 const NOSTORE = { "cache-control": "no-store" };
 
