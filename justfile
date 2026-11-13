@@ -257,7 +257,478 @@ docker_compose := docker + " compose -f " + root + "/infra/docker/compose.yaml"
 
 # Build + push src images (amd64+arm64) to ghcr.io/aphrody-labs in CI with GITHUB_TOKEN (usage: just docker-build, just docker-build bun)
 docker-build targets="default" ref="main":
-    gh workflow run images.yml --repo aphrody-labs/src --ref {{ref}} -f targets="{{targets}}"
+    gh workflow run images.yml --repo aphrody-labs/src --ref "{{ if ref =~ '^[A-Za-z0-9._/-]+
+# Build and health-check images in CI (images.yml: build, then its smoke job on ubuntu-latest); never on fr1
+# (usage: just docker-smoke, just docker-smoke bun main)
+docker-smoke targets="smoke" ref="main":
+    gh workflow run images.yml --repo aphrody-labs/src --ref "{{ if ref =~ '^[A-Za-z0-9._/-]+$' { ref } else { error("invalid ref") } }}" -f "targets={{ if targets =~ '^[A-Za-z0-9._ -]+$' { targets } else { error("invalid targets") } }}"
+
+# Deploy the compose stack: profile core on prd, edge on fr2 (usage: just docker-up, just docker-up edge fr2, SRC_TAG=<sha> to roll back)
+docker-up profile="core" ctx="prd":
+    SRC_TAG={{docker_tag}} {{docker}} --context {{ctx}} compose -f "{{root}}/infra/docker/compose.yaml" --profile {{profile}} pull
+    SRC_TAG={{docker_tag}} {{docker}} --context {{ctx}} compose -f "{{root}}/infra/docker/compose.yaml" --profile {{profile}} up -d --wait --remove-orphans
+
+# Stack status on a host
+docker-ps profile="core" ctx="prd":
+    {{docker}} --context {{ctx}} compose -f "{{root}}/infra/docker/compose.yaml" --profile {{profile}} ps
+
+# Products with their own container flows (sources untouched): shenron lanes + runtime, rosegriffon compose build
+docker-products:
+    cd "{{root}}/apps/shenron" && {{docker}} --context fr1 buildx bake -f docker-bake.hcl lanes
+    cd "{{root}}" && TAG={{docker_tag}} {{docker}} --context fr1 buildx bake -f infra/docker/docker-bake.hcl --push products
+    RG_REGISTRY=ghcr.io/aphrody-labs/rosegriffon RG_TAG={{docker_tag}} {{docker}} --context fr1 compose -f "{{root}}/apps/rosegriffon/compose.yaml" build
+
+# Arch Linux workstation shell with the monorepo mounted at /src
+docker-shell:
+    {{docker_compose}} --profile dev run --rm dev
+
+# Alpine runtime shell (ay + Bun only)
+docker-runtime:
+    {{docker_compose}} --profile dev run --rm runtime
+
+# Run any recipe inside the Arch dev container (usage: just docker-run verify-all)
+docker-run recipe="verify-all":
+    {{docker_compose}} --profile dev run --rm dev just {{recipe}}
+
+# Toolchain bootstrap of a fleet host from packages/machine/toolchains.lock.toml (usage: just fleet-bootstrap prd|fr1|fr2)
+fleet-bootstrap role:
+    tar -cf - -C "{{root}}" infra/fleet/bootstrap/common.sh infra/fleet/bootstrap/{{role}}.sh infra/fleet/bin/heavy.sh infra/fleet/sysctl infra/agents/install.sh packages/machine/toolchains.lock.toml | timeout 120 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'rm -rf /tmp/aphrody-bootstrap && mkdir -p /tmp/aphrody-bootstrap && tar -xf - -C /tmp/aphrody-bootstrap'
+    timeout 1800 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'cd /tmp/aphrody-bootstrap && LOCK=$PWD/packages/machine/toolchains.lock.toml sh infra/fleet/bootstrap/{{role}}.sh'
+
+# Regenerate the pinned toolchain manifest (versions + upstream checksums)
+toolchains-lock:
+    bun "{{root}}/scripts/toolchains-lock.ts"
+
+# Nix alternative to containers: dev shell from infra/nix/flake.nix
+nix-shell:
+    nix develop "{{root}}/infra/nix"
+
+# Refresh the local offline docs mirrors (Docker, Kubernetes, Nix, Arch/Alpine images)
+docs-sync:
+    git -C "{{root}}/third_party/docker-docs" pull --depth 1
+    git -C "{{root}}/third_party/kubernetes-website" pull --depth 1
+    git -C "{{root}}/third_party/nix-dev" pull --depth 1
+    git -C "{{root}}/third_party/archlinux-docker" pull --depth 1
+    git -C "{{root}}/third_party/docker-alpine" pull --depth 1
+
+# Index src (+ third_party/vendor with --all) via @aphrody/core into var/index/core.db
+index *args:
+    bun packages/core/src/cli.ts index "{{root}}" {{args}}
+
+# Generate skills + docs/reference from the index
+index-gen:
+    bun packages/core/src/cli.ts gen "{{root}}"
+
+# Regenerate the core C header (cbindgen)
+core-header:
+    cbindgen --config crates/core-capi/cbindgen.toml crates/core-capi -o crates/core-capi/include/aphrody_core.h
+# --- Labs (merged from C:\labs): conformance (ay conformance), Lore, Chromium factory ---
+
+# ay + conformance harness build.
+lab-build:
+    cargo build -p aphrody -p aphrody-conformance
+
+# Distribution build of ay: fat LTO, 1 CGU, stripped.
+lab-dist:
+    cargo build --release -p aphrody
+
+# Fast local optimized build with debug assertions.
+lab-iter:
+    cargo build --profile iteration -p aphrody
+
+# Run ay from source.
+lab-dev *args:
+    cargo run -p aphrody -- {{args}}
+
+# Conformance suites (writes conformance/results/).
+lab-conformance *suites:
+    cargo run -p aphrody -- conformance --fetch {{suites}}
+
+# Refresh Chrome Stable/Beta/Dev/Canary pins (ay conformance channels).
+lab-channels:
+    cargo run -q -p aphrody -- conformance channels
+
+# Re-absorb Lore from aphrody-labs/lore.
+lab-lore-sync:
+    sh tools/labs-scripts/absorb-lore.sh
+
+# Deploy the Lore server binary to prd (systemd unit loreserver).
+lab-deploy-loreserver:
+    cargo build --release -p lore-server --target x86_64-unknown-linux-gnu
+    scp target/x86_64-unknown-linux-gnu/release/loreserver prd:/opt/lore/bin/loreserver.new
+    ssh prd 'mv /opt/lore/bin/loreserver.new /opt/lore/bin/loreserver && systemctl restart loreserver && sleep 3 && curl -fsS -o /dev/null -w "health %{http_code}\n" http://10.200.77.5:41339/health_check'
+
+# Deploy Chromium factory scripts, args and units to fr1.
+lab-factory-deploy:
+    ssh vps 'mkdir -p /srv/chromium/factory/scripts /srv/chromium/factory/third_party /srv/chromium/factory/args'
+    scp -q infra/chromium-factory/chromium-factory.sh infra/chromium-factory/cros-factory.sh vps:/srv/chromium/factory/
+    scp -q infra/chromium-factory/args/*.gn vps:/srv/chromium/factory/args/
+    scp -q tools/labs-scripts/chrome-channels.sh vps:/srv/chromium/factory/scripts/
+    scp -q third_party/chrome-channels.toml vps:/srv/chromium/factory/third_party/
+    scp -q infra/chromium-factory/systemd/chromium-factory.* vps:/tmp/
+    ssh vps 'sudo mv /tmp/chromium-factory.service /tmp/chromium-factory.timer /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable chromium-factory.timer'
+
+# Run a factory step on fr1 as a managed unit: sync | build | publish | all.
+lab-factory step="all" channel="stable":
+    ssh vps 'sudo systemd-run --unit=chromium-factory-{{step}} --uid=ubuntu --gid=ubuntu -p Nice=10 -p WorkingDirectory=/srv/chromium -E HOME=/home/ubuntu /srv/chromium/factory/chromium-factory.sh {{step}} {{channel}}'
+
+# Factory status and last log lines.
+lab-factory-status:
+    ssh vps 'systemctl list-units "chromium-factory*" --all --no-pager; journalctl -u "chromium-factory*" -n 15 --no-pager; df -h /srv | tail -1'
+
+# Download the latest published labs_agent build from R2.
+lab-factory-fetch version:
+    rclone copyto r2-chromium:aphrody-chromium/labs_agent/{{version}}/linux-x64.tar.zst target/labs_agent-{{version}}-linux-x64.tar.zst
+
+# Smallest ay binary: profile min + rebuilt std with immediate-abort.
+lab-min:
+    cargo build --profile min -p aphrody -Zbuild-std=std,panic_abort --target x86_64-pc-windows-msvc
+
+# Central terminal stack (docs/terminal/ARCHITECTURE.md): Linux validation of the forks on prd at the src.lock.json pins (cpp | rust | all)
+terminal-prd step="all" jobs="4":
+    bun -e "if (!/^(cpp|rust|all)$/.test(process.argv[1]) || !/^[1-8]$/.test(process.argv[2])) process.exit(2)" "{{step}}" "{{jobs}}"
+    ay ssh cp "{{root}}/infra/fleet/bin/terminal-prd-build.sh" prd:terminal-prd-build.sh
+    ay ssh exec prd -- "JOBS={{jobs}} PINS='$(bun -e "const l = await Bun.file(process.argv[1]).json(); console.log(process.argv.slice(2).map((n) => n + '=' + l.repositories['third_party/' + n].commit).join(' '))" "{{root}}/src.lock.json" fmt GSL jsoncpp CLI11 cmark ratatui crossterm tui-markdown acp-rust-sdk terminal-control)' sh terminal-prd-build.sh {{step}}"
+
+# Windows build of intelligent-terminal (WindowsTerminal.exe, wta.exe, installer, C++ and Rust tests): PR CI of the fork, workflow_dispatch on main
+terminal-ci:
+    gh workflow run "PR CI" -R aphrody-labs/intelligent-terminal --ref main
+
+# Last fork CI runs of intelligent-terminal (a dispatched run appears a few seconds after terminal-ci)
+terminal-ci-status:
+    gh run list -R aphrody-labs/intelligent-terminal -w "PR CI" -L 3
+
+# Advance the intelligent-terminal fork to upstream main, refresh every third_party fork (forks.ts), then re-pin src.lock.json
+terminal-sync:
+    gh repo sync aphrody-labs/intelligent-terminal --branch main
+    bun "{{root}}/packages/machine/src/forks.ts"
+    ay lock --lock-only
+
+# Layered dependency gate (Chromium checkdeps analogue): DEPS.rules per directory, see docs/ARCHITECTURE.md
+checkdeps *flags:
+    bun "{{root}}/scripts/checkdeps.ts" --root "{{root}}" {{flags}}
+
+# Units changed since ref plus transitive dependents (task graph filter, turbo `--filter=...[ref]` analogue)
+affected ref="origin/main":
+    bun "{{root}}/scripts/checkdeps.ts" --root "{{root}}" --affected "{{ref}}"
+
+# Test only affected units: cargo -p for crates, bun test for packages. Cargo cache: local sccache (R2 remote cache: TICKET taskgraph-001)
+test-affected ref="origin/main":
+    #!/usr/bin/env sh
+    set -eu
+    out=$(bun "{{root}}/scripts/checkdeps.ts" --root "{{root}}" --affected "{{ref}}")
+    pkgs=$(printf '%s\n' "$out" | awk -F'\t' '$1=="cargo" && $3 ~ /^crates\// {printf "-p %s ", $2}')
+    bunp=$(printf '%s\n' "$out" | awk -F'\t' '$1=="bun" && $3 ~ /^packages\// {printf "%s/%s ", "{{root}}", $3}')
+    [ -z "$pkgs" ] || cargo test $pkgs
+    [ -z "$bunp" ] || bun test $bunp
+    pyp=$(printf '%s\n' "$out" | awk -F'\t' '$1=="uv" {printf "%s/%s ", "{{root}}", $3}')
+    [ -z "$pyp" ] || uv run pytest $pyp
+
+# Supply-chain gates (docs/DEPS-MINIMIZE.md): cargo-deny (licenses, advisories, bans, sources pinned by rev) and the bun workspace check
+deny *flags:
+    cargo deny --locked check {{flags}}
+
+js-deps *flags:
+    bun "{{root}}/scripts/js-deps-check.ts" --root "{{root}}" {{flags}}
+
+# Pre-push gate: format, layered deps, architecture rules
+check:
+    bun fmt --check
+    cargo fmt --all --check
+    bun check -b
+    just checkdeps
+    just js-deps
+    just deny
+    just identity check
+    ay arch check --root "{{root}}"
+
+# --- Agent fleet (docs/agents/AGENT-FIRST.md). `just <recipe>` is the single agent interface. ---
+
+# Lint: Bun typecheck + clippy (compiles: run on fr1, never on the PC nor prd)
+lint:
+    bun check -b
+    cargo clippy --workspace --quiet
+
+# Tests of the units changed since ref (alias of test-affected)
+test ref="origin/main":
+    just test-affected {{ref}}
+
+# Runner on this host: up | health | status | work <role> | enqueue --role R --prompt P [--host H] ...
+agents cmd="status" *args:
+    bun "{{root}}/infra/agents/runner.ts" {{cmd}} {{args}}
+
+# Install/refresh the runner on a Linux host (usage: just agents-install prd|vps|cdn): user agent everywhere (sudo NOPASSWD, docker)
+agents-install host:
+    timeout 120 ssh {{host}} 'sudo sh -s' < "{{root}}/infra/agents/bootstrap-user.sh"
+    timeout 1800 ssh agent@{{host}} 'sh -s' < "{{root}}/infra/agents/install.sh"
+
+# Install the runner on this Windows PC (scheduled tasks + psmux session)
+agents-install-pc:
+    sh "{{root}}/infra/agents/install-pc.sh"
+
+# Attach to a host's agent tmux session (WireGuard or public ssh; see AGENT-FIRST.md, Tunnels)
+agents-attach host="prd":
+    ssh -t {{host}} tmux attach -t agents
+
+# bun-LFS (fork aphrody-labs/lfs in third_party/lfs). Built on GitHub-hosted
+# runners (.github/workflows/bunlfs.yml of the fork): never on the PC, never on prd (fleet rule 2026-11-13).
+lfs_repo := "aphrody-labs/lfs"
+
+# Run the build + QEMU boot + comparisons on CI and wait for it
+lfs-build:
+    gh workflow run bunlfs.yml -R {{lfs_repo}} --ref trunk
+    sleep 10
+    gh run watch -R {{lfs_repo}} --exit-status "$(gh run list -R {{lfs_repo}} -w bunlfs.yml -L 1 --json databaseId --jq '.[0].databaseId')"
+
+# Archive the logs of the last successful run (QEMU serial, boot and image comparisons) into docs/lfs/logs
+lfs-logs:
+    gh run download -R {{lfs_repo}} "$(gh run list -R {{lfs_repo}} -w bunlfs.yml -s success -L 1 --json databaseId --jq '.[0].databaseId')" -n bunlfs-logs -D "{{root}}/docs/lfs/logs"
+
+# Import the rootfs of the last successful run as the WSL distribution bunlfs and run the proof
+[windows]
+lfs-wsl:
+    gh run download -R {{lfs_repo}} "$(gh run list -R {{lfs_repo}} -w bunlfs.yml -s success -L 1 --json databaseId --jq '.[0].databaseId')" -n bunlfs-images -D "$TEMP/bunlfs"
+    -wsl --unregister bunlfs
+    wsl --import bunlfs "$LOCALAPPDATA/bunlfs/wsl" "$TEMP/bunlfs/bunlfs-rootfs.tar.gz" --version 2
+    wsl -d bunlfs -e /usr/bin/bun --version | tee "{{root}}/docs/lfs/logs/wsl-bun-version.txt"
+    wsl -d bunlfs -e /usr/bin/bun /usr/lib/bunlfs/proof.ts | tee "{{root}}/docs/lfs/logs/wsl-proof.txt"
+ { ref } else { error("invalid ref") } }}" -f "targets={{ if targets =~ '^[A-Za-z0-9._ -]+
+# Build and health-check images in CI (images.yml: build, then its smoke job on ubuntu-latest); never on fr1
+# (usage: just docker-smoke, just docker-smoke bun main)
+docker-smoke targets="smoke" ref="main":
+    gh workflow run images.yml --repo aphrody-labs/src --ref "{{ if ref =~ '^[A-Za-z0-9._/-]+$' { ref } else { error("invalid ref") } }}" -f "targets={{ if targets =~ '^[A-Za-z0-9._ -]+$' { targets } else { error("invalid targets") } }}"
+
+# Deploy the compose stack: profile core on prd, edge on fr2 (usage: just docker-up, just docker-up edge fr2, SRC_TAG=<sha> to roll back)
+docker-up profile="core" ctx="prd":
+    SRC_TAG={{docker_tag}} {{docker}} --context {{ctx}} compose -f "{{root}}/infra/docker/compose.yaml" --profile {{profile}} pull
+    SRC_TAG={{docker_tag}} {{docker}} --context {{ctx}} compose -f "{{root}}/infra/docker/compose.yaml" --profile {{profile}} up -d --wait --remove-orphans
+
+# Stack status on a host
+docker-ps profile="core" ctx="prd":
+    {{docker}} --context {{ctx}} compose -f "{{root}}/infra/docker/compose.yaml" --profile {{profile}} ps
+
+# Products with their own container flows (sources untouched): shenron lanes + runtime, rosegriffon compose build
+docker-products:
+    cd "{{root}}/apps/shenron" && {{docker}} --context fr1 buildx bake -f docker-bake.hcl lanes
+    cd "{{root}}" && TAG={{docker_tag}} {{docker}} --context fr1 buildx bake -f infra/docker/docker-bake.hcl --push products
+    RG_REGISTRY=ghcr.io/aphrody-labs/rosegriffon RG_TAG={{docker_tag}} {{docker}} --context fr1 compose -f "{{root}}/apps/rosegriffon/compose.yaml" build
+
+# Arch Linux workstation shell with the monorepo mounted at /src
+docker-shell:
+    {{docker_compose}} --profile dev run --rm dev
+
+# Alpine runtime shell (ay + Bun only)
+docker-runtime:
+    {{docker_compose}} --profile dev run --rm runtime
+
+# Run any recipe inside the Arch dev container (usage: just docker-run verify-all)
+docker-run recipe="verify-all":
+    {{docker_compose}} --profile dev run --rm dev just {{recipe}}
+
+# Toolchain bootstrap of a fleet host from packages/machine/toolchains.lock.toml (usage: just fleet-bootstrap prd|fr1|fr2)
+fleet-bootstrap role:
+    tar -cf - -C "{{root}}" infra/fleet/bootstrap/common.sh infra/fleet/bootstrap/{{role}}.sh infra/fleet/bin/heavy.sh infra/fleet/sysctl infra/agents/install.sh packages/machine/toolchains.lock.toml | timeout 120 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'rm -rf /tmp/aphrody-bootstrap && mkdir -p /tmp/aphrody-bootstrap && tar -xf - -C /tmp/aphrody-bootstrap'
+    timeout 1800 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'cd /tmp/aphrody-bootstrap && LOCK=$PWD/packages/machine/toolchains.lock.toml sh infra/fleet/bootstrap/{{role}}.sh'
+
+# Regenerate the pinned toolchain manifest (versions + upstream checksums)
+toolchains-lock:
+    bun "{{root}}/scripts/toolchains-lock.ts"
+
+# Nix alternative to containers: dev shell from infra/nix/flake.nix
+nix-shell:
+    nix develop "{{root}}/infra/nix"
+
+# Refresh the local offline docs mirrors (Docker, Kubernetes, Nix, Arch/Alpine images)
+docs-sync:
+    git -C "{{root}}/third_party/docker-docs" pull --depth 1
+    git -C "{{root}}/third_party/kubernetes-website" pull --depth 1
+    git -C "{{root}}/third_party/nix-dev" pull --depth 1
+    git -C "{{root}}/third_party/archlinux-docker" pull --depth 1
+    git -C "{{root}}/third_party/docker-alpine" pull --depth 1
+
+# Index src (+ third_party/vendor with --all) via @aphrody/core into var/index/core.db
+index *args:
+    bun packages/core/src/cli.ts index "{{root}}" {{args}}
+
+# Generate skills + docs/reference from the index
+index-gen:
+    bun packages/core/src/cli.ts gen "{{root}}"
+
+# Regenerate the core C header (cbindgen)
+core-header:
+    cbindgen --config crates/core-capi/cbindgen.toml crates/core-capi -o crates/core-capi/include/aphrody_core.h
+# --- Labs (merged from C:\labs): conformance (ay conformance), Lore, Chromium factory ---
+
+# ay + conformance harness build.
+lab-build:
+    cargo build -p aphrody -p aphrody-conformance
+
+# Distribution build of ay: fat LTO, 1 CGU, stripped.
+lab-dist:
+    cargo build --release -p aphrody
+
+# Fast local optimized build with debug assertions.
+lab-iter:
+    cargo build --profile iteration -p aphrody
+
+# Run ay from source.
+lab-dev *args:
+    cargo run -p aphrody -- {{args}}
+
+# Conformance suites (writes conformance/results/).
+lab-conformance *suites:
+    cargo run -p aphrody -- conformance --fetch {{suites}}
+
+# Refresh Chrome Stable/Beta/Dev/Canary pins (ay conformance channels).
+lab-channels:
+    cargo run -q -p aphrody -- conformance channels
+
+# Re-absorb Lore from aphrody-labs/lore.
+lab-lore-sync:
+    sh tools/labs-scripts/absorb-lore.sh
+
+# Deploy the Lore server binary to prd (systemd unit loreserver).
+lab-deploy-loreserver:
+    cargo build --release -p lore-server --target x86_64-unknown-linux-gnu
+    scp target/x86_64-unknown-linux-gnu/release/loreserver prd:/opt/lore/bin/loreserver.new
+    ssh prd 'mv /opt/lore/bin/loreserver.new /opt/lore/bin/loreserver && systemctl restart loreserver && sleep 3 && curl -fsS -o /dev/null -w "health %{http_code}\n" http://10.200.77.5:41339/health_check'
+
+# Deploy Chromium factory scripts, args and units to fr1.
+lab-factory-deploy:
+    ssh vps 'mkdir -p /srv/chromium/factory/scripts /srv/chromium/factory/third_party /srv/chromium/factory/args'
+    scp -q infra/chromium-factory/chromium-factory.sh infra/chromium-factory/cros-factory.sh vps:/srv/chromium/factory/
+    scp -q infra/chromium-factory/args/*.gn vps:/srv/chromium/factory/args/
+    scp -q tools/labs-scripts/chrome-channels.sh vps:/srv/chromium/factory/scripts/
+    scp -q third_party/chrome-channels.toml vps:/srv/chromium/factory/third_party/
+    scp -q infra/chromium-factory/systemd/chromium-factory.* vps:/tmp/
+    ssh vps 'sudo mv /tmp/chromium-factory.service /tmp/chromium-factory.timer /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable chromium-factory.timer'
+
+# Run a factory step on fr1 as a managed unit: sync | build | publish | all.
+lab-factory step="all" channel="stable":
+    ssh vps 'sudo systemd-run --unit=chromium-factory-{{step}} --uid=ubuntu --gid=ubuntu -p Nice=10 -p WorkingDirectory=/srv/chromium -E HOME=/home/ubuntu /srv/chromium/factory/chromium-factory.sh {{step}} {{channel}}'
+
+# Factory status and last log lines.
+lab-factory-status:
+    ssh vps 'systemctl list-units "chromium-factory*" --all --no-pager; journalctl -u "chromium-factory*" -n 15 --no-pager; df -h /srv | tail -1'
+
+# Download the latest published labs_agent build from R2.
+lab-factory-fetch version:
+    rclone copyto r2-chromium:aphrody-chromium/labs_agent/{{version}}/linux-x64.tar.zst target/labs_agent-{{version}}-linux-x64.tar.zst
+
+# Smallest ay binary: profile min + rebuilt std with immediate-abort.
+lab-min:
+    cargo build --profile min -p aphrody -Zbuild-std=std,panic_abort --target x86_64-pc-windows-msvc
+
+# Central terminal stack (docs/terminal/ARCHITECTURE.md): Linux validation of the forks on prd at the src.lock.json pins (cpp | rust | all)
+terminal-prd step="all" jobs="4":
+    bun -e "if (!/^(cpp|rust|all)$/.test(process.argv[1]) || !/^[1-8]$/.test(process.argv[2])) process.exit(2)" "{{step}}" "{{jobs}}"
+    ay ssh cp "{{root}}/infra/fleet/bin/terminal-prd-build.sh" prd:terminal-prd-build.sh
+    ay ssh exec prd -- "JOBS={{jobs}} PINS='$(bun -e "const l = await Bun.file(process.argv[1]).json(); console.log(process.argv.slice(2).map((n) => n + '=' + l.repositories['third_party/' + n].commit).join(' '))" "{{root}}/src.lock.json" fmt GSL jsoncpp CLI11 cmark ratatui crossterm tui-markdown acp-rust-sdk terminal-control)' sh terminal-prd-build.sh {{step}}"
+
+# Windows build of intelligent-terminal (WindowsTerminal.exe, wta.exe, installer, C++ and Rust tests): PR CI of the fork, workflow_dispatch on main
+terminal-ci:
+    gh workflow run "PR CI" -R aphrody-labs/intelligent-terminal --ref main
+
+# Last fork CI runs of intelligent-terminal (a dispatched run appears a few seconds after terminal-ci)
+terminal-ci-status:
+    gh run list -R aphrody-labs/intelligent-terminal -w "PR CI" -L 3
+
+# Advance the intelligent-terminal fork to upstream main, refresh every third_party fork (forks.ts), then re-pin src.lock.json
+terminal-sync:
+    gh repo sync aphrody-labs/intelligent-terminal --branch main
+    bun "{{root}}/packages/machine/src/forks.ts"
+    ay lock --lock-only
+
+# Layered dependency gate (Chromium checkdeps analogue): DEPS.rules per directory, see docs/ARCHITECTURE.md
+checkdeps *flags:
+    bun "{{root}}/scripts/checkdeps.ts" --root "{{root}}" {{flags}}
+
+# Units changed since ref plus transitive dependents (task graph filter, turbo `--filter=...[ref]` analogue)
+affected ref="origin/main":
+    bun "{{root}}/scripts/checkdeps.ts" --root "{{root}}" --affected "{{ref}}"
+
+# Test only affected units: cargo -p for crates, bun test for packages. Cargo cache: local sccache (R2 remote cache: TICKET taskgraph-001)
+test-affected ref="origin/main":
+    #!/usr/bin/env sh
+    set -eu
+    out=$(bun "{{root}}/scripts/checkdeps.ts" --root "{{root}}" --affected "{{ref}}")
+    pkgs=$(printf '%s\n' "$out" | awk -F'\t' '$1=="cargo" && $3 ~ /^crates\// {printf "-p %s ", $2}')
+    bunp=$(printf '%s\n' "$out" | awk -F'\t' '$1=="bun" && $3 ~ /^packages\// {printf "%s/%s ", "{{root}}", $3}')
+    [ -z "$pkgs" ] || cargo test $pkgs
+    [ -z "$bunp" ] || bun test $bunp
+    pyp=$(printf '%s\n' "$out" | awk -F'\t' '$1=="uv" {printf "%s/%s ", "{{root}}", $3}')
+    [ -z "$pyp" ] || uv run pytest $pyp
+
+# Supply-chain gates (docs/DEPS-MINIMIZE.md): cargo-deny (licenses, advisories, bans, sources pinned by rev) and the bun workspace check
+deny *flags:
+    cargo deny --locked check {{flags}}
+
+js-deps *flags:
+    bun "{{root}}/scripts/js-deps-check.ts" --root "{{root}}" {{flags}}
+
+# Pre-push gate: format, layered deps, architecture rules
+check:
+    bun fmt --check
+    cargo fmt --all --check
+    bun check -b
+    just checkdeps
+    just js-deps
+    just deny
+    just identity check
+    ay arch check --root "{{root}}"
+
+# --- Agent fleet (docs/agents/AGENT-FIRST.md). `just <recipe>` is the single agent interface. ---
+
+# Lint: Bun typecheck + clippy (compiles: run on fr1, never on the PC nor prd)
+lint:
+    bun check -b
+    cargo clippy --workspace --quiet
+
+# Tests of the units changed since ref (alias of test-affected)
+test ref="origin/main":
+    just test-affected {{ref}}
+
+# Runner on this host: up | health | status | work <role> | enqueue --role R --prompt P [--host H] ...
+agents cmd="status" *args:
+    bun "{{root}}/infra/agents/runner.ts" {{cmd}} {{args}}
+
+# Install/refresh the runner on a Linux host (usage: just agents-install prd|vps|cdn): user agent everywhere (sudo NOPASSWD, docker)
+agents-install host:
+    timeout 120 ssh {{host}} 'sudo sh -s' < "{{root}}/infra/agents/bootstrap-user.sh"
+    timeout 1800 ssh agent@{{host}} 'sh -s' < "{{root}}/infra/agents/install.sh"
+
+# Install the runner on this Windows PC (scheduled tasks + psmux session)
+agents-install-pc:
+    sh "{{root}}/infra/agents/install-pc.sh"
+
+# Attach to a host's agent tmux session (WireGuard or public ssh; see AGENT-FIRST.md, Tunnels)
+agents-attach host="prd":
+    ssh -t {{host}} tmux attach -t agents
+
+# bun-LFS (fork aphrody-labs/lfs in third_party/lfs). Built on GitHub-hosted
+# runners (.github/workflows/bunlfs.yml of the fork): never on the PC, never on prd (fleet rule 2026-11-13).
+lfs_repo := "aphrody-labs/lfs"
+
+# Run the build + QEMU boot + comparisons on CI and wait for it
+lfs-build:
+    gh workflow run bunlfs.yml -R {{lfs_repo}} --ref trunk
+    sleep 10
+    gh run watch -R {{lfs_repo}} --exit-status "$(gh run list -R {{lfs_repo}} -w bunlfs.yml -L 1 --json databaseId --jq '.[0].databaseId')"
+
+# Archive the logs of the last successful run (QEMU serial, boot and image comparisons) into docs/lfs/logs
+lfs-logs:
+    gh run download -R {{lfs_repo}} "$(gh run list -R {{lfs_repo}} -w bunlfs.yml -s success -L 1 --json databaseId --jq '.[0].databaseId')" -n bunlfs-logs -D "{{root}}/docs/lfs/logs"
+
+# Import the rootfs of the last successful run as the WSL distribution bunlfs and run the proof
+[windows]
+lfs-wsl:
+    gh run download -R {{lfs_repo}} "$(gh run list -R {{lfs_repo}} -w bunlfs.yml -s success -L 1 --json databaseId --jq '.[0].databaseId')" -n bunlfs-images -D "$TEMP/bunlfs"
+    -wsl --unregister bunlfs
+    wsl --import bunlfs "$LOCALAPPDATA/bunlfs/wsl" "$TEMP/bunlfs/bunlfs-rootfs.tar.gz" --version 2
+    wsl -d bunlfs -e /usr/bin/bun --version | tee "{{root}}/docs/lfs/logs/wsl-bun-version.txt"
+    wsl -d bunlfs -e /usr/bin/bun /usr/lib/bunlfs/proof.ts | tee "{{root}}/docs/lfs/logs/wsl-proof.txt"
+ { targets } else { error("invalid targets") } }}"
+    sleep 5; gh run watch --repo aphrody-labs/src --exit-status "$(gh run list --repo aphrody-labs/src --workflow images.yml --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')"
 
 # Build and health-check images in CI (images.yml: build, then its smoke job on ubuntu-latest); never on fr1
 # (usage: just docker-smoke, just docker-smoke bun main)
