@@ -1,0 +1,6 @@
+{
+  "role": "growth",
+  "host": "prd",
+  "approval": "owner",
+  "prompt": "Draft the rosegriffon product page. Inputs: apps/rosegriffon (run `git submodule update --init --depth 1 apps/rosegriffon` if empty), its plugins/steam docs, identity.toml. Output: drafts/growth/rosegriffon/page.md (hero, feature blocks backed by facts found in the code, pricing placeholder marked TODO-OWNER, FAQ) and drafts/growth/rosegriffon/meta.json ({title<=60 chars, description<=155 chars, og:title, og:description, keywords[]}). Plain factual tone, no AI hype, no emojis, French first then English. Do not publish, post, email or deploy anything."
+}

@@ -8,7 +8,7 @@
 //   bun infra/agents/runner.ts up                      start/repair the tmux session (one window per role)
 //   bun infra/agents/runner.ts work <role>             worker loop (what each tmux window runs)
 //   bun infra/agents/runner.ts health                  repair session, requeue orphans, probe CLIs, ship logs
-//   bun infra/agents/runner.ts enqueue --role R --prompt P [--host H] [--check C] [--paths a,b] [--message M]
+//   bun infra/agents/runner.ts enqueue [--template NAME] --role R --prompt P [--host H] [--check C] [--paths a,b] [--message M]
 //                                     [--providers p1,p2] [--cwd dir] [--approval owner] [--id ID]
 //   bun infra/agents/runner.ts status                  queue counts + last events (JSON)
 
@@ -30,6 +30,7 @@ import { join, resolve } from "node:path";
 type Role = { timeout_s: number; budget_usd: number };
 type Host = { roles: string[]; src: string; ssh?: string[] };
 type Fleet = {
+  schedule?: Record<string, number>;
   roles: Record<string, Role>;
   hosts: Record<string, Host>;
   ship: { host: string; dir: string };
@@ -792,6 +793,7 @@ function health() {
   up();
   requeueOrphans();
   ciWatch();
+  schedule();
   const h = { ts: now(), host: HOST, src: SRC, clis: probe(), queue: counts() };
   writeFileSync(join(STATE, "health.json"), JSON.stringify(h, null, 2));
   log("health", { clis: h.clis, queue: h.queue });
@@ -811,52 +813,105 @@ function arg(name: string): string | undefined {
   const i = process.argv.indexOf(`--${name}`);
   return i > 0 ? process.argv[i + 1] : undefined;
 }
-function enqueue() {
-  ensureDirs();
-  const role = arg("role");
-  const prompt = arg("prompt");
+// Task templates: infra/agents/tasks/<name>.json (partial Task); CLI flags override template fields.
+function template(name: string): Partial<Task> {
+  return JSON.parse(readFileSync(join(HERE, "tasks", `${name}.json`), "utf8"));
+}
+function buildTask(
+  base: Partial<Task>,
+  o: Record<string, string | undefined>,
+): Task {
+  const role = o.role ?? base.role;
+  const prompt = o.prompt ?? base.prompt;
   if (!role || !prompt || !FLEET.roles[role])
-    throw new Error("enqueue: --role <known role> and --prompt are required");
-  const host = arg("host") ?? (role === "chromium" ? "fr1" : "any");
+    throw new Error(
+      "enqueue: --role <known role> and --prompt (or --template) are required",
+    );
+  const host = o.host ?? base.host ?? (role === "chromium" ? "fr1" : "any");
   if ((role === "chromium") !== (host === "fr1"))
     throw new Error(
       "enqueue: fr1 only takes role chromium (Chromium/LLVM builds), and chromium only runs on fr1",
     );
-  const t: Task = {
+  return {
+    ...base,
     v: 1,
-    id: arg("id") ?? newId(role),
+    id: o.id ?? newId(role),
     role,
     host,
     prompt,
-    providers: arg("providers")?.split(","),
-    cwd: arg("cwd"),
-    check: arg("check"),
-    commit: arg("paths")
+    providers: o.providers?.split(",") ?? base.providers,
+    cwd: o.cwd ?? base.cwd,
+    check: o.check ?? base.check,
+    commit: o.paths
       ? {
-          paths: arg("paths")!.split(","),
-          message: arg("message") ?? `agents: ${role} task`,
+          paths: o.paths.split(","),
+          message: o.message ?? `agents: ${role} task`,
         }
-      : undefined,
+      : base.commit,
     approval:
-      (arg("approval") as Task["approval"]) ??
+      (o.approval as Task["approval"]) ??
+      base.approval ??
       (role === "growth" ? "owner" : "none"),
-    created_by: process.env.AGENT_CREATED_BY ?? `cli@${HOST}`,
+    created_by:
+      process.env.AGENT_CREATED_BY ?? base.created_by ?? `cli@${HOST}`,
     created_at: now(),
   };
-  if (host === HOST || host === "any") {
+}
+function submit(t: Task) {
+  if (t.host === HOST || t.host === "any") {
     writeTask(Q.new, t);
   } else {
-    const h = FLEET.hosts[host];
-    if (!h) throw new Error(`unknown host ${host}`);
+    const h = FLEET.hosts[t.host];
+    if (!h) throw new Error(`unknown host ${t.host}`);
     const qd = `${h.src}/var/agents/queue`;
     const r = sshRun(
-      host,
+      t.host,
       `mkdir -p '${qd}/tmp' '${qd}/new' && cat > '${qd}/tmp/${t.id}.json' && mv '${qd}/tmp/${t.id}.json' '${qd}/new/${t.id}.json'`,
       JSON.stringify(t, null, 2),
     );
-    if (r.exit) throw new Error(`enqueue on ${host} failed: ${r.err}`);
+    if (r.exit) throw new Error(`enqueue on ${t.host} failed: ${r.err}`);
   }
-  console.log(JSON.stringify({ id: t.id, host, role }));
+}
+function enqueue() {
+  ensureDirs();
+  const o = Object.fromEntries(
+    [
+      "role",
+      "prompt",
+      "host",
+      "providers",
+      "cwd",
+      "check",
+      "paths",
+      "message",
+      "approval",
+      "id",
+    ].map((k) => [k, arg(k)]),
+  );
+  const name = arg("template");
+  const t = buildTask(name ? template(name) : {}, o);
+  submit(t);
+  console.log(JSON.stringify({ id: t.id, host: t.host, role: t.role }));
+}
+// Recurring templates (fleet.toml [schedule]: name = every_h), enqueued by the ship host's health run.
+function schedule() {
+  if (HOST !== FLEET.ship.host) return;
+  for (const [name, everyH] of Object.entries(FLEET.schedule ?? {})) {
+    const f = join(STATE, `schedule-${name}`);
+    if (existsSync(f) && Date.now() - statSync(f).mtimeMs < everyH * 3_600_000)
+      continue;
+    try {
+      const t = buildTask(template(name), {
+        id: `${name}-${now().slice(0, 10)}`,
+      });
+      t.created_by = "schedule";
+      submit(t);
+      writeFileSync(f, now());
+      log("schedule", { name, id: t.id, host: t.host });
+    } catch (e) {
+      log("schedule_error", { name, err: String(e).slice(0, 300) });
+    }
+  }
 }
 function status() {
   ensureDirs();

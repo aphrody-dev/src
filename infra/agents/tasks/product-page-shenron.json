@@ -1,0 +1,6 @@
+{
+  "role": "growth",
+  "host": "prd",
+  "approval": "owner",
+  "prompt": "Draft the shenron product page. Inputs: apps/shenron (run `git submodule update --init --depth 1 apps/shenron` if empty), its README/docs, identity.toml, docs/infra/HOSTING-POLICY.md. Output: write drafts/growth/shenron/page.md (hero, 3 to 5 feature blocks backed by facts found in the code, pricing placeholder marked TODO-OWNER, FAQ) and drafts/growth/shenron/meta.json ({title<=60 chars, description<=155 chars, og:title, og:description, keywords[]}). Plain factual tone, no AI hype, no emojis, French first then English. Do not publish, post, email or deploy anything."
+}

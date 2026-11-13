@@ -63,6 +63,13 @@ ssh = ["fr2", "ubuntu@10.200.77.3", "ubuntu@51.255.162.6"]
 roles = ["coder", "reviewer", "designer", "growth"]
 src = "C:/src"
 
+[schedule]
+# template (infra/agents/tasks/<name>.json) = period in hours; enqueued by the ship host (prd).
+# growth templates end as drafts in var/agents/publish/<id>/ (approval = owner): nothing is published.
+deps-update = 168
+release-notes = 168
+seo-check = 168
+
 [ship]
 # Every host appends its log.jsonl lines to prd over ssh (WireGuard or public ssh).
 host = "prd"
