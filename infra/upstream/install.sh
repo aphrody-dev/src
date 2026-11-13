@@ -1,6 +1,6 @@
 #!/bin/sh
 # Daily patch-stack sync for a fleet host, as the runner user (never root). Idempotent.
-#   prd: ssh prd 'sudo -iu agent sh ~/agents/src/infra/upstream/install.sh'      -> bun,bunx
+#   prd: ssh prd 'sudo -iu agent sh ~/agents/src/infra/upstream/install.sh'      -> bun
 #   fr1: ssh vps 'sh ~/agents/src/infra/upstream/install.sh'                      -> chromium
 # Needs the agents runner checkout (infra/agents/install.sh), bun, git and gh with push rights on the
 # forks (GH_TOKEN from systemd-creds --user on prd, gh hosts.yml on fr1). Doc: docs/upstream/STRATEGY.md.
@@ -16,7 +16,7 @@ command -v gh >/dev/null || { echo "upstream install: gh missing" >&2; exit 1; }
 if [ -d /srv/chromium/src/.git ]; then
   STACKS=chromium GC=chromium ENV="Environment=AY_UPSTREAM_CHECKOUT_CHROMIUM=/srv/chromium/src"
 else
-  STACKS=bun,bunx GC=bun ENV=""
+  STACKS=bun GC=bun ENV=""
 fi
 STACKS=${UPSTREAM_STACKS:-$STACKS}
 

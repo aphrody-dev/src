@@ -22,21 +22,6 @@ runner = "prd"
 # and workflow_dispatch in oven-sh/bun; build + test runs on oven's Buildkite once the PR is open).
 lint_workflows = ["format.yml", "lint.yml", "rust-lints.yml", "source-lints.yml"]
 
-[stack.bunx]
-# Fork on the short org, owned by the native-binary work (docs/bun/NATIVE-BINARY.md). Same upstream,
-# same statuses; skipped while the repository does not exist.
-model = "branch"
-upstream = "oven-sh/bun"
-upstream_url = "https://github.com/oven-sh/bun.git"
-ref = "main"
-fork = "bunx-sh/bun"
-branch = "main"
-checkout = "var/upstream/bunx"
-forge = "github"
-rules = "bun"
-runner = "prd"
-optional = true
-lint_workflows = ["format.yml", "lint.yml", "rust-lints.yml", "source-lints.yml"]
 
 [stack.chromium]
 model = "series"

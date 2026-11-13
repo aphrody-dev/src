@@ -33,6 +33,7 @@ Managed via `env-kit accounts` with isolated `gcloud` named configurations shari
 - **Tri-Forge Synchronization (`frg`)**: Keep repositories synchronized across **GitHub** (`aphrody-dev`), **GitLab** (`gitlab.com/aphrody-dev` & `git.aphrody.com`), and **Google Git** (GCP `aphrody` Developer Connect / Source Repos).
 - **Domain Purity (`ay arch check --strict`)**: `crates/*` is strictly pure Rust 2024 / native code (zero `.ts`/`.js`/npm files); `packages/*` is strictly `@aphrody/*` Bun v1.4.4 packages (zero root `Cargo.toml`/`go.mod`); enforced deterministically by [`crates/archguard`](crates/archguard).
 - **Secret Hygiene (`.env`) & Zero Emojis**: Never print, log, or commit raw secret values from `.env` (only `.env.example` may be committed). Strictly zero emojis in code, assets, Markdown, or commits.
+- **No AI attribution, one exception**: no `Co-Authored-By`, "Generated with" or other AI attribution in commits, PRs or tags. Exception limited to upstream contributions whose project requires it: the upstream policy wins. Chromium CLs carry an `AI assistance:` paragraph (`agents/ai_policy.md`), checked by `ay upstream check chromium`; the owner reviews, sends and answers the reviewers himself. Process: `docs/upstream/STRATEGY.md`.
 
 ## 5. Portability, Containers & Agent Autonomy
 

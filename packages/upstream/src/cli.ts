@@ -471,7 +471,8 @@ Gerrit (${s.gerrit}), sur ${s.runner} dans le checkout Chromium, compte du propr
   git cl upload --no-squash --send-mail=false              # le propriétaire relit, puis « Start review » dans Gerrit
   git checkout origin/${s.ref} && git branch -D up-${name}  # après fusion ou abandon
 Prérequis propriétaire (clic final) : CLA https://cla.developers.google.com/about/google-individual ;
-identifiants Gerrit https://chromium-review.googlesource.com/new-password (ou luci-auth) sur ${s.runner}.`);
+identifiants Gerrit https://chromium-review.googlesource.com/new-password (ou luci-auth) sur ${s.runner}.
+La description garde son paragraphe « AI assistance: » (agents/ai_policy.md) ; le propriétaire répond lui-même aux relecteurs.`);
     return 0;
   }
   const upTip = revParse(dir, `refs/remotes/upstream/${s.ref}`)!;

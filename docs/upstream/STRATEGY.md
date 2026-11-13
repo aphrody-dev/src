@@ -31,8 +31,8 @@ Le statut s'écrit dans `infra/upstream/status/<pile>.toml` (clé = nom du patch
 ## 3. Commandes
 
 ```sh
-ay upstream status [bun|bunx|chromium] [--json|--markdown] [--no-fetch]
-ay upstream sync bun,bunx --push        # rejoue la pile sur l'amont ; code 3 au premier conflit, fork inchangé
+ay upstream status [bun|chromium] [--json|--markdown] [--no-fetch]
+ay upstream sync bun --push             # rejoue la pile sur l'amont ; code 3 au premier conflit, fork inchangé
 ay upstream check bun [patch]           # règles de contribution de l'amont
 ay upstream pr bun <patch> --lint       # tête éphémère up/<nom> = amont + ce patch seul, CI amont dessus
 ay upstream pr bun <patch> --open       # ouvre la PR (refusé si check échoue ou si une PR existe déjà)
@@ -59,7 +59,7 @@ Côté Chromium, `git cl upload` demande une branche locale avec un amont : bran
 
 | Quoi | Où | Quand | Charge |
 |---|---|---|---|
-| `sync bun,bunx --push` puis `gc bun` | prd, utilisateur `agent`, `~/agents/src` (`infra/upstream/install.sh`, unité `aphrody-upstream.timer`) | chaque jour 05:30 UTC (+ 0 à 20 min) | git seul, `Nice=19`, E/S idle |
+| `sync bun --push` puis `gc bun` | prd, utilisateur `agent`, `~/agents/src` (`infra/upstream/install.sh`, unité `aphrody-upstream.timer`) | chaque jour 05:30 UTC (+ 0 à 20 min) | git seul, `Nice=19`, E/S idle |
 | `sync chromium --push` (vérification de la série + miroir GitHub) | fr1, utilisateur `ubuntu`, checkout `/srv/chromium/src` | même timer | fetch + index temporaire |
 | build et tests du sous-ensemble Chromium | fr1, `infra/upstream/chromium-verify.sh`, checkout dédié `/srv/chromium/upstream` (jamais celui de l'usine) | après chaque changement de la série ; ne fait rien tant qu'elle est vide | `nice -n 19 ionice -c3`, pool NativeLink ; cibles = exécutables de test qui dépendent des fichiers touchés (`gn refs --testonly`), au plus 8, puis `git cl presubmit` |
 | CI amont de bun sur la tête éphémère | GitHub Actions du fork : `format.yml`, `lint.yml`, `rust-lints.yml`, `source-lints.yml` d'oven-sh/bun, activés sur `aphrody-labs/bun` le 2026-11-13 et lancés par `ay upstream pr --lint` | avant chaque PR | runners GitHub |
@@ -74,17 +74,16 @@ Rien ne compile sur le poste.
 - **Chromium** (`docs/contributing.md`, `agents/ai_policy.md` au 2026-11-11) : CLA individuel Google, entrée dans `AUTHORS` dans la première CL (aucune entrée `aphrody.com` aujourd'hui), description à 72 colonnes, pied `Bug:` ou `Fixed:`, `git cl format`, `git cl presubmit`, `git cl upload` vers chromium-review.googlesource.com. La politique IA impose que l'humain derrière le compte relise, comprenne et réponde lui-même aux relecteurs ; elle recommande de signaler les parties écrites avec un outil IA.
 - **commun** (`AGENTS.md`) : pas d'emoji, pas d'attribution IA, pas de secret, sujet de 72 caractères au plus.
 
-Conflit à trancher par le propriétaire : `AGENTS.md` interdit toute attribution IA dans les PR, `agents/ai_policy.md` de Chromium demande de signaler les zones produites avec un outil IA et exige un relecteur humain qui répond. Pour Chromium, la règle de l'amont s'applique : le propriétaire relit chaque CL, l'envoie lui-même et répond aux relecteurs.
+Exception à `AGENTS.md` (décision du 2026-11-13, inscrite aussi dans `AGENTS.md`) : pour une contribution amont, la politique du projet amont l'emporte quand elle l'exige. Chaque CL Chromium porte un paragraphe `AI assistance: <outil, parties concernées>` dans sa description ; `check` l'exige pour Chromium (règle `cr-ai-note`) et n'y applique pas l'interdiction d'attribution IA, qui reste en vigueur pour bun et partout ailleurs. Le propriétaire relit chaque CL, l'envoie et répond lui-même aux relecteurs : exigence humaine inévitable, inscrite dans l'index NHITL (`packages/ai-os/src/nhitl/ledger.json`, statut `inevitable`, avec la signature du CLA).
 
 ## 7. État des piles (2026-11-13 03:30 UTC, `ay upstream status --markdown`)
 
-bun : `aphrody-labs/bun` = `oven-sh/bun` `9ea3c693a2` (« Bump to 1.4.5 ») + 15 patchs.
+bun : `aphrody-labs/bun` = `oven-sh/bun` `9ea3c693a2` (« Bump to 1.4.5 ») + 15 patchs ; le patch docs du minifier (sans effet visible : la page publiée a déjà son titre) a été retiré du fork le 2026-11-13.
 
 | # | Patch | Statut | Revue | Porteur |
 |---|---|---|---|---|
 | 1 | child_process: expose the parent-end pipe fd through stream._handle | proposé (portage) | oven-sh/bun#39760 (robobun), ouverte | amont |
 | 2 | build: pass the .bind.ts schema list to the codegen scripts in a file | proposé | oven-sh/bun#48787, ouverte (section 8) | upstream |
-| 3 | docs: minifier page frontmatter uses title like every other page | propre à Aphrody, à retirer : la page publiée a déjà son titre | - | - |
 | 4, 5, 15 | ci: native release build ; ci(native): sysroot ; ci(native): dispatch only | propre à Aphrody (CI du fork) | - | build natif |
 | 6 | upgrade: unpack the Windows release in-process and check canary downloads against the API digest | à proposer | - | bun Windows |
 | 7 | completions: print the script for bash, zsh and fish on Windows (Fixes #25042) | à proposer | - | bun Windows |
@@ -96,7 +95,7 @@ bun : `aphrody-labs/bun` = `oven-sh/bun` `9ea3c693a2` (« Bump to 1.4.5 ») + 15
 | 13 | build: xwin 0.10.0, which reads the current Visual Studio manifest | proposé | oven-sh/bun#48784, ouverte | bun Windows |
 | 14 | docs: sizes Bun.gzipSync and Bun.deflateSync give for the utils examples | proposé | oven-sh/bun#48786, ouverte | audit bun |
 
-bunx : `bunx-sh/bun` n'existe pas encore (`gh api repos/bunx-sh/bun` -> 404) ; la pile est déclarée `optional` et entre dans le timer de prd dès sa création.
+Pas de pile `bunx-sh/bun` : org abandonnée par le propriétaire le 2026-11-13.
 
 Chromium : série vide ; `aphrody-labs/chromium` `main` était à 908 commits de retard, avancé en avance rapide le 2026-11-13 (0/0 depuis).
 
@@ -104,7 +103,7 @@ Chromium : série vide ; `aphrody-labs/chromium` `main` était à 908 commits de
 
 **bun, liste des schémas `.bind.ts` dans un fichier.** Sur un hôte Windows, les règles codegen de `scripts/build/codegen.ts` passent par `cmd /c`, limité à 8191 caractères (Microsoft Learn, « Command prompt (Cmd.exe) command-line string limitation » ; mesuré ici : 8 100 acceptés, 8 200 refusés, « La ligne de commande est trop longue. »). `bun scripts/build.ts --configure-only --profile=release` sous Windows 11 build 28120, checkout `C:\src\third_party\bun`, 150 schémas : commandes développées de l'arête bindgen et de la table des built-ins = 11 602 et 11 537 caractères sur `main` de l'amont ; 8 152 et 8 087 avec l'ancien patch du fork (chemins relatifs, marge de 39 caractères) ; 686 et 621 avec la liste dans un fichier (`--sources=@<fichier>`, lu par `argParse`), quel que soit le nombre de schémas. Nouveau test dans `test/internal/build-codegen-declared-outputs.test.ts`. Le patch relatif du fork a été remplacé par celui-ci, à la même place. PR : https://github.com/oven-sh/bun/pull/48787 ; les workflows format, lint, source-lints et clippy de l'amont passent sur la tête dans le fork.
 
-Écartés (pas de PR) : le patch docs du minifier (aucun effet visible) ; aucune CL Chromium tant qu'aucun défaut n'est reproduit et mesuré sur la pointe.
+Écartés (pas de PR) : le patch docs du minifier (aucun effet visible, retiré du fork) ; aucune CL Chromium tant qu'aucun défaut n'est reproduit et mesuré sur la pointe.
 
 ## 9. Conflit pendant `sync`
 

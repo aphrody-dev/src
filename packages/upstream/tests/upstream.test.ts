@@ -138,8 +138,22 @@ describe("rules", () => {
         .filter((x) => x.level === "error")
         .map((x) => x.rule)
         .sort(),
-    ).toEqual(["cr-authors", "cr-footer"]);
+    ).toEqual(["cr-ai-note", "cr-authors", "cr-footer"]);
   });
+  test("chromium requires the AI note that AGENTS.md forbids elsewhere", () => {
+    const m = parseMessage(
+      "Fix thing\n\nLonger.\n\nAI assistance: Claude wrote the first draft of the test; reviewed by the author.\n\nBug: 1\n",
+    );
+    const f = checkChromium({
+      meta: m,
+      files: ["AUTHORS", "base/a.cc"],
+      added: "",
+      authorEmail: "x@aphrody.com",
+      authors: "",
+    });
+    expect(f.filter((x) => x.level === "error")).toEqual([]);
+  });
+
   test("bun PR body follows the template", () => {
     expect(bunPrBody(meta)).toBe(
       "### What does this PR do?\n\nWhat.\n\n### How did you verify your code works?\n\nbun bd test test/cli/x.test.ts\n",

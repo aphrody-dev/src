@@ -60,12 +60,6 @@ note = "Fixes #25042 ; #28122 fermé sans fusion"
 owner = "bun-windows"
 updated = "2026-11-13"
 
-[patch."docs_minifier_page_frontmatter_uses_title_like_every_other_page"]
-subject = "docs: minifier page frontmatter uses title like every other page"
-status = "inappropriate"
-note = "sans effet visible : bun.com/docs/bundler/minifier affiche déjà le titre Minifier (2026-11-13) ; à retirer"
-owner = "upstream-stack"
-updated = "2026-11-13"
 
 [patch."docs_sizes_bun_gzipsync_and_bun_deflatesync_give_for_the_utils_examples"]
 subject = "docs: sizes Bun.gzipSync and Bun.deflateSync give for the utils examples"

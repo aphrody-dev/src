@@ -29,7 +29,14 @@ const SECRET =
 const VERIFY =
   /^(Tested|Test|Verification|Verified|How (did you|I) verif\w*)\b[^\n]*:/im;
 
-export function checkCommon(p: PatchInput): Finding[] {
+// The upstream policy wins over AGENTS.md for an upstream contribution that asks for it: Chromium wants the
+// use of AI tools stated in the CL description (agents/ai_policy.md), so its rules allow and require the note.
+const AI_NOTE = /^AI[ -]assist(ance|ed)?:\s*\S/im;
+
+export function checkCommon(
+  p: PatchInput,
+  opts: { aiNote?: boolean } = {},
+): Finding[] {
   const f: Finding[] = [];
   const msg = p.meta.subject + "\n" + p.meta.body;
   if (EMOJI.test(msg))
@@ -40,7 +47,7 @@ export function checkCommon(p: PatchInput): Finding[] {
       rule: "no-emoji",
       msg: "emoji dans les lignes ajoutées",
     });
-  if (AI_ATTRIBUTION.test(msg))
+  if (!opts.aiNote && AI_ATTRIBUTION.test(msg))
     f.push({
       level: "error",
       rule: "no-ai-attribution",
@@ -97,7 +104,13 @@ export function checkBun(p: PatchInput): Finding[] {
 }
 
 export function checkChromium(p: PatchInput): Finding[] {
-  const f = checkCommon(p);
+  const f = checkCommon(p, { aiNote: true });
+  if (!AI_NOTE.test(p.meta.body))
+    f.push({
+      level: "error",
+      rule: "cr-ai-note",
+      msg: "paragraphe « AI assistance: <outil, parties concernées> » absent (agents/ai_policy.md : signaler les zones écrites avec un outil IA)",
+    });
   if (!/^(Bug|Fixed): \S+/m.test(p.meta.body))
     f.push({
       level: "error",
