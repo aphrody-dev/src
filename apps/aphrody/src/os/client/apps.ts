@@ -102,35 +102,100 @@ export function library(launch: Launch): Win {
 }
 
 // Store: built-in apps with their licenses, then the open catalog (/os/catalog.json, no Google Play) ------
-const BUILTIN: { name: string; license: string; src: string }[] = [
+// Real products, each with the icon of its own site (nominative use, see assets/library/ATTRIBUTION.md).
+const PRODUCTS: {
+  id: string;
+  name: string;
+  icon: string;
+  src: string;
+  license?: string;
+}[] = [
   {
-    name: "v86 (x86 VM)",
-    license: "BSD-2-Clause",
-    src: "https://github.com/copy/v86",
+    id: "steam",
+    name: "Steam",
+    icon: "steam.ico",
+    src: "https://store.steampowered.com",
   },
   {
-    name: "SeaBIOS, VGABIOS",
-    license: "LGPL-3.0",
-    src: "https://github.com/copy/v86/tree/master/bios",
+    id: "epic",
+    name: "Epic Games Store",
+    icon: "epic.ico",
+    src: "https://store.epicgames.com",
+  },
+  { id: "xbox", name: "Xbox", icon: "xbox.png", src: "https://www.xbox.com" },
+  {
+    id: "playstation",
+    name: "PlayStation",
+    icon: "playstation.jpg",
+    src: "https://www.playstation.com",
+  },
+  { id: "gog", name: "GOG", icon: "gog.png", src: "https://www.gog.com" },
+  { id: "itch", name: "itch.io", icon: "itch.ico", src: "https://itch.io" },
+  {
+    id: "googleplay",
+    name: "Google Play",
+    icon: "googleplay.ico",
+    src: "https://play.google.com",
   },
   {
-    name: "Ruffle (Flash)",
+    id: "fdroid",
+    name: "F-Droid",
+    icon: "fdroid.png",
+    src: "https://f-droid.org",
+    license: "AGPL-3.0",
+  },
+  {
+    id: "flathub",
+    name: "Flathub",
+    icon: "flathub.png",
+    src: "https://flathub.org",
+  },
+  {
+    id: "bevy",
+    name: "Bevy",
+    icon: "bevy.png",
+    src: "https://bevy.org",
     license: "MIT OR Apache-2.0",
-    src: "https://github.com/ruffle-rs/ruffle",
   },
   {
-    name: "EmulatorJS (run time)",
-    license: "GPL-3.0",
-    src: "https://github.com/EmulatorJS/EmulatorJS",
+    id: "artcraft",
+    name: "ArtCraft",
+    icon: "artcraft.png",
+    src: "https://github.com/storytold/artcraft",
   },
-  { name: "Steam (official store and client)", license: "Valve", src: "https://store.steampowered.com" },
-  { name: "Epic Games Store (official)", license: "Epic Games", src: "https://store.epicgames.com" },
   {
-    name: "Aphrody game (Bevy)",
+    id: "ruffle",
+    name: "Ruffle",
+    icon: "ruffle.png",
+    src: "https://ruffle.rs",
     license: "MIT OR Apache-2.0",
-    src: "https://github.com/aphrody-dev/src",
+  },
+  {
+    id: "alpine",
+    name: "Alpine Linux",
+    icon: "alpine.svg",
+    src: "https://alpinelinux.org",
   },
 ];
+interface Game {
+  store: string;
+  ext_id: string;
+  name: string;
+  url: string;
+  cover: string | null;
+  genres: string[];
+  free: boolean;
+  desc: Record<string, string>;
+}
+const ico = (file: string, size = 28) =>
+  h("img", {
+    class: "ico",
+    src: `/os/ico/${file}`,
+    alt: "",
+    width: size,
+    height: size,
+    loading: "lazy",
+  });
 export function store(): Win {
   const w = openWindow("store", t("os.app.store"));
   const q = h("input", {
@@ -142,12 +207,18 @@ export function store(): Win {
   const built = h(
     "ul",
     { class: "list" },
-    ...BUILTIN.map((b) =>
+    ...PRODUCTS.map((b) =>
       h(
         "li",
         {},
+        ico(b.icon),
         h("span", { class: "n" }, b.name),
-        h("span", { class: "m" }, `${t("os.store.license")}: ${b.license}`),
+        h(
+          "span",
+          { class: "m" },
+          t(`os.store.p.${b.id}`) +
+            (b.license ? ` - ${t("os.store.license")}: ${b.license}` : ""),
+        ),
         h(
           "a",
           { class: "btn", href: b.src, target: "_blank", rel: "noopener" },
@@ -156,9 +227,68 @@ export function store(): Win {
       ),
     ),
   );
+  const games = h("ul", { class: "list" });
+  let all: Game[] = [];
+  const paint = (term: string) => {
+    const q = term.toLowerCase();
+    const hit = all
+      .filter(
+        (g) =>
+          !q ||
+          g.name.toLowerCase().includes(q) ||
+          g.genres.join(" ").toLowerCase().includes(q),
+      )
+      .slice(0, 40);
+    games.replaceChildren(
+      ...(hit.length
+        ? hit.map((g) =>
+            h(
+              "li",
+              {},
+              g.cover
+                ? h("img", {
+                    class: "cover",
+                    src: g.cover,
+                    alt: "",
+                    width: 120,
+                    height: 56,
+                    loading: "lazy",
+                    referrerpolicy: "no-referrer",
+                  })
+                : "",
+              ico(g.store === "steam" ? "steam.ico" : "epic.ico", 20),
+              h("span", { class: "n" }, g.name),
+              h(
+                "span",
+                { class: "m" },
+                (g.desc[locale] ?? g.desc.en ?? g.genres.join(", ")).slice(
+                  0,
+                  140,
+                ),
+              ),
+              h(
+                "a",
+                {
+                  class: "btn",
+                  href: g.url,
+                  target: "_blank",
+                  rel: "noopener",
+                },
+                t("os.store.open"),
+              ),
+            ),
+          )
+        : [h("li", {}, t("os.store.none"))]),
+    );
+  };
+  fetch("/os/games.json")
+    .then((r) => r.json())
+    .then((r: Game[]) => ((all = r), paint("")))
+    .catch((e) => fail(games, e));
   let timer = 0;
   const run = async () => {
     const term = q.value.trim();
+    paint(term);
     if (!term) return res.replaceChildren();
     try {
       const r = (await (
@@ -197,10 +327,12 @@ export function store(): Win {
     () => (clearTimeout(timer), (timer = window.setTimeout(run, 250))),
   );
   w.body.append(
+    h("div", { class: "row" }, q),
+    h("h3", {}, t("os.store.games")),
+    games,
     h("h3", {}, t("os.store.included")),
     built,
     h("h3", {}, t("os.store.catalog")),
-    h("div", { class: "row" }, q),
     res,
   );
   return w;

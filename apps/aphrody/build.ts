@@ -154,12 +154,12 @@ for (const i of productIcons(SRC_ROOT)) {
 // cdn.aphrody.com/brand/v1): single source, no copy in public/.
 const BRAND_GEN = join(SRC_ROOT, "assets/brand/gen");
 for (const [from, to] of [
-  ["icons/aphrody-labs/favicon.ico", "favicon.ico"],
-  ["icons/aphrody-labs/icon.svg", "favicon.svg"],
-  ["icons/aphrody-labs/icon.svg", "icon.svg"],
-  ["icons/aphrody-labs/apple-touch-icon.png", "apple-touch-icon.png"],
-  ["icons/aphrody-labs/icon-192.png", "icon-192.png"],
-  ["icons/aphrody-labs/icon-512.png", "icon-512.png"],
+  ["owner/favicon.ico", "favicon.ico"],
+  ["owner/mark-owner-draft.min.svg", "favicon.svg"],
+  ["owner/mark-owner-draft.min.svg", "icon.svg"],
+  ["owner/mark-180.png", "apple-touch-icon.png"],
+  ["owner/mark-192.png", "icon-192.png"],
+  ["owner/mark-512.png", "icon-512.png"],
   ["icons/aphrody-labs/maskable-512.png", "maskable-512.png"],
   ["icons/aphrody-labs/site.webmanifest", "site.webmanifest"],
   ["og/aphrody-labs.png", "og-image.png"],

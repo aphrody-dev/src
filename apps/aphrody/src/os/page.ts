@@ -13,7 +13,7 @@ export const OS_CSP = [
   "default-src 'self'",
   `script-src 'self' 'wasm-unsafe-eval' ${EMU_CDN}`,
   `style-src 'self' 'unsafe-inline' ${EMU_CDN}`,
-  `img-src 'self' data: blob: ${EMU_CDN}`,
+  `img-src 'self' data: blob: ${EMU_CDN} https://shared.akamai.steamstatic.com https://cdn1.epicgames.com https://cdn2.unrealengine.com`,
   "media-src 'self' blob:",
   `font-src 'self' data: ${EMU_CDN}`,
   "worker-src 'self' blob:",
@@ -91,6 +91,7 @@ header.bar h1{margin:0;font-size:1.25rem}header.bar p{margin:0;color:var(--mut);
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 12px}
 .list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .list li{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#1a2430;border-radius:8px}
+.list .cover{border-radius:4px;object-fit:cover;flex:none}.list .ico{flex:none;border-radius:6px;object-fit:contain}.list .m{max-width:46%}
 .list .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.list .m{color:var(--mut);font-size:.85rem}
 .drop{border:2px dashed var(--stage-rule);border-radius:10px;padding:18px;text-align:center;color:var(--mut);margin-bottom:12px}
 .drop.on{border-color:#7fd0ff;color:var(--fg)}
@@ -110,6 +111,13 @@ table.kv{border-collapse:collapse;width:100%}table.kv td,table.kv th{padding:6px
 @media (forced-colors:active){.win{border:2px solid CanvasText}}
 `;
 
+/** Apps that are a real product show that product's own icon (vendor favicons, owner mark for Aphrody Play). */
+const REAL_ICON: Record<string, string> = {
+  game: "/os/aphrody.svg",
+  linux: "/os/ico/alpine.svg",
+  flash: "/os/ico/ruffle.png",
+};
+
 export function renderOs(root: string, locale: OsLocale, pet: string): string {
   const cat = catalogs[locale] as Record<string, string>;
   const sub: Record<string, string> = {};
@@ -118,7 +126,7 @@ export function renderOs(root: string, locale: OsLocale, pet: string): string {
   const t = (k: string) => esc(sub[k] ?? k);
   const tiles = APPS.map(
     (a) =>
-      `<li class="l-card"><button type="button" data-app="${a}">${a === "game" ? '<img class="ico" src="/os/aphrody.svg" alt="" width="34" height="34">' : `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[a]}</svg>`}<span class="t">${t(`os.app.${a}`)}</span><span class="d">${t(`os.app.${a}.d`)}</span></button></li>`,
+      `<li class="l-card"><button type="button" data-app="${a}">${REAL_ICON[a] ? `<img class="ico" src="${REAL_ICON[a]}" alt="" width="34" height="34">` : `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[a]}</svg>`}<span class="t">${t(`os.app.${a}`)}</span><span class="d">${t(`os.app.${a}.d`)}</span></button></li>`,
   ).join("");
   const alt = OS_LOCALES.map(
     (l) =>

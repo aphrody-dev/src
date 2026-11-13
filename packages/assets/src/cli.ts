@@ -32,6 +32,13 @@ import {
   polyhavenItems,
 } from "./sources.ts";
 import { pool, run, which } from "./util.ts";
+import { renderIconAttribution, syncIcons } from "./icons.ts";
+import {
+  exportJson,
+  search as searchGames,
+  syncEpic,
+  syncSteam,
+} from "./games.ts";
 
 const root = process.env.SRC_ROOT ?? join(import.meta.dir, "..", "..", "..");
 const [cmd = "list", ...args] = Bun.argv.slice(2);
@@ -152,9 +159,37 @@ switch (cmd) {
   case "attribution":
     await Bun.write(
       join(libraryRoot(root), "ATTRIBUTION.md"),
-      renderAttribution(assets),
+      renderAttribution(assets) + renderIconAttribution(root),
     );
     break;
+  case "icons": {
+    const r = await syncIcons(root, pos[0]);
+    for (const x of r.ok)
+      console.log(`${x.id}\t${x.file}\t${x.bytes}\t${x.origin}`);
+    for (const f of r.failed) console.error(`failed ${f}`);
+    await Bun.write(
+      join(libraryRoot(root), "ATTRIBUTION.md"),
+      renderAttribution(assets) + renderIconAttribution(root),
+    );
+    process.exitCode = r.failed.length ? 1 : 0;
+    break;
+  }
+  case "games": {
+    if (pos[0] === "sync") {
+      const steam = await syncSteam(root, num("limit", 60));
+      const epic = await syncEpic(root);
+      console.log(
+        `steam ${steam}, epic ${epic}, exported ${await exportJson(root)}`,
+      );
+    } else if (pos[0] === "search")
+      for (const g of searchGames(root, pos.slice(1).join(" ")))
+        console.log(`${g.store}\t${g.name}\t${g.genres}\t${g.url}`);
+    else {
+      console.error("usage: assets games sync [--limit=60] | search <text>");
+      process.exitCode = 2;
+    }
+    break;
+  }
   case "fetch": {
     if (flag("repos")) {
       const rs = loadRepos().filter(

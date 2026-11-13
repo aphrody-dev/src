@@ -181,7 +181,8 @@ export async function verify(root: string, assets: Asset[]): Promise<string[]> {
         /^manifest(\.[\w-]+)?\.toml$|^(ATTRIBUTION\.md|\.gitignore|repos\.toml)$/.test(
           f,
         ) ||
-        f.startsWith("remote/")
+        f.startsWith("remote/") ||
+        f.startsWith("icons/vendors/") // trademark icons: icons/vendors/index.json carries origin and sha256
       )
         continue;
       if (!known.has(f)) errs.push(`unlisted file ${f}`);

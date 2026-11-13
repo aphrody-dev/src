@@ -253,6 +253,7 @@ export async function runTests(
       if (
         listed.has(f) ||
         f.startsWith(join(lib, "remote")) ||
+        f.startsWith(join(lib, "icons", "vendors")) ||
         /^manifest/.test(f.split(/[\\/]/).pop()!)
       )
         continue;
