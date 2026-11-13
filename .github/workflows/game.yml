@@ -73,6 +73,14 @@ jobs:
           wasm-bindgen --target web --no-typescript --out-dir "$GAME_WEB_DIR" --out-name game \
             "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/game.wasm"
           ls -l "$GAME_WEB_DIR"
+      # The 33 MB wasm is not part of the aphrody.com deployment (deploy.yml runs on GitHub-hosted runners with no
+      # wasm toolchain): it is published here to the aphrody-assets bucket, served as https://cdn.aphrody.com/game/.
+      - name: Publish game.js and game_bg.wasm to cdn.aphrody.com/game (R2 aphrody-assets)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          rclone copyto "$GAME_WEB_DIR/game_bg.wasm" r2:aphrody-assets/game/game_bg.wasm --header-upload "Content-Type: application/wasm" --header-upload "Cache-Control: public, max-age=300"
+          rclone copyto "$GAME_WEB_DIR/game.js" r2:aphrody-assets/game/game.js --header-upload "Content-Type: text/javascript" --header-upload "Cache-Control: public, max-age=300"
+          rclone lsl r2:aphrody-assets/game
       - name: Bun workspace (apps/aphrody build and fps script)
         run: bun install --frozen-lockfile
       - name: Script tests

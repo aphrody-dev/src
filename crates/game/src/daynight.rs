@@ -1,7 +1,7 @@
 //! Day/night cycle: the sun is a directional light that follows the hour; sky color, fog, light
 //! intensity and ambient light follow its elevation.
 
-use bevy::light::GlobalAmbientLight;
+use bevy::light::{CascadeShadowConfigBuilder, GlobalAmbientLight};
 use bevy::prelude::*;
 
 use crate::controls::Controls;
@@ -40,6 +40,14 @@ fn spawn_sun(mut commands: Commands) {
             illuminance: 10_000.0,
             ..default()
         },
+        CascadeShadowConfigBuilder {
+            num_cascades: 4,
+            first_cascade_far_bound: 10.0,
+            maximum_distance: 140.0,
+            overlap_proportion: 0.2,
+            ..default()
+        }
+        .build(),
         Transform::default(),
     ));
 }
@@ -91,7 +99,7 @@ fn update_sky(
     let color = Color::srgb(sky.x, sky.y, sky.z);
     clear.0 = color;
     ambient.color = Color::srgb(0.55 + 0.3 * sky.x, 0.6 + 0.3 * sky.y, 0.8 + 0.2 * sky.z);
-    ambient.brightness = 40.0 + 260.0 * (elev * 2.0 + 0.5).clamp(0.0, 1.0);
+    ambient.brightness = 60.0 + 540.0 * (elev * 2.0 + 0.5).clamp(0.0, 1.0);
     if let Ok(mut f) = fog.single_mut() {
         f.color = color;
     }

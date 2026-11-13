@@ -42,6 +42,9 @@ async function hasWebGpu(): Promise<boolean> {
   }
 }
 
+// wasm build published by .github/workflows/game.yml (fr1) to R2; the site deployment does not carry it.
+const GAME_BASE = "https://cdn.aphrody.com/game/";
+
 async function main() {
   show(t.loading);
   state.gpu = await hasWebGpu();
@@ -52,7 +55,7 @@ async function main() {
   let mod: { default: (opts?: unknown) => Promise<unknown> };
   try {
     mod = await import(
-      /* @vite-ignore */ new URL("./game.js", import.meta.url).href
+      /* @vite-ignore */ GAME_BASE + "game.js"
     );
   } catch {
     state.error = "game.js missing";
@@ -61,7 +64,7 @@ async function main() {
   }
   try {
     await mod.default({
-      module_or_path: new URL("./game_bg.wasm", import.meta.url),
+      module_or_path: GAME_BASE + "game_bg.wasm",
     });
   } catch (e) {
     // winit on the web ends init by throwing this on purpose (control flow, not an error).

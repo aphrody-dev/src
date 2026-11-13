@@ -1,7 +1,9 @@
 //! Third-person controller: the character walks on the analytic terrain height, the camera orbits
 //! it with yaw/pitch from mouse or right stick.
 
+use bevy::camera::Exposure;
 use bevy::prelude::*;
+use bevy::render::view::{Msaa, Tonemapping};
 use bevy::world_serialization::WorldAssetRoot;
 
 use crate::WORLD_SEED;
@@ -63,6 +65,11 @@ fn spawn(mut commands: Commands, assets: Res<AssetServer>) {
     commands.spawn((
         MainCamera,
         Camera3d::default(),
+        // Sun 12000 lx and ambient in the hundreds of cd/m2 need an exposure near overcast, else the
+        // default EV 9.7 clips the terrain to pale green; MSAA and tonemapping stated explicitly.
+        Exposure { ev100: 12.5 },
+        Tonemapping::TonyMcMapface,
+        Msaa::Sample4,
         Transform::from_xyz(0.0, y + 4.0, 8.0).looking_at(Vec3::new(0.0, y + 1.5, 0.0), Vec3::Y),
         DistanceFog {
             color: Color::srgb(0.45, 0.68, 0.95),

@@ -13,12 +13,12 @@ const esc = (s: string) =>
 /** CSP of /play only: the wasm module needs 'wasm-unsafe-eval'; no third party, no inline script. */
 export const PLAY_CSP = [
   "default-src 'self'",
-  "script-src 'self' 'wasm-unsafe-eval'",
+  "script-src 'self' https://cdn.aphrody.com 'wasm-unsafe-eval'",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "media-src 'self' blob:",
   "worker-src 'self' blob:",
-  "connect-src 'self'",
+  "connect-src 'self' https://cdn.aphrody.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'none'",
