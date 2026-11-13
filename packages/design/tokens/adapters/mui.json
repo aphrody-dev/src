@@ -1,0 +1,168 @@
+{
+  "$comment": "Généré par packages/design/src/adapters.ts depuis tokens/tokens.json (assets/brand/brand.toml, seed #3355FF, vibrant, MCU 0.4.0). Ne pas éditer. Usage : createTheme({ cssVariables: true, ...json }).",
+  "colorSchemes": {
+    "light": {
+      "palette": {
+        "primary": {
+          "main": "#1242FF",
+          "contrastText": "#FFFFFF"
+        },
+        "secondary": {
+          "main": "#605A7D",
+          "contrastText": "#FFFFFF"
+        },
+        "info": {
+          "main": "#6B5485",
+          "contrastText": "#FFFFFF"
+        },
+        "error": {
+          "main": "#BA1A1A",
+          "contrastText": "#FFFFFF"
+        },
+        "warning": {
+          "main": "#FFB300",
+          "contrastText": "#1A1B25"
+        },
+        "background": {
+          "default": "#FBF8FF",
+          "paper": "#F4F2FF"
+        },
+        "text": {
+          "primary": "#1A1B25",
+          "secondary": "#444654"
+        },
+        "divider": "#C5C5D6"
+      }
+    },
+    "dark": {
+      "palette": {
+        "primary": {
+          "main": "#BAC3FF",
+          "contrastText": "#001E91"
+        },
+        "secondary": {
+          "main": "#C9C1EA",
+          "contrastText": "#312C4C"
+        },
+        "info": {
+          "main": "#D7BBF3",
+          "contrastText": "#3B2654"
+        },
+        "error": {
+          "main": "#FFB4AB",
+          "contrastText": "#690005"
+        },
+        "warning": {
+          "main": "#FFB300",
+          "contrastText": "#1A1B25"
+        },
+        "background": {
+          "default": "#11131C",
+          "paper": "#1A1B25"
+        },
+        "text": {
+          "primary": "#E2E1EF",
+          "secondary": "#C5C5D6"
+        },
+        "divider": "#444654"
+      }
+    }
+  },
+  "shape": {
+    "borderRadius": 12
+  },
+  "typography": {
+    "fontFamily": "\"Google Sans Flex\", \"Roboto Flex\", Inter, system-ui, sans-serif",
+    "h1": {
+      "fontFamily": "\"Google Sans Flex\", \"Roboto Flex\", Inter, system-ui, sans-serif",
+      "fontSize": "3.5625rem",
+      "lineHeight": "4rem",
+      "letterSpacing": "-0.015625rem",
+      "fontWeight": 400
+    },
+    "h2": {
+      "fontFamily": "\"Google Sans Flex\", \"Roboto Flex\", Inter, system-ui, sans-serif",
+      "fontSize": "2.8125rem",
+      "lineHeight": "3.25rem",
+      "letterSpacing": "0rem",
+      "fontWeight": 400
+    },
+    "h3": {
+      "fontFamily": "\"Google Sans Flex\", \"Roboto Flex\", Inter, system-ui, sans-serif",
+      "fontSize": "2.25rem",
+      "lineHeight": "2.75rem",
+      "letterSpacing": "0rem",
+      "fontWeight": 400
+    },
+    "h4": {
+      "fontFamily": "\"Google Sans Flex\", \"Roboto Flex\", Inter, system-ui, sans-serif",
+      "fontSize": "2rem",
+      "lineHeight": "2.5rem",
+      "letterSpacing": "0rem",
+      "fontWeight": 400
+    },
+    "h5": {
+      "fontFamily": "\"Google Sans Flex\", \"Roboto Flex\", Inter, system-ui, sans-serif",
+      "fontSize": "1.75rem",
+      "lineHeight": "2.25rem",
+      "letterSpacing": "0rem",
+      "fontWeight": 400
+    },
+    "h6": {
+      "fontFamily": "\"Google Sans Flex\", \"Roboto Flex\", Inter, system-ui, sans-serif",
+      "fontSize": "1.5rem",
+      "lineHeight": "2rem",
+      "letterSpacing": "0rem",
+      "fontWeight": 400
+    },
+    "subtitle1": {
+      "fontFamily": "\"Google Sans Flex\", \"Roboto Flex\", Inter, system-ui, sans-serif",
+      "fontSize": "1rem",
+      "lineHeight": "1.5rem",
+      "letterSpacing": "0.009375rem",
+      "fontWeight": 500
+    },
+    "subtitle2": {
+      "fontFamily": "\"Google Sans Flex\", \"Roboto Flex\", Inter, system-ui, sans-serif",
+      "fontSize": "0.875rem",
+      "lineHeight": "1.25rem",
+      "letterSpacing": "0.00625rem",
+      "fontWeight": 500
+    },
+    "body1": {
+      "fontFamily": "\"Google Sans Flex\", \"Roboto Flex\", Inter, system-ui, sans-serif",
+      "fontSize": "1rem",
+      "lineHeight": "1.5rem",
+      "letterSpacing": "0.03125rem",
+      "fontWeight": 400
+    },
+    "body2": {
+      "fontFamily": "\"Google Sans Flex\", \"Roboto Flex\", Inter, system-ui, sans-serif",
+      "fontSize": "0.875rem",
+      "lineHeight": "1.25rem",
+      "letterSpacing": "0.015625rem",
+      "fontWeight": 400
+    },
+    "button": {
+      "fontFamily": "\"Google Sans Flex\", \"Roboto Flex\", Inter, system-ui, sans-serif",
+      "fontSize": "0.875rem",
+      "lineHeight": "1.25rem",
+      "letterSpacing": "0.00625rem",
+      "fontWeight": 500
+    },
+    "caption": {
+      "fontFamily": "\"Google Sans Flex\", \"Roboto Flex\", Inter, system-ui, sans-serif",
+      "fontSize": "0.75rem",
+      "lineHeight": "1rem",
+      "letterSpacing": "0.025rem",
+      "fontWeight": 400
+    },
+    "overline": {
+      "fontFamily": "\"Google Sans Flex\", \"Roboto Flex\", Inter, system-ui, sans-serif",
+      "fontSize": "0.6875rem",
+      "lineHeight": "1rem",
+      "letterSpacing": "0.03125rem",
+      "fontWeight": 500
+    }
+  }
+}
