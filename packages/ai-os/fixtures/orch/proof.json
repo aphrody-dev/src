@@ -2,7 +2,7 @@
   "name": "proof-fleet",
   "limits": {
     "maxSteps": 16,
-    "budgetUsd": 4,
+    "budgetUsd": 12,
     "tokenBudget": 200000,
     "deadlineMs": 1800000
   },

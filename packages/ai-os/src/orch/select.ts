@@ -3,9 +3,15 @@
 // dans l'ordre. Rien n'est figé : candidats = CLI d'agents présentes sur l'hôte + modèles découverts par le pont
 // (llm_models), métadonnées de models.dev (registre d'opencode : coût, contexte, tool_call, reasoning), santé observée
 // (health.ts) et refroidissements du runner. Parallèles et sources : docs/ORCHESTRATOR.md.
-import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { listModels } from "../llm/models";
 import { clisOn, type Host } from "./fleet";
 import type { Health } from "./health";
@@ -47,11 +53,17 @@ type Meta = {
   tool_call?: boolean;
   reasoning?: boolean;
 };
-let registry: Record<string, { models?: Record<string, Meta> }> | undefined;
+type Registry = Record<string, { models?: Record<string, Meta> }>;
+let registry: { at: number; data: Registry } | undefined;
 
 /** models.dev/api.json, en cache 24 h dans $AGENT_HOME ; vide hors ligne. */
-export async function modelsDev(): Promise<typeof registry & {}> {
-  if (registry) return registry;
+export async function modelsDev(): Promise<Registry> {
+  if (
+    registry &&
+    Object.keys(registry.data).length &&
+    Date.now() - registry.at < 864e5
+  )
+    return registry.data;
   const f = join(
     Bun.env.AGENT_HOME ?? join(homedir(), ".agent"),
     "models.dev.json",
@@ -65,14 +77,22 @@ export async function modelsDev(): Promise<typeof registry & {}> {
           signal: AbortSignal.timeout(15_000),
         },
       );
-      if (r.ok) writeFileSync(f, await r.text());
+      if (r.ok) {
+        const text = await r.text();
+        registry = { at: Date.now(), data: JSON.parse(text) };
+        try {
+          mkdirSync(dirname(f), { recursive: true });
+          writeFileSync(f, text);
+        } catch {}
+        return registry.data;
+      }
     } catch {}
   try {
-    registry = JSON.parse(readFileSync(f, "utf8"));
+    registry = { at: Date.now(), data: JSON.parse(readFileSync(f, "utf8")) };
   } catch {
-    registry = {};
+    registry = { at: 0, data: {} };
   }
-  return registry!;
+  return registry.data;
 }
 
 /** Métadonnées d'un modèle `fournisseur/modèle` du pont (OpenRouter : `openrouter/vendeur/modèle`). */
@@ -95,17 +115,28 @@ export async function candidates(
   state: RunnerState | undefined,
   withModels = h.local,
 ): Promise<Candidate[]> {
-  const probed = Object.entries(state?.clis ?? {})
-    .filter(([, v]) => v && !/missing|absent|not found/i.test(String(v)))
-    .map(([k]) => k)
-    .filter((k) => AGENT_CLIS.includes(k));
-  const clis = probed.length ? probed : await clisOn(h, AGENT_CLIS);
-  const out: Candidate[] = clis.map((c) => ({
-    id: c,
-    kind: "cli",
-    tools: true,
-    why: probed.length ? "sonde du runner" : "command -v",
-  }));
+  // Sonde du runner : seuls les statuts positifs explicites comptent ; les CLI qu'elle ne cite pas sont cherchées
+  // sur l'hôte.
+  const probe = state?.clis ?? {};
+  const positive = (v: unknown) =>
+    v === true || /^(ok|ready|installed|v?\d)/i.test(String(v ?? ""));
+  const probed = AGENT_CLIS.filter((k) => k in probe && positive(probe[k]));
+  const unknown = AGENT_CLIS.filter((k) => !(k in probe));
+  const found = unknown.length ? await clisOn(h, unknown) : [];
+  const out: Candidate[] = [
+    ...probed.map((c) => ({
+      id: c,
+      kind: "cli" as const,
+      tools: true,
+      why: "sonde du runner",
+    })),
+    ...found.map((c) => ({
+      id: c,
+      kind: "cli" as const,
+      tools: true,
+      why: "command -v",
+    })),
+  ];
   if (withModels) {
     const reg = await modelsDev();
     for (const p of await listModels().catch(() => [])) {
@@ -137,7 +168,15 @@ export function rank(
   health: Health,
   cooling: string[] = [],
 ): string[] {
-  const re = (xs?: string[]) => (xs ?? []).map((x) => new RegExp(x, "i"));
+  // Motifs venus d'un JSON généré : les invalides sont ignorés plutôt que de faire échouer l'étape.
+  const re = (xs?: unknown[]) =>
+    (Array.isArray(xs) ? xs : []).flatMap((x) => {
+      try {
+        return typeof x === "string" ? [new RegExp(x, "i")] : [];
+      } catch {
+        return [];
+      }
+    });
   const only = re(needs.only);
   const ignore = re(needs.ignore);
   const usable = (id: string) =>
@@ -145,19 +184,23 @@ export function rank(
     !ignore.some((r) => r.test(id)) &&
     !cooling.includes(sane(id)) &&
     !health.cooling(host, id);
+  // Une CLI d'agent gère ses outils et son contexte ; un modèle du pont doit prouver chaque capacité exigée
+  // (métadonnée absente = refus), et llm_ask ne câble pas d'outils.
   const fits = (c: Candidate) =>
     usable(c.id) &&
-    (!needs.edit || c.kind === "cli") &&
-    (!needs.tools || c.tools !== false) &&
-    (!needs.reasoning || c.reasoning !== false) &&
-    (!needs.context || !c.context || c.context >= needs.context);
+    (c.kind === "cli" ||
+      (!needs.edit &&
+        !needs.tools &&
+        (!needs.reasoning || c.reasoning === true) &&
+        (!needs.context ||
+          (typeof c.context === "number" && c.context >= needs.context))));
   const pool = all.filter(fits);
   const score = (c: Candidate) => {
     const s = health.stats(host, c.id);
     const rel = (s.ok + 1) / (s.n + 2);
     switch (needs.prefer) {
       case "cost":
-        return -(c.cost ?? Number.MAX_SAFE_INTEGER / 2) + rel * 1e-6;
+        return -(c.cost ?? 1e6) + rel * 1e-3;
       case "latency":
         return -(s.p50 || 60_000) + rel;
       default:
@@ -167,10 +210,10 @@ export function rank(
   const ranked = [...pool].sort((a, b) => score(b) - score(a)).map((c) => c.id);
   const wanted: string[] = [];
   for (const m of needs.models ?? []) {
-    const cli = m.split(":")[0]!;
-    const present = all.some((c) => c.id === m || c.id === cli);
-    if (!present || !usable(m)) continue;
-    if (needs.edit && !AGENT_CLIS.includes(cli)) continue;
+    if (typeof m !== "string") continue;
+    const cli = m.includes(":") ? m.split(":")[0]! : m;
+    // Le modèle souhaité passe les mêmes filtres que son moteur (capacités, refroidissement de la CLI).
+    if (!pool.some((c) => c.id === cli) || !usable(m)) continue;
     wanted.push(m);
     if (m.includes(":") && pool.some((c) => c.id === cli)) wanted.push(cli);
   }

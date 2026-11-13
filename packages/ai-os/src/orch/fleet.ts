@@ -41,6 +41,12 @@ const WIN = process.platform === "win32";
 /** Identifiant fleet.toml de la machine courante (AGENTS_HOST prime). */
 export const selfId = () => Bun.env.AGENTS_HOST ?? (WIN ? "pc" : hostname());
 
+/** Entier strictement positif, sinon la valeur par défaut. */
+const posInt = (v: unknown, d: number) => {
+  const n = Math.floor(Number(v));
+  return Number.isFinite(n) && n >= 1 ? n : d;
+};
+
 export function hosts(root = srcRoot()): Host[] {
   const fleet = toml(join(root, "infra/agents/fleet.toml"));
   const deploy = toml(join(root, "infra/deploy.toml"));
@@ -53,27 +59,29 @@ export function hosts(root = srcRoot()): Host[] {
       nodes.find(([, n]) => n.ssh_alias === id);
     if (node?.[1].role === "build") continue; // fr1
     const local = id === me;
-    const cap = Number(
-      Bun.env[`ORCH_MAX_AGENTS_${id.toUpperCase()}`] ??
-        Bun.env.ORCH_MAX_AGENTS ??
-        (local ? 3 : 2),
+    if (!local && typeof h.src !== "string") continue; // checkout du runner inconnu
+    const cap = posInt(
+      Bun.env[`ORCH_MAX_AGENTS_${id.toUpperCase()}`] ?? Bun.env.ORCH_MAX_AGENTS,
+      local ? 3 : 2,
     );
     out.push({
       id,
       local,
       ssh: local ? undefined : (node?.[1].ssh_alias ?? id),
-      src: local ? root : String(h.src),
+      src: local ? root : h.src,
       roles: h.roles ?? [],
-      maxAgents: Math.max(1, cap),
+      maxAgents: cap,
     });
   }
-  if (!out.some((h) => h.local))
+  // Machine absente de fleet.toml : ajoutée en local, sauf si c'est un nœud de build (fr1).
+  const meNode = nodes.find(([n, v]) => n === me || v.ssh_alias === me);
+  if (!out.some((h) => h.local) && meNode?.[1].role !== "build")
     out.unshift({
       id: me,
       local: true,
       src: root,
       roles: [],
-      maxAgents: Number(Bun.env.ORCH_MAX_AGENTS ?? 3),
+      maxAgents: posInt(Bun.env.ORCH_MAX_AGENTS, 3),
     });
   return out;
 }
@@ -104,7 +112,7 @@ export async function exec(
     const dir = o.cwd ? `${h.src}/${o.cwd}` : h.src;
     const body = o.raw
       ? argv.join(" ")
-      : `exec nice -n 19 timeout ${Math.ceil(timeoutMs / 1000)} ${argv.map(shq).join(" ")}`;
+      : `exec nice -n 19 timeout -k 10 ${Math.ceil(timeoutMs / 1000)} ${argv.map(shq).join(" ")}`;
     cmd = [
       "ssh",
       "-o",
@@ -116,7 +124,7 @@ export async function exec(
         ? `cd; ${body}`
         : o.raw
           ? `cd ${shq(dir)} 2>/dev/null; ${body}`
-          : `cd ${shq(dir)} || { echo "checkout absent : ${dir}" >&2; exit 127; }; ${body}`,
+          : `cd ${shq(dir)} || { printf 'checkout absent : %s\\n' ${shq(dir)} >&2; exit 127; }; ${body}`,
     ];
   }
   try {
@@ -136,8 +144,10 @@ export async function exec(
       new Response(p.stderr).text(),
       p.exited,
     ]);
+    // 124 seulement si le délai est atteint ; un autre signal (OOM, crash) reste un échec ordinaire.
+    const late = performance.now() - t0 >= timeoutMs;
     return {
-      code: p.signalCode ? 124 : code,
+      code: p.signalCode ? (late ? 124 : 128 + 9) : code,
       out,
       err,
       ms: Math.round(performance.now() - t0),
@@ -176,7 +186,7 @@ export async function clisOn(h: Host, names: string[]): Promise<string[]> {
   const r = await exec(
     h,
     [
-      `for c in ${names.join(" ")}; do command -v $c >/dev/null 2>&1 && echo $c; done`,
+      `for c in ${names.map(shq).join(" ")}; do command -v $c >/dev/null 2>&1 && echo $c; done`,
     ],
     { raw: true, timeoutMs: 20_000 },
   );

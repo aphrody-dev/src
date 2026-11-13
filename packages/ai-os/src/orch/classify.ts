@@ -23,12 +23,15 @@ export type FailClass =
 const RULES: [FailClass, RegExp][] = [
   [
     "quota",
-    /insufficient_quota|quota (exceeded|exhausted)|exceeded your (current )?quota|credit(s)? balance|out of credits|insufficient credits|\b402\b|resource_exhausted|usage limit|hit your limit|billing/i,
+    /insufficient_quota|quota\b.{0,40}\b(exceeded|exhausted|reached)|exceeded your (current )?quota|(daily|monthly) (quota|limit)|credits? balance|out of credits|insufficient credits|(status|http|error|code)\D{0,12}\b402\b|payment required|usage limit|hit your limit|billing|resource_exhausted.{0,200}(credit|billing|daily|plan)/is,
   ],
-  ["throttle", /\b429\b|rate[ _-]?limit|too many requests|quota/i],
+  [
+    "throttle",
+    /(status|http|error|code)\D{0,12}\b429\b|rate[ _-]?limit|too many requests|resource_exhausted/i,
+  ],
   [
     "auth",
-    /failed to authenticate|oauth session expired|not logged in|please (log|sign) ?in|login required|unauthori[sz]ed|\b401\b|\b403\b|invalid api key|authentication (failed|required|error)/i,
+    /failed to authenticate|oauth session expired|not logged in|please (log|sign) ?in|login required|unauthori[sz]ed|(status|http|error|code)\D{0,12}\b40[13]\b|invalid api key|authentication (failed|required|error)/i,
   ],
   [
     "missing",
@@ -45,7 +48,7 @@ const RULES: [FailClass, RegExp][] = [
   ["timeout", /timed? ?out|ETIMEDOUT|deadline exceeded|SIGTERM/i],
   [
     "overload",
-    /\b50[0234]\b|\b529\b|overloaded|service unavailable|ECONNRESET|ECONNREFUSED|EAI_AGAIN|socket hang up|connection (reset|closed)/i,
+    /(status|http|error|code)\D{0,12}\b(50[0234]|529)\b|overloaded|service unavailable|ECONNRESET|ECONNREFUSED|EAI_AGAIN|socket hang up|connection (reset|closed)/i,
   ],
 ];
 
@@ -56,17 +59,26 @@ export function classify(text: string, code?: number | null): FailClass {
   return "task";
 }
 
-/** Retry-After (secondes ou date HTTP) cité dans la sortie, borné à 60 s ; 0 si absent. */
-export function retryAfterMs(text: string): number {
-  const m = text.match(/retry[- ]after[^\d]{0,4}(\d+(?:\.\d+)?)\s*(ms|s)?/i);
+/** Retry-After cité dans la sortie (secondes, « 500ms », date HTTP ou ISO), borné à 60 s ; 0 si absent. */
+export function retryAfterMs(text: string, now = Date.now()): number {
+  const m = text.match(
+    /retry[- _]after(?:-ms)?["']?\s*[:=]?\s*["']?([^\r\n"';]+)/i,
+  );
   if (!m) return 0;
-  const v = Number(m[1]) * (m[2]?.toLowerCase() === "ms" ? 1 : 1000);
-  return Math.min(Math.max(v, 0), 60_000);
+  const v = m[1]!.trim();
+  const n = v.match(/^(\d+(?:\.\d+)?)\s*(ms|s)?\b/i);
+  const ms = n
+    ? Number(n[1]) *
+      (n[2]?.toLowerCase() === "ms" || /retry[- _]after-ms/i.test(m[0])
+        ? 1
+        : 1000)
+    : Date.parse(v) - now;
+  return Number.isFinite(ms) ? Math.min(Math.max(ms, 0), 60_000) : 0;
 }
 
 /** Durée de refroidissement d'un moteur après un échec de cette classe ; 0 = aucun (échec propre à la tâche). */
 export function cooldownMs(c: FailClass, fails: number): number {
-  const exp = (base: number) => base * 2 ** Math.min(fails - 1, 5);
+  const exp = (base: number) => base * 2 ** Math.max(0, Math.min(fails - 1, 5));
   switch (c) {
     case "quota":
       return exp(15 * 60_000);

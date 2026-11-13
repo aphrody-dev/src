@@ -19,7 +19,8 @@
  * 2. Staging the raw C:\src\.env vault into git.
  * 3. Printing the raw C:\src\.env vault (cat/type/Get-Content/Read), which would leak secrets into transcripts.
  * 4. External effects (package publication, GitHub releases, e-mail sends, MCP send/publish/payment tools) unless an
- *    owner rule in .agents/owner-rules.json allows them ({ "rules": [{ "effect": "external", "match": "<regex>" }] }).
+ *    owner rule in .agents/owner-rules.json allows them ({ "rules": [{ "effect": "external", "command": "<regex>" }] },
+ *    full match on the command line or the MCP tool name).
  *    Same validation point as the ai-os orchestrator (packages/ai-os/src/orch/policy.ts).
  */
 import { existsSync, readFileSync } from "node:fs";
@@ -61,9 +62,15 @@ export function ownerRules(
     const j = JSON.parse(readFileSync(file, "utf8"));
     return (Array.isArray(j.rules) ? j.rules : [])
       .filter(
-        (r: any) => r?.effect === "external" && typeof r.match === "string",
+        (r: any) => r?.effect === "external" && typeof r.command === "string",
       )
-      .map((r: any) => new RegExp(r.match, "i"));
+      .flatMap((r: any) => {
+        try {
+          return [new RegExp("^(?:" + r.command + ")$")];
+        } catch {
+          return [];
+        }
+      });
   } catch {
     return [];
   }

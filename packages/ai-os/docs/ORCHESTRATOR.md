@@ -157,13 +157,14 @@ Autres garde-fous :
 
 Les effets externes sont refusés par défaut : publication, envoi de message, dépense.
 
-- **Étape marquée `effect: "external"`** (ou héritée d'un parent qui l'est) : elle n'est exécutée que si une règle de `.agents/owner-rules.json` correspond à son identifiant ou à sa commande. Ce fichier n'est écrit que par le propriétaire :
+- **Étape marquée `effect: "external"`** (ou héritée d'un parent qui l'est) : elle n'est exécutée que si une règle de `.agents/owner-rules.json` l'autorise. Les expressions sont ancrées (correspondance complète) : `step` vise l'identifiant exact de l'étape (une étape générée `publish.x` ne profite pas d'une règle `publish`), `command` facultatif sa ligne de commande. Une règle sans `step` ne vaut que pour le garde des agents. Ce fichier n'est écrit que par le propriétaire :
   ```json
   {
     "rules": [
       {
         "effect": "external",
-        "match": "^publish-aphrody-blog ",
+        "step": "publish-aphrody-blog",
+        "command": "bun run --cwd apps/aphrody publish-blog",
         "granted": "AAAA-MM-JJ",
         "note": "…"
       }
@@ -171,8 +172,8 @@ Les effets externes sont refusés par défaut : publication, envoi de message, d
   }
   ```
 - **Sans règle**, l'étape prend l'état `held` : son contenu (brouillon, consigne remplie) est mis en file dans `var/agents/outbox/<run>/<étape>.json`. Les brouillons marketing de `just orch market` sont écrits dans `var/agents/outbox/<produit>-<date>.md`, et rien n'est publié.
-- **Tâches de file** : celles du rôle `growth` et toutes celles qui portent un effet externe partent avec `approval: "owner"`. Le runner ne les commite jamais.
-- **Commandes lancées par les agents eux-mêmes** : le garde `.agents/scripts/pre-tool-guard.ts` (`AGENT_GUARD=enforce`) bloque, avec le même fichier de règles :
+- **Tâches de file** : une étape externe autorisée part avec `approval: "none"` ; les autres tâches `growth` partent avec `approval: "owner"`, que le runner ne commite jamais. Une étape externe ne s'exécute jamais en direct (lecture seule) : sans worker, elle échoue au lieu de paraître faite.
+- **Commandes lancées par les agents eux-mêmes** : le garde `.agents/scripts/pre-tool-guard.ts` (`AGENT_GUARD=enforce`) bloque, sauf règle `command` correspondante dans le même fichier :
   - `npm|bun|cargo|… publish` et `gh release create` ;
   - les envois `resend` ;
   - les outils MCP d'envoi, de publication ou de paiement.
@@ -182,7 +183,7 @@ Les effets externes sont refusés par défaut : publication, envoi de message, d
 `just lifecycle` enchaîne, sans humain :
 
 1. code (sous-agent `coder`, si `--task`) ;
-2. `bun fmt` des chemins ;
+2. `bun fmt --check` des chemins (un écart ouvre un ticket coder qui formate et commite) ; synchronisation git unique de prd ;
 3. en parallèle : `bun check`, `ay arch check --strict`, et `cargo clippy` sur prd ;
 4. tests : `bun test` (paquets), `cargo test` et `go test` sur prd ;
 5. juges en parallèle :
@@ -200,7 +201,20 @@ Variantes produit :
 - `design` : PRD et DESIGN.md (`gds plan`), puis `gds verify`, `wck`, et un juge ;
 - `market` : faits issus de `git log`, brouillons rédigés, publication `held`.
 
-## Preuve d'exécution (2026-11-13, `fixtures/orch/proof.json`, run `20261113T010749-proof-fleet-p9kk`, 14,9 s)
+## Preuve d'exécution (2026-11-13, `fixtures/orch/proof.json`)
+
+Run `20261113T013445-proof-fleet-vycu` (26,8 s, ok), après la mise en service des runners sur pc, prd et fr2 : les étapes `agent` passent par les files v1.
+
+| Étape            | Hôte     | Tentatives                                                                                        |
+| ---------------- | -------- | ------------------------------------------------------------------------------------------------- |
+| pc-gemini        | pc       | file : `agy:gemini-4-carbon-high` exclu (refroidissement quota appris au run précédent), `agy` ok |
+| pc-claude        | pc       | file : `claude` ok                                                                                |
+| prd-agent        | prd      | file : `claude` exclu sur prd (refroidissement auth appris), routé sur `opencode`, ok             |
+| prd-sys, fr2-sys | prd, fr2 | commandes en parallèle, `nice=19`                                                                 |
+| plan             | pc       | file : `claude` ok ; plan.disk-prd et plan.disk-fr2 générés à l'exécution, ok                     |
+| publish          | —        | `held`                                                                                            |
+
+Run `20261113T010749-proof-fleet-p9kk` (14,9 s, exécution directe, avant les runners) :
 
 | Étape     | Hôte        | Tentatives                                                                                                    |
 | --------- | ----------- | ------------------------------------------------------------------------------------------------------------- |
@@ -211,6 +225,8 @@ Variantes produit :
 | fr2-sys   | fr2         | ok : `nproc=6 nice=19`, tmux 3.7b, bun 1.4.4                                                                  |
 | plan      | pc          | `claude` ok ; deux étapes générées à l'exécution : plan.disk-prd (prd) et plan.disk-fr2 (fr2), toutes deux ok |
 | publish   | —           | `held` : effet externe sans règle, mis en file dans `var/agents/outbox/`                                      |
+
+Revue Gemini (Carbon High, gemini.google.com) : 9,5/20, verdict et suites dans `docs/reviews/gemini-2026-11-13-orch.md`.
 
 ## Parallèle avec les projets de référence (relevé du 2026-11-13)
 

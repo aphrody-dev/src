@@ -21,9 +21,13 @@ function argvFor(
   cli: string,
   model: string | undefined,
   prompt: string,
-): { argv: string[]; stdin?: string } {
+  winLocal: boolean,
+): { argv: string[]; stdin?: string } | string {
   const m = (flag: string) => (model ? [flag, model] : []);
-  const p = prompt.length > ARGV_MAX ? prompt.slice(0, ARGV_MAX) : prompt;
+  // Ligne de commande Windows bornée : une consigne trop longue n'est jamais tronquée en silence, le moteur est écarté.
+  if (cli !== "claude" && winLocal && prompt.length > ARGV_MAX)
+    return `consigne de ${prompt.length} caractères : trop longue pour la ligne de commande Windows de ${cli}`;
+  const p = prompt;
   switch (cli) {
     case "claude":
       return {
@@ -65,10 +69,9 @@ function argvFor(
       };
     case "opencode":
       return { argv: ["opencode", "run", "--agent", "plan", ...m("-m"), p] };
-    case "pi":
-      return { argv: ["pi", "-p", ...m("--model"), p] };
     default:
-      throw new Error(`CLI inconnue : ${cli}`);
+      // pi n'a pas de mode lecture seule : il ne passe que par la file du runner.
+      return `${cli} : pas de mode lecture seule pour l'exécution directe`;
   }
 }
 
@@ -76,6 +79,7 @@ function argvFor(
 function parse(out: string): {
   text: string;
   error?: boolean;
+  errText?: string;
   tokens?: number;
 } {
   try {
@@ -84,10 +88,21 @@ function parse(out: string): {
     const tokens =
       (u.input_tokens ?? 0) +
       (u.output_tokens ?? 0) +
-      (u.cache_creation_input_tokens ?? 0);
+      (u.cache_creation_input_tokens ?? 0) +
+      (u.cache_read_input_tokens ?? 0);
+    const error = j.is_error === true || !!j.error;
+    const errText = error
+      ? [
+          j.result,
+          typeof j.error === "string" ? j.error : JSON.stringify(j.error ?? ""),
+        ]
+          .filter((x) => x && x !== '""')
+          .join(" ")
+      : undefined;
     return {
       text: String(j.result ?? j.response ?? j.text ?? out).trim(),
-      error: j.is_error === true || !!j.error,
+      error,
+      errText,
       tokens: tokens || undefined,
     };
   } catch {
@@ -116,11 +131,17 @@ export async function inline(
         tokens: 0,
       };
     try {
-      const r = await llmAsk(provider, prompt);
+      const r = await Promise.race([
+        llmAsk(provider, prompt),
+        Bun.sleep(timeoutMs).then(() => {
+          throw new Error(`délai dépassé (${timeoutMs} ms)`);
+        }),
+      ]);
       const u = (r.usage?.inputTokens ?? 0) + (r.usage?.outputTokens ?? 0);
       return {
         ok: !!r.text,
-        text: r.text,
+        text: r.text || "réponse vide",
+        cls: r.text ? undefined : "task",
         ms: r.ms,
         tokens: u || estimate(prompt, r.text),
       };
@@ -135,7 +156,15 @@ export async function inline(
       };
     }
   }
-  const { argv, stdin } = argvFor(cli!, model || undefined, prompt);
+  const spec = argvFor(
+    cli!,
+    model || undefined,
+    prompt,
+    h.local && process.platform === "win32",
+  );
+  if (typeof spec === "string")
+    return { ok: false, text: spec, cls: "missing", ms: 0, tokens: 0 };
+  const { argv, stdin } = spec;
   if (h.local) {
     // Jamais par cmd.exe (injection par la consigne) : l'exécutable visé par le shim .cmd, sinon moteur écarté.
     argv[0] = resolveExe(argv[0]!);
@@ -161,7 +190,13 @@ export async function inline(
       ms,
       tokens: j.tokens ?? estimate(prompt, j.text),
     };
-  const diag = `${j.text}\n${r.err}`.trim().slice(-4000);
+  // Classement sur stderr et le champ d'erreur structuré, pas sur le texte produit par l'agent (qui peut citer
+  // « 401 » ou « billing » dans une revue).
+  const diag = (
+    j.error ? `${j.errText ?? j.text}\n${r.err}` : r.err || r.out.slice(-1000)
+  )
+    .trim()
+    .slice(-4000);
   return {
     ok: false,
     text: diag || `code ${r.code}`,

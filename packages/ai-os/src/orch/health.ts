@@ -38,6 +38,8 @@ export class Health {
     this.db
       .query("INSERT INTO outcome VALUES (?, ?, ?, ?, ?, ?)")
       .run(host, provider, ok ? 1 : 0, cls, ms, now);
+    if (Math.random() < 0.02)
+      this.db.query("DELETE FROM outcome WHERE at <= ?").run(now - 30 * 864e5);
     if (ok) {
       this.db
         .query("DELETE FROM cooldown WHERE host = ? AND provider = ?")
@@ -75,10 +77,12 @@ export class Health {
         "SELECT ok, ms FROM outcome WHERE host = ? AND provider = ? AND at > ? ORDER BY ms",
       )
       .all(host, provider, now - 7 * 864e5);
+    // Latence mesurée sur les seuls succès : un moteur qui échoue vite ne doit pas paraître rapide.
+    const okRows = rows.filter((r) => r.ok);
     return {
       n: rows.length,
-      ok: rows.filter((r) => r.ok).length,
-      p50: rows.length ? rows[rows.length >> 1]!.ms : 0,
+      ok: okRows.length,
+      p50: okRows.length ? okRows[okRows.length >> 1]!.ms : 0,
     };
   }
 

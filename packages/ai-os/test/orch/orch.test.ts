@@ -171,7 +171,7 @@ test("effet externe : retenu sans règle du propriétaire, autorisé avec", asyn
   mkdirSync(join(root, ".agents"), { recursive: true });
   writeFileSync(
     join(root, ".agents", "owner-rules.json"),
-    JSON.stringify({ rules: [{ effect: "external", match: "^publish-x " }] }),
+    JSON.stringify({ rules: [{ effect: "external", step: "publish-x" }] }),
   );
   const r2 = await runWorkflow(wf, opts);
   expect(r2.steps[0]!.status).toBe("done");
@@ -250,4 +250,46 @@ test("file v1 : dépôt atomique, résultat final lu, sortie de la tentative acc
   const s = await Q.runnerState(local);
   expect(s.roles).toEqual(["coder"]);
   expect(s.cooling).toEqual(["agy_x"]);
+});
+
+test("revue : Retry-After daté, codes HTTP sans contexte, JSON équilibré", async () => {
+  const { balancedSteps } = await import("../../src/orch/run.ts");
+  const now = Date.parse("2026-11-13T10:00:00Z");
+  expect(retryAfterMs("Retry-After: Fri, 13 Nov 2026 10:00:20 GMT", now)).toBe(
+    20_000,
+  );
+  expect(retryAfterMs("retry-after-ms: 1500")).toBe(1500);
+  // Un agent qui cite « ligne 401 » ou « 500 ms » dans sa sortie n'est pas un échec d'authentification.
+  expect(classify("voir ligne 401 et un délai de 500 ms")).toBe("task");
+  expect(classify("HTTP 401 Unauthorized")).toBe("auth");
+  expect(classify("status: 503 Service Unavailable")).toBe("overload");
+  expect(classify("RESOURCE_EXHAUSTED: requests per minute")).toBe("throttle");
+  expect(
+    balancedSteps(
+      'avant {"x":1} puis {"steps":[{"id":"a","run":"echo }"}]} après {"y":2}',
+    ),
+  ).toBe('{"steps":[{"id":"a","run":"echo }"}]}');
+});
+
+test("expansion : les dépendants du parent attendent les étapes générées", async () => {
+  const events: string[] = [];
+  const r = await runWorkflow(
+    {
+      name: "t8",
+      steps: [
+        {
+          id: "gen",
+          do: "cmd",
+          expand: true,
+          run: `bun -e "console.log(JSON.stringify({steps:[{id:'slow',do:'cmd',run:'bun -e \\\\'await Bun.sleep(300)\\\\''}]}))"`,
+        },
+        { id: "after", do: "cmd", deps: ["gen"], run: "echo after" },
+      ],
+    },
+    { ...opts, onEvent: (e) => events.push(`${e.event}:${e.step ?? ""}`) },
+  );
+  expect(r.ok).toBe(true);
+  expect(events.indexOf("end:gen.slow")).toBeLessThan(
+    events.indexOf("start:after"),
+  );
 });

@@ -5,6 +5,7 @@
 //              -> déploiement (dry-run sauf --apply) -> surveillance -> optimisation (étapes générées)
 //   design   : PRD + DESIGN.md (gds plan) -> gds verify -> wck 100/100 -> juge
 //   market   : brouillons rédigés et mis en file ; la publication est un effet externe retenu (policy.ts)
+import { shq } from "./fleet";
 import type { Step, Workflow } from "./run";
 
 export type LifecycleOptions = {
@@ -28,7 +29,8 @@ const slugOf = (s: string) =>
     .slice(0, 40) || "run";
 // Checkout du runner sur l'hôte distant : main à jour avant de compiler.
 const synced = (cmd: string) => `git pull -q --ff-only origin main && ${cmd}`;
-const heavy = (cmd: string) => synced(`nice -n 19 ${cmd}`);
+const heavy = (cmd: string) => `nice -n 19 ${cmd}`;
+const q = (xs: string[]) => xs.map(shq).join(" ");
 
 export function software(o: LifecycleOptions = {}): Workflow {
   const paths = o.paths?.length ? o.paths : ["packages/ai-os"];
@@ -45,7 +47,7 @@ export function software(o: LifecycleOptions = {}): Workflow {
       role: "coder",
       needs: { edit: true },
       prompt: `${o.task}\n\nRègles de src : lis AGENTS.md et CLAUDE.md ; ne touche que ${paths.join(", ")} ; zéro emoji ; aucun secret affiché ; termine par bun fmt sur tes fichiers.`,
-      check: `bun check && bun fmt --check ${paths.join(" ")}`,
+      check: `bun check && bun fmt --check ${q(paths)}`,
       commit: { paths, message: msg(o.task.slice(0, 60)) },
       budget_usd: 5,
     });
@@ -55,7 +57,18 @@ export function software(o: LifecycleOptions = {}): Workflow {
       do: "cmd",
       deps: after(["code"]),
       hosts: ["pc"],
-      run: `bun fmt ${paths.join(" ")}`,
+      // Vérification seulement : un écart ouvre un ticket coder qui formate et commite dans `paths` (aucune
+      // modification locale non commitée que prd ne verrait pas).
+      run: `bun fmt --check ${q(paths)}`,
+    },
+    {
+      // Une seule synchronisation git sur l'hôte de compilation, avant toute compilation (pas de index.lock concurrent).
+      id: "sync",
+      do: "cmd",
+      deps: ["fmt"],
+      hosts: [build],
+      run: "git pull -q --ff-only origin main",
+      onFail: "stop",
     },
     { id: "check", do: "cmd", deps: ["fmt"], hosts: ["pc"], run: "bun check" },
     {
@@ -68,7 +81,7 @@ export function software(o: LifecycleOptions = {}): Workflow {
     {
       id: "clippy",
       do: "cmd",
-      deps: ["fmt"],
+      deps: ["sync"],
       hosts: [build],
       run: heavy("cargo clippy --workspace -j 4 --quiet -- -D warnings"),
       timeout_s: 5400,
@@ -79,7 +92,7 @@ export function software(o: LifecycleOptions = {}): Workflow {
       deps: ["check"],
       hosts: ["pc"],
       run: (o.bunTests ?? ["packages/ai-os"])
-        .map((p) => `bun test ${p}`)
+        .map((p) => `bun test ${shq(p)}`)
         .join(" && "),
     },
     {
@@ -93,7 +106,7 @@ export function software(o: LifecycleOptions = {}): Workflow {
     {
       id: "test-go",
       do: "cmd",
-      deps: ["fmt"],
+      deps: ["test-cargo"], // une compilation à la fois sur prd
       hosts: [build],
       run: heavy("go -C infra test ./..."),
       timeout_s: 2400,
@@ -103,7 +116,8 @@ export function software(o: LifecycleOptions = {}): Workflow {
       do: "cmd",
       deps: ["test-bun", "arch"],
       hosts: ["pc"],
-      run: `git log -3 -p --stat -- ${paths.join(" ")} | head -c 100000`,
+      // Échec de git propagé (pas masqué par le code de sortie de head).
+      run: `out=$(git log -3 -p --stat -- ${q(paths)}) && printf '%s' "$out" | head -c 100000`,
       onFail: "stop",
     },
     {
@@ -121,7 +135,7 @@ export function software(o: LifecycleOptions = {}): Workflow {
       do: "agent",
       role: "reviewer",
       deps: ["diff"],
-      needs: { context: 100_000 },
+      needs: { context: 100_000, only: ["^claude(:|$)", "^anthropic/"] },
       prompt:
         "Juge strict de ce changement de src. Note /20, puis chaque défaut vérifiable (fichier:ligne, défaut, correction). Pas de compliments.\n\n{{diff}}",
       out: `docs/reviews/claude-${day()}-${slug}.md`,
@@ -148,7 +162,10 @@ export function software(o: LifecycleOptions = {}): Workflow {
       do: "cmd",
       deps: ["fix", "test-cargo", "test-go"],
       hosts: [build],
-      run: heavy("docker build --target runtime -t aphrody/src:agents ."),
+      // Resynchronisé : les corrections des juges ont été poussées par le runner depuis « sync ».
+      run: synced(
+        heavy("docker build --target runtime -t aphrody/src:agents ."),
+      ),
       timeout_s: 5400,
     },
     {
@@ -174,14 +191,21 @@ export function software(o: LifecycleOptions = {}): Workflow {
       prompt:
         'État de la flotte après déploiement :\n{{monitor}}\n\nPropose au plus 3 optimisations mesurables de src (performance, fiabilité, coût), chacune en tâche pour un agent coder. Réponds uniquement par un bloc ```json {"steps":[{"id":"o1","do":"agent","role":"coder","needs":{"edit":true},"prompt":"…","check":"…"}]} ``` ; liste vide si rien ne le justifie.',
       expand: true,
+      // Les tâches générées commitent dans le même périmètre et s'enchaînent (run.ts).
+      commit: { paths, message: msg("optimisation") },
       onFail: "continue",
     },
   );
-  return { name: `software-${slug}`, steps };
+  return { name: `software-${slug}`, paths, steps };
 }
 
+const product_ = (p: string) => {
+  if (!/^[\w.-]+$/.test(p)) throw new Error(`nom de produit invalide : ${p}`);
+  return p;
+};
+
 export function design(product: string, o: { url?: string } = {}): Workflow {
-  const dir = `apps/${product}`;
+  const dir = `apps/${product_(product)}`;
   return {
     name: `design-${product}`,
     steps: [
@@ -191,7 +215,7 @@ export function design(product: string, o: { url?: string } = {}): Workflow {
         role: "designer",
         needs: { edit: true },
         prompt: `Design-First Gate de src pour ${dir} : mets à jour le cahier des charges (PRD) et DESIGN.md avec \`gds plan ${product} --out ${dir}/docs\`, puis complète-les à partir du code réel. Aucun code UI avant ces documents.`,
-        check: `gds audit-slop ${dir}/docs`,
+        check: `gds audit-slop ${shq(`${dir}/docs`)}`,
         commit: {
           paths: [`${dir}/docs`],
           message: `${dir} : PRD et DESIGN.md`,
@@ -202,14 +226,14 @@ export function design(product: string, o: { url?: string } = {}): Workflow {
         do: "cmd",
         deps: ["prd"],
         hosts: ["pc"],
-        run: `gds verify ${dir}`,
+        run: `gds verify ${shq(dir)}`,
       },
       {
         id: "wck",
         do: "cmd",
         deps: ["prd"],
         hosts: ["pc"],
-        run: `wck ${o.url ?? dir} --quiet`,
+        run: `wck ${shq(o.url ?? dir)} --quiet`,
       },
       {
         id: "judge",
@@ -228,6 +252,7 @@ export function design(product: string, o: { url?: string } = {}): Workflow {
 }
 
 export function market(product: string, brief: string): Workflow {
+  product_(product);
   return {
     name: `market-${product}`,
     steps: [
@@ -235,7 +260,7 @@ export function market(product: string, brief: string): Workflow {
         id: "facts",
         do: "cmd",
         hosts: ["pc"],
-        run: `git log -20 --format='%h %s' -- apps/${product} packages/${product} | head -40`,
+        run: `git log -20 --format='%h %s' -- ${shq(`apps/${product}`)} ${shq(`packages/${product}`)}`,
       },
       {
         id: "draft",

@@ -91,21 +91,39 @@ export async function poll(h: Host, id: string): Promise<QueueResult | null> {
   const f = `${base}/results/${id}/result.json`;
   // La tâche remise en new/ après des fournisseurs indisponibles garde un result.json intermédiaire : seul
   // done/ ou failed/ est final.
+  // Final sans result.json (runner interrompu, retrait) : échec synthétisé plutôt qu'une attente jusqu'au délai.
+  const settle = (state: string, text: string): QueueResult | null => {
+    if (!state) return null;
+    try {
+      return JSON.parse(text);
+    } catch {
+      return state === "failed"
+        ? { id, status: "failed", host: h.id, attempts: [] }
+        : null;
+    }
+  };
   if (h.local) {
-    const final = ["done", "failed"].some((d) =>
-      existsSync(join(base, "queue", d, `${id}.json`)),
-    );
-    return final && existsSync(f) ? JSON.parse(readFileSync(f, "utf8")) : null;
+    const state =
+      ["done", "failed"].find((d) =>
+        existsSync(join(base, "queue", d, `${id}.json`)),
+      ) ?? "";
+    let text = "";
+    try {
+      text = readFileSync(f, "utf8");
+    } catch {}
+    return settle(state, text);
   }
   const r = await exec(
     h,
     [
-      `if [ -f ${shq(`${base}/queue/done/${id}.json`)} ] || [ -f ${shq(`${base}/queue/failed/${id}.json`)} ]; then cat ${shq(f)}; fi`,
+      `if [ -f ${shq(`${base}/queue/done/${id}.json`)} ]; then echo done; elif [ -f ${shq(`${base}/queue/failed/${id}.json`)} ]; then echo failed; else exit 0; fi; cat ${shq(f)} 2>/dev/null`,
     ],
     { raw: true, timeoutMs: 30_000 },
   );
-  const t = r.out.trim();
-  return t ? JSON.parse(t) : null;
+  const nl = r.out.indexOf("\n");
+  return nl < 0
+    ? settle(r.out.trim(), "")
+    : settle(r.out.slice(0, nl).trim(), r.out.slice(nl + 1));
 }
 
 /** Tentatives déjà faites sur une tâche encore en file (remise en new/ ou réclamée). */
@@ -139,10 +157,13 @@ export async function withdraw(h: Host, id: string): Promise<boolean> {
   const src = `${base}/queue/new/${id}.json`;
   const dst = `${base}/queue/failed/${id}.json`;
   if (h.local) {
-    if (!existsSync(src)) return false;
     mkdirSync(join(base, "queue", "failed"), { recursive: true });
-    renameSync(src, dst);
-    return true;
+    try {
+      renameSync(src, dst); // un worker peut l'avoir réclamée entre-temps : rien à retirer
+      return true;
+    } catch {
+      return false;
+    }
   }
   const r = await exec(
     h,
@@ -172,14 +193,19 @@ export async function runnerState(h: Host): Promise<RunnerState> {
   if (h.local) {
     const d = join(base, "state");
     if (existsSync(d))
-      files = readdirSync(d).map((name) => ({
-        name,
-        age: Date.now() - statSync(join(d, name)).mtimeMs,
-        body:
-          name === "health.json"
-            ? readFileSync(join(d, name), "utf8")
-            : undefined,
-      }));
+      for (const name of readdirSync(d))
+        try {
+          const st = statSync(join(d, name));
+          if (!st.isFile()) continue;
+          files.push({
+            name,
+            age: Math.max(0, Date.now() - st.mtimeMs),
+            body:
+              name === "health.json"
+                ? readFileSync(join(d, name), "utf8")
+                : undefined,
+          });
+        } catch {} // fichier remplacé pendant la lecture (écriture atomique du runner)
   } else {
     const r = await exec(
       h,
@@ -191,9 +217,9 @@ export async function runnerState(h: Host): Promise<RunnerState> {
     const [list, ...rest] = r.out.split("\n\n");
     files = (list ?? "")
       .split("\n")
-      .map((l) => l.match(/^F (\d+) (.+)$/))
+      .map((l) => l.match(/^F (-?\d+) (.+)$/))
       .filter((m): m is RegExpMatchArray => !!m)
-      .map((m) => ({ name: m[2]!, age: Number(m[1]) * 1000 }));
+      .map((m) => ({ name: m[2]!, age: Math.max(0, Number(m[1])) * 1000 }));
     const hj = files.find((f) => f.name === "health.json");
     if (hj) hj.body = rest.join("\n\n");
   }
@@ -236,5 +262,35 @@ export async function output(
           timeoutMs: 30_000,
         })
       ).out;
-  return text.slice(-max);
+  return extractText(text).slice(-max);
+}
+
+/** Texte de la réponse dans le journal brut d'une CLI : JSON unique (claude `result`, agy `response`) ou flux JSONL
+ * (opencode `part.text`, codex `item.text` des messages de l'agent) ; texte brut sinon. stderr retiré. */
+export function extractText(log: string): string {
+  const body = log.split("\n[stderr]\n")[0]!.trim();
+  const pick = (j: any): string | undefined => {
+    const v =
+      j?.result ??
+      j?.response ??
+      j?.part?.text ??
+      (j?.item?.type === "agent_message" ? j.item.text : undefined) ??
+      (j?.type === "text" ? j.text : undefined);
+    return typeof v === "string" ? v : undefined;
+  };
+  try {
+    const one = pick(JSON.parse(body));
+    if (one !== undefined) return one.trim();
+  } catch {}
+  const parts: string[] = [];
+  let parsed = 0;
+  for (const line of body.split("\n")) {
+    try {
+      const j = JSON.parse(line);
+      parsed++;
+      const t = pick(j);
+      if (t) parts.push(t);
+    } catch {}
+  }
+  return parsed && parts.length ? parts.join("").trim() : body;
 }

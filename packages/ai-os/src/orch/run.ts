@@ -50,6 +50,8 @@ export type Step = {
 };
 
 export type Workflow = {
+  /** Préfixes que les tickets de correction peuvent commiter (défaut : aucun commit). */
+  paths?: string[];
   name: string;
   steps: Step[];
   limits?: Partial<Limits>;
@@ -117,6 +119,28 @@ const DEFAULT_ROLE: Record<Step["do"], Role> = {
   tool: "sre",
 };
 
+/** Premier objet JSON équilibré qui contient "steps" (sortie d'agent sans bloc ```json). */
+export function balancedSteps(text: string): string | undefined {
+  for (let i = text.indexOf("{"); i >= 0; i = text.indexOf("{", i + 1)) {
+    let depth = 0;
+    let str = false;
+    for (let j = i; j < text.length; j++) {
+      const c = text[j];
+      if (str) {
+        if (c === "\\") j++;
+        else if (c === '"') str = false;
+      } else if (c === '"') str = true;
+      else if (c === "{") depth++;
+      else if (c === "}" && --depth === 0) {
+        const cand = text.slice(i, j + 1);
+        if (cand.includes('"steps"')) return cand;
+        break;
+      }
+    }
+  }
+  return undefined;
+}
+
 export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
   const root = o.root ?? srcRoot();
   const L = { ...defaultLimits(), ...wf.limits, ...o.limits };
@@ -129,7 +153,6 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
   );
   mkdirSync(logDir, { recursive: true });
   const logFile = join(logDir, `${runId}.jsonl`);
-  const health = new Health();
   const t0 = Date.now();
   const emit = (event: string, data: Record<string, unknown> = {}) => {
     const e = { ts: new Date().toISOString(), run: runId, event, ...data };
@@ -155,6 +178,7 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
   for (const s of wf.steps)
     for (const d of s.deps ?? [])
       if (!st.has(d)) throw new Error(`${s.id} dépend de ${d}, absente`);
+  const health = new Health();
 
   const busy = new Map<string, number>(fleet.map((h) => [h.id, 0]));
   let spentUsd = 0;
@@ -228,7 +252,18 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
       const { toolByName } = await import("../relay/tools.ts");
       const t = toolByName.get(s.step.tool!);
       if (!t) throw new Error(`outil inconnu : ${s.step.tool}`);
-      const args = JSON.parse(fill(JSON.stringify(s.step.args ?? {})));
+      // Interpolation sur la structure (une sortie avec guillemets ou sauts de ligne ne casse pas le JSON).
+      const fillVal = (v: unknown): unknown =>
+        typeof v === "string"
+          ? fill(v)
+          : Array.isArray(v)
+            ? v.map(fillVal)
+            : v && typeof v === "object"
+              ? Object.fromEntries(
+                  Object.entries(v).map(([k, x]) => [k, fillVal(x)]),
+                )
+              : v;
+      const args = fillVal(s.step.args ?? {}) as Record<string, unknown>;
       const r = await t.run(args);
       s.output = (typeof r === "string" ? r : JSON.stringify(r, null, 2)).slice(
         -40_000,
@@ -266,7 +301,13 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
     if (rs.roles.includes(role)) {
       const id = `${runId}-${step.id}`.replace(/[^\w.-]/g, "_").slice(0, 120);
       const budget = step.budget_usd ?? 2;
+      if (spentUsd + budget > L.budgetUsd) {
+        s.output = `budget $ épuisé (${spentUsd} + ${budget} > ${L.budgetUsd})`;
+        return "fail";
+      }
       spentUsd += budget;
+      const maxAttempts = Math.min(providers.length, 6);
+      const allowed = step.effect === "external"; // execute() n'arrive ici qu'avec une règle du propriétaire
       const task: Q.QueueTask = {
         v: 1,
         id,
@@ -277,18 +318,18 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
         cwd: undefined,
         check: step.check,
         commit: step.commit,
-        approval:
-          step.effect === "external" || role === "growth" ? "owner" : "none",
+        // Un effet externe validé par une règle part sans approbation ; growth reste en brouillon sinon (runner).
+        approval: allowed ? "none" : role === "growth" ? "owner" : "none",
         timeout_s: step.timeout_s,
         budget_usd: budget,
-        max_attempts: 3,
+        max_attempts: maxAttempts,
         created_by: `ai-os/orch ${runId}`,
         created_at: new Date().toISOString(),
       };
       await Q.enqueue(h, task);
       emit("enqueue", { step: step.id, host: h.id, task: id, providers });
       const until = Date.now() + ((step.timeout_s ?? 3600) + 600) * 1000;
-      while (Date.now() < until) {
+      while (Date.now() < until && !stopped) {
         await Bun.sleep(L.pollMs);
         const r = await Q.poll(h, id);
         if (r) {
@@ -328,22 +369,27 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
         // Tous les fournisseurs indisponibles sur cet hôte : retirer la tâche et changer d'hôte.
         const pend = await Q.pendingAttempts(h, id);
         if (
-          pend.length >= providers.length &&
+          pend.length >= maxAttempts &&
           pend.every((a) => a.reason === "provider_unavailable") &&
           (await Q.withdraw(h, id))
         ) {
           for (const a of pend)
             health.record(h.id, a.provider, false, "quota", 0);
           s.output = `fournisseurs indisponibles sur ${h.id}`;
+          spentUsd -= budget; // rien n'a tourné
           return "reroute";
         }
         if (Date.now() - t0 > L.deadlineMs) break;
       }
-      s.output = `délai dépassé dans la file de ${h.id}`;
+      // Pas de tâche fantôme : retirée si elle attend encore (une tâche réclamée finit dans le runner).
+      await Q.withdraw(h, id).catch(() => false);
+      s.output = stopped
+        ? `arrêt (${stopped}) pendant l'attente de la file de ${h.id}`
+        : `délai dépassé dans la file de ${h.id}`;
       return "fail";
     }
-    if (step.needs?.edit) {
-      s.output = `aucun worker « ${role} » sur ${h.id} : une étape qui modifie des fichiers passe par la file`;
+    if (step.needs?.edit || step.effect === "external") {
+      s.output = `aucun worker « ${role} » sur ${h.id} : une étape qui modifie des fichiers ou agit à l'extérieur passe par la file`;
       s.tries.push({
         host: h.id,
         ok: false,
@@ -354,7 +400,13 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
       return "reroute";
     }
     // Exécution directe, fournisseur par fournisseur (routeur rappelé après chaque échec, clé déjà essayée exclue).
+    const failed = new Set<string>();
     for (const p of providers) {
+      // Routeur rappelé : une CLI écartée (auth, absence, quota) écarte aussi ses variantes « cli:modèle ».
+      const base = p.includes(":") ? p.split(":")[0]! : p;
+      if (failed.has(p) || failed.has(base) || health.cooling(h.id, base))
+        continue;
+      if (stopped) return "fail";
       if (tokens >= L.tokenBudget) {
         s.output = "budget de jetons épuisé";
         return "fail";
@@ -385,7 +437,14 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
           return "ok";
         }
         s.output = r.text;
-        if (switches(r.cls!) || r.cls === "task" || attempt === 1) break;
+        failed.add(p);
+        // La tâche elle-même échoue : inutile de la rejouer sur tous les moteurs et tous les hôtes.
+        if (r.cls === "task") return "fail";
+        if (r.cls === "auth" || r.cls === "missing") {
+          failed.add(base);
+          if (base !== p) health.record(h.id, base, false, r.cls, 0);
+        }
+        if (!r.cls || switches(r.cls) || attempt === 1) break;
         await Bun.sleep(
           Math.max(retryAfterMs(r.text), r.cls === "throttle" ? 5_000 : 2_000),
         );
@@ -399,7 +458,7 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
     s.t0 = Date.now();
     if (
       step.effect === "external" &&
-      !allowExternal(root, `${step.id} ${step.run ?? ""} ${step.tool ?? ""}`)
+      !allowExternal(root, step.id, step.run ?? step.tool ?? "")
     ) {
       const prompt = step.prompt ? fill(step.prompt) : undefined;
       s.note = hold(root, runId, step.id, { step: { ...step, prompt } });
@@ -407,10 +466,21 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
       return;
     }
     const tried = new Set<string>();
-    for (const h of hostsFor(step)) {
+    const pool =
+      step.do === "tool"
+        ? hostsFor(step).filter((h) => h.local)
+        : hostsFor(step);
+    if (!pool.length) {
+      s.output = `aucun hôte disponible pour ${JSON.stringify(step.hosts ?? step.role ?? step.do)} (${step.do === "tool" ? "outil du relais : hôte local" : "fleet.toml"})`;
+      s.status = "failed";
+      return;
+    }
+    for (const h of pool) {
       if (tried.has(h.id)) continue;
       tried.add(h.id);
-      while ((busy.get(h.id) ?? 0) >= h.maxAgents) await Bun.sleep(500);
+      while ((busy.get(h.id) ?? 0) >= h.maxAgents && !stopped)
+        await Bun.sleep(500);
+      if (stopped) break;
       busy.set(h.id, (busy.get(h.id) ?? 0) + 1);
       s.host = h.id;
       emit("start", { step: step.id, do: step.do, host: h.id });
@@ -427,7 +497,13 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
           return;
         }
         const rs = await runner(h);
-        const all = await candidates(h, rs);
+        // Modèles du pont seulement en exécution directe locale ; la file reçoit des CLI que le runner sait lancer.
+        const role = step.role ?? DEFAULT_ROLE.agent;
+        const all = await candidates(
+          h,
+          rs,
+          h.local && !rs.roles.includes(role),
+        );
         const providers = rank(h.id, all, step.needs ?? {}, health, rs.cooling);
         emit("route", { step: step.id, host: h.id, providers });
         if (!providers.length) {
@@ -456,13 +532,12 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
     if (!s.step.expand || s.status !== "done") return;
     if (s.depth + 1 > L.maxDepth)
       return emit("expand-refused", { step: s.step.id, reason: "profondeur" });
-    const m =
-      s.output.match(/```json\s*([\s\S]*?)```/) ??
-      s.output.match(/(\{[\s\S]*"steps"[\s\S]*\})/);
-    if (!m) return;
+    const fenced = s.output.match(/```json\s*([\s\S]*?)```/)?.[1];
+    const text = fenced ?? balancedSteps(s.output);
+    if (!text) return;
     let spec: any;
     try {
-      spec = JSON.parse(m[1]!);
+      spec = JSON.parse(text);
     } catch {
       return emit("expand-refused", {
         step: s.step.id,
@@ -472,6 +547,18 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
     const raw: any[] = Array.isArray(spec?.steps) ? spec.steps : [];
     const local = new Set(raw.map((x) => String(x?.id ?? "")));
     const prefix = `${s.step.id}.`;
+    const ROLES = [
+      "coder",
+      "reviewer",
+      "tester",
+      "linter",
+      "designer",
+      "deployer",
+      "sre",
+      "growth",
+    ];
+    const added: string[] = [];
+    let prevEdit: string | undefined;
     for (const x of raw) {
       if (
         !x ||
@@ -491,7 +578,7 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
             : undefined,
         tool: typeof x.tool === "string" ? x.tool : undefined,
         args: x.args && typeof x.args === "object" ? x.args : undefined,
-        role: x.role,
+        role: ROLES.includes(x.role) ? x.role : undefined,
         hosts: Array.isArray(x.hosts) ? x.hosts.map(String) : undefined,
         needs: x.needs && typeof x.needs === "object" ? x.needs : undefined,
         check: typeof x.check === "string" ? x.check : undefined,
@@ -500,32 +587,48 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
           x.effect === "external" || s.step.effect === "external"
             ? "external"
             : undefined,
-        commit:
-          s.step.commit && x.commit
-            ? {
-                paths: s.step.commit.paths,
-                message: String(x.commit.message ?? s.step.commit.message),
-              }
-            : undefined,
+        // Commit borné aux chemins du parent, jamais au-delà.
+        commit: s.step.commit
+          ? {
+              paths: s.step.commit.paths,
+              message: String(x.commit?.message ?? s.step.commit.message),
+            }
+          : undefined,
         expand: x.expand === true,
-        onFail: x.onFail,
+        onFail: ["fix", "stop", "continue"].includes(x.onFail)
+          ? x.onFail
+          : undefined,
         deps: [
           s.step.id,
           ...(Array.isArray(x.deps)
             ? x.deps
-                .filter((d: string) => local.has(d))
+                .filter((d: unknown) => typeof d === "string" && local.has(d))
                 .map((d: string) => prefix + d)
             : []),
         ],
       };
+      // Les étapes générées qui modifient le même checkout s'enchaînent au lieu de s'écraser.
+      const edits = child.do === "agent" && child.needs?.edit === true;
+      if (edits && prevEdit && !child.deps!.includes(prevEdit))
+        child.deps!.push(prevEdit);
       try {
         add(child, s.depth + 1);
+        added.push(child.id);
+        if (edits) prevEdit = child.id;
         emit("expand", { parent: s.step.id, step: child.id, do: child.do });
       } catch (e: any) {
         emit("expand-refused", { step: child.id, reason: e.message });
         break;
       }
     }
+    // Les étapes qui attendaient le parent attendent aussi ce qu'il a engendré.
+    for (const o of st.values())
+      if (
+        o.status === "pending" &&
+        !added.includes(o.step.id) &&
+        o.step.deps?.includes(s.step.id)
+      )
+        o.step = { ...o.step, deps: [...o.step.deps, ...added] };
   }
 
   function repair(s: State) {
@@ -537,16 +640,27 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
       return;
     if (s.step.do !== "cmd" || s.fixes >= L.fixRounds) return;
     if (s.tries.at(-1)?.cls === "missing") return; // hôte, checkout ou outil absent : rien à corriger dans le code
+    if (s.step.repo === false) return; // hors checkout : pas de code à corriger
     s.fixes++;
     const fix: Step = {
       id: `${s.step.id}#fix${s.fixes}`,
       do: "agent",
       role: "coder",
       needs: { edit: true },
-      hosts: s.host ? [s.host] : undefined,
+      // Hôte de l'échec d'abord, puis tout hôte qui a un worker coder (checkouts synchronisés par git).
+      hosts: s.host
+        ? [s.host, ...fleet.map((h) => h.id).filter((id) => id !== s.host)]
+        : undefined,
       prompt: `La commande \`${s.step.run}\` échoue sur ${s.host} (sortie ci-dessous). Corrige la cause par le plus petit changement, sans désactiver de contrôle.\n\n${s.output.slice(-6000)}`,
       check: s.step.run,
-      commit: s.step.commit,
+      commit:
+        s.step.commit ??
+        (wf.paths?.length
+          ? {
+              paths: wf.paths,
+              message: `${wf.paths[0]} : correction de « ${s.step.id} »`,
+            }
+          : undefined),
       onFail: "stop",
     };
     try {
@@ -630,18 +744,13 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
         s.status = "skipped";
         s.note = "dépendance circulaire";
       }
+      stopped = "dépendance circulaire";
       break;
     }
     const id = await Promise.race(running.values());
     running.delete(id);
     const s = st.get(id)!;
     s.ms = Date.now() - (s.t0 ?? Date.now());
-    consecutive =
-      s.status === "failed"
-        ? consecutive + 1
-        : s.status === "done"
-          ? 0
-          : consecutive;
     emit("end", {
       step: id,
       status: s.status,
@@ -653,6 +762,13 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
     writeOut(s);
     expand(s);
     repair(s);
+    // Un échec pris en charge par un ticket de correction ne compte pas pour l'arrêt sur échecs répétés.
+    consecutive =
+      s.status === "failed" && !s.fixedBy
+        ? consecutive + 1
+        : s.status === "done"
+          ? 0
+          : consecutive;
   }
   health.close();
 
@@ -669,11 +785,13 @@ export async function runWorkflow(wf: Workflow, o: RunOptions = {}) {
     output: s.output.slice(0, 600),
   }));
   const final = (s: State) => resolve(s.step.id).status;
+  // Une étape sautée n'est jamais un succès ; un échec toléré (onFail: continue) l'est.
   const ok =
     !stopped &&
     [...st.values()].every(
       (s) =>
-        ["done", "held"].includes(final(s)) || s.step.onFail === "continue",
+        ["done", "held"].includes(final(s)) ||
+        (final(s) === "failed" && s.step.onFail === "continue"),
     );
   const report = {
     run: runId,
