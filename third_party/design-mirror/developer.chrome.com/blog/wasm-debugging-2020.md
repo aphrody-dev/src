@@ -1,0 +1,407 @@
+---
+source_url: https://developer.chrome.com/blog/wasm-debugging-2020
+fetched: 2026-11-13
+lastmod: 2026-11-11T16:59:22+00:00
+sha256: 006c8417afffcbc22496dae46c93ea8e77626cad176a35f987be7ece97690993
+license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
+attribution: Google LLC et les auteurs cités, developer.chrome.com
+modified: images et avatars retirés ; texte inchangé sinon
+---
+Ingvar Stepanyan
+
+> [!NOTE]
+> **Note:** Interested in helping improve DevTools? Sign up to participate in [Google User Research here](https://google.qualtrics.com/jfe/form/SV_9YbKj35IGoGsDBj?reserved=1&utm_source=Website+feature&Q_Language=en&utm_medium=own_web&utm_campaign=Q4&productTag=chrm&campaignDate=November2020&referral_code=UXFm430458).
+
+[Video](https://www.youtube.com/watch?v=VBMHswhun-s)
+
+## The road so far
+
+A year ago, Chrome [announced initial support](https://developer.chrome.com/blog/wasm-debugging-2019.md.txt)
+for native WebAssembly debugging in Chrome DevTools.
+
+We demonstrated basic stepping support and talked about opportunities
+usage of [DWARF](http://dwarfstd.org/) information instead of
+source maps opens for us in the future:
+
+- Resolving variable names
+- Pretty-printing types
+- Evaluating expressions in source languages
+- ...and much more!
+
+Today, we're excited to showcase the promised features come into life
+and the progress Emscripten and Chrome DevTools teams have made over
+this year, in particular, for C and C++ apps.
+
+Before we start, please keep in mind that this is still a beta version
+of the new experience, you need to use the latest version of all tools
+at your own risk, and if you run into any issues, please report them to
+[https://issues.chromium.org/issues/new?noWizard=true\&template=0\&component=1456350](https://issues.chromium.org/issues/new?noWizard=true&template=0&component=1456350).
+
+Let's start with the same simple C example as the last time:
+
+```c
+#include <stdlib.h>
+
+void assert_less(int x, int y) {
+  if (x >= y) {
+    abort();
+  }
+}
+
+int main() {
+  assert_less(10, 20);
+  assert_less(30, 20);
+}
+```
+
+To compile it, we use [latest Emscripten](https://github.com/emscripten-core/emsdk#downloads--how-do-i-get-the-latest-emscripten-build)
+and pass a `-g` flag, just like in the original post, to include debug
+information:
+
+```
+emcc -g temp.c -o temp.html
+```
+
+Now we can serve the generated page from a localhost HTTP server (for
+example, with [serve](https://www.npmjs.com/package/serve)), and
+open it in the latest [Chrome Canary](https://www.google.com/chrome/canary/).
+
+This time we'll also need a helper extension that integrates with Chrome
+DevTools and helps it make sense of all the debugging information
+encoded in the WebAssembly file. Please install it by going to this
+link: [goo.gle/wasm-debugging-extension](https://goo.gle/wasm-debugging-extension)
+
+You'll also want to enable WebAssembly debugging in the DevTools
+**Experiments** . Open Chrome DevTools, click the gear (**⚙** ) icon in
+the top right corner of DevTools pane, go to the **Experiments** panel
+and tick **WebAssembly Debugging: Enable DWARF support**.
+
+> [!NOTE]
+> Starting with Chrome 114, you can debug WebAssembly in DevTools without enabling any experimental settings.
+
+When you close the **Settings**, DevTools will suggest to reload itself
+to apply settings, so let's do just that. That's it for the one-off
+setup.
+
+Now we can go back to the **Sources** panel, enable **Pause on
+exceptions** (⏸ icon), then check **Pause on caught exceptions** and
+reload the page. You should see the DevTools paused on an exception:
+
+By default, it stops on an Emscripten-generated glue code, but on the
+right you can see a **Call Stack** view representing the stacktrace of
+the error, and can navigate to the original C line that invoked
+`abort`:
+
+Now, if you look in the **Scope** view, you can see the original names
+and values of variables in the C/C++ code, and no longer have to figure
+out what mangled names like `$localN` mean and how they relate to the
+source code you've written.
+
+This applies not only to primitive values like integers, but to compound
+types like structures, classes, arrays, etc., too!
+
+## Rich type support
+
+Let's take a look at a more complicated example to show those. This
+time, we'll draw a [Mandelbrot fractal](https://en.wikipedia.org/wiki/Mandelbrot_set) with the
+following C++ code:
+
+```c++
+#include <SDL2/SDL.h>
+#include <complex>
+
+int main() {
+  // Init SDL.
+  int width = 600, height = 600;
+  SDL_Init(SDL_INIT_VIDEO);
+  SDL_Window* window;
+  SDL_Renderer* renderer;
+  SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_OPENGL, &window,
+                              &renderer);
+
+  // Generate a palette with random colors.
+  enum { MAX_ITER_COUNT = 256 };
+  SDL_Color palette[MAX_ITER_COUNT];
+  srand(time(0));
+  for (int i = 0; i < MAX_ITER_COUNT; ++i) {
+    palette[i] = {
+        .r = (uint8_t)rand(),
+        .g = (uint8_t)rand(),
+        .b = (uint8_t)rand(),
+        .a = 255,
+    };
+  }
+
+  // Calculate and draw the Mandelbrot set.
+  std::complex<double> center(0.5, 0.5);
+  double scale = 4.0;
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+      std::complex<double> point((double)x / width, (double)y / height);
+      std::complex<double> c = (point - center) * scale;
+      std::complex<double> z(0, 0);
+      int i = 0;
+      for (; i < MAX_ITER_COUNT - 1; i++) {
+        z = z * z + c;
+        if (abs(z) > 2.0)
+          break;
+      }
+      SDL_Color color = palette[i];
+      SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+      SDL_RenderDrawPoint(renderer, x, y);
+    }
+  }
+
+  // Render everything we've drawn to the canvas.
+  SDL_RenderPresent(renderer);
+
+  // SDL_Quit();
+}
+```
+
+You can see that this application is still fairly small-it's a single
+file containing 50 lines of code-but this time I'm also using some
+external APIs, like [SDL library](https://en.wikipedia.org/wiki/Simple_DirectMedia_Layer) for
+graphics as well as [complex numbers](https://en.cppreference.com/w/cpp/numeric/complex) from the
+C++ standard library.
+
+I'm going to compile it with the same `-g` flag as above to include
+debug information, and also I'll ask Emscripten to provide the SDL2
+library and allow arbitrarily-sized memory:
+
+```
+emcc -g mandelbrot.cc -o mandelbrot.html \
+     -s USE_SDL=2 \
+     -s ALLOW_MEMORY_GROWTH=1
+```
+
+When I visit the generated page in the browser, I can see the beautiful
+fractal shape with some random colors:
+
+When I open DevTools, once again, I can see the original C++ file. This
+time, however, we don't have an error in the code (whew!), so let's set
+some breakpoint at the beginning of our code instead.
+
+When we reload the page again, the debugger will pause right inside our
+C++ source:
+
+We can already see all our variables on the right, but only `width`
+and `height` are initialized at the moment, so there isn't much to
+inspect.
+
+Let's set another breakpoint inside our main Mandelbrot loop, and resume
+execution to skip a bit forward.
+
+At this point our `palette` has been filled with some random colors,
+and we can expand both the array itself, as well as the individual
+`SDL_Color` structures and inspect their components to verify that
+everything looks good (for example, that "alpha" channel is always set
+to full opacity). Similarly, we can expand and check the real and
+imaginary parts of the complex number stored in the `center` variable.
+
+If you want to access a deeply nested property that is otherwise hard to
+navigate to via the **Scope** view, you can use the **Console**
+evaluation, too! However, note that more complex C++ expressions are not
+yet supported.
+
+![Console panel showing the result of `palette\[10\].r`](https://developer.chrome.com/static/blog/wasm-debugging-2020/image/console-panel-showing-re-95af81d5ec613.png)
+
+Let's resume execution a few times and we can see how the inner `x` is
+changing as well-either by looking in the **Scope** view again, adding
+the variable name to the watch list, evaluating it in the console, or by
+hovering over the variable in the source code:
+
+From here, we can step-in or step-over C++ statements, and observe how
+other variables are changing too:
+
+Okay, so this all works great when a debug information is available, but
+what if we want to debug a code that wasn't built with the debugging
+options?
+
+## Raw WebAssembly debugging
+
+For example, we asked Emscripten to provide a prebuilt SDL library for
+us, instead of compiling it ourselves from the source, so-at least
+currently-there's no way for the debugger to find associated sources.
+Let's step-in again to get into the `SDL_RenderDrawColor`:
+
+We're back to the raw WebAssembly debugging experience.
+
+Now, it looks a bit scary and isn't something most Web developers will
+ever need to deal with, but occasionally you might want to debug a
+library built without debug information-whether because it's a
+3^rd^-party library you have no control over, or because you're
+running into one of those bugs that occurs only on production.
+
+To aid in those cases, we've made some improvements to the basic
+debugging experience, too.
+
+First of all, if you used raw WebAssembly debugging before, you might
+notice that the entire disassembly is now shown in a single file-no
+more guessing which function a **Sources** entry `wasm-53834e3e/
+wasm-53834e3e-7` possibly corresponds to.
+
+### New name generation scheme
+
+We improved names in the disassembly view, too. Previously you'd see
+just numeric indices, or, in case of functions, no name at all.
+
+Now we're generating names similarly to other disassembly tools, by
+using hints from the [WebAssembly name section](https://webassembly.github.io/spec/core/appendix/custom.html#name-section),
+import/export paths and, finally, if everything else fails, generating
+them based on the type and the index of the item like `$func123`. You can
+see how, in the screenshot above, this already helps to get slightly
+more readable stacktraces and disassembly.
+
+When there is no type information available, it might be hard to inspect
+any values besides the primitives-for example, pointers will show up
+as regular integers, with no way of knowing what's stored behind them in
+memory.
+
+### Memory inspection
+
+Previously, you could only expand the WebAssembly memory object, represented by `env.memory` in the **Scope** view-to look up
+individual bytes. This worked in some trivial scenarios, but wasn't
+particularly convenient to expand and didn't allow to reinterpret data
+in formats other than byte values. We've added a new feature to help
+with this, too: a linear memory inspector.
+
+If you right-click on the `env.memory`, you should now see a new
+option called **Inspect memory**:
+
+Once clicked, it will bring up a **Memory Inspector**, in
+which you can inspect the WebAssembly memory in hexadecimal and ASCII views,
+navigate to specific addresses, as well as interpret the data in
+different formats:
+
+## Advanced scenarios and caveats
+
+### Profiling WebAssembly code
+
+When you open DevTools, WebAssembly code gets "tiered down" to an
+unoptimized version to enable debugging. This version is a lot slower,
+which means that you can't rely on `console.time`, `performance.now`
+and other methods of measuring speed of your code while DevTools are
+open, as the numbers you get won't represent the real-world performance
+at all.
+
+Instead, you should use the DevTools [Performance panel](https://developer.chrome.com/docs/devtools/evaluate-performance/reference)
+which will run the code at the full speed and provide you with a
+detailed breakdown of the time spent in different functions:
+
+Alternatively, you can run your application with DevTools closed, and
+open them once finished to inspect the **Console**.
+
+We'll be improving profiling scenarios in the future, but for now it's a
+caveat to be aware of. If you want to learn more about WebAssembly
+tiering scenarios, check out our docs on [WebAssembly compilation pipeline](https://v8.dev/docs/wasm-compilation-pipeline).
+
+### Building and debugging on different machines (including Docker / host)
+
+When building in a Docker, virtual machine, or on a remote build server,
+you will likely run into situations where the paths to the source files
+used during the build don't match the paths on your own filesystem where
+the Chrome DevTools are running. In this case, files will show up in the
+**Sources** panel but fail to load.
+
+To fix this issue, we have implemented a path mapping functionality in
+the C/C++ extension options. You can use it to remap arbitrary paths and
+help the DevTools locate sources.
+
+For example, if the project on your host machine is under a path
+`C:\src\my_project`, but was built inside a Docker container where
+that path was represented as `/mnt/c/src/my_project`, you can remap
+it back during debugging by specifying those paths as prefixes:
+
+The first matched prefix "wins". If you're familiar with other C++
+debuggers, this option is similar to the `set substitute-path` command
+in GDB or a `target.source-map` setting in LLDB.
+
+### Debugging optimized builds
+
+Like with any other languages, debugging works best if optimizations are
+disabled. Optimizations might inline functions one into another, reorder
+code, or remove parts of the code altogether-and all of this has a
+chance to confuse the debugger and, consequently, you as the user.
+
+If you don't mind a more limited debugging experience and still want to
+debug an optimized build, then most of the optimizations will work as
+expected, except for function inlining. We plan to address the remaining
+issues in the future, but, for now, please use `-fno-inline` to
+disable it when compiling with any `-O` level optimizations, e.g.:
+
+```
+emcc -g temp.c -o temp.html \
+     -O3 -fno-inline
+```
+
+### Separating the debug information
+
+Debug information preserves lots of details about your code, defined
+types, variables, functions, scopes, and locations-anything that might
+be useful to the debugger. As a result, it often can be larger than the
+code itself.
+
+To speed up loading and compilation of the WebAssembly module, you might
+want to split out this debug information into a separate WebAssembly
+file. To do that in Emscripten, pass a `-gseparate-dwarf=...` flag with
+a desired filename:
+
+```
+emcc -g temp.c -o temp.html \
+     -gseparate-dwarf=temp.debug.wasm
+```
+
+In this case, the main application will only store a filename
+`temp.debug.wasm`, and the helper extension will be able to locate and
+load it when you open DevTools.
+
+When combined with optimizations like described above, this feature can
+be even used to ship almost-optimized production builds of your
+application, and later debug them with a local side file. In this case,
+we'll additionally need to override the stored URL to help the extension
+find the side file, for example:
+
+```
+emcc -g temp.c -o temp.html \
+     -O3 -fno-inline \
+     -gseparate-dwarf=temp.debug.wasm \
+     -s SEPARATE_DWARF_URL=file://[local path to temp.debug.wasm]
+```
+
+## To be continued...
+
+Whew, that was a lot of new features!
+
+With all those new integrations, Chrome DevTools becomes a viable,
+powerful, debugger not only for JavaScript, but also for C and C++ apps,
+making it easier than ever to take apps, built in a variety of
+technologies and bring them to a shared, cross-platform Web.
+
+However, our journey is not over yet. Some of the things we'll be
+working on from here on:
+
+- Cleaning up the rough edges in the debugging experience.
+- Adding support for custom type formatters.
+- Working on improvements to the [profiling](https://developer.chrome.com/docs/devtools/evaluate-performance/reference) for WebAssembly apps.
+- Adding support for [code coverage](https://developer.chrome.com/docs/devtools/coverage.md.txt) to make it easier to find unused code.
+- Improving support for expressions in console evaluation.
+- Adding support for more languages.
+- ...and more!
+
+Meanwhile, please help us out by trying the current beta on your own code and reporting any found
+issues to
+[https://issues.chromium.org/issues/new?noWizard=true\&template=0\&component=1456350](https://issues.chromium.org/issues/new?noWizard=true&template=0&component=1456350).
+
+## Download the preview channels
+
+Consider using the Chrome [Canary](https://www.google.com/chrome/canary/), [Dev](https://www.google.com/chrome/dev/), or [Beta](https://www.google.com/chrome/beta/) as your default development browser. These preview channels give you access to the latest DevTools features, let you test cutting-edge web platform APIs, and help you find issues on your site before your users do!
+
+## Get in touch with the Chrome DevTools team
+
+Use the following options to discuss the new features, updates, or anything else related to DevTools.
+
+- Submit feedback and feature requests to us at [crbug.com](https://crbug.com).
+- Report a DevTools issue using the **More options** \> **Help** \> **Report a DevTools issue** in DevTools.
+- Tweet at [@ChromeDevTools](https://twitter.com/intent/tweet?text=@ChromeDevTools).
+- Leave comments on [What's new in DevTools YouTube videos](https://goo.gle/devtools-youtube) or [DevTools Tips YouTube videos](https://goo.gle/devtools-tips).

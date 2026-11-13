@@ -1,0 +1,2793 @@
+{
+ "site": "web.dev",
+ "license": "CC-BY-4.0 (texte), Apache-2.0 (exemples de code)",
+ "attribution": "Google LLC et les auteurs cités, web.dev",
+ "generated": "2026-11-13",
+ "count": 348,
+ "pages": [
+  {
+   "url": "https://web.dev/articles/a11y-for-teams",
+   "path": "articles/a11y-for-teams.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "38d0d1dad20a5905db3fedab65a8a0881a508ceb16d3139b9bbc45ed837f3e28",
+   "bytes": 13948
+  },
+  {
+   "url": "https://web.dev/articles/a11y-tips-for-web-dev",
+   "path": "articles/a11y-tips-for-web-dev.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "5d809bbc6a37b84f8ec292eef078ca8c662d59d9bc29cc4dbff0c3ceb8385a55",
+   "bytes": 20488
+  },
+  {
+   "url": "https://web.dev/articles/accent-color",
+   "path": "articles/accent-color.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-12T22:02:34+00:00",
+   "sha256": "5d1c4c28e63313444a1ffdc99feb8c6c6f60ece0992722a10c0e16508cf347b2",
+   "bytes": 5943
+  },
+  {
+   "url": "https://web.dev/articles/accessibility",
+   "path": "articles/accessibility.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:15+00:00",
+   "sha256": "edcc52994435880ae2b6fec1eb9d09a5ac2753befa63c957ec7191951792a28e",
+   "bytes": 15944
+  },
+  {
+   "url": "https://web.dev/articles/accessibility-auditing-react",
+   "path": "articles/accessibility-auditing-react.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "8ba239a53de014ef777737d1744f43062d37b320e6c58d44fad4469cac317487",
+   "bytes": 4935
+  },
+  {
+   "url": "https://web.dev/articles/accessible-angular-with-codelyzer",
+   "path": "articles/accessible-angular-with-codelyzer.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "523e4f443f62815c83e8c42470ab599493bcd962e713a40590e998abc3e6a363",
+   "bytes": 4797
+  },
+  {
+   "url": "https://web.dev/articles/accessible-responsive-design",
+   "path": "articles/accessible-responsive-design.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "8f749beb5e0f91f84189ae96241975c2963b9947598ff80ce738a6ecac8da438",
+   "bytes": 4799
+  },
+  {
+   "url": "https://web.dev/articles/accessible-tap-targets",
+   "path": "articles/accessible-tap-targets.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "6d10eee8b496e838ecea6bcfc577d97c8dfb9a3228cda337db33b2a62695f7fb",
+   "bytes": 3650
+  },
+  {
+   "url": "https://web.dev/articles/animations-and-performance",
+   "path": "articles/animations-and-performance.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "d37a38a3eba93e427e4aea02020116f8ac0b999b74112bdfa3ced4b983950086",
+   "bytes": 14834
+  },
+  {
+   "url": "https://web.dev/articles/animations-examples",
+   "path": "articles/animations-examples.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "69ac1f024307d64e58af0baacf31448a1f5f13f32b079a1aa43fe541b3785cd6",
+   "bytes": 10517
+  },
+  {
+   "url": "https://web.dev/articles/animations-guide",
+   "path": "articles/animations-guide.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T21:30:47+00:00",
+   "sha256": "185e4349ad8c6af50c0ea5faf3535a5cb101c4dcc418fda648760ee21eb07e82",
+   "bytes": 42583
+  },
+  {
+   "url": "https://web.dev/articles/animations-overview",
+   "path": "articles/animations-overview.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "395acaf881ed0cdd4af1ac71fb1ff383d00b5ed16024d8ff1588718cf1132b03",
+   "bytes": 6399
+  },
+  {
+   "url": "https://web.dev/articles/api-for-fast-beautiful-web-fonts",
+   "path": "articles/api-for-fast-beautiful-web-fonts.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "e1589e38c6c6a915712e00380e74a654ec5e00ee71560ee3501f3ce90d95f52b",
+   "bytes": 9197
+  },
+  {
+   "url": "https://web.dev/articles/aria-labels-and-relationships",
+   "path": "articles/aria-labels-and-relationships.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "feb606486a0547441c5c67f70ed45c38629226d7fbeb6dd756185165bf7c3247",
+   "bytes": 6222
+  },
+  {
+   "url": "https://web.dev/articles/aria-poison-or-antidote",
+   "path": "articles/aria-poison-or-antidote.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "61817101574f167e067a06988025ae1eb76ff031adeeb66a17d4e939c3615fa4",
+   "bytes": 13829
+  },
+  {
+   "url": "https://web.dev/articles/asymmetric-animation-timing",
+   "path": "articles/asymmetric-animation-timing.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "d9ea3bf29d9b41a59f4dd81b1c675adefda7f75cd3aa61475391e2d6232be3d4",
+   "bytes": 1965
+  },
+  {
+   "url": "https://web.dev/articles/baseline-in-action-color-theme",
+   "path": "articles/baseline-in-action-color-theme.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "8860abb820b9a17e8201e82a9cc133eb3f4a63003f95689dce205cbe8e644d1d",
+   "bytes": 16274
+  },
+  {
+   "url": "https://web.dev/articles/baseline-in-action-image-gallery",
+   "path": "articles/baseline-in-action-image-gallery.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "e001918ef07f45634d6ebe7e5eae06b6ecfda04a7c7c1391e39a40ba4cba7d61",
+   "bytes": 11176
+  },
+  {
+   "url": "https://web.dev/articles/better-layout-shift-metric",
+   "path": "articles/better-layout-shift-metric.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "a37958ea602c0c127dfefceca3d364ada9dfbc5503c5143b19e323663b6fd728",
+   "bytes": 13785
+  },
+  {
+   "url": "https://web.dev/articles/bfcache",
+   "path": "articles/bfcache.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "b761ffd5435d078855967b95581c2f69a57c397e3a1e0e443a8b97261171edfe",
+   "bytes": 32326
+  },
+  {
+   "url": "https://web.dev/articles/browser-level-image-lazy-loading",
+   "path": "articles/browser-level-image-lazy-loading.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "e3bdce36e6ffbd7ec4b3d3125ce1accfea5cd327a005e11639b321cefdbe8b2a",
+   "bytes": 37359
+  },
+  {
+   "url": "https://web.dev/articles/browser-level-lazy-loading-for-cmss",
+   "path": "articles/browser-level-lazy-loading-for-cmss.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "0af6d4b4ce66608ca752073840e3aec7b0d8e35712fcf300e264bcb7479abefb",
+   "bytes": 14690
+  },
+  {
+   "url": "https://web.dev/articles/canvas-imagefilters",
+   "path": "articles/canvas-imagefilters.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "1148b37ff4926b131bb8d7263bda7ed86d6d7cd717f5f2676b30039642953745",
+   "bytes": 7487
+  },
+  {
+   "url": "https://web.dev/articles/canvas-performance",
+   "path": "articles/canvas-performance.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "1818ddb712cd0f990dff989ca56e768b08961cc4a18997c9ee61ad81f1589d12",
+   "bytes": 16082
+  },
+  {
+   "url": "https://web.dev/articles/choose-the-right-image-format",
+   "path": "articles/choose-the-right-image-format.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "b270b8b5d79d12315d07023c861b60f3d809cc5d2c6f2713a2b0ff2fff27411a",
+   "bytes": 9504
+  },
+  {
+   "url": "https://web.dev/articles/client-side-ai-performance",
+   "path": "articles/client-side-ai-performance.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-12T22:02:34+00:00",
+   "sha256": "d7c0c39b13adc14e25eb67bb25e4e4785946c37540a50255667ff0700369a72f",
+   "bytes": 13262
+  },
+  {
+   "url": "https://web.dev/articles/client-side-rendering-of-html-and-interactivity",
+   "path": "articles/client-side-rendering-of-html-and-interactivity.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "9dc9694bc6d7fda205576ed655ec9cf64a2b68088632e35229113aa43cb150a3",
+   "bytes": 13481
+  },
+  {
+   "url": "https://web.dev/articles/cls",
+   "path": "articles/cls.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "fc885892e64663eb6373772a0986ef57c1161aee00c4b0c6160029ae981124e6",
+   "bytes": 18142
+  },
+  {
+   "url": "https://web.dev/articles/codelab-adapt-video-to-image-serving-based-on-network-quality",
+   "path": "articles/codelab-adapt-video-to-image-serving-based-on-network-quality.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-12T16:17:04+00:00",
+   "sha256": "b2fe0bfb44139bebc227bd5b702f0b1c2f25f28a4cf9e2f54f6c6d6fe5e8757c",
+   "bytes": 18107
+  },
+  {
+   "url": "https://web.dev/articles/codelab-imagemin-webpack",
+   "path": "articles/codelab-imagemin-webpack.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "56e30808ebeb4d8dbe075734e5a2d217b59e9a21b3d373ed38d417abb33efce9",
+   "bytes": 7008
+  },
+  {
+   "url": "https://web.dev/articles/codelab-notifications-service-worker",
+   "path": "articles/codelab-notifications-service-worker.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "f780a5a53e892cb2ad9dbb99bddf7e1cadb7d2dbf998e483b8f97064a4128012",
+   "bytes": 8610
+  },
+  {
+   "url": "https://web.dev/articles/codelab-optimize-third-party-javascript",
+   "path": "articles/codelab-optimize-third-party-javascript.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "89eba3bd31dc5326c272ef7366fc9bcb8b0a97d098a61b9a189aba5905fde837",
+   "bytes": 13507
+  },
+  {
+   "url": "https://web.dev/articles/codelab-preload-critical-assets",
+   "path": "articles/codelab-preload-critical-assets.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-12T20:26:33+00:00",
+   "sha256": "d72250d9d97971c5736f1662d1a7598db39444987add3c204c0a8fc658008f54",
+   "bytes": 10154
+  },
+  {
+   "url": "https://web.dev/articles/codelab-preload-web-fonts",
+   "path": "articles/codelab-preload-web-fonts.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-12T20:26:33+00:00",
+   "sha256": "ca5849ba4d094b50410e1c32f5afeeb26a21f7f572faa73b18ca461f58b5a7a6",
+   "bytes": 3049
+  },
+  {
+   "url": "https://web.dev/articles/codelab-serve-images-correct-dimensions",
+   "path": "articles/codelab-serve-images-correct-dimensions.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "d34acd6726406e4ae0a2622b2eac308984f3b41306b9477442d6e334a3cf83c3",
+   "bytes": 4251
+  },
+  {
+   "url": "https://web.dev/articles/codelab-serve-images-webp",
+   "path": "articles/codelab-serve-images-webp.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "388b6bab4a508f505395492e2a7d2ae812f3fe40137392502f9137bb316858ba",
+   "bytes": 4269
+  },
+  {
+   "url": "https://web.dev/articles/codelab-service-workers",
+   "path": "articles/codelab-service-workers.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "67833e51f65e56145d888ff0a089deda746dfe3be2a515c4d495edfeb56aa282",
+   "bytes": 8732
+  },
+  {
+   "url": "https://web.dev/articles/codelab-setting-performance-budgets-with-webpack",
+   "path": "articles/codelab-setting-performance-budgets-with-webpack.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-12T20:26:33+00:00",
+   "sha256": "bcf394ecccdb5e9da256e8c37030be1d92e6910942a84634f4c5565e28d516b2",
+   "bytes": 6350
+  },
+  {
+   "url": "https://web.dev/articles/color-and-contrast-accessibility",
+   "path": "articles/color-and-contrast-accessibility.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "8c47e9053fe80c5c71504a3cc7b05b933f519cfcb14aaf15eb88143a133d2ba4",
+   "bytes": 5995
+  },
+  {
+   "url": "https://web.dev/articles/color-scheme",
+   "path": "articles/color-scheme.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-12T22:02:34+00:00",
+   "sha256": "32ed3b00f407728d5246251e5d8176dc0292df45485bd6b144363bd36529f3b7",
+   "bytes": 34900
+  },
+  {
+   "url": "https://web.dev/articles/compiling-mkbitmap-to-webassembly",
+   "path": "articles/compiling-mkbitmap-to-webassembly.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "fb26f5a524f47441b573dc5191799350bbb4c182ea883ad6bf94f35745401eb8",
+   "bytes": 24360
+  },
+  {
+   "url": "https://web.dev/articles/compress-images",
+   "path": "articles/compress-images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "50a51c77f64c028dc1c47cada55f33ad6dc7b9bad5179e70f6cae4e05ef28c37",
+   "bytes": 13221
+  },
+  {
+   "url": "https://web.dev/articles/compress-images-avif",
+   "path": "articles/compress-images-avif.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "c17f5241708cac0958853f4c26ff3d34de94608973326ffeb97b5e90d85a37e7",
+   "bytes": 12526
+  },
+  {
+   "url": "https://web.dev/articles/content-visibility",
+   "path": "articles/content-visibility.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "179d2b777c6e6735e7432b3bea20d8878f6018a8a3804d999632bc765d8d6fd2",
+   "bytes": 25804
+  },
+  {
+   "url": "https://web.dev/articles/control-focus-with-tabindex",
+   "path": "articles/control-focus-with-tabindex.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "f54a4b22c8145269d009445020074b09843a65a724e83f92750d41c2b998d14e",
+   "bytes": 19974
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path",
+   "path": "articles/critical-rendering-path.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "d6669f19b41efe755adb364ddde501932fe79b006376156dc91d8b92ae0bc956",
+   "bytes": 2254
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path/adding-interactivity-with-javascript",
+   "path": "articles/critical-rendering-path/adding-interactivity-with-javascript.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "06eeac68d42fffe0de7cb442b4ab2cf23c66fafdbf622734fbcaa22bebf41b00",
+   "bytes": 8620
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path/analyzing-crp",
+   "path": "articles/critical-rendering-path/analyzing-crp.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "18df422c1770f143fcb01b5cfddad9851a9b7f14411205666b02e7007e281d87",
+   "bytes": 16993
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path/constructing-the-object-model",
+   "path": "articles/critical-rendering-path/constructing-the-object-model.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:15+00:00",
+   "sha256": "74eb54cabd3b4b7b0d1e0faf674357726525afc7846e976e427c1749f128f954",
+   "bytes": 6758
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path/measure-crp",
+   "path": "articles/critical-rendering-path/measure-crp.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "f4a352b41d977345f3c6b32393b69303f2194dde2bed1e342cf0642819d83578",
+   "bytes": 6180
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path/optimizing-critical-rendering-path",
+   "path": "articles/critical-rendering-path/optimizing-critical-rendering-path.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "3659a82c76e9cbb22c06519a6f4c1a241a271ad9df6ae2dec0f0fc301b251b00",
+   "bytes": 1666
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path/page-speed-rules-and-recommendations",
+   "path": "articles/critical-rendering-path/page-speed-rules-and-recommendations.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "c412937abc42f36dfc83f4790528d2ed8c6883f703269c7c7c5cfbd84bd9392b",
+   "bytes": 4781
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path/render-blocking-css",
+   "path": "articles/critical-rendering-path/render-blocking-css.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "7c9983312f0a8ff66000afd796fa039d0447bbacefe65d52a1561b941659ddb4",
+   "bytes": 4739
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path/render-tree-construction",
+   "path": "articles/critical-rendering-path/render-tree-construction.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "1ea55fa21f9cd2679ee8d724d33482a4280a7180fb043b010768f8224ae2128c",
+   "bytes": 6070
+  },
+  {
+   "url": "https://web.dev/articles/crux-and-rum-differences",
+   "path": "articles/crux-and-rum-differences.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "5ed59efd30f967da64d4e2bdf534231366b96982a35aa88ae14e665e4b99f87f",
+   "bytes": 26392
+  },
+  {
+   "url": "https://web.dev/articles/css-border-animations",
+   "path": "articles/css-border-animations.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "f3e2cb84e87e613aabd7699c49fd7d9c39765ba5fece2184fd7767a56fe3ec05",
+   "bytes": 52264
+  },
+  {
+   "url": "https://web.dev/articles/css-scroll-snap",
+   "path": "articles/css-scroll-snap.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "34aad5f6430a9305ca39c99ce508db16cf58f1edea2b4749df459d7465eed236",
+   "bytes": 11437
+  },
+  {
+   "url": "https://web.dev/articles/css-web-vitals",
+   "path": "articles/css-web-vitals.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "6e4ed372dbddf0506d0e6dad0a0df098f464ad023d9160a24dcb45d34677ae9e",
+   "bytes": 12527
+  },
+  {
+   "url": "https://web.dev/articles/debounce-your-input-handlers",
+   "path": "articles/debounce-your-input-handlers.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "01ac417d358823dab3676e71209923df80c75ce378dbdaaec46401d6cd219a0d",
+   "bytes": 2820
+  },
+  {
+   "url": "https://web.dev/articles/debug-layout-shifts",
+   "path": "articles/debug-layout-shifts.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-12T22:02:34+00:00",
+   "sha256": "9573708574089b815140f2908ed3beb408fa3ab98152ea0db1b87c8111b55402",
+   "bytes": 15232
+  },
+  {
+   "url": "https://web.dev/articles/debug-performance-in-the-field",
+   "path": "articles/debug-performance-in-the-field.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "4d19fb8b3bd4e717432e4162ce02cdcc961d1633e9c798556da73702790de022",
+   "bytes": 16770
+  },
+  {
+   "url": "https://web.dev/articles/defining-core-web-vitals-thresholds",
+   "path": "articles/defining-core-web-vitals-thresholds.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "8614c807ebe344391ef60f5ec5cc0eace13b1d35c1a2c047b7adcbb48757526b",
+   "bytes": 22157
+  },
+  {
+   "url": "https://web.dev/articles/discover-performance-opportunities-with-lighthouse",
+   "path": "articles/discover-performance-opportunities-with-lighthouse.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "83500b82bcb0a73411847995d207ccdb14a6d963b77a33e612bc991d3c816cbb",
+   "bytes": 5053
+  },
+  {
+   "url": "https://web.dev/articles/easy-high-dpi-images",
+   "path": "articles/easy-high-dpi-images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "c3d7fa882f1327598a93869d207f46b3b18b8f73a3ce97766c05c18f15530201",
+   "bytes": 10056
+  },
+  {
+   "url": "https://web.dev/articles/fast-playback-with-preload",
+   "path": "articles/fast-playback-with-preload.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "2041feb9d0c6ae6972bf058264b6963de72e94a17bd3b8fd774ff8b7e788d619",
+   "bytes": 20810
+  },
+  {
+   "url": "https://web.dev/articles/fcp",
+   "path": "articles/fcp.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "7dff7e2cc10d0f624356690dba9bfcd90caca7a050e62f9733892c50b36f3d4d",
+   "bytes": 9218
+  },
+  {
+   "url": "https://web.dev/articles/fetch-metadata",
+   "path": "articles/fetch-metadata.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "bee7ebe70c7737540209d5a40aa32c7d2129f544a3c5030f9de8c451f3e9f518",
+   "bytes": 55636
+  },
+  {
+   "url": "https://web.dev/articles/fetch-priority",
+   "path": "articles/fetch-priority.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "6cb27de7bff3606ac6c7588c830d21c2d8733bac22f6f45a3ef2807e63b1dfe0",
+   "bytes": 35030
+  },
+  {
+   "url": "https://web.dev/articles/fid",
+   "path": "articles/fid.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "e3af314830ed6d47d68a393bac1bc750be1c2ae4c85766b77c6563355db741d5",
+   "bytes": 26114
+  },
+  {
+   "url": "https://web.dev/articles/find-slow-interactions-in-the-field",
+   "path": "articles/find-slow-interactions-in-the-field.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "97da1cbabdd03ae1b3209e2b6a6b21a29aaad25c925633978eedcbee5f1c3c04",
+   "bytes": 45620
+  },
+  {
+   "url": "https://web.dev/articles/font-best-practices",
+   "path": "articles/font-best-practices.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "bc6f7afea5dcff85aa6a1a06d7bd82694c2a61519f138512f8e5a38d76f642d3",
+   "bytes": 20926
+  },
+  {
+   "url": "https://web.dev/articles/gde-focus/alba-silvente-fuentes",
+   "path": "articles/gde-focus/alba-silvente-fuentes.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "b040473042cd50d32f560cc8c3b268a4367b92fe447cfa0a8550b5731fefcde9",
+   "bytes": 10390
+  },
+  {
+   "url": "https://web.dev/articles/gde-focus/helpdev",
+   "path": "articles/gde-focus/helpdev.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "c8a0cb21ed7f962d49b995d728530c4e61ff566acde4dc1e1064a0f99b90f93c",
+   "bytes": 11113
+  },
+  {
+   "url": "https://web.dev/articles/gde-focus/lars-knudsen",
+   "path": "articles/gde-focus/lars-knudsen.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "474a032d3b2f8446ef548ab8e71086f0be2d1ed30458ec58034c6db0ba5888df",
+   "bytes": 15135
+  },
+  {
+   "url": "https://web.dev/articles/gde-focus/nishu-goel",
+   "path": "articles/gde-focus/nishu-goel.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:15+00:00",
+   "sha256": "0face3167a9e5a6ab3831f72e336f8cd4581ca066e651e21c45f766b240fdcb0",
+   "bytes": 8964
+  },
+  {
+   "url": "https://web.dev/articles/get-started-optimize-angular",
+   "path": "articles/get-started-optimize-angular.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "d8af721fc9def94251c88b241f69a82e007bba2a2201593a4415ac2afd2ae452",
+   "bytes": 3189
+  },
+  {
+   "url": "https://web.dev/articles/get-started-optimize-react",
+   "path": "articles/get-started-optimize-react.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "64207035f509f9efc97775e9c6983a6c6e2629fe9724d9521b8934627e009b18",
+   "bytes": 4894
+  },
+  {
+   "url": "https://web.dev/articles/headings-and-landmarks",
+   "path": "articles/headings-and-landmarks.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "82d3f44fb0c9af8e348737a31715ae022c2f0ec1d5d55587381f4b09e1e63b6a",
+   "bytes": 4578
+  },
+  {
+   "url": "https://web.dev/articles/how-can-performance-improve-conversion",
+   "path": "articles/how-can-performance-improve-conversion.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "2dc685ae28e9d456a5611b5799679ab27081dbc96e162c1239b9e259ea4aadcf",
+   "bytes": 5803
+  },
+  {
+   "url": "https://web.dev/articles/icons-and-browser-colors",
+   "path": "articles/icons-and-browser-colors.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "22ca946a75afadfeb7584ab3b69ce640e9b0310131f7aebb2f7cdf5822b07975",
+   "bytes": 5076
+  },
+  {
+   "url": "https://web.dev/articles/iframe-lazy-loading",
+   "path": "articles/iframe-lazy-loading.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "635232057abfea1207d3003fc67ec1b4ec7aa39f6a5fa3afe9c89498c1a0c6dc",
+   "bytes": 18386
+  },
+  {
+   "url": "https://web.dev/articles/image-cdns",
+   "path": "articles/image-cdns.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "f8de55f1208037f68f6beea99e66034f3c7a50562255e7671350439cd9ec855e",
+   "bytes": 8771
+  },
+  {
+   "url": "https://web.dev/articles/image-optimization-survey-2019",
+   "path": "articles/image-optimization-survey-2019.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "adaec79648cd06d3514fe0ecff6e032eb5d657d88c2f2abebf119a1053cdf1fa",
+   "bytes": 14286
+  },
+  {
+   "url": "https://web.dev/articles/image-policies",
+   "path": "articles/image-policies.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "b042d3e711ed6ab6d70b52facaaf552e6d7cb92c2a6890a9fa4037f843f2b530",
+   "bytes": 10202
+  },
+  {
+   "url": "https://web.dev/articles/images-tooling-report",
+   "path": "articles/images-tooling-report.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "b92aad59d9e2864893c5a17d98e41177269c5c04e731dbb7af7931fd40ab3a3a",
+   "bytes": 4149
+  },
+  {
+   "url": "https://web.dev/articles/incorporate-performance-budgets-into-your-build-tools",
+   "path": "articles/incorporate-performance-budgets-into-your-build-tools.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "9fa871108469344defa78df566ac019c0fb93116738fc2f697f3d2319df9948d",
+   "bytes": 6208
+  },
+  {
+   "url": "https://web.dev/articles/inp",
+   "path": "articles/inp.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "864fdd55de7996d498ca45da23689b9a82248835115104df444d90283e1f686e",
+   "bytes": 23430
+  },
+  {
+   "url": "https://web.dev/articles/keyboard-access",
+   "path": "articles/keyboard-access.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "0004377861196a851906304e391bb02d06f9dafdf6dbd9c63ad9ff3ed5ae1fcb",
+   "bytes": 4089
+  },
+  {
+   "url": "https://web.dev/articles/labels-and-text-alternatives",
+   "path": "articles/labels-and-text-alternatives.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "4334811cd35ddd4f3d60618bb041fd2c2f2a65d106f34ff2826d29c816736a83",
+   "bytes": 8963
+  },
+  {
+   "url": "https://web.dev/articles/lazy-loading-video",
+   "path": "articles/lazy-loading-video.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "b41d638ff4e928c8bff4f4e9396f483dda69413175b2789235b9c7da85400450",
+   "bytes": 9918
+  },
+  {
+   "url": "https://web.dev/articles/lcp",
+   "path": "articles/lcp.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "3894b68e82964277ddc385927bcd00859121e032faef49eb3079b576de3f9a90",
+   "bytes": 20105
+  },
+  {
+   "url": "https://web.dev/articles/lcp-lazy-loading",
+   "path": "articles/lcp-lazy-loading.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "14186f59472dd13310e0bfde4ccc9d55c69c9fd5338949a1e1146048f0d87f12",
+   "bytes": 18994
+  },
+  {
+   "url": "https://web.dev/articles/lighthouse-ci",
+   "path": "articles/lighthouse-ci.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "bd4cf03da2f90f621f44c92e02268c4dde388d0d3fdb5be9ad23474724017238",
+   "bytes": 18519
+  },
+  {
+   "url": "https://web.dev/articles/lighthouse-user-flows",
+   "path": "articles/lighthouse-user-flows.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T21:30:47+00:00",
+   "sha256": "b5bace33713a1fda2b54a45b42d149034049890802ab850f549d1e910f7cc69f",
+   "bytes": 11175
+  },
+  {
+   "url": "https://web.dev/articles/loading-wasm",
+   "path": "articles/loading-wasm.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "6a41f35a09741a9b55f1fa1f0663cbfafee89121cc6c9a809fd11b3b58414d2b",
+   "bytes": 6352
+  },
+  {
+   "url": "https://web.dev/articles/long-tasks-devtools",
+   "path": "articles/long-tasks-devtools.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "db0d98b27ff35ddfe46f357f95441c8152a6f00638a9db5fd69f93cc0b6a2229",
+   "bytes": 4153
+  },
+  {
+   "url": "https://web.dev/articles/manually-diagnose-slow-interactions-in-the-lab",
+   "path": "articles/manually-diagnose-slow-interactions-in-the-lab.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "e5385c69e09c4180d04ef79e9f12d5a40ad41989d1ba6e5748dce889b143388e",
+   "bytes": 18042
+  },
+  {
+   "url": "https://web.dev/articles/media-capturing-images",
+   "path": "articles/media-capturing-images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "f5a8b37908d432fe57f2826611b5900323c435bd79d1e85e925d01d6204a7573",
+   "bytes": 13252
+  },
+  {
+   "url": "https://web.dev/articles/mobile-optimization-and-performance",
+   "path": "articles/mobile-optimization-and-performance.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "35215259113c460c37f4ba8e36435f8df1d32461edc6abb0d430394c8a7e258f",
+   "bytes": 28734
+  },
+  {
+   "url": "https://web.dev/articles/module-workers",
+   "path": "articles/module-workers.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "b9df65b08a704cb567cb5c06833a06bc4db878a80bea7e6f345195bae0e6860e",
+   "bytes": 10246
+  },
+  {
+   "url": "https://web.dev/articles/modulepreload",
+   "path": "articles/modulepreload.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "fe13f6cd8f3dae96cd2eeb7283e67277b7612951e8fbb0197020f1765a8c23ff",
+   "bytes": 17084
+  },
+  {
+   "url": "https://web.dev/articles/offscreen-canvas",
+   "path": "articles/offscreen-canvas.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "62bb74a22fceef9bc92be23469cc2f65da93d48451056bba551682d4cfe4c985",
+   "bytes": 17897
+  },
+  {
+   "url": "https://web.dev/articles/optimize-cls",
+   "path": "articles/optimize-cls.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "8da8bccbce221c05dd072787e09cdc0f170741bfdc6f2e2fbc5a9b99bef7ce1b",
+   "bytes": 27232
+  },
+  {
+   "url": "https://web.dev/articles/optimize-css-background-images-with-media-queries",
+   "path": "articles/optimize-css-background-images-with-media-queries.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-12T16:17:57+00:00",
+   "sha256": "8ab7383973457f63878fb6d5ceb37bc619cdf3e797f9785029f622f99c7f776f",
+   "bytes": 8589
+  },
+  {
+   "url": "https://web.dev/articles/optimize-cwv-business",
+   "path": "articles/optimize-cwv-business.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "f309af4326a9a7133c6729bae90eea15e36fd11df2c538248d9fd0b58e1d1a10",
+   "bytes": 24385
+  },
+  {
+   "url": "https://web.dev/articles/optimize-inp",
+   "path": "articles/optimize-inp.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "621dc9c16b4d9fcc24b8ee7a2331823fb1df9b72e94ba7d4d7080afd97c01822",
+   "bytes": 19492
+  },
+  {
+   "url": "https://web.dev/articles/optimize-input-delay",
+   "path": "articles/optimize-input-delay.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "22a9fd3cfae7edcb49315cafd04964c9e912acdf33d211e9729adefaf0475696",
+   "bytes": 9014
+  },
+  {
+   "url": "https://web.dev/articles/optimize-javascript-execution",
+   "path": "articles/optimize-javascript-execution.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "5c7f0eb83ce0c7540fd5e9810d7deff090363a84764aad63e09673166b21a974",
+   "bytes": 6864
+  },
+  {
+   "url": "https://web.dev/articles/optimize-lcp",
+   "path": "articles/optimize-lcp.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "4986ea1b5d61d55c590adf78a6b56cddb525eaec376b7cf6a3aefb3be9bacf6f",
+   "bytes": 34104
+  },
+  {
+   "url": "https://web.dev/articles/optimize-long-tasks",
+   "path": "articles/optimize-long-tasks.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "e10b996f13ed124d0e0445f30dd9825bf8a115d458c81f72d5359a32154d7129",
+   "bytes": 38711
+  },
+  {
+   "url": "https://web.dev/articles/optimize-ttfb",
+   "path": "articles/optimize-ttfb.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:15+00:00",
+   "sha256": "04749b848609e4da9fe049febb69927ca4b180b46c1e3169eba871208fbb267f",
+   "bytes": 24748
+  },
+  {
+   "url": "https://web.dev/articles/optimize-vitals-lighthouse",
+   "path": "articles/optimize-vitals-lighthouse.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "a2f18979a4612f7c70ff81f5a9f64654bfd6b15ff5d257edfee7d6ba2dbe9267",
+   "bytes": 15203
+  },
+  {
+   "url": "https://web.dev/articles/optimize-webfont-loading",
+   "path": "articles/optimize-webfont-loading.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "77233574709977cfae52a3c5d8ad628f19ad78b3706bc25f042afb1c99135a19",
+   "bytes": 32398
+  },
+  {
+   "url": "https://web.dev/articles/optimizing-content-efficiency-optimize-encoding-and-transfer",
+   "path": "articles/optimizing-content-efficiency-optimize-encoding-and-transfer.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "6763dcc61608a537868ed531a5c2a80a47c25fd48f907163cc7b0b636ce8f3cd",
+   "bytes": 20630
+  },
+  {
+   "url": "https://web.dev/articles/pass-lighthouse-seo-audit",
+   "path": "articles/pass-lighthouse-seo-audit.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "2981d80f58d8db35ba3dc27eb867771a07ee309b434078bd07f0d0db1950d423",
+   "bytes": 2033
+  },
+  {
+   "url": "https://web.dev/articles/performance-as-a-default-with-nextjs",
+   "path": "articles/performance-as-a-default-with-nextjs.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-12T16:17:57+00:00",
+   "sha256": "0fd427b439c493bdc7635c75a051d1a5c5011363415b58d66f0ca19e8bfe9af7",
+   "bytes": 6526
+  },
+  {
+   "url": "https://web.dev/articles/performance-audit",
+   "path": "articles/performance-audit.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "c3deb89865c8b2352f4e97b430d608c7f4f73a61ce5e3c409761cad67a54b748",
+   "bytes": 5737
+  },
+  {
+   "url": "https://web.dev/articles/performance-audit-next",
+   "path": "articles/performance-audit-next.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "c8fc3d482ca8bc14d488af2755ad536f62c249cd47cd79f82d22345930205a75",
+   "bytes": 1485
+  },
+  {
+   "url": "https://web.dev/articles/performance-audit-prework",
+   "path": "articles/performance-audit-prework.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "ec7778ab270b558a86360f9967e2a45587ea67d3fb8a90479dfdc63127e6ad5a",
+   "bytes": 6403
+  },
+  {
+   "url": "https://web.dev/articles/performance-audit-security",
+   "path": "articles/performance-audit-security.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "a03250367271e1e7e94f54085fbc7d54dd3ad3e9c36c9da4e293848aa5e2b54b",
+   "bytes": 1189
+  },
+  {
+   "url": "https://web.dev/articles/performance-audit-share",
+   "path": "articles/performance-audit-share.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "96879440272e0395c03ae4a7d4bfc246c12fafa9964417fd761fe08df90f04e0",
+   "bytes": 3291
+  },
+  {
+   "url": "https://web.dev/articles/performance-audit-tools",
+   "path": "articles/performance-audit-tools.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "0629660310e5c959b9f02645840c3f301c433284b78dc96a23b00c3c7a19e1bd",
+   "bytes": 16323
+  },
+  {
+   "url": "https://web.dev/articles/performance-budgets-101",
+   "path": "articles/performance-budgets-101.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "9710248cbfe6ecd3f6e52221730f98f1de27dd597a65dc21a5b239390997db31",
+   "bytes": 7082
+  },
+  {
+   "url": "https://web.dev/articles/performance-budgets-with-the-angular-cli",
+   "path": "articles/performance-budgets-with-the-angular-cli.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "f626f5f5aa9cac9e789216c45879682c64d190d5c157a7b2dff0ae9de2f3d3de",
+   "bytes": 5106
+  },
+  {
+   "url": "https://web.dev/articles/performance-mystery",
+   "path": "articles/performance-mystery.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "a13b4823be932043e71cd593c131626c4b36d8d0fa2724358ae20146b0d9773a",
+   "bytes": 17272
+  },
+  {
+   "url": "https://web.dev/articles/performance-optimizing-content-efficiency",
+   "path": "articles/performance-optimizing-content-efficiency.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "77a8ffa98426a7f27d819a65d465748a6298eeacc1f9549ad4f89432aff00991",
+   "bytes": 2808
+  },
+  {
+   "url": "https://web.dev/articles/performance-optimizing-content-efficiency-client-hints",
+   "path": "articles/performance-optimizing-content-efficiency-client-hints.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "7a045710fb9bde17e0388209ffaa7a08f5bd1a5ffbb12554e30c8e0c40a3e328",
+   "bytes": 28648
+  },
+  {
+   "url": "https://web.dev/articles/performance-poor-connectivity",
+   "path": "articles/performance-poor-connectivity.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "3fedf88df6993be0b4ba1110cd0d10be268149ecf27b64716fc52bcb22966d0b",
+   "bytes": 6952
+  },
+  {
+   "url": "https://web.dev/articles/precaching-with-the-angular-service-worker",
+   "path": "articles/precaching-with-the-angular-service-worker.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "acbff36ef0d95f45269f4a418b80f47e2bc4f0a1771c7523e8df66ba8d9e88c9",
+   "bytes": 4332
+  },
+  {
+   "url": "https://web.dev/articles/preconnect-and-dns-prefetch",
+   "path": "articles/preconnect-and-dns-prefetch.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "a1e3bd9767507842ba25b6fc03b01efbd968c4c52ad0aa2ab9f10164d0b5e910",
+   "bytes": 9693
+  },
+  {
+   "url": "https://web.dev/articles/prefers-color-scheme",
+   "path": "articles/prefers-color-scheme.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "fdbd65fd47743a1bf75d53bca8e9b9ab052529f6b932bc74cddf1a158509c84c",
+   "bytes": 35640
+  },
+  {
+   "url": "https://web.dev/articles/preload-critical-assets",
+   "path": "articles/preload-critical-assets.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "96df9b52fdd4af9edaa3b103f211229aeecfbd9144885eb23ea2c7973bd5d085",
+   "bytes": 24207
+  },
+  {
+   "url": "https://web.dev/articles/preload-optional-fonts",
+   "path": "articles/preload-optional-fonts.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-12T22:03:57+00:00",
+   "sha256": "f0a733a61679e3773e5dab01921c2d23f80cf2daed36c4d0bc4ac5c09bbb2e27",
+   "bytes": 5184
+  },
+  {
+   "url": "https://web.dev/articles/preload-responsive-images",
+   "path": "articles/preload-responsive-images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-12T16:17:57+00:00",
+   "sha256": "7e47043224f59c5ead49b197aac652a44ec2ef2551704daeae9fba71b25c60aa",
+   "bytes": 34641
+  },
+  {
+   "url": "https://web.dev/articles/preload-scanner",
+   "path": "articles/preload-scanner.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "079456ee4d86b23c33281cb41c0962512f01ca269d20d032a0d804d064486205",
+   "bytes": 26321
+  },
+  {
+   "url": "https://web.dev/articles/prerender-with-react-snap",
+   "path": "articles/prerender-with-react-snap.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "0f06f1afc49df30f7f7a4475f0e034da5117ac5118b5b0f4a92c652f6b5d99d1",
+   "bytes": 5763
+  },
+  {
+   "url": "https://web.dev/articles/reduce-webfont-size",
+   "path": "articles/reduce-webfont-size.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "529a995dcd3ed015cb4c2b2b80a412ec97fba24ff91a0cf1f06eccac4c2712a4",
+   "bytes": 17937
+  },
+  {
+   "url": "https://web.dev/articles/rendering-on-the-web",
+   "path": "articles/rendering-on-the-web.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "c16e80621277a9207ce46b149834a219e619f4164525f5145c38b4e9c529c2ba",
+   "bytes": 20778
+  },
+  {
+   "url": "https://web.dev/articles/rendering-performance",
+   "path": "articles/rendering-performance.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "ecbd00ceac10090de6b607ad69c13c7df796a0b47738daa5cb21cf99dac35122",
+   "bytes": 10401
+  },
+  {
+   "url": "https://web.dev/articles/responsive-images",
+   "path": "articles/responsive-images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "744d27d9bb3f806c279d9c48e733ddc189493ddcb8bcce9c7f8e0a8c31b0ba21",
+   "bytes": 30528
+  },
+  {
+   "url": "https://web.dev/articles/route-preloading-in-angular",
+   "path": "articles/route-preloading-in-angular.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "f885633400bc3b967818c22a3534572d83bcb68435fed33c4789e655781aed8b",
+   "bytes": 6393
+  },
+  {
+   "url": "https://web.dev/articles/scaling-multithreaded-webassembly-applications",
+   "path": "articles/scaling-multithreaded-webassembly-applications.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:15+00:00",
+   "sha256": "6e88bdbde67678b5f9bf23f46f0d784843a9d4ee31cff2c408bfb7017f3eed10",
+   "bytes": 7791
+  },
+  {
+   "url": "https://web.dev/articles/script-evaluation-and-long-tasks",
+   "path": "articles/script-evaluation-and-long-tasks.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "7d806bd46b23a68838d5e860815b600ea464ed7558547c6598b00f151fda068e",
+   "bytes": 18019
+  },
+  {
+   "url": "https://web.dev/articles/semantics-and-screen-readers",
+   "path": "articles/semantics-and-screen-readers.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "11ac53598cbb0b63628fade9d667320557b1a64dd7df655fc60a281767291e78",
+   "bytes": 4711
+  },
+  {
+   "url": "https://web.dev/articles/semantics-aria",
+   "path": "articles/semantics-aria.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "7286314d3d1f3e6a4bdc82507e364ee2c55f5b201d00d4d9a0c5b9b67fe353ac",
+   "bytes": 6085
+  },
+  {
+   "url": "https://web.dev/articles/semantics-builtin",
+   "path": "articles/semantics-builtin.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "fad92ab2b62da9ead182ce0143d2dd4b3642644e85a1a27f71aba1f15a316a72",
+   "bytes": 7791
+  },
+  {
+   "url": "https://web.dev/articles/serve-images-webp",
+   "path": "articles/serve-images-webp.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-12T22:03:57+00:00",
+   "sha256": "cad3996c2dcbe08448f146cff7b4c479a0aa353124ade95e28e52fc0573c6ff4",
+   "bytes": 6899
+  },
+  {
+   "url": "https://web.dev/articles/serve-images-with-correct-dimensions",
+   "path": "articles/serve-images-with-correct-dimensions.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "ba44874109c1aa436cc8700a3f8ad1fd493c600de242a991cd0c429165150e55",
+   "bytes": 6133
+  },
+  {
+   "url": "https://web.dev/articles/serve-responsive-images",
+   "path": "articles/serve-responsive-images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "a6842e6a3449a1cf44a8889e30598b4e9c5a583cde92b87198b1bc96e3047846",
+   "bytes": 7240
+  },
+  {
+   "url": "https://web.dev/articles/service-worker-caching-and-http-caching",
+   "path": "articles/service-worker-caching-and-http-caching.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "533cddf565d96260cbcdfa7adaa134412e1d46854f175ab1c7246c4a0919fdcc",
+   "bytes": 14773
+  },
+  {
+   "url": "https://web.dev/articles/service-worker-lifecycle",
+   "path": "articles/service-worker-lifecycle.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-12T16:17:57+00:00",
+   "sha256": "521215105f197d476400bb6b0046a2d57613abf7d1764fce6701cd1cec9d5d05",
+   "bytes": 19572
+  },
+  {
+   "url": "https://web.dev/articles/service-worker-mindset",
+   "path": "articles/service-worker-mindset.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "102ec9aa7e8448f6832f4ea3449706ffe0a852da497bd10aca68aad43e7582bd",
+   "bytes": 12317
+  },
+  {
+   "url": "https://web.dev/articles/service-workers-cache-storage",
+   "path": "articles/service-workers-cache-storage.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "15797472408050c3a6e7d45cb617c74436d773defc56c6d383ddfde6003779a1",
+   "bytes": 17536
+  },
+  {
+   "url": "https://web.dev/articles/service-workers-registration",
+   "path": "articles/service-workers-registration.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "90aa0efc7d8a8f2248c58f57e75d67ce29790c6fab38d49aa25c08cafdbbcc22",
+   "bytes": 9706
+  },
+  {
+   "url": "https://web.dev/articles/speed-rendering",
+   "path": "articles/speed-rendering.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "931e8bc7cfb44a54ab027c8728d560a8f32e99afc4457dece565a310b0fc499d",
+   "bytes": 11651
+  },
+  {
+   "url": "https://web.dev/articles/style-focus",
+   "path": "articles/style-focus.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "140201fcf2e9af2c0b82f38baa20b7c8d7ac1865990df6e25c3635045d20faab",
+   "bytes": 7087
+  },
+  {
+   "url": "https://web.dev/articles/tbt",
+   "path": "articles/tbt.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "168ce5f3d1887b475f4b90e9628c0bd28e28bc495651ea7274b209ea185da39b",
+   "bytes": 8140
+  },
+  {
+   "url": "https://web.dev/articles/testing-web-design-color-contrast",
+   "path": "articles/testing-web-design-color-contrast.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "d21a55ab9ae0674f06012d2bdb515a752061fd91687020448e14916f80c6a40a",
+   "bytes": 14706
+  },
+  {
+   "url": "https://web.dev/articles/text-alternatives-for-images",
+   "path": "articles/text-alternatives-for-images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "fd2c4da1b69b32f17a01a75761217c5150758c723a6af79760aaab815b35ec70",
+   "bytes": 3245
+  },
+  {
+   "url": "https://web.dev/articles/the-accessibility-tree",
+   "path": "articles/the-accessibility-tree.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "74d8e2f10ea9af7a83ebe57240da60e3d7de631b4ef01f250a485102832ba526",
+   "bytes": 6445
+  },
+  {
+   "url": "https://web.dev/articles/ttfb",
+   "path": "articles/ttfb.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "a7a1fad0cf7b197fcc93a38532f966585609e166a19535498eadc8775b34fd97",
+   "bytes": 8493
+  },
+  {
+   "url": "https://web.dev/articles/use-imagemin-to-compress-images",
+   "path": "articles/use-imagemin-to-compress-images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "cc24bb4c7f71582127a6fa5fa64a6e887312996d2f1008bdb9f80b350384ed47",
+   "bytes": 4363
+  },
+  {
+   "url": "https://web.dev/articles/use-lighthouse-for-performance-budgets",
+   "path": "articles/use-lighthouse-for-performance-budgets.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "e8c66f394317717518b0742cfaa74996580e12a66bce82ad505aa6b11e06eb86",
+   "bytes": 2837
+  },
+  {
+   "url": "https://web.dev/articles/use-srcset-to-automatically-choose-the-right-image",
+   "path": "articles/use-srcset-to-automatically-choose-the-right-image.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "4abe11aa392291c39281bbab3200f73a024a0f6448d07866a16c948220603c87",
+   "bytes": 7877
+  },
+  {
+   "url": "https://web.dev/articles/user-centric-performance-metrics",
+   "path": "articles/user-centric-performance-metrics.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "c7b37790c86cadbb702e9d57d6a5a006deb4565d2ac402ab6cbb916ae376cbe1",
+   "bytes": 8980
+  },
+  {
+   "url": "https://web.dev/articles/using-lighthouse-bot-to-set-a-performance-budget",
+   "path": "articles/using-lighthouse-bot-to-set-a-performance-budget.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "10c47a83a2c00eca174628505a5a4ef138d7324709bbbc2fac2435b3f08aa8a2",
+   "bytes": 8378
+  },
+  {
+   "url": "https://web.dev/articles/variable-fonts",
+   "path": "articles/variable-fonts.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "befff7f87875a569b41c8d9ec7e2003504b281d79f0afc74adc974b654c87dc3",
+   "bytes": 25192
+  },
+  {
+   "url": "https://web.dev/articles/variable-fonts-in-real-life",
+   "path": "articles/variable-fonts-in-real-life.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "0694f537f37d10a5eaef4e5068dc890f42c21102ceed9eac41ad04ea6d55aec4",
+   "bytes": 11956
+  },
+  {
+   "url": "https://web.dev/articles/vitals",
+   "path": "articles/vitals.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "2b15c903d85773a33b9e4f2d2e507c3ca12d6858074169adf379523b9f05626c",
+   "bytes": 15574
+  },
+  {
+   "url": "https://web.dev/articles/vitals-field-measurement-best-practices",
+   "path": "articles/vitals-field-measurement-best-practices.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "8a914885a76e9eed480555fe6143c326b08146647b41535a563c9ed03819da3e",
+   "bytes": 13913
+  },
+  {
+   "url": "https://web.dev/articles/vitals-ga4",
+   "path": "articles/vitals-ga4.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:15+00:00",
+   "sha256": "bf7aa7e6311ccd043986ab641dfff448670b15d62e882522cb3850330182d751",
+   "bytes": 28200
+  },
+  {
+   "url": "https://web.dev/articles/vitals-measurement-getting-started",
+   "path": "articles/vitals-measurement-getting-started.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "a866c69535563399a241102696858fefed4afaa772c86a9792f5f0ab7787b130",
+   "bytes": 11226
+  },
+  {
+   "url": "https://web.dev/articles/vitals-spa-faq",
+   "path": "articles/vitals-spa-faq.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "ac352a09ff72122fd6fee56e731c3ab3c9acfedd32fcbec832a3d62ca39d1cb7",
+   "bytes": 18043
+  },
+  {
+   "url": "https://web.dev/articles/vitals-tools",
+   "path": "articles/vitals-tools.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "477a93100caf4635ce39f7a704fc5a060bb5c3bdd99b711e30702047278881b0",
+   "bytes": 31336
+  },
+  {
+   "url": "https://web.dev/articles/wasm-av1",
+   "path": "articles/wasm-av1.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "4e846e9070cb465b70bf07c226695e3752e48a52e3b36dea6cc046e7b876a744",
+   "bytes": 17474
+  },
+  {
+   "url": "https://web.dev/articles/wasm-libraries",
+   "path": "articles/wasm-libraries.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "fcd9a72e30550ec203e26a38500ab071f86f7bd2f79d2e121b33c45778afe6bd",
+   "bytes": 4358
+  },
+  {
+   "url": "https://web.dev/articles/wasm-threads",
+   "path": "articles/wasm-threads.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "0e6b733e086e7e8c7eaad4adca00f52f629e4633e356fa7b51ec47dba156c547",
+   "bytes": 9215
+  },
+  {
+   "url": "https://web.dev/articles/web-performance-made-easy",
+   "path": "articles/web-performance-made-easy.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "8475e466855675b209a2bb62e24da2db3d2d95dc2bed29e05b29c4761412b327",
+   "bytes": 31581
+  },
+  {
+   "url": "https://web.dev/articles/webassembly-feature-detection",
+   "path": "articles/webassembly-feature-detection.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "54c4f2665703d1e43b28469dea5a7e4ab2690f8703f0ce06827e45f25c6af707",
+   "bytes": 7156
+  },
+  {
+   "url": "https://web.dev/articles/webassembly-memory-debugging",
+   "path": "articles/webassembly-memory-debugging.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "5837206f4659e49be352f6e0bf5c317f17b7e3b0629c44f9520a8cbbafce1941",
+   "bytes": 21751
+  },
+  {
+   "url": "https://web.dev/articles/webassembly-performance-patterns-for-web-apps",
+   "path": "articles/webassembly-performance-patterns-for-web-apps.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "666993f181731cedf1b0629a9576108dfe57b839d2827b0f12dea041683fc93c",
+   "bytes": 19372
+  },
+  {
+   "url": "https://web.dev/articles/webassembly-threads",
+   "path": "articles/webassembly-threads.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "401db9994c8be28faf933d2573272f1ecacb69198e0fb09e65070a43e6b55aa3",
+   "bytes": 23099
+  },
+  {
+   "url": "https://web.dev/articles/webfonts-quick",
+   "path": "articles/webfonts-quick.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "5408ed690c58062b6fd7256e605065320fca27b96e7ccf1c0525ded2d1af1e93",
+   "bytes": 8295
+  },
+  {
+   "url": "https://web.dev/articles/what-is-accessibility",
+   "path": "articles/what-is-accessibility.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "b1fd17d48ff2a1ff17d57c0c9e9e72fd21b7946f76d7c54df558e6ce58f58d53",
+   "bytes": 3621
+  },
+  {
+   "url": "https://web.dev/articles/what-is-webassembly",
+   "path": "articles/what-is-webassembly.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "f769fff24ce38ea315a79a343a9aefb45f24543224a0e8ac4d7ba8361e0982a5",
+   "bytes": 15362
+  },
+  {
+   "url": "https://web.dev/articles/workers-overview",
+   "path": "articles/workers-overview.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T21:30:47+00:00",
+   "sha256": "4445d453c9c94d6fe6a9f4296177d32f1bfee7b55d1ad99e447557feac8ad9fb",
+   "bytes": 7884
+  },
+  {
+   "url": "https://web.dev/articles/your-first-performance-budget",
+   "path": "articles/your-first-performance-budget.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "676f4327449e4bc54f8f55994a9155521a77846daf080c874dc091542b593705",
+   "bytes": 8719
+  },
+  {
+   "url": "https://web.dev/learn/accessibility",
+   "path": "learn/accessibility.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "bf3ee9f338bb20264037987caf423c2642c668c10c3523845a9c65ba69ab22c3",
+   "bytes": 2575
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/aria-html",
+   "path": "learn/accessibility/aria-html.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "c0c6a34823ad9dfb8c2b3811fd578d500fee26f5fd08f951dbee2e13b76fd438",
+   "bytes": 11179
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/color-contrast",
+   "path": "learn/accessibility/color-contrast.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "bdd7336e6c7d0435521353bd46134ef1e13e6c295b5008c4701e0135e4cb90db",
+   "bytes": 34184
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/conclusion",
+   "path": "learn/accessibility/conclusion.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "efbe2b9bd0f3083cf9bfa5b27209f3ff0260e3ca718d6f9219d4de866fba1424",
+   "bytes": 3485
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/design-ux",
+   "path": "learn/accessibility/design-ux.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "9ce440636055209292750dc0055d2e5eb4f5f16140d7fe277a297f4bdfa0e3dd",
+   "bytes": 13167
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/focus",
+   "path": "learn/accessibility/focus.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "581efd01c880e88b691260ee97b07f55f7863048ff50ad301419c5b3b7f02e48",
+   "bytes": 10354
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/forms",
+   "path": "learn/accessibility/forms.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "3337750ad1e7f3b93ee5404a6c5ed5665f6458b13717f38341a8e9a7673ece1a",
+   "bytes": 9438
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/glossary",
+   "path": "learn/accessibility/glossary.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "1751662ae6f4fad96f204bbf054742807b10c83fec1789f38b72a18a78296ce5",
+   "bytes": 6305
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/images",
+   "path": "learn/accessibility/images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "c059f59a895fd0cd8c0a000686847149db7f6039b243330eb952850fb60765c7",
+   "bytes": 14105
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/javascript",
+   "path": "learn/accessibility/javascript.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "932969d7165c64d82061b214833250cc2befab0609d7d3cd3c00695ac51d3682",
+   "bytes": 12494
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/measure",
+   "path": "learn/accessibility/measure.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "12527355d7499d78f266da5fd2abc160aa87ae436ebcc8301b1bbb62c21b9c0d",
+   "bytes": 7836
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/more-html",
+   "path": "learn/accessibility/more-html.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "a161e984415dffd41eadb5769e01251b4d60215594e41bf755de8f586e335d4c",
+   "bytes": 6650
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/motion",
+   "path": "learn/accessibility/motion.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "bc2d74f029557199c9c5e2e4ee7ee88c4718fb994d66972e2cff4ccee792cc01",
+   "bytes": 19848
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/patterns",
+   "path": "learn/accessibility/patterns.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "f2152befed506301eb09384a67f0b8ef7350922340f03785491ad3249855f2a5",
+   "bytes": 8101
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/structure",
+   "path": "learn/accessibility/structure.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "df9e716a019562b6f714e7c9c198df784c7d29a601802bdeb52487b02ab6f94c",
+   "bytes": 14039
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/test-assistive-technology",
+   "path": "learn/accessibility/test-assistive-technology.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "e113b7510d8d89cc82563bf79a636984733948f4a8860b2dd5153258c13edac6",
+   "bytes": 15124
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/test-automated",
+   "path": "learn/accessibility/test-automated.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "ed2e55dd280da07e41a218d6087920922751228d8cfa676779c6033859025dff",
+   "bytes": 16980
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/test-manual",
+   "path": "learn/accessibility/test-manual.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "c66fb1b5e9d519244b3c351f1058e6c9cd46d41487afbc8d38f11ca013d4a225",
+   "bytes": 13916
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/typography",
+   "path": "learn/accessibility/typography.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "8dae65f10de444e7c74b16f001fa341905fab49f419866cd48dc91def36d0ed7",
+   "bytes": 10801
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/video-audio",
+   "path": "learn/accessibility/video-audio.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "faa497175a328841e0d9c11c73a4c7ad1302b8cb18b10d5f09e8c93728d6c730",
+   "bytes": 8591
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/welcome",
+   "path": "learn/accessibility/welcome.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "bf3ee9f338bb20264037987caf423c2642c668c10c3523845a9c65ba69ab22c3",
+   "bytes": 2575
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/why",
+   "path": "learn/accessibility/why.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "89a3a94d7d1e4a6529bc1b4afd4cb376537cc948f9f73a1e2911d4ac99a7d83b",
+   "bytes": 17395
+  },
+  {
+   "url": "https://web.dev/learn/css",
+   "path": "learn/css.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "f7ff265999361e2d321488db3bef87eb7b019ce2477843deb3bbb7aa48a7f9c5",
+   "bytes": 36343
+  },
+  {
+   "url": "https://web.dev/learn/css/anchor-positioning",
+   "path": "learn/css/anchor-positioning.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "d4a2a1f096a076a73a6274a9b72f5ec07c39a516a454ffb579a7e21675f229af",
+   "bytes": 23528
+  },
+  {
+   "url": "https://web.dev/learn/css/animations",
+   "path": "learn/css/animations.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "c5457ff984702497b7db85321fd6fea669593b7fe2468359b9edc865f391a41b",
+   "bytes": 111155
+  },
+  {
+   "url": "https://web.dev/learn/css/backgrounds",
+   "path": "learn/css/backgrounds.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "1ef7087854ef34f9522074d2b6142e1cb01bfc4b3b3c4d908a64c797fd31cdf3",
+   "bytes": 118521
+  },
+  {
+   "url": "https://web.dev/learn/css/blend-modes",
+   "path": "learn/css/blend-modes.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "984a061a84aea7e31217bb0d396b6460d93c1b1ca1b30772aca755aa2e535241",
+   "bytes": 46498
+  },
+  {
+   "url": "https://web.dev/learn/css/borders",
+   "path": "learn/css/borders.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "9a6fc0ba3f9ac40392e472f32c2b57c94e920399fb5b158bf7ef02fc0c0632b6",
+   "bytes": 25163
+  },
+  {
+   "url": "https://web.dev/learn/css/box-model",
+   "path": "learn/css/box-model.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "4ee815ff48550300dadafe2ec3371ffbbb36b33a4091a9f522916d6dea3edb36",
+   "bytes": 11976
+  },
+  {
+   "url": "https://web.dev/learn/css/color",
+   "path": "learn/css/color.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "dac78a163b29b8969375e60d40c98934aaa06daa29c84489b772e9384222c639",
+   "bytes": 35223
+  },
+  {
+   "url": "https://web.dev/learn/css/conclusion",
+   "path": "learn/css/conclusion.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "321df8da2e2923c3e79f02acdeeb137ff849a1fe195684f35d36a418c9a68798",
+   "bytes": 2359
+  },
+  {
+   "url": "https://web.dev/learn/css/container-queries",
+   "path": "learn/css/container-queries.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "b570f57d226d51c91a1ccb3f85c915c16fe2f9efc5eca3e69a5c926037cae1c4",
+   "bytes": 8664
+  },
+  {
+   "url": "https://web.dev/learn/css/counters",
+   "path": "learn/css/counters.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "a44db97b6f3e91f5247704ea24530eb5bb1eebd467739384fbed8964749f3ada",
+   "bytes": 6656
+  },
+  {
+   "url": "https://web.dev/learn/css/cursors-and-pointers",
+   "path": "learn/css/cursors-and-pointers.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "018afc218cc20fb16eb99e9e06747aa090005782857f6e1f8214b407a2417f50",
+   "bytes": 6147
+  },
+  {
+   "url": "https://web.dev/learn/css/custom-properties",
+   "path": "learn/css/custom-properties.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "a148905b7106cf353fed1dfb8046d769733e066963bfe34c1cfb463e5ef02e47",
+   "bytes": 8485
+  },
+  {
+   "url": "https://web.dev/learn/css/filters",
+   "path": "learn/css/filters.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "7ffbe44691ff51108c7b68661be4ec943959dd50d2c0aff02a743b4e15d80b8c",
+   "bytes": 140029
+  },
+  {
+   "url": "https://web.dev/learn/css/flexbox",
+   "path": "learn/css/flexbox.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "4877f03724051ba35675c43b6bb63c459f654144ee31681dda34bbd428fb1144",
+   "bytes": 26681
+  },
+  {
+   "url": "https://web.dev/learn/css/focus",
+   "path": "learn/css/focus.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "89acbe15ee03e99df298d7397010e6704910334dbfee924b398f3aeb0f25cf5a",
+   "bytes": 7668
+  },
+  {
+   "url": "https://web.dev/learn/css/functions",
+   "path": "learn/css/functions.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "03fc7a47344fc8afbf40896bcd4ab40d9ee4504857ca3d9bb640399422f6d5be",
+   "bytes": 123078
+  },
+  {
+   "url": "https://web.dev/learn/css/gradients",
+   "path": "learn/css/gradients.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "ebb907c8b8b89627bdcddca87b99032bc0c627a6c8122b67b7e8f0054849896c",
+   "bytes": 13396
+  },
+  {
+   "url": "https://web.dev/learn/css/grid",
+   "path": "learn/css/grid.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "6aea06261d1eb83611d8d09e3b05302ab41f25fc3a31d6d85347cbeafc25f8fa",
+   "bytes": 79505
+  },
+  {
+   "url": "https://web.dev/learn/css/inheritance",
+   "path": "learn/css/inheritance.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "51bd9a59c9c3356e5071ac8824f9a3554cf63dde476e3f2be53c0589ec803c2e",
+   "bytes": 14221
+  },
+  {
+   "url": "https://web.dev/learn/css/layout",
+   "path": "learn/css/layout.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "3427a348d842ed8c1905676ebe21520f23d94e58332ab07560f550ddf82da6cc",
+   "bytes": 16119
+  },
+  {
+   "url": "https://web.dev/learn/css/lists",
+   "path": "learn/css/lists.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "7c607217a131af447ee174aac5f1f03b2635b86014eba4389f2875f70868abc7",
+   "bytes": 22582
+  },
+  {
+   "url": "https://web.dev/learn/css/logical-properties",
+   "path": "learn/css/logical-properties.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:15+00:00",
+   "sha256": "15101da3d1a70a7eaeec268efaf81ca529ff0ba7445bbf2c9fba64f06a1d85e5",
+   "bytes": 11635
+  },
+  {
+   "url": "https://web.dev/learn/css/nesting",
+   "path": "learn/css/nesting.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "cd13da4afa25563949a7f10863df93f8497836d7f19499934dc9ad368e671ed5",
+   "bytes": 7978
+  },
+  {
+   "url": "https://web.dev/learn/css/overflow",
+   "path": "learn/css/overflow.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "7a9012d24882d5e862f7f7731caecaf83e431b327d60dc50ec64b971792be3f3",
+   "bytes": 50603
+  },
+  {
+   "url": "https://web.dev/learn/css/paths-shapes-clipping-masking",
+   "path": "learn/css/paths-shapes-clipping-masking.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "209d2bd293141a8c44a0ff934981aa320d1118804b76707699306b9d2bdeb37f",
+   "bytes": 23556
+  },
+  {
+   "url": "https://web.dev/learn/css/popover-and-dialog",
+   "path": "learn/css/popover-and-dialog.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "21a22eedbfac61ad0e41f57d98f7299d530d115db2a2b13c808fa6783feea11d",
+   "bytes": 14375
+  },
+  {
+   "url": "https://web.dev/learn/css/pseudo-classes",
+   "path": "learn/css/pseudo-classes.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "9115516bb8202ab48435ee7d114ed588120fe80b9efab01aa218d3f8cf082d02",
+   "bytes": 208645
+  },
+  {
+   "url": "https://web.dev/learn/css/pseudo-elements",
+   "path": "learn/css/pseudo-elements.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "db5c1e2a7f6c8c47b2725b12595e3d657bd944ee37f20934ed09a121283f7bc8",
+   "bytes": 31700
+  },
+  {
+   "url": "https://web.dev/learn/css/selectors",
+   "path": "learn/css/selectors.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "3a2dc3b3a26a1f5701264d51d4c369d2f9ca2a6a3d6dc4d4c9093b0b81f69f83",
+   "bytes": 72019
+  },
+  {
+   "url": "https://web.dev/learn/css/shadows",
+   "path": "learn/css/shadows.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "be2add8b73d2ea5b2a80c5e97e9f550596883ae3b3fd1a630eb66ac286e3e55f",
+   "bytes": 31078
+  },
+  {
+   "url": "https://web.dev/learn/css/sizing",
+   "path": "learn/css/sizing.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "ec970404e354d0a51ef1926663a3eacbb7803baf07209ac1799d10c056d3c75d",
+   "bytes": 17633
+  },
+  {
+   "url": "https://web.dev/learn/css/spacing",
+   "path": "learn/css/spacing.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:15+00:00",
+   "sha256": "4e1995f846ce9c2475158436852c6742ab120de6d785d4cd6459032782113329",
+   "bytes": 16170
+  },
+  {
+   "url": "https://web.dev/learn/css/specificity",
+   "path": "learn/css/specificity.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "adfe13c8e8a6f3c03041826c8529a2e8b1ef35fdd60e2743294e3dcb433cf89a",
+   "bytes": 14241
+  },
+  {
+   "url": "https://web.dev/learn/css/the-cascade",
+   "path": "learn/css/the-cascade.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "a5ab7b28153b7c234c33b3dfc698868180d3bad40aa9666eb7cc9430dc5071c0",
+   "bytes": 12719
+  },
+  {
+   "url": "https://web.dev/learn/css/transitions",
+   "path": "learn/css/transitions.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "f7ff265999361e2d321488db3bef87eb7b019ce2477843deb3bbb7aa48a7f9c5",
+   "bytes": 36343
+  },
+  {
+   "url": "https://web.dev/learn/css/typography",
+   "path": "learn/css/typography.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "e7a5febfc42bbbb0735798b2363e54a704f5da2b2cfc2c24a28c0ca313b5e887",
+   "bytes": 283457
+  },
+  {
+   "url": "https://web.dev/learn/css/view-transitions-spas",
+   "path": "learn/css/view-transitions-spas.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "faa40acc429d0a1787594d6c70da850972c15d549c3a8d26b2b6b07086ef2174",
+   "bytes": 10559
+  },
+  {
+   "url": "https://web.dev/learn/css/welcome",
+   "path": "learn/css/welcome.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "e49b6a0cf2edde466c12d8bfa2df87f7fa4ce10d5f7873253b8ffa20d24d1d3d",
+   "bytes": 9793
+  },
+  {
+   "url": "https://web.dev/learn/css/z-index",
+   "path": "learn/css/z-index.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "ecb0afeed94f0beefb474ef0d93f39f8d8f0d677b931b929784d534e7dac4abb",
+   "bytes": 7943
+  },
+  {
+   "url": "https://web.dev/learn/design",
+   "path": "learn/design.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "927f43efe2f2a1b67d48c328b46a6fa73b8456e4b17e4e353b1863b86e48cfe2",
+   "bytes": 10754
+  },
+  {
+   "url": "https://web.dev/learn/design/accessibility",
+   "path": "learn/design/accessibility.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "39052784ba069cc7e6ceb6280aa95f67e9a3cbc48fcc5a9ed3681a81df08f89c",
+   "bytes": 35820
+  },
+  {
+   "url": "https://web.dev/learn/design/conclusion",
+   "path": "learn/design/conclusion.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "344fa8e266b304cd9df855f354abd76182fef6f4041263c00ed658ca69216ec4",
+   "bytes": 1377
+  },
+  {
+   "url": "https://web.dev/learn/design/icons",
+   "path": "learn/design/icons.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "927f43efe2f2a1b67d48c328b46a6fa73b8456e4b17e4e353b1863b86e48cfe2",
+   "bytes": 10754
+  },
+  {
+   "url": "https://web.dev/learn/design/interaction",
+   "path": "learn/design/interaction.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "7048832f50e94f4ec988abac2e9947c9861b9b29d3d55508726c9217c14e0704",
+   "bytes": 23113
+  },
+  {
+   "url": "https://web.dev/learn/design/internationalization",
+   "path": "learn/design/internationalization.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "f0338e1e7302e3710aaa5314121dadb06f17c5c18e13ad344d526107c414089d",
+   "bytes": 9147
+  },
+  {
+   "url": "https://web.dev/learn/design/intro",
+   "path": "learn/design/intro.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "e4ff5423df7b73ce7484a62776f9ea6340b7d0e882f9688023c738851d129db2",
+   "bytes": 12267
+  },
+  {
+   "url": "https://web.dev/learn/design/macro-layouts",
+   "path": "learn/design/macro-layouts.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "10b2c88088f0985a3a4781fd3f3a7224225adae26d258e78047795b029c31ee5",
+   "bytes": 6101
+  },
+  {
+   "url": "https://web.dev/learn/design/media-features",
+   "path": "learn/design/media-features.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "8872c353864be85e0f95b063c70430c41798c14d453e4b01a1f9b2b191f865ff",
+   "bytes": 29644
+  },
+  {
+   "url": "https://web.dev/learn/design/media-queries",
+   "path": "learn/design/media-queries.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "676f117894bcd2974100b8021d5b1f252bc822e6c8ba71611183d0f34c1ca759",
+   "bytes": 10589
+  },
+  {
+   "url": "https://web.dev/learn/design/micro-layouts",
+   "path": "learn/design/micro-layouts.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "194fc434ab01eb1277b944b2e9c71308175e3c69ca5fe9705be5c1df2c6e0b64",
+   "bytes": 6876
+  },
+  {
+   "url": "https://web.dev/learn/design/picture-element",
+   "path": "learn/design/picture-element.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "71ff28a006fe53b9f27a5e0cc5d623582216351b4d960e9bb11a008ab9b42609",
+   "bytes": 6361
+  },
+  {
+   "url": "https://web.dev/learn/design/responsive-images",
+   "path": "learn/design/responsive-images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "25ba32ee5258dcfbbd291ea829cc55e4d123d08fe4fc481795bb98fd1fea2220",
+   "bytes": 46433
+  },
+  {
+   "url": "https://web.dev/learn/design/screen-configurations",
+   "path": "learn/design/screen-configurations.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "be35ea8325429977deefa9ba2a8e05f3c0ca0d0e5f73d243b17d7f86e05a1feb",
+   "bytes": 8227
+  },
+  {
+   "url": "https://web.dev/learn/design/theming",
+   "path": "learn/design/theming.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "eae63040fc8e8f8ca3672cdff1442501d160eeab103435428d59c064941556ae",
+   "bytes": 10959
+  },
+  {
+   "url": "https://web.dev/learn/design/typography",
+   "path": "learn/design/typography.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "a2298773b6033fa7fdc0d4b03c61fe0155688f8fc2432c768f146a265e98fbdc",
+   "bytes": 14449
+  },
+  {
+   "url": "https://web.dev/learn/design/ui-patterns",
+   "path": "learn/design/ui-patterns.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "c645d59472d375aae4ddd8d0a824d246d3d478db518eeb569da52ad9a8b31190",
+   "bytes": 8813
+  },
+  {
+   "url": "https://web.dev/learn/design/welcome",
+   "path": "learn/design/welcome.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "0b109015bd7f98ad8a39e7842c0ba6a059f2d2b3164cb12b346f95df4b694cf3",
+   "bytes": 3692
+  },
+  {
+   "url": "https://web.dev/learn/forms",
+   "path": "learn/forms.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "4eebb8625544993121274be3a874e277e5c6a2df9aaa12539486ddc06e93dfaa",
+   "bytes": 10248
+  },
+  {
+   "url": "https://web.dev/learn/forms/accessibility",
+   "path": "learn/forms/accessibility.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "d70b27e54219f2b93bae5029ba36e18d7517f24c9aed73fdd3aa6ecfc66d4321",
+   "bytes": 8924
+  },
+  {
+   "url": "https://web.dev/learn/forms/address",
+   "path": "learn/forms/address.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "104bb7b6485e011b8b2c1abcd7bfc0225c006a23cb5f9f1b0bdea8e8e6a72dbd",
+   "bytes": 3687
+  },
+  {
+   "url": "https://web.dev/learn/forms/attributes",
+   "path": "learn/forms/attributes.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "2a33088a44afab13c2b01ad07aa7f0d1edbc06a184d6b5e65f707fe7dc84af14",
+   "bytes": 7867
+  },
+  {
+   "url": "https://web.dev/learn/forms/auto",
+   "path": "learn/forms/auto.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "f84592ece76a875caac469276f680ec82aad5b4e1916a2cd15315cd305748d57",
+   "bytes": 3721
+  },
+  {
+   "url": "https://web.dev/learn/forms/autofill",
+   "path": "learn/forms/autofill.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "4eebb8625544993121274be3a874e277e5c6a2df9aaa12539486ddc06e93dfaa",
+   "bytes": 10248
+  },
+  {
+   "url": "https://web.dev/learn/forms/conclusion",
+   "path": "learn/forms/conclusion.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "243912c4e294c9f7c78d80fc0034ed93a0a2cc8ad546f815acc004342b0e6a3b",
+   "bytes": 2866
+  },
+  {
+   "url": "https://web.dev/learn/forms/cross-platform-testing",
+   "path": "learn/forms/cross-platform-testing.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "29369d044e6a0a89ed893087af2354cf53051bbd3f105347e159ade786d5c841",
+   "bytes": 7894
+  },
+  {
+   "url": "https://web.dev/learn/forms/data",
+   "path": "learn/forms/data.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "a895fd8694f8e402ecc38261ba2a54e870dd46eed59e599a740d5894c7bd4099",
+   "bytes": 4952
+  },
+  {
+   "url": "https://web.dev/learn/forms/design-basics",
+   "path": "learn/forms/design-basics.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "eb5adc3ed7b6e7dd3cf835d83b97183da569ca5257a35bc88b1e723a259a8dea",
+   "bytes": 8618
+  },
+  {
+   "url": "https://web.dev/learn/forms/fields",
+   "path": "learn/forms/fields.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "76048ca5aed86ecdb5724dad8fdf2ec36eea0ae23f1cdda1276bde8769e7657a",
+   "bytes": 18833
+  },
+  {
+   "url": "https://web.dev/learn/forms/form",
+   "path": "learn/forms/form.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "223666ba8d00a72d33042c55b24e488c8b10dfead663c8f1b0204c3203851521",
+   "bytes": 17755
+  },
+  {
+   "url": "https://web.dev/learn/forms/form-element",
+   "path": "learn/forms/form-element.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "9e5e2a53a1a5da4119304d6c9a845f1038c1a6a76f4d9cdf8546245a0817b52f",
+   "bytes": 4580
+  },
+  {
+   "url": "https://web.dev/learn/forms/form-fields",
+   "path": "learn/forms/form-fields.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "5caf8cb438558daf62a2d495caf186aa38e11cf92f2ddced53a7760f01d2bec4",
+   "bytes": 10240
+  },
+  {
+   "url": "https://web.dev/learn/forms/identity",
+   "path": "learn/forms/identity.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "03b2428ac59a8ee91d3e4332d5654c5264118a65d868b6c4715a01457da6fca6",
+   "bytes": 8922
+  },
+  {
+   "url": "https://web.dev/learn/forms/internationalization",
+   "path": "learn/forms/internationalization.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "fad56d1e549f2255d59cc1a953da0a833ded7ec64a86cee0adb42e1a7aaf7475",
+   "bytes": 6862
+  },
+  {
+   "url": "https://web.dev/learn/forms/javascript",
+   "path": "learn/forms/javascript.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "948e5ef7fc02e26051c49a142c459fdff85dd9fc2ea51c7e68230611ba973b93",
+   "bytes": 19366
+  },
+  {
+   "url": "https://web.dev/learn/forms/payment",
+   "path": "learn/forms/payment.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "ae9ca0cd0f73f0dea48c3f2fe8b2127f64ead2650a3b9a74e15df9345cdb36e5",
+   "bytes": 3992
+  },
+  {
+   "url": "https://web.dev/learn/forms/security-privacy",
+   "path": "learn/forms/security-privacy.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "d9a84865297b66f96d0cd5f56a0f8990f254372e0e27873f019e549993a7e9ea",
+   "bytes": 10338
+  },
+  {
+   "url": "https://web.dev/learn/forms/styling",
+   "path": "learn/forms/styling.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "25e91951e2f6eb09d74424ff40f40dd9ba5e8992770c3df734caedc2323c4dfb",
+   "bytes": 6949
+  },
+  {
+   "url": "https://web.dev/learn/forms/styling-form-controls",
+   "path": "learn/forms/styling-form-controls.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "7413227ad0e59d145a31bd7ba5be08598dfbafe3149eddc9ebe93e80419c92d7",
+   "bytes": 8327
+  },
+  {
+   "url": "https://web.dev/learn/forms/testing",
+   "path": "learn/forms/testing.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "928c70630c50c3964213092e2e2ac0d5185b975a470ff66ab7b61b79376f45b4",
+   "bytes": 9079
+  },
+  {
+   "url": "https://web.dev/learn/forms/usability-testing",
+   "path": "learn/forms/usability-testing.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "3c1aaee2940da381fe16fa91fe2b7981338552e8a28b6b7957349943d995d36c",
+   "bytes": 4996
+  },
+  {
+   "url": "https://web.dev/learn/forms/validation",
+   "path": "learn/forms/validation.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "19c4cb23d7b8dd07975057f076f19392156b74d8cac349ca37ad6c9df62448ab",
+   "bytes": 12361
+  },
+  {
+   "url": "https://web.dev/learn/forms/welcome",
+   "path": "learn/forms/welcome.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "1430eec04551281a342bce2b39604e38d541ae9be0fd3067aca5d786d1b8f698",
+   "bytes": 5672
+  },
+  {
+   "url": "https://web.dev/learn/html",
+   "path": "learn/html.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "897f62b25c96bbeb432922cbf5cddcb4b94f4be8d0e114c8e881b8ca2ce7bb6a",
+   "bytes": 9910
+  },
+  {
+   "url": "https://web.dev/learn/html/apis",
+   "path": "learn/html/apis.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "6d6576e614c1f33f3e009d779ccd7bdb1cbade2de445584cfd7f1c0832188596",
+   "bytes": 16685
+  },
+  {
+   "url": "https://web.dev/learn/html/attributes",
+   "path": "learn/html/attributes.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "1c4135f8c5f282d0fac26b7a12808aab061023922185616073407144b9154157",
+   "bytes": 27389
+  },
+  {
+   "url": "https://web.dev/learn/html/audio-video",
+   "path": "learn/html/audio-video.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "13bc76bad6c42e7682129ac9fb7bccd8e8534059a5bb676e9f9f533c77cd80be",
+   "bytes": 13754
+  },
+  {
+   "url": "https://web.dev/learn/html/conclusion",
+   "path": "learn/html/conclusion.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "c637a5b86ad55d61958dba45fd4fcecb83f8ac3982dad03890eac3b51fb55a76",
+   "bytes": 859
+  },
+  {
+   "url": "https://web.dev/learn/html/details",
+   "path": "learn/html/details.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "4013cb5681a088ccbf2a9ed80b721a2e002fd3f05e98890550113fddac94ecb7",
+   "bytes": 12078
+  },
+  {
+   "url": "https://web.dev/learn/html/dialog",
+   "path": "learn/html/dialog.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "897f62b25c96bbeb432922cbf5cddcb4b94f4be8d0e114c8e881b8ca2ce7bb6a",
+   "bytes": 9910
+  },
+  {
+   "url": "https://web.dev/learn/html/document-structure",
+   "path": "learn/html/document-structure.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "f2880c67bbda60afb0384baf085d0332b22a5d04a687dbd607c68bb913630229",
+   "bytes": 22246
+  },
+  {
+   "url": "https://web.dev/learn/html/focus",
+   "path": "learn/html/focus.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "d7cc8089db7991625f74a129a676a7a8ea3a423a0aa0c32f072176bc6fb3f4da",
+   "bytes": 15690
+  },
+  {
+   "url": "https://web.dev/learn/html/forms",
+   "path": "learn/html/forms.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "dfb15ac0a592bbdcc4b737d6d35269f222bb828e144feca579f93097d7391cb1",
+   "bytes": 33923
+  },
+  {
+   "url": "https://web.dev/learn/html/headings-and-sections",
+   "path": "learn/html/headings-and-sections.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "40b61b0ccaea28cadbf1575c06d7e031de9e9f7f19fea9cb9ce2846d82c9b51f",
+   "bytes": 14745
+  },
+  {
+   "url": "https://web.dev/learn/html/images",
+   "path": "learn/html/images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:15+00:00",
+   "sha256": "7596822bf7c889c48c41d1dcdd05b4a4ac66047aac617f0348c64d14b5fb4455",
+   "bytes": 18180
+  },
+  {
+   "url": "https://web.dev/learn/html/inline-text",
+   "path": "learn/html/inline-text.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "0cf7be7541bbe5bc7a0ec33af80f26e7c3b04ae12ff8fcd4c5d7ce62060d9d9e",
+   "bytes": 14164
+  },
+  {
+   "url": "https://web.dev/learn/html/links",
+   "path": "learn/html/links.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "b64f7888c8b6b72c83527b61cab1a5ed133b461ec134b38aac29482bc6b031bb",
+   "bytes": 14869
+  },
+  {
+   "url": "https://web.dev/learn/html/lists",
+   "path": "learn/html/lists.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "8891cccc3fc95dab36133f2a947bfab86de87944844deef0036aeaeb617bbc53",
+   "bytes": 16122
+  },
+  {
+   "url": "https://web.dev/learn/html/metadata",
+   "path": "learn/html/metadata.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "47b3697a48c9f96f79f6cdd6f8fff605dcd4401985fa746104da97b12ed0b28a",
+   "bytes": 18179
+  },
+  {
+   "url": "https://web.dev/learn/html/navigation",
+   "path": "learn/html/navigation.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "30a52d2339495e483357e7220b5c8c5066ef9e8e2b63532493761083dcf0267e",
+   "bytes": 14357
+  },
+  {
+   "url": "https://web.dev/learn/html/overview",
+   "path": "learn/html/overview.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "de7e47ce4b9a20a8a990aaff5a451c8ba3a417684aa410a0fafbd5e2548e4a5e",
+   "bytes": 14732
+  },
+  {
+   "url": "https://web.dev/learn/html/semantic-html",
+   "path": "learn/html/semantic-html.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "a57cffe158f01883d4ad459510118152a18fa67c2c837ffec562263884b77ec9",
+   "bytes": 9935
+  },
+  {
+   "url": "https://web.dev/learn/html/tables",
+   "path": "learn/html/tables.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "cf1896442a43077cbf8c5e83ffb4599d72c292a83ece0076337779ebe7a2e1a2",
+   "bytes": 16941
+  },
+  {
+   "url": "https://web.dev/learn/html/template",
+   "path": "learn/html/template.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "ef0b0a8da3a4c8563cab874d4d1855227a096e3787bb4e84bf4b691aeca6183f",
+   "bytes": 17145
+  },
+  {
+   "url": "https://web.dev/learn/html/text-basics",
+   "path": "learn/html/text-basics.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "afeafea2a8eb1125e708376a7ed25c04e60599173c88addc5720d69eaede0040",
+   "bytes": 12806
+  },
+  {
+   "url": "https://web.dev/learn/html/welcome",
+   "path": "learn/html/welcome.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "666cea58aef72d8120b3dccada1d2f3b5a845b95f51a07a3531c1bcdb19a199d",
+   "bytes": 5314
+  },
+  {
+   "url": "https://web.dev/learn/images",
+   "path": "learn/images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "7435d52e4ac5310f7bea3f3385b62e51c4e4f0766d589d55be7101cc829a37f3",
+   "bytes": 3250
+  },
+  {
+   "url": "https://web.dev/learn/images/automating",
+   "path": "learn/images/automating.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "346d30baf25284c67ee355eb7d6dc7098c6084dff7f91c831693bcebcbeaced0",
+   "bytes": 16422
+  },
+  {
+   "url": "https://web.dev/learn/images/avif",
+   "path": "learn/images/avif.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "c41574f72737287a3c70463153cf3f8cd3e6690ae2363a5dfc6a45264a626ce5",
+   "bytes": 4059
+  },
+  {
+   "url": "https://web.dev/learn/images/cdn",
+   "path": "learn/images/cdn.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "bf80259c7b17cc0676795cd8bff54d35558f305616c8d3a96ebd54739feefeda",
+   "bytes": 6367
+  },
+  {
+   "url": "https://web.dev/learn/images/cms",
+   "path": "learn/images/cms.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "a6e2b7fc9015b38a4848331c7f343e2fba6cdecedd8912e1f6a01ef99070a3c9",
+   "bytes": 9667
+  },
+  {
+   "url": "https://web.dev/learn/images/conclusion",
+   "path": "learn/images/conclusion.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "7747089813315b122285aa68539b4d931ebe7f785f14a5200ce3de7351702a3e",
+   "bytes": 795
+  },
+  {
+   "url": "https://web.dev/learn/images/descriptive",
+   "path": "learn/images/descriptive.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "f15dc6b02a9f0ff9b494fc7005c0000e5cb257134d3062eba306c8ca854ec4de",
+   "bytes": 21220
+  },
+  {
+   "url": "https://web.dev/learn/images/gif",
+   "path": "learn/images/gif.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "5c6a23686e7fb6d617a79e4ee4e263d6d18177f5cf3a93b45dcdcbc32d190bee",
+   "bytes": 5437
+  },
+  {
+   "url": "https://web.dev/learn/images/history",
+   "path": "learn/images/history.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "c7220e01d64de1924830b003fb2f04f38d4ebee35aea2439aa78c092087376b1",
+   "bytes": 7396
+  },
+  {
+   "url": "https://web.dev/learn/images/jpeg",
+   "path": "learn/images/jpeg.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "9e605c8fc83f6869a02c54f5cb30420db2c8552d1bdd8712218c7584ccd0a326",
+   "bytes": 10661
+  },
+  {
+   "url": "https://web.dev/learn/images/performance-issues",
+   "path": "learn/images/performance-issues.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "f7608668e584cb61148843d9b32a39b8edd20cd8be174515366071d3ed47155b",
+   "bytes": 13038
+  },
+  {
+   "url": "https://web.dev/learn/images/png",
+   "path": "learn/images/png.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "968d2a1bb07dc358dd1e052682ef8a378ae1a74b9f027490535228ff495148d2",
+   "bytes": 2638
+  },
+  {
+   "url": "https://web.dev/learn/images/prescriptive",
+   "path": "learn/images/prescriptive.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "02f2b4cdbe367f2816f2a89f7509904a86c716eb1efeaf360c5ca8f48da03a1e",
+   "bytes": 12225
+  },
+  {
+   "url": "https://web.dev/learn/images/raster-images",
+   "path": "learn/images/raster-images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "25899f51396e7ce3081f75b40d094816f8318144e6f3ae481c33cee23714c707",
+   "bytes": 4104
+  },
+  {
+   "url": "https://web.dev/learn/images/responsive-images",
+   "path": "learn/images/responsive-images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "7435d52e4ac5310f7bea3f3385b62e51c4e4f0766d589d55be7101cc829a37f3",
+   "bytes": 3250
+  },
+  {
+   "url": "https://web.dev/learn/images/vector-images",
+   "path": "learn/images/vector-images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "a02c9a0019228e6415afb0068bc5a7a62a2caee62bd8e38cdcd444e66ac4d0a8",
+   "bytes": 2937
+  },
+  {
+   "url": "https://web.dev/learn/images/webp",
+   "path": "learn/images/webp.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "762e847fa7cb27153c7f1242bc53970ac9ee0fad49a48eb6bfa5dda6f2059fda",
+   "bytes": 7898
+  },
+  {
+   "url": "https://web.dev/learn/images/welcome",
+   "path": "learn/images/welcome.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "4044e4f28fd71a0e9e21c0e2f1bc117d20d7b55a670e354bfcf9c3718f8cc467",
+   "bytes": 3936
+  },
+  {
+   "url": "https://web.dev/learn/performance",
+   "path": "learn/performance.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "a1a233232df37bbae07aa83bc009855d92814509c53cdd32dbe2362d7b00707b",
+   "bytes": 16258
+  },
+  {
+   "url": "https://web.dev/learn/performance/code-split-javascript",
+   "path": "learn/performance/code-split-javascript.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "a1a233232df37bbae07aa83bc009855d92814509c53cdd32dbe2362d7b00707b",
+   "bytes": 16258
+  },
+  {
+   "url": "https://web.dev/learn/performance/general-html-performance",
+   "path": "learn/performance/general-html-performance.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "c367a05d56c13846dcf4d7426bd68cc1f068ef7710c2ddcbe4bcbc02dcc3ea09",
+   "bytes": 13293
+  },
+  {
+   "url": "https://web.dev/learn/performance/image-performance",
+   "path": "learn/performance/image-performance.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "2633df713dd178515a4269a85cbb6d531d57b2ea9d720ec2ad1120d6d9173174",
+   "bytes": 22339
+  },
+  {
+   "url": "https://web.dev/learn/performance/lazy-load-images-and-iframe-elements",
+   "path": "learn/performance/lazy-load-images-and-iframe-elements.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "c5dde596b461a5d104e3b4b7126409ccb880563808b6b19ec99a179b841dfe74",
+   "bytes": 15009
+  },
+  {
+   "url": "https://web.dev/learn/performance/optimize-resource-loading",
+   "path": "learn/performance/optimize-resource-loading.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "ed0c2b35912735709f1f2d9f9f04758ffd9df7363c0f645bd261bc705780ef01",
+   "bytes": 19021
+  },
+  {
+   "url": "https://web.dev/learn/performance/optimize-web-fonts",
+   "path": "learn/performance/optimize-web-fonts.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "6dcae5df011d9ba2ab4837d7c8f8f642d79a2db29e34af7d868850e765e58173",
+   "bytes": 12883
+  },
+  {
+   "url": "https://web.dev/learn/performance/prefetching-prerendering-precaching",
+   "path": "learn/performance/prefetching-prerendering-precaching.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "898511efd67a70d61139dd11837143cd1ff8269f6d4ba13478841740c96eba1f",
+   "bytes": 14943
+  },
+  {
+   "url": "https://web.dev/learn/performance/resource-hints",
+   "path": "learn/performance/resource-hints.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "44eff5175d1894897baea6df98685be0cbd0016227e3d7584999f5e5924d8820",
+   "bytes": 13539
+  },
+  {
+   "url": "https://web.dev/learn/performance/understanding-the-critical-path",
+   "path": "learn/performance/understanding-the-critical-path.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "9c3314e8192e7cf35ff9bf3fdbbbf086190c484d905cb21bbe7b2aade9d3c927",
+   "bytes": 16185
+  },
+  {
+   "url": "https://web.dev/learn/performance/video-performance",
+   "path": "learn/performance/video-performance.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "4bd6d5d918b02277482bc4d9d59f750648d16f41fbaa1e1daf66e987ef756889",
+   "bytes": 12965
+  },
+  {
+   "url": "https://web.dev/learn/performance/web-worker-demo",
+   "path": "learn/performance/web-worker-demo.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "0087431804805309aa399a96bf13bcaf6d77c7949968bd34119b1474db64b222",
+   "bytes": 10333
+  },
+  {
+   "url": "https://web.dev/learn/performance/web-worker-overview",
+   "path": "learn/performance/web-worker-overview.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "ab111cb99ef1c68fac6f0c9392a8ce15ae3b7f3dd3f357e8168cd9b7bda946d3",
+   "bytes": 6882
+  },
+  {
+   "url": "https://web.dev/learn/performance/welcome",
+   "path": "learn/performance/welcome.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2025-07-24T17:14:04+00:00",
+   "sha256": "b4098ef11e6e54dfbe35b02375eb90da39787045a73b532f82bc359153dde6fd",
+   "bytes": 7239
+  },
+  {
+   "url": "https://web.dev/learn/performance/why-speed-matters",
+   "path": "learn/performance/why-speed-matters.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "6fcaa5e162d8f92127e958b2fa276d2add5999ecae68c08f9d08a7fdba662b19",
+   "bytes": 5488
+  }
+ ]
+}

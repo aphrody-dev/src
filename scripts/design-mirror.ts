@@ -162,7 +162,7 @@ async function index(site: Site): Promise<Url[]> {
 // Mirrored text: markdown served by the site (Accept: text/markdown), images and avatar rows removed.
 function clean(md: string): string {
   return md
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
+    .replace(/!\[(?:\\.|[^\]])*\]\([^)]*\)/g, "")
     .replace(/<img\b[^>]*>/gi, "")
     .replace(/^\s*(<br\s*\/?>\s*)+$/gim, "")
     .replace(/\n{3,}/g, "\n\n")
@@ -244,7 +244,7 @@ async function check(): Promise<number> {
     for (const e of (await Bun.file(manFile).json()).pages as Entry[]) {
       const f = Bun.file(join(dir, e.path));
       const text = (await f.exists()) ? await f.text() : "";
-      const body = text.replace(/^---\n[\s\S]*?\n---\n\n/, "").replace(/\n$/, "");
+      const body = text.replace(/^---\n[\s\S]*?\n---\n\n?/, "").replace(/\n$/, "");
       if (sha256(body) !== e.sha256) {
         bad++;
         console.error(`sha256 mismatch: ${site.name}/${e.path}`);

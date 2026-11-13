@@ -1,0 +1,1969 @@
+{
+ "site": "developer.chrome.com",
+ "license": "CC-BY-4.0 (texte), Apache-2.0 (exemples de code)",
+ "attribution": "Google LLC et les auteurs cités, developer.chrome.com",
+ "generated": "2026-11-13",
+ "count": 245,
+ "pages": [
+  {
+   "url": "https://developer.chrome.com/blog/accessible-carousel",
+   "path": "blog/accessible-carousel.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "81a9fec425365370d63f09a845c019ad3555e969a687658324db5e42ba8294ff",
+   "bytes": 13483
+  },
+  {
+   "url": "https://developer.chrome.com/blog/aligning-input-events",
+   "path": "blog/aligning-input-events.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "07e39251101b4df03a903ff85a365c5eab20c77dc3d87b88df7bdc1faef61ca0",
+   "bytes": 6945
+  },
+  {
+   "url": "https://developer.chrome.com/blog/astro-view-transitions",
+   "path": "blog/astro-view-transitions.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "a475e10f1c4e24b0256146b796f29e01aa7faf1789fbb7e99897e6ba460bcc55",
+   "bytes": 10386
+  },
+  {
+   "url": "https://developer.chrome.com/blog/chromium-accessibility-performance",
+   "path": "blog/chromium-accessibility-performance.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "e928e3441cf734dcfb6d3a5022fa01966213f470c5cb39eb1ebfa3b58cd9d976",
+   "bytes": 10806
+  },
+  {
+   "url": "https://developer.chrome.com/blog/crux-2017-12",
+   "path": "blog/crux-2017-12.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "ee2ab6e8774c9dc87a9a146099492a5167a0bf2cad21ec2fd0745fbbe878753b",
+   "bytes": 2306
+  },
+  {
+   "url": "https://developer.chrome.com/blog/crux-2018-01",
+   "path": "blog/crux-2018-01.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "8de55cd60d54a2d69a433f1282f6fc3c81f60b12831ace967498c3fc2d87efe3",
+   "bytes": 2391
+  },
+  {
+   "url": "https://developer.chrome.com/blog/crux-2025-02",
+   "path": "blog/crux-2025-02.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "de43e2a4eba4b5223fca77270b414d2b6e26351ffde59bf42bc20f9480581403",
+   "bytes": 18551
+  },
+  {
+   "url": "https://developer.chrome.com/blog/crux-ad-metrics",
+   "path": "blog/crux-ad-metrics.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "a5fc104afa9feec0cb1f647764631cb7e6deb8b01b0ec354f4e222c5bb4413a8",
+   "bytes": 4792
+  },
+  {
+   "url": "https://developer.chrome.com/blog/crux-dashboard-deprecation",
+   "path": "blog/crux-dashboard-deprecation.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "093919f1c7e6462c5c0c42b4fab0e5139abe7673b89d4232b52edc8e0a710ba5",
+   "bytes": 9907
+  },
+  {
+   "url": "https://developer.chrome.com/blog/crux-navigation-types",
+   "path": "blog/crux-navigation-types.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "a7b6a7fdf40709e47ef3aa181d8a592b72e2e7c992400aa164d4ae7877340e1b",
+   "bytes": 16857
+  },
+  {
+   "url": "https://developer.chrome.com/blog/crux-rank-magnitude",
+   "path": "blog/crux-rank-magnitude.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "2633d4e972fc02761923e36e31ef574ed9786c0e53f03f1b74025093adcb517b",
+   "bytes": 4255
+  },
+  {
+   "url": "https://developer.chrome.com/blog/datalist-for-range-color-inputs-offer-some-default-choices",
+   "path": "blog/datalist-for-range-color-inputs-offer-some-default-choices.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "45c1963316a11fe82af4dc31835b283d88590bbc37296f844e0ed828f2835587",
+   "bytes": 1859
+  },
+  {
+   "url": "https://developer.chrome.com/blog/element-scoped-view-transitions",
+   "path": "blog/element-scoped-view-transitions.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "2d2cdae978f1e6837d3aa61fd6e7459b1d15668b966d6785e8d0ccf3de45e0e5",
+   "bytes": 4019
+  },
+  {
+   "url": "https://developer.chrome.com/blog/faster-wasm-debugging",
+   "path": "blog/faster-wasm-debugging.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "3e33cce51acfb2026cf3bcf68974af6388c1cb38de781b69c9e703e6a8074675",
+   "bytes": 13610
+  },
+  {
+   "url": "https://developer.chrome.com/blog/final-soft-navigations-origin-trial",
+   "path": "blog/final-soft-navigations-origin-trial.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "6582430dd4859a0e49e4c58149cefee983aa7a0816b2c90cdc945c103904ee9d",
+   "bytes": 12117
+  },
+  {
+   "url": "https://developer.chrome.com/blog/first-input-delay-in-crux",
+   "path": "blog/first-input-delay-in-crux.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "22fc7c32bffc73ec380c5690ee5de952924681922c9467b845e8b15c97bb0d89",
+   "bytes": 9765
+  },
+  {
+   "url": "https://developer.chrome.com/blog/from-web-sql-to-sqlite-wasm",
+   "path": "blog/from-web-sql-to-sqlite-wasm.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "fc85669e5ecbbc19d83d227ac310e53c2bf1638fe4aefbdf846774022ad62e6d",
+   "bytes": 9797
+  },
+  {
+   "url": "https://developer.chrome.com/blog/full-accessibility-tree",
+   "path": "blog/full-accessibility-tree.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "878b9481b83cdab0878ddb7094a8c4e3f6ff3a32029ea76a00cc18005ca843b9",
+   "bytes": 9791
+  },
+  {
+   "url": "https://developer.chrome.com/blog/google-ai-mode-view-transitions-case-study",
+   "path": "blog/google-ai-mode-view-transitions-case-study.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "8747c77b164f0a46a04dd3ad2b704da509be31fa8e3c6fac3ad1ca7728c8da22",
+   "bytes": 21067
+  },
+  {
+   "url": "https://developer.chrome.com/blog/hotpath-with-wasm",
+   "path": "blog/hotpath-with-wasm.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "85c342ee3426d90fd133d9925b5cbfe9adc3b7d59f4bde5c1df38b5c0d83a827",
+   "bytes": 24396
+  },
+  {
+   "url": "https://developer.chrome.com/blog/inp-tools-2022",
+   "path": "blog/inp-tools-2022.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "09bd8fcb0e40ae648ac298d24cd064269340e028b64c00abc8f51dfdf0974c29",
+   "bytes": 4664
+  },
+  {
+   "url": "https://developer.chrome.com/blog/inputdevicecapabilities",
+   "path": "blog/inputdevicecapabilities.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "68d5e78fba220e933665360319af7b99ee3ba4dce93226aa2592b1d5747f6a96",
+   "bytes": 3754
+  },
+  {
+   "url": "https://developer.chrome.com/blog/integrating-input-type-file-with-the-filesystem-api",
+   "path": "blog/integrating-input-type-file-with-the-filesystem-api.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "4afea95c1b1eb77ba463a0f315c7095d7e047168d0304d2dcbb3be6e44a2cf6b",
+   "bytes": 3055
+  },
+  {
+   "url": "https://developer.chrome.com/blog/io24-webassembly-webgpu-1",
+   "path": "blog/io24-webassembly-webgpu-1.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "766b0cf87bbcd6e94c8324cb47b6217adfbb0935a6e164f523d473180b449702",
+   "bytes": 13664
+  },
+  {
+   "url": "https://developer.chrome.com/blog/io24-webassembly-webgpu-2",
+   "path": "blog/io24-webassembly-webgpu-2.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "0ae1eb768feb295f10ec32067fdc1ee3f74a017f5910be6b16352066c6e21c57",
+   "bytes": 16696
+  },
+  {
+   "url": "https://developer.chrome.com/blog/live-web-audio-input-enabled",
+   "path": "blog/live-web-audio-input-enabled.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "3059fc349d2b0132c9fadbe3dc507006852a60ca1c10dd45ebcdd5bb71ee5789",
+   "bytes": 2813
+  },
+  {
+   "url": "https://developer.chrome.com/blog/loaf-has-shipped",
+   "path": "blog/loaf-has-shipped.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "8bd116585aa138d2a26594a48bf606e0e4d56f7cb5bbc98a40495ad54b44c1a8",
+   "bytes": 14302
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-113",
+   "path": "blog/new-in-webgpu-113.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "b8da47c44a3c9950409c732dd40036afdcc06cd61636861d424e821b6edf91f2",
+   "bytes": 28051
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-114",
+   "path": "blog/new-in-webgpu-114.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "d2a9bf7efe846ba9e42eca306610e34c862580c820491b14737a5e432bbe5893",
+   "bytes": 27628
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-115",
+   "path": "blog/new-in-webgpu-115.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "8d0dd617e566ffea46f71fdbbc4ad738763a353c18dcbeb5805ef3f6a316d9e5",
+   "bytes": 32167
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-116",
+   "path": "blog/new-in-webgpu-116.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "180a13a475a2d9c9a55577e545d31e9fb36f60fb5ca0c37d283ad33317e43396",
+   "bytes": 31701
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-117",
+   "path": "blog/new-in-webgpu-117.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "6772cf023c719ef7a778c2ddd44bba3d54b82253637f71059f42ce45fb95180e",
+   "bytes": 29859
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-118",
+   "path": "blog/new-in-webgpu-118.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "b9ad57bd3f212b97443c819e14b9aa30e4917db35e04aa1c2631f0eb9da30ee9",
+   "bytes": 30666
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-119",
+   "path": "blog/new-in-webgpu-119.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "6b10284ab71ea8b8da47de1af37a15e175ed1fe6045200b5a144576808ac98d1",
+   "bytes": 29942
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-120",
+   "path": "blog/new-in-webgpu-120.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "bced45213ac6a09dd7e31369108001fe26a9e35b8079aff2173ec60073ecadbe",
+   "bytes": 34996
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-121",
+   "path": "blog/new-in-webgpu-121.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "ede57fd587e8b9d6583860db306435647454d3652c17591c258a3bd22976a185",
+   "bytes": 36519
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-122",
+   "path": "blog/new-in-webgpu-122.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "476df9de0e27887c8ddf86d6f6fd45c1b5e5505a4b6ac90a43f1acab79576475",
+   "bytes": 28885
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-123",
+   "path": "blog/new-in-webgpu-123.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "0fa2215ef278d4e58d351e3ed2a254db8cd332a74ddd17b9e1ce929ca676cf91",
+   "bytes": 32871
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-124",
+   "path": "blog/new-in-webgpu-124.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "181db0f0f377f6eddb3fa1f38b0b87c25144459598f81415a12e20bc91a598c2",
+   "bytes": 30872
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-125",
+   "path": "blog/new-in-webgpu-125.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "c7f7e986f9ed3252396e3cf3cbf35a621fd8885d4c14f2e754ef5eab8dcfcbaf",
+   "bytes": 29082
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-126",
+   "path": "blog/new-in-webgpu-126.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "933cb9c1a73ff54442cc1a116ff15b091ff956ef14c8dbcb6affd98f3cfa19cd",
+   "bytes": 29629
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-127",
+   "path": "blog/new-in-webgpu-127.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "3b72cf74d5460142cbf985ce4f924013476cc73f53baf5af02920521ff2b170a",
+   "bytes": 30209
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-128",
+   "path": "blog/new-in-webgpu-128.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "ba64fc408adad2e70758eb87d34afab132885ff82deed5ead3235f8803534c0a",
+   "bytes": 32511
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-129",
+   "path": "blog/new-in-webgpu-129.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "6e63be0246fbb40f8fb42009ad80873e2a375d917f564c1ccae2b4dfc4e9cf63",
+   "bytes": 31086
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-130",
+   "path": "blog/new-in-webgpu-130.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "586e9cbb5cc2423874a5287efbac6bab78d49e9dac17c371e394e6e7344035ec",
+   "bytes": 30303
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-131",
+   "path": "blog/new-in-webgpu-131.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "c00cf4467375813a379a6892b32d6f39930fd6ffddb09e29942972621847678b",
+   "bytes": 34160
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-132",
+   "path": "blog/new-in-webgpu-132.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "57e95d51e9887236bc1393cb9cb403146a2197e253eec648780838d0e9763a04",
+   "bytes": 34996
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-133",
+   "path": "blog/new-in-webgpu-133.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "6877b99f57cd2d9ef1a43a6ebbeeb5de50d6cfd8e16fa08d54449689afbada1d",
+   "bytes": 33925
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-134",
+   "path": "blog/new-in-webgpu-134.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "4ca742ed5366a093a7b401c4c68c85d16a81cdd559444cfe6cc440eafed25e0e",
+   "bytes": 29539
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-135",
+   "path": "blog/new-in-webgpu-135.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "7dc0dd3765f61ce32b52f6858af11eceaef576439b42edb3fc4d2372ed714594",
+   "bytes": 30905
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-136",
+   "path": "blog/new-in-webgpu-136.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "bf87aed764cdf494acda9fade15ea425ab5a2a0672a2f8134c38e6ee6f276a64",
+   "bytes": 30895
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-137",
+   "path": "blog/new-in-webgpu-137.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "8ced6492199d6091b99fb94498f41a11f56664491decde98c4dd12668beb3701",
+   "bytes": 30978
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-138",
+   "path": "blog/new-in-webgpu-138.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "dabf33e0f71e9195d450f6dac5f7ed2808ed8f87e50b3b1c1e87f26501831877",
+   "bytes": 28980
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-139",
+   "path": "blog/new-in-webgpu-139.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "69add48aa122b32ea5b07377fdacd0fbbf3a6a6e29eb450686c428ee80bd8a1d",
+   "bytes": 31972
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-140",
+   "path": "blog/new-in-webgpu-140.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "eeff2eb7ed22ffdfc2bc4db010c82aaec01c056fc35b784734c33910291c3e06",
+   "bytes": 29736
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-141",
+   "path": "blog/new-in-webgpu-141.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "6bc46aabfb9d7831b1d3ea39d469ab092fcbf208119a526e16ed443ed7452906",
+   "bytes": 28879
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-142",
+   "path": "blog/new-in-webgpu-142.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:15+00:00",
+   "sha256": "38f1c2a8e0cf5a5d38a1120e62a7a9e400ed9a022af7ce94380846459d36519d",
+   "bytes": 29765
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-143",
+   "path": "blog/new-in-webgpu-143.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "f801bdd075155b811cb08d3ab38cb9e1fea4fa5f66cf669ce30dc80fa3adf18a",
+   "bytes": 27915
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-144",
+   "path": "blog/new-in-webgpu-144.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "1551a273c0b8cf452a3ed0bb0116820333d201f24542e680261f773a08ec254c",
+   "bytes": 30455
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-145",
+   "path": "blog/new-in-webgpu-145.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "47613ccc97cd7ac3d0c96dc434c818daa1e7f0c926847130f01d6273d50efc98",
+   "bytes": 29392
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-146",
+   "path": "blog/new-in-webgpu-146.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "7643203ca44d6ba875de243873009b457fc5755a6c8a53a047ee04d31f159b6c",
+   "bytes": 30036
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-147-148",
+   "path": "blog/new-in-webgpu-147-148.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "657c121c74230445be135c8d8a3e2d81dcb60c7d5cf9575a5df430b07e86f7a5",
+   "bytes": 28202
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-149-150",
+   "path": "blog/new-in-webgpu-149-150.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "5890eba567d9624c037750779c8ba601c11989c0d7627ae57c5a5a94c467b64c",
+   "bytes": 29286
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-151-152",
+   "path": "blog/new-in-webgpu-151-152.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "9bf09886f3e753d4d057b6b28b3410ce3f2da46d3408d6c14c0682104320aab9",
+   "bytes": 28343
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-153-154",
+   "path": "blog/new-in-webgpu-153-154.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "d2dc24176b98da4b145ad9b9a3df3b665b48a16f565dcedbc69cd9a43463e7d9",
+   "bytes": 30388
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-in-webgpu-155-156",
+   "path": "blog/new-in-webgpu-155-156.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "976fe2f2298a23f6f23d675652572ab3162fedaf069cdc73a9a45a729a804d63",
+   "bytes": 31579
+  },
+  {
+   "url": "https://developer.chrome.com/blog/new-soft-navigations-origin-trial",
+   "path": "blog/new-soft-navigations-origin-trial.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "6a9676c16b9f51af8eb995e491ed64b01882a9a55991e6785962f1a31b83324a",
+   "bytes": 10146
+  },
+  {
+   "url": "https://developer.chrome.com/blog/next-for-webgpu",
+   "path": "blog/next-for-webgpu.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "fef9c11716e109a746b98cdedcda851c85fedc6bfca42032123370fe0a7727f2",
+   "bytes": 5545
+  },
+  {
+   "url": "https://developer.chrome.com/blog/notification-permission-data-in-crux",
+   "path": "blog/notification-permission-data-in-crux.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "813da66ab08f77fea9ae9a8381c08abee8b3b1f5681336101d8c9fdd7d4819fa",
+   "bytes": 6719
+  },
+  {
+   "url": "https://developer.chrome.com/blog/optimizing-lcp-using-signed-exchanges",
+   "path": "blog/optimizing-lcp-using-signed-exchanges.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "5efb96f5535dbb3dc58472077a37d4c26ef3aff3c367b621e903a45b639253ba",
+   "bytes": 32446
+  },
+  {
+   "url": "https://developer.chrome.com/blog/prerender-until-script-origin-trial",
+   "path": "blog/prerender-until-script-origin-trial.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "7ec464c76aa1f14ccd474cdfa8facdf4e78b12256dd4ea508a5a5331ac37d00e",
+   "bytes": 11018
+  },
+  {
+   "url": "https://developer.chrome.com/blog/quick-faqs-on-input-type-date-in-google-chrome",
+   "path": "blog/quick-faqs-on-input-type-date-in-google-chrome.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "66470e56750bc6e9edb8bda68ea0365e1e06b73b5981d00474b6a3e29ad88573",
+   "bytes": 3172
+  },
+  {
+   "url": "https://developer.chrome.com/blog/scoped-view-transitions-feedback",
+   "path": "blog/scoped-view-transitions-feedback.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:15+00:00",
+   "sha256": "da72557a6cac680893b3d2073247ae652b9c57c016f1642c67f10f97fe19026b",
+   "bytes": 3817
+  },
+  {
+   "url": "https://developer.chrome.com/blog/scroll-driven-animations-video-course",
+   "path": "blog/scroll-driven-animations-video-course.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "a31de7e9f80b3fa527c79c47648535cedad4d57c821bfc1e00d7def5914ae77c",
+   "bytes": 14007
+  },
+  {
+   "url": "https://developer.chrome.com/blog/search-speculation-rules",
+   "path": "blog/search-speculation-rules.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "3cdf7ee7e35607e7697fcff6cca26e3990d3ef216859bab48b13194db3718574",
+   "bytes": 22156
+  },
+  {
+   "url": "https://developer.chrome.com/blog/spa-view-transitions-land",
+   "path": "blog/spa-view-transitions-land.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "0373ab53bf649d8d55be473d7fb53da58caf09f3aec613824c9e4d84464faf8f",
+   "bytes": 8355
+  },
+  {
+   "url": "https://developer.chrome.com/blog/speculation-rules-improvements",
+   "path": "blog/speculation-rules-improvements.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "716fefb984dc61f8f7827f29735e94cc5226e21409c2dc1b0be19126919f1a21",
+   "bytes": 20087
+  },
+  {
+   "url": "https://developer.chrome.com/blog/sqlite-wasm-in-the-browser-backed-by-the-origin-private-file-system",
+   "path": "blog/sqlite-wasm-in-the-browser-backed-by-the-origin-private-file-system.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "a6edde6c4441f3cd5454132f540a06c1816d121366feaa95bddaf8e4eef2ef5d",
+   "bytes": 10405
+  },
+  {
+   "url": "https://developer.chrome.com/blog/taking-advantage-of-gpu-acceleration-in-the-2d-canvas",
+   "path": "blog/taking-advantage-of-gpu-acceleration-in-the-2d-canvas.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "332a4d9b3c923f62d0c0a870ae8b0dc9915b8cb74bdadade0aa711d8d1d52c79",
+   "bytes": 879
+  },
+  {
+   "url": "https://developer.chrome.com/blog/video-accessibility-gemini-competition",
+   "path": "blog/video-accessibility-gemini-competition.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "824bc08b934694cb3a2395d5d671bcee70245c383ef5a9b6852951c5196344fd",
+   "bytes": 3631
+  },
+  {
+   "url": "https://developer.chrome.com/blog/view-transitions-case-studies",
+   "path": "blog/view-transitions-case-studies.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "f63e2a61b76b10aa1cd64fd412b192c79a62d05c25650e13a37561c4dc7c9322",
+   "bytes": 18772
+  },
+  {
+   "url": "https://developer.chrome.com/blog/view-transitions-in-2025",
+   "path": "blog/view-transitions-in-2025.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "198259145ce016a9b1b4954efc20acaa8edbad85a40cc91720b1ced85391dc53",
+   "bytes": 68997
+  },
+  {
+   "url": "https://developer.chrome.com/blog/view-transitions-misconceptions",
+   "path": "blog/view-transitions-misconceptions.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "7e374023b1a76d0c97db99f03ea42fe6b443c37046d4ca1afa6cad24e016a8a7",
+   "bytes": 9030
+  },
+  {
+   "url": "https://developer.chrome.com/blog/view-transitions-update-io24",
+   "path": "blog/view-transitions-update-io24.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "a8f3ff56cb47f2ea216bbdc819820a303f7d25af737ea39264574ffbaa654e38",
+   "bytes": 42265
+  },
+  {
+   "url": "https://developer.chrome.com/blog/wasm-debugging-2019",
+   "path": "blog/wasm-debugging-2019.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "5432a02e8d5e2ee9d31047f463c84f12503c702b586fc1fddc08bc2e2cfe1e55",
+   "bytes": 4736
+  },
+  {
+   "url": "https://developer.chrome.com/blog/wasm-debugging-2020",
+   "path": "blog/wasm-debugging-2020.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "006c8417afffcbc22496dae46c93ea8e77626cad176a35f987be7ece97690993",
+   "bytes": 16766
+  },
+  {
+   "url": "https://developer.chrome.com/blog/wasm-module-sharing-restricted-to-same-origin",
+   "path": "blog/wasm-module-sharing-restricted-to-same-origin.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "2c1897a627beb363668848d52d2e653b26f1bbfebbb67bc006dd19dc0f1ee90c",
+   "bytes": 4194
+  },
+  {
+   "url": "https://developer.chrome.com/blog/wasmgc",
+   "path": "blog/wasmgc.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "77e19ef8770e256edd52b3e1534c0e322a68a367428a4d7949bccea63070bd5a",
+   "bytes": 25198
+  },
+  {
+   "url": "https://developer.chrome.com/blog/web-audio-live-audio-input-now-on-android",
+   "path": "blog/web-audio-live-audio-input-now-on-android.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "2f0ce4503d869a23ab36d88c6dc80af79af84114c5e1f178180c1a0f111ac316",
+   "bytes": 1486
+  },
+  {
+   "url": "https://developer.chrome.com/blog/web-vitals-extension",
+   "path": "blog/web-vitals-extension.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:15+00:00",
+   "sha256": "9ed9e09592bb103b3e309d84acece232264dc221117e117014cd5f105a80f9ae",
+   "bytes": 3152
+  },
+  {
+   "url": "https://developer.chrome.com/blog/web-vitals-extension-merged",
+   "path": "blog/web-vitals-extension-merged.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "9c7cc770d5b0c6f8d0b501fd60da9417885b2c21a3010c96aac664568207f3b5",
+   "bytes": 2487
+  },
+  {
+   "url": "https://developer.chrome.com/blog/webassembly-jspi-origin-trial",
+   "path": "blog/webassembly-jspi-origin-trial.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "636372025a96d060423e40b20bab13862735c81eb449f506694287d8f8b142e2",
+   "bytes": 2733
+  },
+  {
+   "url": "https://developer.chrome.com/blog/webgpu-io2023",
+   "path": "blog/webgpu-io2023.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "9b8559354f4ce1516fcfffb66fbc7b7a65b3cf554a655e6fb206ada939d57346",
+   "bytes": 13793
+  },
+  {
+   "url": "https://developer.chrome.com/blog/webgpu-release",
+   "path": "blog/webgpu-release.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "917ce715a728f49dd61bd9e852340737da498d9b4274f4fc4215563b10e3ba81",
+   "bytes": 5081
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux",
+   "path": "docs/crux.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2025-12-17T09:39:12+00:00",
+   "sha256": "52d36d352e9ef072cbf937d125eceebf3b0ac51e1a76423c86432862aadd7668",
+   "bytes": 1510
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/api",
+   "path": "docs/crux/api.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T15:44:10+00:00",
+   "sha256": "392b3c16bf3c8f34e3493729062e40980c8297bc5ff6bd3ed9e4c08e6f125d8b",
+   "bytes": 25895
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/bigquery",
+   "path": "docs/crux/bigquery.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-10-13T18:02:02+00:00",
+   "sha256": "390d6c97c08a4ab6fb510a420d920efc702257088c8923bda2c63ec45575cce1",
+   "bytes": 8752
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/dashboard",
+   "path": "docs/crux/dashboard.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:15+00:00",
+   "sha256": "3e37ced3d2840c1a005b05037a9fc8dad06fa43be014ad659cedd097e8514ecd",
+   "bytes": 10897
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/feedback",
+   "path": "docs/crux/feedback.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2025-07-25T03:15:47+00:00",
+   "sha256": "e5ac027fc42ef2270010dd1a37d24e3da5d3ef832b5fba78e88811d2e2b89875",
+   "bytes": 1131
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/guides",
+   "path": "docs/crux/guides.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "b1dca5913e84a3144dc9bb46e33ad78139cafaa0d36aa5b802a883484561b424",
+   "bytes": 738
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/guides/bigquery",
+   "path": "docs/crux/guides/bigquery.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "c09d9ce5a534f9b627453fe9c07742fef7ed07904edede4c87739478efd99e75",
+   "bytes": 6675
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/guides/crux-api",
+   "path": "docs/crux/guides/crux-api.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "c0d7c01ac7d21b92c36fd3d4ad3617a0798a223903e170aa68c8b7eb4d0ae6fd",
+   "bytes": 17527
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/guides/history-api",
+   "path": "docs/crux/guides/history-api.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "086514e6bbf19deac8d4f0984b056c2fdef00ccef16ee9edae6a4ad029f41f3d",
+   "bytes": 10365
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/guides/looker-studio-dashboard",
+   "path": "docs/crux/guides/looker-studio-dashboard.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "4ce91b0c66693dff55592d51493642e84b7f91192270fb39813577846c89c1ef",
+   "bytes": 11717
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/guides/pagespeed-insights",
+   "path": "docs/crux/guides/pagespeed-insights.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "0f46a6858516fdac0ddcebb06e43b98e74df6bbf0c49a050d0b0c320370e31b0",
+   "bytes": 7774
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/history-api",
+   "path": "docs/crux/history-api.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "941dc0b192c315a8eced5267c560637676aa75186fb1b25e016b6ff1ae0ef789",
+   "bytes": 26008
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/methodology",
+   "path": "docs/crux/methodology.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-09-15T16:04:03+00:00",
+   "sha256": "42f570ab716b9511705075902df41ac141e30a6f3e8c1cb4228058db6575d3b0",
+   "bytes": 10643
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/methodology/dimensions",
+   "path": "docs/crux/methodology/dimensions.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2025-07-25T03:15:47+00:00",
+   "sha256": "baff66c92c1508eee3cdb918dbf3f3a6cb4985746b2468d2e99d81d777d75ec0",
+   "bytes": 5122
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/methodology/metrics",
+   "path": "docs/crux/methodology/metrics.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "82c35e54826f340efd1115d8bd5d2e208270f254ec59256b14b2a382e0696d8f",
+   "bytes": 14936
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/methodology/tools",
+   "path": "docs/crux/methodology/tools.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "64bb6a01760a3af0441beef3e82bab29185af228e6cc7cefb7e1c64cfce731fe",
+   "bytes": 8878
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/release-notes",
+   "path": "docs/crux/release-notes.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T15:44:10+00:00",
+   "sha256": "f187474a1d18b93e8b7a3d279a1dc2bcdbf3664a453d31b41d50dac56f5fa6d2",
+   "bytes": 78408
+  },
+  {
+   "url": "https://developer.chrome.com/docs/crux/vis",
+   "path": "docs/crux/vis.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-09-15T16:04:03+00:00",
+   "sha256": "3c9b187bf32105acf1aef22ad5e3fdb71ada8046e24c0072d95fe35769d9ba1c",
+   "bytes": 7678
+  },
+  {
+   "url": "https://developer.chrome.com/docs/devtools/accessibility/contrast",
+   "path": "docs/devtools/accessibility/contrast.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "bb061ee59ed3d6485d10a3e5e2e9b28e93becd295118802a0f9ebd4d6d81a146",
+   "bytes": 7059
+  },
+  {
+   "url": "https://developer.chrome.com/docs/devtools/accessibility/focus",
+   "path": "docs/devtools/accessibility/focus.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "2b37b1fc15dc601d72f5891eeb53a46495dbed1660a9314c2045bd6ff4241461",
+   "bytes": 1324
+  },
+  {
+   "url": "https://developer.chrome.com/docs/devtools/accessibility/navigation",
+   "path": "docs/devtools/accessibility/navigation.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "125472f89b56ebdc6ef60cc209db84b93b06c78e89131890b27c61a292bdfa2b",
+   "bytes": 16041
+  },
+  {
+   "url": "https://developer.chrome.com/docs/devtools/accessibility/reference",
+   "path": "docs/devtools/accessibility/reference.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "0ceab4ba27921b138d5006a862d26701791593054aea6adb6885dbc424b605fe",
+   "bytes": 11315
+  },
+  {
+   "url": "https://developer.chrome.com/docs/devtools/lighthouse",
+   "path": "docs/devtools/lighthouse.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "447f8c1dd9283f007c5a10d3d464368984626457bde7dafc95190acdc90670b5",
+   "bytes": 6519
+  },
+  {
+   "url": "https://developer.chrome.com/docs/devtools/performance",
+   "path": "docs/devtools/performance.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "bd5c385d12f643984f58c16156b92befbb6f3bcb05dcc7aec1f14d333050daa8",
+   "bytes": 12759
+  },
+  {
+   "url": "https://developer.chrome.com/docs/devtools/performance-insights",
+   "path": "docs/devtools/performance-insights.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "f36f02ba547466759e5754596586ae7589425af25fe4a65801f9c770ca533d2e",
+   "bytes": 11994
+  },
+  {
+   "url": "https://developer.chrome.com/docs/devtools/performance-monitor",
+   "path": "docs/devtools/performance-monitor.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "bc3b623d78cdd51e86b2ffaf8228985daca793e7d98b10e0a002c1d5074d6247",
+   "bytes": 2468
+  },
+  {
+   "url": "https://developer.chrome.com/docs/devtools/performance/annotations",
+   "path": "docs/devtools/performance/annotations.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "c0d979c7009fe47a60711af27911e7fdc42ab9f8e3d187ef75df841b4199c937",
+   "bytes": 3595
+  },
+  {
+   "url": "https://developer.chrome.com/docs/devtools/performance/extension",
+   "path": "docs/devtools/performance/extension.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "bcd2653fba39a6cfddb954387e060ede1d592fb2cf68630a737b0a0a60803290",
+   "bytes": 10408
+  },
+  {
+   "url": "https://developer.chrome.com/docs/devtools/performance/nodejs",
+   "path": "docs/devtools/performance/nodejs.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "83db94ce9d6006eafb9d9989243add9a9d5f992428ac3c23355c4e58b7581a49",
+   "bytes": 4164
+  },
+  {
+   "url": "https://developer.chrome.com/docs/devtools/performance/overview",
+   "path": "docs/devtools/performance/overview.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "606408d6b4a2752753233939ca67bdc959af4b84ca280304bae183fd8011777e",
+   "bytes": 12972
+  },
+  {
+   "url": "https://developer.chrome.com/docs/devtools/performance/reference",
+   "path": "docs/devtools/performance/reference.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "2d4aca7e6bacb1759abc92dde4039eb02c4b8431d225ed564fb4a47579b85a2f",
+   "bytes": 41358
+  },
+  {
+   "url": "https://developer.chrome.com/docs/devtools/performance/save-trace",
+   "path": "docs/devtools/performance/save-trace.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "b3cd3c506a0cb4a49d3474c2a354e947327752cfb18363f43d8cb87478b8f5ee",
+   "bytes": 4861
+  },
+  {
+   "url": "https://developer.chrome.com/docs/devtools/performance/selector-stats",
+   "path": "docs/devtools/performance/selector-stats.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "14a1729a753f3c67c7a9fe01e46ebae62373bf6b159c96df52c908c0eb329a8a",
+   "bytes": 7909
+  },
+  {
+   "url": "https://developer.chrome.com/docs/devtools/performance/timeline-reference",
+   "path": "docs/devtools/performance/timeline-reference.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "b2799922e954b849f1fcf7e3537ddc66e1dee1d2d276a33db90790880076e2d0",
+   "bytes": 6244
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/custom-control-roles",
+   "path": "docs/lighthouse/accessibility/custom-control-roles.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "b0c681d7c1475ea0c3c75bce3335eed187ac4511b23761bd337fdfb2977ad8a0",
+   "bytes": 2969
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/custom-controls-labels",
+   "path": "docs/lighthouse/accessibility/custom-controls-labels.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:15+00:00",
+   "sha256": "bc1583acd2ba8c1295dd7eb13dfe261fd0fdf8d8be9c53273fdb6ce2b58d560a",
+   "bytes": 2114
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/focus-traps",
+   "path": "docs/lighthouse/accessibility/focus-traps.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "630a41ed0b812665cf2309c51d7eccb3bfd46b4c3be45ebd37da40be558eff40",
+   "bytes": 2171
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/focusable-controls",
+   "path": "docs/lighthouse/accessibility/focusable-controls.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "bbf72977e47dee9cd9feb4e209ab93af3f2c559624054abd91ea9bc5a9c665da",
+   "bytes": 3506
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/interactive-element-affordance",
+   "path": "docs/lighthouse/accessibility/interactive-element-affordance.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "3907778655c4187e84925867a57f01c41ab61e9d91bae13a11279d018aa70734",
+   "bytes": 2454
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/logical-tab-order",
+   "path": "docs/lighthouse/accessibility/logical-tab-order.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "ec2f3d90e35fd1e97e8f2477f1ba4e1ab1fc4ae32a91361923565cc3ea2ea7f4",
+   "bytes": 2070
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/managed-focus",
+   "path": "docs/lighthouse/accessibility/managed-focus.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "9fe8a14adf8e380b4cfdcd59b752238cb7ce231fb895823b5e10e9d4996d99ef",
+   "bytes": 1868
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/offscreen-content-hidden",
+   "path": "docs/lighthouse/accessibility/offscreen-content-hidden.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "ed871e822584bedbe753397e2ac9ae88b531efdb469e2cd96e6dfee0f383eed6",
+   "bytes": 1590
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/scoring",
+   "path": "docs/lighthouse/accessibility/scoring.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "aa00ff1f380904e36e7410f564368dc72cb7606a2abe15db9c24b541363ba9f3",
+   "bytes": 7919
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/use-landmarks",
+   "path": "docs/lighthouse/accessibility/use-landmarks.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "04c6625e2615cbf28203729e1834b39800f9e5402ca38458010ef29cf1ef6f0b",
+   "bytes": 2664
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/visual-order-follows-dom",
+   "path": "docs/lighthouse/accessibility/visual-order-follows-dom.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "66797ab204c18c3e881e29faf2c3f2f3665d9210b588a5e7b68ad05c4d083703",
+   "bytes": 1692
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/appcache-manifest",
+   "path": "docs/lighthouse/best-practices/appcache-manifest.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "13d5a6d3827f4f5b4320ac8c2b69cb9d022d1df8c5f35df126e0f9e40c20c470",
+   "bytes": 1980
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/baseline-features",
+   "path": "docs/lighthouse/best-practices/baseline-features.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "f2b972e0b807b564a3ebcff8508731bbf86b4cfa1d2314510e807ca9c7f9b80d",
+   "bytes": 1256
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/charset",
+   "path": "docs/lighthouse/best-practices/charset.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "57683758837547d0cab12ff3ba62391113670ab6ad01090b093cea7dbdc818fa",
+   "bytes": 2778
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/clickjacking-mitigation",
+   "path": "docs/lighthouse/best-practices/clickjacking-mitigation.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "b4fcbe70da4be6e668b80900fcb9390cc5cfd84cd7d936d04b2f5b0b661b0431",
+   "bytes": 2560
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/csp-xss",
+   "path": "docs/lighthouse/best-practices/csp-xss.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "4763fb0ab42be9afa9bd99ef132b5bd96635fe4bada20c03dbf38eb6302dd46f",
+   "bytes": 5886
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/deprecations",
+   "path": "docs/lighthouse/best-practices/deprecations.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "d15b9290e2412a78b6687f333d7463d7d7dca4bfbd2d584323d4c4a1d9713cf9",
+   "bytes": 1084
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/doctype",
+   "path": "docs/lighthouse/best-practices/doctype.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "877d7e41eb884b34a47b4745f95e50a044d0f450f13f19a9260ab3520d5bf0ca",
+   "bytes": 1274
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/errors-in-console",
+   "path": "docs/lighthouse/best-practices/errors-in-console.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "bd67502061b746b377880cbcce4bf9b6831bd9748112e2c34ea40a5b77eacdbb",
+   "bytes": 2956
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/external-anchors-use-rel-noopener",
+   "path": "docs/lighthouse/best-practices/external-anchors-use-rel-noopener.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "4637339b2bbaf19629626bef613face5e9fa0a4f0efab2f8887b37b65e15e795",
+   "bytes": 3021
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/geolocation-on-start",
+   "path": "docs/lighthouse/best-practices/geolocation-on-start.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "3c3250c29ba422c2a23194407878f431b7c4f2556717f750788c9ed12a7342ac",
+   "bytes": 1989
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts",
+   "path": "docs/lighthouse/best-practices/has-hsts.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "8383a7276db99b9bbd622f13e095bacb21de133a0a3a9dd6c5ecb3501b308497",
+   "bytes": 13806
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/image-aspect-ratio",
+   "path": "docs/lighthouse/best-practices/image-aspect-ratio.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "773ae399fef1ad884b37a5ff578654e1ec38164ed8158c6f96f66e9690e2b445",
+   "bytes": 3204
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/is-on-https",
+   "path": "docs/lighthouse/best-practices/is-on-https.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "57dc6ed0c8a7e612d6e4b0b099828392bfec99630bf7510035b8a212db73695b",
+   "bytes": 2173
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/js-libraries",
+   "path": "docs/lighthouse/best-practices/js-libraries.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "e03e1695a6c2221b97348c804e3e30ffc7a0becc95031053e4a64822ecb7cd17",
+   "bytes": 415
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/no-document-write",
+   "path": "docs/lighthouse/best-practices/no-document-write.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "5bd3d3e03af67ea4b9f133f64d5ab5845f82777daf60762b9adbfe6ea78389c8",
+   "bytes": 2750
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/no-vulnerable-libraries",
+   "path": "docs/lighthouse/best-practices/no-vulnerable-libraries.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "219c4f86c06f5c93655504b86bb25bba2c84ab9e0e4943119fca32fe3c434069",
+   "bytes": 1994
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/notification-on-start",
+   "path": "docs/lighthouse/best-practices/notification-on-start.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "2fc92034d3e5594399aec24a0ba1ba6eb6331ff2e4bb319e6bf94308edfea135",
+   "bytes": 1798
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs",
+   "path": "docs/lighthouse/best-practices/paste-preventing-inputs.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "4e6f1a61324aede284efcc16813aebfbe458589648016de66c8a4b29b18a3e70",
+   "bytes": 2450
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/redirects-http",
+   "path": "docs/lighthouse/best-practices/redirects-http.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "dd3184f30dfb0fb27b421008ed912e54e33d87945ab92a70885696f2be8e882a",
+   "bytes": 1805
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/trusted-types-xss",
+   "path": "docs/lighthouse/best-practices/trusted-types-xss.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "527ed752c9032aeabf32d3df3f24026b7d3bb86f4b0cfdcc7341285ae4b72556",
+   "bytes": 1404
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2",
+   "path": "docs/lighthouse/best-practices/uses-http2.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:36+00:00",
+   "sha256": "f3626475fdd16a2cc89b4386502fcb0b6359225a6be9ee6d4501a0c137f3626e",
+   "bytes": 1647
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/uses-passive-event-listeners",
+   "path": "docs/lighthouse/best-practices/uses-passive-event-listeners.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "2e8366b6fff4276d55975be08f350471e2228572df09c814fe15dc9954e12f77",
+   "bytes": 3259
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/viewport",
+   "path": "docs/lighthouse/best-practices/viewport.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "e9ca79c52fa989cf2d82c9179b14346eba16d2618b98deac9334f80f671290ec",
+   "bytes": 2475
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/bf-cache",
+   "path": "docs/lighthouse/performance/bf-cache.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "b151e6beece19d08a41dca31fc52720a326708c4bb2de7f55e77d631c8417d48",
+   "bytes": 2568
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/bootup-time",
+   "path": "docs/lighthouse/performance/bootup-time.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "aa71f66d01b362ddf723a443f3501719dda4d3becc8c30311393d4510a88149a",
+   "bytes": 2324
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains",
+   "path": "docs/lighthouse/performance/critical-request-chains.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "51230acd7fc34f39fc23c341d57c61134140a420972798089360b4ae06f64d71",
+   "bytes": 2671
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/dom-size",
+   "path": "docs/lighthouse/performance/dom-size.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "b847d71273d10092dc8a7cae000bd1049467486908b7503f4cb094702a2e8ca3",
+   "bytes": 4226
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/efficient-animated-content",
+   "path": "docs/lighthouse/performance/efficient-animated-content.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "29aa5b69c25dd7e3020d061e25bd498c92f12b0a7b0f86ed769512600bc7fe21",
+   "bytes": 3129
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/estimated-input-latency",
+   "path": "docs/lighthouse/performance/estimated-input-latency.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "c1e2157df5748d2299fc97c4fa8a9e59a7294426f4e5caca8eaf1f67ff52d70f",
+   "bytes": 3652
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint",
+   "path": "docs/lighthouse/performance/first-contentful-paint.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "4abfddec4ce92a0730d984de6549aee0373c828f6c7658aa40b336d1fdcd0e12",
+   "bytes": 4112
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/first-cpu-idle",
+   "path": "docs/lighthouse/performance/first-cpu-idle.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "736a35dbc30a0d889d9f37126c8320b6dd0678bb7ead76f51bc96f61cd4cfab3",
+   "bytes": 4082
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint",
+   "path": "docs/lighthouse/performance/first-meaningful-paint.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "9fb9706d95a250bbf65011b89e2682cc1d3ca18dc1649c1fbdb231d0796359c0",
+   "bytes": 4771
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/font-display",
+   "path": "docs/lighthouse/performance/font-display.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "a06bacc142c441101b0bce05cbbbb780f62cbb1f05a15a41a3281defed74d29e",
+   "bytes": 3427
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/interactive",
+   "path": "docs/lighthouse/performance/interactive.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "be1c653b62e21bfbe18978f43836e8bfaded4fbb0d299c2df02c22bf1cd1c901",
+   "bytes": 5875
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint",
+   "path": "docs/lighthouse/performance/lighthouse-largest-contentful-paint.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "06fc7ac2704969630355e73c9047dc52def54e130d4e25237ed823fcd77403b1",
+   "bytes": 3015
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/lighthouse-max-potential-fid",
+   "path": "docs/lighthouse/performance/lighthouse-max-potential-fid.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "c9a739e0af496322bca8af618e21826c79c052527d0f7c795f66b21f39c53428",
+   "bytes": 4936
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/lighthouse-total-blocking-time",
+   "path": "docs/lighthouse/performance/lighthouse-total-blocking-time.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "32db43b0e4653af934b0cbc05636c20a781c4ef1bb7f8114d63b2d1873167b7e",
+   "bytes": 4747
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/mainthread-work-breakdown",
+   "path": "docs/lighthouse/performance/mainthread-work-breakdown.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "29a38a2ded0fcc015f4469f0ffed9a36c486b4448a4d23af77a423bb677e01ac",
+   "bytes": 3496
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/non-composited-animations",
+   "path": "docs/lighthouse/performance/non-composited-animations.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:40+00:00",
+   "sha256": "b70f62936005c39e8b2ff39991c23ba1b40213d0b9b59b32ea690c68cf80ff8a",
+   "bytes": 3183
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/offscreen-images",
+   "path": "docs/lighthouse/performance/offscreen-images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "2236441b338c8ac34a51c7f9b2f33afa330110f14475d7b1aea8c8de58781b49",
+   "bytes": 2149
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/performance-scoring",
+   "path": "docs/lighthouse/performance/performance-scoring.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "44bf154bdc0ab7f71c6792b1eff2a3bfd1acfe4c19e0a352634622296b4a773e",
+   "bytes": 6485
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/redirects",
+   "path": "docs/lighthouse/performance/redirects.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "0ff2f387e50d17c6166b2ffff067eaec4fed42ebe372a8e20bfe737c9326f3f7",
+   "bytes": 2257
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources",
+   "path": "docs/lighthouse/performance/render-blocking-resources.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "bde9fa38b4e4b7e1e20355d9b0afd6263649866762a95ffc4bd3dae72a73d5b3",
+   "bytes": 5434
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/resource-summary",
+   "path": "docs/lighthouse/performance/resource-summary.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "a586520934262f46b53fa9f5652073cf88b8cf893e1625121d8ebd1cc15d15be",
+   "bytes": 3876
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/server-response-time",
+   "path": "docs/lighthouse/performance/server-response-time.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "0ad8b2b6c31f3b8b3e46e2df61dacaabb3c8676e9e6dc9c72596f1237d64e9bd",
+   "bytes": 4695
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/speed-index",
+   "path": "docs/lighthouse/performance/speed-index.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "f9414e2343d30aade3e571e22d8d7832b2796e2f8acb56a8d57a98a3428d29f3",
+   "bytes": 3763
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/third-party-facades",
+   "path": "docs/lighthouse/performance/third-party-facades.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "ed2b69ec96a2cdbc4ca3f56c04c92a1e99f64e263174fe5362610b42c7390f35",
+   "bytes": 4390
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/third-party-summary",
+   "path": "docs/lighthouse/performance/third-party-summary.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "a5738eabd66bbf5d24ac1fdb49788ee9d1f8fd71c8744830d58e2383468aa5d0",
+   "bytes": 1804
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/total-byte-weight",
+   "path": "docs/lighthouse/performance/total-byte-weight.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "0eb65eac84d11b6b386f0296b8d9a57b2afb8de8ad0b26691c374a59982b29ca",
+   "bytes": 3698
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/unminified-css",
+   "path": "docs/lighthouse/performance/unminified-css.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "b89fc9afd983310cb9adadf1fac53c9bee097965a1a68ecd40cdfd2e72d73f88",
+   "bytes": 3527
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/unminified-javascript",
+   "path": "docs/lighthouse/performance/unminified-javascript.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "056ff14a418030d50c001ceff323d471ac2f0b54a872e6ae29d7fb2129c421ab",
+   "bytes": 1973
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/unused-css-rules",
+   "path": "docs/lighthouse/performance/unused-css-rules.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:15+00:00",
+   "sha256": "5832baa68fb553f9bd3d5615c188291451c5aa07fccbaaf4ce37858a24336cbd",
+   "bytes": 3733
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/unused-javascript",
+   "path": "docs/lighthouse/performance/unused-javascript.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "02273409e3d97425bb550777f05097b7c811ef4f093db10525914071b153abbb",
+   "bytes": 4876
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/user-timings",
+   "path": "docs/lighthouse/performance/user-timings.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "97e86e7ad64bbab9b0d857dc10cefb7172f72fc9242ad1f23b92af0d940368c3",
+   "bytes": 2184
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-long-cache-ttl",
+   "path": "docs/lighthouse/performance/uses-long-cache-ttl.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:04+00:00",
+   "sha256": "9b84fd011f403cffd1acd4e8de12931688054c5f526904bee682b827d06f8c0b",
+   "bytes": 4676
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images",
+   "path": "docs/lighthouse/performance/uses-optimized-images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "15c427756794c220861601501708bb5679771862b9bd7bb0e08c199621340551",
+   "bytes": 3366
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect",
+   "path": "docs/lighthouse/performance/uses-rel-preconnect.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "37abda1bb00415b53075b19049ad9e289aa52ff064d7a48138de7f785b17318f",
+   "bytes": 3883
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preload",
+   "path": "docs/lighthouse/performance/uses-rel-preload.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "5c36855ae2f4e0b9edf05037ce4afd0165276d8c3196b6255efd707ec90fb4d6",
+   "bytes": 3073
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-responsive-images",
+   "path": "docs/lighthouse/performance/uses-responsive-images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "2667fcf9f6b8182dd9d4fb6d4f8f6ab0b1dd4a7bfca3aba94d5f150b8b5c3239",
+   "bytes": 4633
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-text-compression",
+   "path": "docs/lighthouse/performance/uses-text-compression.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "4dcb201ca30368213b7ab9f62409d00103b5c62c1c9ffb0b2a8906be69c3c5e5",
+   "bytes": 4510
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-webp-images",
+   "path": "docs/lighthouse/performance/uses-webp-images.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "5b96876672dbc04aaaee4fed261c2abba85c10ae0e6d077578c1076f57bf674f",
+   "bytes": 4018
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/seo/canonical",
+   "path": "docs/lighthouse/seo/canonical.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "8b554911ac18e5e3aad6e7aebd4d59d463d216da2cfb72040685c08d5c9165b3",
+   "bytes": 4401
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/seo/font-size",
+   "path": "docs/lighthouse/seo/font-size.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "aa7a83f77f03223de292dbe47d977d17ad4609b4bf66710e295d78a0cc8b33a7",
+   "bytes": 2162
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/seo/hreflang",
+   "path": "docs/lighthouse/seo/hreflang.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:12+00:00",
+   "sha256": "61455fad82b02e317fe338a513f6e72f808fd8ce0f03fb45ac056cad12c0809e",
+   "bytes": 3809
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/seo/http-status-code",
+   "path": "docs/lighthouse/seo/http-status-code.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "5b5e52a4542178fbd9e13a5c50441155ff1783a11f2225e5506f676a86ba9e55",
+   "bytes": 2273
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/seo/invalid-robots-txt",
+   "path": "docs/lighthouse/seo/invalid-robots-txt.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "64513f15492276eec09c5bbeceee5468503c39de9ced431773d32e84092ea594",
+   "bytes": 5819
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/seo/is-crawlable",
+   "path": "docs/lighthouse/seo/is-crawlable.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "434385c55b621c5ba1f90304993185b96d9bc292d302d66c8197d5e458ee0c03",
+   "bytes": 3652
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/seo/link-text",
+   "path": "docs/lighthouse/seo/link-text.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "33e629f7bad0cc8d1460bcee54f280086094e58be7760b7fb391235d0176b9a1",
+   "bytes": 2549
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/seo/meta-description",
+   "path": "docs/lighthouse/seo/meta-description.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "f12b95752a6950b563ef0dc8525d772db2b730833cf65fb1a02f54c6fc0e353d",
+   "bytes": 2662
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/seo/plugins",
+   "path": "docs/lighthouse/seo/plugins.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "e6a86225e361514033b1a4c9fb214159ce7e513a3f066adb41050ca4a769a904",
+   "bytes": 2012
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/seo/structured-data",
+   "path": "docs/lighthouse/seo/structured-data.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "84939beda053c110e037f0262e532c2a18985744de35b57ddb755e3af7d558a8",
+   "bytes": 1912
+  },
+  {
+   "url": "https://developer.chrome.com/docs/lighthouse/seo/tap-targets",
+   "path": "docs/lighthouse/seo/tap-targets.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:39+00:00",
+   "sha256": "0e5a9bbdf5aade2612169e77e7dd54ed206cbf055a9e6c1421ac0cbfc17cd339",
+   "bytes": 2281
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/cache",
+   "path": "docs/performance/insights/cache.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "e002e9dcabaae91e9a52c1af256effb0e9b75da12a9bd389805128257d96247c",
+   "bytes": 2742
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/charset",
+   "path": "docs/performance/insights/charset.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "8fdfcf2f88c5077dac5b18a07e5a94ef58a495c31b4d56973cd895f860143dbe",
+   "bytes": 2096
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/cls-culprit",
+   "path": "docs/performance/insights/cls-culprit.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "ffdaa270fe7545692fb7f40602b186ee18b2a60ba85409db2d5e1b600ef1ce97",
+   "bytes": 1520
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/document-latency",
+   "path": "docs/performance/insights/document-latency.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:19+00:00",
+   "sha256": "ed420ffbeb05bea9dc504634329224f66268575d8ea893c7650ca662de3422b0",
+   "bytes": 5652
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/dom-size",
+   "path": "docs/performance/insights/dom-size.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:25+00:00",
+   "sha256": "7d19ca3e383ec0e73b03b80efd54aaea2eaf42699548dd6764d1c4c5c25b128b",
+   "bytes": 3547
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/duplicated-javascript",
+   "path": "docs/performance/insights/duplicated-javascript.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "27baf30d896c7852ba5fd6ad28461732f64196124e2b6492c91e637038500635",
+   "bytes": 1640
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/font-display",
+   "path": "docs/performance/insights/font-display.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "feeffea7baeef23c015b4f6695151aa63fe85894229e167ad2ee345d9b24cb35",
+   "bytes": 1601
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/forced-reflow",
+   "path": "docs/performance/insights/forced-reflow.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "5cf71c90f92ead1b6aeaf65a4488c6a233d9b72d89efcac31cf1852353ff44f9",
+   "bytes": 1276
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/image-delivery",
+   "path": "docs/performance/insights/image-delivery.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "2619f86a6c2b35c80e808aae2fda78a718fb88e4868c4fb71f6d93bbffe3dbbe",
+   "bytes": 5814
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/inp-breakdown",
+   "path": "docs/performance/insights/inp-breakdown.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "30ecbe0019f7dc3e4b66f1cc54373240776589b0d7789f6b9bcbc67bdbb3a0f6",
+   "bytes": 1599
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/lcp-breakdown",
+   "path": "docs/performance/insights/lcp-breakdown.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:43+00:00",
+   "sha256": "228f0cf5b3a9dc21e8cdffa6906b66ac71ea4a51ce25a9ec7fbbf3cb76bf2437",
+   "bytes": 2087
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/lcp-discovery",
+   "path": "docs/performance/insights/lcp-discovery.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "cada2db66028c275162ea6211fd71e64518c3da59fdf755d87b6b3515a67de16",
+   "bytes": 1098
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/legacy-javascript",
+   "path": "docs/performance/insights/legacy-javascript.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:57+00:00",
+   "sha256": "5bff5104e3ebdfc6bf459ebcbc305fdeb8bbfb6f766ec26c79babb1ef766181c",
+   "bytes": 3490
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/modern-http",
+   "path": "docs/performance/insights/modern-http.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "6dc72596ecc33b005ddb3bdcf352e468496fcfcb856e40f4eb49c5b1af428eac",
+   "bytes": 1203
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/network-dependency-tree",
+   "path": "docs/performance/insights/network-dependency-tree.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:46+00:00",
+   "sha256": "0417eda829a319e6c8592b6202897c788b72257d22d076b49414685a0060d4dd",
+   "bytes": 1913
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/render-blocking",
+   "path": "docs/performance/insights/render-blocking.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "74462b7ff28de967be06f9d78b4100085c79a9916eb8db8ebc6c768c7fb2cefb",
+   "bytes": 2945
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/slow-css-selector",
+   "path": "docs/performance/insights/slow-css-selector.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "92b824ac1d2fe8c39523e42e6b133ccedfdea92db806f4a33a0f9cea3aedcded",
+   "bytes": 1445
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/third-parties",
+   "path": "docs/performance/insights/third-parties.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "9f6c8f77b6f6916456e6fddf071df0ecd500dfa78ac20e14295518020fd1d67c",
+   "bytes": 1049
+  },
+  {
+   "url": "https://developer.chrome.com/docs/performance/insights/viewport",
+   "path": "docs/performance/insights/viewport.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "1e37168c6c7a9420113ab846df51e317ba424126928130c3756f2859b99e748c",
+   "bytes": 1288
+  },
+  {
+   "url": "https://developer.chrome.com/docs/web-platform/bfcache-ccns",
+   "path": "docs/web-platform/bfcache-ccns.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:29+00:00",
+   "sha256": "0fb2764a71f59bac3c292cde1b52e01430b1a0b9489b684fb34feb0153598f8f",
+   "bytes": 8737
+  },
+  {
+   "url": "https://developer.chrome.com/docs/web-platform/bfcache-notrestoredreasons",
+   "path": "docs/web-platform/bfcache-notrestoredreasons.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:43+00:00",
+   "sha256": "424d6d325e19061de5834154c33acd5bf429efd74b0053e7d52182c65d5f87e2",
+   "bytes": 11309
+  },
+  {
+   "url": "https://developer.chrome.com/docs/web-platform/long-animation-frames",
+   "path": "docs/web-platform/long-animation-frames.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "ab8c620fb15e4775692a843203bd11c2a5adc3a045cb0b80778251c4599eb430",
+   "bytes": 69227
+  },
+  {
+   "url": "https://developer.chrome.com/docs/web-platform/prerender-pages",
+   "path": "docs/web-platform/prerender-pages.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "4dfb2936a30fba20ae4ca75aff621509d7400738a911bd79ca52f06eaf5bc154",
+   "bytes": 124885
+  },
+  {
+   "url": "https://developer.chrome.com/docs/web-platform/view-transitions",
+   "path": "docs/web-platform/view-transitions.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:32+00:00",
+   "sha256": "65e218dcf50e3285413be8aea42826b40f4e59d89af6455edea8e534c0f73a80",
+   "bytes": 25841
+  },
+  {
+   "url": "https://developer.chrome.com/docs/web-platform/view-transitions/cross-document",
+   "path": "docs/web-platform/view-transitions/cross-document.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "afb187b68757c826a9e7c2c214c63ce9d8a5046c59f46c9358a121c7e6759230",
+   "bytes": 64503
+  },
+  {
+   "url": "https://developer.chrome.com/docs/web-platform/view-transitions/same-document",
+   "path": "docs/web-platform/view-transitions/same-document.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:53+00:00",
+   "sha256": "8cb233a3b9cbc37f238a2126859bc4a7508255ff18a1f5b92004c873cf02898f",
+   "bytes": 70439
+  },
+  {
+   "url": "https://developer.chrome.com/docs/web-platform/webgpu/build-app",
+   "path": "docs/web-platform/webgpu/build-app.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "e857359f73ddd43a8750673a8ffb58914ddf585951ccfd3642bfbb3a2c06685b",
+   "bytes": 16352
+  },
+  {
+   "url": "https://developer.chrome.com/docs/web-platform/webgpu/colab-headless",
+   "path": "docs/web-platform/webgpu/colab-headless.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:08+00:00",
+   "sha256": "4ff433f18371b15088f47954efa903b13f5706459d60f0ee9ff237e429789def",
+   "bytes": 10137
+  },
+  {
+   "url": "https://developer.chrome.com/docs/web-platform/webgpu/developer-features",
+   "path": "docs/web-platform/webgpu/developer-features.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:22+00:00",
+   "sha256": "3163f07c41624ae4380f2b7431070476988b83bcbeadc33bdbae56ed77cfae70",
+   "bytes": 5857
+  },
+  {
+   "url": "https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu",
+   "path": "docs/web-platform/webgpu/from-webgl-to-webgpu.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:36+00:00",
+   "sha256": "fb1ab2fc954d405c59ecb001f22fa693a00e2fcda1cf25e01b898192d7112742",
+   "bytes": 12665
+  },
+  {
+   "url": "https://developer.chrome.com/docs/web-platform/webgpu/news",
+   "path": "docs/web-platform/webgpu/news.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:49+00:00",
+   "sha256": "079bfe0b510d499d56735c25234bf6122995a08face74b10c5e30922017ae4b0",
+   "bytes": 25303
+  },
+  {
+   "url": "https://developer.chrome.com/docs/web-platform/webgpu/overview",
+   "path": "docs/web-platform/webgpu/overview.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:00+00:00",
+   "sha256": "4a8ede229708b9cdf1c4b7164194e728712f40b6455cd4f164e5b2ce815600f4",
+   "bytes": 3698
+  },
+  {
+   "url": "https://developer.chrome.com/docs/web-platform/webgpu/troubleshooting-tips",
+   "path": "docs/web-platform/webgpu/troubleshooting-tips.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:58:46+00:00",
+   "sha256": "b52eb855c20615772558b439be143e4dfafabf94f963ad531dbba60aab5cd887",
+   "bytes": 4954
+  },
+  {
+   "url": "https://developer.chrome.com/docs/web-platform/webgpu/webgpu-ecosystem",
+   "path": "docs/web-platform/webgpu/webgpu-ecosystem.md",
+   "fetched": "2026-11-13",
+   "lastmod": "2026-11-11T16:59:33+00:00",
+   "sha256": "66eec3e87e4d892fd8e80ce39173d2e05ac5b1ba05bc134583aaf8d59a54570d",
+   "bytes": 3953
+  }
+ ]
+}
