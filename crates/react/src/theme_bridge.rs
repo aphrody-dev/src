@@ -2,13 +2,13 @@
 //! 8-Preset Universal Theme Bridge for React 19 Web CSS + React Native `StyleSheet` / `PlatformColor`.
 //!
 //! Bridges `yolo-shared` (`YoloThemePreset`, `OmarchySubTheme`, `HYPRLAND_DECORATION_SPEC`,
-//! `BYRON_LOVE_PALETTE`) and `yolo-tokens` (`scheme_for_preset`, `Role`) into:
+//! brand presets) and `yolo-tokens` (`scheme_for_preset`, `Role`) into:
 //! 1. Web CSS `:root` custom property sheets (`--yolo-*` + `--md-sys-color-*`).
 //! 2. React Native / Expo `StyleSheet` JSON payloads for zero-drift cross-platform styling.
 
 use serde::{Deserialize, Serialize};
 use aphrody_design_shared::{
-    BYRON_LOVE_PALETTE, HYPRLAND_DECORATION_SPEC, OmarchySubTheme, YoloStyle, YoloThemePreset,
+    HYPRLAND_DECORATION_SPEC, OmarchySubTheme, YoloStyle, YoloThemePreset,
     YoloThemeTokens, css_preset_variables,
 };
 use aphrody_design_tokens::presets::scheme_for_preset;
@@ -36,8 +36,6 @@ pub struct ReactNativeThemePayload {
     pub omarchy_subtheme: Option<String>,
     /// Optional Hyprland active border gradient spec when using `YoloThemePreset::Hyprland`.
     pub hyprland_border_gradient: Option<String>,
-    /// Optional Byron Love 10-teinte hex palette when using `YoloThemePreset::Aphrody`.
-    pub byron_love_palette: Option<Vec<String>>,
 }
 
 /// Core color roles formatted for React Native `StyleSheet.create`.
@@ -143,17 +141,6 @@ pub fn build_react_native_theme(
         None
     };
 
-    let byron_love_palette = if preset == YoloThemePreset::Aphrody {
-        Some(
-            BYRON_LOVE_PALETTE
-                .iter()
-                .map(|c| c.hex.to_string())
-                .collect(),
-        )
-    } else {
-        None
-    };
-
     ReactNativeThemePayload {
         preset_id: preset.id().to_string(),
         display_name: preset.display_name().to_string(),
@@ -192,7 +179,6 @@ pub fn build_react_native_theme(
         },
         omarchy_subtheme: omarchy_subtheme.map(|s| s.spec().id.to_string()),
         hyprland_border_gradient,
-        byron_love_palette,
     }
 }
 

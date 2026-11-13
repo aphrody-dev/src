@@ -7,7 +7,7 @@ rust-version.workspace = true
 authors = ["Aphrody Contributors"]
 repository = "https://github.com/aphrody-dev/monorepo"
 license = "MIT OR Apache-2.0"
-description = "Canonical multi-preset design tokens (Neutral, Material Design 3, Fluent 2, Apple HIG Liquid Glass, Aphrody Byron Love) and HCT dynamic color engine for Aphrody Design."
+description = "Canonical multi-preset design tokens (Neutral, Material Design 3, Fluent 2, Apple HIG Liquid Glass, Aphrody brand) and HCT dynamic color engine for Aphrody Design."
 
 [lints.rust]
 unsafe_code = "forbid"

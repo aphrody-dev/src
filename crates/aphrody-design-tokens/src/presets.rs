@@ -7,14 +7,13 @@
 //! 4. [`yolo_apple`] (`0xFF00_7AFF` — Apple macOS Tahoe Liquid Glass & iOS Cupertino HIG)
 //! 5. [`yolo_omarchy`] (`0xFF7A_A2F7` — Omacom Omarchy `Tokyo Night` + 23 official `OmarchySubTheme`s)
 //! 6. [`yolo_hyprland`] (`0xFF33_CCFF` — Hyprwm / Hyprland Wayland Compositor `#33ccff` -> `#00ff99` 45deg border + kawase blur)
-//! 7. [`yolo_aphrody`] (`0xFF17_335C` — Byron Love / Aphrody 10-teinte sprite atlas & celestial gold)
+//! 7. [`yolo_aphrody`] (`0xFF33_55FF` — Aphrody brand of `assets/brand`, Material 3 vibrant)
 
 use crate::scheme::{DynamicScheme, Variant};
 use crate::theme::ThemeRequest;
 pub use aphrody_design_shared::{
-    ByronLoveColorTeinte, ByronLovePetSpec, HyprlandDecorationSpec, OmarchySubTheme,
-    OmarchySubThemeSpec, YoloManifest, YoloStyle, YoloThemePreset, YoloThemeTokens,
-    BYRON_LOVE_PALETTE, BYRON_LOVE_PET_SPEC, HYPRLAND_DECORATION_SPEC, OMARCHY_THEMES,
+    HyprlandDecorationSpec, OmarchySubTheme, OmarchySubThemeSpec, YoloManifest, YoloStyle,
+    YoloThemePreset, YoloThemeTokens, HYPRLAND_DECORATION_SPEC, OMARCHY_THEMES,
 };
 
 /// Canonical opaque ARGB seed for `YoloThemePreset::Neutral` (`#6366F1`).
@@ -35,8 +34,8 @@ pub const OMARCHY_SEED: u32 = 0xFF7A_A2F7;
 /// Canonical opaque ARGB seed for `YoloThemePreset::Hyprland` (`#33CCFF` Hyprland electric cyan).
 pub const HYPRLAND_SEED: u32 = 0xFF33_CCFF;
 
-/// Canonical opaque ARGB seed for `YoloThemePreset::Aphrody` (`#17335C` Byron Love Royal Azur).
-pub const APHRODY_SEED: u32 = 0xFF17_335C;
+/// Canonical opaque ARGB seed for `YoloThemePreset::Aphrody` (`#3355FF`, `assets/brand/brand.toml`).
+pub const APHRODY_SEED: u32 = 0xFF33_55FF;
 
 /// Canonical opaque ARGB seed for `YoloThemePreset::Chromium` (`#1A73E8` Chrome blue).
 pub const CHROMIUM_SEED: u32 = 0xFF1A_73E8;
@@ -84,10 +83,10 @@ pub fn yolo_hyprland(dark: bool) -> DynamicScheme {
     DynamicScheme::from_argb(HYPRLAND_SEED, Variant::Vibrant, dark, 0.0)
 }
 
-/// Builds the Byron Love / Aphrody [`DynamicScheme`] (`0xFF17_335C`, `Variant::TonalSpot`).
+/// Builds the Aphrody brand [`DynamicScheme`] (`0xFF33_55FF`, `Variant::Vibrant`, as `packages/design`).
 #[must_use]
 pub fn yolo_aphrody(dark: bool) -> DynamicScheme {
-    DynamicScheme::from_argb(APHRODY_SEED, Variant::TonalSpot, dark, 0.0)
+    DynamicScheme::from_argb(APHRODY_SEED, Variant::Vibrant, dark, 0.0)
 }
 
 /// Builds the Chromium Views/WebUI [`DynamicScheme`] from the customizable Chrome blue HCT seed.
@@ -106,7 +105,7 @@ pub const fn variant_for_preset(preset: YoloThemePreset) -> Variant {
         YoloThemePreset::Apple => Variant::Fidelity,
         YoloThemePreset::Omarchy => Variant::Content,
         YoloThemePreset::Hyprland => Variant::Vibrant,
-        YoloThemePreset::Aphrody => Variant::TonalSpot,
+        YoloThemePreset::Aphrody => Variant::Vibrant,
         YoloThemePreset::Chromium => Variant::Content,
     }
 }
@@ -157,9 +156,8 @@ mod tests {
     }
 
     #[test]
-    fn byron_love_palette_and_hyprland_decoration_match_seeds() {
-        assert_eq!(BYRON_LOVE_PALETTE.len(), 10);
-        assert_eq!(BYRON_LOVE_PALETTE[8].argb, APHRODY_SEED);
+    fn aphrody_seed_and_hyprland_decoration_match_seeds() {
+        assert_eq!(APHRODY_SEED, YoloThemePreset::Aphrody.seed_argb());
         assert_eq!(HYPRLAND_DECORATION_SPEC.active_border_start_argb, HYPRLAND_SEED);
     }
 }

@@ -8,7 +8,7 @@
 //! - [`compiler`]: Native `oxc_parser` (`0.155`) React 19 component, hook, directive (`"use client"`,
 //!   `"use server"`, `"use dom"`), and React Compiler auto-memoization boundary analyzer.
 //! - [`theme_bridge`]: 7-Preset (`Neutral`, `M3`, `Fluent`, `Apple`, `Omarchy` + 23 subthemes,
-//!   `Hyprland`, `Aphrody` Byron Love) Web CSS + React Native `StyleSheet` bridge.
+//!   `Hyprland`, `Aphrody` brand) Web CSS + React Native `StyleSheet` bridge.
 
 pub mod compiler;
 pub mod react_native;
@@ -196,6 +196,6 @@ export function DashboardPanel({ title, initialCount, onSync }) {
         assert!(hypr.hyprland_border_gradient.unwrap().contains("#33ccff"));
 
         let aphrody = build_react_native_theme(YoloThemePreset::Aphrody, true, None);
-        assert_eq!(aphrody.byron_love_palette.unwrap().len(), 10);
+        assert_eq!(aphrody.tokens.accent_primary, "#BAC3FF");
     }
 }

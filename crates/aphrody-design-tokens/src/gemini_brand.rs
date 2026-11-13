@@ -122,8 +122,8 @@ pub const EVOLVING_GOOGLE_YELLOW: u32 = 0xFFF4_B400;
 /// Google's evolved 4-color gradient stop 4: Google Green (`#34A853`).
 pub const EVOLVING_GOOGLE_GREEN: u32 = 0xFF34_A853;
 
-/// Aphrody's signature 4-color gradient stop 1: Deep Navy / Byron Love Royal Azur (`#17335C`).
-pub const APHRODY_SIGNATURE_NAVY: u32 = 0xFF17_335C;
+/// Aphrody's signature 4-color gradient stop 1: brand primary (`#1242FF`, M3 vibrant from `#3355FF`, `assets/brand`).
+pub const APHRODY_SIGNATURE_NAVY: u32 = 0xFF12_42FF;
 /// Aphrody's signature 4-color gradient stop 2: Electric Violet (`#7C5CFF`).
 pub const APHRODY_SIGNATURE_VIOLET: u32 = 0xFF7C_5CFF;
 /// Aphrody's signature 4-color gradient stop 3: Celestial Cyan (`#00D4FF`).
@@ -162,7 +162,7 @@ pub const EVOLVING_GOOGLE_IDENTITY_GRADIENT: LinearGradient = LinearGradient {
 };
 
 /// Aphrody's signature 4-color gradient system:
-/// Deep Navy (`#17335C`) -> Electric Violet (`#7C5CFF`) -> Celestial Cyan (`#00D4FF`) -> Divine Gold (`#FFD700`).
+/// Brand primary (`#1242FF`) -> Electric Violet (`#7C5CFF`) -> Celestial Cyan (`#00D4FF`) -> Divine Gold (`#FFD700`).
 pub const APHRODY_SIGNATURE_GRADIENT: LinearGradient = LinearGradient {
     angle_deg: 135.0,
     stops: [
@@ -844,7 +844,7 @@ mod tests {
         assert_eq!(EVOLVING_GOOGLE_IDENTITY_GRADIENT.stops[4].argb, 0xFF34_A853);
 
         assert_eq!(APHRODY_SIGNATURE_GRADIENT.count, 4);
-        assert_eq!(APHRODY_SIGNATURE_GRADIENT.stops[0].argb, 0xFF17_335C);
+        assert_eq!(APHRODY_SIGNATURE_GRADIENT.stops[0].argb, 0xFF12_42FF);
         assert_eq!(APHRODY_SIGNATURE_GRADIENT.stops[1].argb, 0xFF7C_5CFF);
         assert_eq!(APHRODY_SIGNATURE_GRADIENT.stops[2].argb, 0xFF00_D4FF);
         assert_eq!(APHRODY_SIGNATURE_GRADIENT.stops[3].argb, 0xFFFF_D700);
@@ -864,7 +864,7 @@ mod tests {
 
         let aphrody_css = gradient_to_perceptual_css(&APHRODY_SIGNATURE_GRADIENT, 2);
         assert!(aphrody_css.starts_with("linear-gradient(in oklch 135deg, "));
-        assert!(aphrody_css.contains("#17335c 0.0%"));
+        assert!(aphrody_css.contains("#1242ff 0.0%"));
         assert!(aphrody_css.contains("#ffd700 100.0%"));
     }
 }

@@ -1003,36 +1003,20 @@ font_mono = "'JetBrainsMono Nerd Font', 'JetBrains Mono', monospace"
 
 [themes.yolo-aphrody]
 id = "yolo-aphrody"
-display_name = "Aphrody Byron Love (10-Teinte Sprite Atlas & Celestial Gold)"
-seed_hex = "#17335C"
-seed_argb = 0xFF17335C
-variant = "tonal-spot"
+display_name = "Aphrody (Material 3 vibrant, #3355FF)"
+seed_hex = "#3355FF"
+seed_argb = 0xFF3355FF
+variant = "vibrant"
 is_default = false
-bg_primary_dark = "#090b10"
-bg_surface_dark = "#111520"
-bg_elevated_dark = "#181e2e"
-text_primary_dark = "#f3f6fc"
-text_secondary_dark = "#9ba6bf"
-accent_primary_dark = "#7c5cff"
-accent_secondary_dark = "#00d4ff"
-celestial_gold = "#FFD700"
-divine_violet = "#7C5CFF"
-divine_cyan = "#00D4FF"
-pet_id = "aphrody-byron-love"
-pet_grid = [8, 11]
-pet_cell_px = [192, 208]
-byron_love_palette = [
-  "#F7F3F0", # 1 creme
-  "#EADBA6", # 2 blond
-  "#C2B19E", # 3 sable
-  "#AF9183", # 4 taupe
-  "#8B7083", # 5 mauve
-  "#6C5454", # 6 brun
-  "#91704C", # 7 ocre
-  "#4E3738", # 8 cacao
-  "#17335C", # 9 azur (seed)
-  "#131420", # 10 nuit
-]
+# Roles M3 sombres de packages/design/tokens/tokens.json (assets/brand/brand.toml).
+bg_primary_dark = "#11131C"
+bg_surface_dark = "#1E1F29"
+bg_elevated_dark = "#282934"
+text_primary_dark = "#E2E1EF"
+text_secondary_dark = "#C5C5D6"
+accent_primary_dark = "#BAC3FF"
+accent_secondary_dark = "#D7BBF3"
+bolt = "#FFB300"
 window_vibrancy = "acrylic-dark-glass"
 font_sans = "'Google Sans Flex', 'Zed Plex Sans', Inter, system-ui, sans-serif"
 font_mono = "'Google Sans Code', 'Zed Plex Mono', 'JetBrains Mono', monospace"

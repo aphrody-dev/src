@@ -170,7 +170,7 @@ impl fmt::Display for RgbaColor {
 /// By default, `aphrody-design` uses [`YoloThemePreset::Neutral`] (`"yolo-neutral"`), ensuring
 /// zero vendor lock-in while allowing instant switching to M3, Fluent 2, Apple HIG Liquid Glass,
 /// Omacom Omarchy (`Tokyo Night` + 23 official subthemes), Hyprland (`#33ccff` -> `#00ff99` active border + kawase blur),
-/// or Aphrody (Byron Love).
+/// or Aphrody (original brand of `assets/brand`, Material 3 vibrant from `#3355FF`).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum YoloThemePreset {
@@ -187,7 +187,7 @@ pub enum YoloThemePreset {
     Omarchy,
     /// `"yolo-hyprland"` — Hyprwm / Hyprland / `hyprtoolkit` / `hyprqt6engine` Wayland compositor design system (`#33ccff` -> `#00ff99` 45deg active border, kawase blur).
     Hyprland,
-    /// `"yolo-aphrody"` — Signature Byron Love (Afuro Terumi / Aphrody) pet & brand theme (10 sprite-atlas colors, `#17335C` azur seed, `#FFD700` gold, `#7C5CFF` violet).
+    /// `"yolo-aphrody"` — Aphrody brand theme (`assets/brand/brand.toml`: seed `#3355FF`, M3 vibrant, roles from `packages/design/tokens`).
     Aphrody,
     /// `"yolo-chromium"` — Chromium Views and WebUI design language with editable HCT accent and light/dark surfaces.
     Chromium,
@@ -229,7 +229,7 @@ impl YoloThemePreset {
             Self::Apple => "Apple HIG Liquid Glass (macOS Tahoe & iOS Cupertino)",
             Self::Omarchy => "Omacom Omarchy (Tokyo Night & 23 TUI-Modern Subthemes)",
             Self::Hyprland => "Hyprland Wayland Compositor (Cyan-Mint 45deg Border & Kawase Blur)",
-            Self::Aphrody => "Aphrody Byron Love (10-Teinte Sprite Atlas & Celestial Gold)",
+            Self::Aphrody => "Aphrody (Material 3 vibrant, #3355FF)",
             Self::Chromium => "Chromium Views + WebUI (customizable HCT)",
         }
     }
@@ -243,7 +243,7 @@ impl YoloThemePreset {
             Self::Apple => 0xFF00_7AFF,
             Self::Omarchy => 0xFF7A_A2F7,
             Self::Hyprland => 0xFF33_CCFF,
-            Self::Aphrody => 0xFF17_335C,
+            Self::Aphrody => 0xFF33_55FF,
             Self::Chromium => 0xFF1A_73E8,
         }
     }
@@ -257,7 +257,7 @@ impl YoloThemePreset {
             Self::Apple => "#007AFF",
             Self::Omarchy => "#7AA2F7",
             Self::Hyprland => "#33CCFF",
-            Self::Aphrody => "#17335C",
+            Self::Aphrody => "#3355FF",
             Self::Chromium => "#1A73E8",
         }
     }
@@ -273,7 +273,7 @@ impl YoloThemePreset {
             }
             "yolo-omarchy" | "omarchy" | "omacom" | "tokyo-night" => Some(Self::Omarchy),
             "yolo-hyprland" | "hyprland" | "hyprwm" | "hypr" => Some(Self::Hyprland),
-            "yolo-aphrody" | "aphrody" | "byron-love" | "byron" => Some(Self::Aphrody),
+            "yolo-aphrody" | "aphrody" => Some(Self::Aphrody),
             "yolo-chromium" | "chromium" | "chrome" | "chrome-webui" => Some(Self::Chromium),
             _ => None,
         }
@@ -1000,166 +1000,6 @@ impl Default for HyprlandDecorationSpec {
 }
 
 // ============================================================================
-// Byron Love (Afuro Terumi / Aphrody) 10-Teinte Sprite Atlas & Pet Spec
-// ============================================================================
-
-/// A single measured color teinte from the Byron Love (Afuro Terumi / Aphrody) 8×11 sprite atlas.
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
-pub struct ByronLoveColorTeinte {
-    pub index: u8,
-    pub id: &'static str,
-    pub hex: &'static str,
-    pub argb: u32,
-    pub oklch_l: f32,
-    pub oklch_c: f32,
-    pub oklch_h: f32,
-    pub role: &'static str,
-}
-
-/// The 10 canonical Oklch/sRGB colors measured from the Byron Love 8×11 sprite atlas (`192×208` cells).
-// `0.318` (azur) is a measured Oklch lightness, not an approximation of 1/pi.
-#[allow(clippy::approx_constant)]
-pub const BYRON_LOVE_PALETTE: [ByronLoveColorTeinte; 10] = [
-    ByronLoveColorTeinte {
-        index: 1,
-        id: "creme",
-        hex: "#F7F3F0",
-        argb: 0xFFF7_F3F0,
-        oklch_l: 0.965,
-        oklch_c: 0.008,
-        oklch_h: 55.0,
-        role: "Highlight / Wing Feather Light / On-Dark Primary Text",
-    },
-    ByronLoveColorTeinte {
-        index: 2,
-        id: "blond",
-        hex: "#EADBA6",
-        argb: 0xFFEA_DBA6,
-        oklch_l: 0.892,
-        oklch_c: 0.078,
-        oklch_h: 88.5,
-        role: "Byron Love Signature Golden-Blond Hair & Halo Glow",
-    },
-    ByronLoveColorTeinte {
-        index: 3,
-        id: "sable",
-        hex: "#C2B19E",
-        argb: 0xFFC2_B19E,
-        oklch_l: 0.768,
-        oklch_c: 0.032,
-        oklch_h: 68.0,
-        role: "Warm Sand Shading / Secondary Hair & Tunic Fold",
-    },
-    ByronLoveColorTeinte {
-        index: 4,
-        id: "taupe",
-        hex: "#AF9183",
-        argb: 0xFFAF_9183,
-        oklch_l: 0.678,
-        oklch_c: 0.042,
-        oklch_h: 42.0,
-        role: "Skin Midtone / Warm Neutral Surface Variant",
-    },
-    ByronLoveColorTeinte {
-        index: 5,
-        id: "mauve",
-        hex: "#8B7083",
-        argb: 0xFF8B_7083,
-        oklch_l: 0.568,
-        oklch_c: 0.048,
-        oklch_h: 342.0,
-        role: "Divine Wing Shadow / Tertiary Mauve Accent",
-    },
-    ByronLoveColorTeinte {
-        index: 6,
-        id: "brun",
-        hex: "#6C5454",
-        argb: 0xFF6C_5454,
-        oklch_l: 0.462,
-        oklch_c: 0.034,
-        oklch_h: 22.0,
-        role: "Warm Umber Contour / Muted Outline",
-    },
-    ByronLoveColorTeinte {
-        index: 7,
-        id: "ocre",
-        hex: "#91704C",
-        argb: 0xFF91_704C,
-        oklch_l: 0.562,
-        oklch_c: 0.076,
-        oklch_h: 66.0,
-        role: "Golden Sash Trim / Warm Gold Container",
-    },
-    ByronLoveColorTeinte {
-        index: 8,
-        id: "cacao",
-        hex: "#4E3738",
-        argb: 0xFF4E_3738,
-        oklch_l: 0.354,
-        oklch_c: 0.031,
-        oklch_h: 18.0,
-        role: "Deep Sprite Lineart / Elevated Warm Shadow",
-    },
-    ByronLoveColorTeinte {
-        index: 9,
-        id: "azur",
-        hex: "#17335C",
-        argb: 0xFF17_335C,
-        oklch_l: 0.318,
-        oklch_c: 0.088,
-        oklch_h: 256.0,
-        role: "Canonical Byron Love Royal Azur Tunic & HCT Theme Seed",
-    },
-    ByronLoveColorTeinte {
-        index: 10,
-        id: "nuit",
-        hex: "#131420",
-        argb: 0xFF13_1420,
-        oklch_l: 0.192,
-        oklch_c: 0.028,
-        oklch_h: 274.0,
-        role: "Nuit Abyss Background Surface",
-    },
-];
-
-/// Metadata specification for the Byron Love (Afuro Terumi / Aphrody) 8×11 interactive pet companion.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ByronLovePetSpec {
-    pub pet_id: &'static str,
-    pub character_name: &'static str,
-    pub grid_cols: u8,
-    pub grid_rows: u8,
-    pub cell_width_px: u16,
-    pub cell_height_px: u16,
-    pub seed_argb: u32,
-    pub seed_hex: &'static str,
-    pub celestial_gold_hex: &'static str,
-    pub divine_violet_hex: &'static str,
-    pub divine_cyan_hex: &'static str,
-}
-
-/// Canonical Byron Love pet companion specification (`8×11` grid, `192×208` cells, id `"aphrody-byron-love"`).
-pub const BYRON_LOVE_PET_SPEC: ByronLovePetSpec = ByronLovePetSpec {
-    pet_id: "aphrody-byron-love",
-    character_name: "Byron Love (Afuro Terumi / Aphrody)",
-    grid_cols: 8,
-    grid_rows: 11,
-    cell_width_px: 192,
-    cell_height_px: 208,
-    seed_argb: 0xFF17_335C,
-    seed_hex: "#17335C",
-    celestial_gold_hex: "#FFD700",
-    divine_violet_hex: "#7C5CFF",
-    divine_cyan_hex: "#00D4FF",
-};
-
-impl Default for ByronLovePetSpec {
-    fn default() -> Self {
-        BYRON_LOVE_PET_SPEC
-    }
-}
-
-// ============================================================================
 // Design Tokens (`YoloThemeTokens` & `YoloStyle`)
 // ============================================================================
 
@@ -1401,30 +1241,30 @@ pub const YOLO_HYPRLAND_LIGHT_THEME: YoloThemeTokens = YoloThemeTokens {
     border_subtle: "rgba(15, 23, 42, 0.14)",
 };
 
-/// 7. `YoloThemePreset::Aphrody` Dark Tokens (Byron Love / Aphrody Dark-Glass with `#7c5cff` divine violet, `#00d4ff` cyan, `#FFD700` gold).
+/// 7. `YoloThemePreset::Aphrody` Dark Tokens: M3 dark roles of packages/design/tokens/tokens.json (brand seed #3355FF, vibrant).
 pub const YOLO_APHRODY_DARK_THEME: YoloThemeTokens = YoloThemeTokens {
-    name: "aphrody-m3-dark",
-    bg_primary: "#090b10",
-    bg_surface: "#111520",
-    bg_elevated: "#181e2e",
-    text_primary: "#f3f6fc",
-    text_secondary: "#9ba6bf",
-    accent_primary: "#7c5cff",
-    accent_secondary: "#00d4ff",
+    name: "yolo-aphrody-dark",
+    bg_primary: "#11131C",
+    bg_surface: "#1E1F29",
+    bg_elevated: "#282934",
+    text_primary: "#E2E1EF",
+    text_secondary: "#C5C5D6",
+    accent_primary: "#BAC3FF",
+    accent_secondary: "#D7BBF3",
     border_subtle: "rgba(255, 255, 255, 0.08)",
 };
 
-/// 7b. `YoloThemePreset::Aphrody` Light Tokens (Byron Love Creme `#F7F3F0`, Sable `#C2B19E`, Royal Azur `#17335C`, Ocre `#91704C`).
+/// 7b. `YoloThemePreset::Aphrody` Light Tokens: M3 light roles of packages/design/tokens/tokens.json.
 pub const YOLO_APHRODY_LIGHT_THEME: YoloThemeTokens = YoloThemeTokens {
     name: "yolo-aphrody-light",
-    bg_primary: "#F7F3F0",
-    bg_surface: "#EADBA6",
-    bg_elevated: "#C2B19E",
-    text_primary: "#131420",
-    text_secondary: "#4E3738",
-    accent_primary: "#17335C",
-    accent_secondary: "#91704C",
-    border_subtle: "rgba(23, 51, 92, 0.14)",
+    bg_primary: "#FBF8FF",
+    bg_surface: "#EEECFB",
+    bg_elevated: "#E8E7F5",
+    text_primary: "#1A1B25",
+    text_secondary: "#444654",
+    accent_primary: "#1242FF",
+    accent_secondary: "#6B5485",
+    border_subtle: "rgba(18, 66, 255, 0.14)",
 };
 
 /// Chromium WebUI dark surfaces from `ui/webui/resources/css/md_colors.css` and `cr_shared_vars.css`.
@@ -1605,10 +1445,10 @@ impl Default for YoloStyle {
 
 /// Vendor-neutral, customizable application manifest for any `aphrody-design` host.
 ///
-/// Defaults to [`YoloThemePreset::Neutral`] with `pet_companion: None` so new projects
+/// Defaults to [`YoloThemePreset::Neutral`] so new projects
 /// start 100% clean and unbranded, while allowing one-line opt-in to M3, Fluent 2,
 /// Apple Liquid Glass, Omacom Omarchy (`OmarchySubTheme`), Hyprland (`HyprlandDecorationSpec`),
-/// or Aphrody (Byron Love).
+/// or Aphrody.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(bound(deserialize = "'de: 'static"))]
 pub struct YoloManifest {
@@ -1622,7 +1462,6 @@ pub struct YoloManifest {
     pub custom_seed_argb: Option<u32>,
     pub dark_mode: bool,
     pub window_vibrancy: String,
-    pub pet_companion: Option<ByronLovePetSpec>,
 }
 
 impl Default for YoloManifest {
@@ -1638,7 +1477,6 @@ impl Default for YoloManifest {
             custom_seed_argb: None,
             dark_mode: true,
             window_vibrancy: String::from("none"),
-            pet_companion: None,
         }
     }
 }
@@ -1662,9 +1500,6 @@ impl YoloManifest {
         }
         if preset == YoloThemePreset::Hyprland && self.hyprland_decoration.is_none() {
             self.hyprland_decoration = Some(HYPRLAND_DECORATION_SPEC);
-        }
-        if preset == YoloThemePreset::Aphrody && self.pet_companion.is_none() {
-            self.pet_companion = Some(BYRON_LOVE_PET_SPEC);
         }
         self
     }
@@ -1695,12 +1530,6 @@ impl YoloManifest {
     /// Sets light or dark mode preference.
     pub fn with_dark_mode(mut self, dark_mode: bool) -> Self {
         self.dark_mode = dark_mode;
-        self
-    }
-
-    /// Enables the Byron Love (`"aphrody-byron-love"`) 8×11 sprite companion on this manifest.
-    pub fn with_byron_love_pet(mut self) -> Self {
-        self.pet_companion = Some(BYRON_LOVE_PET_SPEC);
         self
     }
 
@@ -1830,8 +1659,8 @@ mod tests {
     #[test]
     fn test_rgba_color_parsing_and_packing() {
         let c = RgbaColor::parse_css(APHRODY_DARK_THEME.accent_primary).unwrap();
-        assert_eq!(c.to_u32_rgba(), 0x7c5c_ffff);
-        assert_eq!(c.to_css_string(), "#7c5cff");
+        assert_eq!(c.to_u32_rgba(), 0xbac3_ffff);
+        assert_eq!(c.to_css_string(), "#bac3ff");
 
         let border = RgbaColor::parse_css(APHRODY_DARK_THEME.border_subtle).unwrap();
         assert_eq!(border.to_css_string(), "rgba(255, 255, 255, 0.08)");
@@ -1840,8 +1669,8 @@ mod tests {
     #[test]
     fn test_css_variables_generation() {
         let css = css_variables(&APHRODY_DARK_THEME);
-        assert!(css.contains("--yolo-bg-primary: #090b10;"));
-        assert!(css.contains("--yolo-accent-primary: #7c5cff;"));
+        assert!(css.contains("--yolo-bg-primary: #11131C;"));
+        assert!(css.contains("--yolo-accent-primary: #BAC3FF;"));
     }
 
     #[test]
@@ -1849,7 +1678,6 @@ mod tests {
         assert_eq!(YoloThemePreset::default(), YoloThemePreset::Neutral);
         let manifest = YoloManifest::default();
         assert_eq!(manifest.theme_preset, YoloThemePreset::Neutral);
-        assert!(manifest.pet_companion.is_none());
         assert_eq!(manifest.resolved_seed_argb(), 0xFF63_66F1);
 
         let all_ids: Vec<&str> = YoloThemePreset::ALL.iter().map(|p| p.id()).collect();
@@ -1905,20 +1733,10 @@ mod tests {
     }
 
     #[test]
-    fn test_byron_love_ten_teinte_palette_and_pet_spec() {
-        assert_eq!(BYRON_LOVE_PALETTE.len(), 10);
-        assert_eq!(BYRON_LOVE_PALETTE[0].hex, "#F7F3F0");
-        assert_eq!(BYRON_LOVE_PALETTE[8].id, "azur");
-        assert_eq!(BYRON_LOVE_PALETTE[8].argb, 0xFF17_335C);
-        assert_eq!(BYRON_LOVE_PALETTE[9].hex, "#131420");
-
-        let aphrody_manifest = YoloManifest::new("com.aphrody.studio", "Aphrody Studio")
-            .with_preset(YoloThemePreset::Aphrody);
-        let pet = aphrody_manifest.pet_companion.expect("Byron Love pet attached");
-        assert_eq!(pet.pet_id, "aphrody-byron-love");
-        assert_eq!(pet.grid_cols, 8);
-        assert_eq!(pet.grid_rows, 11);
-        assert_eq!(pet.cell_width_px, 192);
-        assert_eq!(pet.cell_height_px, 208);
+    fn aphrody_preset_is_the_original_brand() {
+        assert_eq!(YoloThemePreset::Aphrody.seed_hex(), "#3355FF");
+        assert_eq!(YoloThemePreset::from_id("aphrody"), Some(YoloThemePreset::Aphrody));
+        assert_eq!(YOLO_APHRODY_LIGHT_THEME.accent_primary, "#1242FF");
+        assert_eq!(YOLO_APHRODY_DARK_THEME.accent_primary, "#BAC3FF");
     }
 }

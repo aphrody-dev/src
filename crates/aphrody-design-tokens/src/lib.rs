@@ -69,7 +69,7 @@ pub mod motion;
 #[cfg(feature = "std")]
 pub mod palette;
 /// Ready-to-use `DynamicScheme` and `ThemeRequest` builders for the 5 built-in `YoloThemePreset`s
-/// (`yolo_neutral`, `yolo_m3`, `yolo_fluent`, `yolo_apple`, `yolo_aphrody` + `BYRON_LOVE_PALETTE`).
+/// (`yolo_neutral`, `yolo_m3`, `yolo_fluent`, `yolo_apple`, `yolo_aphrody`).
 #[cfg(feature = "std")]
 pub mod presets;
 /// Image color quantization (`QuantizerCelebi`): [`quantize_wu`] seeds [`quantize_wsmeans`].
