@@ -1,12 +1,12 @@
 # CI is the judge of the PR-less flow on main (docs/agents/AGENT-FIRST.md).
-# When `ci` fails on a main commit whose parent was green, that commit is reverted on main
+# When `judge` or `ci` fails on a main commit whose parent was green, that commit is reverted on main
 # (one-line equivalent: git revert --no-edit <sha> && git push origin HEAD:main).
 # Not reverted: reverts themselves, commits with [no-revert] in the message, failures whose parent
 # was not green (attribution unknown): the prd runner's ci-watch enqueues an sre fix task instead.
 name: ci-revert
 on:
   workflow_run:
-    workflows: [ci]
+    workflows: [judge, ci]
     types: [completed]
     branches: [main]
 permissions:
@@ -23,6 +23,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       SHA: ${{ github.event.workflow_run.head_sha }}
+      WF: ${{ github.event.workflow_run.name }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -34,8 +35,8 @@ jobs:
           msg=$(git log -1 --format=%B "$SHA")
           case "$msg" in Revert*|*"[no-revert]"*) echo "skip: revert or [no-revert]"; exit 0;; esac
           parent=$(git rev-parse "$SHA^")
-          pc=$(gh run list -R "$GITHUB_REPOSITORY" -w ci -c "$parent" --json conclusion --jq '[.[]|select(.conclusion!="")][0].conclusion // ""')
-          if [ "$pc" != success ]; then echo "skip: parent $parent ci=$pc (not attributable)"; exit 0; fi
+          pc=$(gh run list -R "$GITHUB_REPOSITORY" -w "$WF" -c "$parent" --json conclusion --jq '[.[]|select(.conclusion!="")][0].conclusion // ""')
+          if [ "$pc" != success ]; then echo "skip: parent $parent $WF=$pc (not attributable)"; exit 0; fi
           git config user.name "aphrody-dev"
           git config user.email "contact@aphrody.com"
           git revert --no-edit "$SHA"

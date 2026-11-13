@@ -732,47 +732,59 @@ function ship() {
   if (r.exit === 0) writeFileSync(offF, String(buf.length));
 }
 
-// Self-fix loop (ship host only): red `ci` on main -> one sre task per failing commit.
-// Attributable failures are also reverted by .github/workflows/ci-revert.yml; the task checks that first.
+// Self-fix loop (ship host only): red `judge`/`ci` on main -> one sre task per failing commit, at
+// most one open at a time. Attributable failures are also reverted by .github/workflows/ci-revert.yml;
+// the task checks that first.
 function ciWatch() {
   if (HOST !== FLEET.ship.host || !Bun.which("gh")) return;
-  const r = sh(
-    argv0("gh", [
-      "run",
-      "list",
-      "-R",
-      "aphrody-dev/src",
-      "-w",
-      "ci",
-      "-b",
-      "main",
-      "-L",
-      "1",
-      "--json",
-      "conclusion,headSha,url",
-    ]),
-    { timeoutMs: 60_000 },
+  const open = [Q.new, Q.claimed].some((d) =>
+    readdirSync(d).some((f) => f.startsWith("ci-fix-")),
   );
-  if (r.exit) return;
-  const [run] = JSON.parse(r.out || "[]");
-  if (!run || run.conclusion !== "failure") return;
-  const id = `ci-fix-${run.headSha.slice(0, 12)}`;
-  for (const d of [Q.new, Q.claimed, Q.done, Q.failed])
-    if (readdirSync(d).some((f) => f.startsWith(id))) return;
-  writeTask(Q.new, {
-    v: 1,
-    id,
-    role: "sre",
-    host: HOST,
-    created_by: "ci-watch",
-    created_at: now(),
-    prompt: `CI workflow \`ci\` is red on main at ${run.headSha} (${run.url}). Run \`git pull --ff-only origin main\` first. If HEAD already contains a revert of ${run.headSha.slice(0, 12)} or a newer ci run on main is green, stop without changes. Otherwise read the failing job log with \`gh run view --log-failed -R aphrody-dev/src <run id>\`, fix the root cause with the smallest change, run the relevant \`just\` recipe locally, and stop. Do not commit: the runner commits.`,
-    commit: {
-      paths: [""],
-      message: `fix: ci red on main at ${run.headSha.slice(0, 12)}`,
-    },
-  });
-  log("ci_watch", { id, sha: run.headSha });
+  if (open) return;
+  for (const wf of ["judge", "ci"]) {
+    const r = sh(
+      argv0("gh", [
+        "run",
+        "list",
+        "-R",
+        "aphrody-dev/src",
+        "-w",
+        wf,
+        "-b",
+        "main",
+        "-L",
+        "1",
+        "--json",
+        "conclusion,headSha,url,databaseId",
+      ]),
+      { timeoutMs: 60_000 },
+    );
+    if (r.exit) continue;
+    const [run] = JSON.parse(r.out || "[]");
+    if (!run || run.conclusion !== "failure") continue;
+    const id = `ci-fix-${run.headSha.slice(0, 12)}`;
+    if (
+      [Q.done, Q.failed].some((d) =>
+        readdirSync(d).some((f) => f.startsWith(id)),
+      )
+    )
+      continue;
+    writeTask(Q.new, {
+      v: 1,
+      id,
+      role: "sre",
+      host: HOST,
+      created_by: "ci-watch",
+      created_at: now(),
+      prompt: `Workflow \`${wf}\` is red on main at ${run.headSha} (${run.url}). Run \`git pull --ff-only origin main\` first. If HEAD already contains a revert of ${run.headSha.slice(0, 12)} or a newer ${wf} run on main is green, stop without changes. Otherwise read the failing log with \`gh run view --log-failed -R aphrody-dev/src ${run.databaseId}\`, fix the root cause with the smallest change, run the matching \`just\` recipe locally, and stop. Do not commit: the runner commits.`,
+      commit: {
+        paths: [""],
+        message: `fix: ${wf} rouge sur main à ${run.headSha.slice(0, 12)}`,
+      },
+    });
+    log("ci_watch", { id, workflow: wf, sha: run.headSha });
+    return;
+  }
 }
 
 function health() {

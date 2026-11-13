@@ -1,0 +1,33 @@
+# Judge of the PR-less flow on main (docs/agents/AGENT-FIRST.md): fast gates on a GitHub-hosted
+# runner, so a verdict exists for every push even when the self-hosted fr1 runner is stopped
+# (docs/infra/FLEET.md). Red -> ci-revert.yml reverts an attributable commit; the prd runner's
+# ci-watch enqueues an sre fix task otherwise. Heavy builds stay in ci.yml.
+# Action versions: actions/checkout v7.0.1, actions/setup-go v7.0.0 (gh api releases/latest, 2026-11-13).
+name: judge
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: judge-${{ github.sha }}
+  cancel-in-progress: false
+permissions: { contents: read }
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with: { fetch-depth: 1, submodules: false }
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version: 1.4.4 }
+      - uses: actions/setup-go@v7
+        with: { go-version-file: infra/go.mod }
+      - name: Layered dependency gate (checkdeps)
+        run: bun scripts/checkdeps.ts
+      - name: Identity gate
+        run: bun scripts/identity.ts check
+      - name: Agent runner parses and answers
+        run: AGENTS_HOME="$RUNNER_TEMP/agents" bun --no-env-file infra/agents/runner.ts status
+      - name: Go deploy engine
+        run: go -C infra test ./...
