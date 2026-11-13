@@ -226,6 +226,8 @@ const PREFIX = new Set([
   ".",
   "start",
   "start-process",
+  "busybox",
+  "toybox",
 ]);
 
 // Command name of a token: basename, lowercased, without .exe/.cmd/.bat/.ps1.
@@ -710,6 +712,40 @@ const DENY_SECRET =
 const DENY_PUBLISH =
   "NHITL : publication de contenu Epic/Unreal ou MSVC SDK/CRT interdite.";
 
+const DENY_OBFUSCATED =
+  "NHITL : commande masquée (verbe échappé ou calculé, joker ou échappement sur un nom de secret, code décodé envoyé à un shell). Écrire la commande en clair.";
+
+// Glob pattern (bash rules: a leading * or ? never matches a dot file) matched against secret names.
+function globHitsSecret(tok: string): boolean {
+  const name = tok.replaceAll("\\", "/").split("/").pop() ?? "";
+  if (!/[?*[]/.test(name) || name.replace(/[?*[\]]/g, "").length < 2) return false;
+  try {
+    const g = new Bun.Glob(name);
+    return SECRET_NAMES.some((n) => (n.startsWith(".") && !name.startsWith(".") ? false : g.match(n)));
+  } catch {
+    return false;
+  }
+}
+
+// Bash only: what the lexer cannot judge is refused instead of guessed.
+function obfuscated(seg: string[], cmd: string): boolean {
+  let i = 0;
+  while (i < seg.length && (PREFIX.has(seg[i]!.toLowerCase()) || /^[A-Za-z_][A-Za-z0-9_]*=/.test(seg[i]!))) i++;
+  const v = seg[i] ?? "";
+  // r\m, \rm (not a Windows path such as C:\tools\x.exe), $cmd, r?m, [r]m
+  if (/\\/.test(v) && !/[:/]|\\.*\\|\.\w+$/.test(v)) return true;
+  if (/^\$\{?[A-Za-z_][A-Za-z0-9_]*\}?$/.test(v) || /[?*[]/.test(v)) return true;
+  for (const t of seg.slice(i + 1)) {
+    if (/\\/.test(t) && isSecretPath(` ${t.replace(/\\(.)/g, "$1")}`)) return true;
+    if (globHitsSecret(t)) return true;
+  }
+  return false;
+}
+
+// Decoded or downloaded bytes piped into a bare shell are unverifiable code.
+const PIPE_TO_SHELL =
+  /\|\s*(?:sudo\s+)?(?:bash|sh|zsh|dash|ksh|osh|pwsh|powershell|iex|invoke-expression)(?:\s+-[a-z]+)*\s*(?:$|[;&|)\n])/im;
+
 function shellVerdict(
   cmd: string,
   cwd: string,
@@ -719,6 +755,7 @@ function shellVerdict(
 ): Verdict {
   if (!cmd || depth > 4) return null;
   const vars: Record<string, string> = {};
+  if (PIPE_TO_SHELL.test(cmd)) return { deny: DENY_OBFUSCATED };
   const segs = segments(cmd, ps);
   for (let si = 0; si < segs.length; si++) {
     const seg = segs[si]!;
@@ -741,13 +778,27 @@ function shellVerdict(
     const asg =
       seg.length === 1 ? /^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/.exec(seg[0]!) : null;
     if (asg) {
+      if (
+        asg[2] &&
+        isSecretPath(` ${asg[2]}`) &&
+        new RegExp(`\\$\\{?${asg[1]}\\b`).test(cmd)
+      )
+        return { deny: DENY_SECRET };
       if (asg[2]) vars[asg[1]!] = asg[2];
       else if (verbOf(segs[si + 1] ?? [])[0] === "mktemp")
         vars[asg[1]!] = TEMP + "/mktemp";
       continue;
     }
+    if (!ps && obfuscated(seg, cmd)) return { deny: DENY_OBFUSCATED };
     const [verb, args] = verbOf(seg);
     const text = seg.join(" ");
+    // here-string fed to a shell (bash <<< 'code') is code
+    const hs = seg.findIndex((t) => t.startsWith("<<<"));
+    if (hs >= 0 && SHELLS.has(verb)) {
+      const code = seg[hs] === "<<<" ? (seg[hs + 1] ?? "") : seg[hs]!.slice(3);
+      const v = shellVerdict(code, cwd, remote, verb === "pwsh" || verb === "powershell", depth + 1);
+      if (v) return v;
+    }
     // Redirection targets are writes, not reads: `echo x > .env` is allowed; `< .env` is a read.
     const readText = seg
       .filter(
@@ -821,6 +872,8 @@ function shellVerdict(
     }
 
     if (verb === "git") {
+      if (args.some((a, k) => /^-c$/.test(a) && /^alias\./i.test(args[k + 1] ?? "")) || args.some((a) => /^-calias\./i.test(a)))
+        return { deny: "NHITL : alias git défini en ligne interdit (git -c alias.*) : écrire la sous-commande en clair." };
       const [sub, sa, dir] = gitSub(args);
       if (sub === "push" && forcePush(sa))
         return {
@@ -832,7 +885,8 @@ function shellVerdict(
         (sub === "reflog" && sa[0] === "expire") ||
         (sub === "update-ref" &&
           (sa.includes("-d") || sa.some((x) => /^refs\/heads\//.test(x)))) ||
-        (sub === "rebase" && sa.includes("--root"))
+        (sub === "rebase" && sa.includes("--root")) ||
+        (sub === "reset" && sa.includes("--hard"))
       )
         return { deny: "NHITL : réécriture d'historique git interdite." };
       if (
@@ -1031,6 +1085,9 @@ function overwriteTargets(
     pos.push(a);
   }
   switch (verb) {
+    case "dd":
+      for (const a of args) if (a.startsWith("of=")) t.push(a.slice(3));
+      break;
     case "truncate":
     case "clear-content":
     case "clc":
