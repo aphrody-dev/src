@@ -13,7 +13,7 @@ import { join, resolve, sep } from "node:path";
 type Hosts = { hosts?: string[] };
 type Marketplace = Hosts & { name: string; repo?: string; path?: string; commit?: string };
 type Plugin = Hosts & { id: string; scope?: string; state?: "present" | "absent" | "disabled"; env?: string[]; refresh?: boolean };
-type Mcp = Hosts & { name: string; scope?: string; command?: string[]; url?: string; env?: Record<string, string>; secrets?: string[]; state?: "absent" };
+type Mcp = Hosts & { name: string; scope?: string; command?: string[]; url?: string; env?: Record<string, string>; secrets?: string[]; headers?: Record<string, string>; state?: "absent" };
 type Skill = Hosts & { name: string; repo: string; commit: string; path: string; license?: string };
 type Secret = { name: string; user_env?: boolean };
 type Manifest = {
@@ -70,7 +70,11 @@ export function installSkill(s: Skill): string | null {
   try {
     const tgz = join(tmp, "src.tgz");
     const dl = Bun.spawnSync(["gh", "api", `repos/${s.repo}/tarball/${s.commit}`], { stdout: Bun.file(tgz), stderr: "pipe", stdin: "ignore", timeout: 300_000 });
-    if (dl.exitCode !== 0) return `téléchargement ${s.repo}@${s.commit} : ${dl.stderr.toString().trim()}`;
+    if (dl.exitCode !== 0) {
+      // Hôte sans gh authentifié : archive publique codeload, même commit épinglé.
+      const curl = run(["curl", "-fsSL", "--max-time", "300", "-o", tgz, `https://codeload.github.com/${s.repo}/tar.gz/${s.commit}`]);
+      if (curl.code !== 0) return `téléchargement ${s.repo}@${s.commit} : ${dl.stderr.toString().trim().split("\n")[0]} ; codeload : ${curl.err.trim()}`;
+    }
     const xdir = join(tmp, "x");
     mkdirSync(xdir);
     const x = run(["tar", "-xzf", tgz, "-C", xdir]);
@@ -150,7 +154,14 @@ function claude(m: Manifest, out: string[], note: (ok: boolean, w: string) => vo
     for (const e of p.env ?? []) out.push(`info ${p.id} : variable ${e} ${process.env[e] ? "présente" : "absente de l'env"}`);
     if (check) continue;
     let r = { code: 0, out: "", err: "" };
-    if (!cur) r = run(["claude", "plugin", "install", p.id, "--scope", scope]);
+    if (!cur) {
+      r = run(["claude", "plugin", "install", p.id, "--scope", scope]);
+      // Marketplace fraîchement clonée ou copie interrompue : mise à jour de la marketplace puis un seul nouvel essai.
+      if (r.code !== 0) {
+        run(["claude", "plugin", "marketplace", "update", p.id.split("@")[1]!]);
+        r = run(["claude", "plugin", "install", p.id, "--scope", scope]);
+      }
+    }
     else if (!cur.enabled) r = run(["claude", "plugin", "enable", p.id, "--scope", scope]);
     else if (p.refresh && moved) r = run(["claude", "plugin", "update", p.id, "--scope", scope]);
     if (r.code !== 0) out.push(`ERR  plugin ${p.id} : ${last(r)}`);
@@ -158,7 +169,7 @@ function claude(m: Manifest, out: string[], note: (ok: boolean, w: string) => vo
   pl = json<Installed[]>(["claude", "plugin", "list", "--json"]) ?? pl;
 
   // MCP : état lu dans ~/.claude.json (lecture seule) ; toute écriture passe par `claude mcp`.
-  let servers: Record<string, { command?: string; args?: string[]; url?: string; env?: Record<string, string> }> = {};
+  let servers: Record<string, { command?: string; args?: string[]; url?: string; env?: Record<string, string>; headersHelper?: string }> = {};
   try {
     servers = JSON.parse(readFileSync(join(HOME, ".claude.json"), "utf8")).mcpServers ?? {};
   } catch {}
@@ -176,15 +187,21 @@ function claude(m: Manifest, out: string[], note: (ok: boolean, w: string) => vo
       continue;
     }
     const leaked = Object.keys(cur?.env ?? {}).some((k) => s.secrets?.includes(k));
+    // En-têtes secrets d'un serveur HTTP : headersHelper qui lit le coffre (mcp-headers.ts), aucune valeur stockée.
+    const helper = s.headers
+      ? `bun ${join(SRC, "packages", "machine", "src", "mcp-headers.ts").replaceAll("\\", "/")} ${Object.entries(s.headers).map(([h, n]) => `${h}=${n}`).join(" ")}`
+      : undefined;
     const same = s.url
-      ? cur?.url === s.url
+      ? cur?.url === s.url && cur?.headersHelper === helper
       : !!cur && norm(cur.command ?? "") === norm(argv[0]) && JSON.stringify((cur.args ?? []).map(norm)) === JSON.stringify(argv.slice(1).map(norm));
     note(same && !leaked, `claude mcp ${s.name}${leaked ? " (secret en clair dans ~/.claude.json : remplacé par env-kit)" : ""}`);
     if ((same && !leaked) || check) continue;
     if (cur) run(["claude", "mcp", "remove", s.name, "--scope", scope]);
     const env = Object.entries(s.env ?? {}).flatMap(([k, v]) => ["-e", `${k}=${v}`]);
     const r = s.url
-      ? run(["claude", "mcp", "add", "--scope", scope, "--transport", "http", s.name, s.url])
+      ? helper
+        ? run(["claude", "mcp", "add-json", "--scope", scope, s.name, JSON.stringify({ type: "http", url: s.url, headersHelper: helper })])
+        : run(["claude", "mcp", "add", "--scope", scope, "--transport", "http", s.name, s.url])
       : // name before -e: -e is variadic in `claude mcp add` and would swallow the name (fr2, 2026-11-13)
         run(["claude", "mcp", "add", "--scope", scope, s.name, ...env, "--", ...argv]);
     if (r.code !== 0) out.push(`ERR  claude mcp ${s.name} : ${last(r)}`);
@@ -291,6 +308,13 @@ export async function toolchain({ check }: { check: boolean }): Promise<string[]
     if (!check) rmSync(d, { recursive: true, force: true });
   }
 
+  // Secrets au coffre seul : retirés de l'env utilisateur Windows s'ils y traînent encore.
+  for (const s of m.secret ?? []) {
+    if (s.user_env !== false || process.platform !== "win32") continue;
+    const has = run(["reg", "query", "HKCU\\Environment", "/v", s.name]).code === 0;
+    note(!has, `secret ${s.name} hors de HKCU\\Environment (coffre env-kit seul)`);
+    if (has && !check) run(["reg", "delete", "HKCU\\Environment", "/v", s.name, "/f"]);
+  }
   for (const s of m.secret ?? []) out.push(`info secret ${s.name} : ${process.env[s.name] ? "présent dans l'env" : "absent de l'env"}`);
   if (!check && head && !out.some((l) => l.startsWith("ERR"))) {
     mkdirSync(join(HOME, ".cache", "aphrody"), { recursive: true });

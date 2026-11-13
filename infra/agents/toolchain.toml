@@ -53,12 +53,14 @@ scope = "user"
 # Serveurs MCP stdio lancés par bun x (les plugins upstream utilisent npx : non installés).
 [[claude.mcp]]
 name = "chrome-devtools"
+hosts = ["pc"]                         # navigateur local / connexion Firebase du PC
 scope = "user"
 command = ["bun", "x", "chrome-devtools-mcp@1.13.0"]
 source = "ChromeDevTools/chrome-devtools-mcp@1417f93ee3f8"
 
 [[claude.mcp]]
 name = "firebase"
+hosts = ["pc"]                         # navigateur local / connexion Firebase du PC
 scope = "user"
 command = ["bun", "x", "firebase-tools@15.36.0", "mcp"]
 env = { IS_FIREBASE_MCP = "true" }
@@ -68,7 +70,7 @@ source = "firebase/firebase-tools@450bcf337418"
 [[secret]]
 name = "DEVELOPERKNOWLEDGE_API_KEY"
 store = "env-kit"
-user_env = true
+user_env = false                        # coffre seul : retirée de HKCU\\Environment, lue par mcp-headers.ts
 mint = "gcloud services api-keys get-key-string 334a6698-4c5b-41b9-b896-7f8f1494fa5b --project aphrody --account yolo-automation@aphrody.iam.gserviceaccount.com"
 
 # --- Audit design / UI (2026-11-13, docs/ui/ECOSYSTEM-AUDIT.md) ---
@@ -193,6 +195,14 @@ hosts = ["pc"]
 [[claude.mcp]]
 name = "agent-browser"
 command = ["{bin}/agent-browser.exe", "mcp"]
+hosts = ["pc"]
+
+# Serveur Developer Knowledge du plugin google-cloud-developer, clé lue dans le coffre par headersHelper
+# (le serveur du plugin, qui attend la variable d'env, reste en échec sans elle).
+[[claude.mcp]]
+name = "developer-knowledge"
+url = "https://developerknowledge.googleapis.com/mcp"
+headers = { "X-Goog-Api-Key" = "DEVELOPERKNOWLEDGE_API_KEY" }
 hosts = ["pc"]
 
 [[claude.mcp]]

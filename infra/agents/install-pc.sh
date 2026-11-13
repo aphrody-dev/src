@@ -13,6 +13,10 @@ TR="conhost.exe --headless \"$WBUN\" --no-env-file \"$RUNNER\" health"
 
 schtasks.exe /Create /F /TN "Aphrody\\AgentsHealth" /SC MINUTE /MO 5 /TR "$TR" >/dev/null
 schtasks.exe /Create /F /TN "Aphrody\\AgentsLogon" /SC ONLOGON /TR "$TR" >/dev/null
+# Outillage agent (infra/agents/toolchain.toml) : correction de dérive toutes les heures et à l'ouverture de session.
+SYNC="conhost.exe --headless \"$WBUN\" \"$SRC/packages/machine/src/toolchain.ts\" sync"
+schtasks.exe /Create /F /TN "Aphrody\\AgentsSync" /SC HOURLY /TR "$SYNC" >/dev/null
+schtasks.exe /Create /F /TN "Aphrody\\AgentsSyncLogon" /SC ONLOGON /TR "$SYNC" >/dev/null
 SRC_ROOT=$SRC "$BUN" "$RUNNER" health
 schtasks.exe /Query /TN "Aphrody\\AgentsHealth" /FO LIST | grep -iE 'TaskName|Next Run|Prochaine|Status|Statut' || true
 tmux list-windows -t agents -F '  tmux #{window_index} #{window_name}' 2>/dev/null || true
