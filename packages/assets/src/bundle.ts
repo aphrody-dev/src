@@ -12,8 +12,7 @@ import type { OptRecord } from "./optimize.ts";
 import { hashBytes, posix, stableJson } from "./util.ts";
 
 export const CACHE_CONTROL = "public, max-age=31536000, immutable";
-const BR_TYPES =
-  /\.(svg|json|glb|gltf|wasm|js|css|html|txt|ktx2|hdr|ttf|otf|obj|bin)$/i;
+const BR_TYPES = /\.(svg|json|gltf|wasm|js|css|html|txt|hdr|ttf|otf|obj|bin)$/i; // already-compressed formats (glb meshopt, ktx2 zstd, webp, avif, opus, woff2) gain nothing
 
 export interface BundleEntry {
   path: string;
