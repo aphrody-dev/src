@@ -441,6 +441,101 @@ assets.linux-aarch64 = "ollama-linux-arm64.tar.zst"
 assets.macos-x86_64 = "ollama-darwin.tgz"
 assets.macos-aarch64 = "ollama-darwin.tgz"
 
+# mistral.rs, build CPU officiel (serveur OpenAI-compatible de `ay ai`, prd sans GPU). Empreinte :
+# digest de l'asset GitHub de la release v0.9.5, relevé le 2026-11-13.
+[[tool]]
+name = "mistral.rs"
+version = "0.9.5"
+bin = ["mistralrs"]
+source = "github"
+repo = "EricLBuehler/mistral.rs"
+assets.linux-x86_64 = "mistralrs-cpu-x86_64-unknown-linux-gnu.tar.gz"
+sha256.linux-x86_64 = "9b542da90b6541abd599ff275e3246fa6e144885bdcd67d1f0aefdba1729f7b5"
+unsupported = ["windows-x86_64", "linux-aarch64", "macos-x86_64", "macos-aarch64"] # ay ai ne l'utilise que sur prd
+
+# ---------------------------------------------------------------------------------------------
+# Navigateurs headless et automatisation : façade packages/chromium-bun/src/engines (`just browsers`).
+# Ici les binaires publiés en release ; Chrome for Testing, les navigateurs Playwright et les outils
+# Python (uv tool) passent par `chromium-bun engines install`. Rien n'est compilé sur le poste.
+# ---------------------------------------------------------------------------------------------
+
+# Lightpanda (Zig) : CDP sur `lightpanda serve`, aucune build Windows publiée.
+[[tool]]
+name = "lightpanda"
+version = "1.0.3"
+bin = ["lightpanda"]
+verify = ["lightpanda", "version"]
+source = "github"
+repo = "lightpanda-io/browser"
+tag = "{version}"
+assets.linux-x86_64 = "lightpanda-x86_64-linux"
+assets.linux-aarch64 = "lightpanda-aarch64-linux"
+assets.macos-x86_64 = "lightpanda-x86_64-macos"
+assets.macos-aarch64 = "lightpanda-aarch64-macos"
+unsupported = ["windows-x86_64"]
+
+# Obscura (Rust) : CDP sur `obscura serve`. Pas de fichier de sommes publié.
+[[tool]]
+name = "obscura"
+version = "0.2.6"
+bin = ["obscura"]
+source = "github"
+repo = "h4ckf0r0day/obscura"
+assets.windows-x86_64 = "obscura-x86_64-windows.zip"
+assets.linux-x86_64 = "obscura-x86_64-linux.tar.gz"
+assets.linux-aarch64 = "obscura-aarch64-linux.tar.gz"
+assets.macos-x86_64 = "obscura-x86_64-macos.tar.gz"
+assets.macos-aarch64 = "obscura-aarch64-macos.tar.gz"
+
+# Servo (Rust) : WebDriver sur `servo --headless --webdriver=<port>` ; arbre servo/ + resources/.
+[[tool]]
+name = "servo"
+version = "0.8.0"
+bin = ["servo"]
+source = "github"
+repo = "servo/servo"
+layout = "tree"
+checksum = "{asset}.sha256"
+assets.windows-x86_64 = "servo-x86_64-windows-msvc.zip"
+assets.linux-x86_64 = "servo-x86_64-linux-gnu.tar.gz"
+assets.linux-aarch64 = "servo-aarch64-linux-gnu.tar.gz"
+unsupported = ["macos-x86_64", "macos-aarch64"] # macOS : .dmg uniquement
+
+# agent-browser (Rust, vercel-labs) : CLI et serveur MCP déjà déclaré côté Claude Code.
+[[tool]]
+name = "agent-browser"
+version = "0.43.0"
+bin = ["agent-browser"]
+source = "github"
+repo = "vercel-labs/agent-browser"
+assets.windows-x86_64 = "agent-browser-win32-x64.exe"
+assets.linux-x86_64 = "agent-browser-linux-musl-x64"
+assets.linux-aarch64 = "agent-browser-linux-musl-arm64"
+assets.macos-x86_64 = "agent-browser-darwin-x64"
+assets.macos-aarch64 = "agent-browser-darwin-arm64"
+
+[[tool]]
+name = "chrome-devtools-mcp"
+version = "1.13.0"
+bin = ["chrome-devtools-mcp"]
+source = "bun"
+package = "chrome-devtools-mcp"
+
+[[tool]]
+name = "playwright-mcp"
+version = "0.0.85"
+bin = ["playwright-mcp"]
+source = "bun"
+package = "@playwright/mcp"
+
+# Apify CLI (plateforme Apify, acteurs Crawlee) : binaires apify et actor.
+[[tool]]
+name = "apify-cli"
+version = "1.12.0"
+bin = ["apify"]
+source = "bun"
+package = "apify-cli"
+
 # ---------------------------------------------------------------------------------------------
 # Navigateurs headless et automatisation : façade packages/chromium-bun/src/engines (`just browsers`).
 # Ici les binaires publiés en release ; Chrome for Testing, les navigateurs Playwright et les outils

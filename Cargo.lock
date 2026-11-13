@@ -271,8 +271,14 @@ dependencies = [
  "depot-core",
  "depot-gclient",
  "depot-vpython",
+ "dotenvy",
+ "regex",
+ "serde",
  "serde_json",
  "stack-bench",
+ "toml 1.2.1+spec-1.1.0",
+ "ureq",
+ "uuid",
  "xtk",
 ]
 

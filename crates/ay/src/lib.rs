@@ -7,6 +7,7 @@ use clap::{Parser, Subcommand};
 use std::path::PathBuf;
 use std::process::Command;
 
+pub mod ai;
 pub mod build;
 pub mod chromium;
 mod exec;
@@ -102,6 +103,8 @@ pub enum Cmd {
     Up(up::UpArgs),
     /// Update `ay` itself from the dist GitHub Releases (axoupdater)
     SelfUpdate(self_update::SelfUpdateArgs),
+    /// Inference providers behind LiteLLM (infra/ai/ai.toml): ls, install, service, pull, config, check, auth, push, up
+    Ai(ai::AiArgs),
 }
 
 #[derive(clap::Args, Debug, PartialEq, Default)]
@@ -138,6 +141,7 @@ pub enum Route {
     Sys(SysArgs),
     Up(up::UpArgs),
     SelfUpdate(self_update::SelfUpdateArgs),
+    Ai(ai::AiArgs),
 }
 
 fn prefixed(head: &[&str], rest: &[String]) -> Vec<String> {
@@ -191,6 +195,7 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Sys(s) => Route::Sys(s),
         Cmd::Up(u) => Route::Up(u),
         Cmd::SelfUpdate(a) => Route::SelfUpdate(a),
+        Cmd::Ai(a) => Route::Ai(a),
     }
 }
 
@@ -226,6 +231,7 @@ fn run_route(route: Route) -> i32 {
         Route::Sys(args) => run_sys(args),
         Route::Up(args) => up::run(args),
         Route::SelfUpdate(args) => self_update::run(args),
+        Route::Ai(args) => ai::run(args),
     }
 }
 
@@ -397,6 +403,23 @@ mod tests {
             parse("self-update --version 0.3.0"),
             Route::SelfUpdate(self_update::SelfUpdateArgs { check: false, version: Some("0.3.0".into()) })
         );
+    }
+
+    #[test]
+    fn conformance_and_manifests_verify() {
+        assert_eq!(parse("conformance --fetch wpt"), Route::Conformance(v(&["--fetch", "wpt"])));
+        assert_eq!(parse("manifests verify"), Route::Xtk(v(&["manifests", "--check"])));
+    }
+
+    #[test]
+    fn ai_subcommands() {
+        let Route::Ai(a) = parse("ai check --json --env-file x.env") else { panic!("not ai") };
+        assert_eq!(a.cmd, Some(ai::AiCmd::Check));
+        assert!(a.json);
+        assert_eq!(a.env_files, vec![PathBuf::from("x.env")]);
+        let Route::Ai(a) = parse("ai service ollama litellm --remove") else { panic!("not ai") };
+        assert_eq!(a.cmd, Some(ai::AiCmd::Service { ids: v(&["ollama", "litellm"]), remove: true }));
+        assert_eq!(parse("ai"), Route::Ai(ai::AiArgs::default()));
     }
 
     #[test]

@@ -1,0 +1,204 @@
+# Fournisseurs d'inférence pour `ay ai` (crates/ay/src/ai.rs), passerelle unique LiteLLM.
+# Rien n'est figé dans le code : un fournisseur est actif si sa clé est dans le coffre (`--env-file`,
+# `$AY_ENV_FILE` ou `<repo>/.env`, puis l'environnement) ou si son serveur local répond ; ses modèles
+# viennent de l'API du fournisseur, via les routes joker de LiteLLM (`<id>/*`, check_provider_endpoint).
+#
+# [settings]   proxy LiteLLM (host, port), config générée (`config`), prompt de vérification,
+#              master_key (variable de la clé maîtresse du proxy, créée et rangée si absente)
+# [[runtime]]  serveur : os (défaut : tous), bin (présent = installé), install.<windows|linux> (argv),
+#              serve (argv au premier plan), env, health (URL), pull (argv avec {model}), models
+#              path (dossiers ajoutés au PATH). Gabarits : {config} {host} {port} {prompt} {model}
+#              {env:X} {ollama_gguf:<modèle>} (GGUF téléchargé par Ollama, lien dur en .gguf)
+# [[provider]] (complète ou ajoute au registre) `route` (fournisseur LiteLLM), `key`, `requires`,
+#              `api_base`, `health` (chemin sous api_base, fournisseur local), `params` (litellm_params ;
+#              "env:X" -> os.environ/X), `credentials` (Vertex : "env:VAR" JSON ou "file:~/..."), `probe`
+#              (regex facultative du modèle d'essai), `auth_url` + `key_pattern` + `validate` (`ay ai auth`),
+#              `cli` (hors LiteLLM : argv `models` et `ask` avec {model} {prompt}).
+
+[settings]
+host = "127.0.0.1"
+port = 4000
+config = "~/.config/ay/litellm.yaml"
+prompt = "Reply with the single word: ok"
+master_key = "LITELLM_MASTER_KEY"
+registry = "https://models.dev/api.json"
+
+# --- Serveurs ---------------------------------------------------------------------------------
+
+# Passerelle : roue construite depuis le fork aphrody-labs/litellm (extension Rust, maturin) et
+# publiée en release du fork avec litellm-proxy-extras et litellm-enterprise du même commit (absents de
+# PyPI à ces versions) ; aucune compilation sur le poste.
+[[runtime]]
+id = "litellm"
+bin = "litellm"
+install.windows = [["uv", "tool", "install", "--no-build", "--force", "--python", "3.13", "--with", "litellm-proxy-extras @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_proxy_extras-0.4.115-py3-none-any.whl", "--with", "litellm-enterprise @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_enterprise-0.1.84-py3-none-any.whl", "litellm[proxy,google] @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm-1.111.0-cp310-abi3-win_amd64.whl"]]
+install.linux = [["uv", "tool", "install", "--no-build", "--force", "--python", "3.13", "--with", "litellm-proxy-extras @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_proxy_extras-0.4.115-py3-none-any.whl", "--with", "litellm-enterprise @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_enterprise-0.1.84-py3-none-any.whl", "litellm[proxy,google] @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm-1.111.0-cp310-abi3-manylinux_2_39_x86_64.whl"]]
+serve = ["litellm", "--config", "{config}", "--host", "{host}", "--port", "{port}", "--num_workers", "1"]
+env = { LITELLM_LOG = "ERROR", PYTHONUTF8 = "1" }
+health = "http://{host}:{port}/health/liveliness"
+
+[[runtime]]
+id = "ollama"
+os = ["windows"]
+bin = "ollama"
+install.windows = [["ay", "up", "ollama"]]
+serve = ["ollama", "serve"]
+env = { OLLAMA_HOST = "127.0.0.1:11434", OLLAMA_MAX_LOADED_MODELS = "1", OLLAMA_NUM_PARALLEL = "1" }
+health = "http://127.0.0.1:11434/api/version"
+pull = ["ollama", "pull", "{model}"]
+# Bibliothèque Ollama relevée le 2026-11-13 : gemma4:e2b = 4,6 Go (tient dans 12 Go de VRAM).
+models = ["gemma4:e2b"]
+
+# llama.cpp sert le GGUF déjà téléchargé par Ollama (pas de second téléchargement).
+[[runtime]]
+id = "llamacpp"
+os = ["windows"]
+bin = "llama-server"
+install.windows = [["ay", "up", "llama.cpp"]]
+serve = ["llama-server", "--host", "127.0.0.1", "--port", "8080", "-m", "{ollama_gguf:gemma4:e2b}", "--alias", "gemma4-e2b", "-ngl", "99", "-c", "8192", "-t", "4", "--jinja"]
+health = "http://127.0.0.1:8080/health"
+
+# LM Studio sans interface : démon llmster + CLI lms (installateur officiel lmstudio.ai).
+[[runtime]]
+id = "lmstudio"
+os = ["windows"]
+bin = "lms"
+path = ["~/.lmstudio/bin"]
+install.windows = [["pwsh", "-NoProfile", "-Command", "irm https://lmstudio.ai/install.ps1 | iex"]]
+install.linux = [["sh", "-c", "curl -fsSL https://lmstudio.ai/install.sh | bash"]]
+serve = ["lms", "server", "start", "--port", "1234", "--bind", "127.0.0.1"]
+oneshot = true
+health = "http://127.0.0.1:1234/v1/models"
+# Lien dur du GGUF d'Ollama (aucun second téléchargement) ; un ré-import est signalé « déjà présent ».
+pull = ["lms", "import", "-y", "--hard-link", "--user-repo", "ollama/gemma4-e2b", "{ollama_gguf:gemma4:e2b}"]
+
+[[runtime]]
+id = "jan"
+os = ["windows"]
+# Application de bureau : son serveur API (port 1337) ne tourne que dans l'application ouverte.
+bin = "~/AppData/Local/Programs/Jan/Jan-Desktop.exe"
+install.windows = [["winget", "install", "--id", "Jan.Jan", "--exact", "--source", "winget", "--silent", "--accept-package-agreements", "--accept-source-agreements", "--disable-interactivity"]]
+health = "http://127.0.0.1:1337/v1/models"
+
+# prd (sans GPU) : roue CPU officielle de vLLM et binaire CPU de mistral.rs, petit modèle HF public.
+[[runtime]]
+id = "vllm"
+os = ["linux"]
+bin = "vllm"
+install.linux = [["uv", "tool", "install", "--python", "3.12", "--torch-backend", "cpu", "vllm @ https://github.com/vllm-project/vllm/releases/download/v0.32.0/vllm-0.32.0+cpu-cp38-abi3-manylinux_2_39_x86_64.whl"]]
+serve = ["vllm", "serve", "Qwen/Qwen3-0.6B", "--host", "127.0.0.1", "--port", "8000", "--max-model-len", "4096", "--served-model-name", "qwen3-0.6b"]
+env = { VLLM_CPU_KVCACHE_SPACE = "2", VLLM_CPU_OMP_THREADS_BIND = "0-3", OMP_NUM_THREADS = "4" }
+health = "http://127.0.0.1:8000/health"
+
+[[runtime]]
+id = "mistralrs"
+os = ["linux"]
+bin = "mistralrs"
+install.linux = [["ay", "up", "mistral.rs"]]
+serve = ["mistralrs", "serve", "--cpu", "--host", "127.0.0.1", "-p", "8001", "-m", "Qwen/Qwen3-0.6B"]
+env = { RAYON_NUM_THREADS = "4", OMP_NUM_THREADS = "4" }
+health = "http://127.0.0.1:8001/v1/models"
+
+# --- Fournisseurs -------------------------------------------------------------------------------
+# Découverts dans le registre models.dev (format d'opencode : `env`, `api`, `npm`, `models` avec prix) :
+# un fournisseur du registre est actif dès que sa clé est présente ; ses modèles viennent de son API
+# via LiteLLM, sinon du catalogue du registre ; le modèle d'essai est le moins cher (prix du registre).
+# Les entrées [[provider]] ci-dessous n'ajoutent que ce que le registre ignore : serveurs locaux,
+# comptes de service Vertex, Mammouth (absent du registre), pages de clés pour `ay ai auth`.
+
+# Vocabulaire du registre -> LiteLLM : paquet AI SDK d'un point d'accès, puis identifiant.
+[litellm.npm]
+"@ai-sdk/openai-compatible" = "openai"
+[litellm.providers]
+google = "gemini"
+google-vertex = "vertex_ai"
+vercel = "vercel_ai_gateway"
+
+# Noms du registre -> noms du coffre de src.
+[env]
+CLOUDFLARE_API_KEY = "CLOUDFLARE_API_TOKEN"
+
+# Serveurs locaux (sans clé, actifs s'ils répondent).
+[[provider]]
+id = "ollama"
+route = "ollama_chat"
+api_base = "http://127.0.0.1:11434"
+health = "/api/version"
+
+[[provider]]
+id = "llamacpp"
+route = "hosted_vllm"
+api_base = "http://127.0.0.1:8080/v1"
+health = "/models"
+
+[[provider]]
+id = "lmstudio"
+route = "hosted_vllm"
+api_base = "http://127.0.0.1:1234/v1"
+health = "/models"
+
+[[provider]]
+id = "jan"
+route = "hosted_vllm"
+api_base = "http://127.0.0.1:1337/v1"
+health = "/models"
+
+[[provider]]
+id = "vllm"
+route = "hosted_vllm"
+api_base = "http://127.0.0.1:8000/v1"
+health = "/models"
+
+[[provider]]
+id = "mistralrs"
+route = "hosted_vllm"
+api_base = "http://127.0.0.1:8001/v1"
+health = "/models"
+
+# Pages de clés (`ay ai auth`) : ouvertes dans le navigateur, clé lue au presse-papiers.
+[[provider]]
+id = "openai"
+auth_url = "https://platform.openai.com/api-keys"
+key_pattern = "^sk-[A-Za-z0-9_-]{20,}$"
+validate = "https://api.openai.com/v1/models"
+
+[[provider]]
+id = "openrouter"
+auth_url = "https://openrouter.ai/settings/keys"
+key_pattern = "^sk-or-v1-[0-9a-f]{64}$"
+validate = "https://openrouter.ai/api/v1/key"
+
+[[provider]]
+id = "huggingface"
+auth_url = "https://huggingface.co/settings/tokens/new?tokenType=fineGrained"
+key_pattern = "^hf_[A-Za-z0-9]{30,}$"
+validate = "https://huggingface.co/api/whoami-v2"
+
+[[provider]]
+id = "vercel"
+auth_url = "https://vercel.com/d?to=%2F%5Bteam%5D%2F%7E%2Fai%2Fapi-keys"
+key_pattern = "^[A-Za-z0-9_-]{24,}$"
+validate = "https://ai-gateway.vercel.sh/v1/credits"
+
+# Absent du registre models.dev au 2026-11-13 ; API OpenAI-compatible (info.mammouth.ai/docs).
+[[provider]]
+id = "mammouth"
+route = "openai"
+api_base = "https://api.mammouth.ai/v1"
+key = "MAMMOUTH_API_KEY"
+auth_url = "https://mammouth.ai/app/account/settings/api"
+key_pattern = "^sk-[A-Za-z0-9_-]{16,}$"
+validate = "https://api.mammouth.ai/v1/models"
+
+# Une route par compte de service lisible (projet lu dans le JSON) au lieu des variables
+# GOOGLE_VERTEX_* du registre.
+[[provider]]
+id = "google-vertex"
+route = "vertex_ai"
+credentials = ["env:GCP_ADMIN_SA_KEY", "file:~/.aphrody/secrets/yolo-automation.json"]
+params = { vertex_location = "env:GOOGLE_CLOUD_LOCATION" }
+
+# Hors LiteLLM : CLI Antigravity authentifiée (modèles listés par la CLI).
+[[provider]]
+id = "antigravity"
+cli = { models = ["agy", "models"], ask = ["agy", "-p", "{prompt}", "--mode", "plan", "--model", "{model}"] }

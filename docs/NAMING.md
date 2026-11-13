@@ -28,6 +28,7 @@ aliases.
 | `ay graph <path>` | `graphify`, `depot-graph` | tree-sitter code graph |
 | `ay deploy` | `src-deploy` (Go engine, invoked by `ay`) | deploy |
 | `ay bench` | `stack-bench` | benchmarks |
+| `ay ai ls/install/service/pull/config/check/auth/push/up` | ad hoc Ollama, llama.cpp, LM Studio, vLLM, mistral.rs and LiteLLM setup | inference providers discovered from the models.dev registry plus `infra/ai/ai.toml`, behind one LiteLLM proxy (fork aphrody-labs/litellm), Task Scheduler or systemd services |
 | `ay sys` | (new) | OS, firmware, hardware and software profile |
 | `ay auth status/repair/gh-secrets/tunnels/rotate`, `ay secret` | ad hoc `gh auth`, `gcloud auth`, `gh secret set`, token files | every authentication of the fleet and the OS secret store (DPAPI, systemd-creds), run by bun from `packages/env-kit` (docs/infra/AUTH.md) |
 | `ay ssh exec/cp/hosts/check` | `ssh`, `scp` (OpenSSH client) | pure-Rust SSH (crate `aphrody-remote`, russh): exec on `usa`/`fr1`/`fr2` or `all`, SFTP copy, fleet health |

@@ -31,6 +31,13 @@ depot-gclient = { version = "0.2.0", path = "../depot-gclient" }
 depot-vpython = { version = "0.2.0", path = "../depot-vpython" }
 remote = { version = "0.2.0", package = "aphrody-remote", path = "../remote" }
 serde_json.workspace = true
+# `ay ai`: ai.toml, provider HTTP checks, secrets from `.env`.
+serde.workspace = true
+toml.workspace = true
+ureq.workspace = true
+regex.workspace = true
+uuid.workspace = true
+dotenvy = "0.15.7"
 sys = { version = "0.2.0", path = "../sys" , package = "aphrody-sys" }
 xtk.workspace = true
 up = { version = "0.2.0", package = "aphrody-up", path = "../up" }
