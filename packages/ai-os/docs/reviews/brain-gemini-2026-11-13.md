@@ -15,3 +15,4 @@ Score 13/20. Then fixed: --days must match a decimal number (empty string reject
 ## Third pass (gemini.google.com, Carbon High, claude-in-chrome)
 
 Two submissions (full file 10.9 KB, then 3.9 KB excerpt, conversation bd5c00274ae51689): both ended with an empty answer after "Searching the web". No score obtained.
+Third attempt (1.8 KB excerpt, conversation 9ac440bdd3f59022): empty answer again after "Searching the web". Carbon High on the web is unusable for reviews today.
