@@ -151,7 +151,7 @@ type GltfValidator = {
 // Upstream defects confirmed in the validator output of third-party assets we do not edit (checksummed in the manifest):
 // the glTF is served as published; the listed codes are reported as warnings for that file only.
 const UPSTREAM_DEFECTS: Record<string, string[]> = {
-  "polyhaven-models/fir_tree_01/fir_tree_01_1k.gltf": [
+  "fir_tree_01/fir_tree_01_1k.gltf": [
     "MESH_PRIMITIVE_TOO_FEW_TEXCOORDS",
   ],
 };
