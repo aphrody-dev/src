@@ -225,7 +225,8 @@ describe("Schema.org JSON-LD @graph", () => {
       );
     }
     const html = readFileSync(join(DIST, "index.html"), "utf-8");
-    expect(ldGraph(html).length).toBe(4);
+    // Holding home (src/holding/page.ts): Organization + WebSite with its SearchAction.
+    expect(ldGraph(html).length).toBe(2);
   });
 });
 

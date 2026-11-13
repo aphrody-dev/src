@@ -9,11 +9,11 @@
       },
     },
     "apps/aphrody": {
-      "name": "@aphrody/web",
+      "name": "@aphrody/aphrody",
       "version": "1.0.0",
     },
     "apps/nt": {
-      "name": "nt",
+      "name": "@aphrody/nt",
       "dependencies": {
         "@aphrody/ffi-bridge": "workspace:*",
       },
@@ -26,7 +26,7 @@
       },
     },
     "apps/nt/modules/web": {
-      "name": "@nt/web",
+      "name": "@aphrody/web",
     },
     "apps/r2-site": {
       "name": "@aphrody/r2-site",
@@ -43,7 +43,7 @@
       },
     },
     "infra/cloudflare/workers/github-app": {
-      "name": "aphrody-github",
+      "name": "@aphrody/github-app",
       "devDependencies": {
         "@cloudflare/vite-plugin": "catalog:",
         "@cloudflare/workers-types": "catalog:",
@@ -210,6 +210,8 @@
   "packages": {
     "@aphrody/ai-os": ["@aphrody/ai-os@workspace:packages/ai-os"],
 
+    "@aphrody/aphrody": ["@aphrody/aphrody@workspace:apps/aphrody"],
+
     "@aphrody/bun-parity": ["@aphrody/bun-parity@workspace:packages/bun-parity"],
 
     "@aphrody/bun-plugins": ["@aphrody/bun-plugins@workspace:packages/bun-plugins"],
@@ -230,6 +232,8 @@
 
     "@aphrody/gaming": ["@aphrody/gaming@workspace:packages/gaming"],
 
+    "@aphrody/github-app": ["@aphrody/github-app@workspace:infra/cloudflare/workers/github-app"],
+
     "@aphrody/google-design": ["@aphrody/google-design@workspace:packages/google-design"],
 
     "@aphrody/linux": ["@aphrody/linux@workspace:packages/linux"],
@@ -237,6 +241,8 @@
     "@aphrody/machine": ["@aphrody/machine@workspace:packages/machine"],
 
     "@aphrody/net": ["@aphrody/net@workspace:packages/net"],
+
+    "@aphrody/nt": ["@aphrody/nt@workspace:apps/nt"],
 
     "@aphrody/r2-site": ["@aphrody/r2-site@workspace:apps/r2-site"],
 
@@ -252,7 +258,7 @@
 
     "@aphrody/wck": ["@aphrody/wck@workspace:packages/wck"],
 
-    "@aphrody/web": ["@aphrody/web@workspace:apps/aphrody"],
+    "@aphrody/web": ["@aphrody/web@workspace:apps/nt/modules/web"],
 
     "@aphrody/yolo": ["@aphrody/yolo@workspace:apps/yolo"],
 
@@ -360,8 +366,6 @@
 
     "@napi-rs/wasm-runtime": ["@napi-rs/wasm-runtime@1.2.6", "", { "dependencies": { "@tybys/wasm-util": "^0.10.3" }, "peerDependencies": { "@emnapi/core": "^1.7.1 || 2.0.0-beta.2", "@emnapi/runtime": "^1.7.1 || 2.0.0-beta.2" } }, "sha512-mRyDmEw9/fCDXCGfL1sbgIw/GUK0PVxRW4YwgPN61F3LQ+fSyoBFarJVzgGyhF6kRzEQZ0FejDqm4WLXSeqQmw=="],
 
-    "@nt/web": ["@nt/web@workspace:apps/nt/modules/web"],
-
     "@oxc-project/types": ["@oxc-project/types@0.156.0", "", {}, "sha512-1Duyg48TdJNdyhEB8Xn1L36bT9Pv6GUtlKjHxOys8xkaF/rQq3XJE+bAurSK/AgIz5mGFsb77cn9Pb20+WCScw=="],
 
     "@poppinss/colors": ["@poppinss/colors@4.1.6", "", { "dependencies": { "kleur": "^4.1.5" } }, "sha512-H9xkIdFswbS8n1d6vmRd8+c10t2Qe+rZITbbDHHkQixH5+2x1FDGmi/0K+WgWiqQFKPSlIYB7jlH6Kpfn6Fleg=="],
@@ -418,8 +422,6 @@
 
     "@webgpu/types": ["@webgpu/types@0.1.74", "", {}, "sha512-lgiI4hbuLcI9unnm2cL/tvCaQU45dp0xcLWJh5uB/9MBGvIA4F8XIk7nSiBeg+K4xWGYwgZKn80LmERI5CxoTA=="],
 
-    "aphrody-github": ["aphrody-github@workspace:infra/cloudflare/workers/github-app"],
-
     "bun-types": ["bun-types@1.4.4", "", { "dependencies": { "@types/node": "*", "undici-types": "*" } }, "sha512-yjrJh5oGX7mMPKGd19YXyIjmEuj4G4zNC30bs7PM9Az7NQ3ndF3j6hbeRdvJTRQEhJ/FYQwW0a2moweEi2hMxQ=="],
 
     "cookie": ["cookie@1.1.1", "", {}, "sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ=="],
@@ -473,8 +475,6 @@
     "node-addon-api": ["node-addon-api@8.9.2", "", {}, "sha512-VijLXbi3UACN69I0JVXJsX4tjACjNoQDgv2gTF6sx2wWEi8tkSg2eX8p5gSIFi8z2+DL3oHmY6OyKce38SDolg=="],
 
     "node-gyp-build": ["node-gyp-build@4.8.4", "", { "bin": { "node-gyp-build": "bin.js", "node-gyp-build-optional": "optional.js", "node-gyp-build-test": "build-test.js" } }, "sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ=="],
-
-    "nt": ["nt@workspace:apps/nt"],
 
     "pathe": ["pathe@2.0.3", "", {}, "sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w=="],
 

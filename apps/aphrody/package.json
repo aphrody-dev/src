@@ -1,5 +1,5 @@
 {
-  "name": "@aphrody/web",
+  "name": "@aphrody/aphrody",
   "version": "1.0.0",
   "description": "aphrody.com - Aphrody brand homepage, search with package catalog, and runtime benchmarks, in pure Bun web standards",
   "private": true,

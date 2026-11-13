@@ -1,5 +1,5 @@
 {
-  "name": "aphrody-github",
+  "name": "@aphrody/github-app",
   "private": true,
   "type": "module",
   "scripts": {

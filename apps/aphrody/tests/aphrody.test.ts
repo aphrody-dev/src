@@ -266,7 +266,8 @@ describe("Aphrody HTTP Server & Endpoints", () => {
     expect(res.headers.get("content-security-policy")).toBeDefined();
 
     const text = await res.text();
-    expect(text).toContain("Aphrody développe des logiciels web");
+    // Home = holding page generated from docs/ALPHABET.md (build.ts renderHolding).
+    expect(text).toContain("<h1>Aphrody</h1>");
     expect(res.headers.get("link")).toContain("atkinson-next.woff2");
   });
 
