@@ -1,0 +1,9 @@
+[Unit]
+Description=Sync the fr2 vhosts of the failover names to the prd standby origin (fleet-standby-sync.sh)
+Wants=network-online.target
+After=network-online.target
+[Service]
+Type=oneshot
+Nice=19
+IOSchedulingClass=idle
+ExecStart=/usr/local/bin/fleet-standby-sync.sh

@@ -1,0 +1,6 @@
+[Unit]
+Description=Proxy 127.0.0.1:%i to prd standby 10.200.77.5:%i
+Requires=fleet-fwd-standby@%i.socket
+After=fleet-fwd-standby@%i.socket
+[Service]
+ExecStart=/usr/lib/systemd/systemd-socket-proxyd 10.200.77.5:%i

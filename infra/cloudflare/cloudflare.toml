@@ -27,6 +27,11 @@ ingress = [
   { hostname = "mig-depot.aphrody.com", service = "http://127.0.0.1:19182" },
   { hostname = "mig-commons.aphrody.com", service = "http://127.0.0.1:19766" },
   { hostname = "ssh-prd.aphrody.com", service = "ssh://127.0.0.1:19022" }, # cluster LB -> prd sshd from any replica
+  # Standby of the names whose DNS still points to fr2 (infra/fleet/fr2/bin/fleet-standby-sync.sh, prd loopback):
+  # unused until fleet-dns-failover.sh turns their A/AAAA into a CNAME to this tunnel when fr2 is down.
+  { hostname = "dbfr.aphrody.com", service = "http://127.0.0.1:29401" },
+  { hostname = "nie.aphrody.app", service = "http://127.0.0.1:29402" },
+  { hostname = "fleet-failover-test.aphrody.com", service = "http://127.0.0.1:29401" }, # fleet-dns-failover-test.sh only
   # aphrody service: cluster LB pool aphrody (prd:23000, blue/green switched in deploy.toml only).
   { hostname = "aphrody.com", service = "http://127.0.0.1:19300" },
   { hostname = "*.aphrody.com", service = "http://127.0.0.1:19300" },

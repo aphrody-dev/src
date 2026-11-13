@@ -1,0 +1,8 @@
+# fr1/fr2: the mig-prd tunnel replicas serve the failover standby names (fleet-dns-failover.sh) from prd's
+# standby origin (10.200.77.5:<port>, fleet-standby-sync.sh). Instance = port: fleet-fwd-standby@29401.socket.
+[Unit]
+Description=Forward 127.0.0.1:%i to the prd standby origin
+[Socket]
+ListenStream=127.0.0.1:%i
+[Install]
+WantedBy=sockets.target
