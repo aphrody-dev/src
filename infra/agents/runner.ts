@@ -26,6 +26,7 @@ import {
 } from "node:fs";
 import { hostname } from "node:os";
 import { join, resolve } from "node:path";
+import { resolveExe } from "../../packages/ai-os/src/llm/agents.ts";
 
 type Role = { timeout_s: number; budget_usd: number };
 type Host = { roles: string[]; src: string; ssh?: string[] };
@@ -150,13 +151,16 @@ function sh(
     err: r.stderr.toString(),
   };
 }
-// Windows: .cmd shims must go through cmd.exe; resolve the real path first.
-function argv0(name: string, args: string[]): string[] {
-  const p = Bun.which(name);
-  if (!p) return [name, ...args];
-  return WIN && /\.(cmd|bat)$/i.test(p)
-    ? ["cmd.exe", "/d", "/c", p, ...args]
-    : [p, ...args];
+// Never through a shell: on Windows a .cmd/.bat shim is resolved to its target .exe (ai-os
+// resolveExe) and spawned directly, so prompts with & | ^ % " < > stay plain arguments.
+// A shim that cannot be resolved is refused instead of falling back to cmd.exe.
+export function argv0(name: string, args: string[]): string[] {
+  const p = WIN ? resolveExe(name) : (Bun.which(name) ?? name);
+  if (WIN && /\.(cmd|bat)$/i.test(p))
+    throw new Error(
+      `${name}: shim ${p} has no resolvable .exe (no shell fallback)`,
+    );
+  return [p, ...args];
 }
 function shellCmd(cmd: string): string[] {
   return WIN ? [Bun.which("niu") ?? "sh", "-c", cmd] : ["sh", "-c", cmd];
@@ -169,7 +173,7 @@ function shellCmd(cmd: string): string[] {
 // With no name, the relay's llm_models answer (available providers, relay order) is used as is.
 // Prompt goes on stdin where the CLI supports it (no argv length or quoting limits).
 const CLIS = new Set(["claude", "codex", "opencode", "pi", "agy"]);
-function providerCmd(
+export function providerCmd(
   p: string,
   t: Task,
   budget: number,
@@ -529,22 +533,29 @@ async function runTaskLocked(t: Task, claimedPath: string, named: string[]) {
         exit = r.exit;
         text = r.out;
       } else {
-        const { cmd, stdin } = providerCmd(p, { ...t, prompt }, budget);
-        const proc = Bun.spawn(cmd, {
-          cwd,
-          stdin: stdin ? Buffer.from(stdin) : "ignore",
-          stdout: "pipe",
-          stderr: "pipe",
-          env: childEnv({ AGENT_TASK_ID: t.id, AGENT_ROLE: t.role }),
-        });
-        const timer = setTimeout(() => proc.kill(), timeoutMs);
-        const [o, e] = await Promise.all([
-          new Response(proc.stdout).text(),
-          new Response(proc.stderr).text(),
-        ]);
-        exit = await proc.exited;
-        clearTimeout(timer);
-        text = o + (e ? `\n[stderr]\n${e}` : "");
+        let built: { cmd: string[]; stdin?: string } = { cmd: [] };
+        exit = 127;
+        text = "";
+        try {
+          built = providerCmd(p, { ...t, prompt }, budget);
+          const proc = Bun.spawn(built.cmd, {
+            cwd,
+            stdin: built.stdin ? Buffer.from(built.stdin) : "ignore",
+            stdout: "pipe",
+            stderr: "pipe",
+            env: childEnv({ AGENT_TASK_ID: t.id, AGENT_ROLE: t.role }),
+          });
+          const timer = setTimeout(() => proc.kill(), timeoutMs);
+          const [o, e] = await Promise.all([
+            new Response(proc.stdout).text(),
+            new Response(proc.stderr).text(),
+          ]);
+          exit = await proc.exited;
+          clearTimeout(timer);
+          text = o + (e ? `\n[stderr]\n${e}` : "");
+        } catch (e) {
+          text = `command not found: ${String(e)}`; // ENOENT or unresolvable shim: provider_unavailable
+        }
       }
       writeFileSync(
         join(out, `${attempts.length}-${p.replace(/[^\w.-]/g, "_")}.log`),
@@ -1037,8 +1048,10 @@ function status() {
   );
 }
 
-const [cmd, a1] = process.argv.slice(2);
+const [cmd, a1] = import.meta.main ? process.argv.slice(2) : ["lib"];
 switch (cmd) {
+  case "lib":
+    break; // imported (tests)
   case "up":
     up();
     break;
