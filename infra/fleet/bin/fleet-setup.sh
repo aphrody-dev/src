@@ -43,6 +43,7 @@ if [ "$ROLE" = fr1 ]; then
     install -m 0755 "$t/actionlint" /usr/local/bin/actionlint; rm -rf "$t"; log "actionlint $v"
   fi
   install -m 0755 "$F/bin/gh-runners.sh" /usr/local/bin/gh-runners.sh
+  install -m 0644 "$F/systemd/third-party-sync.service" "$F/systemd/third-party-sync.timer" /etc/systemd/system/; systemctl daemon-reload; systemctl enable --now third-party-sync.timer >/dev/null
   if ! command -v jaq >/dev/null; then # jq-compatible filter used by ci.yml, game.yml and build-all.sh (upstream release asset)
     curl -fsSL -o /usr/local/bin/jaq https://github.com/01mf02/jaq/releases/latest/download/jaq-x86_64-unknown-linux-gnu && chmod 0755 /usr/local/bin/jaq && log "jaq $(jaq --version)"
   fi

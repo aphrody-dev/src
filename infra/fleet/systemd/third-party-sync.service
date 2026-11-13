@@ -1,0 +1,12 @@
+[Unit]
+Description=Clone or pin the third_party forks of /srv/src at their src.lock.json commits (fr1)
+Wants=network-online.target
+After=network-online.target src-checkout-update.service
+[Service]
+Type=oneshot
+User=ubuntu
+Environment=HOME=/home/ubuntu JOBS=2
+Nice=19
+IOSchedulingClass=idle
+TimeoutStartSec=6h
+ExecStart=/usr/local/bin/third-party-sync.sh
