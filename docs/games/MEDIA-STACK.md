@@ -53,7 +53,7 @@ Source: `gh api repos/<owner>/<repo>` run on 2026-11-13 (stars, last push, SPDX)
 | pdeljanov/Symphonia | MPL-2.0 | 3482 | 2026-11-08 | Rust audio demux/decode |
 | videolan/dav1d | BSD-2-Clause | 829 | 2026-11-12 | AV1 decoder |
 | xiph/vorbis | BSD-3-Clause | 591 | 2026-08-04 | Vorbis codec |
-| AOMediaCodec/SVT-AV1 | BSD-3-Clause-Clear | 118 | 2026-11-11 | AV1 encoder (stars as reported by this mirror path) |
+| AOMediaCodec/SVT-AV1 | BSD-3-Clause-Clear | 118 | 2026-11-11 | AV1 encoder |
 
 ## Compiler infrastructure
 
