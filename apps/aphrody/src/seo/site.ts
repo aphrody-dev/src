@@ -242,10 +242,10 @@ export const VERTICALS: Vertical[] = [
     fr: {
       title: "Cloud et edge - Aphrody",
       description:
-        "Déploiement d'Aphrody sur Bun, Cloudflare Workers ou Vercel : cache immuable, HSTS et routage des sitemaps et d'ads.txt.",
+        "Déploiement d'Aphrody sur Bun ou Cloudflare Workers : cache immuable, HSTS et routage des sitemaps et d'ads.txt.",
       h1: "Cloud et edge",
       intro:
-        "Le site se sert depuis un serveur Bun, ou comme actifs statiques sur Cloudflare Workers ou Vercel. Les fichiers wrangler.toml et vercel.json fournissent un cache immuable, HSTS et le routage des sitemaps et d'ads.txt.",
+        "Le site se sert depuis un serveur Bun, ou comme actifs statiques sur Cloudflare Workers. Le build écrit dist/_headers (cache immuable, HSTS), les sitemaps et ads.txt.",
       points: [
         "Actifs pre-compressés (gzip et brotli) servis depuis la mémoire.",
         "ETag fort et réponses 304.",
@@ -255,10 +255,10 @@ export const VERTICALS: Vertical[] = [
     en: {
       title: "Cloud and edge - Aphrody",
       description:
-        "Deploying Aphrody on Bun, Cloudflare Workers or Vercel: immutable caching, HSTS and routing for sitemaps and ads.txt.",
+        "Deploying Aphrody on Bun or Cloudflare Workers: immutable caching, HSTS and routing for sitemaps and ads.txt.",
       h1: "Cloud and edge",
       intro:
-        "The site is served from a Bun server, or as static assets on Cloudflare Workers or Vercel. The wrangler.toml and vercel.json files provide immutable caching, HSTS and routing for sitemaps and ads.txt.",
+        "The site is served from a Bun server, or as static assets on Cloudflare Workers. The build writes dist/_headers (immutable caching, HSTS), the sitemaps and ads.txt.",
       points: [
         "Pre-compressed assets (gzip and brotli) served from memory.",
         "Strong ETag and 304 responses.",

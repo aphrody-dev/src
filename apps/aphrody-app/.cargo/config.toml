@@ -1,12 +1,6 @@
 [target.wasm32-unknown-unknown]
 rustflags = ["--cfg=web_sys_unstable_apis"]
 
-[target.x86_64-unknown-linux-musl]
-linker = "tools/zig-cc-x86_64-musl.cmd"
-
-[target.aarch64-unknown-linux-musl]
-linker = "tools/zig-cc-aarch64-musl.cmd"
-
-[target.aarch64-linux-android]
-linker = "C:/Users/aphro/AppData/Local/Android/Sdk/ndk/30.0.16248370/toolchains/llvm/prebuilt/windows-x86_64/bin/aarch64-linux-android35-clang.cmd"
-
+# Android and musl linkers come from the environment, never from a path of one machine:
+#   CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/<host>/bin/aarch64-linux-android35-clang
+# musl targets, when built, use the shared LLVM toolchain (clang --target + -fuse-ld=lld, docs/llvm/UNIFIED-TOOLCHAIN.md) in CI or on fr1.

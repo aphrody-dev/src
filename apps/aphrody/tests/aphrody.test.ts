@@ -385,3 +385,10 @@ describe("Aphrody HTTP Server & Endpoints", () => {
     expect(await lRes.text()).toContain("# Aphrody");
   });
 });
+
+describe("Hosting manifests", () => {
+  it("ships no hand-written host manifest besides wrangler.toml (others come from scripts/deploy-target.ts)", () => {
+    for (const f of ["vercel.json", "netlify.toml", "fly.toml", "app.yaml", "firebase.json"])
+      expect(existsSync(join(ROOT_DIR, f))).toBe(false);
+  });
+});

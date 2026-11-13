@@ -3,8 +3,9 @@
 
 [patch."build_pass_the_bind_ts_schema_list_to_the_codegen_scripts_in_a_file"]
 subject = "build: pass the .bind.ts schema list to the codegen scripts in a file"
-status = "pending"
-note = "remplace build: pass bindgen sources relative (marge mesurée : 39 caractères sous 8191)"
+status = "submitted"
+note = "https://github.com/oven-sh/bun/pull/48787"
+pr = "https://github.com/oven-sh/bun/pull/48787"
 owner = "upstream-stack"
 updated = "2026-11-13"
 

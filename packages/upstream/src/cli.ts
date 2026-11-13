@@ -353,6 +353,10 @@ async function sync(root: string, s: StackConfig, o: Opts): Promise<number> {
       sha: r.patch.sha,
       conflicts: r.conflicts,
       applied: r.applied,
+      dropped_before: r.dropped.map((d) => ({
+        subject: d.patch.meta.subject,
+        why: d.why,
+      })),
     };
     writeState(root, s, "last-sync.json", state);
     console.error(

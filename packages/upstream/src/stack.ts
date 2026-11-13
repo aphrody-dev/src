@@ -145,6 +145,16 @@ export function branchSeries(
       `${s.name}: commits de fusion dans la pile (${merges.split("\n").length}) : pile linéaire attendue`,
     );
   const list = commits(dir, `${base}..${tip}`);
+  // The status registry is keyed by slug: two patches with one slug would share a status.
+  const seen = new Map<string, string>();
+  for (const c of list) {
+    const k = slug(c.message.split("\n")[0] ?? "");
+    if (seen.has(k))
+      throw new Error(
+        `${s.name}: deux patchs ont le même nom « ${k} » (${seen.get(k)!.slice(0, 10)}, ${c.sha.slice(0, 10)}) : changer un sujet`,
+      );
+    seen.set(k, c.sha);
+  }
   return {
     base,
     patches: list.map((c, i) => ({
@@ -199,7 +209,13 @@ export type ReplayResult =
       kept: Patch[];
       dropped: { patch: Patch; why: string }[];
     }
-  | { ok: false; patch: Patch; conflicts: string[]; applied: number };
+  | {
+      ok: false;
+      patch: Patch;
+      conflicts: string[];
+      applied: number;
+      dropped: { patch: Patch; why: string }[];
+    };
 
 /**
  * Replay `patches` on `onto`. A patch is dropped when `drop` says so (merged upstream) or when it
@@ -228,6 +244,7 @@ export function replay(
         patch: p,
         conflicts: r.conflicts,
         applied: kept.length,
+        dropped,
       };
     if (r.tree === treeOf(dir, head)) {
       dropped.push({

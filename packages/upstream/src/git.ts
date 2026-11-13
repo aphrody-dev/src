@@ -123,11 +123,13 @@ export function pickTree(
     "--write-tree",
     "--name-only",
     "--no-messages",
+    "-z",
     `--merge-base=${base}`,
     onto,
     c.sha,
   ]);
-  const lines = r.out.split("\n").filter(Boolean);
+  // -z: NUL-separated, so paths with spaces, quotes or non-ASCII characters come back verbatim.
+  const lines = r.out.split("\0").filter(Boolean);
   if (r.code === 0) return { tree: lines[0]! };
   if (r.code === 1) return { conflicts: lines.slice(1) };
   throw new GitError(`git merge-tree ${c.sha}: ${r.err.trim()}`);

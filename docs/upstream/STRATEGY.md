@@ -83,7 +83,7 @@ bun : `aphrody-labs/bun` = `oven-sh/bun` `9ea3c693a2` (« Bump to 1.4.5 ») + 15
 | # | Patch | Statut | Revue | Porteur |
 |---|---|---|---|---|
 | 1 | child_process: expose the parent-end pipe fd through stream._handle | proposé (portage) | oven-sh/bun#39760 (robobun), ouverte | amont |
-| 2 | build: pass the .bind.ts schema list to the codegen scripts in a file | proposé | voir section 8 | upstream |
+| 2 | build: pass the .bind.ts schema list to the codegen scripts in a file | proposé | oven-sh/bun#48787, ouverte (section 8) | upstream |
 | 3 | docs: minifier page frontmatter uses title like every other page | propre à Aphrody, à retirer : la page publiée a déjà son titre | - | - |
 | 4, 5, 15 | ci: native release build ; ci(native): sysroot ; ci(native): dispatch only | propre à Aphrody (CI du fork) | - | build natif |
 | 6 | upgrade: unpack the Windows release in-process and check canary downloads against the API digest | à proposer | - | bun Windows |
@@ -102,7 +102,7 @@ Chromium : série vide ; `aphrody-labs/chromium` `main` était à 908 commits de
 
 ## 8. Correctifs proposés par cette pile
 
-**bun, liste des schémas `.bind.ts` dans un fichier.** Sur un hôte Windows, les règles codegen de `scripts/build/codegen.ts` passent par `cmd /c`, limité à 8191 caractères (Microsoft Learn, « Command prompt (Cmd.exe) command-line string limitation » ; mesuré ici : 8 100 acceptés, 8 200 refusés, « La ligne de commande est trop longue. »). `bun scripts/build.ts --configure-only --profile=release` sous Windows 11 build 28120, checkout `C:\src\third_party\bun`, 150 schémas : commandes développées de l'arête bindgen et de la table des built-ins = 11 602 et 11 537 caractères sur `main` de l'amont ; 8 152 et 8 087 avec l'ancien patch du fork (chemins relatifs, marge de 39 caractères) ; 686 et 621 avec la liste dans un fichier (`--sources=@<fichier>`, lu par `argParse`), quel que soit le nombre de schémas. Nouveau test dans `test/internal/build-codegen-declared-outputs.test.ts`. Le patch relatif du fork a été remplacé par celui-ci, à la même place.
+**bun, liste des schémas `.bind.ts` dans un fichier.** Sur un hôte Windows, les règles codegen de `scripts/build/codegen.ts` passent par `cmd /c`, limité à 8191 caractères (Microsoft Learn, « Command prompt (Cmd.exe) command-line string limitation » ; mesuré ici : 8 100 acceptés, 8 200 refusés, « La ligne de commande est trop longue. »). `bun scripts/build.ts --configure-only --profile=release` sous Windows 11 build 28120, checkout `C:\src\third_party\bun`, 150 schémas : commandes développées de l'arête bindgen et de la table des built-ins = 11 602 et 11 537 caractères sur `main` de l'amont ; 8 152 et 8 087 avec l'ancien patch du fork (chemins relatifs, marge de 39 caractères) ; 686 et 621 avec la liste dans un fichier (`--sources=@<fichier>`, lu par `argParse`), quel que soit le nombre de schémas. Nouveau test dans `test/internal/build-codegen-declared-outputs.test.ts`. Le patch relatif du fork a été remplacé par celui-ci, à la même place. PR : https://github.com/oven-sh/bun/pull/48787 ; les workflows format, lint, source-lints et clippy de l'amont passent sur la tête dans le fork.
 
 Écartés (pas de PR) : le patch docs du minifier (aucun effet visible) ; aucune CL Chromium tant qu'aucun défaut n'est reproduit et mesuré sur la pointe.
 

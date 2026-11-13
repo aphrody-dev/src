@@ -6,16 +6,15 @@
   "type": "module",
   "scripts": {
     "build": "bun run build.ts",
-    "build:aot": "bun build --compile --minify --bytecode server.ts --outfile C:/Users/aphro/.local/bin/aphrody-web.exe",
+    "build:aot": "bun build --compile --minify --bytecode server.ts --outfile dist/aphrody-web.exe",
     "dev": "bun run server.ts",
     "start": "bun run server.ts",
     "test": "bun test",
     "pm": "bun run pm.ts",
     "fmt": "bun fmt",
-    "check": "bun check"
+    "check": "bun check",
+    "deploy:dry": "bunx wrangler@4.161.0 deploy --dry-run"
   },
   "dependencies": {},
-  "devDependencies": {
-    "wrangler": "^4.161.0"
-  }
+  "devDependencies": {}
 }
