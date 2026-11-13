@@ -58,3 +58,12 @@ Rust builds run in CI or on fr1, never on the workstation.
 
 - No crate was added, no code moved and no build was run for this plan. Refactoring src into a game engine and creative suite has not started.
 - Gates that failed when measured on 2026-11-13, independently of these documents: `ay arch check --strict` (72 errors or more, among them binaries over 50 MB), `ay manifests verify` (pins that are not gitlinks), `ay doctor` (`cl.exe` missing).
+
+## 6. Target set by the owner on 2026-11-13 (recorded, nothing started)
+
+- Three apps only, one per domain: `shenron`, `rosegriffon`, and one Aphrody app merging `apps/aphrody` (aphrody.com) and `apps/aphrody-app` (aphrody.app). Every other app, package and crate is flattened into shared code; code of `shenron` and `rosegriffon` that is not specific to their product moves to shared crates and packages and is reused.
+- The merged Aphrody app hosts and deploys the Craft Apps, ArtCraft and the game: full-screen WebAssembly and WebGPU in the browser, open-world multiplayer, 120 fps at 1080p, gamepad (Xbox, PlayStation), keyboard and mouse, audio and video, built on Bevy with a feature matrix against Unreal Engine.
+- Upstreams the owner named, to check with `gh api` before any use: `vercel-labs/ui`, `vercel-labs/native`, `niri-wm/niri`, `niri-wm/awesome-niri`, the DioxusLabs organisation, `longbridge` (GPUI components, `nsh`), `cloudflare/vinext`, `vercel/next.js`, `vercel/vercel`, `vercel/ai`, `vercel/turborepo`, `mui/base-ui`, shadcn, `tailwindlabs/tailwindcss`, Microsoft WebUI, iced and COSMIC.
+- Cleanup: remove vendored and nested third-party copies inside apps, packages and crates; one version per dependency; smaller binaries.
+- Checks to define before work starts: one build of the merged app in CI, a browser run that measures frame rate, and a parity list per replaced feature. None exists today.
+- Character and mascot assets (Inazuma Eleven and Dragon Ball characters, Tux, the Bun mascot, third-party logos) belong to their owners; only assets whose license allows redistribution go into this public repository.
