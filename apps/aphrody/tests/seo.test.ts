@@ -222,9 +222,9 @@ describe("Schema.org JSON-LD @graph", () => {
         false,
       );
     const html = readFileSync(join(DIST, "index.html"), "utf-8");
-    // Holding home (src/holding/page.ts): Organization, WebSite, product ItemList, BreadcrumbList. No SearchAction:
+    // Holding home (src/holding/page.ts): Organization, WebSite, product ItemList. No SearchAction:
     // the site has no search, and Google retired the sitelinks search box on 2024-11-21.
-    expect(ldGraph(html).length).toBe(4);
+    expect(ldGraph(html).length).toBe(3);
     expect(html).not.toContain("SearchAction");
   });
 });
@@ -496,16 +496,32 @@ describe("Zero-copy static serving, hashing and progressive enhancement", () => 
     expect(traversal.status).toBe(404);
   });
 
-  it("home is complete without JavaScript and shows a real product capture", async () => {
+  it("home is complete without JavaScript, with the brand favicon set and generated illustrations", () => {
     const home = readFileSync(join(DIST, "index.html"), "utf-8");
-    // Every width asked to the image optimizer is one it accepts (a refused width is a broken image).
-    const { WIDTHS } = await import("../../../packages/deploy/src/runtime.ts");
-    for (const m of home.matchAll(/_aphrody\/image\?[^"\s]*?w=(\d+)/g))
-      expect(WIDTHS).toContain(Number(m[1]));
     expect(home).not.toContain('<div id="root"></div>');
-    expect(home).toContain('width="1280" height="800"');
-    expect(existsSync(join(DIST, "shots", "aphrody-app.webp"))).toBe(true);
-    for (const id of ["nt", "aphrody-app", "rosegriffon"])
+    expect(home).toContain('href="/art.svg#volt"');
+    expect(existsSync(join(DIST, "art.svg"))).toBe(true);
+    for (const id of ["nt", "aphrody-app", "ay"])
       expect(existsSync(join(DIST, "icons", `${id}.svg`))).toBe(true);
+    // The served favicon set is the generated brand monogram (assets/brand/gen/icons/aphrody-labs), byte for byte.
+    const gen = join(
+      import.meta.dir,
+      "..",
+      "..",
+      "..",
+      "assets",
+      "brand",
+      "gen",
+      "icons",
+      "aphrody-labs",
+    );
+    for (const [from, to] of [
+      ["favicon.ico", "favicon.ico"],
+      ["icon.svg", "favicon.svg"],
+      ["apple-touch-icon.png", "apple-touch-icon.png"],
+    ] as const)
+      expect(
+        readFileSync(join(DIST, to)).equals(readFileSync(join(gen, from))),
+      ).toBe(true);
   });
 });

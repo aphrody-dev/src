@@ -29,10 +29,11 @@ import {
 import { minifyCss } from "./src/seo/page-css";
 import { render404 } from "./src/seo/html";
 import { PLAY_CSP, renderPlay } from "./src/play/page";
-import { LOCALES, localizedPath } from "./src/seo/site";
 import { buildImmersive } from "./src/immersive/build";
 import {
   holding404,
+  HOME_LOCALES,
+  artSprite,
   holdingCss,
   productIcons,
   renderHolding,
@@ -79,16 +80,14 @@ const rawCss = [
 ].join("\n");
 emit("style.css", minifyCss(rawCss));
 
-// 3. Static HTML (SSG): holding page, fr and en.
-const pageFile = (path: string, l: "fr" | "en") => {
-  const p = localizedPath(path, l);
-  return (p === "/" ? "" : p.slice(1) + "/") + "index.html";
-};
-// Public site = the holding page only (fr, en): no technical hubs, package catalogs or changelogs.
+// 3. Static HTML (SSG): home page in the five locales of packages/i18n.
+// Public site = the holding page only (fr, en, zh-CN, ja, es): no technical hubs, package catalogs or changelogs.
 const SRC_ROOT = join(ROOT, "..", "..");
-for (const l of LOCALES) emit(pageFile("/", l), renderHolding(SRC_ROOT, l));
+for (const l of HOME_LOCALES)
+  emit((l === "fr" ? "" : `${l}/`) + "index.html", renderHolding(SRC_ROOT, l));
 
 // 4. Crawler, agent and compliance documents.
+emit("art.svg", artSprite(SRC_ROOT));
 emit("robots.txt", robotsTxt());
 for (const [name, xml] of Object.entries(buildSitemaps(BUILD_DATE)))
   emit(name, xml);
@@ -137,7 +136,9 @@ console.log(
   `- /play: wasm build ${gameWasm ? "included" : "absent (message page only)"}`,
 );
 // Immersive stage (WebGPU, textures from assets/library): bundles and the 512 px texture set.
-for (const l of await buildImmersive(ROOT, DIST_DIR, { "stage-home.js": "home-entry.ts" }))
+for (const l of await buildImmersive(ROOT, DIST_DIR, {
+  "stage-home.js": "home-entry.ts",
+}))
   console.log(`- ${l}`);
 // Product icons from `ay brand build` (assets/brand/gen/icons/<id>/), shown on the home page and in JSON-LD.
 for (const i of productIcons(SRC_ROOT)) {
@@ -148,15 +149,15 @@ for (const i of productIcons(SRC_ROOT)) {
 // cdn.aphrody.com/brand/v1): single source, no copy in public/.
 const BRAND_GEN = join(SRC_ROOT, "assets/brand/gen");
 for (const [from, to] of [
-  ["icons/aphrody/favicon.ico", "favicon.ico"],
-  ["icons/aphrody/icon.svg", "favicon.svg"],
-  ["icons/aphrody/icon.svg", "icon.svg"],
-  ["icons/aphrody/apple-touch-icon.png", "apple-touch-icon.png"],
-  ["icons/aphrody/icon-192.png", "icon-192.png"],
-  ["icons/aphrody/icon-512.png", "icon-512.png"],
-  ["icons/aphrody/maskable-512.png", "maskable-512.png"],
-  ["icons/aphrody/site.webmanifest", "site.webmanifest"],
-  ["og/aphrody.png", "og-image.png"],
+  ["icons/aphrody-labs/favicon.ico", "favicon.ico"],
+  ["icons/aphrody-labs/icon.svg", "favicon.svg"],
+  ["icons/aphrody-labs/icon.svg", "icon.svg"],
+  ["icons/aphrody-labs/apple-touch-icon.png", "apple-touch-icon.png"],
+  ["icons/aphrody-labs/icon-192.png", "icon-192.png"],
+  ["icons/aphrody-labs/icon-512.png", "icon-512.png"],
+  ["icons/aphrody-labs/maskable-512.png", "maskable-512.png"],
+  ["icons/aphrody-labs/site.webmanifest", "site.webmanifest"],
+  ["og/aphrody-labs.png", "og-image.png"],
   ["fonts/atkinson-hyperlegible-next.woff2", "atkinson-next.woff2"],
   ["fonts/atkinson-hyperlegible-next-OFL.txt", "atkinson-next-OFL.txt"],
 ] as const)

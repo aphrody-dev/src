@@ -71,11 +71,11 @@ describe("Aphrody build output", () => {
 
   it("homepage is the public holding page, without technical content", () => {
     const html = readFileSync(join(dist, "index.html"), "utf-8");
-    expect(html).toContain("<title>Aphrody : des produits simples, rapides et accessibles</title>");
+    expect(html).toContain("<title>Aphrody\u202f: moteur de jeu et suite créative open source</title>");
     expect(html).toContain('href="/holding.css"');
     expect(html).not.toContain('id="root"');
     expect((html.match(/<h1[ >]/g) || []).length).toBe(1);
-    for (const h of ["Nos produits", "Notre approche", "Contact"]) expect(html).toContain(h);
+    for (const h of ["Ce qui existe", "En cours", "Construit", "Prévu"]) expect(html).toContain(h);
     for (const href of ['href="mailto:contact@aphrody.com"', 'href="https://aphrody.app/"', 'href="https://rosegriffon.fr/"'])
       expect(html).toContain(href);
     // Public pages never talk about code, repositories or packages.
@@ -93,8 +93,10 @@ describe("Aphrody build output", () => {
   it("english homepage mirrors the french one", () => {
     const html = readFileSync(join(dist, "en", "index.html"), "utf-8");
     expect(html).toContain('<html lang="en">');
-    expect(html).toContain("Our products");
+    expect(html).toContain("What exists");
     expect(html).toContain('href="https://aphrody.com/en"');
+    for (const l of ["zh-CN", "ja", "es"])
+      expect(readFileSync(join(dist, l, "index.html"), "utf-8")).toContain(`<html lang="${l}"`);
   });
 });
 
