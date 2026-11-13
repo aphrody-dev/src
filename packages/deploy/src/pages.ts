@@ -1,7 +1,7 @@
 // Server-rendered HTML of aphrody.app (landing, labs, dashboard). Design system: packages/design (tokens.css in the
 // registry, Material Web components loaded from /_/md.js, Google Sans Flex). Only M3 tokens are referenced in CSS.
 // Pages read without JavaScript: Material Web elements upgrade links, lists and chips that already carry their text.
-import { FONT_LINK, NATIVE_CSS, m3List, type } from "./m3.ts";
+import { FONT_LINK, NATIVE_CSS, m3List, paintMark, type } from "./m3.ts";
 import { METRICS, rating, type Summary } from "./runtime.ts";
 import {
   previewUrl,
@@ -47,23 +47,49 @@ table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:8px;bord
 code{font-family:var(--md-ref-typeface-code)}
 form{display:inline}
 pre{white-space:pre-wrap;word-break:break-word;background:var(--md-sys-color-surface-container);padding:16px;border-radius:var(--md-sys-shape-corner-medium);font-family:var(--md-ref-typeface-code);${type("body-small").replace(/font:[^;]*;/, "")}}
+.skip{position:absolute;left:-999px}.skip:focus{left:16px;top:16px;z-index:2;background:var(--md-sys-color-surface-container-highest);padding:8px 16px;border-radius:var(--md-sys-shape-corner-small)}
+ul.grid{list-style:none;padding:0;margin:0}
+.hero{padding:clamp(24px,6vw,72px) 0 8px}
+.hero h1{${type("display-medium")};max-width:18ch;margin:0 0 16px}
+@media (max-width:599px){.hero h1{${type("headline-large")}}}
+.card h3.title a{color:var(--md-sys-color-on-surface)}
+@view-transition{navigation:auto}
+@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){.card{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 40%}}}
+@keyframes rise{from{transform:translateY(24px)}to{transform:none}}
 footer{max-width:1200px;margin:0 auto;padding:24px 16px;color:var(--md-sys-color-on-surface-variant);${type("body-medium")}}
 `;
 
 type Tab = "home" | "labs" | "dashboard";
 
+const ORG = {
+  "@type": "Organization",
+  "@id": "https://aphrody.com/#org",
+  name: "Aphrody",
+  url: "https://aphrody.com/",
+  logo: "https://aphrody.com/icon-512.png",
+  email: "contact@aphrody.com",
+};
+
+// Public pages: no code, repository, package or command is named (owner order, 2026-11-13). The dashboard,
+// behind Cloudflare Access, keeps its technical detail.
 export function layout(
   reg: Pick<Registry, "css" | "mark">,
   title: string,
   tab: Tab,
   body: string,
   desc = "",
+  ld: object[] = [],
 ): string {
+  const path = tab === "home" ? "/" : `/${tab}`;
+  const url = `https://aphrody.app${path}`;
   const nav = (t: Tab, href: string, label: string) =>
     t === tab
       ? `<md-filled-tonal-button href="${href}" aria-current="page">${label}</md-filled-tonal-button>`
       : `<md-text-button href="${href}">${label}</md-text-button>`;
-  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title>${desc ? `<meta name="description" content="${esc(desc)}">` : ""}<meta name="color-scheme" content="light dark"><link rel="canonical" href="https://aphrody.app${tab === "home" ? "/" : `/${tab}`}"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta property="og:type" content="website"><meta property="og:site_name" content="aphrody.app"><meta property="og:title" content="${esc(title)}">${desc ? `<meta property="og:description" content="${esc(desc)}">` : ""}<meta property="og:url" content="https://aphrody.app${tab === "home" ? "/" : `/${tab}`}"><meta property="og:image" content="https://aphrody.com/og-image.png"><meta name="twitter:card" content="summary_large_image">${tab === "dashboard" ? '<meta name="robots" content="noindex">' : ""}${FONT_LINK}<style>${reg.css}${NATIVE_CSS}${BASE_CSS}</style><script type="module" src="/_/md.js"></script><script src="/_aphrody/insights.js" defer></script></head><body><header class="top-app-bar"><a class="brand" href="/">${reg.mark}<span>aphrody.app</span></a><nav aria-label="Navigation">${nav("home", "/", "Projets")}${nav("labs", "/labs", "Labs")}${nav("dashboard", "/dashboard", "Tableau de bord")}</nav></header><main>${body}</main><footer>Aphrody. Code source : <a href="https://github.com/aphrody-labs/src">github.com/aphrody-labs/src</a>. Contact : <a href="mailto:contact@aphrody.com">contact@aphrody.com</a>. Holding : <a href="https://aphrody.com/">aphrody.com</a>.</footer></body></html>`;
+  const graph = ld.length
+    ? `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@graph": [ORG, ...ld] }).replace(/</g, "\\u003c")}</script>`
+    : "";
+  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title>${desc ? `<meta name="description" content="${esc(desc)}">` : ""}<meta name="color-scheme" content="light dark"><link rel="canonical" href="${url}"><link rel="alternate" hreflang="fr" href="${url}"><link rel="alternate" hreflang="x-default" href="${url}"><link rel="icon" href="https://aphrody.com/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="https://aphrody.com/apple-touch-icon.png"><meta property="og:type" content="website"><meta property="og:site_name" content="aphrody.app"><meta property="og:locale" content="fr_FR"><meta property="og:title" content="${esc(title)}">${desc ? `<meta property="og:description" content="${esc(desc)}">` : ""}<meta property="og:url" content="${url}"><meta property="og:image" content="https://aphrody.com/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">${tab === "dashboard" ? '<meta name="robots" content="noindex">' : '<meta name="robots" content="index, follow, max-image-preview:large">'}${FONT_LINK}<style>${reg.css}${NATIVE_CSS}${BASE_CSS}</style><script type="module" src="/_/md.js"></script><script src="/_aphrody/insights.js" defer></script>${graph}</head><body><a class="skip" href="#main">Aller au contenu</a><header class="top-app-bar"><a class="brand" href="/">${paintMark(reg.mark)}<span>aphrody.app</span></a><nav aria-label="Navigation principale">${nav("home", "/", "Accueil")}${nav("dashboard", "/dashboard", "Tableau de bord")}</nav></header><main id="main">${body}</main><footer><p>Aphrody. Contact : <a href="mailto:contact@aphrody.com">contact@aphrody.com</a>. Le groupe : <a href="https://aphrody.com/">aphrody.com</a>.</p></footer></body></html>`;
 }
 
 const when = (iso?: string) =>
@@ -83,28 +109,95 @@ export interface ProjectView {
   latest: Deployment | null;
 }
 
+const FEATURES: [string, string][] = [
+  [
+    "Une adresse par version",
+    "Chaque version d'un site reçoit sa propre adresse de prévisualisation, à relire et à partager avant la mise en ligne.",
+  ],
+  [
+    "Mise en ligne et retour arrière",
+    "Une version publiée ne change plus jamais. Passer à une autre, plus récente ou plus ancienne, prend quelques secondes.",
+  ],
+  [
+    "Statistiques de visite",
+    "Pages vues, provenance, pays et type d'appareil, sans cookie ni identifiant de visiteur.",
+  ],
+  [
+    "Vitesse mesurée chez les visiteurs",
+    "Temps d'affichage, réactivité et stabilité de la page, relevés sur de vraies visites et suivis dans le temps.",
+  ],
+  [
+    "Images allégées",
+    "Chaque image part à la taille affichée et dans le format le plus léger que le navigateur sait lire.",
+  ],
+  [
+    "Réglages sans republier",
+    "Bandeaux, options et interrupteurs se modifient en direct, sans refaire de version.",
+  ],
+  ["Noms de domaine", "Chaque site garde son adresse, chiffrée en HTTPS."],
+  [
+    "Journal de chaque publication",
+    "Le déroulé de chaque mise en ligne reste consultable, étape par étape.",
+  ],
+];
+
 export function landing(reg: Registry, views: ProjectView[]): string {
-  const cards = views
-    .map(({ project: p, state: s, latest: d }) => {
-      const domain = p.domains[0];
-      return `<article class="card"><h3 class="title">${esc(p.name)}</h3><p class="support"><code>${esc(p.path)}</code></p>${domain ? `<p class="support">Production : <a href="https://${esc(domain)}">${esc(domain)}</a>${s?.production ? ` (<code>${esc(s.production.slice(0, 7))}</code>)` : ""}</p>` : ""}${d ? `<p class="support">Dernier déploiement : <a href="${esc(previewUrl(p.name, d.sha))}"><code>${esc(d.sha.slice(0, 7))}</code></a>, ${state(d)}, ${when(d.readyAt ?? d.createdAt)}</p>` : `<p class="support">Aucun déploiement.</p>`}<div class="chips">${p.worker ? chip(`Worker ${p.worker}`) : chip("aphrody-deploy")}${chip(p.production === "auto" ? "production automatique" : "production manuelle")}</div></article>`;
+  const sites = views
+    .filter(({ project: p }) => p.domains.length)
+    .map(({ project: p, state: s }) => {
+      const d = p.domains[0]!;
+      return `<li class="card"><h3 class="title"><a href="https://${esc(d)}">${esc(d)}</a></h3><p class="support">${s?.production ? "En ligne" : "En préparation"}</p></li>`;
     })
     .join("");
-  const inv = reg.inventory.filter((i) => !i.deployed);
-  const body = `<h1>Déployer le monorepo</h1><p class="lead">Chaque commit sur <code>main</code> qui touche un projet est construit en CI, publié sur une URL de preview <code>&lt;projet&gt;-&lt;sha&gt;.aphrody.app</code>, puis promu en production. Les déploiements sont immuables : un rollback déplace le pointeur de production, sans reconstruire. Construit sur Cloudflare Workers et R2.</p><div class="actions"><md-filled-button href="/dashboard">Ouvrir le tableau de bord</md-filled-button><md-text-button href="/labs">Voir les labs</md-text-button></div><h2>Projets déployés par aphrody.app</h2><div class="grid">${cards || '<p class="support">Aucun projet enregistré.</p>'}</div><h2>Autres unités du monorepo</h2>${m3List(
-    inv.map((i) => ({
-      headline: esc(i.name),
-      supporting: esc(i.description || i.path),
-      trailing: esc(i.kind),
-      href: `https://github.com/aphrody-labs/src/tree/main/${esc(i.path)}`,
-    })),
-  )}<p class="support">Inventaire généré au commit <code>${esc(reg.commit.slice(0, 7))}</code> le ${when(reg.generatedAt)}.</p>`;
+  const features = FEATURES.map(
+    ([t, d]) =>
+      `<li class="card"><h3 class="title">${t}</h3><p class="support">${d}</p></li>`,
+  ).join("");
+  const body = `<section class="hero"><h1>Mettre en ligne les sites d'Aphrody</h1><p class="lead">Chaque version d'un site reçoit sa propre adresse pour être relue. Quand elle convient, elle passe en ligne. Si un problème apparaît, la version précédente revient en quelques secondes.</p></section><section aria-labelledby="f"><h2 id="f">Ce que fait la plateforme</h2><ul class="grid" role="list">${features}</ul></section><section aria-labelledby="s"><h2 id="s">Sites publiés</h2><ul class="grid" role="list">${sites || '<li class="support">Aucun site pour le moment.</li>'}</ul></section><section aria-labelledby="c"><h2 id="c">Nous contacter</h2><p>Une question sur la plateforme ou sur un site publié : <a href="mailto:contact@aphrody.com">contact@aphrody.com</a>.</p></section>`;
+  const desc =
+    "La plateforme de mise en ligne d'Aphrody : une adresse de prévisualisation par version, mise en ligne et retour arrière en quelques secondes, statistiques sans cookie et vitesse mesurée chez les visiteurs.";
   return layout(
     reg,
-    "aphrody.app, plateforme de déploiement d'Aphrody",
+    "aphrody.app, la plateforme de mise en ligne d'Aphrody",
     "home",
     body,
-    "Previews par commit, production, rollback et journaux des projets du monorepo Aphrody.",
+    desc,
+    [
+      {
+        "@type": "WebSite",
+        "@id": "https://aphrody.app/#site",
+        url: "https://aphrody.app/",
+        name: "aphrody.app",
+        inLanguage: "fr",
+        publisher: { "@id": "https://aphrody.com/#org" },
+      },
+      {
+        "@type": "Product",
+        name: "aphrody.app",
+        url: "https://aphrody.app/",
+        description: desc,
+        image: "https://aphrody.com/og-image.png",
+        brand: { "@id": "https://aphrody.com/#org" },
+        category: "Plateforme de mise en ligne de sites",
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Aphrody",
+            item: "https://aphrody.com/",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "aphrody.app",
+            item: "https://aphrody.app/",
+          },
+        ],
+      },
+    ],
   );
 }
 

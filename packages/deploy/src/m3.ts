@@ -23,10 +23,46 @@ export function readBrand(root: string): Brand {
         .replace(/<!--[\s\S]*?-->/g, "")
         .trim()
     : "";
+  // mark.svg is a template for `ay brand build`: its {container}/{glyph}/{bolt} slots become M3 roles here,
+  // so the inline mark follows the page theme (light and dark) instead of rendering unfilled.
+  const role: Record<string, string> = {
+    container: "var(--md-sys-color-primary)",
+    glyph: "var(--md-sys-color-on-primary)",
+    bolt: b.accent ?? "#FFB300",
+  };
+  mark = mark.replace(
+    /(fill|stroke)="\{(\w+)\}"/g,
+    (_, attr: string, slot: string) =>
+      `style="${attr}:${role[slot] ?? "currentColor"}"`,
+  );
   if (mark && !/aria-hidden/.test(mark))
     mark = mark.replace("<svg", '<svg aria-hidden="true"');
   return { name: b.name ?? "Aphrody", mark };
 }
+
+/** Paint the placeholders of assets/brand/src/mark.svg ({container}, {glyph}, {bolt}, filled by `ay brand build`
+ * in the generated files) with the theme roles, for inline use: the mark follows light and dark. The bolt gets
+ * class `bolt` (animated by MARK_CSS when motion is allowed). Idempotent on an already painted mark. */
+export function paintMark(svg: string): string {
+  return svg
+    .replace(
+      /fill="\{container\}"/g,
+      'style="fill:var(--md-sys-color-primary)"',
+    )
+    .replace(
+      /stroke="\{container\}"/g,
+      'style="stroke:var(--md-sys-color-primary)"',
+    )
+    .replace(/fill="\{glyph\}"/g, 'style="fill:var(--md-sys-color-on-primary)"')
+    .replace(
+      /<path fill="\{bolt\}"/g,
+      '<path class="bolt" style="fill:var(--aphrody-bolt)"',
+    )
+    .replace(/<svg[^>]*>/, (tag) => tag.replace(/ (width|height)="48"/g, ""));
+}
+
+/** Entrance of the bolt (transform and opacity only, once), skipped under prefers-reduced-motion. */
+export const MARK_CSS = `@media (prefers-reduced-motion:no-preference){.bolt{transform-box:fill-box;transform-origin:left center;animation:bolt .9s cubic-bezier(.2,0,0,1) .2s both}}@keyframes bolt{from{transform:scaleX(0);opacity:0}to{transform:none;opacity:1}}`;
 
 /** packages/design/tokens/tokens.css, minified (comments and whitespace only). */
 export function tokensCss(root: string): string {
@@ -53,7 +89,7 @@ export const FONT_LINK =
 /** M3 list and chip in native HTML (ul/li/a, span/a): the md-list-item shadow `role="listitem"` has no `list`
  * parent for axe (aria-required-parent), and labels must not wait for JavaScript. Buttons keep Material Web but
  * reserve their box before the upgrade, so `md.js` arriving late does not shift the page. */
-export const NATIVE_CSS = `
+export const NATIVE_CSS = `${MARK_CSS}
 .m3-list{list-style:none;margin:0;padding:8px 0;border-radius:var(--md-sys-shape-corner-medium);background:var(--md-sys-color-surface-container-low)}
 .m3-list a,.m3-list .row{display:flex;gap:16px;align-items:center;min-height:72px;padding:12px 24px 12px 16px;color:var(--md-sys-color-on-surface);text-decoration:none}
 .m3-list a:hover{background:color-mix(in srgb,var(--md-sys-color-on-surface) 8%,transparent)}

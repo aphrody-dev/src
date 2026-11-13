@@ -292,7 +292,7 @@ describe("platform worker", () => {
       200,
     );
     expect((await call(e, "GET", "/", undefined, {})).status).toBe(200);
-    expect((await call(e, "GET", "/labs", undefined, {})).status).toBe(200);
+    expect((await call(e, "GET", "/labs", undefined, {})).status).toBe(301);
   });
   test("deploy token comparison", () => {
     expect(bearerOk(`Bearer ${TOKEN}`, TOKEN)).toBe(true);
