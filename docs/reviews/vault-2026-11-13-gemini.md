@@ -97,3 +97,89 @@
     - `process substitution <(identity)` masque l'échec de décryptage de l'identité (`:62`).
     - Un `.new` abandonné par un crash n'est jamais nettoyé.
     - `receive` accepte des liens symboliques et physiques dans le tar (`:41`). Ajouter `--no-same-owner` ne suffit pas : vérifier le type de chaque entrée.
+
+## Passe 2 (12/20, antigravity)
+
+Suite : 1-3 corrigés (`dropTable` borné à la table, tableaux de `policy.toml` comparés en chaîne, trois fichiers validés par `Bun.TOML.parse` avant écriture atomique) ; 4-5 corrigés (`removeHost` sous verrou, garde `pc` en tête) ; 6 corrigé (drapeaux filtrés) ; 7 corrigé (timer et service arrêtés d'abord, verrou tenu jusqu'à la sortie) ; 8 corrigé (migration à la lecture, `migrate-dpapi`, marqueur v2-only en TS, env-kit et Rust) ; 9 corrigé (MANIFEST exigé) ; 10-14 corrigés (erreurs `schtasks` levées, S4U à 15 min, commentaires) ; tests ajoutés : refus v1 après marqueur, garde `pc`, XML des deux tâches, `infra/vault/test-host.sh` (9/9 sur fr1). Restent : 15 (primitive DPAPI brute exportée pour les tests), 17 (constantes v2 recopiées en trois langages sans vecteur partagé).
+
+### Texte
+
+**Note : 12/20**
+
+La note monte de 2 points grâce au format v2 et à la symétrie TS/Rust. Elle reste limitée par un bug de config (`dropTable`), une race non verrouillée dans `removeHost`, un repli v1 qui annule la liaison au nom, et l'absence de tests sur le code le plus risqué. Les numéros de ligne sont ceux de la nouvelle version (calculés depuis les en-têtes de hunk, donc approximatifs).
+
+## Défauts bloquants ou majeurs
+
+1. **`hosts.ts` L60-67, `dropTable` supprime des commentaires qui ne lui appartiennent pas.**
+   - `skip` reste vrai jusqu'au prochain `[table]`. Les commentaires placés au-dessus de la table suivante sont donc avalés, et le `while` de remontée ne les rattrape pas.
+   - Correction : à la première ligne `#` ou vide après le corps de la table, arrêter `skip` ou mettre ces lignes en tampon.
+   - Autre cas : la table `[x]` introuvable n'est pas détectée (aucune erreur).
+
+2. **`hosts.ts` L77-79, parsing de `policy.toml` fragile.**
+   - La regex ne couvre que les tableaux sur une seule ligne. Un tableau multiligne garde l'hôte supprimé sans erreur.
+   - Le `\[(.*)\]` est glouton : un commentaire de fin de ligne contenant `]` casse la ligne.
+   - `new RegExp(`"${host}"`)` n'échappe pas `host`. Utiliser une comparaison de chaîne.
+   - Une portée qui devient `[]` n'a pas de sémantique vérifiée (« aucun hôte » ou « défaut » ?).
+   - Correction : parser le TOML avec un vrai parseur, ou au minimum échouer si l'hôte reste présent après réécriture.
+
+3. **`hosts.ts` L74-83, écritures non atomiques et sans ordre sûr.** `writeFile` direct sur `hosts.toml`, puis `policy.toml`, puis le registre. Un échec au milieu laisse une config incohérente. Correction : tmp + `rename` pour chaque fichier, et lire/valider les trois avant d'écrire.
+
+4. **`sync.ts` L262-269, `removeHost` n'est pas sous `withLock`.**
+   - La tâche de 5 min (`sync`/`push-only`) peut recréer `outbox/<hôte>` et l'état après les `rm`, tant que `forgetHost` n'est pas passé.
+   - Correction : envelopper tout le corps dans `withLock`.
+
+5. **`sync.ts` ≈L263 et `hosts.ts` L73, garde `pc` trop tardive.** `removeHost("pc")` appelle `hostByName` puis `ssh(... decommission)` avant que `forgetHost` lève « the PC cannot be removed ». Correction : tester `name === "pc"` en première ligne de `removeHost`.
+
+6. **`cli.ts` ≈L204, parsing des arguments.** `const [sub, h] = a` suivi de `flag(a, "--force")`. `vault host remove --force fr1` donne `h = "--force"`, donc un hôte inconnu. Correction : extraire les flags avant de déstructurer.
+
+7. **`vault-host.sh` L71, `flock -u 9` avant `rm -rf "$VAULT"`.**
+   - Libérer le verrou laisse un `apply` en attente (timer ou service déjà lancé) s'exécuter pendant ou après la suppression.
+   - Le `disable --now` du timer ne stoppe pas un service `apply` en cours.
+   - Correction : garder le verrou jusqu'à la sortie, et `systemctl stop aphrody-vault-apply.service` avant la purge.
+   - Le fd 9 n'est pas visible dans le diff. S'il n'est pas ouvert avant le `case`, `flock -u 9` échoue sous `set -e`.
+
+8. **`store.ts`, `secret-store.ts` et `local.rs`, repli v1 permanent.**
+   - La lecture v1 reste acceptée sans limite, donc la liaison au nom est contournable : copier un blob v1 d'un autre secret sous un nouveau nom.
+   - La « migration à l'écriture » ne migre rien tant que le secret n'est pas réécrit.
+   - Correction : migration au `get` (réécrire en v2 après lecture réussie d'un v1) ou commande `vault migrate-dpapi`, puis refus du v1 une fois la migration faite.
+
+9. **`sync.ts` L376, `present` redondant et incorrect.**
+   - `stat(MANIFEST)` sinon `readdir` donne « le dossier existe ». Un outbox sans MANIFEST (scellement partiel) est donc poussé.
+   - `receive` le refuse, ce qui produit une erreur toutes les 5 min.
+   - Correction : exiger `MANIFEST`, et ne pousser qu'un outbox cohérent.
+
+## Défauts mineurs
+
+10. **`sync.ts` L362-364, `installTask`.**
+    - Le type de retour passe d'un objet à un tableau, ce qui casse l'API exportée de `@aphrody/vault`.
+    - Le code de retour de `schtasks` n'est pas propagé en code de sortie.
+    - Si la 2ᵉ tâche échoue, la 1ʳᵉ reste installée.
+
+11. **`sync.ts` L322, `LogonTrigger`.** Le délai passe de PT2M à PT1M sans mention dans la doc.
+
+12. **Doublon de tâches.** Pendant la session ouverte, `sync` et `push` s'exécutent toutes deux toutes les 5 min, avec un travail redondant. La tâche S4U pourrait n'avoir qu'un déclencheur au démarrage ou un intervalle plus long.
+
+13. **`hosts.ts` L54, JSDoc mal placé.** « Rewrites one host's recipient… » décrit maintenant `dropTable`, alors qu'il est censé décrire `setRecipient`.
+
+14. **`ffi.ts` ≈L582, commentaire faux.** Il cite `ENTROPY_V2 || name`, constante qui n'existe pas. L'entropie réelle est `aphrody/vault/dpapi/v2|<name>`.
+
+15. **`index.ts` L16.** `dpapiProtectRaw` expose une primitive sans liaison au nom dans l'API publique, uniquement pour un test. `export *` de `store.ts` expose aussi `dpapiEncode`, `dpapiDecode`, `entropyV2` et `isDpapiV2`.
+
+16. **`sync.ts` L266-267, état résiduel.** `last-push.json` conserve l'hôte supprimé. Les noms `*.index.json` et `*.pushed.json` ne sont pas vérifiés dans le diff.
+
+17. **Constantes dupliquées.** v2 est recopié à la main dans trois endroits (env-kit, vault TS, Rust) sans vecteur de test partagé.
+
+18. **`protect` et `unprotect` de `store.ts`.** L'entropie dépend maintenant de l'argument `name`. Si un appelant protège avec un nom et déprotège avec un autre, le déchiffrement échoue. Les appelants ne figurent pas dans le diff, à vérifier.
+
+## Tests
+
+- **Zéro test** pour `removeHost`, `pushOnly`, `vault-host.sh decommission`, ni pour la lecture v1/v2 de la crate Rust. La doc affirme pourtant que Rust lit les deux versions.
+- **`vault.test.ts` L647-648** : `.then(() => "opened", () => "refused")` accepte n'importe quelle erreur (fichier absent, FFI en panne), pas seulement le refus DPAPI.
+- **`vault.test.ts` L665-667** : l'assertion `InteractiveToken` de la tâche `sync` a été retirée. Rien ne vérifie plus que `push` n'a aucun déclencheur ni que `sync` reste interactive.
+- **`vault.test.ts` L673-681** : le test réécrit `policy.toml` avec `forgetHost`. Il faut vérifier que `VAULT_POLICY_FILE` pointe vers un fichier temporaire. Sinon le test modifie `infra/vault/policy.toml` du dépôt.
+- **Imports** : `copyFileSync`, `writeFileSync` et `readFileSync` ne figurent pas dans les imports visibles du diff.
+
+## Documentation (`VAULT.md`)
+
+- La phrase « `env-kit secret set` et `vault add` scellent tout de suite » décrit un comportement absent de ce diff, sans code ni test visible.
+- Le « testé le 2026-11-13 » et le test de décommissionnement en bac à sable ne sont pas archivés dans le dépôt, donc non reproductibles.
