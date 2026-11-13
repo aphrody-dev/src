@@ -29,6 +29,13 @@ import {
 import { minifyCss } from "./src/seo/page-css";
 import { render404 } from "./src/seo/html";
 import { PLAY_CSP, PLAY_LOCALES, renderPlay } from "./src/play/page";
+import { CRAFT_APPS } from "./src/craft/apps";
+import {
+  CRAFT_CSP,
+  CRAFT_PERMISSIONS,
+  renderCraftApp,
+  renderCraftIndex,
+} from "./src/craft/page";
 import { buildImmersive } from "./src/immersive/build";
 import { buildOs } from "./src/os/build";
 import { OS_CSP } from "./src/os/page";
@@ -135,6 +142,21 @@ for (const f of ["game.js", "game_bg.wasm"]) {
 const gameAssets = join(ROOT, "..", "..", "crates", "game", "assets");
 if (existsSync(gameAssets))
   cpSync(gameAssets, join(DIST_DIR, "play", "assets"), { recursive: true });
+// 3b2. /craft and /craft/<id>: host pages of the Craft Apps (the wasm builds live on cdn.aphrody.com/craft/<id>/).
+emit("craft/index.html", renderCraftIndex());
+for (const a of CRAFT_APPS) emit(`craft/${a.id}/index.html`, renderCraftApp(a));
+const craftBuild = await Bun.build({
+  entrypoints: [join(ROOT, "src", "client", "craft.ts")],
+  outdir: join(DIST_DIR, "craft"),
+  naming: "craft.js",
+  minify: true,
+  target: "browser",
+  format: "esm",
+});
+if (!craftBuild.success) {
+  console.error("Craft build failed:", craftBuild.logs);
+  process.exit(1);
+}
 // 3c. /os: browser OS shell (apps/aphrody/src/os): pages in five locales, client, owner assets, pinned runtimes.
 for (const l of await buildOs(ROOT, DIST_DIR, emit)) console.log(`- ${l}`);
 console.log(
@@ -145,11 +167,8 @@ for (const l of await buildImmersive(ROOT, DIST_DIR, {
   "stage-home.js": "home-entry.ts",
 }))
   console.log(`- ${l}`);
-// Product icons from `ay brand build` (assets/brand/gen/icons/<id>/), shown on the home page and in JSON-LD.
-for (const i of productIcons(SRC_ROOT)) {
-  emit(`icons/${i.id}.svg`, readFileSync(i.svg));
-  emit(`icons/${i.id}.png`, readFileSync(i.png));
-}
+// Real product art (vendor icons from `ay assets icons`, owner mark), shown on the home page and in JSON-LD.
+for (const i of productIcons(SRC_ROOT)) emit(i.out, readFileSync(i.file));
 // Site icon set, social card and web font from `ay brand build` (assets/brand/gen, also on
 // cdn.aphrody.com/brand/v1): single source, no copy in public/.
 const BRAND_GEN = join(SRC_ROOT, "assets/brand/gen");
@@ -187,6 +206,14 @@ emit(
     "  ! Content-Security-Policy",
     `  Content-Security-Policy: ${PLAY_CSP}`,
     "  Permissions-Policy: microphone=(), camera=(), geolocation=(), gamepad=(self)",
+    "/craft",
+    "  ! Content-Security-Policy",
+    `  Content-Security-Policy: ${CRAFT_CSP}`,
+    `  Permissions-Policy: ${CRAFT_PERMISSIONS}`,
+    "/craft/*",
+    "  ! Content-Security-Policy",
+    `  Content-Security-Policy: ${CRAFT_CSP}`,
+    `  Permissions-Policy: ${CRAFT_PERMISSIONS}`,
     "/os",
     "  ! Content-Security-Policy",
     `  Content-Security-Policy: ${OS_CSP}`,

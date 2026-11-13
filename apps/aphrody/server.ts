@@ -16,6 +16,7 @@ import { indexNowKey, indexNowPayload } from "./src/seo/documents";
 import { render404, renderSearchResults } from "./src/seo/html";
 import type { Locale } from "./src/seo/site";
 import { PLAY_CSP } from "./src/play/page";
+import { CRAFT_CSP, CRAFT_PERMISSIONS } from "./src/craft/page";
 import { handleOs, isOs, osHeaders } from "./src/os/server";
 
 const PORT = Number(process.env.PORT) || 3000;
@@ -68,7 +69,15 @@ const PLAY_HEADERS: Record<string, string> = {
   "Permissions-Policy":
     "microphone=(), camera=(), geolocation=(), gamepad=(self)",
 };
+/** /craft/<id> frames the wasm build from the first-party CDN (frame-src), no third party. */
+const CRAFT_HEADERS: Record<string, string> = {
+  ...SECURITY_HEADERS,
+  "Content-Security-Policy": CRAFT_CSP,
+  "Permissions-Policy": CRAFT_PERMISSIONS,
+};
 const OS_HEADERS = osHeaders(SECURITY_HEADERS);
+const isCraft = (pathname: string) =>
+  pathname === "/craft" || pathname.startsWith("/craft/");
 const isPlay = (pathname: string) =>
   pathname === "/play" || pathname.startsWith("/play/");
 
@@ -128,6 +137,8 @@ function htmlHeaders(pathname: string): Record<string, string> {
       ? OS_HEADERS
       : isPlay(pathname)
       ? PLAY_HEADERS
+      : isCraft(pathname)
+      ? CRAFT_HEADERS
       : {
           Link: pathname === "/" || pathname === "/en" ? LINK_HOME : LINK_PAGE,
           ...SECURITY_HEADERS,
@@ -321,7 +332,9 @@ export const server = serve({
             ? OS_HEADERS
             : isPlay(pathname)
               ? PLAY_HEADERS
-              : SECURITY_HEADERS,
+              : isCraft(pathname)
+                ? CRAFT_HEADERS
+                : SECURITY_HEADERS,
       );
     }
 
