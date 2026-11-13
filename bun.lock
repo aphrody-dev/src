@@ -80,6 +80,14 @@
       "name": "@aphrody/machine",
       "version": "0.1.0",
     },
+    "packages/net": {
+      "name": "@aphrody/net",
+      "version": "0.2.0",
+    },
+    "packages/runtime-adapter": {
+      "name": "@aphrody/runtime-adapter",
+      "version": "0.1.0",
+    },
     "packages/shell-matrix": {
       "name": "@aphrody/shell-matrix",
       "version": "0.1.0",
@@ -117,6 +125,10 @@
     "@aphrody/infra-ffi-bridge": ["@aphrody/infra-ffi-bridge@workspace:infra/ffi-bridge"],
 
     "@aphrody/machine": ["@aphrody/machine@workspace:packages/machine"],
+
+    "@aphrody/net": ["@aphrody/net@workspace:packages/net"],
+
+    "@aphrody/runtime-adapter": ["@aphrody/runtime-adapter@workspace:packages/runtime-adapter"],
 
     "@aphrody/shell-matrix": ["@aphrody/shell-matrix@workspace:packages/shell-matrix"],
 
