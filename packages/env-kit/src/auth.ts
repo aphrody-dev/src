@@ -251,7 +251,14 @@ function checkBrowser(): Check[] {
 // --- Tokens (env-kit whoami) and store -----------------------------------------------------------
 
 async function checkTokens(): Promise<Check[]> {
-  const ids = await whoami(process.env);
+  // Same precedence as every consumer: the OS store first, then the environment (.env).
+  const env: Record<string, string | undefined> = { ...process.env };
+  try {
+    for (const n of secretList()) env[n] = secretGet(n) ?? env[n];
+  } catch {
+    // No store on this host: environment only.
+  }
+  const ids = await whoami(env);
   return ids.map((i) => ({
     kind: "token", target: i.provider, host: LOCAL,
     status: i.status === "ok" ? "ok" : i.status === "unset" ? "missing" : "invalid",
