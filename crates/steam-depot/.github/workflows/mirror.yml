@@ -1,0 +1,24 @@
+# Read-only mirror of aphrody-labs/src crates/steam-depot (consumed as a cargo git dependency by
+# apps/rosegriffon). Runs in aphrody-labs/steam-depot itself: src is public, so the clone needs no
+# credential, and the push uses this repository's own GITHUB_TOKEN (contents: write). No PAT, no
+# deploy key (disabled for the aphrody-labs organization), no secret. This file travels with the split.
+name: mirror
+on:
+  schedule: [{ cron: "17 * * * *" }]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: { group: mirror, cancel-in-progress: false }
+jobs:
+  pull:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Split crates/steam-depot from aphrody-labs/src and push
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          git clone --quiet --filter=blob:none --single-branch --branch main https://github.com/aphrody-labs/src.git src
+          cd src
+          git subtree split --prefix=crates/steam-depot -b split
+          git push --force "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" split:main
