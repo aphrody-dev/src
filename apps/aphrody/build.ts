@@ -28,7 +28,9 @@ import {
 } from "./src/seo/documents";
 import { minifyCss } from "./src/seo/page-css";
 import { render404 } from "./src/seo/html";
+import { PLAY_CSP, renderPlay } from "./src/play/page";
 import { LOCALES, localizedPath } from "./src/seo/site";
+import { buildImmersive } from "./src/immersive/build";
 import {
   holding404,
   holdingCss,
@@ -101,6 +103,42 @@ const nowKey = indexNowKey(process.env);
 emit(`${nowKey}.txt`, nowKey);
 emit("g-cfg.json", JSON.stringify(cfg));
 emit("404.html", holding404(SRC_ROOT));
+// 3b. /play: full-screen WebGPU canvas. The wasm build (crates/game, wasm-bindgen --target web) is
+// produced on fr1 or by .github/workflows/game.yml into GAME_WEB_DIR (default target/game-web); when it
+// is absent the page still ships and tells the visitor the game is not installed.
+emit("play/index.html", renderPlay());
+const playBuild = await Bun.build({
+  entrypoints: [join(ROOT, "src", "client", "play.ts")],
+  outdir: join(DIST_DIR, "play"),
+  naming: "play.js",
+  minify: true,
+  target: "browser",
+  format: "esm",
+});
+if (!playBuild.success) {
+  console.error("Play build failed:", playBuild.logs);
+  process.exit(1);
+}
+const GAME_WEB_DIR =
+  process.env.GAME_WEB_DIR || join(ROOT, "..", "..", "target", "game-web");
+let gameWasm = false;
+for (const f of ["game.js", "game_bg.wasm"]) {
+  const from = join(GAME_WEB_DIR, f);
+  if (existsSync(from)) {
+    cpSync(from, join(DIST_DIR, "play", f));
+    gameWasm = true;
+  }
+}
+// Procedural assets written by `gen-assets` (deterministic GLB and SVG), committed in crates/game/assets.
+const gameAssets = join(ROOT, "..", "..", "crates", "game", "assets");
+if (existsSync(gameAssets))
+  cpSync(gameAssets, join(DIST_DIR, "play", "assets"), { recursive: true });
+console.log(
+  `- /play: wasm build ${gameWasm ? "included" : "absent (message page only)"}`,
+);
+// Immersive stage (WebGPU, textures from assets/library): bundles and the 512 px texture set.
+for (const l of await buildImmersive(ROOT, DIST_DIR, { "stage-home.js": "home-entry.ts" }))
+  console.log(`- ${l}`);
 // Product icons from `ay brand build` (assets/brand/gen/icons/<id>/), shown on the home page and in JSON-LD.
 for (const i of productIcons(SRC_ROOT)) {
   emit(`icons/${i.id}.svg`, readFileSync(i.svg));
@@ -135,6 +173,10 @@ emit(
     "  Permissions-Policy: microphone=(), camera=(), geolocation=()",
     "  Cross-Origin-Opener-Policy: same-origin",
     `  Content-Security-Policy: ${buildCsp(cfg)}`,
+    "/play/*",
+    "  ! Content-Security-Policy",
+    `  Content-Security-Policy: ${PLAY_CSP}`,
+    "  Permissions-Policy: microphone=(), camera=(), geolocation=(), gamepad=(self)",
     "/atkinson-next.woff2",
     "  Cache-Control: public, max-age=31536000, immutable",
     "/icons/*",
@@ -161,6 +203,7 @@ emit("holding.css", minifyCss(holdingCss(join(ROOT, "..", ".."))));
 
 // 5. Pre-compress text assets (gzip + brotli) for in-memory serving.
 const COMPRESS = new Set([
+  ".wasm",
   ".html",
   ".js",
   ".css",
@@ -184,7 +227,12 @@ for (const file of walk(DIST_DIR)) {
   writeFileSync(`${file}.gz`, Bun.gzipSync(raw));
   writeFileSync(
     `${file}.br`,
-    brotliCompressSync(raw, { params: { [zc.BROTLI_PARAM_QUALITY]: 11 } }),
+    brotliCompressSync(raw, {
+      // quality 11 takes minutes on a multi-megabyte wasm module
+      params: {
+        [zc.BROTLI_PARAM_QUALITY]: file.endsWith(".wasm") ? 9 : 11,
+      },
+    }),
   );
 }
 

@@ -1,0 +1,62 @@
+[package]
+name = "game"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "Open-world vertical slice on Bevy: streamed procedural terrain, third-person controller, day/night, procedural audio"
+publish = false
+
+[lib]
+name = "game"
+
+[[bin]]
+name = "game"
+path = "src/main.rs"
+
+[[bin]]
+name = "gen-assets"
+path = "src/bin/gen-assets.rs"
+
+# Features verified against bevy v0.20.1 Cargo.toml (gh api, 2026-11-13): the default set pulls the 2d,
+# ui and picking profiles that this slice does not use, so everything is listed explicitly.
+[dependencies]
+bevy = { workspace = true, features = [
+  "std",
+  "async_executor",
+  "bevy_asset",
+  "bevy_log",
+  "bevy_window",
+  "bevy_winit",
+  "bevy_render",
+  "bevy_core_pipeline",
+  "bevy_post_process",
+  "bevy_anti_alias",
+  "bevy_camera",
+  "bevy_light",
+  "bevy_mesh",
+  "bevy_pbr",
+  "bevy_color",
+  "bevy_image",
+  "bevy_shader",
+  "bevy_world_serialization",
+  "bevy_scene",
+  "bevy_gltf",
+  "bevy_audio",
+  "bevy_gilrs",
+  "wav",
+  "png",
+  "hdr",
+  "tonemapping_luts",
+  "zstd_rust",
+] }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+bevy = { workspace = true, features = ["multi_threaded", "x11", "wayland"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+# `webgpu` overrides `webgl2`: WebGPU is required, the page shows a message otherwise.
+bevy = { workspace = true, features = ["web", "webgpu"] }
+console_error_panic_hook = { workspace = true }

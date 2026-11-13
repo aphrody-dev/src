@@ -15,6 +15,7 @@ import { handleCollect } from "./src/google/relay";
 import { indexNowKey, indexNowPayload } from "./src/seo/documents";
 import { render404, renderSearchResults } from "./src/seo/html";
 import type { Locale } from "./src/seo/site";
+import { PLAY_CSP } from "./src/play/page";
 
 const PORT = Number(process.env.PORT) || 3000;
 
@@ -58,6 +59,16 @@ const SECURITY_HEADERS: Record<string, string> = {
   "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
   "X-XSS-Protection": "1; mode=block",
 };
+
+/** /play ships a wasm module: its own CSP (adds wasm-unsafe-eval, no third party). */
+const PLAY_HEADERS: Record<string, string> = {
+  ...SECURITY_HEADERS,
+  "Content-Security-Policy": PLAY_CSP,
+  "Permissions-Policy":
+    "microphone=(), camera=(), geolocation=(), gamepad=(self)",
+};
+const isPlay = (pathname: string) =>
+  pathname === "/play" || pathname.startsWith("/play/");
 
 /** CDNs (for example Cloudflare) can turn these Link headers into 103 Early Hints. */
 const LINK_HOME =
@@ -111,8 +122,12 @@ function clientId(
 
 function htmlHeaders(pathname: string): Record<string, string> {
   return {
-    Link: pathname === "/" || pathname === "/en" ? LINK_HOME : LINK_PAGE,
-    ...SECURITY_HEADERS,
+    ...(isPlay(pathname)
+      ? PLAY_HEADERS
+      : {
+          Link: pathname === "/" || pathname === "/en" ? LINK_HOME : LINK_PAGE,
+          ...SECURITY_HEADERS,
+        }),
   };
 }
 
@@ -290,7 +305,11 @@ export const server = serve({
       return respondWithAsset(
         req,
         asset,
-        asset.ext === ".html" ? htmlHeaders(pathname) : SECURITY_HEADERS,
+        asset.ext === ".html"
+          ? htmlHeaders(pathname)
+          : isPlay(pathname)
+            ? PLAY_HEADERS
+            : SECURITY_HEADERS,
       );
     }
 
