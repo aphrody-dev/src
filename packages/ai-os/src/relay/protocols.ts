@@ -55,7 +55,10 @@ export async function call(name: string, args: unknown) {
   const t = toolByName.get(name);
   if (!t && name.includes("__")) return hubCall(name, args);
   if (!t)
-    throw Object.assign(new Error(`outil inconnu : ${name}`), { code: -32601 });
+    throw Object.assign(new Error(`outil inconnu : ${name}`), {
+      code: -32601,
+      unknownTool: true,
+    });
   const input = args ?? {};
   const bad = validate(t.inputSchema as JsonSchema, input);
   if (bad.length)
@@ -144,8 +147,17 @@ export async function mcpRpc(r: Req): Promise<Res | null> {
           }),
         );
       case "tools/call": {
+        const name = r.params?.name;
+        // Outil inconnu ou nom absent : erreur de protocole -32602 (spec MCP 2025-11-25, server/tools, Error Handling).
+        if (typeof name !== "string" || !name)
+          return r.id === undefined
+            ? null
+            : fail(
+                r.id,
+                -32602,
+                "Invalid params: name must be a non-empty string",
+              );
         try {
-          const name = String(r.params?.name);
           const v = await call(name, r.params?.arguments);
           // Outil d'un serveur agrégé : son résultat MCP est renvoyé tel quel.
           if (!toolByName.has(name))
@@ -162,11 +174,24 @@ export async function mcpRpc(r: Req): Promise<Res | null> {
             }),
           );
         } catch (e: any) {
-          if (e.code === -32601) throw e;
+          // Erreurs de protocole : outil local ou serveur agrégé inconnu (-32602), ou erreur JSON-RPC relayée d'un
+          // serveur agrégé (son code). Les échecs d'exécution restent des résultats isError.
+          const proto = e?.unknownTool
+            ? fail(r.id, -32602, `Unknown tool: ${name}`)
+            : e?.rpc && Number.isInteger(e.code)
+              ? // Serveur agrégé antérieur à 2025-11-25 : -32601 pour un outil inconnu, normalisé en -32602.
+                fail(
+                  r.id,
+                  e.code === -32601 ? -32602 : e.code,
+                  e.message,
+                  e.data,
+                )
+              : null;
+          if (proto) return r.id === undefined ? null : proto;
           return ok(
             r.id,
             complete({
-              content: [{ type: "text", text: e.message }],
+              content: [{ type: "text", text: String(e?.message ?? e) }],
               isError: true,
             }),
           );

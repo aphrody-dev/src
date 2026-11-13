@@ -57,7 +57,8 @@ test("MCP : outil inconnu et notification sans réponse", async () => {
     method: "tools/call",
     params: { name: "nope" },
   });
-  expect(r.error.code).toBe(-32601);
+  expect(r.error.code).toBe(-32602);
+  expect(r.error.message).toBe("Unknown tool: nope");
   expect(
     await mcpRpc({ jsonrpc: "2.0", method: "notifications/initialized" }),
   ).toBeNull();
@@ -74,4 +75,36 @@ test("JSON-RPC : code d'erreur toujours entier (erreur réseau à code texte)", 
   expect(rpcCode({ code: "ECONNREFUSED" }, -32603)).toBe(-32603);
   expect(rpcCode({ code: -32602 }, -32603)).toBe(-32602);
   expect(rpcCode(undefined, -32000)).toBe(-32000);
+});
+
+test("MCP tools/call : nom absent ou vide -> -32602, serveur agrégé inconnu -> -32602, erreur d'exécution -> isError", async () => {
+  for (const name of [undefined, 42, ""]) {
+    const r: any = await mcpRpc({
+      jsonrpc: "2.0",
+      id: 7,
+      method: "tools/call",
+      params: { name },
+    });
+    expect(r.error.code).toBe(-32602);
+    expect(r.error.message).toContain("non-empty string");
+  }
+  const hub: any = await mcpRpc({
+    jsonrpc: "2.0",
+    id: 8,
+    method: "tools/call",
+    params: { name: "absent__outil" },
+  });
+  expect(hub.error.code).toBe(-32602);
+  expect(hub.error.message).toBe("Unknown tool: absent__outil");
+  const bad: any = await mcpRpc({
+    jsonrpc: "2.0",
+    id: 9,
+    method: "tools/call",
+    params: {
+      name: "llm_ask",
+      arguments: { model: "absent/modele", prompt: "x" },
+    },
+  });
+  expect(bad.error).toBeUndefined();
+  expect(bad.result.isError).toBe(true);
 });

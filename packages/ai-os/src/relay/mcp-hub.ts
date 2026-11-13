@@ -115,7 +115,7 @@ class StdioServer {
         id,
         (m) => (
           clearTimeout(t),
-          m.error ? ko(new Error(m.error.message)) : ok(m.result)
+          m.error ? ko(rpcError(m.error)) : ok(m.result)
         ),
       );
       (this.p!.stdin as any).write(
@@ -151,7 +151,7 @@ class HttpServer {
       ? body
       : (body.match(/^data: (.+)$/m)?.[1] ?? "{}");
     const m = JSON.parse(json);
-    if (m.error) throw new Error(m.error.message);
+    if (m.error) throw rpcError(m.error);
     return m.result;
   }
 }
@@ -163,7 +163,11 @@ async function server(name: string) {
   let s = servers.get(name);
   if (!s) {
     const c = (await userServers())[name];
-    if (!c) throw new Error(`serveur MCP inconnu : ${name}`);
+    if (!c)
+      throw Object.assign(new Error(`serveur MCP inconnu : ${name}`), {
+        code: -32601,
+        unknownTool: true,
+      });
     s = c.type === "http" || c.url ? new HttpServer(c) : new StdioServer(c);
     if (c.type === "http" || c.url)
       await s
@@ -196,6 +200,14 @@ export async function hubTools(): Promise<(Remote & { server: string })[]> {
   }
   return out;
 }
+
+/** Erreur JSON-RPC d'un serveur agrégé : code et données conservés (erreur de protocole relayée telle quelle). */
+const rpcError = (e: { code?: number; message: string; data?: unknown }) =>
+  Object.assign(new Error(e.message), {
+    code: e.code,
+    data: e.data,
+    rpc: true,
+  });
 
 export async function hubCall(prefixed: string, args: unknown) {
   const i = prefixed.indexOf("__");
