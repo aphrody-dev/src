@@ -1,6 +1,7 @@
 import type { BenchmarkRecord, ContestantMetric } from "../types.ts";
 import { existsSync, writeFileSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
+import { chromiumNodePath } from "../paths.ts";
 
 // -------------------------------------------------------------
 // Category A Kernels: Richards, DeltaBlue, NavierStokes, RayTrace, JsonParseSerialize, WebAssembly
@@ -306,10 +307,9 @@ export function getWasmModule(): {
 
 export function benchmarkCategoryA(): BenchmarkRecord[] {
   const records: BenchmarkRecord[] = [];
-  const chromiumNodePath =
-    "C:\\src\\third_party\\chromium\\src\\third_party\\node\\win\\node.exe";
-  const hasChromiumNode = existsSync(chromiumNodePath);
-  const nodeBinary = hasChromiumNode ? chromiumNodePath : "node";
+  const vendoredNode = chromiumNodePath();
+  const hasChromiumNode = existsSync(vendoredNode);
+  const nodeBinary = hasChromiumNode ? vendoredNode : "node";
 
   // Helper to run code in Node.js (V8)
   function runInNodeV8(scriptBody: string): {

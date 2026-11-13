@@ -52,6 +52,7 @@ export interface WinnerManifest {
     ram: string;
     os: string;
   };
+  provenance: { commit: string; command: string; host: string };
   totalBenchmarks: number;
   winnersByLayer: Record<SovereignLayerId, number>;
   winners: BenchmarkRecord[];

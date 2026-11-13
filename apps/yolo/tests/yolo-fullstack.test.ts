@@ -3,7 +3,7 @@ import { describe, expect, test } from "bun:test";
 import {
   auditUrlInRealChromium,
   findLocalChromiumBinary,
-} from "../../../packages/chromium-bun/src/index.ts";
+} from "@aphrody/chromium-bun";
 import { buildYoloApp } from "../build.ts";
 import { startYoloServer } from "../server.ts";
 
@@ -62,7 +62,9 @@ describe("@aphrody/yolo — Reproducible Fullstack Bun v1.4.4 Framework", () => 
       };
       expect(search.hits.length).toBeGreaterThan(0);
 
-      const font = await fetch(`${base}/assets/fonts/GoogleSansFlex-latin.woff2`);
+      const font = await fetch(
+        `${base}/assets/fonts/GoogleSansFlex-latin.woff2`,
+      );
       expect(font.status).toBe(200);
       const favicon = await fetch(`${base}/favicon.ico`);
       expect(favicon.status).toBe(200);

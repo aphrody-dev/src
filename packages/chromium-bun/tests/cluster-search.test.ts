@@ -3,7 +3,8 @@ import { describe, expect, test } from "bun:test";
 import {
   ContentShieldsEngine,
   SsrfGuard,
-  THREE_VPS_CLUSTER_TOPOLOGY,
+  nodesWithRole,
+  productionNode,
   ThreeVpsSearchCluster,
   assertNodeWorkloadAllowed,
   auditUrlInRealChromium,
@@ -90,17 +91,22 @@ describe("@aphrody/chromium-bun — Browser, Crawler & 3-VPS Datacenter Search",
     ).toBe(true);
   });
 
-  test("3-VPS Search Cluster enforces usa strict Google egress policy and executes RRF k=60 fusion", async () => {
-    expect(THREE_VPS_CLUSTER_TOPOLOGY.fr1.publicIp).toBe("51.77.147.152");
-    expect(THREE_VPS_CLUSTER_TOPOLOGY.fr2.publicIp).toBe("51.255.162.6");
-    expect(THREE_VPS_CLUSTER_TOPOLOGY.usa.publicIp).toBe("72.60.186.43");
-    expect(THREE_VPS_CLUSTER_TOPOLOGY.usa.allowNonGoogleWorkloads).toBe(false);
+  test("3-VPS Search Cluster places workloads by deploy.toml role and executes RRF k=60 fusion", async () => {
+    const prod = nodesWithRole("production")[0]!;
+    const edge = nodesWithRole("cdn-edge-and-test")[0]!;
+    const build = nodesWithRole("build")[0]!;
+    expect(prod.workloads).toContain("web-crawl");
+    expect(productionNode().id).toBe(prod.id);
 
-    expect(() => assertNodeWorkloadAllowed("usa", "web-crawl")).toThrow(
-      /Sovereign Egress Policy Violation/,
+    expect(() => assertNodeWorkloadAllowed(edge.id, "web-crawl")).toThrow(
+      /Placement Policy Violation/,
     );
+    expect(() => assertNodeWorkloadAllowed(build.id, "bm25-index")).toThrow(
+      /Placement Policy Violation/,
+    );
+    expect(() => assertNodeWorkloadAllowed(edge.id, "proxy-cdn")).not.toThrow();
     expect(() =>
-      assertNodeWorkloadAllowed("usa", "google-custom-search"),
+      assertNodeWorkloadAllowed(prod.id, "google-custom-search"),
     ).not.toThrow();
 
     const cluster = new ThreeVpsSearchCluster({ allowPrivateCrawl: true });
@@ -129,7 +135,7 @@ describe("@aphrody/chromium-bun — Browser, Crawler & 3-VPS Datacenter Search",
       });
 
       try {
-        const crawled = await cluster.crawlAndIndexOnFr2(
+        const crawled = await cluster.crawlAndIndex(
           `http://127.0.0.1:${srv.port}/wgsl-raymarcher`,
         );
         expect(crawled.title).toBe("Quantum WGSL Raymarcher");

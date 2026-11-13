@@ -5,6 +5,12 @@
   "description": "CDP client, SSRF-guarded crawler, BM25 search shards, engine registry and runtime benchmarks, on bun",
   "type": "module",
   "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./search": "./src/search/index.ts",
+    "./cdp": "./src/browser/cdp-client.ts",
+    "./engines": "./src/engines/index.ts"
+  },
   "bin": {
     "chromium-bun": "./src/cli.ts"
   },

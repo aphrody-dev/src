@@ -12,7 +12,7 @@ import {
 } from "./qa/real-browser-audit.ts";
 import { runFullE2eRealConditionSuite } from "./qa/e2e-runner.ts";
 import {
-  THREE_VPS_CLUSTER_TOPOLOGY,
+  CLUSTER_TOPOLOGY,
   ThreeVpsSearchCluster,
 } from "./search/cluster-3vps.ts";
 
@@ -25,7 +25,7 @@ async function main(): Promise<void> {
       const query = args.slice(1).join(" ") || "aphrody";
       const cluster = new ThreeVpsSearchCluster();
       try {
-        const res = await cluster.search(query, { useUsaGrounding: true });
+        const res = await cluster.search(query, { useGrounding: true });
         console.log(JSON.stringify(res, null, 2));
       } finally {
         cluster.close();
@@ -38,11 +38,7 @@ async function main(): Promise<void> {
       try {
         const health = await cluster.probeClusterHealth(probe);
         console.log(
-          JSON.stringify(
-            { topology: THREE_VPS_CLUSTER_TOPOLOGY, health },
-            null,
-            2,
-          ),
+          JSON.stringify({ topology: CLUSTER_TOPOLOGY, health }, null, 2),
         );
       } finally {
         cluster.close();
@@ -60,7 +56,7 @@ async function main(): Promise<void> {
         allowPrivateCrawl: args.includes("--allow-private"),
       });
       try {
-        const res = await cluster.crawlAndIndexOnFr2(url, {
+        const res = await cluster.crawlAndIndex(url, {
           renderWithChromium: useChromium,
         });
         console.log(JSON.stringify(res, null, 2));
@@ -127,9 +123,9 @@ async function main(): Promise<void> {
           "chromium-bun — Sovereign Bun v1.4.4 + Chromium Browser, Crawler & 3-VPS Search Engine",
           "",
           "Commands:",
-          "  search <query>                                    Query 3-VPS RRF Search Cluster (fr1 + fr2 + usa)",
+          "  search <query>                                    Query the RRF search cluster (nodes from infra/deploy.toml)",
           "  cluster [--probe]                                 Show 3-VPS WireGuard/MASQUE cluster topology & health",
-          "  crawl <url> [--chromium] [--allow-private]        Crawl & index page on fr2 shard",
+          "  crawl <url> [--chromium] [--allow-private]        Crawl and index a page on the production node",
           "  audit-url <url> [--lighthouse] [--agent-browser]  Run real headless Chromium Web Vitals & QA audit",
           "  inspect | layers | matrix | bench                 6-Layer Chromium extraction & benchmarks",
           "  engines list|channels|path|install|launch         Browser, automation and crawl engines (engines/registry.ts)",

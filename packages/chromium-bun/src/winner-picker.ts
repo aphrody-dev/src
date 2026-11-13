@@ -6,6 +6,7 @@ import type {
 import { CHROMIUM_DEPENDENCY_AUDIT } from "./audit/purge-matrix.ts";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
+import os from "node:os";
 
 export interface HostHardwareSpecs {
   gpu: string;
@@ -14,15 +15,53 @@ export interface HostHardwareSpecs {
   os: string;
 }
 
-export const CANONICAL_HARDWARE: HostHardwareSpecs = {
-  gpu: "NVIDIA GeForce RTX 4070 12GB (Ada Lovelace sm_89, Driver 621.14, CUDA 13.4, Vulkan 1.4)",
-  cpu: "Intel Core i7-13700F (16C/24T: 8P + 8E, up to 5.2 GHz, AVX2, FMA3, BMI2)",
-  ram: "32 GB DDR5-5800 MT/s Dual-Channel",
-  os: "Microsoft Windows NT 10.0.26100 (x64) with native IOCP & DirectStorage",
-};
+function run(cmd: string[]): string | null {
+  try {
+    const r = Bun.spawnSync(cmd, { stdout: "pipe", stderr: "ignore" });
+    return r.exitCode === 0 ? r.stdout.toString().trim() : null;
+  } catch {
+    return null; // binary absent
+  }
+}
+
+/** Reads OS, CPU, RAM and GPU of the machine running the benchmarks, at call time. */
+export function detectHostHardware(): HostHardwareSpecs {
+  const cpus = os.cpus();
+  const threads = cpus.length || navigator.hardwareConcurrency;
+  const model = cpus[0]?.model.trim() ?? "unknown CPU";
+  const gpuLines = run([
+    "nvidia-smi",
+    "--query-gpu=name,memory.total,driver_version",
+    "--format=csv,noheader",
+  ]);
+  return {
+    os: `${os.type()} ${os.release()} (${os.arch()}) [${navigator.userAgent}]`,
+    cpu: `${model} (${threads} threads)`,
+    ram: `${Math.round(os.totalmem() / 2 ** 30)} GB`,
+    gpu: gpuLines
+      ? gpuLines.split("\n").join("; ")
+      : "none detected (nvidia-smi absent)",
+  };
+}
+
+export interface RunProvenance {
+  commit: string;
+  command: string;
+  host: string;
+}
+
+export function detectProvenance(): RunProvenance {
+  return {
+    commit: run(["git", "rev-parse", "HEAD"]) ?? "unknown",
+    command: process.argv.join(" "),
+    host: os.hostname(),
+  };
+}
 
 export function buildWinnerManifest(
   benchmarks: BenchmarkRecord[],
+  hardware: HostHardwareSpecs = detectHostHardware(),
+  provenance: RunProvenance = detectProvenance(),
 ): WinnerManifest {
   const winnersByLayer: Record<SovereignLayerId, number> = {
     1: 0,
@@ -49,7 +88,8 @@ export function buildWinnerManifest(
 
   return {
     timestamp: new Date().toISOString(),
-    hostHardware: CANONICAL_HARDWARE,
+    hostHardware: hardware,
+    provenance,
     totalBenchmarks: benchmarks.length,
     winnersByLayer,
     winners: benchmarks,

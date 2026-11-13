@@ -364,6 +364,47 @@ export class ChromiumBunCdpClient implements AsyncDisposable {
     }
   }
 
+  /**
+   * Pauses every request of the page (main frame, subresources, each redirect hop) at the Fetch
+   * domain and lets `validate` decide. A request whose validation throws is failed with
+   * BlockedByClient and recorded in `blocked`. Call the returned function to stop intercepting.
+   */
+  async interceptRequests(validate: (url: string) => Promise<void>): Promise<{
+    blocked: Array<{ url: string; reason: string }>;
+    stop: () => Promise<void>;
+  }> {
+    const blocked: Array<{ url: string; reason: string }> = [];
+    const unsubscribe = this.on("Fetch.requestPaused", (params, sessionId) => {
+      const requestId = params.requestId;
+      const url = (params.request as { url?: string } | undefined)?.url;
+      if (typeof requestId !== "string" || typeof url !== "string") return;
+      void (async () => {
+        try {
+          await validate(url);
+          await this.send("Fetch.continueRequest", { requestId }, sessionId);
+        } catch (err) {
+          blocked.push({
+            url,
+            reason: err instanceof Error ? err.message : String(err),
+          });
+          await this.send(
+            "Fetch.failRequest",
+            { requestId, errorReason: "BlockedByClient" },
+            sessionId,
+          ).catch(() => undefined);
+        }
+      })();
+    });
+    await this.send("Fetch.enable", { patterns: [{ urlPattern: "*" }] });
+    return {
+      blocked,
+      stop: async () => {
+        unsubscribe();
+        await this.send("Fetch.disable").catch(() => undefined);
+      },
+    };
+  }
+
   async evaluate<T = unknown>(
     expression: string,
     options?: { awaitPromise?: boolean; returnByValue?: boolean },

@@ -218,11 +218,36 @@ export class ChromiumBunCrawler {
       await using browser = await launchHeadlessChromium({
         timeoutMs: this.timeoutMs,
       });
-      const nav = await browser.client.navigate(parsedUrl.href, {
-        waitUntil: "load",
+      // Every request and redirect hop of the page goes through the SSRF guard and the shields.
+      const guard = await browser.client.interceptRequests(async (url) => {
+        if (/^(data|blob|about):/i.test(url)) return;
+        await this.ssrf.validateUrl(url);
+        if (this.shields.shouldBlockUrl(url)) {
+          throw new Error(`Content Shields blocked tracker URL: ${url}`);
+        }
       });
-      if (nav.errorText) {
-        throw new Error(`Chromium navigation failed: ${nav.errorText}`);
+      try {
+        const nav = await browser.client.navigate(parsedUrl.href, {
+          waitUntil: "load",
+        });
+        const mainBlocked =
+          guard.blocked.find((b) => b.url === parsedUrl.href) ??
+          guard.blocked[0];
+        if (nav.errorText) {
+          throw new Error(
+            mainBlocked
+              ? mainBlocked.reason
+              : `Chromium navigation failed: ${nav.errorText}`,
+          );
+        }
+        // A blocked redirect hop ends the navigation in an error page: refuse it too.
+        if (guard.blocked.some((b) => /^SSRF Guard/.test(b.reason))) {
+          throw new Error(
+            guard.blocked.find((b) => /^SSRF Guard/.test(b.reason))!.reason,
+          );
+        }
+      } finally {
+        await guard.stop();
       }
       html = await browser.client.evaluate<string>(
         "document.documentElement.outerHTML",

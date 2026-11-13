@@ -5,6 +5,8 @@
  */
 import { Database } from "bun:sqlite";
 
+export type ShardId = "shard0" | "shard1";
+
 export interface IndexedWebDocument {
   url: string;
   title: string;
@@ -13,7 +15,7 @@ export interface IndexedWebDocument {
   body: string;
   domain: string;
   category: "app" | "docs" | "web" | "infra" | "design" | "code";
-  shard: "fr1" | "fr2";
+  shard: ShardId;
   qualityScore: number;
   crawledAt: number;
   blake3Hash?: string;
@@ -25,7 +27,7 @@ export interface ShardSearchHit {
   snippet: string;
   domain: string;
   category: IndexedWebDocument["category"];
-  shard: "fr1" | "fr2";
+  shard: ShardId;
   bm25Score: number;
   qualityScore: number;
   crawledAt: number;
@@ -117,7 +119,7 @@ export const APHRODY_TOP1_SUBDOMAIN_CATALOG: readonly SubdomainAppEntry[] = [
     title: "Spacedrive VDFS — Virtual Distributed File System",
     category: "drive",
     summary:
-      "Content-addressed Virtual Distributed File System (sd:// locations, Blake3 CAS deduplication, tags, albums, and instant preview) replicated across fr1 and fr2 NVMe storage.",
+      "Content-addressed Virtual Distributed File System (sd:// locations, Blake3 CAS deduplication, tags, albums, and instant preview) kept on the production node NVMe storage.",
     keywords: [
       "spacedrive",
       "drive",
@@ -161,7 +163,7 @@ export const APHRODY_TOP1_SUBDOMAIN_CATALOG: readonly SubdomainAppEntry[] = [
     title: "Aphrody 3-VPS Datacenter Search & Chromium Crawler",
     category: "search",
     summary:
-      "End-to-end distributed search engine uniting fr1 (OVH Edge Ingress & BM25 Shard 0), fr2 (Headless Chromium CDP Render Pool & BM25 Shard 1), and usa (Strict Google/Gemini Grounding Egress) via Reciprocal Rank Fusion (RRF k=60).",
+      "End-to-end distributed search engine running crawl, indexing and both BM25 shards on the production node (role read from infra/deploy.toml), behind the edge proxy, merged via Reciprocal Rank Fusion (RRF k=60).",
     keywords: [
       "search",
       "crawler",
@@ -304,7 +306,7 @@ export const SEED_DOCUMENTS_FR1: readonly Omit<
     body: "Aphrody unifies distributed 3-VPS search, CraftUI creative tools (PhotoCraft, VectorCraft, FigCraft, ShaderCraft, AudioCraft, CodeCraft), Fluent 2 Office (WordCraft OOXML .docx, GridCraft spreadsheet formulas, DeckCraft slides), Spacedrive content-addressed storage, M3 Mail/Notes/Calendar/Contacts/Photos, Aphrody Pet WebGPU companion, and Locally Uncensored open-weights studio.",
     domain: "aphrody.com",
     category: "app",
-    shard: "fr1",
+    shard: "shard0",
     qualityScore: 1.0,
   },
   {
@@ -321,7 +323,7 @@ export const SEED_DOCUMENTS_FR1: readonly Omit<
     body: "Yolo exploits every native capability of Bun v1.4.4: Bun.serve HTTP/WebSocket, HTMLRewriter streaming SSR with per-request CSP nonces, bun:sqlite WAL module dependency graph, Bun.Transpiler zero-dep AST import scanning, Bun.Image, Bun.Archive, Bun.password Argon2id, Bun.CryptoHasher Blake3, Bun.color, Bun.semver, and standalone bytecode compilation.",
     domain: "yolo.aphrody.com",
     category: "code",
-    shard: "fr1",
+    shard: "shard0",
     qualityScore: 0.99,
   },
   {
@@ -339,7 +341,7 @@ export const SEED_DOCUMENTS_FR1: readonly Omit<
     body: "Craft Creative Cloud delivers Adobe Creative Cloud class workflows inside a sub-14KB critical path shell: real WebAssembly binary image convolution and exposure kernels, SVG precision path minification, Material Design 3 HCT dynamic color palettes, 60fps WebGPU/Canvas2D shaders, 16-bit PCM WAV synthesis, and WAT to WASM compilation.",
     domain: "aphrody.com",
     category: "design",
-    shard: "fr1",
+    shard: "shard0",
     qualityScore: 0.97,
   },
   {
@@ -356,7 +358,7 @@ export const SEED_DOCUMENTS_FR1: readonly Omit<
     body: "Edit rich documents and export genuine PKZIP OOXML .docx archives built with Bun.deflateSync, run financial and statistical formulas (SUM, AVG, MIN, MAX, ROUND, IF, NPV) via a pure recursive-descent parser with zero eval(), and present high-contrast 16:9 vector decks.",
     domain: "aphrody.com",
     category: "app",
-    shard: "fr1",
+    shard: "shard0",
     qualityScore: 0.96,
   },
   {
@@ -370,10 +372,10 @@ export const SEED_DOCUMENTS_FR1: readonly Omit<
       "Blake3 CAS Storage",
       "Cross-Device File Index",
     ],
-    body: "Spacedrive indexes documents, images, vectors, audio, and archives using 256-bit Blake3 content hashes stored in bun:sqlite WAL tables, eliminating duplicate blobs across fr1 and fr2.",
+    body: "Spacedrive indexes documents, images, vectors, audio, and archives using 256-bit Blake3 content hashes stored in bun:sqlite WAL tables, eliminating duplicate blobs on the production node.",
     domain: "aphrody.com",
     category: "infra",
-    shard: "fr1",
+    shard: "shard0",
     qualityScore: 0.95,
   },
   {
@@ -386,7 +388,7 @@ export const SEED_DOCUMENTS_FR1: readonly Omit<
     body: "Shenron serves structured canon encyclopedia entries, frame-accurate episode metadata, and low-latency media delivery on the OVH EU mesh.",
     domain: "dragonballfr.com",
     category: "web",
-    shard: "fr1",
+    shard: "shard0",
     qualityScore: 0.9,
   },
   {
@@ -402,7 +404,7 @@ export const SEED_DOCUMENTS_FR1: readonly Omit<
     body: "RoseGriffon combines digital typography, serialized literature publishing, and community event orchestration hosted on the sovereign EU cluster.",
     domain: "rosegriffon.fr",
     category: "web",
-    shard: "fr1",
+    shard: "shard0",
     qualityScore: 0.9,
   },
 ];
@@ -415,16 +417,16 @@ export const SEED_DOCUMENTS_FR2: readonly Omit<
     url: "https://aphrody.com/docs/cluster-3vps",
     title: "Aphrody 3-VPS WireGuard + Cloudflare MASQUE Datacenter Topology",
     description:
-      "Production datacenter architecture uniting fr1 (51.77.147.152 OVH Edge), fr2 (51.255.162.6 OVH Chromium Crawler & Replica), and usa (72.60.186.43 Strict Google/Gemini Egress).",
+      "Node placement is driven by the role of each node in infra/deploy.toml: production runs crawl, index and shards, the edge node proxies and serves the CDN, the build node is excluded.",
     headings: [
-      "fr1 Primary EU Edge",
-      "fr2 Headless Chromium & Replica",
-      "usa Strict Google Grounding Egress",
+      "production: crawl, index, shards",
+      "cdn-edge-and-test: proxy and CDN",
+      "build: excluded",
     ],
-    body: "WireGuard subnet 10.200.77.0/24 interconnects fr1 (10.200.77.1), fr2 (10.200.77.3), and usa (10.200.77.5). All non-Google workloads are deterministically pinned to EU nodes fr1 and fr2, while usa executes exclusively Google Search Grounding and Gemini API egress.",
+    body: "The WireGuard mesh interconnects the nodes declared in infra/deploy.toml. Crawl, indexing and BM25 shards run only on the node whose role is production; the edge node proxies requests and serves the CDN; the build node takes no search workload.",
     domain: "aphrody.com",
     category: "infra",
-    shard: "fr2",
+    shard: "shard1",
     qualityScore: 0.98,
   },
   {
@@ -440,19 +442,24 @@ export const SEED_DOCUMENTS_FR2: readonly Omit<
     body: "Chromium-Bun pairs headless Chromium M136+ over pure-Bun WebSocket CDP with C-speed HTMLRewriter text extraction, DNS-rebinding SSRF protection, tracker domain filtering, and SQLite FTS5 BM25 ranking.",
     domain: "aphrody.com",
     category: "code",
-    shard: "fr2",
+    shard: "shard1",
     qualityScore: 0.97,
   },
   {
     url: "https://aphrody.com/docs/design",
-    title: "Aphrody Design System — Material 3 tokens, Material Web, Material Symbols",
+    title:
+      "Aphrody Design System — Material 3 tokens, Material Web, Material Symbols",
     description:
       "Material 3 color roles generated by Material Color Utilities from the brand seed, Material Web components, Material Symbols, Figma variables and DESIGN.md (packages/design).",
-    headings: ["Material 3 tokens", "Material Web components", "Material Symbols"],
+    headings: [
+      "Material 3 tokens",
+      "Material Web components",
+      "Material Symbols",
+    ],
     body: "packages/design generates CSS, Rust (GPUI), Zig and ANSI tokens in six contrast modes from assets/brand/brand.toml, syncs them to Figma, and ships a Bun plugin for Material Symbols SVG icons.",
     domain: "aphrody.com",
     category: "design",
-    shard: "fr2",
+    shard: "shard1",
     qualityScore: 0.96,
   },
   {
@@ -469,7 +476,7 @@ export const SEED_DOCUMENTS_FR2: readonly Omit<
     body: "Built on Linus Torvalds systems taste: flat data structures, strict ABI boundaries, zero userspace pollution, native Rust 2024 crates, and empirical hardware benchmarks on RTX 4070 Ada Lovelace sm_89 and Core i7-13700F.",
     domain: "aphrody.com",
     category: "docs",
-    shard: "fr2",
+    shard: "shard1",
     qualityScore: 0.94,
   },
 ];
@@ -497,10 +504,10 @@ function sanitizeFts5Query(rawQuery: string): string {
 }
 
 export class SovereignSearchShardDb {
-  readonly shardId: "fr1" | "fr2";
+  readonly shardId: ShardId;
   readonly db: Database;
 
-  constructor(shardId: "fr1" | "fr2", dbPath = ":memory:") {
+  constructor(shardId: ShardId, dbPath = ":memory:") {
     this.shardId = shardId;
     this.db = new Database(dbPath, { create: true });
     this.db.exec("PRAGMA journal_mode = WAL;");
@@ -534,7 +541,7 @@ export class SovereignSearchShardDb {
 
   seedDefaults(): number {
     const seeds =
-      this.shardId === "fr1" ? SEED_DOCUMENTS_FR1 : SEED_DOCUMENTS_FR2;
+      this.shardId === "shard0" ? SEED_DOCUMENTS_FR1 : SEED_DOCUMENTS_FR2;
     const now = Date.now();
     let inserted = 0;
     for (const s of seeds) {
@@ -624,7 +631,7 @@ export class SovereignSearchShardDb {
             description: string;
             domain: string;
             category: IndexedWebDocument["category"];
-            shard: "fr1" | "fr2";
+            shard: ShardId;
             quality_score: number;
             crawled_at: number;
           },
@@ -658,7 +665,7 @@ export class SovereignSearchShardDb {
           description: string;
           domain: string;
           category: IndexedWebDocument["category"];
-          shard: "fr1" | "fr2";
+          shard: ShardId;
           raw_bm25: number;
           quality_score: number;
           crawled_at: number;
@@ -779,7 +786,10 @@ export function buildKnowledgeCard(
       { label: "Subdomain", value: top.subdomain },
       { label: "Local Route", value: top.localRoute },
       { label: "Stack", value: top.stack.join(" · ") },
-      { label: "Cluster Pinning", value: "fr1 + fr2 (EU Sovereign Mesh)" },
+      {
+        label: "Cluster Pinning",
+        value: "production node (role from infra/deploy.toml)",
+      },
     ],
   };
 }

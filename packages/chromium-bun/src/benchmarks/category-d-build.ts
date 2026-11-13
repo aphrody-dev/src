@@ -1,14 +1,14 @@
 import type { BenchmarkRecord, ContestantMetric } from "../types.ts";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { chromiumBuildTool, chromiumNodePath, depotTool } from "../paths.ts";
 
 export async function benchmarkCategoryD(): Promise<BenchmarkRecord[]> {
   const records: BenchmarkRecord[] = [];
   const webuiDir = join(import.meta.dir, "..", "webui_poc");
   const entrypoint = join(webuiDir, "index.ts");
-  const chromiumNodePath =
-    "C:\\src\\third_party\\chromium\\src\\third_party\\node\\win\\node.exe";
-  const hasChromiumNode = existsSync(chromiumNodePath);
+  const vendoredNode = chromiumNodePath();
+  const hasChromiumNode = existsSync(vendoredNode);
 
   // 1. WebUI Component Bundling: Bun.build (Full Minify + Sourcemap) vs Simulated Node/Rollup
   {
@@ -108,9 +108,9 @@ export async function benchmarkCategoryD(): Promise<BenchmarkRecord[]> {
 
   // 3. Native Build Orchestration Probing (Chromium Siso, GN, Autoninja)
   {
-    const gnPath = "C:\\src\\third_party\\chromium\\src\\buildtools\\win\\gn.exe";
-    const ninjaPath = "C:\\src\\third_party\\depot_tools\\ninja.bat";
-    const sisoBatPath = "C:\\src\\third_party\\depot_tools\\siso.bat";
+    const gnPath = chromiumBuildTool("gn");
+    const ninjaPath = depotTool("ninja");
+    const sisoBatPath = depotTool("siso");
 
     let gnVersion = "unknown";
     if (existsSync(gnPath)) {

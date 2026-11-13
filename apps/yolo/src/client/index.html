@@ -119,7 +119,6 @@
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
@@ -240,9 +239,10 @@
                 3-VPS Datacenter Search &amp; WireGuard Mesh Inspector
               </h2>
               <p class="helper-text">
-                Reciprocal Rank Fusion (<code>RRF k=60</code>) across
-                <code>fr1</code> (OVH Edge), <code>fr2</code> (OVH Headless
-                Chromium Crawler), and <code>usa</code> (Strict Google Egress).
+                Reciprocal Rank Fusion (<code>RRF k=60</code>) across the nodes
+                declared in <code>infra/deploy.toml</code>: crawl, index and
+                shards on the <code>production</code> node, proxy and CDN on the
+                edge node.
               </p>
             </div>
           </div>

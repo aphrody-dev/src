@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 /**
- * 3-VPS Sovereign Datacenter Search Cluster Coordinator (fr1 + fr2 + usa)
- * Models the exact WireGuard/MASQUE 10.200.77.0/24 cluster defined in infra/deploy.toml:
- *   - fr1 (infra/deploy.toml nodes.*.public_ip / mesh_ip, OVH EU): Primary Search Edge Ingress, Autocomplete & BM25 Shard 0
- *   - fr2 (infra/deploy.toml nodes.*.public_ip / mesh_ip, OVH EU): Headless Chromium CDP Crawler Pool, Spacedrive & BM25 Shard 1
- *   - usa (infra/deploy.toml nodes.*.public_ip / mesh_ip, Hostinger US): Strict Google Search / Gemini Grounding Egress ONLY
+ * Search cluster coordinator. The topology is read from infra/deploy.toml (`[nodes.*]`): a node's
+ * `role` decides which workloads it may run. Nothing here names a host.
+ *   - role "production": crawl, indexing, BM25 shards, app hosting, search egress
+ *   - role "cdn-edge-and-test": proxy / CDN only
+ *   - any other role (for example "build"): excluded from the search cluster
  */
 import fleet from "../../../../infra/deploy.toml";
 import { ChromiumBunCrawler, type CrawlPageResult } from "./crawler.ts";
@@ -14,69 +14,10 @@ import {
   buildKnowledgeCard,
   matchSubdomainCatalog,
   type IndexedWebDocument,
+  type ShardId,
   type SovereignKnowledgeCard,
   type SubdomainAppEntry,
 } from "./indexer.ts";
-
-export type ClusterNodeId = "fr1" | "fr2" | "usa";
-
-export interface ClusterNodeSpec {
-  id: ClusterNodeId;
-  provider: "ovh" | "hostinger";
-  region: "eu-fr" | "us-google-egress";
-  publicIp: string;
-  wireguardIp: string;
-  role: string;
-  allowNonGoogleWorkloads: boolean;
-  services: string[];
-}
-
-export const THREE_VPS_CLUSTER_TOPOLOGY: Record<
-  ClusterNodeId,
-  ClusterNodeSpec
-> = {
-  fr1: {
-    id: "fr1",
-    provider: "ovh",
-    region: "eu-fr",
-    publicIp: fleet.nodes.fr1.public_ip,
-    wireguardIp: fleet.nodes.fr1.mesh_ip,
-    role: "primary-eu-production-edge",
-    allowNonGoogleWorkloads: true,
-    services: [
-      "search-edge-ingress",
-      "fts5-bm25-shard-0",
-      "autocomplete",
-      "aphrody-web",
-      "yolo-web",
-    ],
-  },
-  fr2: {
-    id: "fr2",
-    provider: "ovh",
-    region: "eu-fr",
-    publicIp: fleet.nodes.fr2.public_ip,
-    wireguardIp: fleet.nodes.fr2.mesh_ip,
-    role: "eu-ha-replica-chromium-crawler",
-    allowNonGoogleWorkloads: true,
-    services: [
-      "headless-chromium-cdp-pool",
-      "fts5-bm25-shard-1",
-      "robots-ssrf-crawler",
-      "spacedrive-cas-replica",
-    ],
-  },
-  usa: {
-    id: "usa",
-    provider: "hostinger",
-    region: "us-google-egress",
-    publicIp: fleet.nodes.usa.public_ip,
-    wireguardIp: fleet.nodes.usa.mesh_ip,
-    role: "strict-google-gemini-egress-only",
-    allowNonGoogleWorkloads: false,
-    services: ["google-custom-search-egress", "gemini-grounding-proxy"],
-  },
-};
 
 export type WorkloadKind =
   | "google-custom-search"
@@ -84,22 +25,100 @@ export type WorkloadKind =
   | "web-crawl"
   | "bm25-index"
   | "app-hosting"
-  | "spacedrive-storage";
+  | "spacedrive-storage"
+  | "proxy-cdn";
+
+/** Workloads allowed per deploy.toml role. Unknown roles get none. */
+export const ROLE_WORKLOADS: Readonly<Record<string, readonly WorkloadKind[]>> =
+  {
+    production: [
+      "web-crawl",
+      "bm25-index",
+      "app-hosting",
+      "spacedrive-storage",
+      "google-custom-search",
+      "gemini-grounding",
+    ],
+    "cdn-edge-and-test": ["proxy-cdn"],
+  };
+
+export type ClusterNodeId = string;
+
+export interface ClusterNodeSpec {
+  id: ClusterNodeId;
+  provider: string;
+  region: string;
+  publicIp: string;
+  wireguardIp: string;
+  /** Verbatim `role` from infra/deploy.toml. */
+  role: string;
+  workloads: readonly WorkloadKind[];
+}
+
+interface FleetNodeToml {
+  provider?: string;
+  region?: string;
+  public_ip: string;
+  mesh_ip: string;
+  role: string;
+}
+
+export function loadClusterTopology(
+  nodes: Record<string, FleetNodeToml> = (
+    fleet as unknown as { nodes: Record<string, FleetNodeToml> }
+  ).nodes,
+): Record<ClusterNodeId, ClusterNodeSpec> {
+  const out: Record<ClusterNodeId, ClusterNodeSpec> = {};
+  for (const [id, n] of Object.entries(nodes)) {
+    out[id] = {
+      id,
+      provider: n.provider ?? "unknown",
+      region: n.region ?? "unknown",
+      publicIp: n.public_ip,
+      wireguardIp: n.mesh_ip,
+      role: n.role,
+      workloads: ROLE_WORKLOADS[n.role] ?? [],
+    };
+  }
+  return out;
+}
+
+export const CLUSTER_TOPOLOGY: Record<ClusterNodeId, ClusterNodeSpec> =
+  loadClusterTopology();
+
+export function nodesWithRole(
+  role: string,
+  topology: Record<ClusterNodeId, ClusterNodeSpec> = CLUSTER_TOPOLOGY,
+): ClusterNodeSpec[] {
+  return Object.values(topology).filter((n) => n.role === role);
+}
+
+/** The node that runs crawl, index and shards. Throws when deploy.toml declares none. */
+export function productionNode(
+  topology: Record<ClusterNodeId, ClusterNodeSpec> = CLUSTER_TOPOLOGY,
+): ClusterNodeSpec {
+  const node = nodesWithRole("production", topology)[0];
+  if (!node) {
+    throw new Error(
+      'infra/deploy.toml declares no node with role = "production"',
+    );
+  }
+  return node;
+}
 
 export function assertNodeWorkloadAllowed(
   nodeId: ClusterNodeId,
   workload: WorkloadKind,
+  topology: Record<ClusterNodeId, ClusterNodeSpec> = CLUSTER_TOPOLOGY,
 ): void {
-  const spec = THREE_VPS_CLUSTER_TOPOLOGY[nodeId];
-  if (!spec.allowNonGoogleWorkloads) {
-    if (
-      workload !== "google-custom-search" &&
-      workload !== "gemini-grounding"
-    ) {
-      throw new Error(
-        `Sovereign Egress Policy Violation: Node "${nodeId}" (${spec.publicIp} / ${spec.wireguardIp}) is reserved strictly for Google/Gemini egress; "${workload}" must run on fr1 or fr2.`,
-      );
-    }
+  const spec = topology[nodeId];
+  if (!spec) {
+    throw new Error(`Unknown cluster node "${nodeId}" (not in deploy.toml)`);
+  }
+  if (!spec.workloads.includes(workload)) {
+    throw new Error(
+      `Placement Policy Violation: node "${nodeId}" (role "${spec.role}") may not run "${workload}"; it belongs on a node with the matching role in infra/deploy.toml.`,
+    );
   }
 }
 
@@ -110,9 +129,7 @@ export interface FusedSearchHit {
   domain: string;
   category: string;
   rrfScore: number;
-  sources: Array<
-    "fr1-shard0" | "fr2-shard1" | "aphrody-catalog" | "usa-google-grounding"
-  >;
+  sources: Array<"shard0" | "shard1" | "aphrody-catalog" | "google-grounding">;
   subdomain?: string;
   localRoute?: string;
 }
@@ -122,17 +139,18 @@ export interface ClusterSearchResponse {
   tookMs: number;
   rrfConstantK: number;
   routedVia: {
-    ingress: ClusterNodeSpec;
-    crawlerReplica: ClusterNodeSpec;
-    googleGrounding: ClusterNodeSpec;
-    usaGroundingUsed: boolean;
+    /** Node with role "production": crawl, index, shards, grounding. */
+    production: ClusterNodeSpec;
+    /** Nodes with role "cdn-edge-and-test": proxy / CDN in front of production. */
+    edgeProxies: ClusterNodeSpec[];
+    groundingUsed: boolean;
   };
   knowledgeCard: SovereignKnowledgeCard | null;
   subdomainMatches: SubdomainAppEntry[];
   hits: FusedSearchHit[];
   totalIndexedDocs: {
-    fr1: number;
-    fr2: number;
+    shard0: number;
+    shard1: number;
     catalog: number;
   };
 }
@@ -150,40 +168,45 @@ export interface ClusterHealthReport {
 }
 
 export interface ThreeVpsClusterOptions {
-  fr1DbPath?: string;
-  fr2DbPath?: string;
+  shard0DbPath?: string;
+  shard1DbPath?: string;
   seedDefaults?: boolean;
   allowPrivateCrawl?: boolean;
-  enableUsaGoogleGrounding?: boolean;
+  enableGoogleGrounding?: boolean;
+  topology?: Record<ClusterNodeId, ClusterNodeSpec>;
 }
 
 export class ThreeVpsSearchCluster {
   readonly rrfK = 60;
-  readonly shardFr1: SovereignSearchShardDb;
-  readonly shardFr2: SovereignSearchShardDb;
-  readonly crawlerFr2: ChromiumBunCrawler;
-  private readonly enableUsaGoogleGrounding: boolean;
+  readonly topology: Record<ClusterNodeId, ClusterNodeSpec>;
+  readonly production: ClusterNodeSpec;
+  readonly shard0: SovereignSearchShardDb;
+  readonly shard1: SovereignSearchShardDb;
+  readonly crawler: ChromiumBunCrawler;
+  private readonly enableGoogleGrounding: boolean;
 
   constructor(options: ThreeVpsClusterOptions = {}) {
-    assertNodeWorkloadAllowed("fr1", "bm25-index");
-    assertNodeWorkloadAllowed("fr2", "web-crawl");
+    this.topology = options.topology ?? CLUSTER_TOPOLOGY;
+    this.production = productionNode(this.topology);
+    assertNodeWorkloadAllowed(this.production.id, "bm25-index", this.topology);
+    assertNodeWorkloadAllowed(this.production.id, "web-crawl", this.topology);
 
-    this.shardFr1 = new SovereignSearchShardDb(
-      "fr1",
-      options.fr1DbPath ?? ":memory:",
+    this.shard0 = new SovereignSearchShardDb(
+      "shard0",
+      options.shard0DbPath ?? ":memory:",
     );
-    this.shardFr2 = new SovereignSearchShardDb(
-      "fr2",
-      options.fr2DbPath ?? ":memory:",
+    this.shard1 = new SovereignSearchShardDb(
+      "shard1",
+      options.shard1DbPath ?? ":memory:",
     );
-    this.crawlerFr2 = new ChromiumBunCrawler({
+    this.crawler = new ChromiumBunCrawler({
       ssrf: { allowPrivateNetwork: options.allowPrivateCrawl ?? false },
     });
-    this.enableUsaGoogleGrounding = options.enableUsaGoogleGrounding ?? false;
+    this.enableGoogleGrounding = options.enableGoogleGrounding ?? false;
 
     if (options.seedDefaults ?? true) {
-      if (this.shardFr1.count() === 0) this.shardFr1.seedDefaults();
-      if (this.shardFr2.count() === 0) this.shardFr2.seedDefaults();
+      if (this.shard0.count() === 0) this.shard0.seedDefaults();
+      if (this.shard1.count() === 0) this.shard1.seedDefaults();
     }
   }
 
@@ -192,7 +215,7 @@ export class ThreeVpsSearchCluster {
     for (let i = 0; i < domain.length; i++) {
       acc = (acc * 31 + domain.charCodeAt(i)) >>> 0;
     }
-    return acc % 2 === 0 ? this.shardFr1 : this.shardFr2;
+    return acc % 2 === 0 ? this.shard0 : this.shard1;
   }
 
   ingestDocument(
@@ -200,7 +223,7 @@ export class ThreeVpsSearchCluster {
       crawledAt?: number;
     },
   ): {
-    shard: "fr1" | "fr2";
+    shard: ShardId;
     hash: string;
     updated: boolean;
   } {
@@ -213,17 +236,17 @@ export class ThreeVpsSearchCluster {
     return { shard: targetShard.shardId, ...res };
   }
 
-  async crawlAndIndexOnFr2(
+  async crawlAndIndex(
     url: string,
     options?: {
       renderWithChromium?: boolean;
       category?: IndexedWebDocument["category"];
     },
-  ): Promise<CrawlPageResult & { indexedShard: "fr1" | "fr2" }> {
-    assertNodeWorkloadAllowed("fr2", "web-crawl");
+  ): Promise<CrawlPageResult & { indexedShard: ShardId }> {
+    assertNodeWorkloadAllowed(this.production.id, "web-crawl", this.topology);
     const parsed = new URL(url);
     const targetShard = this.pickShardForDomain(parsed.hostname.toLowerCase());
-    const result = await this.crawlerFr2.crawlPage(url, {
+    const result = await this.crawler.crawlPage(url, {
       shardDb: targetShard,
       category: options?.category ?? "web",
       renderWithChromium: options?.renderWithChromium,
@@ -234,13 +257,17 @@ export class ThreeVpsSearchCluster {
     };
   }
 
-  private async fetchOptionalUsaGoogleGrounding(
+  private async fetchOptionalGoogleGrounding(
     query: string,
   ): Promise<
     Array<{ url: string; title: string; snippet: string; domain: string }>
   > {
-    if (!this.enableUsaGoogleGrounding || !query.trim()) return [];
-    assertNodeWorkloadAllowed("usa", "google-custom-search");
+    if (!this.enableGoogleGrounding || !query.trim()) return [];
+    assertNodeWorkloadAllowed(
+      this.production.id,
+      "google-custom-search",
+      this.topology,
+    );
 
     const apiKey =
       Bun.env.GOOGLE_SEARCH_API_KEY || Bun.env.GEMINI_API_KEY || "";
@@ -283,18 +310,18 @@ export class ThreeVpsSearchCluster {
 
   async search(
     rawQuery: string,
-    options?: { limit?: number; category?: string; useUsaGrounding?: boolean },
+    options?: { limit?: number; category?: string; useGrounding?: boolean },
   ): Promise<ClusterSearchResponse> {
     const started = performance.now();
     const query = rawQuery.trim();
     const limit = Math.max(1, Math.min(options?.limit ?? 12, 50));
 
-    const [hitsFr1, hitsFr2, catalogMatches, usaHits] = await Promise.all([
-      Promise.resolve(this.shardFr1.search(query, limit * 2)),
-      Promise.resolve(this.shardFr2.search(query, limit * 2)),
+    const [hits0, hits1, catalogMatches, groundingHits] = await Promise.all([
+      Promise.resolve(this.shard0.search(query, limit * 2)),
+      Promise.resolve(this.shard1.search(query, limit * 2)),
       Promise.resolve(matchSubdomainCatalog(query)),
-      options?.useUsaGrounding
-        ? this.fetchOptionalUsaGoogleGrounding(query)
+      options?.useGrounding
+        ? this.fetchOptionalGoogleGrounding(query)
         : Promise.resolve([]),
     ]);
 
@@ -354,11 +381,11 @@ export class ThreeVpsSearchCluster {
       1.35,
     );
 
-    mergeRankedList(hitsFr1, "fr1-shard0", 1.0);
-    mergeRankedList(hitsFr2, "fr2-shard1", 1.0);
+    mergeRankedList(hits0, "shard0", 1.0);
+    mergeRankedList(hits1, "shard1", 1.0);
     mergeRankedList(
-      usaHits.map((h) => ({ ...h, category: "web" })),
-      "usa-google-grounding",
+      groundingHits.map((h) => ({ ...h, category: "web" })),
+      "google-grounding",
       0.95,
     );
 
@@ -378,38 +405,34 @@ export class ThreeVpsSearchCluster {
       tookMs: Math.round((performance.now() - started) * 100) / 100,
       rrfConstantK: this.rrfK,
       routedVia: {
-        ingress: THREE_VPS_CLUSTER_TOPOLOGY.fr1,
-        crawlerReplica: THREE_VPS_CLUSTER_TOPOLOGY.fr2,
-        googleGrounding: THREE_VPS_CLUSTER_TOPOLOGY.usa,
-        usaGroundingUsed: usaHits.length > 0,
+        production: this.production,
+        edgeProxies: nodesWithRole("cdn-edge-and-test", this.topology),
+        groundingUsed: groundingHits.length > 0,
       },
       knowledgeCard: query ? buildKnowledgeCard(query) : null,
       subdomainMatches: catalogMatches.slice(0, 6),
       hits: sortedHits.slice(0, limit),
       totalIndexedDocs: {
-        fr1: this.shardFr1.count(),
-        fr2: this.shardFr2.count(),
+        shard0: this.shard0.count(),
+        shard1: this.shard1.count(),
         catalog: APHRODY_TOP1_SUBDOMAIN_CATALOG.length,
       },
     };
   }
 
   suggest(prefix: string, limit = 8): string[] {
-    const s1 = this.shardFr1.suggest(prefix, limit);
-    const s2 = this.shardFr2.suggest(prefix, limit);
+    const s1 = this.shard0.suggest(prefix, limit);
+    const s2 = this.shard1.suggest(prefix, limit);
     return [...new Set([...s1, ...s2])].slice(0, limit);
   }
 
   async probeClusterHealth(probeNetwork = false): Promise<ClusterHealthReport> {
     const entries: ClusterHealthReport["nodes"] = [];
-    for (const id of ["fr1", "fr2", "usa"] as const) {
-      const spec = THREE_VPS_CLUSTER_TOPOLOGY[id];
+    for (const spec of Object.values(this.topology)) {
       const indexedDocs =
-        id === "fr1"
-          ? this.shardFr1.count()
-          : id === "fr2"
-            ? this.shardFr2.count()
-            : 0;
+        spec.id === this.production.id
+          ? this.shard0.count() + this.shard1.count()
+          : 0;
 
       if (!probeNetwork) {
         entries.push({
@@ -456,7 +479,7 @@ export class ThreeVpsSearchCluster {
   }
 
   close(): void {
-    this.shardFr1.close();
-    this.shardFr2.close();
+    this.shard0.close();
+    this.shard1.close();
   }
 }

@@ -16,6 +16,8 @@
     "fmt": "bun fmt",
     "check": "bun check"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@aphrody/chromium-bun": "workspace:*"
+  },
   "devDependencies": {}
 }

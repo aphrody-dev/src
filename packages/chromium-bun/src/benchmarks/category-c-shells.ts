@@ -1,5 +1,5 @@
 import type { BenchmarkRecord, ContestantMetric } from "../types.ts";
-import { existsSync } from "node:fs";
+import { findExecutable } from "../paths.ts";
 import { $ } from "bun";
 
 export interface ShellTarget {
@@ -11,23 +11,24 @@ export interface ShellTarget {
 }
 
 export function getShellTargets(): ShellTarget[] {
-  const bashPath = "C:\\Program Files\\Git\\bin\\bash.exe";
-  const nuPath = "C:\\Users\\aphro\\AppData\\Local\\Programs\\nu\\bin\\nu.exe";
-  const coreutilsPath = "C:\\Users\\aphro\\.local\\bin\\coreutils.exe";
+  const bashPath = findExecutable("bash") ?? "bash";
+  const nuPath = findExecutable("nu") ?? "nu";
+  const coreutilsPath = findExecutable("coreutils") ?? "coreutils";
+  const isWindows = process.platform === "win32";
 
   return [
     {
       name: "uutils (Rust coreutils.exe true)",
       command: coreutilsPath,
       args: ["true"],
-      isAvailable: existsSync(coreutilsPath),
+      isAvailable: findExecutable("coreutils") !== null,
       layer: 4, // GNU in Rust
     },
     {
       name: "Windows NT native cmd.exe (/c exit)",
       command: "cmd.exe",
       args: ["/c", "exit"],
-      isAvailable: true,
+      isAvailable: isWindows,
       layer: 1, // POSIX / Native OS
     },
     {
@@ -41,28 +42,28 @@ export function getShellTargets(): ShellTarget[] {
       name: "Git Bash (bash.exe --noprofile -c exit)",
       command: bashPath,
       args: ["--noprofile", "--norc", "-c", "exit"],
-      isAvailable: existsSync(bashPath),
+      isAvailable: findExecutable("bash") !== null,
       layer: 2, // Unix / Bash
     },
     {
       name: "Nushell (nu.exe -c exit)",
       command: nuPath,
       args: ["-c", "exit"],
-      isAvailable: existsSync(nuPath),
+      isAvailable: findExecutable("nu") !== null,
       layer: 4, // Modern Rust Shell
     },
     {
       name: "Windows PowerShell 5.1 (-NoProfile)",
       command: "powershell.exe",
       args: ["-NoProfile", "-NonInteractive", "-Command", "exit"],
-      isAvailable: true,
+      isAvailable: isWindows,
       layer: 1, // Windows OS Shell
     },
     {
       name: "PowerShell 7 Core (pwsh.exe -NoProfile)",
       command: "pwsh.exe",
       args: ["-NoProfile", "-NonInteractive", "-Command", "exit"],
-      isAvailable: true,
+      isAvailable: isWindows,
       layer: 1, // Windows Shell
     },
   ];

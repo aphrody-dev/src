@@ -8,17 +8,18 @@ import {
   existsSync,
 } from "node:fs";
 import { join } from "node:path";
+import { CHROMIUM_ROOT, findExecutable } from "../paths.ts";
 import { ReadableStream, WritableStream } from "node:stream/web";
 
-const UUTILS_COREUTILS = "C:\\Users\\aphro\\.local\\bin\\coreutils.exe";
-const HAS_UUTILS = existsSync(UUTILS_COREUTILS);
+const UUTILS_COREUTILS = findExecutable("coreutils") ?? "coreutils";
+const HAS_UUTILS = findExecutable("coreutils") !== null;
 
 export async function benchmarkCategoryB(): Promise<BenchmarkRecord[]> {
   const records: BenchmarkRecord[] = [];
 
   // 1. Directory Walk Benchmark (Bun.Glob vs Node fs.readdir recursive vs PowerShell)
   {
-    const targetDir = "C:\\src\\third_party\\chromium\\src\\ui\\color";
+    const targetDir = join(CHROMIUM_ROOT, "ui", "color");
     const iterations = 5;
 
     // Bun.Glob
@@ -98,7 +99,7 @@ export async function benchmarkCategoryB(): Promise<BenchmarkRecord[]> {
 
   // 2. File I/O Stat & Read (Bun.file vs Node.fs vs uutils stat)
   {
-    const sampleFilePath = "C:\\src\\third_party\\chromium\\src\\ui\\color\\color_id.h";
+    const sampleFilePath = join(CHROMIUM_ROOT, "ui", "color", "color_id.h");
     const iterations = 500;
 
     // Bun.file

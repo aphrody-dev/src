@@ -6,7 +6,7 @@
  */
 import { existsSync, readFileSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
-import { ThreeVpsSearchCluster } from "../../packages/chromium-bun/src/search/cluster-3vps.ts";
+import { ThreeVpsSearchCluster } from "@aphrody/chromium-bun/search";
 import { symbolSvg } from "../../packages/design/src/bun-plugin.ts";
 import { searchSymbols } from "../../packages/design/src/runtime.ts";
 import { buildYoloApp } from "./build.ts";
