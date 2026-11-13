@@ -272,6 +272,26 @@ lab-factory-fetch version:
 lab-min:
     cargo build --profile min -p aphrody-labs-cli -Zbuild-std=std,panic_abort --target x86_64-pc-windows-msvc
 
+# Central terminal stack (docs/terminal/ARCHITECTURE.md): Linux validation of the forks on prd at the src.lock.json pins (cpp | rust | all)
+terminal-prd step="all" jobs="4":
+    bun -e "if (!/^(cpp|rust|all)$/.test(process.argv[1]) || !/^[1-8]$/.test(process.argv[2])) process.exit(2)" "{{step}}" "{{jobs}}"
+    ay ssh cp "{{root}}/infra/fleet/bin/terminal-prd-build.sh" prd:terminal-prd-build.sh
+    ay ssh exec prd -- "JOBS={{jobs}} PINS='$(bun -e "const l = await Bun.file(process.argv[1]).json(); console.log(process.argv.slice(2).map((n) => n + '=' + l.repositories['third_party/' + n].commit).join(' '))" "{{root}}/src.lock.json" fmt GSL jsoncpp CLI11 cmark ratatui crossterm tui-markdown acp-rust-sdk terminal-control)' sh terminal-prd-build.sh {{step}}"
+
+# Windows build of intelligent-terminal (WindowsTerminal.exe, wta.exe, installer, C++ and Rust tests): PR CI of the fork, workflow_dispatch on main
+terminal-ci:
+    gh workflow run "PR CI" -R aphrody-labs/intelligent-terminal --ref main
+
+# Last fork CI runs of intelligent-terminal (a dispatched run appears a few seconds after terminal-ci)
+terminal-ci-status:
+    gh run list -R aphrody-labs/intelligent-terminal -w "PR CI" -L 3
+
+# Advance the intelligent-terminal fork to upstream main, refresh every third_party fork (forks.ts), then re-pin src.lock.json
+terminal-sync:
+    gh repo sync aphrody-labs/intelligent-terminal --branch main
+    bun "{{root}}/packages/machine/src/forks.ts"
+    ay lock --lock-only
+
 # Layered dependency gate (Chromium checkdeps analogue): DEPS.rules per directory, see docs/ARCHITECTURE.md
 checkdeps *flags:
     bun "{{root}}/scripts/checkdeps.ts" --root "{{root}}" {{flags}}

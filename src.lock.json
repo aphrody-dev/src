@@ -182,6 +182,48 @@
             },
             "sparse_paths": null
         },
+        "third_party/acp-rust-sdk": {
+            "path": "C:\\src\\third_party\\acp-rust-sdk",
+            "url": "https://github.com/aphrody-labs/acp-rust-sdk.git",
+            "upstream_url": "https://github.com/agentclientprotocol/rust-sdk.git",
+            "commit": "91d368ad8b6761f314da9095c4a030d365c079a9",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/acp-rust-sdk.git",
+                "upstream": "https://github.com/agentclientprotocol/rust-sdk.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/agent-client-protocol": {
+            "path": "C:\\src\\third_party\\agent-client-protocol",
+            "url": "https://github.com/aphrody-labs/agent-client-protocol.git",
+            "upstream_url": "https://github.com/agentclientprotocol/agent-client-protocol.git",
+            "commit": "c392d7e9d1de01337b749c0070929933e9f6f09f",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/agent-client-protocol.git",
+                "upstream": "https://github.com/agentclientprotocol/agent-client-protocol.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/amplifier-constellation-instance": {
+            "path": "C:\\src\\third_party\\amplifier-constellation-instance",
+            "url": "https://github.com/aphrody-labs/amplifier-constellation-instance.git",
+            "upstream_url": "https://github.com/microsoft/amplifier-constellation-instance.git",
+            "commit": "39807674755dff153de372b3311e08a006ba7174",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/amplifier-constellation-instance.git",
+                "upstream": "https://github.com/microsoft/amplifier-constellation-instance.git"
+            },
+            "sparse_paths": null
+        },
         "third_party/anyrender": {
             "path": "C:\\src\\third_party\\anyrender",
             "url": "https://github.com/aphrody-labs/anyrender.git",
@@ -249,6 +291,20 @@
             "remotes": {
                 "origin": "https://github.com/aphrody-labs/apify-sdk-python.git",
                 "upstream": "https://github.com/apify/apify-sdk-python.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/bincode-fork": {
+            "path": "C:\\src\\third_party\\bincode-fork",
+            "url": "https://github.com/aphrody-labs/bincode-fork.git",
+            "upstream_url": "https://github.com/vercel-labs/bincode-fork.git",
+            "commit": "099bf4fdb9b7208adc78d3f78a8fd2586460d9f3",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/bincode-fork.git",
+                "upstream": "https://github.com/vercel-labs/bincode-fork.git"
             },
             "sparse_paths": null
         },
@@ -320,6 +376,62 @@
             },
             "sparse_paths": null
         },
+        "third_party/CLI11": {
+            "path": "C:\\src\\third_party\\CLI11",
+            "url": "https://github.com/aphrody-labs/CLI11.git",
+            "upstream_url": "https://github.com/CLIUtils/CLI11.git",
+            "commit": "1764a057b760e8873eab03f4635b4aaed5303a04",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/CLI11.git",
+                "upstream": "https://github.com/CLIUtils/CLI11.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/clip": {
+            "path": "C:\\src\\third_party\\clip",
+            "url": "https://github.com/aphrody-labs/clip.git",
+            "upstream_url": "https://github.com/anomalyco/clip.git",
+            "commit": "c7e1d9b1bddf02ac96e90314bbca7b2dddc67ec0",
+            "branch": "dev",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/clip.git",
+                "upstream": "https://github.com/anomalyco/clip.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/cmark": {
+            "path": "C:\\src\\third_party\\cmark",
+            "url": "https://github.com/aphrody-labs/cmark.git",
+            "upstream_url": "https://github.com/commonmark/cmark.git",
+            "commit": "d56b4bdced7563c7bd596f8f80dd0521eb8ca34a",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/cmark.git",
+                "upstream": "https://github.com/commonmark/cmark.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/cppwinrt": {
+            "path": "C:\\src\\third_party\\cppwinrt",
+            "url": "https://github.com/aphrody-labs/cppwinrt.git",
+            "upstream_url": "https://github.com/microsoft/cppwinrt.git",
+            "commit": "9bb8a57e46aea546b70b0af73e2b4137b8fed759",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/cppwinrt.git",
+                "upstream": "https://github.com/microsoft/cppwinrt.git"
+            },
+            "sparse_paths": null
+        },
         "third_party/crawlee-python": {
             "path": "C:\\src\\third_party\\crawlee-python",
             "url": "https://github.com/aphrody-labs/crawlee-python.git",
@@ -331,6 +443,48 @@
             "remotes": {
                 "origin": "https://github.com/aphrody-labs/crawlee-python.git",
                 "upstream": "https://github.com/apify/crawlee-python.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/crossterm": {
+            "path": "C:\\src\\third_party\\crossterm",
+            "url": "https://github.com/aphrody-labs/crossterm.git",
+            "upstream_url": "https://github.com/crossterm-rs/crossterm.git",
+            "commit": "de052f5c30c47f26b81f14f8e4372c5fda4e3549",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/crossterm.git",
+                "upstream": "https://github.com/crossterm-rs/crossterm.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/deadbolt": {
+            "path": "C:\\src\\third_party\\deadbolt",
+            "url": "https://github.com/aphrody-labs/deadbolt.git",
+            "upstream_url": "https://github.com/anomalyco/deadbolt.git",
+            "commit": "11a56948b453823c9c9c3de1161254df2c00b105",
+            "branch": "dev",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/deadbolt.git",
+                "upstream": "https://github.com/anomalyco/deadbolt.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/DevSkim": {
+            "path": "C:\\src\\third_party\\DevSkim",
+            "url": "https://github.com/aphrody-labs/DevSkim.git",
+            "upstream_url": "https://github.com/microsoft/DevSkim.git",
+            "commit": "7f8e5e24f62d9ba95f261e7f45b4b1c293a59a51",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/DevSkim.git",
+                "upstream": "https://github.com/microsoft/DevSkim.git"
             },
             "sparse_paths": null
         },
@@ -348,6 +502,34 @@
             },
             "sparse_paths": null
         },
+        "third_party/fast": {
+            "path": "C:\\src\\third_party\\fast",
+            "url": "https://github.com/aphrody-labs/fast.git",
+            "upstream_url": "https://github.com/microsoft/fast.git",
+            "commit": "34f3a99e2a2afaa822fedc2b8c55624a88591c60",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/fast.git",
+                "upstream": "https://github.com/microsoft/fast.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/flicks": {
+            "path": "C:\\src\\third_party\\flicks",
+            "url": "https://github.com/aphrody-labs/flicks.git",
+            "upstream_url": "https://github.com/anomalyco/flicks.git",
+            "commit": "8f64cea7a81724b8e60fae244e5bde9b1fe78e68",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/flicks.git",
+                "upstream": "https://github.com/anomalyco/flicks.git"
+            },
+            "sparse_paths": null
+        },
         "third_party/FluidFramework": {
             "path": "C:\\src\\third_party\\FluidFramework",
             "url": "https://github.com/microsoft/FluidFramework.git",
@@ -357,6 +539,34 @@
             "pillar": "git",
             "remotes": {
                 "origin": "https://github.com/microsoft/FluidFramework.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/fmt": {
+            "path": "C:\\src\\third_party\\fmt",
+            "url": "https://github.com/aphrody-labs/fmt.git",
+            "upstream_url": "https://github.com/fmtlib/fmt.git",
+            "commit": "4229eb5820af49bf797641168624c8a754a1a4eb",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/fmt.git",
+                "upstream": "https://github.com/fmtlib/fmt.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/ghostty-web": {
+            "path": "C:\\src\\third_party\\ghostty-web",
+            "url": "https://github.com/aphrody-labs/ghostty-web.git",
+            "upstream_url": "https://github.com/anomalyco/ghostty-web.git",
+            "commit": "6e24d040458ddd7aae81572fe2901deec32f9fe7",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/ghostty-web.git",
+                "upstream": "https://github.com/anomalyco/ghostty-web.git"
             },
             "sparse_paths": null
         },
@@ -373,6 +583,104 @@
             },
             "sparse_paths": null
         },
+        "third_party/GSL": {
+            "path": "C:\\src\\third_party\\GSL",
+            "url": "https://github.com/aphrody-labs/GSL.git",
+            "upstream_url": "https://github.com/microsoft/GSL.git",
+            "commit": "a4651c0f995d3309432f78e977058d9d4760f9fa",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/GSL.git",
+                "upstream": "https://github.com/microsoft/GSL.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/hex": {
+            "path": "C:\\src\\third_party\\hex",
+            "url": "https://github.com/aphrody-labs/hex.git",
+            "upstream_url": "https://github.com/anomalyco/hex.git",
+            "commit": "e14c03040a6c0fdc7b6037e36bb6b84ca2d640a1",
+            "branch": "dev",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/hex.git",
+                "upstream": "https://github.com/anomalyco/hex.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/hokum": {
+            "path": "C:\\src\\third_party\\hokum",
+            "url": "https://github.com/aphrody-labs/hokum.git",
+            "upstream_url": "https://github.com/anomalyco/hokum.git",
+            "commit": "e2e31b146792da21b9c6c691703433a6d2d72bbe",
+            "branch": "dev",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/hokum.git",
+                "upstream": "https://github.com/anomalyco/hokum.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/inshellisense": {
+            "path": "C:\\src\\third_party\\inshellisense",
+            "url": "https://github.com/aphrody-labs/inshellisense.git",
+            "upstream_url": "https://github.com/microsoft/inshellisense.git",
+            "commit": "316f9149d2d52091f9aac752b32f1c589bc84efb",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/inshellisense.git",
+                "upstream": "https://github.com/microsoft/inshellisense.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/isocast": {
+            "path": "C:\\src\\third_party\\isocast",
+            "url": "https://github.com/aphrody-labs/isocast.git",
+            "upstream_url": "https://github.com/anomalyco/isocast.git",
+            "commit": "dd2d1038f10ae90e07bd08582881ba21aaeaa0cc",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/isocast.git",
+                "upstream": "https://github.com/anomalyco/isocast.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/jsoncpp": {
+            "path": "C:\\src\\third_party\\jsoncpp",
+            "url": "https://github.com/aphrody-labs/jsoncpp.git",
+            "upstream_url": "https://github.com/open-source-parsers/jsoncpp.git",
+            "commit": "93acc7b155048f1a66c43235cc205519f1e7a6ea",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/jsoncpp.git",
+                "upstream": "https://github.com/open-source-parsers/jsoncpp.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/just-bash": {
+            "path": "C:\\src\\third_party\\just-bash",
+            "url": "https://github.com/aphrody-labs/just-bash.git",
+            "upstream_url": "https://github.com/vercel-labs/just-bash.git",
+            "commit": "7a2a7a57d46095bf6cc8195680a13f76f784681b",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/just-bash.git",
+                "upstream": "https://github.com/vercel-labs/just-bash.git"
+            },
+            "sparse_paths": null
+        },
         "third_party/LiberNT": {
             "path": "C:\\src\\third_party\\LiberNT",
             "url": "https://github.com/aphrody-labs/LiberNT.git",
@@ -385,6 +693,78 @@
                 "origin": "https://github.com/aphrody-labs/LiberNT.git",
                 "reactos": "https://github.com/reactos/reactos.git",
                 "upstream": "https://github.com/LiberNT/LiberNT"
+            },
+            "sparse_paths": null
+        },
+        "third_party/mcp-for-beginners": {
+            "path": "C:\\src\\third_party\\mcp-for-beginners",
+            "url": "https://github.com/aphrody-labs/mcp-for-beginners.git",
+            "upstream_url": "https://github.com/microsoft/mcp-for-beginners.git",
+            "commit": "827ca952072abd67a2ac1696413bd9f9eb924b9f",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/mcp-for-beginners.git",
+                "upstream": "https://github.com/microsoft/mcp-for-beginners.git"
+            },
+            "sparse_paths": [
+                "/*",
+                "!/*/",
+                "/00-Introduction/",
+                "/01-CoreConcepts/",
+                "/02-Security/",
+                "/03-GettingStarted/",
+                "/04-PracticalImplementation/",
+                "/05-AdvancedTopics/",
+                "/06-CommunityContributions/",
+                "/07-LessonsfromEarlyAdoption/",
+                "/08-BestPractices/",
+                "/09-CaseStudy/",
+                "/10-StreamliningAIWorkflowsBuildingAnMCPServerWithAIToolkit/",
+                "/11-MCPServerHandsOnLabs/",
+                "/12-tooling/"
+            ]
+        },
+        "third_party/mdxjs-rs-turbopack": {
+            "path": "C:\\src\\third_party\\mdxjs-rs-turbopack",
+            "url": "https://github.com/aphrody-labs/mdxjs-rs-turbopack.git",
+            "upstream_url": "https://github.com/vercel-labs/mdxjs-rs-turbopack.git",
+            "commit": "700e192fbdbad5874208addfbf421dcf1eca7a20",
+            "branch": "turbopack",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/mdxjs-rs-turbopack.git",
+                "upstream": "https://github.com/vercel-labs/mdxjs-rs-turbopack.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/microsoft-skills": {
+            "path": "C:\\src\\third_party\\microsoft-skills",
+            "url": "https://github.com/aphrody-labs/microsoft-skills.git",
+            "upstream_url": "https://github.com/microsoft/skills.git",
+            "commit": "2d08976b5f1c50457272ad3d20aa479d5d3ba937",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/microsoft-skills.git",
+                "upstream": "https://github.com/microsoft/skills.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/native": {
+            "path": "C:\\src\\third_party\\native",
+            "url": "https://github.com/aphrody-labs/native.git",
+            "upstream_url": "https://github.com/vercel-labs/native.git",
+            "commit": "4d47c2cfcd256e7835a31342058cb321d5c75217",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/native.git",
+                "upstream": "https://github.com/vercel-labs/native.git"
             },
             "sparse_paths": null
         },
@@ -423,6 +803,34 @@
                 "/src/"
             ]
         },
+        "third_party/opensrc": {
+            "path": "C:\\src\\third_party\\opensrc",
+            "url": "https://github.com/aphrody-labs/opensrc.git",
+            "upstream_url": "https://github.com/vercel-labs/opensrc.git",
+            "commit": "b51de60867e806da1839b33dd29c29424f12521b",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/opensrc.git",
+                "upstream": "https://github.com/vercel-labs/opensrc.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/opentunnel": {
+            "path": "C:\\src\\third_party\\opentunnel",
+            "url": "https://github.com/aphrody-labs/opentunnel.git",
+            "upstream_url": "https://github.com/anomalyco/opentunnel.git",
+            "commit": "42af396d19fb154db1df9581897ad9bfca7df098",
+            "branch": "dev",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/opentunnel.git",
+                "upstream": "https://github.com/anomalyco/opentunnel.git"
+            },
+            "sparse_paths": null
+        },
         "third_party/Oryx": {
             "path": "C:\\src\\third_party\\Oryx",
             "url": "https://github.com/aphrody-labs/Oryx.git",
@@ -434,6 +842,20 @@
             "remotes": {
                 "origin": "https://github.com/aphrody-labs/Oryx.git",
                 "upstream": "https://github.com/microsoft/Oryx.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/oxidizer": {
+            "path": "C:\\src\\third_party\\oxidizer",
+            "url": "https://github.com/aphrody-labs/oxidizer.git",
+            "upstream_url": "https://github.com/microsoft/oxidizer.git",
+            "commit": "af27402e84b26432debf1b7d1fb2210fc1e695d8",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/oxidizer.git",
+                "upstream": "https://github.com/microsoft/oxidizer.git"
             },
             "sparse_paths": null
         },
@@ -476,6 +898,48 @@
             "remotes": {
                 "origin": "https://github.com/aphrody-labs/PowerToys.git",
                 "upstream": "https://github.com/microsoft/PowerToys.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/ratatui": {
+            "path": "C:\\src\\third_party\\ratatui",
+            "url": "https://github.com/aphrody-labs/ratatui.git",
+            "upstream_url": "https://github.com/ratatui/ratatui.git",
+            "commit": "41c26a74b3bcfa365e8c0f7e2b827f266bad8755",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/ratatui.git",
+                "upstream": "https://github.com/ratatui/ratatui.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/rift": {
+            "path": "C:\\src\\third_party\\rift",
+            "url": "https://github.com/aphrody-labs/rift.git",
+            "upstream_url": "https://github.com/anomalyco/rift.git",
+            "commit": "7077f47ae1f3800bed2c689142d0b32ea568c5fa",
+            "branch": "dev",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/rift.git",
+                "upstream": "https://github.com/anomalyco/rift.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/rune": {
+            "path": "C:\\src\\third_party\\rune",
+            "url": "https://github.com/aphrody-labs/rune.git",
+            "upstream_url": "https://github.com/anomalyco/rune.git",
+            "commit": "d80c872f06323f5a871c6012df29c7a2b7f09d70",
+            "branch": "dev",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/rune.git",
+                "upstream": "https://github.com/anomalyco/rune.git"
             },
             "sparse_paths": null
         },
@@ -530,6 +994,48 @@
             "sparse_paths": null,
             "depth": 1
         },
+        "third_party/strobe": {
+            "path": "C:\\src\\third_party\\strobe",
+            "url": "https://github.com/aphrody-labs/strobe.git",
+            "upstream_url": "https://github.com/anomalyco/strobe.git",
+            "commit": "384805d4183095c21789736a9069c8d03b0b2d94",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/strobe.git",
+                "upstream": "https://github.com/anomalyco/strobe.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/terminal-control": {
+            "path": "C:\\src\\third_party\\terminal-control",
+            "url": "https://github.com/aphrody-labs/terminal-control.git",
+            "upstream_url": "https://github.com/anomalyco/terminal-control.git",
+            "commit": "6c255aa4816d48fad78b45c9700235f3b7b71bc5",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/terminal-control.git",
+                "upstream": "https://github.com/anomalyco/terminal-control.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/tui-markdown": {
+            "path": "C:\\src\\third_party\\tui-markdown",
+            "url": "https://github.com/aphrody-labs/tui-markdown.git",
+            "upstream_url": "https://github.com/joshka/tui-markdown.git",
+            "commit": "95a2ac2e20bfdd444e811fdbb05fc403ce474924",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/tui-markdown.git",
+                "upstream": "https://github.com/joshka/tui-markdown.git"
+            },
+            "sparse_paths": null
+        },
         "third_party/TypeChat": {
             "path": "C:\\src\\third_party\\TypeChat",
             "url": "https://github.com/microsoft/TypeChat.git",
@@ -540,6 +1046,20 @@
             "remotes": {
                 "aphrody": "https://github.com/aphrody-labs/TypeChat.git",
                 "origin": "https://github.com/microsoft/TypeChat.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/virtue-fork": {
+            "path": "C:\\src\\third_party\\virtue-fork",
+            "url": "https://github.com/aphrody-labs/virtue-fork.git",
+            "upstream_url": "https://github.com/vercel-labs/virtue-fork.git",
+            "commit": "06e262d73cec9bc360092fb2cf8e25dffde4e8bc",
+            "branch": "trunk",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/virtue-fork.git",
+                "upstream": "https://github.com/vercel-labs/virtue-fork.git"
             },
             "sparse_paths": null
         },
@@ -566,6 +1086,20 @@
                 "/Source/bmalloc/",
                 "/Source/cmake/"
             ]
+        },
+        "third_party/wil": {
+            "path": "C:\\src\\third_party\\wil",
+            "url": "https://github.com/aphrody-labs/wil.git",
+            "upstream_url": "https://github.com/microsoft/wil.git",
+            "commit": "abb1bd3509b6e5db53ba29738a4180d857adfd40",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/wil.git",
+                "upstream": "https://github.com/microsoft/wil.git"
+            },
+            "sparse_paths": null
         },
         "third_party/WSL": {
             "path": "C:\\src\\third_party\\WSL",
@@ -2156,7 +2690,7 @@
             "path": "C:\\src\\third_party\\intelligent-terminal",
             "url": "https://github.com/aphrody-labs/intelligent-terminal.git",
             "upstream_url": "https://github.com/microsoft/intelligent-terminal.git",
-            "commit": "4f5d86a5cacd32ce5b35cf70bd68cf1ca79dc286",
+            "commit": "5a4876de63bce90ac8158c826168cb42b500d4d4",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
