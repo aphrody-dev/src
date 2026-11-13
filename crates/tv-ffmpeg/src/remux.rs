@@ -73,10 +73,10 @@ pub fn remux(input: &str, output: &Path, format: Option<&str>) -> Result<RemuxRe
     Ok(RemuxReport { format: octx.format().name().to_owned(), streams: next, packets })
 }
 
-/// Vrai si le conteneur accepte ce codec (`avformat_query_codec`, mode normal).
+/// Vrai si le conteneur accepte ce codec (`avformat_query_codec`, mode normal) : 1 accepte, 0 refuse, une valeur négative (mpegts) signifie « inconnu » et laisse au muxer le soin de refuser à l'écriture.
 fn query_codec(fmt: &ff::format::Output, id: ff::codec::Id) -> bool {
     // SAFETY : `fmt.as_ptr()` pointe vers un AVOutputFormat statique de libavformat.
-    unsafe { ff::ffi::avformat_query_codec(fmt.as_ptr(), id.into(), ff::ffi::FF_COMPLIANCE_NORMAL) == 1 }
+    unsafe { ff::ffi::avformat_query_codec(fmt.as_ptr(), id.into(), ff::ffi::FF_COMPLIANCE_NORMAL) != 0 }
 }
 
 #[cfg(test)]
