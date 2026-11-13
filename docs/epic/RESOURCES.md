@@ -14,12 +14,12 @@ Source: unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show (2026-
 
 | Item | Fact | Source |
 | :--- | :--- | :--- |
-| Unreal Engine (C++) | Latest stable 5.8 (2026-06-17); last planned UE5 major; latest GitHub tag 5.8.4-release | 5.8 release notes (dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-8-release-notes); State of Unreal 2026 page; docs/epic/snapshot.json |
+| Unreal Engine (C++) | Latest stable 5.8 (2026-06-17); last planned UE5 major; the private repo had tag 5.8.4-release when read with an Epic-linked gh login on 2026-11-13 (`gh api graphql` repository.latestRelease), not visible to the CI snapshot | 5.8 release notes (dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-8-release-notes); State of Unreal 2026 page |
 | UE source access | Private `EpicGames/UnrealEngine`; link GitHub account at unrealengine.com/ue4-on-github | `gh api repos/EpicGames/Signup/readme`; `gh api repos/EpicGames/UnrealEngine` returns private |
 | UE royalty | Not recorded: the EULA text has not been read in a session (only secondary quotes) | unrealengine.com/eula |
 | Lore (Rust VCS) | MIT, pre-1.0, v0.13.0 2026-11-06, centralized content-addressed, built into UEFN; docs epicgames.github.io/lore | `gh api repos/EpicGames/lore` |
 | Lore SDKs | lore-js, lore-go, lore-python, lore-dotnet (MIT, no releases yet) | `gh api repos/EpicGames/lore-js` (and lore-go, lore-python, lore-dotnet) |
-| Zen | UE5 local/shared DDC and cook storage server, C++20, xmake; v5.8.27 2026-10-20; no SPDX license | `gh api repos/EpicGames/zen` |
+| Zen | UE5 local/shared DDC and cook storage server, C++20, xmake; v5.8.27 2026-10-20; no open-source license (GitHub license=null, no LICENSE file, headers say Copyright Epic Games, All Rights Reserved) | `gh api repos/EpicGames/zen` |
 
 ## Unreal Engine 6 and Verse direction
 
@@ -33,7 +33,7 @@ Source: unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show (2026-
 ## Verse language
 
 - Reference: The Verse book, verselang.github.io/book (repo verselang/book, CC0-1.0); Context7 `/websites/verselang_github_io_book`.
-- Effect specifiers: `<computes>` `<reads>` `<writes>` `<allocates>` `<transacts>` `<decides>` (can fail) `<suspends>` (async) `<converges>` `<diverges>` `<predicts>` (client) `<dictates>` (server). Failure contexts: a `<decides>` call must sit in `if` or `or`, or in a `<decides>` function; a failed transaction rolls back every `set`.
+- Effect specifiers: `<computes>` `<reads>` `<writes>` `<allocates>` `<transacts>` `<decides>` (can fail) `<suspends>` (async) `<converges>` (guaranteed to terminate) `<diverges>` (may not terminate) `<predicts>` (client) `<dictates>` (server). Failure contexts: a `<decides>` call must sit in `if` or `or`, or in a `<decides>` function; a failed transaction rolls back every `set`.
 
 ## Build CLI and CI (Context7 `/websites/dev_epicgames_unreal-engine`)
 
@@ -41,12 +41,12 @@ Source: unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show (2026-
 - UBT: `Engine/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe <Target> Development Win64`; targets in `<Name>.Target.cs` (`class <Name>Target : TargetRules`), modules in `<Module>.Build.cs` (`ModuleRules`, Public/PrivateDependencyModuleNames).
 - Horde: Epic's build/test automation (BuildGraph scripts, Perforce streams, UE 5.4+), Unreal Build Accelerator remote compile, UnrealGameSync metadata server (`ApiUrl=https://<horde>/ugs` in `UnrealGameSync.ini`); source `Engine/Source/Programs/Horde/Horde.Server/` (dev.epicgames.com/documentation/en-us/unreal-engine/horde-in-unreal-engine).
 - Containers: official UE container images, quick start at dev.epicgames.com/documentation/unreal-engine/quick-start-guide-for-using-container-images-in-unreal-engine.
-- Coding standard: prefixes `U` (UObject), `A` (AActor), `F` (structs), `T` (templates), `E` (enums), `I` (interfaces), `b` (bool), `C` (concept-alike structs) (epic-cplusplus-coding-standard-for-unreal-engine).
+- Coding standard: prefixes `U` (UObject), `A` (AActor), `F` (structs), `T` (templates), `E` (enums), `I` (interfaces), `b` (bool), `C` (concept-alike structs) (dev.epicgames.com/documentation/en-us/unreal-engine/epic-cplusplus-coding-standard-for-unreal-engine).
 - Python editor scripting API: Context7 `/websites/dev_epicgames_en-us_unreal-engine_python-api`.
 
 ## AI tooling (Claude Code, MCP)
 
-- `EpicGames/unreal-engine-skills-for-claude-code-plugin` (MIT, v3.1.2): skills `unreal-mcp`, `create-toolset`, `unreal-skill`, SessionStart hook (needs bash). Installed here through the `aphrody` marketplace (`plugins/.claude-plugin/marketplace.json`, fork `aphrody-labs/unreal-engine-skills-for-claude-code-plugin`); also listed in `claude-plugins-official`.
+- `EpicGames/unreal-engine-skills-for-claude-code-plugin` (MIT, v3.1.2): skills `unreal-mcp`, `create-toolset`, `unreal-skill`, SessionStart hook (needs bash). Installed here through the `aphrody` marketplace (`.claude-plugin/marketplace.json` à la racine, fork `aphrody-labs/unreal-engine-skills-for-claude-code-plugin`); also listed in `claude-plugins-official`.
 - Unreal MCP server (UE 5.8, Experimental): enable `ModelContextProtocol` and `AllToolsets` in the `.uproject`; start with `ModelContextProtocol.StartServer`, or `bAutoStartServer=True` under `[/Script/ModelContextProtocolEngine.ModelContextProtocolSettings]` in `Saved/Config/<Platform>Editor/EditorPerProjectUserSettings.ini`; write client config with `ModelContextProtocol.GenerateClientConfig ClaudeCode`. Default endpoint `http://127.0.0.1:8000/mcp`. Only three meta-tools are listed: `list_toolsets`, `describe_toolset`, `call_tool`. Optional stdio proxy `Engine/Plugins/Experimental/ModelContextProtocol/Extras/Proxy`.
 
 ## Epic Online Services (EOS)
