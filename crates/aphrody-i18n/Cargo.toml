@@ -1,0 +1,10 @@
+[package]
+name = "aphrody-i18n"
+description = "Shared i18n catalogs (packages/i18n/locales/*.json): ICU plural/select subset, fallback to en, Accept-Language negotiation."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+serde_json.workspace = true
