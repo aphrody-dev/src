@@ -13,6 +13,7 @@ set -uo pipefail
 . /etc/fleet/resilience.conf
 D=${SRC_CHECKOUT:?SRC_CHECKOUT not set}; REPO=${SRC_REPO:-https://github.com/aphrody-labs/src.git}
 STATE=${SRC_STATE:-/var/lib/src-sync/status.json}
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/.bun/bin:/usr/local/bin:$PATH" # ay for SRC_POST
 g() { git -c safe.directory="$D" -c submodule.recurse=false -c fetch.recurseSubmodules=false -C "$D" "$@"; }
 note() { logger -t src-checkout "$*"; echo "src-checkout: $*"; }
 fail() { logger -t src-checkout -p daemon.err "$*"; echo "src-checkout: $*" >&2; status error "$*"; exit 1; }
@@ -26,12 +27,13 @@ ensure() {
   mkdir -p "$(dirname "$D")"
   GIT_TERMINAL_PROMPT=0 git clone -q --filter=blob:none --no-checkout --branch main "$REPO" "$D" || return 1
   [ -z "${SRC_SPARSE:-}" ] || g sparse-checkout set --cone $SRC_SPARSE
-  g checkout -q main || return 1
+  g config core.fileMode false; g checkout -q main || return 1
   note "cloned $REPO into $D (${SRC_SPARSE:-full})"
 }
 update() {
   ensure || fail "clone of $REPO into $D failed"
   local old new p unit
+  g config core.fileMode false # bun install and builds chmod +x bins: mode changes are not local edits
   [ "$(g symbolic-ref -q --short HEAD)" = main ] || { note "HEAD is not main, left alone"; status skipped "not on main"; exit 0; }
   if [ -n "$(g status --porcelain --untracked-files=no)" ]; then note "tracked changes in $D, update skipped"; status skipped "dirty tree"; exit 0; fi
   old=$(g rev-parse HEAD)
