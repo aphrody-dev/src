@@ -247,13 +247,23 @@ async function api(req: Request, env: Env, url: URL): Promise<Response> {
   if (seg[2] === "deployments" && sha && SHA.test(sha)) {
     // PUT /api/projects/<p>/deployments/<sha>/files/<path>
     if (seg[4] === "files" && method === "PUT") {
-      const rel = seg.slice(5).map(decodeURIComponent).join("/");
-      if (!rel || rel.includes("..")) return json({ error: "bad path" }, 400);
+      let parts: string[];
+      try {
+        parts = seg.slice(5).map(decodeURIComponent);
+      } catch {
+        return json({ error: "bad path" }, 400);
+      }
+      if (
+        !parts.length ||
+        parts.some((x) => !x || x === "." || x === ".." || /[\\/\0]/.test(x)) ||
+        parts.join("/").length > 512
+      )
+        return json({ error: "bad path" }, 400);
+      const rel = parts.join("/");
       await env.BUCKET.put(keys.file(p, sha, rel), req.body, {
         httpMetadata: {
           contentType:
             req.headers.get("content-type") ?? "application/octet-stream",
-          cacheControl: req.headers.get("x-cache-control") ?? undefined,
         },
       });
       return json({ ok: true });
@@ -314,8 +324,10 @@ async function dash(req: Request, env: Env, url: URL): Promise<Response> {
   if (!project)
     return html("<!doctype html><title>404</title><p>Projet inconnu.</p>", 404);
   if (seg[1] === "promote" && req.method === "POST") {
+    // CSRF: the form posts from the dashboard itself; anything else (no Origin, cross-site) is refused.
     const origin = req.headers.get("origin");
-    if (origin && origin !== url.origin)
+    const site = req.headers.get("sec-fetch-site");
+    if (origin ? origin !== url.origin : site !== "same-origin")
       return html("<p>Origine refusée.</p>", 403);
     const form = await req.formData();
     const sha = String(form.get("sha") ?? "");

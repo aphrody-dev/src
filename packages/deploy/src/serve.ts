@@ -85,8 +85,17 @@ export async function serveDeployment(
   const cache = (globalThis as { caches?: { default?: any } }).caches?.default;
   if (!cache || req.method !== "GET" || req.headers.has("range"))
     return fromR2(bucket, project, sha, req, extra);
+  let norm: string;
+  try {
+    norm = encodeURI(decodeURIComponent(new URL(req.url).pathname));
+  } catch {
+    return fromR2(bucket, project, sha, req, extra);
+  }
+  const tag = Object.entries(extra)
+    .map(([k, v]) => `${k}=${v}`)
+    .join("&");
   const key = new Request(
-    `https://deploy-cache.aphrody.app/${keys.base(project, sha)}${new URL(req.url).pathname}`,
+    `https://deploy-cache.aphrody.app/${keys.base(project, sha)}${norm}?${encodeURIComponent(tag)}`,
   );
   const hit = (await cache.match(key)) as Response | undefined;
   if (hit) {

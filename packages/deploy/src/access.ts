@@ -67,9 +67,10 @@ export async function verifyAccess(
     if (!ok) return null;
     const auds = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
     if (!auds.includes(aud)) return null;
-    if (typeof payload.exp !== "number" || payload.exp * 1000 < Date.now())
-      return null;
-    if (payload.iss && payload.iss !== `https://${team}`) return null;
+    const now = Date.now() / 1000;
+    if (typeof payload.exp !== "number" || payload.exp + 30 < now) return null;
+    if (typeof payload.nbf === "number" && payload.nbf - 30 > now) return null;
+    if (payload.iss !== `https://${team}`) return null;
     return { email: payload.email, sub: payload.sub };
   } catch {
     return null;

@@ -60,10 +60,11 @@ export async function componentsBundle(root: string): Promise<string> {
     plugins: [
       <import("bun").BunPlugin>{
         name: "aphrody-design",
-        setup: (b) =>
+        setup(b) {
           b.onResolve({ filter: /^@material\/web\// }, (a) => ({
             path: Bun.resolveSync(a.path, from),
-          })),
+          }));
+        },
       },
     ],
   });
