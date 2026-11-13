@@ -27,6 +27,7 @@ Managed via `env-kit accounts` with isolated `gcloud` named configurations shari
 
 ## 4. Core Engineering Rules
 
+- **Agent operating model**: roles, task queue and judge in [`docs/agents/AGENT-FIRST.md`](docs/agents/AGENT-FIRST.md), organisation in [`docs/ALPHABET.md`](docs/ALPHABET.md); single interface = `just` (check, fmt, lint, test, affected, deploy, docker-*, agents*); push straight to main, the `judge` workflow decides and `ci-revert.yml` reverts red commits automatically.
 - **Sacred Host Userspace**: Never modify `C:\Windows\System32` or host OS directories. Install userland CLIs and shared libraries (`.exe`, `.dll`, `.cmd`) exclusively in `~/.local/bin`.
 - **Bun v1.4.4 Full-Rust Native First**: Use `bun fmt`, `bun check`, `bun test`, `bun:sqlite`, `Bun.SQL`, `bun:ffi`, and `bun build --compile` with zero unnecessary npm dependencies.
 - **Git**: everything is committed and pushed directly on `main` (here and on the default branch of the aphrody-labs forks); no branches, no worktrees, never push upstream.
