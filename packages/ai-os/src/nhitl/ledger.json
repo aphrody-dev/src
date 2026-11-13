@@ -60,8 +60,8 @@
       "category": "owner_click",
       "severity": "medium",
       "status": "open",
-      "excerpt": "gcloud auth login contact@aphrody.com : consentement reçu pour le mauvais compte Google",
-      "fix": "relancé avec BROWSER = ouverture du profil Chrome contact@aphrody.com et login_hint=contact@aphrody.com ; clic du propriétaire"
+      "excerpt": "gcloud auth login contact@aphrody.com : trois consentements reçus pour yohanpierre15@gmail.com (profil Chrome par défaut), BROWSER de gcloud non honoré sous Windows",
+      "fix": "ouvrir l URL OAuth affichée par gcloud dans le profil Chrome « Profile 4 » (contact@aphrody.com) avec login_hint, le rappel localhost:8085 restant à l écoute ; clic du propriétaire"
     },
     {
       "location": "pc npm",
