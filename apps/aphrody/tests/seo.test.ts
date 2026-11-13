@@ -496,8 +496,12 @@ describe("Zero-copy static serving, hashing and progressive enhancement", () => 
     expect(traversal.status).toBe(404);
   });
 
-  it("home is complete without JavaScript and shows a real product capture", () => {
+  it("home is complete without JavaScript and shows a real product capture", async () => {
     const home = readFileSync(join(DIST, "index.html"), "utf-8");
+    // Every width asked to the image optimizer is one it accepts (a refused width is a broken image).
+    const { WIDTHS } = await import("../../../packages/deploy/src/runtime.ts");
+    for (const m of home.matchAll(/_aphrody\/image\?[^"\s]*?w=(\d+)/g))
+      expect(WIDTHS).toContain(Number(m[1]));
     expect(home).not.toContain('<div id="root"></div>');
     expect(home).toContain('width="1280" height="800"');
     expect(existsSync(join(DIST, "shots", "aphrody-app.webp"))).toBe(true);
