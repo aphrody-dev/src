@@ -1,0 +1,30 @@
+{
+  "name": "@aphrody/design",
+  "version": "0.1.0",
+  "description": "Systeme de design unique du monorepo : tokens Material 3 (Material Color Utilities) depuis assets/brand/brand.toml, sorties CSS, Rust (GPUI), Zig, ANSI, Figma, DESIGN.md ; composants Material Web ; Material Symbols.",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.json": "./tokens/tokens.json",
+    "./tokens.css": "./tokens/tokens.css",
+    "./components": "./src/components.ts",
+    "./symbols.css": "./src/symbols.css"
+  },
+  "scripts": {
+    "build": "bun run src/build.ts",
+    "check": "bun run src/build.ts --check",
+    "test": "bun test",
+    "figma": "bun run src/figma.ts --modes 4",
+    "lint": "designmd lint DESIGN.md"
+  },
+  "dependencies": {
+    "@material/material-color-utilities": "0.4.0",
+    "@material/web": "2.5.0",
+    "material-symbols": "0.49.0"
+  },
+  "license": "MIT OR Apache-2.0",
+  "devDependencies": {
+    "@google/design.md": "0.4.0"
+  }
+}

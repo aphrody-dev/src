@@ -1,7 +1,8 @@
-// Terminal UI, Bun-native (node:readline + node:util styleText, no npm dependency): prompt line with history,
+// Terminal UI, Bun-native (node:readline + node:util styleText ; couleurs = rôles M3 de @aphrody/design, ansi 24 bits): prompt line with history,
 // transcript with light markdown styling (bold, inline code, headings), spinner while the agent runs, slash commands.
 import { createInterface } from "node:readline";
 import { styleText } from "node:util";
+import { ansi, type Role } from "@aphrody/design";
 import { run } from "../core/agent";
 import type { LanguageModel, Message } from "../llm/types";
 
@@ -13,6 +14,9 @@ export type TuiOptions = {
   input?: NodeJS.ReadableStream;
   output?: NodeJS.WritableStream;
 };
+
+/** Texte coloré par un rôle M3 (thème sombre), avant-plan seul pour garder gras/italique. */
+const md = (role: Role, x: string) => `${ansi(role, "dark")}${x}\x1b[39m`;
 
 export const HELP = "/help  /clear  /exit   Enter sends, Ctrl+C quits";
 
@@ -27,15 +31,15 @@ export function renderMarkdown(md: string, color = true) {
         fenced = !fenced;
         return styleText("dim", l);
       }
-      if (fenced) return styleText("green", l);
+      if (fenced) return md("tertiary", l);
       // Inline code first; its content is kept out of the bold/italic rules.
       const parts = l.split(/(`[^`]+`)/);
       if (/^#{1,6}\s/.test(l))
-        return styleText(["bold", "cyan"], l.replace(/^#+\s/, ""));
+        return styleText("bold", md("primary", l.replace(/^#+\s/, "")));
       return parts
         .map((p) =>
           p.startsWith("`") && p.endsWith("`") && p.length > 1
-            ? styleText("yellow", p.slice(1, -1))
+            ? md("secondary", p.slice(1, -1))
             : p
                 .replace(/\*\*([^*]+)\*\*/g, (_, x) => styleText("bold", x))
                 .replace(
@@ -93,7 +97,7 @@ export async function startTui(o: TuiOptions) {
     input,
     output,
     terminal: color,
-    prompt: color ? styleText("cyan", "> ") : "> ",
+    prompt: color ? md("primary", "> ") : "> ",
   });
   const history: Message[] = [];
   const frames = ["|", "/", "-", "\\"];

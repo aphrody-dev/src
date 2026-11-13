@@ -24,7 +24,9 @@
     "check": "bun check src/cli.ts",
     "relay": "bun src/relay/cli.ts serve"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@aphrody/design": "workspace:*"
+  },
   "devDependencies": {},
   "license": "MIT OR Apache-2.0",
   "repository": {

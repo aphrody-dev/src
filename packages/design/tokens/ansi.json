@@ -1,0 +1,448 @@
+{
+  "sgr": {
+    "light": {
+      "background": {
+        "fg": "\u001b[38;2;251;248;255m",
+        "bg": "\u001b[48;2;251;248;255m"
+      },
+      "on-background": {
+        "fg": "\u001b[38;2;26;27;37m",
+        "bg": "\u001b[48;2;26;27;37m"
+      },
+      "surface": {
+        "fg": "\u001b[38;2;251;248;255m",
+        "bg": "\u001b[48;2;251;248;255m"
+      },
+      "surface-dim": {
+        "fg": "\u001b[38;2;217;217;231m",
+        "bg": "\u001b[48;2;217;217;231m"
+      },
+      "surface-bright": {
+        "fg": "\u001b[38;2;251;248;255m",
+        "bg": "\u001b[48;2;251;248;255m"
+      },
+      "surface-container-lowest": {
+        "fg": "\u001b[38;2;255;255;255m",
+        "bg": "\u001b[48;2;255;255;255m"
+      },
+      "surface-container-low": {
+        "fg": "\u001b[38;2;244;242;255m",
+        "bg": "\u001b[48;2;244;242;255m"
+      },
+      "surface-container": {
+        "fg": "\u001b[38;2;238;236;251m",
+        "bg": "\u001b[48;2;238;236;251m"
+      },
+      "surface-container-high": {
+        "fg": "\u001b[38;2;232;231;245m",
+        "bg": "\u001b[48;2;232;231;245m"
+      },
+      "surface-container-highest": {
+        "fg": "\u001b[38;2;226;225;239m",
+        "bg": "\u001b[48;2;226;225;239m"
+      },
+      "on-surface": {
+        "fg": "\u001b[38;2;26;27;37m",
+        "bg": "\u001b[48;2;26;27;37m"
+      },
+      "on-surface-variant": {
+        "fg": "\u001b[38;2;68;70;84m",
+        "bg": "\u001b[48;2;68;70;84m"
+      },
+      "outline": {
+        "fg": "\u001b[38;2;117;118;133m",
+        "bg": "\u001b[48;2;117;118;133m"
+      },
+      "outline-variant": {
+        "fg": "\u001b[38;2;197;197;214m",
+        "bg": "\u001b[48;2;197;197;214m"
+      },
+      "inverse-surface": {
+        "fg": "\u001b[38;2;47;48;58m",
+        "bg": "\u001b[48;2;47;48;58m"
+      },
+      "inverse-on-surface": {
+        "fg": "\u001b[38;2;240;239;254m",
+        "bg": "\u001b[48;2;240;239;254m"
+      },
+      "primary": {
+        "fg": "\u001b[38;2;18;66;255m",
+        "bg": "\u001b[48;2;18;66;255m"
+      },
+      "primary-dim": {
+        "fg": "\u001b[38;2;0;54;232m",
+        "bg": "\u001b[48;2;0;54;232m"
+      },
+      "on-primary": {
+        "fg": "\u001b[38;2;255;255;255m",
+        "bg": "\u001b[48;2;255;255;255m"
+      },
+      "primary-container": {
+        "fg": "\u001b[38;2;222;224;255m",
+        "bg": "\u001b[48;2;222;224;255m"
+      },
+      "on-primary-container": {
+        "fg": "\u001b[38;2;0;46;202m",
+        "bg": "\u001b[48;2;0;46;202m"
+      },
+      "primary-fixed": {
+        "fg": "\u001b[38;2;222;224;255m",
+        "bg": "\u001b[48;2;222;224;255m"
+      },
+      "primary-fixed-dim": {
+        "fg": "\u001b[38;2;186;195;255m",
+        "bg": "\u001b[48;2;186;195;255m"
+      },
+      "on-primary-fixed": {
+        "fg": "\u001b[38;2;0;16;92m",
+        "bg": "\u001b[48;2;0;16;92m"
+      },
+      "on-primary-fixed-variant": {
+        "fg": "\u001b[38;2;0;46;202m",
+        "bg": "\u001b[48;2;0;46;202m"
+      },
+      "inverse-primary": {
+        "fg": "\u001b[38;2;186;195;255m",
+        "bg": "\u001b[48;2;186;195;255m"
+      },
+      "secondary": {
+        "fg": "\u001b[38;2;96;90;125m",
+        "bg": "\u001b[48;2;96;90;125m"
+      },
+      "secondary-dim": {
+        "fg": "\u001b[38;2;84;78;112m",
+        "bg": "\u001b[48;2;84;78;112m"
+      },
+      "on-secondary": {
+        "fg": "\u001b[38;2;255;255;255m",
+        "bg": "\u001b[48;2;255;255;255m"
+      },
+      "secondary-container": {
+        "fg": "\u001b[38;2;230;222;255m",
+        "bg": "\u001b[48;2;230;222;255m"
+      },
+      "on-secondary-container": {
+        "fg": "\u001b[38;2;72;66;100m",
+        "bg": "\u001b[48;2;72;66;100m"
+      },
+      "secondary-fixed": {
+        "fg": "\u001b[38;2;230;222;255m",
+        "bg": "\u001b[48;2;230;222;255m"
+      },
+      "secondary-fixed-dim": {
+        "fg": "\u001b[38;2;201;193;234m",
+        "bg": "\u001b[48;2;201;193;234m"
+      },
+      "on-secondary-fixed": {
+        "fg": "\u001b[38;2;28;23;54m",
+        "bg": "\u001b[48;2;28;23;54m"
+      },
+      "on-secondary-fixed-variant": {
+        "fg": "\u001b[38;2;72;66;100m",
+        "bg": "\u001b[48;2;72;66;100m"
+      },
+      "tertiary": {
+        "fg": "\u001b[38;2;107;84;133m",
+        "bg": "\u001b[48;2;107;84;133m"
+      },
+      "tertiary-dim": {
+        "fg": "\u001b[38;2;95;73;120m",
+        "bg": "\u001b[48;2;95;73;120m"
+      },
+      "on-tertiary": {
+        "fg": "\u001b[38;2;255;255;255m",
+        "bg": "\u001b[48;2;255;255;255m"
+      },
+      "tertiary-container": {
+        "fg": "\u001b[38;2;239;219;255m",
+        "bg": "\u001b[48;2;239;219;255m"
+      },
+      "on-tertiary-container": {
+        "fg": "\u001b[38;2;83;61;108m",
+        "bg": "\u001b[48;2;83;61;108m"
+      },
+      "tertiary-fixed": {
+        "fg": "\u001b[38;2;239;219;255m",
+        "bg": "\u001b[48;2;239;219;255m"
+      },
+      "tertiary-fixed-dim": {
+        "fg": "\u001b[38;2;215;187;243m",
+        "bg": "\u001b[48;2;215;187;243m"
+      },
+      "on-tertiary-fixed": {
+        "fg": "\u001b[38;2;38;16;61m",
+        "bg": "\u001b[48;2;38;16;61m"
+      },
+      "on-tertiary-fixed-variant": {
+        "fg": "\u001b[38;2;83;61;108m",
+        "bg": "\u001b[48;2;83;61;108m"
+      },
+      "error": {
+        "fg": "\u001b[38;2;186;26;26m",
+        "bg": "\u001b[48;2;186;26;26m"
+      },
+      "error-dim": {
+        "fg": "\u001b[38;2;168;7;16m",
+        "bg": "\u001b[48;2;168;7;16m"
+      },
+      "on-error": {
+        "fg": "\u001b[38;2;255;255;255m",
+        "bg": "\u001b[48;2;255;255;255m"
+      },
+      "error-container": {
+        "fg": "\u001b[38;2;255;218;214m",
+        "bg": "\u001b[48;2;255;218;214m"
+      },
+      "on-error-container": {
+        "fg": "\u001b[38;2;147;0;10m",
+        "bg": "\u001b[48;2;147;0;10m"
+      }
+    },
+    "dark": {
+      "background": {
+        "fg": "\u001b[38;2;17;19;28m",
+        "bg": "\u001b[48;2;17;19;28m"
+      },
+      "on-background": {
+        "fg": "\u001b[38;2;226;225;239m",
+        "bg": "\u001b[48;2;226;225;239m"
+      },
+      "surface": {
+        "fg": "\u001b[38;2;17;19;28m",
+        "bg": "\u001b[48;2;17;19;28m"
+      },
+      "surface-dim": {
+        "fg": "\u001b[38;2;17;19;28m",
+        "bg": "\u001b[48;2;17;19;28m"
+      },
+      "surface-bright": {
+        "fg": "\u001b[38;2;55;56;67m",
+        "bg": "\u001b[48;2;55;56;67m"
+      },
+      "surface-container-lowest": {
+        "fg": "\u001b[38;2;12;14;23m",
+        "bg": "\u001b[48;2;12;14;23m"
+      },
+      "surface-container-low": {
+        "fg": "\u001b[38;2;26;27;37m",
+        "bg": "\u001b[48;2;26;27;37m"
+      },
+      "surface-container": {
+        "fg": "\u001b[38;2;30;31;41m",
+        "bg": "\u001b[48;2;30;31;41m"
+      },
+      "surface-container-high": {
+        "fg": "\u001b[38;2;40;41;52m",
+        "bg": "\u001b[48;2;40;41;52m"
+      },
+      "surface-container-highest": {
+        "fg": "\u001b[38;2;51;52;63m",
+        "bg": "\u001b[48;2;51;52;63m"
+      },
+      "on-surface": {
+        "fg": "\u001b[38;2;226;225;239m",
+        "bg": "\u001b[48;2;226;225;239m"
+      },
+      "on-surface-variant": {
+        "fg": "\u001b[38;2;197;197;214m",
+        "bg": "\u001b[48;2;197;197;214m"
+      },
+      "outline": {
+        "fg": "\u001b[38;2;143;143;159m",
+        "bg": "\u001b[48;2;143;143;159m"
+      },
+      "outline-variant": {
+        "fg": "\u001b[38;2;68;70;84m",
+        "bg": "\u001b[48;2;68;70;84m"
+      },
+      "inverse-surface": {
+        "fg": "\u001b[38;2;226;225;239m",
+        "bg": "\u001b[48;2;226;225;239m"
+      },
+      "inverse-on-surface": {
+        "fg": "\u001b[38;2;47;48;58m",
+        "bg": "\u001b[48;2;47;48;58m"
+      },
+      "primary": {
+        "fg": "\u001b[38;2;186;195;255m",
+        "bg": "\u001b[48;2;186;195;255m"
+      },
+      "primary-dim": {
+        "fg": "\u001b[38;2;115;135;255m",
+        "bg": "\u001b[48;2;115;135;255m"
+      },
+      "on-primary": {
+        "fg": "\u001b[38;2;0;30;145m",
+        "bg": "\u001b[48;2;0;30;145m"
+      },
+      "primary-container": {
+        "fg": "\u001b[38;2;0;46;202m",
+        "bg": "\u001b[48;2;0;46;202m"
+      },
+      "on-primary-container": {
+        "fg": "\u001b[38;2;222;224;255m",
+        "bg": "\u001b[48;2;222;224;255m"
+      },
+      "primary-fixed": {
+        "fg": "\u001b[38;2;222;224;255m",
+        "bg": "\u001b[48;2;222;224;255m"
+      },
+      "primary-fixed-dim": {
+        "fg": "\u001b[38;2;186;195;255m",
+        "bg": "\u001b[48;2;186;195;255m"
+      },
+      "on-primary-fixed": {
+        "fg": "\u001b[38;2;0;16;92m",
+        "bg": "\u001b[48;2;0;16;92m"
+      },
+      "on-primary-fixed-variant": {
+        "fg": "\u001b[38;2;0;46;202m",
+        "bg": "\u001b[48;2;0;46;202m"
+      },
+      "inverse-primary": {
+        "fg": "\u001b[38;2;18;66;255m",
+        "bg": "\u001b[48;2;18;66;255m"
+      },
+      "secondary": {
+        "fg": "\u001b[38;2;201;193;234m",
+        "bg": "\u001b[48;2;201;193;234m"
+      },
+      "secondary-dim": {
+        "fg": "\u001b[38;2;216;207;248m",
+        "bg": "\u001b[48;2;216;207;248m"
+      },
+      "on-secondary": {
+        "fg": "\u001b[38;2;49;44;76m",
+        "bg": "\u001b[48;2;49;44;76m"
+      },
+      "secondary-container": {
+        "fg": "\u001b[38;2;72;66;100m",
+        "bg": "\u001b[48;2;72;66;100m"
+      },
+      "on-secondary-container": {
+        "fg": "\u001b[38;2;230;222;255m",
+        "bg": "\u001b[48;2;230;222;255m"
+      },
+      "secondary-fixed": {
+        "fg": "\u001b[38;2;230;222;255m",
+        "bg": "\u001b[48;2;230;222;255m"
+      },
+      "secondary-fixed-dim": {
+        "fg": "\u001b[38;2;201;193;234m",
+        "bg": "\u001b[48;2;201;193;234m"
+      },
+      "on-secondary-fixed": {
+        "fg": "\u001b[38;2;28;23;54m",
+        "bg": "\u001b[48;2;28;23;54m"
+      },
+      "on-secondary-fixed-variant": {
+        "fg": "\u001b[38;2;72;66;100m",
+        "bg": "\u001b[48;2;72;66;100m"
+      },
+      "tertiary": {
+        "fg": "\u001b[38;2;215;187;243m",
+        "bg": "\u001b[48;2;215;187;243m"
+      },
+      "tertiary-dim": {
+        "fg": "\u001b[38;2;227;198;255m",
+        "bg": "\u001b[48;2;227;198;255m"
+      },
+      "on-tertiary": {
+        "fg": "\u001b[38;2;59;38;84m",
+        "bg": "\u001b[48;2;59;38;84m"
+      },
+      "tertiary-container": {
+        "fg": "\u001b[38;2;83;61;108m",
+        "bg": "\u001b[48;2;83;61;108m"
+      },
+      "on-tertiary-container": {
+        "fg": "\u001b[38;2;239;219;255m",
+        "bg": "\u001b[48;2;239;219;255m"
+      },
+      "tertiary-fixed": {
+        "fg": "\u001b[38;2;239;219;255m",
+        "bg": "\u001b[48;2;239;219;255m"
+      },
+      "tertiary-fixed-dim": {
+        "fg": "\u001b[38;2;215;187;243m",
+        "bg": "\u001b[48;2;215;187;243m"
+      },
+      "on-tertiary-fixed": {
+        "fg": "\u001b[38;2;38;16;61m",
+        "bg": "\u001b[48;2;38;16;61m"
+      },
+      "on-tertiary-fixed-variant": {
+        "fg": "\u001b[38;2;83;61;108m",
+        "bg": "\u001b[48;2;83;61;108m"
+      },
+      "error": {
+        "fg": "\u001b[38;2;255;180;171m",
+        "bg": "\u001b[48;2;255;180;171m"
+      },
+      "error-dim": {
+        "fg": "\u001b[38;2;255;85;74m",
+        "bg": "\u001b[48;2;255;85;74m"
+      },
+      "on-error": {
+        "fg": "\u001b[38;2;105;0;5m",
+        "bg": "\u001b[48;2;105;0;5m"
+      },
+      "error-container": {
+        "fg": "\u001b[38;2;147;0;10m",
+        "bg": "\u001b[48;2;147;0;10m"
+      },
+      "on-error-container": {
+        "fg": "\u001b[38;2;255;218;214m",
+        "bg": "\u001b[48;2;255;218;214m"
+      }
+    }
+  },
+  "windows-terminal": [
+    {
+      "name": "Aphrody M3 Light",
+      "background": "#FBF8FF",
+      "foreground": "#1A1B25",
+      "cursorColor": "#1242FF",
+      "selectionBackground": "#DEE0FF",
+      "black": "#E2E1EF",
+      "red": "#BA1A1A",
+      "green": "#6B5485",
+      "yellow": "#FFB300",
+      "blue": "#1242FF",
+      "purple": "#605A7D",
+      "cyan": "#856D9F",
+      "white": "#444654",
+      "brightBlack": "#757685",
+      "brightRed": "#DE3730",
+      "brightGreen": "#A086BA",
+      "brightYellow": "#FFB300",
+      "brightBlue": "#7287FF",
+      "brightPurple": "#938CB2",
+      "brightCyan": "#BBA1D6",
+      "brightWhite": "#1A1B25"
+    },
+    {
+      "name": "Aphrody M3 Dark",
+      "background": "#11131C",
+      "foreground": "#E2E1EF",
+      "cursorColor": "#BAC3FF",
+      "selectionBackground": "#002ECA",
+      "black": "#33343F",
+      "red": "#FFB4AB",
+      "green": "#D7BBF3",
+      "yellow": "#FFB300",
+      "blue": "#BAC3FF",
+      "purple": "#C9C1EA",
+      "cyan": "#BBA1D6",
+      "white": "#C5C5D6",
+      "brightBlack": "#8F8F9F",
+      "brightRed": "#FF897D",
+      "brightGreen": "#EFDBFF",
+      "brightYellow": "#FFB300",
+      "brightBlue": "#DEE0FF",
+      "brightPurple": "#E6DEFF",
+      "brightCyan": "#F9EDFF",
+      "brightWhite": "#E2E1EF"
+    }
+  ]
+}
