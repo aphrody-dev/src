@@ -24,7 +24,7 @@ on:
     inputs:
       targets: { description: "bake group/targets", default: "default" }
 concurrency:
-  group: images-${{ github.ref }}
+  group: images-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: false # Rust LTO builds are long: queue, never cancel on the busy main branch
 permissions:
   contents: read

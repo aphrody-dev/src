@@ -84,3 +84,8 @@ graphify-out/
 !/scripts/
 
 packages/shell-matrix/bin/
+
+# Third-party console UI mockups (never committed).
+/assets/*.fig
+/assets/*.zip
+/assets/Nintendo*.png

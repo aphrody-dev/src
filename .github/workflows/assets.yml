@@ -19,7 +19,7 @@ on:
     - cron: "17 3 * * *"
   workflow_dispatch:
 concurrency:
-  group: assets-${{ github.ref }}
+  group: assets-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: false
 permissions: { contents: read }
 jobs:
