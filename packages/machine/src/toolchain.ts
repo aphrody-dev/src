@@ -4,7 +4,8 @@
 // [[claude.skill]] (dossier SKILL.md copié depuis un commit épinglé), [[skill.private]], [codex], [agy], [gemini],
 // [cleanup], [[secret]] (contrôle seul). `hosts` absent = tous (pc, prd, fr1, fr2). Aucun lien créé ; réglages
 // modifiés par les CLI seules (jamais de réécriture de settings.json).
-// Appelé par apply-user.ts (PC) et infra/fleet/bin/agents-sync.sh (Linux) ; seul : bun packages/machine/src/toolchain.ts [--check]
+// Appelé par apply-user.ts, la tâche \Aphrody\AgentsSync (PC) et aphrody-agents-sync.timer (Linux) ; seul : `ay agents install|sync|check|list`
+// ou bun packages/machine/src/toolchain.ts [sync|check|list]
 import { cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmdirSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
 import { hostname, tmpdir } from "node:os";
 import { join, resolve, sep } from "node:path";
@@ -297,8 +298,29 @@ export async function toolchain({ check }: { check: boolean }): Promise<string[]
   return out;
 }
 
+/** Entrées du manifeste qui s'appliquent à cet hôte (`ay agents list`). */
+export async function list(): Promise<string[]> {
+  const m = Bun.TOML.parse(await Bun.file(MANIFEST).text()) as Manifest;
+  const rows = [`hôte ${HOST}, src ${SRC}`];
+  for (const x of (m.claude?.marketplace ?? []).filter(here)) rows.push(`claude marketplace ${x.name} ${x.repo ?? join(SRC, x.path ?? "")}`);
+  for (const x of (m.claude?.plugin ?? []).filter(here)) rows.push(`claude plugin ${x.id} ${x.state ?? "present"}`);
+  for (const x of (m.claude?.mcp ?? []).filter(here)) rows.push(`claude mcp ${x.name} ${x.url ?? (x.command ?? []).join(" ")}${x.secrets ? ` (coffre : ${x.secrets.join(",")})` : ""}`);
+  for (const x of (m.claude?.skill ?? []).filter(here)) rows.push(`claude skill ${x.name} ${x.repo}@${x.commit.slice(0, 12)}`);
+  for (const x of m.codex?.plugins ?? []) rows.push(`codex plugin ${x}`);
+  for (const x of m.agy?.plugins ?? []) rows.push(`agy plugin ${x}`);
+  for (const x of m.gemini?.extensions ?? []) rows.push(`gemini extension ${join(SRC, x)}`);
+  rows.push(`skills src ${readdirSync(join(SRC, ".agents", "skills")).length} (.agents/skills)`);
+  return rows;
+}
+
+// Verbes : install|sync (appliquer, défaut), check (ou --check : écarts seuls, code 1 si écart), list.
 if (import.meta.main) {
-  const check = process.argv.includes("--check");
+  const verb = process.argv[2] ?? "sync";
+  if (verb === "list") {
+    console.log((await list()).join("\n"));
+    process.exit(0);
+  }
+  const check = verb === "check" || process.argv.includes("--check");
   const r = await toolchain({ check });
   console.log(r.join("\n"));
   process.exit(r.some((l) => l.startsWith("ERR")) || (check && r.some((l) => l.startsWith("DIFF"))) ? 1 : 0);

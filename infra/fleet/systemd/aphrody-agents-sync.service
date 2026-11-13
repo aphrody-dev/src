@@ -1,0 +1,10 @@
+[Unit]
+Description=Outillage agent (skills, plugins, MCP) pour root et agent depuis /srv/src
+Wants=network-online.target
+After=network-online.target src-checkout-update.service
+[Service]
+Type=oneshot
+Nice=19
+IOSchedulingClass=idle
+TimeoutStartSec=30min
+ExecStart=/usr/local/bin/agents-sync.sh sync
