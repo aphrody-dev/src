@@ -6,7 +6,7 @@ edition.workspace = true
 license.workspace = true
 authors.workspace = true
 description = "ay: one multicall CLI for the Aphrody monorepo (arch gate, lock, git, ingest, graph, deploy, bench, build)"
-repository = "https://github.com/aphrody-dev/src"
+repository = "https://github.com/aphrody-labs/src"
 
 # Released with dist (dist-workspace.toml); the only dist package in the workspace.
 [package.metadata.dist]

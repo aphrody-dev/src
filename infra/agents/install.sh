@@ -7,7 +7,7 @@ set -eu
 [ "$(id -u)" != 0 ] || { echo "install: never as root; run bootstrap-user.sh as root, then this as user agent" >&2; exit 1; }
 
 SRC=${AGENTS_SRC:-$HOME/agents/src}
-REPO=${AGENTS_REPO:-https://github.com/aphrody-dev/src.git}
+REPO=${AGENTS_REPO:-https://github.com/aphrody-labs/src.git}
 export PATH="$HOME/.bun/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
 
 need() { command -v "$1" >/dev/null 2>&1; }

@@ -165,7 +165,7 @@ M:	Aphrody Engineering <contact@aphrody.com>
 L:	contact@aphrody.com
 S:	Supported
 W:	https://about.aphrody.com
-T:	git https://github.com/aphrody-dev/src.git
+T:	git https://github.com/aphrody-labs/src.git
 T:	git https://github.com/aphrody-dev/xtask.git
 T:	git https://github.com/aphrody-dev/forge.git
 F:	.gitattributes

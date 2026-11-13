@@ -37,7 +37,7 @@ target "_common" {
     CARGO_BUILD_JOBS = CARGO_BUILD_JOBS
   }
   labels = {
-    "org.opencontainers.image.source" = "https://github.com/aphrody-dev/src"
+    "org.opencontainers.image.source" = "https://github.com/aphrody-labs/src"
     "org.opencontainers.image.revision" = TAG
     "org.opencontainers.image.licenses" = "MIT OR Apache-2.0"
   }

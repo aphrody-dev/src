@@ -10,7 +10,7 @@
   "license": "MIT OR Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aphrody-dev/src.git",
+    "url": "git+https://github.com/aphrody-labs/src.git",
     "directory": "packages/shell-matrix"
   }
 }

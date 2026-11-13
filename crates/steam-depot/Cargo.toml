@@ -7,7 +7,7 @@ edition = "2024"
 rust-version = "1.97"
 authors = ["aphrody-dev <contact@aphrody.com>"]
 license = "Apache-2.0"
-repository = "https://github.com/aphrody-dev/src"
+repository = "https://github.com/aphrody-labs/src"
 description = "Bun OS Steam owner: VDF text/binary parser and writer, install and library discovery, client configuration, Proton launch tuning, Remote Play state."
 
 [lib]

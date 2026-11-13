@@ -138,33 +138,33 @@
         },
         "packages/bun-plugins": {
             "path": "C:\\src\\packages\\bun-plugins",
-            "url": "https://github.com/aphrody-dev/src.git",
+            "url": "https://github.com/aphrody-labs/src.git",
             "commit": "eecc8f2c22b5b7320c7faeebb3bcfdb310d53919",
             "branch": "main",
             "engine": "jj",
             "pillar": "git",
             "remotes": {
-                "all": "https://github.com/aphrody-dev/src.git",
-                "gitlab": "https://gitlab.com/aphrody-dev/src.git",
+                "all": "https://github.com/aphrody-labs/src.git",
+                "gitlab": "https://gitlab.com/aphrody-labs/src.git",
                 "gitlab-self": "https://git.aphrody.com/aphrody/src.git",
                 "google": "https://source.developers.google.com/p/aphrody/r/src",
-                "origin": "https://github.com/aphrody-dev/src.git"
+                "origin": "https://github.com/aphrody-labs/src.git"
             },
             "sparse_paths": null
         },
         "packages/forge": {
             "path": "C:\\src\\packages\\forge",
-            "url": "https://github.com/aphrody-dev/src.git",
+            "url": "https://github.com/aphrody-labs/src.git",
             "commit": "eecc8f2c22b5b7320c7faeebb3bcfdb310d53919",
             "branch": "main",
             "engine": "jj",
             "pillar": "git",
             "remotes": {
-                "all": "https://github.com/aphrody-dev/src.git",
-                "gitlab": "https://gitlab.com/aphrody-dev/src.git",
+                "all": "https://github.com/aphrody-labs/src.git",
+                "gitlab": "https://gitlab.com/aphrody-labs/src.git",
                 "gitlab-self": "https://git.aphrody.com/aphrody/src.git",
                 "google": "https://source.developers.google.com/p/aphrody/r/src",
-                "origin": "https://github.com/aphrody-dev/src.git"
+                "origin": "https://github.com/aphrody-labs/src.git"
             },
             "sparse_paths": null
         },

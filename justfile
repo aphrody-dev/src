@@ -217,7 +217,7 @@ docker-build targets="default":
 # (usage: just docker-smoke, just docker-smoke bun main iteration)
 docker-smoke targets="smoke" ref="main" profile="release":
     timeout 900 ssh prd 'cat > /usr/local/bin/aphrody-heavy && chmod 755 /usr/local/bin/aphrody-heavy' < "{{root}}/infra/fleet/bin/heavy.sh"
-    timeout 7200 ssh prd 'TAG=smoke CARGO_PROFILE={{profile}} CARGO_BUILD_JOBS=2 aphrody-heavy docker buildx bake --builder aphrody "https://github.com/aphrody-dev/src.git#{{ref}}" -f infra/docker/docker-bake.hcl --set "*.platform=linux/amd64" --set "*.attest=" --set "*.cache-from=" --load --progress quiet {{targets}}'
+    timeout 7200 ssh prd 'TAG=smoke CARGO_PROFILE={{profile}} CARGO_BUILD_JOBS=2 aphrody-heavy docker buildx bake --builder aphrody "https://github.com/aphrody-labs/src.git#{{ref}}" -f infra/docker/docker-bake.hcl --set "*.platform=linux/amd64" --set "*.attest=" --set "*.cache-from=" --load --progress quiet {{targets}}'
     timeout 900 ssh prd 'SRC_TAG=smoke sh -s' < "{{root}}/infra/docker/smoke.sh"
 
 # Deploy the compose stack: profile core on prd, edge on fr2 (usage: just docker-up, just docker-up edge fr2, SRC_TAG=<sha> to roll back)
