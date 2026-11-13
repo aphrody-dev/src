@@ -1,6 +1,6 @@
 # Architecture: the Aphrody console shell (hybrid fullscreen launcher)
 
-Inputs: `recon.md`, `features.csv` (commit 765af380), the code already in the tree on 2026-11-13, and the Android TV public guidance read in this session. Clean-room: layout and interaction only, no Sony, Nintendo or Google art, marks or glyphs. Nothing in this document is built beyond what section "What exists" lists.
+Inputs: `recon.md`, `features.csv` (commit 765af380), the code already in the tree on 2026-11-13, and the Android TV public guidance read in this session. Sources are taken verbatim (AGENTS.md section 4 as amended 2026-11-13, commit 9f86176e). Nothing in this document is built beyond what section "What exists" lists.
 
 ## Owner decisions folded in
 
@@ -10,7 +10,7 @@ Inputs: `recon.md`, `features.csv` (commit 765af380), the code already in the tr
 
 ## License posture
 
-`docs/legal/LICENSE-QUEUE.md` (commit b6aea61a) records an owner decision that all licenses are accepted and reference assets may be taken verbatim. `AGENTS.md` section 4 ("Limits that stay": no unlicensed or non-OSI code and no proprietary assets copied into the repository, no Unreal, Oodle or MSVC SDK) is the checked-in contract and an agent relay cannot amend it. This document therefore keeps the clean-room default for Sony, Nintendo and Google marks and art: layouts, states and metrics are implemented, shipped art is original or openly licensed, and the Android TV kit is consumed as numbers read from developer.android.com. Switching to verbatim assets is a one-line change per asset class once `AGENTS.md` section 4 is amended by the owner in the repository; every asset class is already listed in the queue file with its status. No work is blocked either way.
+`AGENTS.md` section 4 was amended by the owner (commit 9f86176e): all licenses accepted, every source taken verbatim, no gating for license or trademark. This plan therefore has no clean-room rule and no license gate. Assets, icons, art, fonts and kits from the PlayStation-style and Switch-style references (`assets/Gamescope.fig`, `assets/consolde.fig`, `assets/mobile.fig`, the Switch 2 png), Material Symbols, the Google Fonts families and the Android TV kit are used as they come from their sources. Each asset class is logged in `docs/legal/LICENSE-QUEUE.md` (status column only; work never waits on it). Remaining constraints are technical: secrets stay out of the repository, and Unreal sources stay an interop-only private fork.
 
 ## What exists (read in the tree, not assumed)
 
@@ -30,7 +30,7 @@ Inputs: `recon.md`, `features.csv` (commit 765af380), the code already in the tr
 | `assets/library/icons/vendors` | 20 real vendor icons (steam, epic, gog, itch, xbox, googleplay, flathub, windows, ...) |
 | Not found | any iOS crate, any native winit shell, any text rasteriser dependency in the workspace, any sqlite code for the shell, an audio crate, a gamepad layer wired to the shell (`gilrs 0.11.2` is only in the lockfile) |
 
-Conflict to report: the baseline given in the brief (153.9 fps live, `crates/game`) is not in the repo. The only recorded figure is `docs/reviews/PROOF-2026-11-13.md` line 24: Chrome 157 headless, RTX 4070, 1920x1080, 3438 frames, median 243.9 fps, p95 4.9 ms, p99 9.4 ms, worst 16.1 ms. Until a live run is archived, the 153.9 value is unsourced. The 3D game scene is also a much heavier workload than a UI quad pass, so it is an upper bound on cost, not a shell measurement.
+fps baseline, reconciled: both figures are in `docs/reviews/PROOF-2026-11-13.md` and measure different things on the same machine (Chrome 157 headless, RTX 4070, 1920x1080, `scripts/game-fps.ts`). Line 24, local build served by `server.ts`: 3438 frames, median 243.9 fps, p95 4.9 ms, p99 9.4 ms, worst 16.1 ms (warm, no network). Line 25, live `https://aphrody.com/play?autostart=1` with wasm from cdn.aphrody.com/game/: 739 frames, median 153.9 fps, p95 8.5 ms, cold start. The shell baseline to design against is the live one: 153.9 fps median clears 120 Hz but its p95 of 8.5 ms is already over the 8.33 ms budget, which is why the shell gate is on p99 frame time, not on the median. The 3D game scene costs far more than a one-draw-call UI pass, so both numbers are an upper bound on shell cost, not a shell measurement.
 
 Version pins read in `Cargo.lock` (2026-11-13): bevy 0.20.1, wgpu 30.0.2 (workspace requirement `30.0.1`), winit 0.30.13, egui 0.37.0, rusqlite 0.42.0, taffy 0.15.1, wasm-bindgen 0.2.130, gilrs 0.11.2. The brief says "wgpu 30": consistent.
 
@@ -48,13 +48,13 @@ Version pins read in `Cargo.lock` (2026-11-13): bevy 0.20.1, wgpu 30.0.2 (worksp
 | layout | pure functions in `gamescope-core` (`row_xs`, grid rules) plus taffy 0.15.1 for flex panes in settings and store only | rows and grids are cheaper by hand; taffy only where nesting is real |
 | focus | `spatial_next` evolved into a focus-tree engine (section below) | owned code, unit-testable without a GPU |
 | text | JS canvas glyph atlas on the web (existing); native needs a rasteriser and shaper. Candidates cosmic-text, swash, parley, fontdue: none is in the workspace, so the pick is made at S06 after reading each crate on crates.io and its license, not from memory | Latin, CJK, RTL shaping; on-demand glyph cache, not a static grid |
-| fonts | Atkinson Hyperlegible Next (OFL, already shipped by `assets/brand/gen/fonts`), Instrument Sans and Karla (OFL per recon), Noto Sans JP and SC (OFL, to be fetched and licence-verified at S06) | CJK strategy: Latin primary, per-locale CJK fallback subset by locale, glyphs rasterised on demand |
-| icons | Material Symbols (verify licence text in its upstream repo at S01 before bundling), our own glyph set for controller prompts, real vendor favicons from `assets/library/icons/vendors` for stores | only public licences; no console button glyphs from third parties |
+| fonts | Atkinson Hyperlegible Next (OFL, already shipped by `assets/brand/gen/fonts`), Instrument Sans and Karla (OFL per recon), Noto Sans JP and SC (OFL, fetched from Google Fonts at S06), Roboto for the `Tv` variant, plus the fonts embedded in the .fig references | CJK strategy: Latin primary, per-locale CJK fallback subset by locale, glyphs rasterised on demand |
+| icons | Material Symbols, the icon sets and button glyphs of the console references extracted from the .fig files, real vendor favicons from `assets/library/icons/vendors` | taken verbatim from their sources; vector first |
 | tokens | `packages/design/tokens/themes.json` + `tokens.rs`; 7 themes x light/dark; layout variant is a token set (metrics, radii, motion, safe area), not a code fork | Material 3 roles as the single colour vocabulary |
 | i18n | `packages/i18n` locales fr, en, zh-CN, ja, es compiled to a Rust table by `ay` at build time | same strings on web, native, mobile |
 | local data | SQLite: `rusqlite 0.42.0` native and Android/iOS, SQLite compiled to wasm over OPFS on the web (`aphrody-wasm/opfs.rs` exists), `bun:sqlite` only on the server side (catalogue builds) | one schema (`schema.sql`); sqlx is rejected: async pool and compile-time macros add weight for a single-writer local file |
 | catalogue | `packages/assets/data/games.sqlite` attached read-only, shipped to wasm as a range-fetched file | already built, FTS5 for S15 |
-| audio | UI sound effects only (original, synthesised: `crates/game/src/synth.rs` exists). Backend crate chosen at S09 among those verified on crates.io | licensed system sounds are out of scope (features.csv) |
+| audio | UI sounds from the references where present plus synthesised ones (`crates/game/src/synth.rs` exists). Backend crate chosen at S09 among those verified on crates.io | no gating; format and size are the criteria |
 | gamepad | gilrs 0.11.2 native, Gamepad API in Chromium, Android `InputDevice`, iOS GameController framework | platform-native paths |
 | companion link | `aphrody-core` wire + WebMCP (existing) | the app already speaks it |
 | hosting | web build at aphrody.app (existing Worker `aphrody-app-site`, R2 `aphrody-dist`), assets on cdn.aphrody.com; aphrody.com links only | owner decision |
@@ -86,13 +86,13 @@ Ownership while the agents work: `console.rs`, `ui.rs`, `console.wgsl`, `web-was
 Facts read on developer.android.com/design/ui/tv/guides/styles/layouts (2026-11-13):
 
 - design at 960 x 540 dp (MDPI, 1 px = 1 dp), assets aimed at 1080p, scaled to 4K proportionally;
-- overscan: 5 % margin, stated as 48 dp left and right and 27 dp top and bottom; the same page also says 58 dp sides and 28 dp top and bottom further down. Conflict on the source itself; we expose `safe_area_pct` (default 5 %, 0 on modern TVs per the page note "most modern TVs no longer have overscan issues") and derive both numbers from it;
+- overscan, conflict settled from the official sources: the layouts page computes 960 x 5 % = 48 dp and 540 x 5 % = 27 dp (27 rounded to 24), which is the bare overscan minimum; for the layout it prescribes "a 5 % margin layout (58 dp on the sides and 28 dp on the top and bottom edges)", and the official Apache-2.0 sample app `android/tv-samples` JetStreamCompose defines `ParentPadding = PaddingValues(vertical = 16.dp, horizontal = 58.dp)` (DashboardScreen.kt). Decision: content margin 58 dp sides and 28 dp top and bottom (the design value), 48 and 27 dp as the hard floor for `safe_area_pct`; the page notes most modern TVs no longer have overscan, so backgrounds always fill the screen;
 - 12 columns of 52 dp, 20 dp gutters, 58 dp side margin (12x52 + 11x20 = 844 dp card span, matching the page's 1-card width of 844 dp); card widths per row 412, 268, 196, 124 dp for 2 to 5 cards;
 - templates: Browse, left, right, center and bottom overlay, Actions, Content details, Compilation, Grid, Alert; single-pane and two-pane;
 - D-pad needs instant and distinct feedback; TV is a shared device (privacy: profile PIN, guest); backgrounds fill the screen and only content respects the safe area;
 - Compose for TV: `androidx.tv:tv-material:1.0.0` with compose-bom 2026.09.00 per developer.android.com/training/tv/playback/compose; TV Material components have clear focus indicators and remote-friendly input; mixing mobile and TV Material themes is discouraged. We do not use Compose: these are references for behaviour.
 
-Not obtained: the 10-foot type scale page and the design kit page returned 404 at the guessed URLs; the TV design landing page links the Figma community kit at figma.com/@tv and states no licence. Decision: the kit is reference only, never copied or redistributed; type scale is derived from the Material 3 typescale spec in `docs/design/specs` and checked on a real 1080p screen at 3 m equivalent (S03 proof). Open item: read the TV typography and color pages by their real URLs at /replica-design.
+Type scale (page `/design/ui/tv/guides/styles/typography`, values from `androidx/androidx` `tv/tv-material/.../tokens/TypeScaleTokens.kt`, read through `gh api`): 15 styles, Roboto default (we use Roboto plus the locale CJK fallback), sizes in sp at the 960 x 540 dp design size, scaled 2x at 1080p and 4x at 4K. Display large 57/64, medium 45/52, small 36/44; headline large 32/40, medium 28/36, small 24/32; title large 22/28, medium 16/24 (weight medium), small 14/20 (medium); body large 16/24, medium 14/20, small 12/16; label large 14/20 (medium), medium 12/16 (medium), small 11/16 (medium); tracking from -0.2 to 0.5 sp. Buttons use label large. Colour (page `/styles/color-system`): Material roles, dark theme recommended for the cinematic look, content-based schemes from hero art through Material Color Utilities (`material-foundation/material-color-utilities`); TV has no wallpaper-based dynamic colour. Kit: the TV design landing page links the Figma community profile `figma.com/@tv` ("styles, themes, patterns, components"); WebFetch gets HTTP 403 there, so the kit is fetched through the Figma MCP (`get_libraries`, `get_design_context`) at /replica-design, and used verbatim. Code reference: `android/tv-samples` (Apache-2.0: JetStreamCompose, TvMaterialCatalog) for focus, scale and glow values.
 
 `Shell::Tv` is added beside `Ps` and `Switch`: browse template (vertical stack of horizontal rows), left-overlay navigation rail, focus = scale 1.05 plus 2 dp ring from `layout.focus-ring` token, no hover states, no pointer cursor.
 
@@ -160,7 +160,7 @@ Schema in `schema.sql` (17 tables, STRICT, UTC unix ms, per-profile ownership by
 
 - Gates (CI on fr1, ci.yml): `cargo test` of core (focus, springs, layout, pacing; no GPU), wasm32 build of `gamescope-web-wasm` and `aphrody-wasm`, native build for x86_64-pc-windows-msvc and linux, `ay arch check --strict`, `bun fmt`, `bun check`. Perf gate in `crates/bench`: 500-tile scene, p99 under 8.33 ms on the reference machine; a swiftshader run is allowed only as a smoke test and labelled "software GPU, not a performance result".
 - Real-GPU proof (required for every milestone after S05): real Chrome with GPU on the PC for WebGPU (frame histogram exported by the page, screenshots read with the image tool); DX12 and Vulkan builds launched through agent-desktop, screenshots taken and inspected, then one exercised interaction (D-pad move, open overlay, back) captured before and after. HTTP 200 is never proof.
-- Pixel fidelity: reference captures stay in a local temp directory and are never committed; the repo stores our own golden renders and per-screen layout numbers (rects in dp), compared with the reference by SSIM locally; the report quotes the score and shows both images to the reviewer.
+- Pixel fidelity: the reference frames exported from the .fig files are committed beside the golden renders; per-screen layout numbers (rects in dp) come from the Figma geometry; render versus reference is compared by SSIM per screen, the score is quoted and both images are shown to the reviewer.
 - Gemini Carbon review of this document and of each milestone, verdict archived in `docs/reviews`.
 
 ## Milestones (vertical slice first)
@@ -173,7 +173,7 @@ M0 slice, from recon (screens S01 to S05, flows F01, F02, F05, F10), in this ord
 | S02 | profile overlay | overlay scope with focus restore | profile | open, back, focus returns |
 | S03 | home, game row (Ps) | tab bar, hero, scale-up tile row, must-see block | game, library | tile focus scale spring, row scroll |
 | S04 | home, tile row (Switch) | status bar, tile row, hints footer | controller, library | same, plus layout switch by token |
-| S05 | round menu row | 8 to 10 original round icons, selection, badge | setting | down from S04, select an item |
+| S05 | round menu row | 8 to 10 round icons extracted from the reference, selection, badge | setting | down from S04, select an item |
 
 Then:
 
@@ -185,16 +185,16 @@ Then:
 6. M6 could-haves: S12 to S14, S17, S18, S21, S22; HDR polish, accessibility audit, offline service worker.
 7. M7 fixes from replica-entrepreneur and replica-diff.
 
-Out of scope, from features.csv: accounts, payments, sync backends, licensed art and sound, third-party service logos.
+Out of scope (technical, not licensing): accounts, payments, sync backends and any network service. features.csv rows marked skip for art, brand and sound are reversed by the owner decision above.
 
 ## Risks (ranked)
 
 1. 120 fps with text and large art on integrated GPUs and mobile: atlas thrash and upload stalls. Mitigation: dirty-range uploads, one atlas upload per frame, tile art compression, perf gate in CI from S01.
 2. Native text for CJK, RTL and shaping: no rasteriser dependency exists; a wrong pick costs a rewrite. Mitigation: decide at S06 behind the `gamescope-text` trait, keep the JS canvas path on the web.
 3. Real-GPU proof coverage: no GPU Linux or iOS device in the fleet; Android needs an emulator. Mitigation: label every software or emulated run, never claim parity; ask for hardware when M3 and M5 land.
-4. Clean-room fidelity versus "pixel-perfect": the reference art cannot be committed, so exact comparison is local only. Mitigation: layout numbers in dp captured from the Figma geometry, original icons and art, SSIM reported per screen.
+4. Pixel-perfect fidelity: embedded images, fonts (Instrument Sans, Karla, NDS12, Inter) and effects in the .fig files must be extracted faithfully (blur, gradients, shadows as SDF quads). Mitigation: geometry in dp from the Figma nodes, SSIM per screen, effects checked first on S03.
 5. Two parallel agents editing the same files (`console.rs`, `ui.rs`): conflicts and duplicate extraction. Mitigation: extraction only after their commits, path-scoped commits.
 6. HDR and wgpu surface formats vary per OS; DX12 HDR on the PC is the only verifiable case.
-7. Android TV Figma kit licence unstated: reference only, nothing redistributed; type scale to verify.
+7. Android TV Figma kit access: figma.com/@tv blocks plain fetch (403) and the Figma seat is rate limited per recon; extraction may have to wait for quota.
 8. Web build size and start time on aphrody.app (wasm plus fonts plus catalogue): range-fetched SQLite, split fonts per locale, streaming compile.
-9. Licence checks pending: Material Symbols, Noto CJK, chosen text and audio crates.
+9. Asset weight: verbatim art and fonts (Noto CJK, 220 embedded images in the PlayStation-style file) must be compressed and split per locale to keep the wasm start time acceptable.
