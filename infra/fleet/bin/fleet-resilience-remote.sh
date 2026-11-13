@@ -14,14 +14,14 @@ rc=0
 
 push() { # $1 host
   local a; a=$(alias_of "$1")
-  tar -cf - -C "$F" bin/fleet-resilience.sh bin/fleet-health.sh bin/fleet-backup.sh bin/fleet-wg-failover.sh bin/src-checkout-update.sh \
-      systemd/src-checkout-update.service systemd/src-checkout-update.timer systemd/fleet-health.service systemd/fleet-health.timer systemd/fleet-backup.service systemd/fleet-backup.timer \
+  tar -cf - -C "$F" bin/fleet-resilience.sh bin/fleet-health.sh bin/fleet-backup.sh bin/fleet-wg-failover.sh bin/src-checkout-update.sh bin/fleet-notify.sh bin/fleet-dns-failover.sh \
+      systemd/src-checkout-update.service systemd/src-checkout-update.timer systemd/fleet-notify.service systemd/fleet-notify.timer systemd/fleet-health.service systemd/fleet-health.timer systemd/fleet-backup.service systemd/fleet-backup.timer \
       "$1/resilience.conf" backup-age.pub $([ "$1" = prd ] && echo prd/systemd/aphrody-relay.service prd/systemd/aphrody-relay.service.d) -C "$root/infra/agents" systemd \
     | timeout 120 ssh "$a" 'rm -rf /tmp/fleet-resilience-push && mkdir -p /tmp/fleet-resilience-push && tar -xf - -C /tmp/fleet-resilience-push' || return 1
   timeout 120 ssh "$a" "S=; [ \"\$(id -u)\" = 0 ] || S='sudo -n'; \$S sh -s /tmp/fleet-resilience-push $1" <<'EOS'
 set -e; d=$1; h=$2
-install -m 0755 "$d"/bin/fleet-resilience.sh "$d"/bin/fleet-health.sh "$d"/bin/fleet-backup.sh "$d"/bin/fleet-wg-failover.sh "$d"/bin/src-checkout-update.sh /usr/local/bin/
-install -m 0644 "$d"/systemd/fleet-health.* "$d"/systemd/fleet-backup.* "$d"/systemd/src-checkout-update.* /etc/systemd/system/
+install -m 0755 "$d"/bin/fleet-resilience.sh "$d"/bin/fleet-health.sh "$d"/bin/fleet-backup.sh "$d"/bin/fleet-wg-failover.sh "$d"/bin/src-checkout-update.sh "$d"/bin/fleet-notify.sh "$d"/bin/fleet-dns-failover.sh /usr/local/bin/
+install -m 0644 "$d"/systemd/fleet-health.* "$d"/systemd/fleet-backup.* "$d"/systemd/src-checkout-update.* "$d"/systemd/fleet-notify.* /etc/systemd/system/
 # prd: ai-os relay (root user unit) from the read-only checkout /srv/src.
 if [ -f "$d/prd/systemd/aphrody-relay.service" ]; then
   . "$d/$h/resilience.conf"; [ -n "${SRC_CHECKOUT:-}" ] && SRC_CHECKOUT=$SRC_CHECKOUT SRC_SPARSE="$SRC_SPARSE" "$d"/bin/src-checkout-update.sh ensure 2>/dev/null || true

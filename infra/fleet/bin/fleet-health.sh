@@ -6,9 +6,8 @@
 #     peer unreachable -> counted in /var/lib/fleet-health/down.<peer> and alerted;
 #  3. mesh ping, FLEET_TCP ports, edge fr2 (curl --resolve).
 # Service failover between hosts is the cluster LB (infra/cluster, HAProxy pools fr1/fr2/prd with health checks).
-# Alerts: journald (tag fleet-health) + optional webhook FLEET_ALERT_URL (ntfy/Discord-compatible POST).
-# DNS failover (off by default): FLEET_DNS_FAILOVER=1 + CF_API_TOKEN (Zone.DNS:Edit) + /etc/fleet/dns-failover.tsv
-# ("zone_id record_id fallback_ip" per line) -> after 3 consecutive edge failures, PATCH records to fallback.
+# Alerts: journald (tag fleet-health, priority err), mailed by fleet-notify.sh (one per cause per 24 h).
+# DNS failover: FLEET_DNS_FAILOVER=1 (prd) -> fleet-dns-failover.sh down/up (token fleet-<host>-dns).
 set -uo pipefail
 [ -f /etc/fleet/resilience.conf ] && . /etc/fleet/resilience.conf
 [ -f /etc/fleet/health.env ] && . /etc/fleet/health.env
@@ -33,24 +32,24 @@ done
 
 for ip in ${FLEET_PEERS:-10.200.77.1 10.200.77.3 10.200.77.5}; do ping_ok "$ip" || fail+=("mesh:$ip"); done
 for hp in ${FLEET_TCP:-10.200.77.1:50051 10.200.77.1:50061 10.200.77.5:8766 10.200.77.5:8182}; do tcp_ok "${hp%:*}" "${hp#*:}" || fail+=("tcp:$hp"); done
-edge_fail=0
+# Edge = fr2: down only when every edge URL fails (one broken vhost is not an edge outage).
+edge_ok=0; edge_n=0
 for u in ${FLEET_URLS:-https://api.aphrody.com/v1/health https://creator.aphrody.com/health https://cdn.aphrody.com/}; do
-  h=${u#https://}; h=${h%%/*}
-  http_ok --resolve "$h:443:${FLEET_EDGE_IP:-51.255.162.6}" "$u" || { fail+=("edge:$u"); edge_fail=1; }
+  h=${u#https://}; h=${h%%/*}; edge_n=$((edge_n+1))
+  if http_ok --resolve "$h:443:${FLEET_EDGE_IP:-51.255.162.6}" "$u"; then edge_ok=$((edge_ok+1)); else fail+=("edge:$u"); fi
 done
-n=$(cat "$st/edge_fail" 2>/dev/null || echo 0); [ $edge_fail = 1 ] && n=$((n+1)) || n=0; echo $n > "$st/edge_fail"
+n=$(cat "$st/edge_fail" 2>/dev/null || echo 0); [ $edge_ok = 0 ] && n=$((n+1)) || n=0; echo $n > "$st/edge_fail"
+up=$(cat "$st/edge_up" 2>/dev/null || echo 0); [ $edge_ok = "$edge_n" ] && up=$((up+1)) || up=0; echo $up > "$st/edge_up"
+# DNS failover (FLEET_DNS_FAILOVER=1, prd): edge down 3 runs in a row (6 min) and fr2 unreachable over ssh;
+# failback after 3 healthy runs. Records, standby choice (strict TLS) and state: fleet-dns-failover.sh.
+if [ "${FLEET_DNS_FAILOVER:-0}" = 1 ] && [ -x /usr/local/bin/fleet-dns-failover.sh ]; then
+  if [ "$n" -ge 3 ] && [ "$(cat "$st/down.fr2" 2>/dev/null || echo 0)" -ge 3 ]; then /usr/local/bin/fleet-dns-failover.sh down
+  elif [ "$up" -ge 3 ]; then /usr/local/bin/fleet-dns-failover.sh up; fi
+fi
 if [ ${#fail[@]} -gt 0 ]; then
+  # journald err = alert source: fleet-notify.timer turns it into one mail per cause and per 24 h.
   msg="fleet-health $(hostname): ${fail[*]}"
   logger -t fleet-health -p daemon.err "$msg"; echo "$msg"
-  [ -n "${FLEET_ALERT_URL:-}" ] && curl -s -m 10 -d "$msg" "$FLEET_ALERT_URL" >/dev/null
-  if [ "${FLEET_DNS_FAILOVER:-0}" = 1 ] && [ "$n" -ge 3 ] && [ -n "${CF_API_TOKEN:-}" ] && [ ! -e "$st/failed_over" ]; then
-    while read -r z r ip; do
-      [ -z "$z" ] || [ "${z#\#}" != "$z" ] && continue
-      curl -s -m 15 -X PATCH -H "Authorization: Bearer $CF_API_TOKEN" -H 'Content-Type: application/json' \
-        "https://api.cloudflare.com/client/v4/zones/$z/dns_records/$r" -d "{\"content\":\"$ip\"}" >/dev/null
-    done < /etc/fleet/dns-failover.tsv
-    touch "$st/failed_over"; logger -t fleet-health -p daemon.crit "DNS failover executed (rollback: reset records, rm $st/failed_over)"
-  fi
   exit 1
 fi
 echo "fleet-health $(hostname): OK"

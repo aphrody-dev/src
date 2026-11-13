@@ -1,0 +1,8 @@
+[Unit]
+Description=Fleet alerts: journald errors and failed units -> one mail per cause per 24 h (fleet-notify.sh)
+Wants=network-online.target
+After=network-online.target
+[Service]
+Type=oneshot
+Nice=10
+ExecStart=/usr/local/bin/fleet-notify.sh scan
