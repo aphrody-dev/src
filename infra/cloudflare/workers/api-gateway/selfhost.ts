@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
-// Self-host a Cloudflare Worker module (infra/fleet/workers/*/worker.js) on Bun: same fetch(req, env) code,
+// Self-host a Cloudflare Worker module (infra/cloudflare/workers/api-gateway/worker.js) on Bun: same fetch(req, env) code,
 // R2 bindings backed by any S3 endpoint (R2's own S3 API, MinIO, rustfs), [vars] read from the worker's toml.
-//   bun infra/fleet/workers/selfhost.ts infra/fleet/workers/api-gateway/api.aphrody.com.toml
+//   bun infra/cloudflare/workers/api-gateway/selfhost.ts infra/cloudflare/workers/api-gateway/api.aphrody.com.toml
 // Env: PORT (8080), HOST (0.0.0.0), S3_ENDPOINT, S3_REGION, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY,
 //      S3_BUCKET_<BINDING> overrides the toml bucket_name. Health: GET /__health.
 import { dirname, resolve } from "node:path";
