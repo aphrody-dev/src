@@ -4,18 +4,17 @@ Single map of everything the monorepo runs on. Sources of truth are cited per se
 summarizes them and must be updated in the same change when they move. Secrets are referenced by
 environment variable name only (values live in `C:\src\.env`, managed by `packages/env-kit`).
 
-Owner decision 2026-11-12 (revised the same day): **usa = all production, and every public DNS
-record points to usa. fr1 = builds only (Chromium, AOSP, Linux kernel, wasm, Steam game builds).
-fr2 = CDN edge and test machine, to be wiped and reinstalled.** Reality still differs: aphrody.com
-and aphrody.app are served from fr1. The cutover plan is in `docs/AY_MIGRATION.md`.
+Owner decision 2026-11-13: **usa (prd) = production backends only, minimal, no compilers. fr1 = the
+factory (builds, CI runner, training, heavy agents). fr2 = edge only, minimal.** Upstream tool per
+infrastructure brick (versions, source commits, rollback): `docs/infra/UPSTREAM-STACK.md`.
 
 ## 1. Machines
 
 | Node        | SSH                                          | Provider             | Public IP        | Mesh IP     | Role                                                                                                                                                                        | Source                                       |
 | ----------- | -------------------------------------------- | -------------------- | ---------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| `usa`       | `ssh prd` (root, key `hostinger_us_ed25519`) | Hostinger VPS        | 72.60.186.43     | 10.200.77.5 | **production**: every public service                                                                                                                                        | `infra/deploy.toml` `[nodes.usa]`, `~/.ssh/config` |
-| `fr1`       | `ssh vps` (ubuntu)                           | OVHcloud VPS         | 51.77.147.152    | 10.200.77.1 | **builds only**: Chromium, AOSP, Linux kernel, wasm, Steam game builds                                                                                                      | `[nodes.fr1]`                                |
-| `fr2`       | `ssh cdn` (ubuntu)                           | OVHcloud VPS         | 51.255.162.6     | 10.200.77.3 | **CDN edge and test machine**: caching edge in front of usa; to be reinstalled                                                                                              | `[nodes.fr2]`                                |
+| `usa`       | `ssh prd` (root, key `hostinger_us_ed25519`) | Hostinger VPS        | 72.60.186.43     | 10.200.77.5 | **production backends only**: compose `core`, products, no compilers                                                                                                        | `infra/deploy.toml` `[nodes.usa]`, `~/.ssh/config` |
+| `fr1`       | `ssh vps` (ubuntu)                           | OVHcloud VPS         | 51.77.147.152    | 10.200.77.1 | **factory**: Chromium/LLVM, image builds (buildx `aphrody`), CI runner `fr1`, training, heavy agents                                                                       | `[nodes.fr1]`                                |
+| `fr2`       | `ssh cdn` (ubuntu)                           | OVHcloud VPS         | 51.255.162.6     | 10.200.77.3 | **edge only**: nginx/HAProxy cache shard, cloudflared, self-host edge containers                                                                                            | `[nodes.fr2]`                                |
 | workstation | local                                        | ASUS ROG Strix G35CA | LAN 192.168.0.24 | -           | development; i7-13700F (8P+8E, 24T, x86-64-v3), 32 GiB DDR5-5800, RTX 4070 12 GiB, Micron 2400 NVMe 1 TB, Windows 11 Pro 26H1 build 28120, UEFI + Secure Boot, Hyper-V root | `ay sys`                                     |
 
 Hardware and software of the three VPS, surveyed read-only over SSH on 2026-11-12. Running `ay sys`
@@ -46,8 +45,9 @@ per-domain cutover table is in `docs/AY_MIGRATION.md`.
 | yolo                                | Bun fullstack  | yolo.aphrody.com, yolo.aphrody.app        | 3092               | -                  |
 | auto (on usa since 2026-11-12)      | Bun + Rust FFI | auto.aphrody.com (tunnel `auto-usa`)      | none (auto-prod)   | - (RustFS auto-s3) |
 
-Reverse proxy: Caddy, generated `infra/generated/Caddyfile`; systemd units in
-`infra/generated/systemd/`. Deploy engine: `ay deploy` (Go `src-deploy`, `infra/cmd/src-deploy`).
+Reverse proxy: nginx vhosts + HAProxy cluster layer (`infra/cluster`, `docs/infra/CLUSTER.md`) behind Cloudflare.
+Deploy: upstream only, `docker buildx bake` (CI `images.yml`) + `docker compose up --wait` (`just deploy`, `ay deploy <sub>`
+= `just docker-<sub>`); the Go `src-deploy` engine and its Caddyfile/systemd generator were removed on 2026-11-13.
 
 ## 3. Cloud providers and accounts
 
@@ -83,7 +83,7 @@ Account notes (2026-11-12):
 | Store                 | Where                                                                                                       | Notes                                                                                                  |
 | --------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | Postgres              | Neon/Supabase (managed); containers on usa (shenron, rosegriffon) and fr1 (`rg-inagle-pg`, `yolo-crawl-pg`) | `DATABASE_URL`. fr2 keeps only `/etc/postgresql/18`, with no data and no unit: the old replica is gone |
-| SQLite (`bun:sqlite`) | per app on `usa`                                                                                            | app data dirs; backups go off-host to R2 (fr1 builds only, fr2 is reinstalled)                         |
+| SQLite (`bun:sqlite`) | per app on `usa`                                                                                            | app data dirs; backups go off-host to R2 (fr1 is the factory, fr2 is edge only)                         |
 | Object storage        | Cloudflare R2 (`aphrody-assets`, `shenron-cdn`, `rosegriffon-media`)                                        | caching edge on fr2 (`cdn.rosegriffon.fr`)                                                             |
 | Build artifacts       | fr1                                                                                                         | build caches only, no production data                                                                  |
 

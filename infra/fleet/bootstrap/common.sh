@@ -28,7 +28,8 @@ lock_art() {
 # fetch <tool> <dest>: download this platform's artifact and verify its checksum (sha256 or sha512).
 fetch() {
   url=$(lock_art "$1" url); [ -n "$url" ] || { echo "no $PLAT artifact for $1" >&2; return 1; }
-  curl -fsSL --retry 3 -o "$2" "$url"
+  # IPv4 fallback: fr1 gets 404 from dl.google.com over IPv6 (seen 2026-11-13 on go1.27.4).
+  curl -fsSL --retry 3 -o "$2" "$url" || curl -4 -fsSL --retry 3 -o "$2" "$url"
   if sum=$(lock_art "$1" sha256) && [ -n "$sum" ]; then echo "$sum  $2" | sha256sum -c --quiet -
   elif sum=$(lock_art "$1" sha512) && [ -n "$sum" ]; then echo "$sum  $2" | sha512sum -c --quiet -
   else echo "no checksum for $1" >&2; return 1; fi
@@ -115,10 +116,11 @@ docker_runtime() {
 docker_multiarch() {
   docker_runtime
   docker run --privileged --rm tonistiigi/binfmt:qemu-v10.1.3 --install arm64 >/dev/null 2>&1 || docker run --privileged --rm tonistiigi/binfmt --install arm64 >/dev/null
-  # BuildKit capped to 2 CPUs / 8 GiB (shared-host rule); builds go through infra/fleet/bin/heavy.sh.
+  # BuildKit capped (BUILDKIT_CPUS, default 2; BUILDKIT_MEM, default 8g); builds go through infra/fleet/bin/heavy.sh.
+  cpus=${BUILDKIT_CPUS:-2}; mem=${BUILDKIT_MEM:-8g}
   docker buildx inspect aphrody >/dev/null 2>&1 || docker buildx create --name aphrody --driver docker-container \
-    --driver-opt network=host --driver-opt cpu-quota=200000 --driver-opt cpu-period=100000 --driver-opt memory=8g --bootstrap >/dev/null
-  docker update --cpus 2 --memory 8g --memory-swap 8g buildx_buildkit_aphrody0 >/dev/null 2>&1 || true
+    --driver-opt network=host --driver-opt cpu-quota=$((cpus * 100000)) --driver-opt cpu-period=100000 --driver-opt memory="$mem" --bootstrap >/dev/null
+  docker update --cpus "$cpus" --memory "$mem" --memory-swap "$mem" buildx_buildkit_aphrody0 >/dev/null 2>&1 || true
   for h in "$(dirname "$0")/heavy.sh" "$(dirname "$0")/../bin/heavy.sh"; do [ -f "$h" ] && $SUDO install -m 0755 "$h" "$BIN/aphrody-heavy" && break; done
   docker buildx inspect aphrody | grep -E '^Platforms' | head -1
 }

@@ -2,14 +2,14 @@
 
 Compatible with **Google Antigravity (`agy`)**, **OpenAI Codex (`codex`)**, **Anthropic Claude Code (`claude`)**, **Vercel-Labs (`skills` / `agent-skills`)**, **OpenCode**, **Pi**, and **Zed**.
 
-## 1. Canonical Monorepo Architecture (Linux / Git / GNU / Chromium `depot_tools` / Bun v1.4.4 / Go 1.27)
+## 1. Canonical Monorepo Architecture (Linux / Git / GNU / Chromium `depot_tools` / Bun v1.4.4)
 
 The repository root (`SRC_ROOT`) separates first-party code from upstream vendor trees (lists as of 2026-11-13, `ls` of each directory):
 
 - [`apps/`](apps) — products and maintained sites (`aphrody`, `aphrody-app`, `auto`, `l2l`, `nt`, `r2b`, `r2-site`, `rosegriffon`, `shenron`, `yolo`); `auto`, `r2b`, `rosegriffon`, `shenron` are the only git submodules.
 - [`packages/`](packages) — Bun 1.4.4 `@aphrody/*` packages (`ai-os`, `bun-parity`, `bun-plugins`, `chromium-bun`, `core`, `env-kit`, `epic-games`, `forge`, `google-design`, `machine`, `net`, `runtime-adapter`, `shell-matrix`, `wck`).
 - [`crates/`](crates) — Rust 2024 crates in one flat workspace (`ay`, `archguard`, `xtask`, `depot-*`, `lore*`, `aphrody-design-*`, `corelib`, `core`, `core-capi`, `ffi`, `rust-stack`, `ring3-agent`, `gamescope-*`, `unix-*`, `tv-*`, `bench`, ...).
-- [`infra/`](infra) — Go 1.27 deploy engine and fleet (`cmd/src-deploy`, `cshared` -> `infra_go.dll`, `fleet`, `mesh-vn`, `gcloud`, `gitlab`, `mail`, `ffi-bridge`, `chromium-factory`).
+- [`infra/`](infra) — fleet and deploy config assembled from upstream tools (`deploy.toml`, `docker`, `cluster`, `cloudflare`, `fleet`, `mesh-vn`, `gcloud`, `gitlab`, `mail`, `ffi-bridge`, `chromium-factory`; `docs/infra/UPSTREAM-STACK.md`).
 - [`third_party/`](third_party) — upstream checkouts and aphrody-labs forks, flat (`third_party/<name>`, list in `third_party/forks.txt`).
 
 ## 2. Single AI Product Ownership & Anti-AI-Slop Design-First Gate

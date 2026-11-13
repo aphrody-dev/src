@@ -1,10 +1,10 @@
-//! External engines that `ay` drives but does not link: the Go deploy engine and binaries
+//! External programs that `ay` drives but does not link: `just` recipes and binaries
 //! that have not been folded in yet.
 
 use std::path::PathBuf;
 use std::process::Command;
 
-/// Environment override for a program: `src-deploy` -> `AY_SRC_DEPLOY`.
+/// Environment override for a program: `gamescope-rs` -> `AY_GAMESCOPE_RS`.
 pub fn override_var(program: &str) -> String {
     format!("AY_{}", program.to_ascii_uppercase().replace('-', "_"))
 }
@@ -59,7 +59,7 @@ mod tests {
 
     #[test]
     fn override_variable_names() {
-        assert_eq!(override_var("src-deploy"), "AY_SRC_DEPLOY");
+        assert_eq!(override_var("just"), "AY_JUST");
         assert_eq!(override_var("gamescope-rs"), "AY_GAMESCOPE_RS");
     }
 

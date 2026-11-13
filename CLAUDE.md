@@ -10,7 +10,7 @@ The canonical cross-agent contract is [`AGENTS.md`](./AGENTS.md) plus [`.agents/
 ## Repository Conventions (checked by `archguard` and CI)
 
 - `packages/ai-os` (`@aphrody/ai-os`) is the sole AI product and owner of AI routing, MCP, skills, memory. Other units are generalist software; do not add AI features or AI-flavored copy outside `ai-os`.
-- Domain purity: `crates/*` is Rust 2024 only (no `.ts`/`.js`/npm). `packages/*` is Bun-only `@aphrody/*` (no root `Cargo.toml`/`go.mod`). Infra is Go 1.27. Upstream code lives in `third_party/`.
+- Domain purity: `crates/*` is Rust 2024 only (no `.ts`/`.js`/npm). `packages/*` is Bun-only `@aphrody/*` (no root `Cargo.toml`/`go.mod`). Infra assembles upstream tools (no in-house engine, `docs/infra/UPSTREAM-STACK.md`). Upstream code lives in `third_party/`.
 - Root directories are whitelisted in `crates/archguard/src/constants.rs` (`ALLOWED_ROOT_PHYSICAL_DIRS`, mirrored in `archguard.rules.json`). A new root dir fails `ay arch check --strict` until it is added there. The root `.gitignore` is an allowlist: new tracked root files need a `!/name` entry.
 - No `postinstall`/`preinstall` scripts, no `binding.gyp`; prefer Bun built-ins (`bun:sqlite`, `Bun.SQL`, `bun:ffi`, `bun build --compile`) over npm dependencies.
 - UI work follows the Design-First Gate: PRD (_Cahier des charges_) + `DESIGN.md` before code, then `gds verify` and `wck` 100/100.
@@ -18,7 +18,7 @@ The canonical cross-agent contract is [`AGENTS.md`](./AGENTS.md) plus [`.agents/
 
 ## Commands
 
-Toolchain: Bun 1.4.4, Cargo (Rust 2024), Go 1.27, `just`. First-party CLIs are prebuilt in `~/.local/bin`: `ay` (the Rust multicall CLI, `crates/ay`; command table in `docs/NAMING.md`), `frg`, `gds`, `wck`, `graphify`, `src-deploy` (driven by `ay deploy`), `ai-os`. Install or refresh `ay` with `just install-ay`.
+Toolchain: Bun 1.4.4, Cargo (Rust 2024), `just`. First-party CLIs are prebuilt in `~/.local/bin`: `ay` (the Rust multicall CLI, `crates/ay`; command table in `docs/NAMING.md`), `frg`, `gds`, `wck`, `graphify`, `ai-os`. Install or refresh `ay` with `just install-ay`.
 
 ```sh
 bun fmt                       # format workspace (bun fmt --check in CI)
@@ -34,13 +34,13 @@ ay arch check --strict        # architecture / purity / hygiene gate (also: just
 ay doctor | ay lock | ay manifests [verify]   # toolchain doctor, src.lock.json + generated manifests
 ay git <cmd>                  # fork, slim [--all], clone, gix, forge, audit, maintainer, depot_tools shims
 ay ingest <path> / ay graph <path>   # repository digest / tree-sitter code graph (build, query, path, explain, mcp)
-ay deploy ... / ay bench ...  # Go src-deploy engine / Windows benchmark suite
+ay deploy <sub> / ay bench ... # just docker-<sub> (buildx bake + compose) / Windows benchmark suite
 ay build --list               # cross-compilation presets and which Rust targets / native toolchains are missing
 ay build -t wasm32 -t linux-musl --release   # or: just build target=wasm32
 just verify-all               # ay arch check + ay doctor + bun + cargo + go suites
 just graph third_party/bun/src bun   # AST graph into graphify-out/bun
 just lock                     # src.lock.json from the checkout, then DEPS + .gitmodules derived from it
-just deploy                   # src-deploy up --all --dry-run; `just deploy --all ""` deploys for real
+just deploy [profile] [host]  # docker compose pull + up --wait (default core on prd); rollback SRC_TAG=<sha>
 ```
 
 Nothing compiles on the workstation: the `cargo`, `go` and `ay build` commands above run in CI (GitHub-hosted runners: `ci.yml` Rust, `judge.yml` fast gates), never on prd (production backends); fr1 (`ssh vps`) takes Chromium/LLVM builds only. Never run bare `bun test` from the root: it walks `third_party/` (5M+ files, over a minute) before finding anything.
@@ -51,7 +51,7 @@ The only git submodules are `apps/auto`, `apps/r2b`, `apps/rosegriffon` and `app
 
 - The `justfile` runs under `sh` on Unix and `pwsh` on Windows. Every path is `{{root}}/...` with `root := env("SRC_ROOT", justfile_directory())`; keep new recipes in that form and avoid shell-specific syntax (no `Push-Location`, no `&&` chains that pwsh 5 cannot parse).
 - `ay arch` root: `--root`, else `$SRC_ROOT`, else nearest ancestor with `src.lock.json`.
-- Containers, never Debian/Ubuntu: Alpine runtimes, Arch Linux for the heavy `dev` image, Nix (`infra/nix/flake.nix`, `just nix-shell`) as the non-container path. Everything lives in `infra/docker/`: `Dockerfile` (one target per service: `ai-os`, `aphrody`, `yolo`, `r2-site`, `api-gateway`, `loreserver`, `r3d`, `rust-stack`, `runtime`, `dev`; cargo-chef + cargo-zigbuild for amd64/arm64 musl), `Dockerfile.dockerignore` (allowlist), `docker-bake.hcl` (matrix, GHCR `ghcr.io/aphrody-labs/*`), `compose.yaml` (profiles `core` prd, `edge` fr2, `dev`), `smoke.sh`. Pins = `packages/machine/toolchains.lock.toml`. The PC has no engine: `docker context use prd`. Recipes: `just docker-build|docker-smoke|docker-up|docker-products`. Placement, scaling and rollback per service: `docs/infra/DEPLOY.md`. Policy: `.agents/skills/containers-alpine-arch-k8s/SKILL.md`.
+- Containers, never Debian/Ubuntu: Alpine runtimes, Arch Linux for the heavy `dev` image, Nix (`infra/nix/flake.nix`, `just nix-shell`) as the non-container path. Everything lives in `infra/docker/`: `Dockerfile` (one target per service: `ai-os`, `aphrody`, `yolo`, `r2-site`, `api-gateway`, `loreserver`, `r3d`, `rust-stack`, `runtime`, `dev`; cargo-chef + cargo-zigbuild for amd64/arm64 musl), `Dockerfile.dockerignore` (allowlist), `docker-bake.hcl` (matrix, GHCR `ghcr.io/aphrody-labs/*`), `compose.yaml` (profiles `core` prd, `edge` fr2, `dev`), `smoke.sh`. Pins = `packages/machine/toolchains.lock.toml`. The PC has no engine: docker contexts `fr1` (builds), `prd`, `fr2` over ssh. Recipes: `just docker-build|docker-smoke|docker-up|docker-products`. Placement, scaling and rollback per service: `docs/infra/DEPLOY.md`. Policy: `.agents/skills/containers-alpine-arch-k8s/SKILL.md`.
 - Offline docs: `third_party/docs-ecosystem/` holds sparse mirrors of Docker docs, Kubernetes website, nix.dev, and the official Arch/Alpine image repos (pinned in `src.lock.json`, refreshed by `just docs-sync`). Grep them before the web.
 - Container CLIs in `~/.local/bin`: `kubectl` (Docker Desktop), `helm`, `kind`, `kustomize`, `hadolint`.
 - Bootstrap: `scripts/install.ps1` / `scripts/install.sh` build `ay` once, then `ay up --bootstrap`; deploy is `just deploy` (`ay deploy`).
@@ -61,7 +61,7 @@ The only git submodules are `apps/auto`, `apps/r2b`, `apps/rosegriffon` and `app
 - **Ownership**: Aphrody's own products are `apps/aphrody` (aphrody.com search and package catalog), `apps/aphrody-app` (aphrody.app) and `packages/ai-os`. `apps/shenron` (DBFR, dragonballfr.com) and `apps/rosegriffon` (rosegriffon.fr) are distinct community products that Aphrody is employed to maintain and uses as testbeds for Bun, Rust, design-stack evaluation and benchmarks: never present them as Aphrody products.
 - **Workspaces**: root `package.json` workspaces are `packages/*`, `infra/mesh-vn`, `infra/ffi-bridge`. Packages expose `src/cli.ts`, run via `bun run --cwd packages/<pkg> src/cli.ts <cmd>` (what most `just` recipes wrap), and are AOT-compiled into `~/.local/bin`.
 - **FFI**: `crates/ffi` builds `aphrody_ffi` (`depot_*` and `aphrody_*` symbols, read by `packages/forge` via `bun:ffi`; symbol names are a stable contract). **Three-way FFI**: Rust (`crates/rust-stack` -> `rust_stack_ffi.dll`), Go (`infra/cshared` -> `infra_go.dll`), and Bun (`infra/ffi-bridge`, `bun:ffi`) call each other over a C ABI. Changing an exported signature on one side means updating the other two and running `just verify-all`.
-- **Deploy engine**: `infra/cmd/src-deploy` (Go) builds OCI images and drives Cloudflare, Caddy blue/green on `prd` (`usa` node, production backends) behind `fr2` (proxy, vhosts, CDN); `fr1` builds (Chromium, LLVM, images), GCP Cloud Run, Vercel. Config is `infra/deploy.toml`; the generated Caddyfile lives in `infra/generated/`.
+- **Deploy**: upstream only (`docs/infra/UPSTREAM-STACK.md`): images by `docker buildx bake` in CI (`images.yml`) or on `fr1` (factory: builds, CI, training, heavy agents), pushed to `ghcr.io/aphrody-labs`; `docker compose up --wait` on `prd` (`usa` node, production backends only, no compilers) and `fr2` (edge only); Cloudflare via wrangler/`cf`. Config is `infra/deploy.toml`.
 - **VCS governance (pin-001)**: `src.lock.json` is the only pin; `DEPS` (gclient) and `.gitmodules` are derived from it by `ay manifests` (`ay manifests --check` / `just manifests-check` gate). Do not hand-edit them. `MAINTAINERS` (kernel format) is hand-maintained. Product names live in `identity.toml` (`just identity check`).
 - **One canonical path per unit**: there are no root aliases (the former `C:/src/bun`, `C:/src/chromium`, ... junctions were removed; the list is in `var/reorg/`). Always reference `third_party/<name>`, `packages/<name>`, `crates/<name>`, `apps/<name>`. `third_party/chromium` is a gclient solution (`.gclient`, cache in `%LOCALAPPDATA%/depot_tools/git_cache`); `third_party/bun` is the `aphrody-labs/bun` fork (default branch `main`), a Rust Cargo workspace of ~130 crates under `src/` with its own `CLAUDE.md` (build with `bun bd`, never plain `bun test` there).
 - **Root Cargo workspace** (`Cargo.toml`): flat `crates/<name>` members sharing `[workspace.package]` (edition 2024), `[workspace.dependencies]`, and one release profile (fat LTO, 1 codegen unit, abort). Members inherit with `edition.workspace = true`; archguard accepts that only when the root value is compliant.

@@ -1,6 +1,6 @@
 //! `ay`: the monorepo's multicall CLI. Each command forwards its arguments to the library
 //! that owns the logic (archguard, xtk, depot-cli, aphrody-remote, stack-bench) or to an
-//! external engine (`src-deploy`, `gamescope-rs`). See docs/NAMING.md for the command table.
+//! external program (`gamescope-rs`, `just` recipes). See docs/NAMING.md for the command table.
 //! `ay build` drives cargo itself (see [`build`]).
 
 use clap::{Parser, Subcommand};
@@ -65,7 +65,7 @@ pub enum Cmd {
     /// Tree-sitter code graph: `ay graph <path>` builds; build, query, path, explain, mcp
     #[command(disable_help_flag = true)]
     Graph(Rest),
-    /// Deploy engine (runs the Go `src-deploy` binary)
+    /// Containers: `ay deploy <sub>` runs `just docker-<sub>` (buildx bake + compose, docs/infra/DEPLOY.md)
     #[command(disable_help_flag = true)]
     Deploy(Rest),
     /// Hardware and compiler benchmarks (Windows)
@@ -214,7 +214,10 @@ pub fn route(cmd: Cmd) -> Route {
             }
             _ => Route::Depot("ay", prefixed(&["graph", "build"], &r.args)),
         },
-        Cmd::Deploy(r) => Route::External("src-deploy", r.args),
+        Cmd::Deploy(r) => {
+            let (sub, rest) = r.args.split_first().map_or(("ps", &[][..]), |(s, rest)| (s.as_str(), rest));
+            Route::External("just", prefixed(&[format!("docker-{sub}").as_str()], rest))
+        }
         Cmd::Bench(r) => Route::Bench(r.args),
         Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
         Cmd::Upstream(r) => Route::Package("upstream", r.args),
@@ -389,7 +392,8 @@ mod tests {
 
     #[test]
     fn external_engines() {
-        assert_eq!(parse("deploy up --all"), Route::External("src-deploy", v(&["up", "--all"])));
+        assert_eq!(parse("deploy up edge fr2"), Route::External("just", v(&["docker-up", "edge", "fr2"])));
+        assert_eq!(parse("deploy"), Route::External("just", v(&["docker-ps"])));
         assert_eq!(parse("scope serve-web"), Route::External("gamescope-rs", v(&["serve-web"])));
         assert_eq!(parse("lfs logs"), Route::External("just", v(&["lfs-logs"])));
         assert_eq!(parse("lfs"), Route::External("just", v(&["lfs-build"])));

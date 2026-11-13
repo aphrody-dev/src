@@ -1,20 +1,11 @@
 # =============================================================================
-# Multi-cloud and self-hosted deployment manifest. Node roles (2026-11-12, owner decision):
-#   usa (ssh prd) = all production, every public DNS record points here;
-#   fr1 (ssh vps) = builds only (Chromium, AOSP, kernel, wasm, Steam games);
-#   fr2 (ssh cdn) = CDN edge and test machine (to be wiped and reinstalled). See docs/INFRA_MATRIX.md.
-# Engine: `src-deploy` / `dpl` (Go 1.27 + Zig CGO + Rust + Bun v1.4.4 FFI)
+# Multi-cloud and self-hosted deployment manifest. Node roles (owner decision 2026-11-13):
+#   usa (ssh prd) = production backends only, no compilers;
+#   fr1 (ssh vps) = factory: builds, CI, training, heavy agents;
+#   fr2 (ssh cdn) = edge only. See docs/INFRA_MATRIX.md.
+# Tooling: upstream only (docker buildx bake + compose, cloudflared, HAProxy, nginx); no in-house deploy engine.
+# Brick -> tool map with versions and source commits: docs/infra/UPSTREAM-STACK.md.
 # =============================================================================
-
-[engine]
-module = "sovereign.local/infra"
-cli = "src-deploy"
-shim = "dpl"
-go_version = "1.27.0"
-cshared_dll = "C:/Users/aphro/.local/bin/infra_go.dll"
-oci_spec = "1.1"
-caddyfile_out = "C:/src/infra/generated/Caddyfile"
-plan_out = "C:/src/infra/generated/deploy-plan.json"
 
 [mesh]
 network_cidr = "10.200.77.0/24"

@@ -2,13 +2,12 @@
   "name": "@aphrody/ffi-bridge",
   "version": "1.27.0",
   "private": true,
-  "description": "Three-Way Rust <-> Bun v1.4.4 <-> Go 1.27 Zero-Copy Native FFI Bridge",
+  "description": "bun:ffi tests of the Rust cdylibs (rust-stack, unix-distro probes)",
   "type": "module",
   "scripts": {
     "test": "bun test",
     "check": "bun check",
-    "fmt": "bun fmt",
-    "test:rust": "cargo test"
+    "fmt": "bun fmt"
   },
   "dependencies": {},
   "devDependencies": {},

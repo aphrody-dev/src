@@ -3,15 +3,17 @@
 Source unique : `infra/deploy.toml` (`[services.*]` placement et ports blue/green, `[hosting.*]` cible cf | vercel | vps,
 `[containers]` images). Rendu par cible : `bun scripts/deploy-target.ts <app> <cf|vercel|vps>`. Images :
 `infra/docker/` (Dockerfile, `docker-bake.hcl`, `compose.yaml`, `smoke.sh`), CI `.github/workflows/images.yml`.
-Versions des outils : `packages/machine/toolchains.lock.toml` (généré par `scripts/toolchains-lock.ts`).
+Versions des outils : `packages/machine/toolchains.lock.toml` (généré par `scripts/toolchains-lock.ts`). Outils upstream
+retenus par brique (versions, commits sources) : [UPSTREAM-STACK.md](UPSTREAM-STACK.md). Aucun moteur maison : `ay deploy <sub>`
+= `just docker-<sub>`.
 
 ## Rôles de la flotte
 
 | Hôte | Rôle | Installé par | Moteur de conteneurs |
 |---|---|---|---|
-| PC (Windows 11) | dev, aucune build lourde | winget/officiels, `packages/machine` | aucun local (pas de WSL) : `docker context use prd` |
-| prd (USA, Arch) | builds générales, backends, images | `just fleet-bootstrap prd` | Docker 29.9, buildx `aphrody` (docker-container, amd64+arm64 via binfmt) |
-| fr1 (Ubuntu) | Chromium/LLVM uniquement | `just fleet-bootstrap fr1` | Docker présent, aucune app |
+| PC (Windows 11) | dev, aucune build lourde | winget/officiels, `packages/machine` | aucun local (pas de WSL) : contextes `fr1` (ssh://vps), `prd`, `fr2` |
+| prd (USA, Arch) | backends de prod uniquement, aucun compilateur | `just fleet-bootstrap prd` (purge go, zig, .NET, cargo-zigbuild, cbindgen, nextest, builder buildx) | Docker 29.9 + compose, images tirées de GHCR |
+| fr1 (Ubuntu) | usine : Chromium/LLVM, builds d'images, CI (runner `fr1`), training, agents lourds | `just fleet-bootstrap fr1` | Docker 29.7, buildx `aphrody` (docker-container, 4 CPU / 12 Gio, amd64+arm64 via binfmt) |
 | fr2 (Ubuntu) | edge : nginx, CDN, cloudflared | `just fleet-bootstrap fr2` | Docker (`ip-forward-no-drop`, `live-restore`), profil `edge` |
 
 ## Matrice par service
@@ -37,14 +39,15 @@ aucune production n'y est placée.
 
 ## Procédure
 
-1. `just toolchains-lock` si une version change, puis `just fleet-bootstrap prd` (idempotent, vérifie les versions).
+1. `just toolchains-lock` si une version change, puis `just fleet-bootstrap fr1` (usine) et `just fleet-bootstrap prd`
+   (runtime seul) ; idempotents, ils vérifient les versions.
 2. Images : push sur `main` → `images.yml` (amd64+arm64, cache registre partagé) ; ou depuis le PC `just docker-build`
-   (moteur prd par ssh, `docker login ghcr.io` requis côté client avec un jeton `write:packages`).
-3. Test avant bascule : `just docker-smoke` (build amd64 chargée, healthcheck de chaque image), puis
+   (`gh workflow run images.yml`, push par `GITHUB_TOKEN`). Build manuel sur l'usine : `ssh vps aphrody-heavy docker buildx bake --builder aphrody …`.
+3. Test avant bascule : `just docker-smoke` (job smoke d'`images.yml` : healthcheck de chaque image), puis
    `just docker-up core prd` : les conteneurs écoutent sur les ports verts en 127.0.0.1, les services actuels gardent
    les ports bleus. Vérifier `curl -fsS http://127.0.0.1:<port vert>/<health>` sur l'hôte.
-4. Bascule : l'upstream nginx/cloudflared du domaine passe du port bleu au vert (`ay deploy caddyfile` /
-   vhost fr2), puis `curl -sS -o /dev/null -w '%{http_code}' https://<domaine>/` depuis le PC.
+4. Bascule : l'upstream nginx/HAProxy du domaine passe du port bleu au vert (vhost nginx, `infra/cluster`,
+   [CLUSTER.md](CLUSTER.md)), puis `curl --resolve <domaine>:443:<ip> -fsS https://<domaine>/<health>`, puis `curl -sS -o /dev/null -w '%{http_code}' https://<domaine>/` depuis le PC.
 5. Retour arrière : remettre l'upstream sur le port bleu, ou `SRC_TAG=<sha précédent> just docker-up`.
 
 ## Règles

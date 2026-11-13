@@ -655,13 +655,6 @@ path = "{repo}/.claude/skills"
 target = "{repo}/.agents/skills"
 
 [[step]]
-name = "src-deploy"
-when = "{repo}/infra/go.mod"
-cwd = "{repo}/infra"
-run = ["go", "build", "-o", "{bin}/src-deploy{exe}", "./cmd/src-deploy"]
-creates = "{bin}/src-deploy{exe}"
-
-[[step]]
 name = "ai-os"
 when = "{repo}/packages/ai-os/src/cli.ts"
 run = ["bun", "build", "--compile", "{repo}/packages/ai-os/src/cli.ts", "--outfile", "{bin}/ai-os{exe}"]
