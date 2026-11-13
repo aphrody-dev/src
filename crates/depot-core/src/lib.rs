@@ -18,7 +18,7 @@ pub mod worktree;
 pub use artifacts::{
     Artifact, ArtifactBinaryHeader, ArtifactEntry, ArtifactManifest, ArtifactReport,
 };
-pub use depot_tools::{DepotTools, DepotToolsInfo};
+pub use depot_tools::{DepotTools, DepotToolsInfo, home_dir, src_root};
 pub use ecosystems::{
     AospProjectEntry, DepsPin, EcosystemGovernanceStatus, EcosystemManifests,
     KernelMaintainerSubsystem,
@@ -188,7 +188,7 @@ lint:
 
     #[test]
     fn test_gix_engine_inspects_monorepo() {
-        let telemetry = GixEngine::inspect(std::path::Path::new(r"C:\src"), 3).unwrap();
+        let telemetry = GixEngine::inspect(&std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../.."), 3).unwrap();
         assert!(!telemetry.branch.is_empty());
         assert!(telemetry.head_commit.is_some());
         assert!(!telemetry.recent_commits.is_empty());

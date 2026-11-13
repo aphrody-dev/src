@@ -20,6 +20,26 @@ pub struct DepotToolsInfo {
 
 pub struct DepotTools;
 
+/// The monorepo root: `$SRC_ROOT`, else the nearest ancestor of the working directory holding
+/// src.lock.json. Same on Windows and Linux (no hardcoded `C:\src`).
+pub fn src_root() -> Option<PathBuf> {
+    std::env::var_os("SRC_ROOT")
+        .filter(|v| !v.is_empty())
+        .map(PathBuf::from)
+        .or_else(|| {
+            let cwd = std::env::current_dir().ok()?;
+            cwd.ancestors()
+                .find(|d| d.join("src.lock.json").is_file())
+                .map(Path::to_path_buf)
+        })
+}
+
+/// The user's home directory: `%USERPROFILE%` on Windows, `$HOME` elsewhere.
+pub fn home_dir() -> Option<PathBuf> {
+    let key = if cfg!(windows) { "USERPROFILE" } else { "HOME" };
+    std::env::var_os(key).filter(|v| !v.is_empty()).map(PathBuf::from)
+}
+
 /// Candidate roots, most specific first: `$DEPOT_TOOLS_PATH`, `<$SRC_ROOT or the nearest
 /// ancestor with src.lock.json>/third_party/depot_tools`, a `PATH` entry holding gclient.py,
 /// `C:\depot_tools`.
@@ -28,16 +48,7 @@ fn candidates() -> Vec<PathBuf> {
     if let Some(p) = std::env::var_os("DEPOT_TOOLS_PATH") {
         out.push(PathBuf::from(p));
     }
-    let src_root = std::env::var_os("SRC_ROOT")
-        .filter(|v| !v.is_empty())
-        .map(PathBuf::from)
-        .or_else(|| {
-            let cwd = std::env::current_dir().ok()?;
-            cwd.ancestors()
-                .find(|d| d.join("src.lock.json").is_file())
-                .map(Path::to_path_buf)
-        });
-    if let Some(r) = src_root {
+    if let Some(r) = src_root() {
         out.push(r.join("third_party").join("depot_tools"));
     }
     out.push(Path::new(env!("CARGO_MANIFEST_DIR")).join("../../third_party/depot_tools"));

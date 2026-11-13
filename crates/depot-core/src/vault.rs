@@ -8,10 +8,11 @@ use std::path::{Path, PathBuf};
 pub struct VaultEnv;
 
 impl VaultEnv {
-    /// Load key/value pairs from `C:\src\.env` (if present) merged with process environment variables.
+    /// Load key/value pairs from `<src root>/.env` (if present) merged with process environment variables.
     pub fn load_merged() -> HashMap<String, String> {
         let mut map = HashMap::new();
-        for candidate in [PathBuf::from(r"C:\src\.env"), PathBuf::from(".env")] {
+        let root_env = crate::depot_tools::src_root().map(|r| r.join(".env"));
+        for candidate in root_env.into_iter().chain([PathBuf::from(".env")]) {
             if candidate.is_file() {
                 Self::load_file_into(&candidate, &mut map);
                 break;

@@ -31,7 +31,7 @@ enum Commands {
         host: String,
         #[arg(long, short, default_value_t = 4320)]
         port: u16,
-        #[arg(long, default_value = "C:\\Users\\aphro\\.rust-stack\\sovereign.sqlite3")]
+        #[arg(long, default_value_os_t = default_db())]
         db: PathBuf,
         #[arg(long, default_value_t = false)]
         offline_only: bool,
@@ -95,14 +95,24 @@ enum AuthCommands {
         name: String,
         #[arg(long, default_value = "chat:completions,models:read")]
         scopes: String,
-        #[arg(long, default_value = "C:\\Users\\aphro\\.rust-stack\\sovereign.sqlite3")]
+        #[arg(long, default_value_os_t = default_db())]
         db: PathBuf,
     },
     /// Print active Ed25519 OIDC JWKS document
     Jwks {
-        #[arg(long, default_value = "C:\\Users\\aphro\\.rust-stack\\sovereign.sqlite3")]
+        #[arg(long, default_value_os_t = default_db())]
         db: PathBuf,
     },
+}
+
+/// `~/.rust-stack/sovereign.sqlite3` (`%USERPROFILE%` on Windows, `$HOME` elsewhere).
+fn default_db() -> PathBuf {
+    let key = if cfg!(windows) { "USERPROFILE" } else { "HOME" };
+    std::env::var_os(key)
+        .map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from("."))
+        .join(".rust-stack")
+        .join("sovereign.sqlite3")
 }
 
 #[tokio::main]

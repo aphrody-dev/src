@@ -9,8 +9,9 @@ import { join } from "node:path";
 import { generateDynamicTheme } from "../color-utils/hct.ts";
 import { listAvailableSymbols } from "../symbols/catalog.ts";
 
-const BUN_DOCS_DESIGN_DIR = "C:\\src\\third_party\\bun\\docs\\design";
-const BUN_DOCS_JSON = "C:\\src\\third_party\\bun\\docs\\docs.json";
+const BUN_DOCS_ROOT = join(import.meta.dir, "..", "..", "..", "..", "third_party", "bun", "docs");
+const BUN_DOCS_DESIGN_DIR = join(BUN_DOCS_ROOT, "design");
+const BUN_DOCS_JSON = join(BUN_DOCS_ROOT, "docs.json");
 
 export interface GenerationResult {
   generatedFiles: string[];

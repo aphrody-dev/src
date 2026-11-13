@@ -1,20 +1,24 @@
 import { describe, expect, test } from "bun:test";
-import { dlopen, FFIType, ptr } from "bun:ffi";
+import { dlopen, FFIType, ptr, suffix } from "bun:ffi";
 import { existsSync } from "node:fs";
+import { homedir } from "node:os";
 import { join } from "node:path";
 
+// rust_stack_ffi.dll on Windows, librust_stack_ffi.so on Linux.
+const libName = `${process.platform === "win32" ? "" : "lib"}rust_stack_ffi.${suffix}`;
+const repoRoot = join(import.meta.dir, "..", "..");
 const candidateDlls = [
   process.env.RUST_STACK_FFI_DLL,
-  "C:\\src\\crates\\rust-stack\\target\\release\\rust_stack_ffi.dll",
+  join(repoRoot, "target", "release", libName),
   process.env.CARGO_TARGET_DIR
-    ? join(process.env.CARGO_TARGET_DIR, "release", "rust_stack_ffi.dll")
+    ? join(process.env.CARGO_TARGET_DIR, "release", libName)
     : undefined,
-  "C:\\Users\\aphro\\.local\\bin\\rust_stack_ffi.dll",
+  join(homedir(), ".local", "bin", libName),
 ].filter((p): p is string => Boolean(p));
 
 const dllPath =
   candidateDlls.find((p) => existsSync(p)) ??
-  "C:\\Users\\aphro\\.local\\bin\\rust_stack_ffi.dll";
+  join(homedir(), ".local", "bin", libName);
 
 const lib = dlopen(dllPath, {
   rs_abi_version: {

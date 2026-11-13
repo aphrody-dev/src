@@ -541,8 +541,8 @@ pub struct MaintainerArgs {
     #[argh(positional)]
     pub target: String,
 
-    /// monorepo root path (default: C:\src)
-    #[argh(option, short = 'r', default = "PathBuf::from(\"C:\\\\src\")")]
+    /// monorepo root path (default: $SRC_ROOT or the nearest ancestor holding src.lock.json)
+    #[argh(option, short = 'r', default = "depot_core::src_root().unwrap_or_else(|| PathBuf::from(\".\"))")]
     pub root: PathBuf,
 }
 

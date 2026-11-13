@@ -61,10 +61,15 @@ impl JustEngine {
 
     /// Detect whether `just` binary is available on the system.
     pub fn detect_binary() -> Option<PathBuf> {
-        let candidates = [
-            PathBuf::from(r"C:\Users\aphro\.local\bin\just.exe"),
-            PathBuf::from(r"C:\Users\aphro\.cargo\bin\just.exe"),
-        ];
+        let exe = if cfg!(windows) { "just.exe" } else { "just" };
+        let candidates: Vec<PathBuf> = crate::depot_tools::home_dir()
+            .map(|h| {
+                vec![
+                    h.join(".local").join("bin").join(exe),
+                    h.join(".cargo").join("bin").join(exe),
+                ]
+            })
+            .unwrap_or_default();
         for c in &candidates {
             if c.is_file() {
                 return Some(c.clone());

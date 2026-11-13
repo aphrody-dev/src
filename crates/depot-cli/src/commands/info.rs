@@ -5,7 +5,8 @@ use depot_core::{
 
 pub fn run_info() -> Result<(), String> {
     let info = DepotTools::detect();
-    let gov = EcosystemManifests::inspect_root(Path::new(r"C:\src"));
+    let root = depot_core::src_root().unwrap_or_else(|| Path::new(".").to_path_buf());
+    let gov = EcosystemManifests::inspect_root(&root);
 
     println!("{}", "================================================".cyan());
     println!("{}", "           DEPOT UNIFIED ECOSYSTEM INFO         ".bold().cyan());
@@ -47,7 +48,7 @@ pub fn run_info() -> Result<(), String> {
     println!("  - autoninja:       {}", status_flag(info.autoninja_found));
     println!("  - siso:            {}", status_flag(info.siso_found));
 
-    println!("\n4-Pillar Manifests (C:\\src):");
+    println!("\n4-Pillar Manifests ({}):", root.display());
     println!("  - Chromium DEPS:   {} pinned entries", gov.deps_pin_count.to_string().green());
     println!("  - AOSP repo XML:   {} projects", gov.aosp_project_count.to_string().green());
     println!("  - Kernel OWNERS:   {} subsystems", gov.kernel_subsystem_count.to_string().green());

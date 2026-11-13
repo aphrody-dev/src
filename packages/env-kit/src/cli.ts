@@ -744,7 +744,7 @@ ${formatIdentities(ids)}`);
         scopes,
         openBrowser: (url) =>
           spawnSync(
-            process.platform === "win32" ? "cmd" : "open",
+            process.platform === "win32" ? "cmd" : process.platform === "darwin" ? "open" : "xdg-open",
             process.platform === "win32" ? ["/c", "start", "", url] : [url],
             { stdio: "ignore" },
           ),

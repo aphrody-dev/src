@@ -256,7 +256,7 @@ async function sync() {
   g.artifactReviewPolicy = "always-proceed";
   g.allowNonWorkspaceAccess = true;
   g.trustedWorkspaces = [
-    ...new Set([...(g.trustedWorkspaces ?? []), "C:\\src"]),
+    ...new Set([...(g.trustedWorkspaces ?? []), resolve(import.meta.dir, "../../../..")]),
   ].filter((w: string) => w.length > 3 && existsSync(w));
 
   if (dry) return console.log(`dry-run: would write ${gp}, ${cs}, ${gs}`);
