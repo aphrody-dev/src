@@ -1,17 +1,17 @@
-# Rigueur des chiffres (règles du monorepo)
+# Rigor of figures (monorepo rules)
 
-S'applique à toute la doc, aux messages de commit, aux PR et aux rapports d'agents.
+Applies to all docs, commit messages, PRs and agent reports.
 
-1. Chaque chiffre est l'un des deux :
-   - une **mesure** : valeur, méthode (outil, commande, machine, date), n ;
-   - une **borne ou un calcul** : formule écrite, entrées mesurées citées, hypothèses listées.
-2. Aucune estimation sans étiquette. Une valeur non vérifiée porte `[NV]` et dit ce qui manque pour la vérifier. Une valeur de scénario (« si L = 30 min ») est présentée comme scénario, jamais comme résultat.
-3. Intervalles systématiques : IC 95 % (bootstrap, Wilson pour les proportions, bootstrap par blocs pour les séries autocorrélées) ou min/max quand n est trop petit. Pour n < 10, donner les valeurs brutes et dire que l'échantillon ne permet pas de conclure.
-4. Benchmarks : warmup (style hyperfine, ≥ 3 runs jetés), n ≥ 30 quand c'est faisable (sinon donner n et la raison), rapporter médiane + IQR ou moyenne ± IC. Préciser la charge de la machine pendant la mesure (`uptime`), la version des outils et le commit.
-5. Reproductible : le script ou la commande exacte est versionné (`tools/…`, `scripts/…`), avec ses entrées et, si possible, la sortie brute (`results/`). Graine fixée pour tout tirage aléatoire.
-6. Un modèle est validé contre une mesure indépendante (hindcast, validation croisée) et son erreur est publiée. Un test circulaire est signalé comme tel.
-7. Limites écrites à côté du résultat : biais connus, ce qui n'est pas mesuré, conditions hors domaine.
-8. Sources en conflit : les deux valeurs et leurs sources sont citées, sans arbitrage silencieux.
-9. Travail lourd (builds, bootstrap, gros parsing) sur les serveurs (`nice`), jamais sur le PC local ; fichiers temporaires hors du dépôt.
+1. Every figure is one of two things:
+   - a **measurement**: value, method (tool, command, machine, date), n;
+   - a **bound or a calculation**: written formula, cited measured inputs, listed assumptions.
+2. No estimate without a label. An unverified value carries `[NV]` and says what is missing to verify it. A scenario value ("if L = 30 min") is presented as a scenario, never as a result.
+3. Systematic intervals: 95% CI (bootstrap, Wilson for proportions, block bootstrap for autocorrelated series) or min/max when n is too small. For n < 10, give the raw values and say that the sample does not allow a conclusion.
+4. Benchmarks: warmup (hyperfine style, ≥ 3 runs discarded), n ≥ 30 when feasible (otherwise give n and the reason), report median + IQR or mean ± CI. State the machine load during the measurement (`uptime`), the tool versions and the commit.
+5. Reproducible: the exact script or command is versioned (`tools/…`, `scripts/…`), with its inputs and, if possible, the raw output (`results/`). Fixed seed for any random draw.
+6. A model is validated against an independent measurement (hindcast, cross-validation) and its error is published. A circular test is flagged as such.
+7. Limits written next to the result: known biases, what is not measured, out-of-domain conditions.
+8. Conflicting sources: both values and their sources are cited, without silent arbitration.
+9. Heavy work (builds, bootstrap, large parsing) on the servers (`nice`), never on the local PC; temporary files outside the repository.
 
-Référence d'application : `docs/CHROMIUM-FACTORY.md`, section « Modèle et bornes », et `tools/build-model/`.
+Application reference: `docs/CHROMIUM-FACTORY.md`, section "Modèle et bornes", and `tools/build-model/`.

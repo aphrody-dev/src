@@ -1,40 +1,40 @@
-# npm : état de préparation (2026-11-12)
+# npm: readiness status (2026-11-12)
 
-Vérifié sur fr2 avec `bun pm pack --dry-run` (bun 1.4.4) sur l'arbre `C:\src-merge` (branche merge/labs, 06ebcae ; même liste de 16 paquets que `C:\src\packages`). La disponibilité des noms a été lue sur `registry.npmjs.org`. C:\labs ne contient aucun package.json suivi (hors third_party), donc aucun paquet npm.
+Verified on fr2 with `bun pm pack --dry-run` (bun 1.4.4) on the `C:\src-merge` tree (branch merge/labs, 06ebcae; same list of 16 packages as `C:\src\packages`). Name availability was read from `registry.npmjs.org`. C:\labs contains no tracked package.json (outside third_party), so no npm package.
 
-## Propriété du scope @aphrody
+## Ownership of the @aphrody scope
 
-- `npm whoami` en local renvoie **401** : le token de `~/.npmrc` est expiré ou révoqué. La propriété n'a donc pas pu être confirmée directement.
-- Indices : `@aphrody/web` (1.4.7) et `@aphrody/yolo` (3.2.0) ont pour seul mainteneur `<npm-owner>`. `@aphrody/yolo` déclare `repository: aphrody-code/YOLO` et `author: aphrody-code`. Il s'agit très probablement du compte du propriétaire.
-- À faire : `npm login`, puis `npm whoami` (doit répondre `<npm-owner>`) et `npm org ls aphrody`.
+- `npm whoami` locally returns **401**: the token in `~/.npmrc` is expired or revoked. Ownership could therefore not be confirmed directly.
+- Clues: `@aphrody/web` (1.4.7) and `@aphrody/yolo` (3.2.0) have `<npm-owner>` as sole maintainer. `@aphrody/yolo` declares `repository: aphrody-code/YOLO` and `author: aphrody-code`. This is very likely the owner's account.
+- To do: `npm login`, then `npm whoami` (must answer `<npm-owner>`) and `npm org ls aphrody`.
 
-## Paquets (packages/*)
+## Packages (packages/*)
 
-| Paquet | Version | private | license | repository | pack dry-run | Nom sur npm |
+| Package | Version | private | license | repository | pack dry-run | Name on npm |
 |---|---|---|---|---|---|---|
-| @aphrody/agy | 2.0.0 | non | – | – | OK, 13 fichiers, 97,6 KB | libre |
-| @aphrody/ai-os | 2.1.0 | non | – | – | OK, 76 fichiers, 5,1 MB | libre |
-| @aphrody/ai-triad | 1.0.0 | non | – | – | OK, 23 fichiers, 206,9 KB | libre |
-| @aphrody/brain | 0.1.0 | **oui** | – | – | OK, 6 fichiers | libre |
-| @aphrody/bun-parity | 1.0.0 | non | MIT | – | OK, 36 fichiers | libre |
-| @aphrody/bun-plugins | 1.0.0 | non | – | – | OK, 15 fichiers | libre |
-| @aphrody/chromium-bun | 2.1.0 | non | – | – | OK, 41 fichiers | libre |
-| @aphrody/env-kit | 1.0.0 | non | – | – | OK, 26 fichiers | libre |
-| @aphrody/epic-games | 0.1.0 | non | – | – | OK, 10 fichiers | libre, **ne pas publier** |
-| @aphrody/forge | 1.1.0 | non | – | – | OK, 22 fichiers | libre |
-| @aphrody/google-design | 2.0.0 | **oui** | – | – | OK, 172 fichiers, **33,7 MB** | libre |
-| @aphrody/knowledge-engine | 1.0.0 | non | – | – | OK, 18 fichiers | libre |
-| @aphrody/machine | 0.1.0 | **oui** | – | – | OK, 8 fichiers | libre |
-| @aphrody/pi-opencode | 1.0.0 | non | – | – | OK, 15 fichiers | libre |
-| @aphrody/shell-matrix | 0.1.0 | **oui** | – | – | OK, 4 fichiers | libre |
-| @aphrody/wck | 1.0.0 | non | – | – | OK, 17 fichiers | libre |
+| @aphrody/agy | 2.0.0 | no | – | – | OK, 13 files, 97.6 KB | free |
+| @aphrody/ai-os | 2.1.0 | no | – | – | OK, 76 files, 5.1 MB | free |
+| @aphrody/ai-triad | 1.0.0 | no | – | – | OK, 23 files, 206.9 KB | free |
+| @aphrody/brain | 0.1.0 | **yes** | – | – | OK, 6 files | free |
+| @aphrody/bun-parity | 1.0.0 | no | MIT | – | OK, 36 files | free |
+| @aphrody/bun-plugins | 1.0.0 | no | – | – | OK, 15 files | free |
+| @aphrody/chromium-bun | 2.1.0 | no | – | – | OK, 41 files | free |
+| @aphrody/env-kit | 1.0.0 | no | – | – | OK, 26 files | free |
+| @aphrody/epic-games | 0.1.0 | no | – | – | OK, 10 files | free, **do not publish** |
+| @aphrody/forge | 1.1.0 | no | – | – | OK, 22 files | free |
+| @aphrody/google-design | 2.0.0 | **yes** | – | – | OK, 172 files, **33.7 MB** | free |
+| @aphrody/knowledge-engine | 1.0.0 | no | – | – | OK, 18 files | free |
+| @aphrody/machine | 0.1.0 | **yes** | – | – | OK, 8 files | free |
+| @aphrody/pi-opencode | 1.0.0 | no | – | – | OK, 15 files | free |
+| @aphrody/shell-matrix | 0.1.0 | **yes** | – | – | OK, 4 files | free |
+| @aphrody/wck | 1.0.0 | no | – | – | OK, 17 files | free |
 
-Les 16 passent `pack --dry-run`, et aucune dépendance `workspace:`/`file:`/`link:` ne bloquerait la publication.
+All 16 pass `pack --dry-run`, and no `workspace:`/`file:`/`link:` dependency would block publication.
 
-## Correctifs nécessaires
+## Required fixes
 
-1. `license` : ajoutée (`MIT OR Apache-2.0`) aux 15 paquets qui n'en ont pas, et `repository` (`aphrody-dev/src`, avec `directory`) aux 16, dans `src-publish-fields.patch`.
-2. `@aphrody/epic-games` : ne pas le publier. Il embarque le client secret du launcher Epic (audit §1), ce que les CGU Epic interdisent. Le patch le passe en `"private": true`.
-3. Les 4 paquets en `private: true` (brain, google-design, machine, shell-matrix) sont refusés par `npm publish`. Il faut une décision du propriétaire. google-design (33,7 MB) contient des assets Google, dont la licence est à vérifier avant toute publication.
-4. Les paquets npm de aphrody-labs/aphrody-m3 sont tous déjà en `private: true` sauf identity, web-to-tauri, scaffold et m3-fonts. Leurs métadonnées ont été corrigées dans le dépôt (3e1dcf5).
-5. Publication ensuite par `bun publish` (ou `npm publish --access public`), une fois le scope confirmé.
+1. `license`: added (`MIT OR Apache-2.0`) to the 15 packages that lack one, and `repository` (`aphrody-dev/src`, with `directory`) to all 16, in `src-publish-fields.patch`.
+2. `@aphrody/epic-games`: do not publish it. It embeds the Epic launcher client secret (audit §1), which the Epic terms of service forbid. The patch sets it to `"private": true`.
+3. The 4 packages with `private: true` (brain, google-design, machine, shell-matrix) are refused by `npm publish`. An owner decision is needed. google-design (33.7 MB) contains Google assets, whose license must be checked before any publication.
+4. The npm packages of aphrody-labs/aphrody-m3 are all already `private: true` except identity, web-to-tauri, scaffold and m3-fonts. Their metadata was fixed in the repository (3e1dcf5).
+5. Publication afterwards with `bun publish` (or `npm publish --access public`), once the scope is confirmed.

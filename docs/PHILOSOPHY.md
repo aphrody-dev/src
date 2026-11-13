@@ -1,76 +1,76 @@
-# Philosophie de src
+# Philosophy of src
 
-Ce que src reprend de chaque modèle, ce qu'il refuse, et pourquoi. Marquage : [V] vérifié dans la source citée le 2026-11-12, [NV] non vérifié (à sourcer avant d'en dépendre). La structure qui en découle est dans [ARCHITECTURE.md](ARCHITECTURE.md).
+What src takes from each model, what it refuses, and why. Marking: [V] verified in the cited source on 2026-11-12, [NV] not verified (to be sourced before depending on it). The resulting structure is in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## 1. Chromium (gn, DEPS/gclient, //base, components, checkdeps, Mojo)
 
-| Principe | Source | Adopté | Rejeté / adapté |
+| Principle | Source | Adopted | Rejected / adapted |
 |---|---|---|---|
-| Fichiers DEPS par répertoire : `+` autorise, `-` interdit, `!` autorisé mais à retirer (avertissement en presubmit) | `third_party/chromium/src/buildtools/checkdeps/README.md` @ef68a767 [V] | Adapté : format maison `DEPS.rules` (pas le DEPS Python), mêmes préfixes `+`/`-`/`!` et même héritage vers le bas, plus deux ajouts absents de Chromium : `layer = N` et les lignes `sous/dossier: directive` ; gate `scripts/checkdeps.ts` | Granularité unité (crate ou package) et pas fichier `#include` : Cargo et bun déclarent déjà les arêtes dans leurs manifestes |
-| Les components ne dépendent pas des couches hautes (`//chrome`, `//content/shell`…), peuvent dépendre des basses (`//base`, `//net`, `//mojo`, `//ui`), et entre eux seulement si c'est explicite dans DEPS | `components/README.md` [V] | Oui : couches L0 à L5, dépendance vers le bas libre, latérale libre mais sans cycle, vers le haut interdite (seul `!` + ticket la tolère, `+` ne lève qu'un `-`) | Chromium autorise les arêtes entre components par `+` ; chez nous `+` ne franchit jamais une couche vers le haut |
-| `//base` : petite bibliothèque commune, code hors src.git ne l'utilise pas ; en Rust, « very small crates, split up by function » | `base/README.md` [V] | Oui : L1 base = crates petites, sans code propre à un OS (pas de `cfg(target_os)` ni windows-rs) et sans dépendance vers un service ; des primitives génériques de domaine (CAS, erreurs, tokens) y sont admises | Pas de copie de l'API C++ de base : on prend std + crates.io épinglés |
-| gclient DEPS : chaque dépendance externe épinglée par commit de 40 caractères | `DEPS` racine, gate ARCH-014 d'archguard [V] | Oui (DEPS racine existant, `src.lock.json`) | Pas de `hooks` Python arbitraires : les hooks passent par `just` |
-| Mojo : interfaces typées (`.mojom`) entre processus/services | `docs/mojo_and_services.md` [V] | L'idée : toute frontière de processus a un schéma versionné (proto pour Lore, JSON Schema/MCP pour l'agent, C ABI versionnée `core_abi_version()`) | Mojo lui-même : trop lié à //base et au sandbox Chromium |
-| gn + siso/ninja pour le build | `crates/factory` (F4) | Seulement pour construire Chromium (factory) | Pas de gn pour le reste : cargo et bun suffisent, un second système de build dupliquerait le graphe |
+| DEPS files per directory: `+` allows, `-` forbids, `!` allowed but to be removed (presubmit warning) | `third_party/chromium/src/buildtools/checkdeps/README.md` @ef68a767 [V] | Adapted: in-house `DEPS.rules` format (not the Python DEPS), same `+`/`-`/`!` prefixes and same downward inheritance, plus two additions absent from Chromium: `layer = N` and `sub/folder: directive` lines; gate `scripts/checkdeps.ts` | Granularity is the unit (crate or package), not the `#include` file: Cargo and bun already declare the edges in their manifests |
+| Components do not depend on high layers (`//chrome`, `//content/shell`…), may depend on low ones (`//base`, `//net`, `//mojo`, `//ui`), and on each other only if explicit in DEPS | `components/README.md` [V] | Yes: layers L0 to L5, downward dependency free, lateral free but without cycles, upward forbidden (only `!` + ticket tolerates it, `+` only lifts a `-`) | Chromium allows edges between components through `+`; here `+` never crosses a layer upward |
+| `//base`: small common library, code outside src.git does not use it; in Rust, "very small crates, split up by function" | `base/README.md` [V] | Yes: L1 base = small crates, without OS-specific code (no `cfg(target_os)` nor windows-rs) and without dependency on a service; generic domain primitives (CAS, errors, tokens) are admitted there | No copy of the C++ base API: we take std + pinned crates.io |
+| gclient DEPS: every external dependency pinned by a 40-character commit | root `DEPS`, archguard gate ARCH-014 [V] | Yes (existing root DEPS, `src.lock.json`) | No arbitrary Python `hooks`: hooks go through `just` |
+| Mojo: typed interfaces (`.mojom`) between processes/services | `docs/mojo_and_services.md` [V] | The idea: every process boundary has a versioned schema (proto for Lore, JSON Schema/MCP for the agent, versioned C ABI `core_abi_version()`) | Mojo itself: too tied to //base and the Chromium sandbox |
+| gn + siso/ninja for the build | `crates/factory` (F4) | Only to build Chromium (factory) | No gn for the rest: cargo and bun are enough, a second build system would duplicate the graph |
 
 ## 2. bun
 
-| Principe | Source | Adopté | Rejeté |
+| Principle | Source | Adopted | Rejected |
 |---|---|---|---|
-| Binaire unique : `bun build --compile` produit un exécutable autonome | `third_party/bun/docs/compiler/executables.mdx` @9dda375 [V] | Oui : `ay` multicall (un binaire, sous-commandes), `aphrody` CLI unique | — |
-| Tout intégré (test, fmt, bundler, sqlite, ffi, shell) | doc bun 1.4.4 (skill `bun`) [V] | Oui : aucun outil tiers JS si bun le fait ; gate checkdeps écrit en bun, pas de dépendance npm | turbo, eslint, prettier, vitest : refusés tant que bun couvre le besoin |
-| Démarrage rapide, coût mesuré | — | Oui : les gates (checkdeps < 1 s) tournent sans compilation | — |
-| Langage d'implémentation (bun est écrit en Zig et C++ ; on ne lui attribue aucun portage Rust) | — | Choix propre à src, pas repris de bun : le code natif first-party est Rust (unification cargo + LLVM) : le code natif first-party est Rust ; C++ seulement via la toolchain LLVM partagée | Pas de Zig first-party |
+| Single binary: `bun build --compile` produces a standalone executable | `third_party/bun/docs/compiler/executables.mdx` @9dda375 [V] | Yes: multicall `ay` (one binary, subcommands), single `aphrody` CLI | — |
+| Everything built in (test, fmt, bundler, sqlite, ffi, shell) | bun 1.4.4 docs (skill `bun`) [V] | Yes: no third-party JS tool if bun does it; checkdeps gate written in bun, no npm dependency | turbo, eslint, prettier, vitest: refused as long as bun covers the need |
+| Fast startup, measured cost | — | Yes: the gates (checkdeps < 1 s) run without compilation | — |
+| Implementation language (bun is written in Zig and C++; no Rust port is attributed to it) | — | Choice specific to src, not taken from bun: first-party native code is Rust (cargo + LLVM unification): first-party native code is Rust; C++ only through the shared LLVM toolchain | No first-party Zig |
 
-## 3. Noyau Linux (upstream)
+## 3. Linux kernel (upstream)
 
-| Principe | Source | Adopté | Rejeté |
+| Principle | Source | Adopted | Rejected |
 |---|---|---|---|
-| « We don't cause regressions », première règle | docs.kernel.org/admin-guide/reporting-regressions.html [V] | Oui : une fusion ne fait jamais baisser le nombre de tests verts ; une régression se corrige ou se revert | — |
-| Un changement logique par patch, et le tree compile et tourne après chaque patch (bisect) | docs.kernel.org/process/submitting-patches.html [V] | Oui : petits commits sur main, chacun passe `just check` ; pas de force-push | Pas de série de patchs par mail |
-| MAINTAINERS + `get_maintainer.pl` : copier les mainteneurs du sous-système | idem [V], `third_party/linux/MAINTAINERS` | Oui : `MAINTAINERS` racine (format kernel, champs M/S/F/X), `just maintainer <chemin>` ; M: peut nommer un agent ou une skill | — |
-| Revue sur liste de diffusion | idem | L'esprit : toute modification de doc d'architecture passe une revue externe archivée (`docs/reviews/`) | Le canal mail : remplacé par revue d'agent + archive versionnée |
-| Coding style | `Documentation/process/coding-style.rst` [NV, non relu] | rustfmt / `bun fmt` comme seul style, sans débat | Le style C du kernel |
+| "We don't cause regressions", first rule | docs.kernel.org/admin-guide/reporting-regressions.html [V] | Yes: a merge never lowers the number of green tests; a regression is fixed or reverted | — |
+| One logical change per patch, and the tree compiles and runs after each patch (bisect) | docs.kernel.org/process/submitting-patches.html [V] | Yes: small commits on main, each passes `just check`; no force-push | No patch series by mail |
+| MAINTAINERS + `get_maintainer.pl`: copy the subsystem maintainers | same [V], `third_party/linux/MAINTAINERS` | Yes: root `MAINTAINERS` (kernel format, M/S/F/X fields), `just maintainer <path>`; M: may name an agent or a skill | — |
+| Review on a mailing list | same | The spirit: every change to an architecture doc goes through an archived external review (`docs/reviews/`) | The mail channel: replaced by agent review + versioned archive |
+| Coding style | `Documentation/process/coding-style.rst` [NV, not reread] | rustfmt / `bun fmt` as the only style, no debate | The kernel C style |
 
 ## 4. Windows NT
 
-| Principe | Source | Adopté | Rejeté |
+| Principle | Source | Adopted | Rejected |
 |---|---|---|---|
-| Couche Executive (objets, mémoire, processus, E/S, configuration) dans ntoskrnl ; les pilotes et la HAL n'en font pas partie | learn.microsoft.com/windows-hardware/drivers/kernel/windows-kernel-mode-executive-support-library [V] | Oui : L2 « plateforme » = notre HAL (Windows, Linux, Cloudflare, Vercel derrière une interface) ; L3 « services » = notre Executive | — |
-| E/S en couches : le gestionnaire d'E/S transforme une demande en IRP routé à travers une pile de pilotes, chacun traite puis passe au suivant | learn.microsoft.com/…/overview-of-the-windows-i-o-model [V] | Le modèle de requête : un appel traverse les couches de haut en bas, jamais l'inverse ; les adaptateurs de plateforme sont empilables (runtime-adapter) | Les IRP eux-mêmes |
-| Gestionnaire d'objets + handles + contrôle d'accès par le security reference monitor à l'ouverture | learn.microsoft.com/…/example-i-o-request---an-overview [V] | L'idée pour l'agent : une ressource s'obtient par handle avec des droits vérifiés à l'ouverture (outils MCP, secrets env-kit) | Pas d'implémentation d'ACL NT hors Windows |
-| Stabilité de l'ABI exposée | [NV] | Oui pour nos C ABI (`core_abi_version`) : on ajoute, on ne casse pas | — |
+| Executive layer (objects, memory, processes, I/O, configuration) in ntoskrnl; drivers and the HAL are not part of it | learn.microsoft.com/windows-hardware/drivers/kernel/windows-kernel-mode-executive-support-library [V] | Yes: L2 "platform" = our HAL (Windows, Linux, Cloudflare, Vercel behind an interface); L3 "services" = our Executive | — |
+| Layered I/O: the I/O manager turns a request into an IRP routed through a driver stack, each one processes it then passes it to the next | learn.microsoft.com/…/overview-of-the-windows-i-o-model [V] | The request model: a call goes through the layers from top to bottom, never the reverse; platform adapters are stackable (runtime-adapter) | The IRPs themselves |
+| Object manager + handles + access control by the security reference monitor at open time | learn.microsoft.com/…/example-i-o-request---an-overview [V] | The idea for the agent: a resource is obtained through a handle with rights checked at open time (MCP tools, env-kit secrets) | No NT ACL implementation outside Windows |
+| Stability of the exposed ABI | [NV] | Yes for our C ABIs (`core_abi_version`): we add, we do not break | — |
 
 ## 5. cargo / crates.io
 
-| Principe | Source | Adopté | Rejeté |
+| Principle | Source | Adopted | Rejected |
 |---|---|---|---|
-| Workspace unique, `[workspace.dependencies]` | `Cargo.toml` racine [V] | Oui : une version par dépendance | — |
-| Features additives : activer une feature ne doit pas retirer de fonctionnalité ni introduire de changement incompatible SemVer ; unification par union | doc.rust-lang.org/cargo/reference/features.html [V] | Oui : pas de feature qui désactive ; les choix de plateforme passent par `cfg(target_os)` en L2 | — |
-| SemVer et publication crates.io | doc cargo `semver.md` [NV, non relu] | SemVer pour les crates publiables ; `publish = false` par défaut | Publier des crates internes non stabilisées |
+| Single workspace, `[workspace.dependencies]` | root `Cargo.toml` [V] | Yes: one version per dependency | — |
+| Additive features: enabling a feature must not remove functionality nor introduce a SemVer-incompatible change; unification by union | doc.rust-lang.org/cargo/reference/features.html [V] | Yes: no feature that disables; platform choices go through `cfg(target_os)` in L2 | — |
+| SemVer and crates.io publication | cargo doc `semver.md` [NV, not reread] | SemVer for publishable crates; `publish = false` by default | Publishing unstabilized internal crates |
 
-## 6. Monorepo moderne (Turborepo, just, bun workspaces, uv)
+## 6. Modern monorepo (Turborepo, just, bun workspaces, uv)
 
-| Principe | Source | Adopté | Rejeté |
+| Principle | Source | Adopted | Rejected |
 |---|---|---|---|
-| Graphe de tâches + filtre par changement + cache distant ; le cache distant est implémentable par tout serveur HTTP suivant l'API Remote Cache (endpoints v8) | turborepo.dev/docs/core-concepts/remote-caching [V] | Le graphe : `checkdeps --affected REF` calcule unités touchées + dépendants transitifs ; `just test-affected` teste seulement celles-là | turbo : refusé. Il peut cacher n'importe quelle tâche déclarée, mais au grain du package : il faudrait redéclarer le graphe Cargo dans turbo.json/package.json, alors que sccache cache déjà au grain de l'unité de compilation rustc. Il ajouterait un binaire, une config et un second graphe. Le cache distant R2 vaut pour cargo/sccache (TICKET taskgraph-001), pas pour turbo |
-| just comme point d'entrée | `justfile` [V] | Oui : `just check`, `just checkdeps`, `just affected` | Makefiles, scripts .sh/.ps1 |
-| bun workspaces, uv pour Python | `package.json`, `pyproject.toml` racine (workspace uv, un seul `uv.lock`) [V] | Oui | npm/pnpm/yarn, pip |
+| Task graph + filter by change + remote cache; the remote cache can be implemented by any HTTP server following the Remote Cache API (v8 endpoints) | turborepo.dev/docs/core-concepts/remote-caching [V] | The graph: `checkdeps --affected REF` computes touched units + transitive dependents; `just test-affected` tests only those | turbo: refused. It can cache any declared task, but at package granularity: the Cargo graph would have to be redeclared in turbo.json/package.json, while sccache already caches at the granularity of the rustc compilation unit. It would add a binary, a config and a second graph. The R2 remote cache applies to cargo/sccache (TICKET taskgraph-001), not to turbo |
+| just as the entry point | `justfile` [V] | Yes: `just check`, `just checkdeps`, `just affected` | Makefiles, .sh/.ps1 scripts |
+| bun workspaces, uv for Python | root `package.json`, `pyproject.toml` (uv workspace, a single `uv.lock`) [V] | Yes | npm/pnpm/yarn, pip |
 
-## 7. FFI / interop et toolchain LLVM
+## 7. FFI / interop and LLVM toolchain
 
-| Principe | Source | Adopté | Rejeté |
+| Principle | Source | Adopted | Rejected |
 |---|---|---|---|
-| C ABI générée par cbindgen | `crates/core-capi` (cbindgen.toml) [V] | Oui : une seule frontière native, versionnée | Bindings écrits à la main |
-| bun:ffi pour consommer la C ABI | `packages/core` [V] | Oui | napi tant que bun:ffi suffit (napi = Node, ABI plus lourde) |
-| pyo3 pour Python | `crates/agent-py` [V] | Oui, côté agent seulement | — |
-| windows-rs depuis le dépôt (pas crates.io) + windows-bindgen | consigne propriétaire | Oui, en L2 uniquement | `winapi`, bindings ad hoc |
-| Toolchain LLVM partagée (clang, lld, rustc sur le même LLVM) pour la LTO inter-langages | `docs/llvm/` | Oui comme cible L0 | Conflit ouvert MSVC vs LLVM pour nt (non tranché ici) |
+| C ABI generated by cbindgen | `crates/core-capi` (cbindgen.toml) [V] | Yes: a single native boundary, versioned | Hand-written bindings |
+| bun:ffi to consume the C ABI | `packages/core` [V] | Yes | napi as long as bun:ffi is enough (napi = Node, heavier ABI) |
+| pyo3 for Python | `crates/agent-py` [V] | Yes, on the agent side only | — |
+| windows-rs from the repository (not crates.io) + windows-bindgen | owner instruction | Yes, in L2 only | `winapi`, ad hoc bindings |
+| Shared LLVM toolchain (clang, lld, rustc on the same LLVM) for cross-language LTO | `docs/llvm/` | Yes as the L0 target | Open conflict MSVC vs LLVM for nt (not decided here) |
 
-## Règles qui en découlent
+## Resulting rules
 
-1. Une dépendance va vers une couche inférieure ou latérale, jamais vers le haut ; les cycles sont interdits. Contrôlé par `just checkdeps` (CI).
-2. Toute exception est écrite dans un `DEPS.rules` avec `!` et un ticket ; elle s'affiche en avertissement jusqu'à sa suppression.
-3. Pas de régression, commits bisectables, revue archivée.
-4. Une frontière de processus ou de langage a un schéma versionné (C ABI, proto, MCP).
-5. Pas d'outil ajouté si bun, cargo ou just le font déjà.
+1. A dependency goes to a lower or lateral layer, never upward; cycles are forbidden. Checked by `just checkdeps` (CI).
+2. Every exception is written in a `DEPS.rules` with `!` and a ticket; it shows as a warning until it is removed.
+3. No regression, bisectable commits, archived review.
+4. A process or language boundary has a versioned schema (C ABI, proto, MCP).
+5. No tool added if bun, cargo or just already do it.

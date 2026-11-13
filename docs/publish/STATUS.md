@@ -1,34 +1,34 @@
-# Visibilité des dépôts (2026-11-12)
+# Repository visibility (2026-11-12)
 
-Source : `docs/PUBLISH-AUDIT.md`, plus un gitleaks 8.30.1 (sha256 vérifié) lancé sur fr2 pour les dépôts que l'audit n'avait pas couverts (msys, knowledge-engine, mesh-vn, zig). `aphrody-dev` est un compte utilisateur, pas une organisation : `orgs/aphrody-dev/repos` renvoie 404, l'inventaire a donc été fait via `user/repos?visibility=private&affiliation=owner`.
+Source: `docs/PUBLISH-AUDIT.md`, plus a gitleaks 8.30.1 run (sha256 verified) on fr2 for the repositories the audit had not covered (msys, knowledge-engine, mesh-vn, zig). `aphrody-dev` is a user account, not an organization: `orgs/aphrody-dev/repos` returns 404, so the inventory was done via `user/repos?visibility=private&affiliation=owner`.
 
-| Dépôt | Avant | Après | Classe | Motif / correctif |
+| Repository | Before | After | Class | Reason / fix |
 |---|---|---|---|---|
-| aphrody-labs/antigravity-sdk-python | private | **public** | propre | Copie du SDK Google, LICENSE Apache-2.0 amont conservée, 0 finding |
-| aphrody-labs/yolo | private | **public** | propre | LICENSE MIT + LICENSES/, 0 finding |
-| aphrody-labs/r2b | private | **public** | propre | MIT, notices amont (rea, replica, third_party/) présentes, fixtures seulement |
-| aphrody-labs/auto | private | **public** | propre | Apache-2.0 + licenses/, fixtures seulement |
-| aphrody-labs/zig | private | **public** | propre | Miroir codeberg ziglang/zig (MIT). 1879 findings `generic-api-key`, tous dans `lib/std` et `lib/libc` (vecteurs de test amont) |
-| aphrody-labs/aphrody-m3 | private | **public** | corrigé | 3e1dcf5 : LICENSE-MIT + LICENSE-APACHE, `license`/`repository`/`description` dans 30 package.json (repository corrigé : `aphrody-code/material-web` remplacé par `aphrody-labs/aphrody-m3`). forks/ garde ses licences amont |
-| aphrody-labs/msys | private | **public** | corrigé | 8e29324 : LICENSE-MIT + LICENSE-APACHE, métadonnées des 3 package.json. 8 findings = faux positifs (noms de paquets cygwin) |
-| aphrody-dev/knowledge-engine | private (archivé) | **public** (archivé) | corrigé | Désarchivé, puis 4050e87 (licences + package.json), puis réarchivé. 1 finding = fixture `SYNTHETIC` |
-| aphrody-labs/labs | private | **public** | propre (vide) | Dépôt vide. C:\labs se pousse vers le serveur Lore, pas vers ce dépôt. LICENSE-MIT et LICENSE-APACHE ajoutés à la racine de C:\labs |
-| aphrody-labs/shenron | private | **public** | HEAD propre | HEAD propre ; historique : clé Stripe `sk_test_` (a2671e1e→14cbbe07) et `.next-ui-preview` (3ffae86d→5ad418d0). Clé mode test (ne peut pas déplacer d argent réel) ; à **roller dans le dashboard Stripe** (action propriétaire). Non testée contre l API |
-| aphrody-dev/mesh-vn | private (archivé) | private (archivé) | bloqué (rotation) | Clé retirée du HEAD (1757fcd), `generated/` ignoré et détracké (65be40b). Ancienne pubkey `up+fbCDK…` toujours présente sur fr1 et prd après 3 h de sondage (absente de fr2, pair inexistant là). Rotation = action propriétaire (UAC) : `infra/fleet/wg/rotate-wg-win.sh`, puis désarchiver, passer public, réarchiver |
-| aphrody-labs/UnrealEngine | private | private | bloqué (légal) | Vérifié 2026-11-12 (`gh api` : parent EpicGames/UnrealEngine, private=true, fork=true) : GitHub interdit de rendre public un fork d un amont privé, et l EULA Epic interdit de publier les sources UE. Aucune action. Donc impossible à rendre public |
-| aphrody-dev/UnrealEngine | private | private | bloqué (légal) | Même cas |
+| aphrody-labs/antigravity-sdk-python | private | **public** | clean | Copy of the Google SDK, upstream Apache-2.0 LICENSE kept, 0 findings |
+| aphrody-labs/yolo | private | **public** | clean | MIT LICENSE + LICENSES/, 0 findings |
+| aphrody-labs/r2b | private | **public** | clean | MIT, upstream notices (rea, replica, third_party/) present, fixtures only |
+| aphrody-labs/auto | private | **public** | clean | Apache-2.0 + licenses/, fixtures only |
+| aphrody-labs/zig | private | **public** | clean | Codeberg mirror of ziglang/zig (MIT). 1879 `generic-api-key` findings, all in `lib/std` and `lib/libc` (upstream test vectors) |
+| aphrody-labs/aphrody-m3 | private | **public** | fixed | 3e1dcf5: LICENSE-MIT + LICENSE-APACHE, `license`/`repository`/`description` in 30 package.json (repository fixed: `aphrody-code/material-web` replaced by `aphrody-labs/aphrody-m3`). forks/ keeps its upstream licenses |
+| aphrody-labs/msys | private | **public** | fixed | 8e29324: LICENSE-MIT + LICENSE-APACHE, metadata of the 3 package.json. 8 findings = false positives (cygwin package names) |
+| aphrody-dev/knowledge-engine | private (archived) | **public** (archived) | fixed | Unarchived, then 4050e87 (licenses + package.json), then re-archived. 1 finding = `SYNTHETIC` fixture |
+| aphrody-labs/labs | private | **public** | clean (empty) | Empty repository. C:\labs pushes to the Lore server, not to this repository. LICENSE-MIT and LICENSE-APACHE added at the root of C:\labs |
+| aphrody-labs/shenron | private | **public** | HEAD clean | HEAD clean; history: Stripe `sk_test_` key (a2671e1e→14cbbe07) and `.next-ui-preview` (3ffae86d→5ad418d0). Test-mode key (cannot move real money); to be **rolled in the Stripe dashboard** (owner action). Not tested against the API |
+| aphrody-dev/mesh-vn | private (archived) | private (archived) | blocked (rotation) | Key removed from HEAD (1757fcd), `generated/` ignored and untracked (65be40b). Old pubkey `up+fbCDK…` still present on fr1 and prd after 3 h of probing (absent from fr2, no peer there). Rotation = owner action (UAC): `infra/fleet/wg/rotate-wg-win.sh`, then unarchive, make public, re-archive |
+| aphrody-labs/UnrealEngine | private | private | blocked (legal) | Verified 2026-11-12 (`gh api`: parent EpicGames/UnrealEngine, private=true, fork=true): GitHub forbids making a fork of a private upstream public, and the Epic EULA forbids publishing UE sources. No action. Therefore impossible to make public |
+| aphrody-dev/UnrealEngine | private | private | blocked (legal) | Same case |
 
-Bilan : 13 dépôts privés inventoriés. 9 passés en public (5 propres, 3 corrigés, 1 vide), 4 restent privés (2 pour des secrets, 2 pour l'EULA Epic).
+Summary: 13 private repositories inventoried. 9 made public (5 clean, 3 fixed, 1 empty), 4 stay private (2 for secrets, 2 for the Epic EULA).
 
-## Point hors périmètre, déjà public
+## Out-of-scope item, already public
 
-`aphrody-dev/src` est **déjà public**. Les verdicts « après correction » de l'audit n'y ont pas été appliqués :
-- `packages/epic-games/src/auth.ts` (@bca544b2) contient le client id/secret du launcher Epic, ce qui contrevient aux CGU Epic ;
-- `infra/internal/envvault/envvault_test.go` (@5d7e8036) : il faut vérifier que `CLOUDFLARE_ACCOUNT_ID` n'est pas le vrai ;
-- il n'y a pas de LICENSE à la racine (voir `src-publish-fields.patch`).
+`aphrody-dev/src` is **already public**. The audit's "after fix" verdicts were not applied to it:
+- `packages/epic-games/src/auth.ts` (@bca544b2) contains the Epic launcher client id/secret, which violates the Epic terms of service;
+- `infra/internal/envvault/envvault_test.go` (@5d7e8036): it must be checked that `CLOUDFLARE_ACCOUNT_ID` is not the real one;
+- there is no LICENSE at the root (see `src-publish-fields.patch`).
 
-La décision revient au propriétaire : repasser src en privé, ou corriger puis purger l'historique. Aucune action n'a été faite.
+The decision belongs to the owner: make src private again, or fix and then purge the history. No action was taken.
 
-La clé WireGuard de mesh-vn ne figure dans aucun commit de src (`git log --all -S` sur un clone mirror : 0 résultat).
+The mesh-vn WireGuard key does not appear in any src commit (`git log --all -S` on a mirror clone: 0 results).
 
-Mise à jour 2026-11-13 : `packages/epic-games` a été supprimé de l arbre (commit `2b1a28fe`). Les points qui le citent ne concernent plus que l historique git, où la valeur reste lisible.
+Update 2026-11-13: `packages/epic-games` was removed from the tree (commit `2b1a28fe`). The items that cite it now concern only the git history, where the value remains readable.

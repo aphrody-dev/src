@@ -1,85 +1,85 @@
-# Racine unique — architecture cible (2026-11-12)
+# Single root — target architecture (2026-11-12)
 
-Fusion de trois arbres — le monorepo `src`, `labs` et `nt` (public : github.com/aphrody-labs/nt) — en un seul. Contraintes du propriétaire : **zéro doublon, zéro régression**. La racine doit être, dès le départ, à la fois un **OS pour agents**, un **navigateur**, un **shell** et un **monorepo bun + cargo à plat**, et tout doit y être **renommable, déplaçable et multiplateforme**.
+Merge of three trees — the `src` monorepo, `labs` and `nt` (public: github.com/aphrody-labs/nt) — into one. Owner constraints: **zero duplicates, zero regressions**. From the start, the root must be at the same time an **OS for agents**, a **browser**, a **shell** and a **flat bun + cargo monorepo**, and everything in it must be **renamable, movable and cross-platform**.
 
-Cible commune avec la session labs (référence : `labs/docs/ROOT-ARCHITECTURE.md`). Les décisions de coordination sont reprises ici.
+Common target with the labs session (reference: `labs/docs/ROOT-ARCHITECTURE.md`). The coordination decisions are restated here.
 
-## 1. Invariants (contrôlés par `ay arch check --strict` et `just ci`)
+## 1. Invariants (checked by `ay arch check --strict` and `just ci`)
 
-1. **Un seul de chaque.** Un workspace Cargo (`crates/*`), un workspace bun (`packages/*`), une toolchain Rust (`rust-toolchain.toml`, une nightly épinglée). Un seul `Cargo.lock`, `bun.lock`, `src.lock.json` (dépôts) et `justfile`. `[workspace.dependencies]` donne une version par crate.
-2. **À plat.** `crates/<couche>-<nom>`, `packages/<nom>`, `third_party/<nom>`, sur un seul niveau, sans dossier de catégorie (modèle Chromium). La catégorie devient une métadonnée. Un déplacement de dossier ne renomme jamais un package (aucun dépendant cassé) ; un renommage ne passe que par l'invariant 5. Les deux règles ne se recouvrent pas : 2 régit le chemin, 5 le nom.
-3. **Un projet amont = un dossier.** Les forks d'un même réseau GitHub sont réunis :
-   - `origin` = fork `aphrody-labs`, `upstream` = projet amont ;
-   - un fork tiers qui porte des commits devient un remote supplémentaire du même clone (exemple : `reactos` dans `third_party/LiberNT`), pas une seconde copie ;
-   - les patchs vivent dans les forks, épinglés par commit, jamais dans une copie vendorisée.
-4. **Rien de régénérable n'est versionné.** `third_party/` (matérialisé depuis `src.lock.json`, à l'exception de ses fichiers de pins suivis : `third_party/*.toml` comme `chrome-channels*.toml` et `ECOSYSTEM.toml`, `forks.txt`), `third_party/crates` (`cargo vendor` via `just vendor` : `Cargo.lock` et la source-replace de `.cargo/config.toml` restent versionnés, le build tourne hors ligne), `target/`, `node_modules/`, `var/`.
-5. **Identité unique.** `identity.toml` à la racine contient : produit et dépôt, CLI (binaire `ay`, package `aphrody`), scope npm, préfixes (`crate_prefix`, `env_prefix`, `symbol_prefix`), orgs (`aphrody-dev`, `aphrody-labs`), domaines, sous-produits.
-   - `just identity apply` (`bun scripts/identity.ts apply`) réécrit les champs copiés : `[workspace.package]` (authors, repository, homepage), nom et `[[bin]]` de crates/ay, `package.json#name` et clés `@scope/` ;
-   - `just identity check` garde `just check` et la CI (étape « Identity gate ») ;
-   - préfixe des crates : seuls les noms qui entreraient en collision sur crates.io le portent (docs/NAMING.md) ; il n'est pas réappliqué aux noms existants, ce qui casserait l'invariant 2 ;
-   - le code n'écrit aucun nom de produit en dur : `env!("CARGO_PKG_NAME")` partout, `env!("CARGO_BIN_NAME")` seulement dans une cible `[[bin]]` (Cargo ne le définit pas pour une lib), sinon lecture d'identity.toml (Rust : crates/xtask ; TS : import TOML de Bun) ;
-   - renommer tient en une PR : identity.toml, puis `apply`, puis `just ci`.
-6. **Aucun chemin absolu, lien ni jonction versionné.**
-   - La règle vise l'arbre suivi par git : aucun lien ni jonction n'y est commité, aucun alias de dossier à la racine. Les liens créés par les outils dans des dossiers ignorés restent permis : `node_modules/` (bun install), cache gclient, `.claude/skills` (`ay up --bootstrap`). `ay git audit` ne signale que les jonctions de la racine.
-   - Les chemins sont relatifs à la racine : le plus proche ancêtre qui contient `identity.toml` (fichier unique, absent des sous-crates, contrairement à `Cargo.toml`), sinon `SRC_ROOT`, sinon `.lore`.
-   - Sinon ils viennent des variables d'environnement (`XDG_*`, `%LOCALAPPDATA%`, `SystemRoot`).
-7. **Multiplateforme.** Chaque binaire compile et teste sur windows-msvc et linux-gnu. `just` appelle des binaires Rust ou bun : aucun `.sh` ni `.ps1` requis. Les recettes propres à un OS sont marquées `[windows]` ou `[unix]`.
-8. **Pas de régression.** Après chaque phase, les nombres de tests doivent être égaux ou supérieurs à la base. Une phase qui casse est annulée. Exécution sur prd ou fr2 uniquement : consigne du propriétaire, aucune compilation sur le PC ni sur fr1.
+1. **One of each.** One Cargo workspace (`crates/*`), one bun workspace (`packages/*`), one Rust toolchain (`rust-toolchain.toml`, one pinned nightly). A single `Cargo.lock`, `bun.lock`, `src.lock.json` (repositories) and `justfile`. `[workspace.dependencies]` gives one version per crate.
+2. **Flat.** `crates/<layer>-<name>`, `packages/<name>`, `third_party/<name>`, on a single level, without a category folder (Chromium model). The category becomes metadata. A folder move never renames a package (no broken dependent); a rename only goes through invariant 5. The two rules do not overlap: 2 governs the path, 5 the name.
+3. **One upstream project = one folder.** Forks of the same GitHub network are merged:
+   - `origin` = `aphrody-labs` fork, `upstream` = upstream project;
+   - a third-party fork that carries commits becomes an additional remote of the same clone (example: `reactos` in `third_party/LiberNT`), not a second copy;
+   - patches live in the forks, pinned by commit, never in a vendored copy.
+4. **Nothing regenerable is versioned.** `third_party/` (materialized from `src.lock.json`, except its tracked pin files: `third_party/*.toml` such as `chrome-channels*.toml` and `ECOSYSTEM.toml`, `forks.txt`), `third_party/crates` (`cargo vendor` via `just vendor`: `Cargo.lock` and the source-replace of `.cargo/config.toml` stay versioned, the build runs offline), `target/`, `node_modules/`, `var/`.
+5. **Single identity.** `identity.toml` at the root contains: product and repository, CLI (binary `ay`, package `aphrody`), npm scope, prefixes (`crate_prefix`, `env_prefix`, `symbol_prefix`), orgs (`aphrody-dev`, `aphrody-labs`), domains, sub-products.
+   - `just identity apply` (`bun scripts/identity.ts apply`) rewrites the copied fields: `[workspace.package]` (authors, repository, homepage), name and `[[bin]]` of crates/ay, `package.json#name` and `@scope/` keys;
+   - `just identity check` guards `just check` and CI (step "Identity gate");
+   - crate prefix: only names that would collide on crates.io carry it (docs/NAMING.md); it is not reapplied to existing names, which would break invariant 2;
+   - code hard-codes no product name: `env!("CARGO_PKG_NAME")` everywhere, `env!("CARGO_BIN_NAME")` only in a `[[bin]]` target (Cargo does not define it for a lib), otherwise reading identity.toml (Rust: crates/xtask; TS: Bun TOML import);
+   - renaming fits in one PR: identity.toml, then `apply`, then `just ci`.
+6. **No absolute path, link or junction versioned.**
+   - The rule targets the tree tracked by git: no link or junction is committed there, no folder alias at the root. Links created by tools in ignored folders remain allowed: `node_modules/` (bun install), gclient cache, `.claude/skills` (`ay up --bootstrap`). `ay git audit` only reports root junctions.
+   - Paths are relative to the root: the nearest ancestor that contains `identity.toml` (a unique file, absent from sub-crates, unlike `Cargo.toml`), otherwise `SRC_ROOT`, otherwise `.lore`.
+   - Otherwise they come from environment variables (`XDG_*`, `%LOCALAPPDATA%`, `SystemRoot`).
+7. **Cross-platform.** Every binary compiles and tests on windows-msvc and linux-gnu. `just` calls Rust or bun binaries: no `.sh` or `.ps1` required. OS-specific recipes are marked `[windows]` or `[unix]`.
+8. **No regression.** After each phase, test counts must be equal to or greater than the baseline. A phase that breaks is cancelled. Execution on prd or fr2 only: owner instruction, no compilation on the PC or on fr1.
 
-## 2. Arbre cible
+## 2. Target tree
 
 ```
-<racine>/
-├── identity.toml                                   identité unique (nom, CLI, scope, domaine, remotes)
+<root>/
+├── identity.toml                                   single identity (name, CLI, scope, domain, remotes)
 ├── Cargo.toml  Cargo.lock  rust-toolchain.toml  .cargo/config.toml
 ├── package.json  bun.lock  bunfig.toml  tsconfig.json
 ├── justfile  src.lock.json  README.md  AGENTS.md  CLAUDE.md  LICENSE-*
-├── crates/<couche>-<nom>   Rust : sys-, shell-, browser-, desktop-, agent-, vcs-, depot-, design-, nt-
-├── packages/<nom>          bun : machine, shell-matrix, nt, env-kit, forge…
-├── apps/<nom>              binaires et sites déployables
-├── third_party/<nom>       amonts à plat, verrouillés (src.lock.json), non versionnés
+├── crates/<layer>-<name>   Rust: sys-, shell-, browser-, desktop-, agent-, vcs-, depot-, design-, nt-
+├── packages/<name>         bun: machine, shell-matrix, nt, env-kit, forge…
+├── apps/<name>             deployable binaries and sites
+├── third_party/<name>      flat upstreams, locked (src.lock.json), not versioned
 ├── infra/                  Go, fleet, chromium-factory (scripts → crates/browser-factory)
-└── docs/<couche>/          une arborescence, un fichier par sujet ; historique → docs/archive/
+└── docs/<layer>/           one tree, one file per topic; history → docs/archive/
 ```
 
-## 3. Rôles
+## 3. Roles
 
-| Rôle                   | Couches                             | Pièces                                                                                                                                                                     |
-| ---------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| OS pour agents         | `sys-`, `nt-`, `desktop-`, `agent-` | modèle du vrai NT du poste (ntdll, NTFS, PE, UI Automation) rendu GPU (WebGPU, D3D12), `agent-desktop` (UIA, SendInput, capture, MCP), `ring3-agent`, `apm`, `packages/machine` (poste reproductible, élévation) |
-| Compatibilité NT/Linux | `third_party`                       | `LiberNT` (+ remote `reactos`), `linux` (kernel.org), `wine` (gitlab.winehq.org), `mingw-w64` (SourceForge), `windows-rs`, `windows-drivers-rs`, `litebox`, `openvmm`      |
-| Navigateur             | `browser-`                          | `chromium` (unité gclient indivisible), `infra/chromium-factory`, channels, conformance, `webui`, `blitz`, `agent-browser` (session labs)                                  |
-| Shell                  | `shell-`                            | `niubash`, `rubash`, `brush`, `oils` (port Windows), Coreutils, `packages/shell-matrix`, `packages/machine/shell.dsc.winget`                                               |
-| Monorepo               | `depot-`, `vcs-`                    | `ay` (lock, forks, up, identity, arch), Lore, `just`                                                                                                                       |
+| Role | Layers | Pieces |
+| --- | --- | --- |
+| OS for agents | `sys-`, `nt-`, `desktop-`, `agent-` | model of the workstation's real NT (ntdll, NTFS, PE, UI Automation) rendered on GPU (WebGPU, D3D12), `agent-desktop` (UIA, SendInput, capture, MCP), `ring3-agent`, `apm`, `packages/machine` (reproducible workstation, elevation) |
+| NT/Linux compatibility | `third_party` | `LiberNT` (+ remote `reactos`), `linux` (kernel.org), `wine` (gitlab.winehq.org), `mingw-w64` (SourceForge), `windows-rs`, `windows-drivers-rs`, `litebox`, `openvmm` |
+| Browser | `browser-` | `chromium` (indivisible gclient unit), `infra/chromium-factory`, channels, conformance, `webui`, `blitz`, `agent-browser` (labs session) |
+| Shell | `shell-` | `niubash`, `rubash`, `brush`, `oils` (Windows port), Coreutils, `packages/shell-matrix`, `packages/machine/shell.dsc.winget` |
+| Monorepo | `depot-`, `vcs-` | `ay` (lock, forks, up, identity, arch), Lore, `just` |
 
-## 4. Fusion : origine → destination
+## 4. Merge: origin → destination
 
-| Origine                                | Destination                                                            | Note                                                                                                 |
-| -------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `nt` (aphrody-labs/nt, encore actif sur GitHub au 2026-11-13) | `apps/nt` (coque WinUI 3, scène web, outils hôte bun) | cœur Rust = monorepo windows-rs (fork aphrody-labs, branche unique `master`) → `third_party/windows-rs` |
-| `nt/docs`                              | `docs/nt`, `docs/ms`, `docs/bun`, `docs/research`                      | dédupliqués avec l'existant                                                                          |
-| `nt/vendor` (35 clones) | supprimé le 2026-11-12 (sans modification locale) ; LiberNT déplacé dans `third_party/LiberNT` | doublons de `third_party` |
-| `labs/crates/*`                        | `crates/*`                                                             | merge par la session labs (worktree `merge/labs`) : dependencies, profils, cargo-features, `[patch]` |
-| `labs/vendor/{glob-match,quinn-proto}` | forks + `[patch.crates-io]`                                            |                                                                                                      |
-| `labs/infra/chromium-factory`                 | `infra/chromium-factory`                                               |                                                                                                      |
-| `labs/forks/oils`                      | `third_party/oils`                                                     | branche windows-native                                                                               |
-| `third_party/<cat>/<dépôt>`            | `third_party/<nom>`                                                    | `packages/machine/src/flatten-third-party.ts` (voir §5)                                              |
-| `configuration/` (racine, ARCH-005)    | `packages/machine`                                                     | ARCH-006 interdit le TS dans `infra/`                                                                |
+| Origin | Destination | Note |
+| --- | --- | --- |
+| `nt` (aphrody-labs/nt, still active on GitHub as of 2026-11-13) | `apps/nt` (WinUI 3 shell, web scene, bun host tools) | Rust core = windows-rs monorepo (aphrody-labs fork, single branch `master`) → `third_party/windows-rs` |
+| `nt/docs` | `docs/nt`, `docs/ms`, `docs/bun`, `docs/research` | deduplicated against the existing |
+| `nt/vendor` (35 clones) | deleted on 2026-11-12 (without local changes); LiberNT moved to `third_party/LiberNT` | duplicates of `third_party` |
+| `labs/crates/*` | `crates/*` | merge by the labs session (worktree `merge/labs`): dependencies, profiles, cargo-features, `[patch]` |
+| `labs/vendor/{glob-match,quinn-proto}` | forks + `[patch.crates-io]` | |
+| `labs/infra/chromium-factory` | `infra/chromium-factory` | |
+| `labs/forks/oils` | `third_party/oils` | windows-native branch |
+| `third_party/<cat>/<repo>` | `third_party/<name>` | `packages/machine/src/flatten-third-party.ts` (see §5) |
+| `configuration/` (root, ARCH-005) | `packages/machine` | ARCH-006 forbids TS in `infra/` |
 
-## 5. third_party à plat — plan vérifié (simulation 2026-11-12)
+## 5. Flat third_party — verified plan (simulation 2026-11-12)
 
-- 320 dépôts → 309 projets amont : 277 déplacements, 10 doublons supprimés, 1 dossier vide retiré (320 − 10 − 1 = 309). Limite : la comparaison GitHub ne porte que sur la branche par défaut ; vérifier aussi branches, tags et amonts hors GitHub avant suppression.
-  - Doublons détectés par l'API GitHub, en suivant le réseau de forks et le nombre de commits d'avance (« ahead »). Exemples : `cachyos/WSL` (fork de microsoft/WSL, 0 commit d'avance, 67 de retard) et `build/wild` (aphrody-dev, 0 d'avance).
-  - Autres opérations : 3 jonctions retirées, 1 dossier vide, 2 fichiers isolés déplacés vers `var/`, 26 références suivies réécrites.
-- Nommage. Le nom est le dernier segment du chemin actuel, sans le préfixe `owner_`. Un nom générique garde son propriétaire (`lightpanda-io-browser`, `modelcontextprotocol-rust-sdk`). Les exceptions sont listées et justifiées dans le script.
-- Sûreté. Le plan est refusé dans quatre cas : collision, dossier non verrouillé, travail local dans un doublon, fork divergent.
-- Application. Le déplacement passe par un transit `third_party/.flatten`. Les dossiers de catégorie sont retirés par `rmdir`, qui échoue s'ils ne sont pas vides.
-- Calendrier : après le merge labs, puis `ay lock --lock-only`.
+- 320 repositories → 309 upstream projects: 277 moves, 10 duplicates deleted, 1 empty folder removed (320 − 10 − 1 = 309). Limit: the GitHub comparison only covers the default branch; also check branches, tags and non-GitHub upstreams before deletion.
+  - Duplicates detected through the GitHub API, following the fork network and the number of commits ahead ("ahead"). Examples: `cachyos/WSL` (fork of microsoft/WSL, 0 commits ahead, 67 behind) and `build/wild` (aphrody-dev, 0 ahead).
+  - Other operations: 3 junctions removed, 1 empty folder, 2 isolated files moved to `var/`, 26 tracked references rewritten.
+- Naming. The name is the last segment of the current path, without the `owner_` prefix. A generic name keeps its owner (`lightpanda-io-browser`, `modelcontextprotocol-rust-sdk`). Exceptions are listed and justified in the script.
+- Safety. The plan is refused in four cases: collision, unlocked folder, local work in a duplicate, divergent fork.
+- Application. The move goes through a `third_party/.flatten` transit. Category folders are removed by `rmdir`, which fails if they are not empty.
+- Schedule: after the labs merge, then `ay lock --lock-only`.
 
 ## 6. Phases
 
-1. Base de référence (fait le 2026-11-12, avant la consigne « pas de build sur le PC ») : 9/9 étapes vertes, cargo 805 tests OK, bun 45 OK (`var/baseline-verify-all.log`).
-2. Merge labs (session labs) → vérification sur prd/fr2.
-3. third_party à plat + dédup → `ay lock`.
-4. nt → `apps/nt` (fait le 2026-11-13) ; cœur Rust via le monorepo windows-rs (`third_party/windows-rs`, fork aphrody-labs, branche master ; aucune branche nt/*) → vérification, mesure d'affichage réelle (?report=1).
-5. `identity.toml` + `ay identity` ; `.sh`/`.ps1` restants → recettes `just` vers Rust/bun (`forks-aphrody-labs.sh` déjà remplacé par `packages/machine/src/forks.ts`).
+1. Baseline (done on 2026-11-12, before the "no build on the PC" instruction): 9/9 green steps, cargo 805 tests OK, bun 45 OK (`var/baseline-verify-all.log`).
+2. labs merge (labs session) → verification on prd/fr2.
+3. Flat third_party + dedup → `ay lock`.
+4. nt → `apps/nt` (done on 2026-11-13); Rust core via the windows-rs monorepo (`third_party/windows-rs`, aphrody-labs fork, master branch; no nt/* branch) → verification, real display measurement (?report=1).
+5. `identity.toml` + `ay identity`; remaining `.sh`/`.ps1` → `just` recipes to Rust/bun (`forks-aphrody-labs.sh` already replaced by `packages/machine/src/forks.ts`).

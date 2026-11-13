@@ -1,78 +1,78 @@
-# Couche gaming : carte d'ownership (2026-11-13)
+# Gaming layer: ownership map (2026-11-13)
 
-Périmètre : Steam (client, steamcmd, Steam Runtime, Steamworks), Proton, Wine, DXVK, VKD3D-Proton,
-gamescope, Mesa/RADV, Vulkan, DirectX, SteamOS, Bazzite, CachyOS côté jeu (proton-cachyos,
-wine-cachyos). Le noyau et les paquets CachyOS, les patchsets Linux et les images de base
-appartiennent à la couche système : `docs/linux/OWNERSHIP.md`.
+Scope: Steam (client, steamcmd, Steam Runtime, Steamworks), Proton, Wine, DXVK, VKD3D-Proton,
+gamescope, Mesa/RADV, Vulkan, DirectX, SteamOS, Bazzite, CachyOS on the gaming side (proton-cachyos,
+wine-cachyos). The CachyOS kernel and packages, the Linux patchsets and the base images
+belong to the system layer: `docs/linux/OWNERSHIP.md`.
 
-Commandes : `ay steam` (Rust, `crates/ay/src/low/steam.rs`) et `ay gaming` (`packages/gaming`, lancé par bun).
+Commands: `ay steam` (Rust, `crates/ay/src/low/steam.rs`) and `ay gaming` (`packages/gaming`, run by bun).
 
-## 1. Une source par fonction
+## 1. One source per function
 
-| Fonction | Source unique | Consommateurs |
+| Function | Single source | Consumers |
 |---|---|---|
-| VDF texte et binaire, `appinfo.vdf` v39-v41, `packageinfo.vdf`, ACF, `libraryfolders.vdf`, découverte des installations, outils de compatibilité, environnement Proton, client CM/CDN et manifests de dépôts | `crates/steam-depot` (lib `bun_steam`, miroir lecture seule `aphrody-labs/steam-depot`) | `ay steam` (JSON), `apps/rosegriffon` (dépendance git), image `rg-steam-depot` sur prd |
-| Données Steam en JSON pour Bun | `ay steam root/libraries/apps/vdf/compat/host/env` | `packages/gaming/src/native.ts` |
-| SteamID, liens SteamDB/boutique, carte des chemins d'une app, filtre des fichiers d'identifiants | `packages/gaming/src/steam.ts` (`@aphrody/gaming`) | MCP du plugin, `ay gaming` |
-| Vulkan (ICD, couches implicites et explicites), DirectX (adaptateurs DXGI, runtime D3D12, Agility SDK, DXVK/vkd3d-proton livrés par Proton) | `packages/gaming/src/{vulkan,dx}.ts` | `ay gaming layers`, `ay gaming dx`, `ay gaming status` |
-| steamcmd reproductible, Proton hors Steam (umu-run ou `proton waitforexitandrun`) | `packages/gaming/src/{steamcmd,proton}.ts`, manifeste `packages/gaming/src/downloads.toml` | `ay gaming steamcmd`, `ay gaming run` |
-| Plugin Claude Code, MCP `steam` | `apps/rosegriffon/plugins/steam` (`servers/steam-mcp.ts` importe `packages/gaming`) | Claude Code, tout client MCP |
-| Skills | `apps/rosegriffon/plugins/steam/skills/*` | miroirs générés `.agents/skills/{steam-*,gaming-stack}` : `ay gaming skills sync`, contrôle `ay gaming skills check` (test de `packages/gaming`) |
-| Images (Bazzite, SteamOS, CachyOS côté jeu) | `infra/gaming/images.toml` | CI, hôtes |
-| Mises à jour amont des forks | `infra/upstream/stacks.d/gaming.toml` (modèle `mirror`, `packages/upstream/src/mirror.ts`) | `ay upstream sync gaming --push`, timer `aphrody-upstream` sur prd |
-| Mode gamescope first-party | `crates/gamescope-{core,cli,wgsl,web-wasm}`, `infra/gamescope-web` (`ay scope`) | inchangé ; source amont `third_party/gamescope` |
+| Text and binary VDF, `appinfo.vdf` v39-v41, `packageinfo.vdf`, ACF, `libraryfolders.vdf`, installation discovery, compatibility tools, Proton environment, CM/CDN client and depot manifests | `crates/steam-depot` (lib `bun_steam`, read-only mirror `aphrody-labs/steam-depot`) | `ay steam` (JSON), `apps/rosegriffon` (git dependency), image `rg-steam-depot` on prd |
+| Steam data as JSON for Bun | `ay steam root/libraries/apps/vdf/compat/host/env` | `packages/gaming/src/native.ts` |
+| SteamID, SteamDB/store links, path map of an app, credential file filter | `packages/gaming/src/steam.ts` (`@aphrody/gaming`) | plugin MCP, `ay gaming` |
+| Vulkan (ICD, implicit and explicit layers), DirectX (DXGI adapters, D3D12 runtime, Agility SDK, DXVK/vkd3d-proton shipped by Proton) | `packages/gaming/src/{vulkan,dx}.ts` | `ay gaming layers`, `ay gaming dx`, `ay gaming status` |
+| Reproducible steamcmd, Proton outside Steam (umu-run or `proton waitforexitandrun`) | `packages/gaming/src/{steamcmd,proton}.ts`, manifest `packages/gaming/src/downloads.toml` | `ay gaming steamcmd`, `ay gaming run` |
+| Claude Code plugin, `steam` MCP | `apps/rosegriffon/plugins/steam` (`servers/steam-mcp.ts` imports `packages/gaming`) | Claude Code, any MCP client |
+| Skills | `apps/rosegriffon/plugins/steam/skills/*` | generated mirrors `.agents/skills/{steam-*,gaming-stack}`: `ay gaming skills sync`, check `ay gaming skills check` (test of `packages/gaming`) |
+| Images (Bazzite, SteamOS, CachyOS on the gaming side) | `infra/gaming/images.toml` | CI, hosts |
+| Upstream updates of the forks | `infra/upstream/stacks.d/gaming.toml` (`mirror` model, `packages/upstream/src/mirror.ts`) | `ay upstream sync gaming --push`, timer `aphrody-upstream` on prd |
+| First-party gamescope mode | `crates/gamescope-{core,cli,wgsl,web-wasm}`, `infra/gamescope-web` (`ay scope`) | unchanged; upstream source `third_party/gamescope` |
 
-## 2. Supprimé (doublons)
+## 2. Removed (duplicates)
 
-| Copie | Remplacée par |
+| Copy | Replaced by |
 |---|---|
-| `crates/unix-cachyos` `ProtonWineOrchestrator` : environnement Proton figé (ntsync et anti-triche forcés à 1, noms non lus par Proton) | `bun_steam::proton::launch_plan` sur la sonde de l hôte, plus les seules options CachyOS (`CACHYOS_PROTON_OPTIONS`) |
-| `apps/rosegriffon/plugins/steam/lib/steam.ts` : parseurs VDF texte/binaire, `readAppInfo`, `findSteamRoot`, `listLibraries`, `listApps`, table StateFlags | `crates/steam-depot` via `ay steam` ; SteamID, liens et chemins déplacés dans `packages/gaming/src/steam.ts` |
-| `apps/rosegriffon/plugins/steam/scripts/steam-inspect.ts` | `ay steam` et `ay gaming` |
-| Table StateFlags TypeScript (bits 16 à 23 absents côté Rust) | `AppManifest::state_flag_descriptions` (`crates/steam-depot/src/install.rs`), complétée |
-| `.agents/skills/steam-*` copiés à la main (steam-local-inspect avait divergé) | miroirs générés depuis le plugin |
+| `crates/unix-cachyos` `ProtonWineOrchestrator`: frozen Proton environment (ntsync and anti-cheat forced to 1, names not read by Proton) | `bun_steam::proton::launch_plan` on the host probe, plus only the CachyOS options (`CACHYOS_PROTON_OPTIONS`) |
+| `apps/rosegriffon/plugins/steam/lib/steam.ts`: text/binary VDF parsers, `readAppInfo`, `findSteamRoot`, `listLibraries`, `listApps`, StateFlags table | `crates/steam-depot` via `ay steam`; SteamID, links and paths moved to `packages/gaming/src/steam.ts` |
+| `apps/rosegriffon/plugins/steam/scripts/steam-inspect.ts` | `ay steam` and `ay gaming` |
+| TypeScript StateFlags table (bits 16 to 23 missing on the Rust side) | `AppManifest::state_flag_descriptions` (`crates/steam-depot/src/install.rs`), completed |
+| `.agents/skills/steam-*` copied by hand (steam-local-inspect had diverged) | mirrors generated from the plugin |
 
-## 3. Forks et checkouts (`third_party/<nom>`, épinglés dans `src.lock.json`, liste `third_party/forks.txt`)
+## 3. Forks and checkouts (`third_party/<name>`, pinned in `src.lock.json`, list `third_party/forks.txt`)
 
-Un seul Wine, un seul Proton, un seul DXVK : les variantes sont des remotes du checkout et des branches
-du fork, jamais des copies. Les sous-modules de Proton (wine, dxvk, vkd3d-proton, Vulkan-Headers,
-Vulkan-Loader, SPIRV-Headers, glslang...) ne sont pas initialisés : les checkouts ci-dessous en tiennent lieu.
+One Wine, one Proton, one DXVK: variants are remotes of the checkout and branches
+of the fork, never copies. The Proton submodules (wine, dxvk, vkd3d-proton, Vulkan-Headers,
+Vulkan-Loader, SPIRV-Headers, glslang...) are not initialized: the checkouts below stand in for them.
 
-| Checkout | Fork aphrody-labs | Amont | Licence (vérifiée le 2026-11-13) | Variantes |
+| Checkout | aphrody-labs fork | Upstream | License (verified 2026-11-13) | Variants |
 |---|---|---|---|---|
-| `Proton` | `Proton` | ValveSoftware/Proton `proton_11.0` | BSD-3-Clause (`LICENSE.proton`), chaque composant sous sa licence | branches `cachyos_main` (CachyOS/proton-cachyos), `ge` (GloriousEggroll/proton-ge-custom) |
-| `wine` | `wine` (préexistant, parent wine-mirror/wine) | WineHQ `master` | LGPL-2.1+ | branches `proton_11.0` (ValveSoftware/wine), `cachyos_11.0` (CachyOS/wine-cachyos, dernière `cachyos_11.0_<date>/main`) |
+| `Proton` | `Proton` | ValveSoftware/Proton `proton_11.0` | BSD-3-Clause (`LICENSE.proton`), each component under its own license | branches `cachyos_main` (CachyOS/proton-cachyos), `ge` (GloriousEggroll/proton-ge-custom) |
+| `wine` | `wine` (pre-existing, parent wine-mirror/wine) | WineHQ `master` | LGPL-2.1+ | branches `proton_11.0` (ValveSoftware/wine), `cachyos_11.0` (CachyOS/wine-cachyos, latest `cachyos_11.0_<date>/main`) |
 | `dxvk` | `dxvk` | doitsujin/dxvk | Zlib | remote `valve` (ValveSoftware/dxvk) |
 | `vkd3d-proton` | `vkd3d-proton` | HansKristian-Work/vkd3d-proton | LGPL-2.1 | |
 | `gamescope` | `gamescope` | ValveSoftware/gamescope | BSD-2-Clause | |
-| `mesa` (RADV, lavapipe, NVK) | non forké (amont GitLab, aucun patch) | gitlab.freedesktop.org/mesa/mesa | MIT | |
-| `Vulkan-Headers`, `Vulkan-Loader`, `Vulkan-ValidationLayers`, `Vulkan-Tools` | idem | KhronosGroup | Apache-2.0 (Headers : Apache-2.0 OR MIT) | |
-| `SPIRV-Headers`, `SPIRV-Tools`, `SPIRV-Cross`, `SPIRV-LLVM-Translator` | non forkés (préexistants) | KhronosGroup | Apache-2.0 / MIT | |
-| `DirectX-Headers`, `DirectXShaderCompiler` | préexistants | microsoft | MIT, NCSA (LLVM Release License) | |
+| `mesa` (RADV, lavapipe, NVK) | not forked (GitLab upstream, no patch) | gitlab.freedesktop.org/mesa/mesa | MIT | |
+| `Vulkan-Headers`, `Vulkan-Loader`, `Vulkan-ValidationLayers`, `Vulkan-Tools` | same | KhronosGroup | Apache-2.0 (Headers: Apache-2.0 OR MIT) | |
+| `SPIRV-Headers`, `SPIRV-Tools`, `SPIRV-Cross`, `SPIRV-LLVM-Translator` | not forked (pre-existing) | KhronosGroup | Apache-2.0 / MIT | |
+| `DirectX-Headers`, `DirectXShaderCompiler` | pre-existing | microsoft | MIT, NCSA (LLVM Release License) | |
 | `bazzite` | `bazzite` | ublue-os/bazzite | Apache-2.0 | |
-| `steamos-manager` | `steamos-manager` (miroir poussé) | gitlab.steamos.cloud/holo/steamos-manager | MIT | |
-| `steam-runtime-tools` (pressure-vessel) | `steam-runtime-tools` (miroir poussé) | gitlab.steamos.cloud/steamrt/steam-runtime-tools | LGPL-2.1+ (et MIT, Apache-2.0, Zlib par fichier) | |
+| `steamos-manager` | `steamos-manager` (pushed mirror) | gitlab.steamos.cloud/holo/steamos-manager | MIT | |
+| `steam-runtime-tools` (pressure-vessel) | `steam-runtime-tools` (pushed mirror) | gitlab.steamos.cloud/steamrt/steam-runtime-tools | LGPL-2.1+ (and MIT, Apache-2.0, Zlib per file) | |
 | `steam-devices` | `steam-devices` | ValveSoftware/steam-devices | MIT | |
 | `GameNetworkingSockets` | `GameNetworkingSockets` | ValveSoftware | BSD-3-Clause | |
 | `umu-launcher` | `umu-launcher` | Open-Wine-Components | GPL-3.0 | |
-| `MangoHud`, `gamemode` | idem | flightlessmango, FeralInteractive | MIT, BSD-3-Clause | |
-| `steamroom` | préexistant | landaire/steamroom | MIT OR Apache-2.0 | dépendance de `crates/steam-depot` |
-| `steamkit`, `steam-vent`, `steamlocate-rs`, `steamworks-rs`, `steamappinfo`, `steam-protobufs`, `steamtracking`, `valvepython-steam`, `steamctl`, `node-steam-*`, `steam-lancache-prefill`, `steam-rs` | non forkés (référence, `crates/steam-depot/UPSTREAM.md`) | divers | GPL/LGPL : lecture seule, jamais copiés | |
+| `MangoHud`, `gamemode` | same | flightlessmango, FeralInteractive | MIT, BSD-3-Clause | |
+| `steamroom` | pre-existing | landaire/steamroom | MIT OR Apache-2.0 | dependency of `crates/steam-depot` |
+| `steamkit`, `steam-vent`, `steamlocate-rs`, `steamworks-rs`, `steamappinfo`, `steam-protobufs`, `steamtracking`, `valvepython-steam`, `steamctl`, `node-steam-*`, `steam-lancache-prefill`, `steam-rs` | not forked (reference, `crates/steam-depot/UPSTREAM.md`) | various | GPL/LGPL: read-only, never copied | |
 
-CachyOS (noyau `linux-cachyos`, `CachyOS-PKGBUILDS`) : couche système, `docs/linux/OWNERSHIP.md`.
+CachyOS (kernel `linux-cachyos`, `CachyOS-PKGBUILDS`): system layer, `docs/linux/OWNERSHIP.md`.
 
-## 4. Exclu pour cause de licence
+## 4. Excluded for license reasons
 
-Jamais forké, vendorisé, commité ni redistribué ; seulement wrappers, manifestes de téléchargement
-officiels (`packages/gaming/src/downloads.toml`), documentation et skills :
+Never forked, vendored, committed or redistributed; only wrappers, official download manifests
+(`packages/gaming/src/downloads.toml`), documentation and skills:
 
-- client Steam, `steamcmd` (téléchargé depuis `steamcdn-a.akamaihd.net` par `ay gaming steamcmd install`, taille contrôlée) ;
-- builds Proton et Steam Linux Runtime distribués par Steam (apps 1493710, 2180100, 3658110, 2805730, 2348590, 1628350, 1391110, 1070560), installés par steamcmd sous le compte de l'utilisateur ;
-- images SteamOS (`steamdeck-repair-latest.img.bz2`, lien seulement) ;
-- SDK Steamworks (licence partenaire ; `third_party/steamworks-rs` ne sert que de référence d'en-têtes) ;
-- ValveSoftware/steamlink-sdk (aucune licence publiée), ValveSoftware/steam-runtime (images construites à partir de paquets sous licences diverses : seuls ses scripts sont lus en amont, rien n'est repris), ValveSoftware/SteamOS et steam-for-linux (dépôts de tickets, sans code).
+- Steam client, `steamcmd` (downloaded from `steamcdn-a.akamaihd.net` by `ay gaming steamcmd install`, size checked);
+- Proton and Steam Linux Runtime builds distributed by Steam (apps 1493710, 2180100, 3658110, 2805730, 2348590, 1628350, 1391110, 1070560), installed by steamcmd under the user's account;
+- SteamOS images (`steamdeck-repair-latest.img.bz2`, link only);
+- Steamworks SDK (partner license; `third_party/steamworks-rs` serves only as a header reference);
+- ValveSoftware/steamlink-sdk (no published license), ValveSoftware/steam-runtime (images built from packages under various licenses: only its scripts are read upstream, nothing is reused), ValveSoftware/SteamOS and steam-for-linux (issue trackers, no code).
 
-## 5. Reste hors de cette couche
+## 5. Remains outside this layer
 
-- `apps/shenron` (`packages/dbxv2/src/steamcmd.ts`, `crates/shenron-re/src/steam.rs`) et `apps/rosegriffon/apps/iecode-dotnet/Core/Steam` (client de dépôts C#) : code produit dans leurs sous-modules ; à converger sur `ay gaming steamcmd` et `crates/steam-depot` par leurs propriétaires. `apps/rosegriffon/crates/yolo-re-core` consomme déjà `bun_steam`.
-- La stack docker `rosegriffon-stack` sur prd (`rg-steam-depot`, `rg-steam-initial`) et son jeton : propriétaire rosegriffon, non modifiés.
+- `apps/shenron` (`packages/dbxv2/src/steamcmd.ts`, `crates/shenron-re/src/steam.rs`) and `apps/rosegriffon/apps/iecode-dotnet/Core/Steam` (C# depot client): product code in their submodules; to be converged onto `ay gaming steamcmd` and `crates/steam-depot` by their owners. `apps/rosegriffon/crates/yolo-re-core` already consumes `bun_steam`.
+- The `rosegriffon-stack` docker stack on prd (`rg-steam-depot`, `rg-steam-initial`) and its token: owned by rosegriffon, not modified.
