@@ -148,7 +148,8 @@ export const server = Bun.serve({
     }
 
     if (pathname === "/api/verify") {
-      const target = url.searchParams.get("target") || "C:\\src\\packages\\google-design";
+      const target =
+        url.searchParams.get("target") || "C:\\src\\packages\\google-design";
       const report = verifyTarget(target);
       return new Response(JSON.stringify(report), { headers: jsonHeaders });
     }
