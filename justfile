@@ -42,7 +42,7 @@ npm cmd="status" *args:
 # Timer hebdomadaire : actions des npm-publish.yml (src, rosegriffon, shenron) remises au dernier SHA de leur majeure, commit sur main
 [windows]
 npm-pins-schedule:
-    schtasks /Create /F /SC WEEKLY /D MON /ST 06:00 /TN aphrody-npm-pins /TR "\"$(bun -e 'process.stdout.write(process.execPath)')\" run \"{{root}}/scripts/npm.ts\" pins --push"
+    schtasks /Create /F /SC WEEKLY /D MON /ST 06:00 /TN aphrody-npm-pins /TR "conhost.exe --headless \"$(bun -e 'process.stdout.write(process.execPath)')\" run \"{{root}}/scripts/npm.ts\" pins --push"
 
 # Dry-run de publication npm en CI (trusted publishing OIDC, repli NPM_TOKEN) pour des dossiers de paquets
 npm-publish-ci pkgs="packages/wck" dry="true":
@@ -55,7 +55,7 @@ env-doctor:
 # Auth service of this host (env-kit auth-daemon.ts): real probe every 5 min, unattended refresh, one grouped notice per credential per 24 h
 [windows]
 auth-daemon-install:
-    schtasks /Create /F /SC ONLOGON /TN aphrody-auth-daemon /TR "\"$(bun -e 'process.stdout.write(process.execPath)')\" run --cwd \"{{root}}/packages/env-kit\" src/cli.ts auth daemon --every 5 --refresh 30"
+    schtasks /Create /F /SC ONLOGON /TN aphrody-auth-daemon /TR "conhost.exe --headless \"$(bun -e 'process.stdout.write(process.execPath)')\" run --cwd \"{{root}}/packages/env-kit\" src/cli.ts auth daemon --every 5 --refresh 30"
     schtasks /Run /TN aphrody-auth-daemon
 
 [unix]
@@ -193,7 +193,7 @@ nhitl *args:
 # Hourly NHITL rescan as a user scheduled task (no elevation); `schtasks /Delete /TN aphrody-nhitl-scan /F` removes it
 [windows]
 nhitl-schedule:
-    schtasks /Create /F /SC HOURLY /TN aphrody-nhitl-scan /TR "\"$(bun -e 'process.stdout.write(process.execPath)')\" run --cwd \"{{root}}/packages/ai-os\" src/cli.ts nhitl scan"
+    schtasks /Create /F /SC HOURLY /TN aphrody-nhitl-scan /TR "conhost.exe --headless \"$(bun -e 'process.stdout.write(process.execPath)')\" run --cwd \"{{root}}/packages/ai-os\" src/cli.ts nhitl scan"
 
 [unix]
 nhitl-schedule:

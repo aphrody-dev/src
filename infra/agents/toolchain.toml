@@ -55,7 +55,7 @@ scope = "user"
 name = "chrome-devtools"
 hosts = ["pc"]                         # navigateur local / connexion Firebase du PC
 scope = "user"
-command = ["bun", "x", "chrome-devtools-mcp@1.13.0"]
+command = ["bun", "x", "chrome-devtools-mcp@1.13.0", "--headless", "--isolated"]  # aucune fenêtre (demande du propriétaire 2026-11-13)
 source = "ChromeDevTools/chrome-devtools-mcp@1417f93ee3f8"
 
 [[claude.mcp]]
@@ -189,7 +189,7 @@ hosts = ["pc"]
 
 [[claude.mcp]]
 name = "agent-desktop"
-command = ["{bin}/agent-desktop.exe", "mcp", "--headed"]
+command = ["{bin}/agent-desktop.exe", "mcp"]  # headless sémantique par défaut : pas de focus ni curseur physique
 hosts = ["pc"]
 
 [[claude.mcp]]

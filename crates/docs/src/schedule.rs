@@ -23,7 +23,11 @@ fn quote_windows(arg: &str) -> String {
 
 /// `schtasks /Create` arguments.
 pub fn schtasks_create(argv: &[String], hours: u32) -> Vec<String> {
-    let tr = argv.iter().map(|a| quote_windows(a)).collect::<Vec<_>>().join(" ");
+    // conhost --headless: ay.exe is a console binary; without it every run flashes a console window.
+    let tr = std::iter::once("conhost.exe --headless".to_string())
+        .chain(argv.iter().map(|a| quote_windows(a)))
+        .collect::<Vec<_>>()
+        .join(" ");
     ["/Create", "/F", "/SC", "HOURLY", "/MO", &hours.to_string(), "/TN", TASK, "/TR", &tr]
         .iter()
         .map(|s| s.to_string())
@@ -99,7 +103,7 @@ mod tests {
         assert_eq!(argv[1..], ["docs", "sync", "--quiet", "--root", "C:/src"]);
         let a = schtasks_create(&argv, 6);
         assert_eq!(a[..8], ["/Create", "/F", "/SC", "HOURLY", "/MO", "6", "/TN", TASK]);
-        assert_eq!(a[9], "\"C:/Users/a b/ay.exe\" docs sync --quiet --root C:/src");
+        assert_eq!(a[9], "conhost.exe --headless \"C:/Users/a b/ay.exe\" docs sync --quiet --root C:/src");
         let (svc, timer) = systemd_units(&sync_argv(Path::new("/home/u/.local/bin/ay"), None), 12);
         assert!(svc.contains("ExecStart=/home/u/.local/bin/ay docs sync --quiet\n"));
         assert!(timer.contains("OnUnitActiveSec=12h"));
