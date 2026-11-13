@@ -7,7 +7,7 @@ pour un patch Rust, un `[patch.crates-io]` git épinglé par `rev` sur ce fork.
 
 ## Avant / après
 
-Mesures sur `main` (avant : f27d752 ; après : f1df189 puis le commit steamroom).
+Mesures sur `main` (avant : f27d752 ; après : 88da4d2). `cargo deny --locked check` : advisories, bans, licenses et sources ok.
 
 | Mesure | Avant | Après |
 |---|---|---|
@@ -15,8 +15,8 @@ Mesures sur `main` (avant : f27d752 ; après : f1df189 puis le commit steamroom)
 | Copies vendorisées | 3 : `third_party/oils` (5 327 fichiers), `third_party/patches/quinn-proto`, `third_party/patches/glob-match` | 0 |
 | Fichiers suivis (dépôt) | 10 519 | 5 129 |
 | Pack `.git` | 59 Mio | inchangé (historique conservé, pas de réécriture) |
-| Paquets `Cargo.lock` | 1 350 (lock en retard sur les manifestes) | 1 356 (lock aligné : `adblock` et sa chaîne) |
-| Crates Cargo en plusieurs versions / copies en trop | 114 / 127 | 114 / 127 (tous transitifs, voir plus bas) |
+| Paquets `Cargo.lock` | 1 350 (lock en retard sur les manifestes) | 1 353 (lock aligné sur les manifestes) |
+| Crates Cargo en plusieurs versions / copies en trop | 114 / 127 | 109 / 122 (zip, zerocopy, sha2 alignés ; le reste est transitif) |
 | Sources git Cargo | 3 dépôts, épinglés par `branch`/`tag` | 5 dépôts, tous épinglés par `rev` |
 | Patchs Cargo `path` | 2 | 0 |
 | Paquets npm externes (`bun.lock`) | 4 (`@types/bun`, `bun-types`, `@types/node`, `undici-types`), 0 doublon | idem |
@@ -87,3 +87,12 @@ les deux.
   session.
 - **.NET** : `apps/nt` utilise `Directory.Packages.props` (gestion centrale). `Relay.Service.csproj`
   (`packages/ai-os`) déclare encore ses versions en ligne.
+
+## Validation (2026-11-13)
+
+- `cargo deny --locked check` sur 88da4d2 : advisories, bans, licenses et sources ok.
+- Windows natif (`x86_64-pc-windows-msvc`, PC) : `cargo check -p quinn-proto -p glob-match` passe sur les
+  forks épinglés ; les 22 tests de `glob-match` (dont `doublestar` et `literal_ends`) passent.
+- prd (`aphrody-heavy`) : `cargo check --workspace --all-targets` passe sur `steamroom` 0.2.1 (zip 9).
+- `bun check scripts/js-deps-check.ts` : aucune erreur de type. `js-deps-check` : 17 manifestes,
+  0 problème ; un cas négatif (axios, `^4`, `postinstall`, doublon) en relève 7.
