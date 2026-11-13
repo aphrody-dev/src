@@ -6,9 +6,9 @@
 //   managed block, and both CLIs get the same no-human-in-the-loop settings.
 // restore <path>: writes a compressed file back to its original path.
 import { Database } from "bun:sqlite";
-import { existsSync, readdirSync, rmSync, statSync } from "node:fs";
+import { existsSync, readdirSync, rmSync, statSync, utimesSync } from "node:fs";
 import { homedir } from "node:os";
-import { join, relative } from "node:path";
+import { join, relative, resolve, sep } from "node:path";
 import { parseArgs } from "node:util";
 import { Context } from "../core/context";
 
@@ -26,7 +26,10 @@ const CLAUDE = join(H, ".claude");
 const GEMINI = join(H, ".gemini");
 const home = values.home ?? Bun.env.AGENT_HOME ?? join(H, ".agent");
 const dry = values["dry-run"];
-const cutoff = Date.now() - Number(values.days) * 86_400_000;
+const days = Number(values.days);
+if (!Number.isFinite(days) || days < 0)
+  throw new Error(`--days must be a number >= 0, got ${values.days}`);
+const cutoff = Date.now() - days * 86_400_000;
 
 function* walk(dir: string): Generator<string> {
   if (!existsSync(dir)) return;
@@ -75,6 +78,8 @@ async function absorb() {
   blobs.run(
     "CREATE TABLE IF NOT EXISTS blobs(path TEXT PRIMARY KEY, mtime INTEGER, size INTEGER, data BLOB)",
   );
+  blobs.run("PRAGMA journal_mode=WAL");
+  blobs.run("PRAGMA busy_timeout=10000");
   const put = blobs.query(
     "INSERT INTO blobs(path, mtime, size, data) VALUES (?, ?, ?, ?) ON CONFLICT(path) DO UPDATE SET mtime=excluded.mtime, size=excluded.size, data=excluded.data",
   );
@@ -180,13 +185,20 @@ async function absorb() {
       n.packed++;
       n.bytes += st.size;
       if (dry) continue;
-      const data = Bun.zstdCompressSync(await Bun.file(p).bytes(), {
-        level: 19,
-      });
-      put.run(relative(H, p), Math.round(st.mtimeMs), st.size, data);
+      const raw = await Bun.file(p).bytes();
+      const data = Bun.zstdCompressSync(raw, { level: 19 });
+      // Delete only after the committed blob decompresses to the same bytes.
+      blobs.transaction(() =>
+        put.run(relative(H, p), Math.round(st.mtimeMs), st.size, data),
+      )();
+      const back = blobs
+        .query("SELECT data FROM blobs WHERE path = ?")
+        .get(relative(H, p)) as { data: Uint8Array };
+      if (Bun.hash(Bun.zstdDecompressSync(back.data)) !== Bun.hash(raw))
+        throw new Error(`verify failed: ${p}`);
       rmSync(p);
     }
-  if (!dry) blobs.run("VACUUM");
+  if (!dry && n.packed) blobs.run("VACUUM");
   blobs.close();
   ctx.close();
   console.log(
@@ -209,10 +221,12 @@ async function sync() {
   const block = `${BEGIN}\n# Shared directives (from ~/.claude/CLAUDE.md, synced by ai-os brain)\n\n${global.trim()}\n\n## Memory index (~/.claude/projects/C--src/memory)\n\n${mem.trim()}\n${END}`;
   const gp = join(GEMINI, "GEMINI.md");
   const cur = existsSync(gp) ? await Bun.file(gp).text() : "";
-  const re = new RegExp(`${BEGIN}[\\s\\S]*?${END}`);
-  const next = re.test(cur)
-    ? cur.replace(re, block)
-    : `${cur.trimEnd()}\n\n${block}\n`;
+  const b = cur.indexOf(BEGIN);
+  const e = cur.indexOf(END, b);
+  const next =
+    b >= 0 && e > b
+      ? cur.slice(0, b) + block + cur.slice(e + END.length)
+      : `${cur.trimEnd()}\n\n${block}\n`;
 
   // Same NHITL posture on both sides: Claude bypassPermissions, agy auto-approve.
   const cs = join(CLAUDE, "settings.json");
@@ -239,13 +253,24 @@ async function sync() {
 async function restore(path: string) {
   const db = new Database(join(home, "brain.sqlite"), { readonly: true });
   const rows = db
-    .query("SELECT path, data FROM blobs WHERE path LIKE ?")
-    .all(`%${path.replaceAll("/", "\\")}%`) as {
+    .query(
+      "SELECT path, mtime, data FROM blobs WHERE path = ? OR path LIKE ? ESCAPE '!'",
+    )
+    .all(path, `${path.replace(/[!%_]/g, (m) => `!${m}`)}${sep}%`) as {
     path: string;
+    mtime: number;
     data: Uint8Array;
   }[];
   for (const r of rows) {
-    await Bun.write(join(H, r.path), Bun.zstdDecompressSync(r.data));
+    const out = resolve(H, r.path);
+    if (!out.startsWith(H + sep))
+      throw new Error(`refusing path outside home: ${r.path}`);
+    if (existsSync(out)) {
+      console.error(`exists, skipped: ${r.path}`);
+      continue;
+    }
+    await Bun.write(out, Bun.zstdDecompressSync(r.data));
+    utimesSync(out, r.mtime / 1000, r.mtime / 1000);
     console.log(`restored ${r.path}`);
   }
   if (!rows.length) process.exitCode = 1;

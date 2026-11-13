@@ -174,6 +174,14 @@ rust-stack cmd="serve":
 deploy target="--all" flags="--dry-run":
     ay deploy up {{target}} {{flags}}
 
+# Cloudflare edge (infra/cloudflare, docs/infra/FR2-CLOUDFLARE.md): read-only diff of cloudflare.toml vs live
+cf-plan section="":
+    bun infra/cloudflare/cf.ts plan {{section}}
+
+# Re-run every Cloudflare/fr2 edge check (DNS, headers, TLS, tunnels, Access, closed origin, WAF, cache); exit 1 on regression
+cf-proof:
+    bun infra/cloudflare/proof.ts
+
 # Generate production HTTP/3 Caddyfile & systemd fleet manifests
 deploy-plan:
     ay deploy plan --all
