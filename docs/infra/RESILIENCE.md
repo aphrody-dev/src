@@ -64,7 +64,7 @@ dans settings.json (code lu) : accès complet par `--approval-mode yolo` seuleme
 
 - systemd : nginx, docker, containerd, aphrody-cluster-haproxy, nativelink-server, nativelink-worker, fail2ban,
   runner CI `actions.runner.aphrody-dev-src.fr1` (dépôt aphrody-labs/src, en ligne depuis le 2026-11-13).
-- utilisateur : agent `aphrody-agents*` (rôle chromium) ; ubuntu : outils Chromium/LLVM.
+- utilisateur : agent `aphrody-agents*` (rôles lourds : coder, tester, linter, build, chromium, training, plus reviewer, designer, sre) ; ubuntu : outils Chromium/LLVM.
 - jobs lourds : `aphrody-heavy` (flock unique, charge < 2/3 nproc, nice 19, ionice idle, `-j nproc/3`).
 
 ## Preuves de reboot (2026-11-13)

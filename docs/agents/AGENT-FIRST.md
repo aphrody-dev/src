@@ -17,14 +17,16 @@ Le runner ne choisit jamais un fournisseur : il exécute ce que la tâche nomme,
 
 | Rôle | Entrées | Sorties | Juge | Hôtes |
 |---|---|---|---|---|
-| `coder` | prompt, `cwd`, `commit.paths` | commit sur main | `check` de la tâche, puis `judge`/`ci` | prd, pc |
-| `reviewer` | sha ou chemin | rapport `results/<id>/` | humain absent : verdict LLM (relais) ou Gemini Carbon pour les livrables | prd, pc |
-| `tester` | unité, `just test-affected` | tests + commit | `check` = recette `just` | prd |
-| `linter` | recette `fmt`/`lint` ciblée | commit de formatage | `bun fmt --check <dir>`, `cargo clippy` | prd, fr2 |
-| `designer` | PRD, `DESIGN.md` (porte design-first d'AGENTS.md) | maquettes, tokens | `wck` / Lighthouse | pc |
+| `coder` | prompt, `cwd`, `commit.paths` | commit sur main | `check` de la tâche, puis `judge`/`ci` | fr1 |
+| `reviewer` | sha ou chemin | rapport `results/<id>/` | humain absent : verdict LLM (relais) ou Gemini Carbon pour les livrables | fr1, pc |
+| `tester` | unité, `just test-affected` | tests + commit | `check` = recette `just` | fr1 |
+| `linter` | recette `fmt`/`lint` ciblée | commit de formatage | `bun fmt --check <dir>`, `cargo clippy` | fr1 |
+| `designer` | PRD, `DESIGN.md` (porte design-first d'AGENTS.md) | maquettes, tokens | `wck` / Lighthouse | fr1, pc |
 | `deployer` | `just deploy <cible>` | déploiement | santé de la cible | prd |
-| `sre` | `ci-watch` (CI rouge), `deps-update` | correctif commité | `judge` vert | prd, fr2 |
-| `chromium` | tâches Chromium/LLVM uniquement | builds | factory (`docs/CHROMIUM-FACTORY.md`) | fr1 seul (refus à l'enqueue sinon) |
+| `sre` | santé, journaux, relances ; `ci-watch` crée des `coder` | correctif léger | `judge` vert | prd, fr1, fr2 |
+| `chromium` | tâches Chromium/LLVM | builds | factory (`docs/CHROMIUM-FACTORY.md`) | fr1 |
+| `build` | images, artefacts, toolchains (`aphrody-heavy`) | artefacts | recette `just` | fr1 |
+| `training` | entraînement | modèles | évaluation | fr1 |
 | `growth` | modèles `infra/agents/tasks/*` | brouillons dans `var/agents/publish/<id>/` | revue du propriétaire | prd, pc |
 
 `growth` a `approval = "owner"` par défaut : la tâche finit `done`, ses fichiers sont déplacés dans `publish/<id>/` (`changes.patch`, `files/`, journaux, `README.txt`) et le checkout est restauré. Rien n'est publié, posté, envoyé ni déployé ; le propriétaire publie depuis cette file.
@@ -99,7 +101,7 @@ Budgets : `budget_usd` par rôle (`fleet.toml`) passé à `--max-budget-usd` de 
 - Journaux : une seule destination, `prd:/var/lib/aphrody-agents/logs/<hôte>.jsonl` (offset par hôte dans `state/ship-offset`).
 - Planification (`[schedule]`, enqueue par prd) : `deps-update`, `release-notes`, `seo-check` chaque semaine. Les pages produit (`product-page-shenron`, `product-page-rosegriffon`) se lancent à la demande : `just agents enqueue --template product-page-shenron`.
 
-Sessions en place au 2026-11-13 : prd `coder reviewer tester linter deployer sre growth`, fr2 `linter sre`, fr1 `chromium`, pc `coder reviewer designer growth`.
+Placement (2026-11-13, décision propriétaire) : les rôles `heavy = true` de `fleet.toml` (`coder tester linter build chromium training`) ne tournent que sur fr1, imposé par `runner.ts` à l'enqueue et au claim ; prd ne garde que `deployer sre growth`, fr2 `sre`, pc `reviewer designer growth`. Une tâche déposée sur un hôte qui ne la prend pas (CI rouge, alertes, revues reçues par prd) est transférée par `health` (`route()`), copie locale dans `done/<id>@fwd-<hôte>.json`. `ci-fix-*` et alertes sécurité sont des tâches `coder`.
 
 ## 6. Accès aux hôtes (tunnels)
 

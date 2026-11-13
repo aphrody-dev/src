@@ -28,9 +28,9 @@ import { hostname } from "node:os";
 import { join, resolve } from "node:path";
 import { resolveExe } from "../../packages/ai-os/src/llm/agents.ts";
 
-type Role = { timeout_s: number; budget_usd: number };
+type Role = { timeout_s: number; budget_usd: number; heavy?: boolean };
 type Host = { roles: string[]; src: string; ssh?: string[] };
-type Fleet = {
+export type Fleet = {
   schedule?: Record<string, number>;
   roles: Record<string, Role>;
   hosts: Record<string, Host>;
@@ -105,6 +105,25 @@ function hostAlias(h: string): string {
   return map[h] ?? h;
 }
 const now = () => new Date().toISOString();
+// Heavy roles (fleet.toml heavy = true: builds, tests, training) run on the factory only, whatever
+// fleet.toml hosts say; every other role runs where its host lists it.
+const FACTORY = "fr1";
+export function accepts(fleet: Fleet, host: string, role: string): boolean {
+  if (!fleet.roles[role] || !fleet.hosts[host]?.roles.includes(role)) return false;
+  return !fleet.roles[role].heavy || host === FACTORY;
+}
+// Target host of a new task: heavy roles default to the factory, others to any accepting host.
+export function place(fleet: Fleet, role: string, host?: string): string {
+  const h = host && host !== "any" ? host : fleet.roles[role]?.heavy ? FACTORY : "any";
+  if (h === "any") {
+    if (!Object.keys(fleet.hosts).some((x) => accepts(fleet, x, role)))
+      throw new Error(`no host accepts role ${role}`);
+  } else if (!accepts(fleet, h, role))
+    throw new Error(
+      `host ${h} does not take role ${role} (heavy roles run on ${FACTORY} only, prd/fr2 keep light roles)`,
+    );
+  return h;
+}
 function ensureDirs() {
   for (const d of [...Object.values(Q), STATE, RESULTS, PUBLISH])
     mkdirSync(d, { recursive: true });
@@ -492,7 +511,7 @@ function claim(role: string): { t: Task; path: string } | null {
     }
     if (t.role !== role || (t.host && t.host !== "any" && t.host !== HOST))
       continue;
-    if ((role === "chromium") !== (t.host === "fr1")) continue; // fr1 = Chromium/LLVM builds only
+    if (!accepts(FLEET, HOST, role)) continue; // heavy roles: fr1 only
     if (t.not_before && Date.parse(t.not_before) > Date.now()) continue;
     const dst = join(Q.claimed, `${t.id}@${HOST}.${process.pid}.json`);
     try {
@@ -965,7 +984,7 @@ function ciWatch() {
     writeTask(Q.new, {
       v: 1,
       id,
-      role: "sre",
+      role: "coder", // a CI fix builds and tests: heavy, forwarded to fr1 by route()
       host: HOST,
       created_by: "ci-watch",
       created_at: now(),
@@ -1005,10 +1024,45 @@ function health() {
   ciWatch();
   githubEvents();
   schedule();
+  route();
   const h = { ts: now(), host: HOST, src: SRC, clis: probe(), queue: counts() };
   writeFileSync(join(STATE, "health.json"), JSON.stringify(h, null, 2));
   log("health", { clis: h.clis, queue: h.queue });
   ship();
+}
+// Tasks this host must not run (heavy role on prd/fr2, role not listed here) go to the host that
+// takes them; the local copy ends in done/<id>@fwd-<host>.json so ciWatch and github-events dedup still see it.
+function route() {
+  for (const f of readdirSync(Q.new)) {
+    if (!f.endsWith(".json")) continue;
+    let t: Task;
+    try {
+      t = JSON.parse(readFileSync(join(Q.new, f), "utf8"));
+    } catch {
+      continue;
+    }
+    if ((t.host === HOST || t.host === "any") && accepts(FLEET, HOST, t.role)) continue;
+    const to = routeTarget(FLEET, HOST, t);
+    if (!to) {
+      log("route_error", { id: t.id, role: t.role, err: "no reachable host takes this role" });
+      continue;
+    }
+    try {
+      submit({ ...t, host: to });
+    } catch (e) {
+      log("route_error", { id: t.id, to, err: String(e).slice(0, 200) });
+      continue;
+    }
+    renameSync(join(Q.new, f), join(Q.done, `${t.id}@fwd-${to}.json`));
+    log("route", { id: t.id, role: t.role, to });
+  }
+}
+// Explicit target if it takes the role, else the factory for heavy roles, else the first ssh host taking it.
+export function routeTarget(fleet: Fleet, from: string, t: Pick<Task, "host" | "role">): string | null {
+  const ok = (h: string) => h !== from && h !== "pc" && accepts(fleet, h, t.role);
+  if (t.host !== "any" && ok(t.host)) return t.host;
+  if (fleet.roles[t.role]?.heavy) return ok(FACTORY) ? FACTORY : null;
+  return Object.keys(fleet.hosts).find(ok) ?? null;
 }
 function counts() {
   return Object.fromEntries(
@@ -1038,11 +1092,7 @@ function buildTask(
     throw new Error(
       "enqueue: --role <known role> and --prompt (or --template) are required",
     );
-  const host = o.host ?? base.host ?? (role === "chromium" ? "fr1" : "any");
-  if ((role === "chromium") !== (host === "fr1"))
-    throw new Error(
-      "enqueue: fr1 only takes role chromium (Chromium/LLVM builds), and chromium only runs on fr1",
-    );
+  const host = place(FLEET, role, o.host ?? base.host);
   return {
     ...base,
     v: 1,

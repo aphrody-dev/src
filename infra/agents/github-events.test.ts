@@ -7,7 +7,7 @@ describe("eventTask", () => {
   test("CI rouge sur src : même id que ciWatch, commit du runner", () => {
     const t = eventTask(ev({ kind: "ci_red", event: "workflow_run", repo: "aphrody-labs/src", sha: "0123456789ab" + "c".repeat(28), title: "ci : failure", url: "https://github.com/aphrody-labs/src/actions/runs/1" }), "prd")!;
     expect(t.id).toBe("ci-fix-0123456789ab");
-    expect(t.role).toBe("sre");
+    expect(t.role).toBe("coder");
     expect(t.commit?.paths).toEqual([""]);
   });
   test("CI rouge hors checkout : rapport sans commit", () => {

@@ -69,7 +69,7 @@ export function eventTask(e: GithubEvent, host: string, now = new Date().toISOSt
       return {
         ...base,
         id: repo === SRC_REPO ? `ci-fix-${short(e.sha)}` : `gh-ci-${repo.replace("/", "-")}-${short(e.sha)}`,
-        role: "sre",
+        role: "coder", // builds and tests: heavy, forwarded to fr1 by runner.ts route()
         prompt: `GitHub Actions is red on ${repo} default branch: ${untrusted(e.title)} at ${e.sha} (${e.url}). Run \`git pull --ff-only origin main\` first. If a newer run of the same workflow on main is green, or HEAD already reverts ${short(e.sha)}, stop without changes. Otherwise read the failing log with \`gh run view --log-failed -R ${repo} <run id from the URL>\`. ${inCheckout(repo) ? "Fix the root cause with the smallest change in this checkout (submodules live under apps/), run the matching `just` recipe locally, and stop. Do not commit: the runner commits." : "This repository is not in the checkout: if the failure is transient infrastructure, rerun it once with `gh run rerun --failed`; otherwise write the diagnosis and the proposed patch in your final answer."}`,
         ...(inCheckout(repo) ? { commit: { paths: [""], message: `fix: CI rouge sur ${repo} à ${short(e.sha)} (webhook App)` } } : {}),
       };
@@ -84,7 +84,7 @@ export function eventTask(e: GithubEvent, host: string, now = new Date().toISOSt
       return {
         ...base,
         id: `gh-sec-${e.delivery.slice(0, 18)}`,
-        role: "sre",
+        role: "coder",
         prompt: `Security alert on ${repo} (${e.event}, ${clean(e.action)}): ${untrusted(e.title)} ${e.url}. Read it with \`gh api\` on that URL's API path. If it is a vulnerable dependency, bump it within declared bounds and run \`just checkdeps\`; if it is code scanning, fix the code; if it is a leaked secret, rotate it with \`ay secret set\` / \`ay auth rotate\` without ever printing the value, then dismiss the alert as revoked. ${inCheckout(repo) ? "Do not commit: the runner commits." : "The repository is not in the checkout: report the fix in your final answer."}`,
         ...(inCheckout(repo) ? { commit: { paths: [""], message: `security: ${e.event} sur ${repo} (webhook App)` } } : {}),
       };
@@ -180,7 +180,7 @@ export async function pull(o: { src: string; home: string; host: string; dryRun?
   const ciPrefix = (id: string) => id.replace(/[0-9a-f]{12}$/, "");
   const open = (p: string) => ["new", "claimed"].some((d) => readdirSync(dirs[d]!).some((f) => f.startsWith(p)));
   const lastCi = new Map<string, QueueTask>();
-  for (const t of tasks) if (t.role === "sre" && /^(ci-fix-|gh-ci-)/.test(t.id)) lastCi.set(ciPrefix(t.id), t);
+  for (const t of tasks) if (/^(ci-fix-|gh-ci-)/.test(t.id)) lastCi.set(ciPrefix(t.id), t);
   for (let i = tasks.length - 1; i >= 0; i--) {
     const t = tasks[i]!;
     if (!/^(ci-fix-|gh-ci-)/.test(t.id)) continue;
