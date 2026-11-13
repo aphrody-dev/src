@@ -1,6 +1,6 @@
 #!/bin/sh
 # Run one heavy job (build, test suite, image bake, training) on fr1, the factory; prd accepts light builds
-# under the load rule (-j 2, load < nproc/2), fr2 never builds. HEAVY_SLOTS jobs at a time (fr1 default 2 for the
+# under the load rule (-j 2, load < nproc/2), fr2 never builds. HEAVY_SLOTS jobs at a time (fr1 default 3 for the
 # parallel CI runners, prd 1) under flock /var/lock/aphrody-heavy[.N].lock, started when load < 2x nproc (fr1: shared with agents, nice 19 yields to Chromium) or
 # nproc/2 (prd), at nice 19 / ionice idle, so Chromium/LLVM builds and production keep priority.
 #   aphrody-heavy <cmd...>      e.g. aphrody-heavy cargo build --release ; aphrody-heavy docker buildx bake ...
@@ -13,7 +13,7 @@ lock=/var/lock/aphrody-heavy.lock
 max=${HEAVY_WAIT_MAX:-3600}
 n=$(nproc)
 case $role in
-  fr1) limit=$(( n * 2 )); slots=${HEAVY_SLOTS:-2}; jobs=$(( n / (slots + 1) )) ;;
+  fr1) limit=$(( n * 2 )); slots=${HEAVY_SLOTS:-3}; jobs=$(( n / (slots + 1) )) ;;
   # prd (owner order 2026-11-13): light builds only (wasm/web bundles, CLI packaging), production first:
   # same lock, -j 2, started only while load < nproc/2, nice 19 / ionice idle.
   prd) limit=$(( n / 2 )); jobs=2; slots=1 ;;
