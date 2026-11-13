@@ -1120,5 +1120,13 @@ path = "third_party/wgpu"
 url = "https://github.com/gfx-rs/wgpu.git"
 sha = "101edc8f3afa5bf41bc3ab4ca801f3e67c22d499"
 kind = "gpu"
-used_by = ["docs/compat/TARGETS.md (naga: SPIR-V <-> WGSL/MSL)", "agent (WebGPU runtime)"]
+used_by = ["docs/compat/TARGETS.md (naga: SPIR-V <-> WGSL/MSL)", "agent (WebGPU runtime)", "packages/chromium-bun/src/engines (WebGPU de Firefox, Servo, Blitz, Deno)"]
+status = "reference"
+
+[entry.dawn]
+path = "third_party/dawn"
+url = "https://github.com/google/dawn.git"
+sha = "022096b337f6e37e6f24947514b6e995d35d471d"
+kind = "gpu"
+used_by = ["packages/chromium-bun/src/engines (WebGPU de Chrome)", "ay rt matrix (dawn_revision par canal Chrome)"]
 status = "reference"
