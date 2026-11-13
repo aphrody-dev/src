@@ -27,14 +27,19 @@ Frozen: changing this file needs a tribunal verdict in `docs/reviews/INDEX.md`. 
 
 | Channel | Cadence | Version | Where | Model |
 |---|---|---|---|---|
-| canary | every green `ci` on main + daily 03:00 UTC | `X.Y.Z-canary.<run>+<sha7>` | rolling GitHub prerelease `canary`, sha256 and git log notes; `ay-canary` on fr1 | Chromium Canary, Bun canary, Rust nightly |
+| canary | every green `ci` on main + daily 03:00 UTC (newest green SHA, no-op if unchanged; never moves backwards) | `X.Y.Z-canary.<run>+<sha7>` | rolling GitHub prerelease `canary`, sha256 and git log notes; `ay-canary` on fr1 | Chromium Canary, Bun canary, Rust nightly |
 | beta | weekly from week 5 | `vX.Y.0-rc.N` | GitHub prerelease | Linux `-rcN`, Rust beta, Chrome Beta |
 | stable | end of a 6-week train | `vX.Y.0` | GitHub Release (dist), `ay self-update` | Rust stable, Chrome Stable |
 | patch | fixes only | `vX.Y.Z`, Z > 0 | same as stable | Linux `x.y.z` |
 
-- Train = 6 weeks (Rust). Weeks 1-4: merge window on main (Linux). Weeks 5-6: fixes only, one rc per week.
+- Train = 6 weeks (Rust). Weeks 1-4: merge window on main (Linux). Weeks 5-6: main is frozen to fixes
+  (Linux `-rc` model), one rc per week. With no branch, a tag ships everything below it: work that is not
+  ready for the train lands only behind an off-by-default flag, and a patch tag after stable carries the same
+  rule.
 - After a stable tag `vX.Y.0`, the next commit sets `VERSION` to `X.(Y+1).0` and runs `ay release freeze`.
-- Rollout ring: fr1 (factory), then fr2 (edge), then prd (production), each gated by `just ping`.
+- Rollout ring: fr1 (factory), then fr2 (edge), then prd (production), each gated by `just ping` (exit 1
+  on an unreachable host, a `degraded` systemd or any failed unit, or an endpoint outside its allowed codes).
+  Canary follows the same order: installed and run as `ay-canary` on fr1 before the prerelease is published.
   Rollback = redeploy the previous tag.
 
 ## Commands
