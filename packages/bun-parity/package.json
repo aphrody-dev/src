@@ -34,5 +34,9 @@
     "type": "git",
     "url": "git+https://github.com/aphrody-labs/src.git",
     "directory": "packages/bun-parity"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

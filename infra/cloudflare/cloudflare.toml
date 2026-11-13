@@ -23,10 +23,10 @@ ingress = [
   { hostname = "mig-downloads.aphrody.com", service = "http://127.0.0.1:19797" },
   { hostname = "mig-depot.aphrody.com", service = "http://127.0.0.1:19182" },
   { hostname = "mig-commons.aphrody.com", service = "http://127.0.0.1:19766" },
-  { hostname = "ssh-prd.aphrody.com", service = "ssh://127.0.0.1:22" },
-  # aphrody service (deploy.toml services.aphrody green_port, container aphrody-src-aphrody-1).
-  { hostname = "aphrody.com", service = "http://127.0.0.1:23000" },
-  { hostname = "*.aphrody.com", service = "http://127.0.0.1:23000" },
+  { hostname = "ssh-prd.aphrody.com", service = "ssh://127.0.0.1:19022" }, # cluster LB -> prd sshd from any replica
+  # aphrody service: cluster LB pool aphrody (prd:23000, blue/green switched in deploy.toml only).
+  { hostname = "aphrody.com", service = "http://127.0.0.1:19300" },
+  { hostname = "*.aphrody.com", service = "http://127.0.0.1:19300" },
   # aphrody-app VPS port (deploy.toml hosting.aphrody-app.port): same target fr2 used, nothing listens yet (502 parity).
   { hostname = "*.aphrody.app", service = "http://127.0.0.1:3010" },
   { service = "http_status:404" },

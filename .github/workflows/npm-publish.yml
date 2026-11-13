@@ -1,0 +1,85 @@
+# Publication npm sans humain (docs/infra/NPM.md).
+# Trusted publishing OIDC (npm >= 11.5.1, Node >= 22.14, id-token: write, runner hébergé par GitHub) : aucun jeton,
+# provenance automatique (dépôt et paquet publics). Repli sur le secret d'org NPM_TOKEN tant que le trusted publisher
+# du paquet n'existe pas (premier publish) : npm/cli lib/utils/oidc.js ne remplace le jeton qu'après un échange OIDC réussi.
+# bun pack (résout workspace: et catalog:) ; npm publie, car bun publish ne gère ni OIDC ni --provenance
+# (oven-sh/bun#22423, #15601 ouverts au 2026-11-13 ; le release.yml de bun publie lui-même avec npm publish).
+# Les dépôts des sous-modules (rosegriffon, shenron) appellent ce workflow depuis leur propre npm-publish.yml : npm
+# vérifie le nom du workflow appelant, d'où le même nom de fichier partout.
+name: npm-publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      packages:
+        description: "Dossiers des paquets, relatifs au dépôt, séparés par des espaces"
+        required: true
+      dry_run:
+        description: "npm publish --dry-run"
+        type: boolean
+        default: true
+      tag:
+        description: "dist-tag"
+        default: latest
+  workflow_call:
+    inputs:
+      packages:
+        type: string
+        required: true
+      dry_run:
+        type: boolean
+        default: true
+      tag:
+        type: string
+        default: latest
+    secrets:
+      NPM_TOKEN:
+        required: false
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-publish-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    # Le trusted publishing refuse les runners auto-hébergés (docs.npmjs.com/trusted-publishers).
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - name: npm 12.2.2 (OIDC, provenance)
+        run: bun add -g npm@12.2.2 && echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+      - name: bun install
+        run: bun install
+      - name: pack + publish
+        env:
+          PACKAGES: ${{ inputs.packages }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          TAG: ${{ inputs.tag }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          npm --version
+          out="$RUNNER_TEMP/npm"; mkdir -p "$out"
+          for dir in $PACKAGES; do
+            name=$(jq -r .name "$dir/package.json"); version=$(jq -r .version "$dir/package.json")
+            if [ "$(jq -r '.private // false' "$dir/package.json")" = true ]; then echo "::warning::$name privé, ignoré"; continue; fi
+            if npm view "$name@$version" version >/dev/null 2>&1; then echo "$name@$version déjà publié"; continue; fi
+            (cd "$dir" && bun run --if-present build)
+            tgz=$(cd "$dir" && bun pm pack --destination "$out" --quiet | tail -1)
+            flags=(--access public --tag "$TAG" --provenance)
+            [ "$DRY_RUN" = true ] && flags+=(--dry-run)
+            npm publish "$out/$(basename "$tgz")" "${flags[@]}"
+            echo "### $name@$version $([ "$DRY_RUN" = true ] && echo '(dry-run)')" >> "$GITHUB_STEP_SUMMARY"
+          done

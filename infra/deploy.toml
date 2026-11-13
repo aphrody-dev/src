@@ -230,7 +230,7 @@ vps_exec = "bun run server.ts"
 "aphrody-labs/src" = ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID", "HOSTINGER_API_TOKEN", "VERCEL_TOKEN", "SUBMODULES_TOKEN"]
 
 [auth.github.org_secrets]
-aphrody-labs = ["HOSTINGER_API_TOKEN", "CARGO_REGISTRY_TOKEN"]
+aphrody-labs = ["HOSTINGER_API_TOKEN", "CARGO_REGISTRY_TOKEN", "NPM_TOKEN"]
 
 # Per node: cloudflared units (unit = tunnel name), WireGuard interfaces (handshake < 180 s),
 # units that renew a credential (must not be failed). repair = false: checked, never changed.
@@ -349,6 +349,15 @@ lb_port = 19780
 targets = { prd = "127.0.0.1:8780" }
 check = { path = "/", host = "mig-test.aphrody.com", expect = "status 200" }
 cache = "honor"
+[cluster.services.aphrody]           # aphrody.com / *.aphrody.com (mig-prd ingress); blue/green switch = edit this target only
+lb_port = 19300
+targets = { prd = "127.0.0.1:23000" }
+check = { path = "/", host = "aphrody.com", expect = "rstatus ^[23]" }
+cache = "honor"
+[cluster.services.ssh-prd]           # Tunnel ingress ssh-prd: always prd's sshd, whichever member runs the connector
+mode = "tcp"
+lb_port = 19022
+targets = { prd = "127.0.0.1:22" }
 [cluster.services.depot]
 lb_port = 19182
 targets = { prd = "10.200.77.5:8182" }

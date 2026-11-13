@@ -4,5 +4,6 @@
     "description": "Proto files package",
     "files": [
         "proto/*"
-    ]
+    ],
+    "private": true
 }

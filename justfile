@@ -35,6 +35,14 @@ bun-docs *args:
 archguard:
     ay arch check --strict --root "{{root}}"
 
+# npm sans humain (docs/infra/NPM.md) : status|sync|inventory|align [--write]|login|trust|harden
+npm cmd="status" *args:
+    bun run "{{root}}/scripts/npm.ts" {{cmd}} {{args}}
+
+# Dry-run de publication npm en CI (trusted publishing OIDC, repli NPM_TOKEN) pour des dossiers de paquets
+npm-publish-ci pkgs="packages/wck" dry="true":
+    gh workflow run npm-publish.yml -R aphrody-labs/src -f packages="{{pkgs}}" -f dry_run={{dry}}
+
 # Check masked .env vault and multi-editor auth wiring
 env-doctor:
     bun run --cwd "{{root}}/packages/env-kit" src/cli.ts doctor
@@ -96,7 +104,7 @@ deps *flags:
 deps-lock *flags:
     ay lock --deps --root "{{root}}" {{flags}}
 
-# Upgrade within declared requirements, report Cargo duplicates before/after (--breaking: majors too); then run on prd
+# Upgrade within declared requirements, report Cargo duplicates before/after (--breaking: majors too); then run on fr1
 deps-bump *flags:
     ay lock --deps --bump --dedupe --root "{{root}}" {{flags}}
 
@@ -192,22 +200,25 @@ triad cmd="doctor":
 rust-stack cmd="serve":
     rust-stack {{cmd}}
 
-# One-click self-hosted & multi-cloud deploy (git clone -> live production)
-deploy target="--all" flags="--dry-run":
-    ay deploy up {{target}} {{flags}}
+# Deploy = compose pull + up --wait on a host (`ay deploy <sub>` runs `just docker-<sub>`; docs/infra/DEPLOY.md)
+deploy profile="core" ctx="prd":
+    just docker-up {{profile}} {{ctx}}
 
 # Cloudflare edge (infra/cloudflare, docs/infra/FR2-CLOUDFLARE.md): read-only diff of cloudflare.toml vs live
 cf-plan section="":
-    bun infra/cloudflare/cf.ts plan {{section}}
+    bun packages/env-kit/src/cli.ts secret exec CLOUDFLARE_API_TOKEN -- bun infra/cloudflare/cf.ts plan {{section}}
+
+# Apply one section of cloudflare.toml (dns|tunnels|rules|access), vault token, fails hard if it is invalid
+cf-apply section only="":
+    bun packages/env-kit/src/cli.ts secret exec CLOUDFLARE_API_TOKEN -- bun infra/cloudflare/cf.ts apply {{section}} {{ if only != "" { "--only " + only } else { "" } }}
+
+# Rotate the per-host least-privilege fleet tokens (fleet-<host>-dns) into /etc/aphrody/secrets.env of fr2/prd
+cf-fleet-token:
+    bun packages/env-kit/src/cli.ts secret exec CLOUDFLARE_API_TOKEN -- bun infra/cloudflare/fleet-token.ts fr2 prd
 
 # Re-run every Cloudflare/fr2 edge check (DNS, headers, TLS, tunnels, Access, closed origin, WAF, cache); exit 1 on regression
 cf-proof:
-    bun infra/cloudflare/proof.ts
-
-# Generate production HTTP/3 Caddyfile & systemd fleet manifests
-deploy-plan:
-    ay deploy plan --all
-    ay deploy caddyfile
+    bun packages/env-kit/src/cli.ts secret exec CLOUDFLARE_API_TOKEN -- bun infra/cloudflare/proof.ts
 
 # Headless Claude Code, no human in the loop (JSON result on stdout)
 agent prompt turns="100":
@@ -221,7 +232,7 @@ agent-ci prompt:
 fmt:
     bun fmt
 
-# Run architecture gate, toolchain doctor, and Bun + Cargo + Go suites
+# Run architecture gate, toolchain doctor, and Bun + Cargo suites
 verify-all:
     ay arch check --strict --root "{{root}}"
     ay doctor
@@ -230,25 +241,24 @@ verify-all:
     bun --cwd "{{root}}/packages/ai-os" test
     cargo test --manifest-path "{{root}}/crates/rust-stack/Cargo.toml"
     cargo test --workspace --manifest-path "{{root}}/Cargo.toml"
-    go -C "{{root}}/infra" test ./...
 
-# --- Containers (infra/docker: Dockerfile, docker-bake.hcl, compose.yaml; docs/infra/DEPLOY.md) ---
-# The PC has no local engine (no WSL): `docker context use prd` sends every docker command to prd over ssh.
+# --- Containers (upstream only: docker buildx bake + compose; docs/infra/DEPLOY.md, docs/infra/UPSTREAM-STACK.md) ---
+# Builds run in CI (images.yml) or on fr1 (factory); prd and fr2 only pull and run. The PC has no local engine:
+# docker contexts fr1 (ssh://vps), prd (ssh://prd), fr2 (ssh://cdn).
 docker := if os() == "windows" { "docker.exe" } else { "docker" }
 docker_tag := env("SRC_TAG", `git rev-parse --short=12 HEAD`)
 docker_compose := docker + " compose -f " + root + "/infra/docker/compose.yaml"
 
-# Build + push src images (amd64+arm64) to ghcr.io/aphrody-labs on the prd engine (usage: just docker-build, just docker-build bun)
-docker-build targets="default":
-    {{docker}} buildx inspect aphrody >/dev/null 2>&1 || {{docker}} buildx create --name aphrody --driver docker-container --bootstrap
-    cd "{{root}}" && TAG={{docker_tag}} {{docker}} buildx bake --builder aphrody -f infra/docker/docker-bake.hcl --push {{targets}}
+# Build + push src images (amd64+arm64) to ghcr.io/aphrody-labs in CI with GITHUB_TOKEN (usage: just docker-build, just docker-build bun)
+docker-build targets="default" ref="main":
+    gh workflow run images.yml --repo aphrody-labs/src --ref {{ref}} -f targets="{{targets}}"
 
-# amd64 build of a pushed commit ON prd (git context, no upload from the PC), loaded there, then health-checked
+# amd64 build of a pushed commit ON fr1 (git context, no upload from the PC), loaded there, then health-checked
 # (usage: just docker-smoke, just docker-smoke bun main iteration)
 docker-smoke targets="smoke" ref="main" profile="release":
-    timeout 900 ssh prd 'cat > /usr/local/bin/aphrody-heavy && chmod 755 /usr/local/bin/aphrody-heavy' < "{{root}}/infra/fleet/bin/heavy.sh"
-    timeout 7200 ssh prd 'TAG=smoke CARGO_PROFILE={{profile}} CARGO_BUILD_JOBS=2 aphrody-heavy docker buildx bake --builder aphrody "https://github.com/aphrody-labs/src.git#{{ref}}" -f infra/docker/docker-bake.hcl --set "*.platform=linux/amd64" --set "*.attest=" --set "*.cache-from=" --load --progress quiet {{targets}}'
-    timeout 900 ssh prd 'SRC_TAG=smoke sh -s' < "{{root}}/infra/docker/smoke.sh"
+    timeout 900 ssh vps 'sudo install -m 0755 /dev/stdin /usr/local/bin/aphrody-heavy' < "{{root}}/infra/fleet/bin/heavy.sh"
+    timeout 7200 ssh vps 'TAG=smoke CARGO_PROFILE={{profile}} CARGO_BUILD_JOBS=4 aphrody-heavy docker buildx bake --builder aphrody "https://github.com/aphrody-labs/src.git#{{ref}}" -f infra/docker/docker-bake.hcl --set "*.platform=linux/amd64" --set "*.attest=" --set "*.cache-from=" --load --progress quiet {{targets}}'
+    timeout 900 ssh vps 'SRC_TAG=smoke sh -s' < "{{root}}/infra/docker/smoke.sh"
 
 # Deploy the compose stack: profile core on prd, edge on fr2 (usage: just docker-up, just docker-up edge fr2, SRC_TAG=<sha> to roll back)
 docker-up profile="core" ctx="prd":
@@ -261,9 +271,9 @@ docker-ps profile="core" ctx="prd":
 
 # Products with their own container flows (sources untouched): shenron lanes + runtime, rosegriffon compose build
 docker-products:
-    cd "{{root}}/apps/shenron" && {{docker}} buildx bake -f docker-bake.hcl lanes
-    cd "{{root}}" && TAG={{docker_tag}} {{docker}} buildx bake -f infra/docker/docker-bake.hcl --push products
-    RG_REGISTRY=ghcr.io/aphrody-labs/rosegriffon RG_TAG={{docker_tag}} {{docker}} compose -f "{{root}}/apps/rosegriffon/compose.yaml" build
+    cd "{{root}}/apps/shenron" && {{docker}} --context fr1 buildx bake -f docker-bake.hcl lanes
+    cd "{{root}}" && TAG={{docker_tag}} {{docker}} --context fr1 buildx bake -f infra/docker/docker-bake.hcl --push products
+    RG_REGISTRY=ghcr.io/aphrody-labs/rosegriffon RG_TAG={{docker_tag}} {{docker}} --context fr1 compose -f "{{root}}/apps/rosegriffon/compose.yaml" build
 
 # Arch Linux workstation shell with the monorepo mounted at /src
 docker-shell:
@@ -431,7 +441,7 @@ check:
 
 # --- Agent fleet (docs/agents/AGENT-FIRST.md). `just <recipe>` is the single agent interface. ---
 
-# Lint: Bun typecheck + clippy (compiles: run on prd, never on the PC)
+# Lint: Bun typecheck + clippy (compiles: run on fr1, never on the PC nor prd)
 lint:
     bun check -b
     cargo clippy --workspace --quiet

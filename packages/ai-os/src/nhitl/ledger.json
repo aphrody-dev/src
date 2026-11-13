@@ -230,6 +230,15 @@
       "excerpt": "CLA individuel Google requis avant la première CL Chromium",
       "fix": "page ouverte dans le Chrome du propriétaire, clic final de sa part",
       "reason": "2026-11-13 : signature d un contrat au nom du propriétaire"
+    },
+    {
+      "location": "npmjs.com yohan971 (2FA)",
+      "category": "npm_2fa",
+      "severity": "info",
+      "status": "inevitable",
+      "excerpt": "2FA du compte npm (security key ou authenticator) et défi 2FA de npm trust / npm access set / création de jeton / approbation npm stage",
+      "fix": "page https://www.npmjs.com/settings/yohan971/tfa ouverte chez le propriétaire ; ensuite just npm login (un clic) puis just npm trust (skip 2FA 5 min) ; publication en CI par trusted publishing OIDC (docs/infra/NPM.md)",
+      "reason": "2026-11-13 : la 2FA est le facteur du propriétaire ; depuis août 2026 les jetons bypass 2FA ne passent plus ces actions (github.blog changelog 2026-07-31, docs.npmjs.com npm-trust)"
     }
   ]
 }

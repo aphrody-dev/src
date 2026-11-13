@@ -20,7 +20,9 @@ export type Cfg = {
 export const cfgPath = join(import.meta.dir, "cloudflare.toml");
 export const cfg = Bun.TOML.parse(await Bun.file(cfgPath).text()) as unknown as Cfg;
 
-// Token: CLOUDFLARE_API_TOKEN when it verifies, else the `cf auth login` OAuth token (refreshed by `cf auth whoami`).
+// Token: CLOUDFLARE_API_TOKEN (from the vault: env-kit secret exec CLOUDFLARE_API_TOKEN -- ...). An invalid token fails
+// hard: no silent fallback that would hide a dead CI/VPS secret behind the owner super-admin login. The `cf auth login`
+// OAuth token is used only when no token is set, or explicitly with CF_AUTH=oauth.
 async function oauthToken(): Promise<string> {
   Bun.spawnSync(["cf", "auth", "whoami"], { env: { ...Bun.env, CLOUDFLARE_API_TOKEN: "" }, stdout: "ignore", stderr: "ignore" });
   const base = Bun.env.APPDATA ? join(Bun.env.APPDATA, "xdg.config") : (Bun.env.XDG_CONFIG_HOME ?? join(Bun.env.HOME ?? "", ".config"));
@@ -30,11 +32,11 @@ async function oauthToken(): Promise<string> {
 let token = "";
 async function auth(): Promise<string> {
   if (token) return token;
-  const env = Bun.env.CLOUDFLARE_API_TOKEN ?? "";
+  const env = Bun.env.CF_AUTH === "oauth" ? "" : (Bun.env.CLOUDFLARE_API_TOKEN ?? "");
   if (env) {
     const r = await fetch(`https://api.cloudflare.com/client/v4/accounts/${cfg.account}`, { headers: { authorization: `Bearer ${env}` } });
     if (r.ok) return (token = env);
-    console.error(`note: CLOUDFLARE_API_TOKEN rejected (HTTP ${r.status}), falling back to cf OAuth login`);
+    throw new Error(`CLOUDFLARE_API_TOKEN rejected (HTTP ${r.status}): fix the secret (env-kit secret set) or run with CF_AUTH=oauth`);
   }
   token = await oauthToken();
   if (!token) throw new Error("no usable Cloudflare credential (set CLOUDFLARE_API_TOKEN or run `cf auth login`)");
