@@ -140,9 +140,10 @@ COPY apps/aphrody/ apps/aphrody/
 COPY docs/ALPHABET.md docs/ALPHABET.md
 COPY docs/reviews/ docs/reviews/
 COPY third_party/forks.txt third_party/forks.txt
+COPY assets/brand/gen/ assets/brand/gen/
 COPY --parents crates/*/Cargo.toml ./
 COPY apps/r2-site/ apps/r2-site/
-COPY infra/fleet/workers/ infra/fleet/workers/
+COPY infra/cloudflare/workers/api-gateway/ infra/cloudflare/workers/api-gateway/
 # Each app: its own build step (static dist/), then the server bundled into one file next to dist/.
 RUN set -eu; mkdir -p /out; \
     for app in aphrody; do \
@@ -151,8 +152,8 @@ RUN set -eu; mkdir -p /out; \
       cp -r "apps/$app/dist" "/out/$app/dist" && mkdir -p "/out/$app/var" && { [ ! -d "apps/$app/public" ] || cp -r "apps/$app/public" "/out/$app/public"; }; \
     done; \
     bun build apps/r2-site/src/entry.vps.ts --target=bun --minify --outfile /out/r2-site/server.js; \
-    mkdir -p /out/api-gateway && bun build infra/fleet/workers/selfhost.ts --target=bun --outfile /out/api-gateway/selfhost.js && \
-    cp infra/fleet/workers/api-gateway/worker.js infra/fleet/workers/api-gateway/api.aphrody.com.toml /out/api-gateway/
+    mkdir -p /out/api-gateway && bun build infra/cloudflare/workers/api-gateway/selfhost.ts --target=bun --outfile /out/api-gateway/selfhost.js && \
+    cp infra/cloudflare/workers/api-gateway/worker.js infra/cloudflare/workers/api-gateway/api.aphrody.com.toml /out/api-gateway/
 
 FROM bun-alpine AS bun-runtime
 ENV NODE_ENV=production HOST=0.0.0.0
@@ -198,7 +199,7 @@ ENV PORT=8797 HEALTH_PATH=/health STORAGE=s3
 EXPOSE 8797
 CMD ["bun", "server.js"]
 
-# api.aphrody.com worker self-hosted (infra/fleet/workers/selfhost.ts): R2 binding over S3.
+# api.aphrody.com worker self-hosted (infra/cloudflare/workers/api-gateway/selfhost.ts): R2 binding over S3.
 FROM bun-runtime AS api-gateway
 COPY --from=bun-build --chown=bun:bun /out/api-gateway/ /app/
 ENV PORT=8080 HEALTH_PATH=/__health
