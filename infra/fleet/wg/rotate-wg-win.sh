@@ -24,7 +24,7 @@ pwsh -NoProfile -Command "\$wg='$WGDIR\\wireguard.exe'; \$store='$WGDIR\\Data\\C
   & \$wg /uninstalltunnelservice wg-win; Start-Sleep 3;
   Copy-Item '$CONF' (Join-Path \$store 'wg-win.conf') -Force; Start-Sleep 3;
   & \$wg /installtunnelservice (Join-Path \$store 'wg-win.conf.dpapi'); Start-Sleep 5;
-  if ((Get-Service 'WireGuardTunnel`\$wg-win').Status -ne 'Running') { exit 1 }"
+  if ((Get-Service 'WireGuardTunnel\$wg-win').Status -ne 'Running') { exit 1 }"
 # 2. serveurs
 swap vps wg1 10.200.77.2/32 "$OLD" "$NEW"
 swap prd prod 10.200.78.2/32 "$OLD" "$NEW"
