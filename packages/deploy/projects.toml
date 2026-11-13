@@ -34,6 +34,6 @@ path = "apps/yolo"
 build = "bun run build"
 out = "dist"
 domains = ["yolo.aphrody.app"]
-watch = ["apps/yolo/**", "packages/bun-plugins/**", "packages/google-design/**"]
+watch = ["apps/yolo/**", "packages/bun-plugins/**", "packages/design/**"]
 exclude = ["**/*.gz", "**/*.br", "**/*.exe"]
 production = "auto"
