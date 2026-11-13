@@ -64,4 +64,5 @@ unmaintained = "workspace"
 ignore = [
   { id = "RUSTSEC-2023-0071", reason = "rsa 0.9 via jsonwebtoken 11, no fixed 0.9 release; leaves with jsonwebtoken on rsa 0.10" },
   { id = "RUSTSEC-2026-0387", reason = "crypto-bigint 0.5 via elliptic-curve 0.13 (p256/p384 0.13), no fixed 0.5 release; 0.7 already in graph" },
+  { id = "RUSTSEC-2026-0192", reason = "ttf-parser unmaintained, no safe upgrade; used by crates/asset-test for font validation and by bevy via owned_ttf_parser" },
 ]
