@@ -155,7 +155,16 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Doctor(r) => Route::Xtk(prefixed(&["doctor"], &r.args)),
         Cmd::Lock(r) => Route::Xtk(prefixed(&["lock"], &r.args)),
         Cmd::Manifests(r) => match r.args.first().map(String::as_str) {
-            Some("verify") => Route::Xtk(prefixed(&["manifests", "--check"], &r.args[1..])),
+            // `ay manifests verify [root]`: the optional positional root becomes `--root`.
+            Some("verify") => Route::Xtk(
+                ["manifests", "--check"]
+                    .into_iter()
+                    .map(String::from)
+                    .chain(r.args[1..].iter().flat_map(|a| {
+                        if a.starts_with('-') { vec![a.clone()] } else { vec!["--root".to_string(), a.clone()] }
+                    }))
+                    .collect(),
+            ),
             _ => Route::Xtk(prefixed(&["manifests"], &r.args)),
         },
         Cmd::Git(r) => {
@@ -321,7 +330,7 @@ mod tests {
         assert_eq!(parse("doctor"), Route::Xtk(v(&["doctor"])));
         assert_eq!(parse("lock --lock-only"), Route::Xtk(v(&["lock", "--lock-only"])));
         assert_eq!(parse("manifests"), Route::Xtk(v(&["manifests"])));
-        assert_eq!(parse("manifests verify ."), Route::Depot("ay", v(&["manifests", "."])));
+        assert_eq!(parse("manifests verify ."), Route::Xtk(v(&["manifests", "--check", "--root", "."])));
     }
 
     #[test]
