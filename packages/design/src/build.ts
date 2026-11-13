@@ -2,8 +2,9 @@
 // Color: official @material/material-color-utilities (DynamicScheme, MaterialDynamicColors).
 // Type scale, shape, motion, elevation, state: parsed from @material/web tokens/versions/v0_192.
 // `bun run src/build.ts` writes tokens/ and DESIGN.md ; `--check` fails if anything would change.
-import { argbFromHex, hexFromArgb, Hct, MaterialDynamicColors } from "@material/material-color-utilities";
+import { argbFromHex, hexFromArgb, Hct, MaterialDynamicColors, TonalPalette } from "@material/material-color-utilities";
 import { join } from "node:path";
+import { moduleDir } from "./modules.ts";
 import { SCHEMES, type Variant } from "./schemes.ts";
 
 const pkg = join(import.meta.dir, "..");
@@ -19,8 +20,8 @@ const brand: Brand = (await brandFile.exists())
   ? (Bun.TOML.parse(await brandFile.text()) as { brand: Brand }).brand
   : (await Bun.file(join(out, "tokens.json")).json()).source.brand;
 if (!brand?.seed) throw new Error("graine de marque introuvable (assets/brand/brand.toml ou tokens/tokens.json source.brand)");
-const mcuVersion = (await Bun.file(join(pkg, "node_modules/@material/material-color-utilities/package.json")).json()).version;
-const mwcVersion = (await Bun.file(join(pkg, "node_modules/@material/web/package.json")).json()).version;
+const mcuVersion = (await Bun.file(join(moduleDir("@material/material-color-utilities"), "package.json")).json()).version;
+const mwcVersion = (await Bun.file(join(moduleDir("@material/web"), "package.json")).json()).version;
 
 const Scheme = SCHEMES[brand.variant as Variant];
 if (!Scheme) throw new Error(`variant inconnue dans brand.toml : ${brand.variant}`);
@@ -61,7 +62,7 @@ for (const [name, p] of Object.entries({
 }
 
 // --- Material Web sys tokens (SCSS maps, hardcoded values) ---
-const v = join(pkg, "node_modules/@material/web/tokens/versions/v0_192");
+const v = join(moduleDir("@material/web"), "tokens/versions/v0_192");
 async function scss(name: string): Promise<Record<string, string>> {
   const src = (await Bun.file(join(v, `_md-${name}.scss`)).text()).replace(/\s+/g, " ");
   const r: Record<string, string> = {};
@@ -172,9 +173,21 @@ files["tokens.rs"] = `${header("//")}// Couleurs en RGBA u32 (0xRRGGBBFF), direc
 // Usage : include!(concat!(env!("CARGO_MANIFEST_DIR"), "/<chemin relatif>/packages/design/tokens/tokens.rs"));
 #[allow(dead_code)]
 pub mod md {
-${MODES.map(([m]) => `    pub mod ${m.replace(/-/g, "_")} {\n${Object.entries(color[m]).map(([k, x]) => `        pub const ${UP(k)}: u32 = ${rgba(x)};`).join("\n")}\n    }`).join("\n")}
+${MODES.map(([m]) => `    pub mod ${m.replace(/-/g, "_")} {\n${Object.entries(color[m]).map(([k, x]) => `        pub const ${UP(k)}: u32 = ${rgba(x)};`).join("\n")}\n        /// Tous les rôles (nom kebab, RGBA), pour les recherches par nom.\n        pub const ALL: &[(&str, u32)] = &[${Object.keys(color[m]).map((k) => `("${k}", ${UP(k)})`).join(", ")}];\n    }`).join("\n")}
     pub const BOLT: u32 = ${rgba(tokens.custom.bolt)};
     pub const FONT_BRAND: &str = ${JSON.stringify(brand.font)};
+    /// Ton 10 de la palette neutre (encre de l'organisation Dev).
+    pub const INK: u32 = ${rgba(palettes.neutral["10"])};
+    /// Palettes HCT de Material Color Utilities par teinte entière (0..360) : tuiles produit (chroma 56,
+    /// tons 40 et 80) et séries de graphiques (chroma 60, tons 45 et 70) ; PRIMARY = teinte du primaire clair.
+    pub mod hue {
+        pub const PRIMARY: f64 = ${Hct.fromInt(argbFromHex(color.light.primary)).hue.toFixed(6)};
+${[["TILE_40", 56, 40], ["TILE_80", 56, 80], ["SERIES_45", 60, 45], ["SERIES_70", 60, 70]].map(([n, c, t]) => `        pub const ${n}: [u32; 360] = [${Array.from({ length: 360 }, (_, h) => rgba(hexFromArgb(TonalPalette.fromHueAndChroma(h, c as number).tone(t as number)).toUpperCase())).join(", ")}];`).join("\n")}
+        /// Valeur de table pour une teinte quelconque (arrondie au degré).
+        pub fn at(table: &[u32; 360], hue: f64) -> u32 {
+            table[(hue.rem_euclid(360.0).round() as usize) % 360]
+        }
+    }
 ${Object.entries(shape).filter(([, x]) => x.endsWith("px")).map(([k, x]) => `    pub const SHAPE_${UP(k)}: f32 = ${parseFloat(x).toFixed(1)};`).join("\n")}
 ${Object.entries(motion).filter(([k]) => k.startsWith("duration")).map(([k, x]) => `    pub const MOTION_${UP(k)}_MS: u32 = ${parseInt(x)};`).join("\n")}
 }

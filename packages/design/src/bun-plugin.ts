@@ -2,8 +2,9 @@
 // Material Symbols (paquet @material-symbols/svg-400, Apache-2.0) en chaîne, colorié par currentColor.
 import type { BunPlugin } from "bun";
 import { join } from "node:path";
+import { moduleDir } from "./modules.ts";
 
-const ROOT = join(import.meta.dir, "..", "node_modules", "@material-symbols", "svg-400");
+const ROOT = moduleDir("@material-symbols/svg-400");
 const STYLES = new Set(["outlined", "rounded", "sharp"]);
 
 export async function symbolSvg(style: string, name: string, size = 24, fill = false): Promise<string> {

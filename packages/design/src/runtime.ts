@@ -2,6 +2,7 @@
 // Les sites à graine fixe consomment tokens/tokens.css ; ce module sert les cas où la graine varie.
 import { hexFromArgb, MaterialDynamicColors } from "@material/material-color-utilities";
 import { join } from "node:path";
+import { moduleDir } from "./modules.ts";
 import { dynamicScheme, type Variant } from "./schemes.ts";
 
 export type { Variant };
@@ -25,7 +26,7 @@ let names: string[] | undefined;
 /** Noms de Material Symbols (type MaterialSymbol du paquet material-symbols). */
 export async function symbolNames(): Promise<string[]> {
   if (names) return names;
-  const dts = await Bun.file(join(import.meta.dir, "..", "node_modules", "material-symbols", "index.d.ts")).text();
+  const dts = await Bun.file(join(moduleDir("material-symbols"), "index.d.ts")).text();
   names = [...dts.matchAll(/^\s*"([a-z0-9_]+)",?$/gm)].map((m) => m[1]);
   return names;
 }
