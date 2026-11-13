@@ -1,4 +1,4 @@
-# Container images of src (infra/docker): amd64+arm64, pushed to ghcr.io/aphrody-dev/* with GITHUB_TOKEN.
+# Container images of src (infra/docker): amd64+arm64, pushed to ghcr.io/<repository owner>/* with GITHUB_TOKEN (aphrody-labs since the repo transfer).
 # Rust images cross-compile with cargo-zigbuild on the amd64 runner (no qemu); Bun images are arch-neutral.
 # Action versions: latest releases read with `gh api repos/<action>/releases/latest` on 2026-11-13.
 name: images
@@ -32,6 +32,7 @@ jobs:
         uses: docker/bake-action@v7.5.0
         env:
           TAG: ${{ github.sha }}
+          REGISTRY: ghcr.io/${{ github.repository_owner }}
           PUSH_CACHE: "true"
         with:
           source: .
@@ -46,4 +47,4 @@ jobs:
       - uses: actions/checkout@v7
       - uses: docker/login-action@v4.8.0
         with: { registry: ghcr.io, username: "${{ github.actor }}", password: "${{ secrets.GITHUB_TOKEN }}" }
-      - run: SRC_TAG=${{ github.sha }} sh infra/docker/smoke.sh
+      - run: SRC_REGISTRY=ghcr.io/${{ github.repository_owner }} SRC_TAG=${{ github.sha }} sh infra/docker/smoke.sh
