@@ -65,7 +65,13 @@ pub fn build_chunk(seed: u32, cx: i32, cz: i32) -> ChunkData {
             let nrm = normal_at(seed, x, z);
             positions.push([x, h, z]);
             normals.push(nrm);
-            colors.push(biome_color(h, 1.0 - nrm[1]));
+            // World-space color breakup (patches about 20 m, grain about 1 m): the base biome color alone reads as one flat
+            // green wash under the tone mapper. Continuous across chunk borders because it depends on x and z only.
+            let patch = noise::value(seed ^ 0x51, x * 0.05, z * 0.05) - 0.5;
+            let grain = noise::value(seed ^ 0x77, x * 0.9, z * 0.9) - 0.5;
+            let k = 1.0 + 0.55 * patch + 0.25 * grain;
+            let c = biome_color(h, 1.0 - nrm[1]);
+            colors.push([(c[0] * k).min(1.0), (c[1] * k).min(1.0), (c[2] * k).min(1.0), 1.0]);
         }
     }
     let mut indices = Vec::with_capacity(CHUNK_RES * CHUNK_RES * 6);
