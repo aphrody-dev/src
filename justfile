@@ -282,10 +282,13 @@ docker-build targets="default" ref="main":
     gh workflow run images.yml --repo aphrody-labs/src --ref "{{ if ref =~ '^[A-Za-z0-9._/-]+$' { ref } else { error("invalid ref") } }}" -f "targets={{ if targets =~ '^[A-Za-z0-9._ -]+$' { targets } else { error("invalid targets") } }}"
     sleep 5; gh run watch --repo aphrody-labs/src --exit-status "$(gh run list --repo aphrody-labs/src --workflow images.yml --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')"
 
-# Build and health-check images in CI (images.yml: build, then its smoke job on ubuntu-latest); never on fr1
-# (usage: just docker-smoke, just docker-smoke bun main)
-docker-smoke targets="smoke" ref="main":
-    gh workflow run images.yml --repo aphrody-labs/src --ref "{{ if ref =~ '^[A-Za-z0-9._/-]+$' { ref } else { error("invalid ref") } }}" -f "targets={{ if targets =~ '^[A-Za-z0-9._ -]+$' { targets } else { error("invalid targets") } }}"
+# amd64 build of a pushed commit ON fr1 (factory, git context: nothing uploaded from the PC), loaded there, then
+# health-checked; aphrody-heavy refreshed first (sudo install reads a mktemp file: install cannot read /dev/stdin on fr1).
+# Full multi-arch build + push stays in images.yml (usage: just docker-smoke, just docker-smoke bun main iteration)
+docker-smoke targets="smoke" ref="main" profile="release":
+    timeout 900 ssh vps 't=$(mktemp) && cat >"$t" && sudo install -m 0755 "$t" /usr/local/bin/aphrody-heavy; rc=$?; rm -f "$t"; exit $rc' < "{{root}}/infra/fleet/bin/heavy.sh"
+    timeout 7200 ssh vps 'TAG=smoke CARGO_PROFILE={{ if profile =~ '^[a-z-]+$' { profile } else { error("invalid profile") } }} CARGO_BUILD_JOBS=4 aphrody-heavy docker buildx bake --builder aphrody "https://github.com/aphrody-labs/src.git#{{ if ref =~ '^[A-Za-z0-9._/-]+$' { ref } else { error("invalid ref") } }}" -f infra/docker/docker-bake.hcl --set "*.platform=linux/amd64" --set "*.attest=" --set "*.cache-from=" --load --progress quiet {{ if targets =~ '^[A-Za-z0-9._ -]+$' { targets } else { error("invalid targets") } }}'
+    timeout 900 ssh vps 'SRC_TAG=smoke sh -s' < "{{root}}/infra/docker/smoke.sh"
 
 # Deploy the compose stack: profile core on prd, edge on fr2 (usage: just docker-up, just docker-up edge fr2, SRC_TAG=<sha> to roll back)
 docker-up profile="core" ctx="prd":
