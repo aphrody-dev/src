@@ -1,0 +1,36 @@
+# Revue Claude : ai-os review, tour 2 (module après corrections du tour 1, 051beebc) (2026-11-13)
+
+- Date : 2026-11-13. Outil : ai-os review (tribunal à trois voix, docs/reviews/README.md). Voix : Claude.
+- Moteur : claude (207769 ms, cache miss) ; essais : claude:claude-sonnet-5-5 échec (timeout : ⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth so) ; claude ok.
+- Objet : `ai-os review, tour 2 (module après corrections du tour 1, 051beebc)` ; 4 fichier(s).
+- Note : 13/20.
+- Sources : eng-practices-looking-for@3e6ba5cfc8c0 (https://github.com/google/eng-practices/blob/3e6ba5cfc8c096528173f8f31b2caf15bb78340c/review/reviewer/looking-for.md), eng-practices-standard@deaff2f9ff28 (https://github.com/google/eng-practices/blob/deaff2f9ff28501df657f37a73ed72afa57cb2e0/review/reviewer/standard.md), eng-practices-small-cls@fde5fd40e259 (https://github.com/google/eng-practices/blob/fde5fd40e259bb703dec55f17729abe99c17bf73/review/developer/small-cls.md), chromium-web-style@76a9e5ddf3de (https://github.com/chromium/chromium/blob/76a9e5ddf3de5e65c610470a2e68aa23366659a8/styleguide/web/web.md), google-ts-style@52f2e7406a80 (https://github.com/google/styleguide/blob/52f2e7406a802778e44b92694d4aead252b09091/tsguide.md).
+- Listes de contrôle : bun-ts (docs/reviews/CHECKLISTS.md) ; sujets : bun-ts.
+
+## Verdict brut
+
+Note : 13/20
+
+## Défauts
+| # | fichier:ligne | gravité | défaut | correction | source |
+|---|---|---|---|---|---|
+| 1 | packages/ai-os/src/review/index.ts:857-865 | haute | Le texte de `o.content` (sortie d'une étape d'orchestrateur) part vers les moteurs sans `scrub()`. Seul `collect` (l.259) l'appelle. Un secret présent dans cette sortie est envoyé au moteur et archivé dans le verdict. | Appliquer `scrub(o.content.text)` avant `slice`. Ajouter un test avec un jeton factice passé par `content`. | checklist:bun-ts, eng-practices-looking-for |
+| 2 | packages/ai-os/src/review/cli.ts:95 | haute | `import.meta.main \|\| NODE_ENV !== "test"` lance `main(Bun.argv)` dès que le module est importé hors test. Si le répartiteur `src/cli.ts` importe `main` pour l'appeler, la revue tourne deux fois. Les E/S et `process.exitCode` sont alors posés au niveau du module. | Garder `if (import.meta.main)` seul. Le répartiteur importe `main` et l'appelle lui-même. | checklist:bun-ts |
+| 3 | packages/ai-os/src/review/sources.ts:131 | moyenne | `Number(Bun.env.REVIEW_SOURCES_TTL_MS ?? DAY)` n'a aucune garde. Avec `""`, le TTL vaut 0 ; avec `"abc"`, il vaut `NaN`, `age < NaN` est toujours faux et chaque appel relance `gh api`. | Réutiliser `positive()` de index.ts:55 : l'exporter ou le déplacer dans un module commun. | checklist:bun-ts |
+| 4 | packages/ai-os/src/review/index.ts:65-66 | moyenne | `loadConfig` appelle `JSON.parse` sans `try/catch` ni validation. Un `review.json` invalide lève une `SyntaxError` sans chemin. `timeout_s`, `rounds` et `max_bytes` ne sont pas bornés (l.916-917). | Mettre le parse sous `try` avec un message qui donne le chemin. Valider les nombres avec `positive()`. | checklist:bun-ts |
+| 5 | packages/ai-os/src/review/index.ts:227-233 | moyenne | `git check-ignore -- ...files` passe tous les fichiers en argv. Pour un répertoire volumineux (`packages/ai-os`), on dépasse la limite de 32 Ko de la ligne de commande sous Windows : le spawn échoue et `allowFail` ne rattrape pas l'exception. | Utiliser `check-ignore --stdin` et écrire la liste sur stdin. | eng-practices-looking-for |
+| 6 | packages/ai-os/src/review/index.ts:238-253 | moyenne | Chaque fichier est lu en entier par `readFileSync`, et la troncature n'intervient qu'après (l.260). La mémoire n'est donc pas bornée par `max_bytes`. | Sortir de la boucle dès que `text.length > max`. Filtrer par `statSync().size` avant de lire. | checklist:bun-ts (gros fichiers) |
+| 7 | packages/ai-os/src/review/index.ts:1066-1069 | moyenne | `INDEX.md` est mis à jour par lecture-modification-écriture non atomique (`Bun.write` direct). Deux revues concurrentes perdent une ligne, et un crash peut tronquer l'index. | Écrire dans un fichier temporaire puis `rename` (réutiliser `atomic` de sources.ts:39), sous verrou ou avec relecture avant l'écriture. | checklist:bun-ts |
+| 8 | packages/ai-os/test/review/review.test.ts:141 | basse | Le `mkdtempSync` de ce test n'est pas ajouté à `temps` : le répertoire n'est jamais nettoyé. | `temps.push(root)`. | checklist:bun-ts (tests hermétiques) |
+| 9 | packages/ai-os/test/review/review.test.ts:343-352 | basse | `mine(srcRoot())` lit le dépôt réel et vérifie des notes du poste (11, 4, n > 10). Le test n'est pas hermétique et passe en silence sur un dépôt partiel (l.346). | Utiliser des verdicts de référence dans le dépôt temporaire de `repo()`. | checklist:bun-ts, eng-practices-looking-for |
+| 10 | packages/ai-os/src/review/index.ts:142-147, 187 | basse | `A...B` est passé à `git log` (différence symétrique) et à `git diff --name-only` (depuis la base commune) : la liste `files` ne correspond pas au texte. | Pour `...`, calculer `files` avec `git log --name-only --format=`. | eng-practices-looking-for |
+| 11 | packages/ai-os/src/review/index.ts:489, 836 ; cli.ts:98 | basse | `any` sur `j`, `r as any` et `e: any` : les réponses du moteur et du workflow ne sont pas typées. | Utiliser `unknown` avec une garde de type, ou un type `RunResult` exporté par orch/run. | google-ts-style |
+| 12 | packages/ai-os/src/review/index.ts:1014 | basse | `okVoices.sort` trie le tableau en place, alors qu'il sert plus haut. Ce n'est pas un bogue aujourd'hui, mais c'est fragile. | `[...okVoices].sort` ou `toSorted`. | google-ts-style |
+
+## À confirmer
+- review.test.ts:370-379 : le contenu fourni montre `'[secret]'`, déjà expurgé par le collecteur. Si le fichier source contient bien un jeton `ghp_...`, le test est valide. Sinon, `not.toContain("ghp_AAAA")` ne vérifie rien et `scrub` n'est pas testé. Le `.catch` de repli rend aussi ce test ambigu.
+- index.ts:471 : le statut 502 renvoyé à `Outbound` peut déclencher une nouvelle tentative ou une exception selon le code de relay/outbound.ts, qui n'est pas fourni.
+- index.ts:148, avec `advance` en mode `paths` : un fichier supprimé par la correction donne « cible inconnue », parce que l'existence est testée sur l'arbre de travail et non sur `ref`.
+
+## Synthèse
+Le module est solide sur l'injection d'arguments git, le slug et le cache, et le contrat de note est respecté. En revanche, la branche `content` n'est pas expurgée, l'exécution au niveau du module n'est pas maîtrisée et plusieurs nombres venant de l'env ou de la config ne sont pas validés. La lecture n'est pas bornée et ne tient pas sur les gros répertoires sous Windows. Corriger les points 1 et 2 avant toute porte.

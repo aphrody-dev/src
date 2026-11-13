@@ -1,0 +1,69 @@
+# Revue Juge : ai-os review, tour 2 (module après corrections du tour 1, 051beebc) (2026-11-13)
+
+- Date : 2026-11-13. Outil : ai-os review (tribunal à trois voix, docs/reviews/README.md). Voix : Juge.
+- Moteur : claude:claude-opus-5-5 (55228 ms, cache miss) ; essais : claude:claude-opus-5-5 ok.
+- Objet : `ai-os review, tour 2 (module après corrections du tour 1, 051beebc)` ; 4 fichier(s).
+- Note : 12/20. Seuil : 16/20. Statut : à corriger.
+- Sources : eng-practices-looking-for@3e6ba5cfc8c0 (https://github.com/google/eng-practices/blob/3e6ba5cfc8c096528173f8f31b2caf15bb78340c/review/reviewer/looking-for.md), eng-practices-standard@deaff2f9ff28 (https://github.com/google/eng-practices/blob/deaff2f9ff28501df657f37a73ed72afa57cb2e0/review/reviewer/standard.md), eng-practices-small-cls@fde5fd40e259 (https://github.com/google/eng-practices/blob/fde5fd40e259bb703dec55f17729abe99c17bf73/review/developer/small-cls.md), chromium-web-style@76a9e5ddf3de (https://github.com/chromium/chromium/blob/76a9e5ddf3de5e65c610470a2e68aa23366659a8/styleguide/web/web.md), google-ts-style@52f2e7406a80 (https://github.com/google/styleguide/blob/52f2e7406a802778e44b92694d4aead252b09091/tsguide.md).
+- Listes de contrôle : bun-ts (docs/reviews/CHECKLISTS.md) ; sujets : bun-ts.
+
+## Verdict brut
+
+Note : 12/20
+
+| Grief | Gemini | Claude | Juge (décision motivée) | Suite |
+|---|---|---|---|---|
+| Exécution de `main` dès l'import (cli.ts:95) | G1 haute | C2 haute | Confirmé. Hors `bun test`, tout import du module lance `main(Bun.argv.slice(2))` et écrit `process.exitCode`. | retenu |
+| `content` non expurgé (index.ts:857-865) | absent | C1 haute | Confirmé. `scrub` n'est appelé que dans `collect` (l.259). | retenu |
+| `loadConfig` sans `try/catch` ni validation (index.ts:65-66) | G2 | C4 | Confirmé. `timeout_s`, `rounds` et `max_bytes` ne sont pas bornés (l.916-917). | retenu |
+| `JSON.parse` et `Number(header)` dans le faux fetch (index.ts:464-467) | G3 haute | absent | Rejeté. Le corps et l'en-tête sont produits par le même module (l.481-484), et le TTL passe par `positive` (l.461). | rejeté |
+| `RegExp` venant de la config (index.ts:526, sources.ts:216) | G4-5 moyenne | absent | Nuancé en basse. La config est versionnée, mais un motif invalide fait tomber toute la revue sans nommer la clé. | retenu, basse |
+| TTL des sources (sources.ts:131) | G6 | C3 | Confirmé. `NaN` fait relancer `gh api` à chaque appel. | retenu |
+| `atomic` : mode et collision de pid (sources.ts:40-41) | G7 | absent | Rejeté. `writeFileSync` et `renameSync` sont synchrones, donc deux appels ne se chevauchent pas dans un même thread. Le cache contient des documents publics, pas des secrets. | rejeté |
+| `JSON.parse` de gitiles (sources.ts:111) | G8 moyenne | absent | Nuancé en basse. L'appel passe par le `try` de `get` (l.168-169), mais le message ne nomme pas la source. | retenu, basse |
+| Taille des réponses gitiles non plafonnée (sources.ts:106,115) | G9 | absent | Nit, sur une source épinglée sur googlesource.com. | non retenu |
+| Tri en place de `okVoices` (index.ts:1014) | G10 | C12 | Confirmé en basse. Le tableau n'est plus lu ensuite. | retenu, basse |
+| Clé d'index `undefined` ou sous-chaîne (index.ts:1055) | G11 | absent | Rejeté. `files` contient chaque voix de `done`, et la clé `](f)` avec parenthèse fermante est discriminante. | rejeté |
+| `git fetch` non rattrapé (index.ts:1119) | G12 haute | absent | Nuancé en moyenne. L'exception remonte au-delà du `finally`, le résultat du tour corrigé est perdu et aucun verdict de sortie n'est rendu. | retenu |
+| `any` et `origin/main` en dur (index.ts:836-841) | G13-14 | C11 | Confirmé en basse. | retenu, basse |
+| Chemin contenant `..` (index.ts:142) | G15 | absent | Rejeté. `!existsSync` passe avant, donc un chemin qui existe reste un chemin. | rejeté |
+| `REV` accepte `@{}` (index.ts:80) | G16 | absent | Rejeté. Ces formes sont des révisions git légitimes, `--verify` les valide et `^{commit}` les force à désigner un commit. | rejeté |
+| Lecture non bornée par `max_bytes` (index.ts:238-253) | G17 | C6 | Confirmé. | retenu |
+| `check-ignore` en argv (index.ts:227-233) | absent | C5 | Confirmé. Sur un gros répertoire, la ligne de commande dépasse la limite Windows. | retenu |
+| `INDEX.md` écrit sans atomicité (index.ts:1066-1069) | absent | C7 | Confirmé. `atomic` existe déjà dans sources.ts:39. | retenu |
+| Test « fouille » non hermétique (test:343-352) | G18,20 | C9 | Confirmé. | retenu |
+| `.catch` et assertion `ghp_AAAA` (test:375-380) | G19 | à confirmer | Partiel. `collect([".", "--"])` lève toujours « hors de src » (`inside` refuse `rel === ""`), donc le premier appel est mort et le `.catch` sert à chaque fois. Le littéral du fichier source n'est pas vérifiable, parce que le texte fourni est lui-même expurgé. | retenu (le catch) |
+| `tmpdir` jamais nettoyé (test:141) | absent | C8 | Confirmé. | retenu |
+| `A...B` et liste des fichiers (index.ts:175-187) | absent | C10 | Confirmé. | retenu |
+| Taille du fichier (index.ts entier) | G21 | absent | Nit. | non retenu |
+| Juge sans plaidoirie (index.ts:948-952, 1002-1004) | absent | absent | Ajout. Si les deux voix échouent, le juge reçoit `pleas=[]`, donc une consigne de simple voix, et sa note devient quand même la note finale. | retenu |
+
+## Défauts
+| # | fichier:ligne | gravité | défaut | correction | source |
+|---|---|---|---|---|---|
+| 1 | packages/ai-os/src/review/index.ts:857-865 | haute | Le texte de `o.content` part vers les moteurs et dans le verdict archivé sans passer par `scrub`. | Appliquer `scrub(o.content.text)` avant `slice`, et ajouter un test avec un jeton factice passé par `content`. | checklist:bun-ts |
+| 2 | packages/ai-os/src/review/cli.ts:95 | haute | `import.meta.main \|\| NODE_ENV !== "test"` lance `main` et pose `exitCode` dès l'import du module. | Garder `if (import.meta.main)` seul ; le répartiteur appelle `main` explicitement. | checklist:bun-ts |
+| 3 | packages/ai-os/src/review/index.ts:948-952 | moyenne | Le juge peut trancher sans aucune plaidoirie, et sa note devient la note finale. | Si `after` est déclaré et que `pleas` est vide, mettre le statut à « incomplet » ou ne pas lancer le juge. | eng-practices-looking-for |
+| 4 | packages/ai-os/src/review/index.ts:65-66 | moyenne | `JSON.parse` n'est pas protégé et les nombres de la config ne sont pas validés. | `try/catch` avec le chemin dans le message, puis `positive()` sur `timeout_s`, `rounds` et `max_bytes`. | checklist:bun-ts |
+| 5 | packages/ai-os/src/review/sources.ts:131 | moyenne | Le TTL issu de l'env accepte `""` (qui donne 0) et `NaN`. | Exporter `positive` et l'utiliser ici. | checklist:bun-ts |
+| 6 | packages/ai-os/src/review/index.ts:1119 | moyenne | Un échec de `git fetch` lève une exception et la revue se termine sans résultat. | Capturer l'erreur, renseigner `last.fix`, puis `break`. | eng-practices-looking-for |
+| 7 | packages/ai-os/src/review/index.ts:238-253 | moyenne | Chaque fichier est lu en entier avant la troncature, donc la mémoire n'est pas bornée. | Filtrer par `statSync().size` et sortir de la boucle dès que `text.length > max`. | checklist:bun-ts |
+| 8 | packages/ai-os/src/review/index.ts:227-233 | moyenne | `check-ignore` reçoit tous les fichiers en argv, ce qui dépasse la limite Windows sur un gros répertoire. | `check-ignore --stdin` avec la liste écrite sur stdin. | eng-practices-looking-for |
+| 9 | packages/ai-os/src/review/index.ts:1066-1069 | moyenne | `INDEX.md` est mis à jour sans écriture atomique. | Réutiliser `atomic` (sources.ts:39) après l'avoir exporté. | checklist:bun-ts |
+| 10 | packages/ai-os/test/review/review.test.ts:375-377 | basse | `collect([".", "--"])` échoue toujours, donc le `.catch` masque un premier appel mort. | Appeler directement `collect(["src", ".env"])`, avec un jeton `ghp_` construit à l'exécution. | eng-practices-looking-for |
+| 11 | packages/ai-os/test/review/review.test.ts:343-352 | basse | Le test dépend des verdicts réels du dépôt et sort en silence s'ils manquent. | Utiliser des verdicts de référence dans le `tmpdir` de `repo()`. | checklist:bun-ts |
+| 12 | packages/ai-os/test/review/review.test.ts:141 | basse | Le `mkdtempSync` n'est pas ajouté à `temps`, donc le répertoire n'est jamais nettoyé. | `temps.push(root)`. | checklist:bun-ts |
+| 13 | packages/ai-os/src/review/index.ts:175-187 | basse | Pour `A...B`, `log` et `diff --name-only` ne couvrent pas les mêmes commits. | Pour `...`, calculer `files` avec `git log --name-only --format=`. | eng-practices-looking-for |
+| 14 | packages/ai-os/src/review/index.ts:526 ; sources.ts:216 | basse | Un motif invalide dans la config lève une erreur qui ne nomme pas la clé. | Compiler les motifs au chargement de la config, avec un message qui nomme la clé. | checklist:bun-ts |
+| 15 | packages/ai-os/src/review/sources.ts:111 | basse | Une `SyntaxError` sur la réponse gitiles ne nomme pas la source. | `try/catch` local avec l'id de la source dans le message. | checklist:bun-ts |
+| 16 | packages/ai-os/src/review/index.ts:836-841, 1014 ; cli.ts:98 | basse | `any` et `as any` sur les retours, et `okVoices` trié en place. | `unknown` avec garde de type, et `toSorted`. | google-ts-style |
+
+## À confirmer
+- review.test.ts:370 : le littéral réel du fichier n'est pas vérifiable, parce que le contenu fourni est déjà expurgé. Si le fichier contient bien un jeton `ghp_`, l'assertion de la l.379 est valide.
+- `bun test` pose bien `NODE_ENV=test` dans le runtime Bun 1.4.4 : à vérifier pour savoir si la garde de cli.ts:95 tient même en test.
+- Le comportement d'`Outbound` sur un statut 502 (nouvelle tentative ou exception) dépend de relay/outbound.ts, qui n'est pas fourni.
+
+## Synthèse
+Six griefs de Gemini sont rejetés comme des faux positifs : faux fetch interne, `atomic` synchrone, clé d'index, `..`, `REV`, taille du fichier.
+Deux défauts hauts doivent être corrigés avant toute porte : le contenu `content` non expurgé et l'exécution de `main` à l'import ; s'y ajoute en moyenne un juge qui peut trancher sans plaidoirie.
+Le reste relève de bornes de lecture, de validation et d'hermétisme des tests.
