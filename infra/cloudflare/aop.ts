@@ -2,7 +2,8 @@
 // Custom (per-hostname) Authenticated Origin Pulls for fr2 origins that Cloudflare proxies to fr2 (dbfr.aphrody.com):
 // a private CA signs a client certificate that only this zone's edge presents; nginx on fr2 requires it (fleet exempt),
 // so another Cloudflare account pointing a zone at 51.255.162.6 is refused. The client key goes only to Cloudflare
-// (upload over the API), never to disk outside a private temp dir removed at exit; fr2 receives the CA certificate only.
+// (upload over the API), never to disk outside a private temp dir removed at exit; the CA key goes to the vault
+// (AOP_CA_KEY); fr2 receives the CA certificate only.
 //   just cf-aop [host]   (rotate: new CA + client certificate, bundle on fr2)   then   just cf-aop-prune
 // Needs the SSL scope of the cf OAuth login (CF_AUTH=oauth): the vault account token has no origin_tls_client_auth right.
 import { chmodSync, mkdtempSync, rmSync, readFileSync } from "node:fs";
@@ -23,6 +24,9 @@ const zoneOf = async (h: string) => {
 if (prune) {
   // Keep only the newest CA of the bundle if 25 consecutive public pulls succeed with it alone, else restore the bundle.
   const sh = (c: string) => Bun.spawnSync(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=60", "fr2", c], { timeout: 120_000 });
+  // Not before 15 min after the switch (edge convergence measured at about 3 min, PoP by PoP).
+  const age = Number(sh("echo $(( $(date +%s) - $(sudo cat /etc/nginx/aop/rotated_at 2>/dev/null || echo 0) ))").stdout.toString().trim());
+  if (!(age >= 900)) { console.log(`prune refused: rotation ${age}s ago (< 900 s)`); process.exit(1); }
   const r = sh("f=/etc/nginx/aop/ca.pem; n=$(sudo grep -c 'BEGIN CERT' $f); [ $n -gt 1 ] || { echo single; exit 0; }; sudo cp -a $f $f.bundle; sudo awk -v n=$n '/BEGIN CERT/{i++} i==n' $f.bundle | sudo tee $f >/dev/null; sudo nginx -t -q && sudo systemctl reload nginx && echo pruned");
   const out = r.stdout.toString().trim();
   if (out !== "pruned") { console.log(out || r.stderr.toString().slice(0, 200)); process.exit(out === "single" ? 0 : 1); }
@@ -33,17 +37,21 @@ if (prune) {
     await Bun.sleep(2000);
   }
   if (ok < 25) {
-    sh("f=/etc/nginx/aop/ca.pem; sudo mv $f.bundle $f && sudo nginx -t -q && sudo systemctl reload nginx");
-    console.log("edge not converged: bundle restored");
+    const back = sh("f=/etc/nginx/aop/ca.pem; sudo mv $f.bundle $f && sudo nginx -t -q && sudo systemctl reload nginx");
+    console.log(back.exitCode === 0 ? "edge not converged: bundle restored" : "edge not converged and bundle restore FAILED: check /etc/nginx/aop on fr2");
     process.exit(1);
   }
   sh("sudo rm -f /etc/nginx/aop/ca.pem.bundle");
+  // Certificates still bound to any of the hosts are kept; only unbound ones are deleted.
+  const byZone = new Map<string, Set<string>>();
   for (const h of hosts) {
     const z = await zoneOf(h);
     const cur = (await api<any>("GET", `/zones/${z}/origin_tls_client_auth/hostnames/${h}`)).cert_id;
-    for (const old of await api<any[]>("GET", `/zones/${z}/origin_tls_client_auth/hostnames/certificates`))
-      if (old.id !== cur) await api("DELETE", `/zones/${z}/origin_tls_client_auth/hostnames/certificates/${old.id}`);
+    byZone.set(z, (byZone.get(z) ?? new Set()).add(cur));
   }
+  for (const [z, keep] of byZone)
+    for (const old of await api<any[]>("GET", `/zones/${z}/origin_tls_client_auth/hostnames/certificates`))
+      if (!keep.has(old.id)) await api("DELETE", `/zones/${z}/origin_tls_client_auth/hostnames/certificates/${old.id}`);
   console.log("pruned: newest CA only, 25 consecutive verified pulls, old edge certificates deleted");
   process.exit(0);
 }
@@ -64,11 +72,12 @@ try {
   const ca = readFileSync(join(dir, "ca.pem"), "utf8");
   // Order: CA on fr2, certificate active at the edge, then AOP enabled for the hostname; the nginx requirement
 // (conf.d/aop.conf) is wired separately and checked by just cf-proof (public 200 = edge presents the certificate).
-  // The CA key is kept in the vault (AOP_CA_KEY) so a client certificate can be re-signed without a new CA.
+  // The CA key is kept in the vault (AOP_CA_KEY, DPAPI) for audit and emergency re-signing by hand; each rotation
+  // creates a new CA, so the stored key is the one of the CA currently trusted by fr2.
   const vault = Bun.spawnSync(["bun", "run", join(import.meta.dir, "../../packages/env-kit/src/cli.ts"), "secret", "set", "AOP_CA_KEY"], { stdin: Buffer.from(readFileSync(join(dir, "ca.key"))) });
   if (vault.exitCode !== 0) throw new Error("AOP CA key not stored in the vault");
   const put = Bun.spawnSync(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=60", "fr2",
-    "sudo install -d -m 755 -o root -g root /etc/nginx/aop && { sudo cat /etc/nginx/aop/ca.pem 2>/dev/null; cat; } > /tmp/aop-ca.$ && sudo install -m 644 -o root -g root /tmp/aop-ca.$ /etc/nginx/aop/ca.pem && rm -f /tmp/aop-ca.$ && sudo nginx -t -q && sudo systemctl reload nginx"], { stdin: Buffer.from(ca) });
+    "sudo install -d -m 755 -o root -g root /etc/nginx/aop && t=$(sudo mktemp /etc/nginx/aop/.ca.XXXXXX) && { sudo cat /etc/nginx/aop/ca.pem 2>/dev/null; cat; } | sudo tee $t >/dev/null && sudo install -m 644 -o root -g root $t /etc/nginx/aop/ca.pem && sudo rm -f $t && date +%s | sudo tee /etc/nginx/aop/rotated_at >/dev/null && sudo nginx -t -q && sudo systemctl reload nginx"], { stdin: Buffer.from(ca) });
   if (put.exitCode !== 0) throw new Error("CA not installed on fr2");
   // During the switch nginx trusts the old and the new CA (bundle); once the edge uses the new certificate, the bundle
   // is replaced by the new CA alone and the previous edge certificates are deleted.

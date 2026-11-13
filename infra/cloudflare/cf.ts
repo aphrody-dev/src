@@ -121,8 +121,9 @@ function storeAccess(host: string, t: { client_id: string; client_secret: string
 // client_id stored on the host (ids are not secret): detects a token whose secret never reached the host.
 function storedClientId(host: string): string | null {
   const p = Bun.spawnSync(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=60", host,
-    "sudo sed -n 's/^CF_ACCESS_CLIENT_ID=//p' /etc/aphrody/secrets.env"], { timeout: 120_000 });
-  return p.exitCode === 0 ? p.stdout.toString().trim() : null; // null = host unreachable: never rotate on that
+    "sudo sh -c 'test -f /etc/aphrody/secrets.env || exit 0; sed -n s/^CF_ACCESS_CLIENT_ID=//p /etc/aphrody/secrets.env'"], { timeout: 120_000 });
+  // exit 0 with empty output = no secret on the host (deliver); ssh failure (255) or sudo failure = unknown (no rotation).
+  return p.exitCode === 0 ? p.stdout.toString().trim() : null;
 }
 
 if (want("access")) {
@@ -178,8 +179,7 @@ if (want("access")) {
     const desired = [cfg.access.owner_policy, ...(a.tokens ?? []).map((t) => polByToken.get(t)).filter((x): x is string => !!x)];
     // PUT body: the managed fields plus the editable settings already set on the app (read-only fields such as id,
     // uid, aud, created_at are never sent back).
-    const KEEP = ["custom_deny_message", "custom_deny_url", "custom_non_identity_deny_url", "custom_pages", "self_hosted_domains",
-      "destinations", "path_cookie_attribute", "allow_authenticate_via_warp", "app_launcher_logo_url", "bg_color", "header_bg_color",
+    const KEEP = ["custom_deny_message", "custom_deny_url", "custom_non_identity_deny_url", "custom_pages", "path_cookie_attribute", "allow_authenticate_via_warp", "app_launcher_logo_url", "bg_color", "header_bg_color",
       "landing_page_design", "footer_links", "skip_app_launcher_login_page", "allow_iframe", "read_service_tokens_from_header", "allowed_idps", "auto_redirect_to_identity", "cors_headers", "enable_binding_cookie", "http_only_cookie_attribute",
       "same_site_cookie_attribute", "logo_url", "skip_interstitial", "options_preflight_bypass", "service_auth_401_redirect", "tags"];
     const body = (cur?: any) => ({

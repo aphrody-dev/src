@@ -206,3 +206,11 @@ Barème : exactitude 4/6, réseau 3/5, sécurité 3/5, complétude 2/4. Défauts
 ## Passe 3 (2026-11-13 ~03:17) : 13/20
 
 Barème : exactitude 4/6, réseau 4/5, sécurité 3/5, complétude 2/4. Défauts : boucle de rotation (3e secret perdu), jeton existant sans secret sur l'hôte, corps PUT renvoyant les champs en lecture seule, politique non reliée au jeton courant, retrait sans relecture des politiques, sourcing de secrets.env et absence de trap, 403 ambigu sans contrôle positif, --record figeant les dérives, 502 figés sans motif, mig-depot/mig-commons non figés, horodatage et compteur nft, ordre du retour arrière CNAME, port 22 sans propriétaire, expiration sans alerte, AOP toujours non fait.
+
+## Passe 4 (2026-11-13 ~03:30) : 12/20
+
+Exactitude 4/6, réseau 4/5, sécurité 2/5, complétude 2/4. Défauts : total des vérifications incohérent, section 7 confuse (caractère de contrôle), compteur nft présenté comme preuve, sonde v6 absente, blocs ACME webroot morts, statut « fait » de l'origine publique, liste de pairs dupliquée, AOP lié au Host, absence de test négatif, expiration AOP non contrôlée, clé de CA perdue, chemin temporaire, rotation sur panne ssh, champs d'app perdus au PUT, variable Windows héritée.
+
+## Passe 5 (2026-11-13 ~03:50) : 12/20
+
+Défauts : contournement de l'AOP par un SNI différent du Host, preuve fleet-only statique, prune multi-hôtes et à un seul PoP, fichier temporaire root prévisible, trois listes de pairs, clé de CA au coffre non documentée, CF_PROOF_TOKEN non documenté et rotation AOP dépendante d'OAuth, KEEP conservant destinations, storedClientId confondant fichier absent et hôte injoignable, critères du port 22 non mesurables.
