@@ -27,9 +27,9 @@ install -m 0755 "$SRC/infra/agents/pre-push" "$SRC/.git/hooks/pre-push"
 
 # 2. Agent CLIs (upstream packages, global bun installs). Claude Code uses its own native installer.
 need claude || curl -fsSL https://claude.ai/install.sh | bash
-for spec in codex:@openai/codex opencode:opencode-ai pi:@mariozechner/pi-coding-agent; do
+for spec in codex:@openai/codex opencode:opencode-ai pi:@earendil-works/pi-coding-agent; do
   bin=${spec%%:*}; pkg=${spec#*:}
-  if ! need "$bin" || [ "${AGENTS_UPDATE:-0}" = 1 ]; then bun add -g "$pkg@latest" >/dev/null; fi
+  if ! need "$bin" || [ "${AGENTS_UPDATE:-0}" = 1 ]; then bun add -g "$pkg@latest" >/dev/null 2>&1; fi
 done
 
 # 3. systemd user units (linger keeps them running without a login session).

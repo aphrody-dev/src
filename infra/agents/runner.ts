@@ -584,6 +584,20 @@ function workerCmd(role: string): string {
 }
 function up() {
   ensureDirs();
+  // One repair at a time (service start and health timer can race).
+  const lock = join(STATE, "up.lock");
+  try {
+    mkdirSync(lock);
+  } catch {
+    if (Date.now() - statSync(lock).mtimeMs < 60_000) return;
+  }
+  try {
+    upLocked();
+  } finally {
+    rmSync(lock, { recursive: true, force: true });
+  }
+}
+function upLocked() {
   const roles = FLEET.hosts[HOST]?.roles ?? [];
   if (tmux(["has-session", "-t", SESSION]).exit !== 0) {
     const r = tmux([
@@ -598,11 +612,22 @@ function up() {
     ]);
     log("tmux_session", { created: r.exit === 0, err: r.err.slice(0, 300) });
   }
-  const have = new Set(
-    tmux(["list-windows", "-t", SESSION, "-F", "#{window_name}"])
-      .out.split(/\r?\n/)
-      .filter(Boolean),
-  );
+  const have = new Set<string>();
+  for (const line of tmux([
+    "list-windows",
+    "-t",
+    SESSION,
+    "-F",
+    "#{window_index} #{window_name}",
+  ])
+    .out.split(/\r?\n/)
+    .filter(Boolean)) {
+    const [idx, name] = line.split(" ");
+    if (have.has(name)) {
+      tmux(["kill-window", "-t", `${SESSION}:${idx}`]); // duplicate role window
+      log("tmux_window", { role: name, action: "kill_duplicate", idx });
+    } else have.add(name);
+  }
   for (const role of roles) {
     const hb = join(STATE, `heartbeat-${role}`);
     const stale =
