@@ -39,6 +39,11 @@ archguard:
 npm cmd="status" *args:
     bun run "{{root}}/scripts/npm.ts" {{cmd}} {{args}}
 
+# Timer hebdomadaire : actions des npm-publish.yml (src, rosegriffon, shenron) remises au dernier SHA de leur majeure, commit sur main
+[windows]
+npm-pins-schedule:
+    schtasks /Create /F /SC WEEKLY /D MON /ST 06:00 /TN aphrody-npm-pins /TR "\"$(bun -e 'process.stdout.write(process.execPath)')\" run \"{{root}}/scripts/npm.ts\" pins --push"
+
 # Dry-run de publication npm en CI (trusted publishing OIDC, repli NPM_TOKEN) pour des dossiers de paquets
 npm-publish-ci pkgs="packages/wck" dry="true":
     gh workflow run npm-publish.yml -R aphrody-labs/src -f packages="{{pkgs}}" -f dry_run={{dry}}

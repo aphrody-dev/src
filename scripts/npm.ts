@@ -7,6 +7,8 @@
 //   bun scripts/npm.ts login               npm login --auth-type=web en PTY (session séparée), le propriétaire clique
 //   bun scripts/npm.ts trust [--dry-run]   npm trust github pour chaque paquet publié (2FA du compte requise)
 //   bun scripts/npm.ts harden [--dry-run]  npm access set mfa=publish (2FA + jetons refusés) sur les paquets déjà en OIDC
+//   bun scripts/npm.ts pins [--write] [--push]  actions des npm-publish.yml épinglées par SHA (tag en commentaire), mises à
+//                                          jour dans la même majeure ; --push commit + push sur main (timer : just npm-pins-schedule)
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 
@@ -228,6 +230,56 @@ async function harden(dry: boolean) {
   console.log(JSON.stringify(res, null, 2));
 }
 
+// ------------------------------------------------------------------------------------------------- épinglage SHA
+/** Fichiers workflow npm-publish.yml : src + sous-modules qui l'appellent. */
+const PIN_FILES = [ROOT, ...SUBMODULES.map((m) => join(ROOT, m).replaceAll("\\", "/"))]
+  .map((d) => ({ repo: d, file: join(d, ".github/workflows", WORKFLOW) }))
+  .filter((x) => existsSync(x.file));
+const gh = (path: string) => JSON.parse(run(["gh", "api", path]).out || "null");
+const shaOf = (repo: string, ref: string) => (gh(`repos/${repo}/commits/${ref}`) as { sha: string }).sha;
+
+/** Dernière release stable de la même majeure que `tag` (v7.0.1 -> v7.x.y la plus récente). */
+function latestInMajor(repo: string, tag: string): string {
+  const major = /^v?(\d+)/.exec(tag)?.[1];
+  const rel = (gh(`repos/${repo}/releases?per_page=50`) as { tag_name: string; prerelease: boolean; draft: boolean }[]) ?? [];
+  return rel.find((r) => !r.prerelease && !r.draft && new RegExp(`^v?${major}\\.`).test(r.tag_name))?.tag_name ?? tag;
+}
+
+function pins(write: boolean, push: boolean) {
+  const USES = /uses: ([\w.-]+\/[\w.-]+)((?:\/[\w./-]+)?)@([0-9a-f]{40}|[\w.-]+)(?: # ([\w.\/-]+))?/g;
+  const out: Record<string, string[]> = {};
+  for (const { repo, file } of PIN_FILES) {
+    const text = readFileSync(file, "utf8");
+    const changes: string[] = [];
+    const next = text.replace(USES, (m, action: string, sub: string, ref: string, comment?: string) => {
+      let tag: string, sha: string;
+      if (sub) {
+        // workflow réutilisable du monorepo : dernier commit de main qui l'a modifié
+        tag = "main";
+        sha = (gh(`repos/${action}/commits?sha=main&path=${sub.slice(1)}&per_page=1`) as { sha: string }[])[0]!.sha;
+      } else {
+        tag = latestInMajor(action, comment ?? ref);
+        sha = shaOf(action, tag);
+      }
+      const line = `uses: ${action}${sub}@${sha} # ${tag}`;
+      if (line !== m) changes.push(`${action}${sub} ${comment ?? ref} -> ${tag}`);
+      return line;
+    });
+    const rel = relative(ROOT, file).replaceAll("\\", "/");
+    out[rel] = changes;
+    if (!write || next === text) continue;
+    writeFileSync(file, next);
+    if (!push) continue;
+    const wf = relative(repo, file).replaceAll("\\", "/");
+    run(["git", "-C", repo, "add", "--", wf]);
+    run(["git", "-C", repo, "commit", "-m", `npm-publish : actions épinglées par SHA (${changes.join(", ")})`, "--", wf]);
+    run(["git", "-C", repo, "pull", "--rebase", "--autostash"], { timeout: 300_000 });
+    const p = run(["git", "-C", repo, "push", "origin", "HEAD:main"], { timeout: 300_000 });
+    out[rel].push(p.code === 0 ? "poussé" : `push en échec : ${p.err.slice(-160)}`);
+  }
+  console.log(JSON.stringify(out, null, 2));
+}
+
 const [cmd = "status", ...args] = Bun.argv.slice(2);
 const flag = (f: string) => args.includes(f);
 switch (cmd) {
@@ -238,7 +290,8 @@ switch (cmd) {
   case "login": await login(); break;
   case "trust": await trust(flag("--dry-run")); break;
   case "harden": await harden(flag("--dry-run")); break;
+  case "pins": pins(flag("--write") || flag("--push"), flag("--push")); break;
   default:
-    console.error("usage : bun scripts/npm.ts status|sync|inventory [--json]|align [--write]|login|trust [--dry-run]|harden [--dry-run]");
+    console.error("usage : bun scripts/npm.ts status|sync|inventory [--json]|align [--write]|login|trust [--dry-run]|harden [--dry-run]|pins [--write] [--push]");
     process.exit(2);
 }

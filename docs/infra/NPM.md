@@ -73,3 +73,11 @@ l'approbation d'un `npm stage` exigent un défi 2FA interactif que ni un agent n
 3. `just npm trust` : premier défi 2FA validé sur la page ouverte, cocher « skip 2FA 5 min », les 33 paquets existants
    reçoivent leur trusted publisher (`--allow-publish --allow-stage-publish`). Les 12 nouveaux : premier publish par le
    workflow (repli jeton), puis `just npm trust` à nouveau.
+
+## Épinglage des actions
+
+Les `uses:` des trois `npm-publish.yml` sont épinglés par SHA, tag en commentaire (`actions/checkout@<sha> # v7.0.1`) ;
+les appelants pointent sur le SHA du dernier commit de `main` qui a modifié le workflow réutilisable. Mise à jour :
+`bun scripts/npm.ts pins --push` (dernière release de la même majeure, commit + push sur main dans chaque dépôt), lancé
+chaque lundi à 06:00 par la tâche planifiée `aphrody-npm-pins` (`just npm-pins-schedule`). Pas de Dependabot pour ces
+fichiers : ses PR passent par des branches, contraire à la règle « tout sur main ».
