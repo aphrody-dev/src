@@ -10,7 +10,8 @@ After=network-online.target
 [Service]
 Type=simple
 Environment=SRC_ROOT=%h/agents/src
-ExecStart=/bin/sh -c 'exec "$HOME/.bun/bin/bun" run --cwd "$SRC_ROOT/packages/env-kit" src/cli.ts auth daemon --every 5 --refresh 30'
+Environment=PATH=%h/.bun/bin:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/bin/sh -c 'exec bun run --cwd "$SRC_ROOT/packages/env-kit" src/cli.ts auth daemon --every 5 --refresh 30'
 Restart=on-failure
 RestartSec=60
 Nice=19

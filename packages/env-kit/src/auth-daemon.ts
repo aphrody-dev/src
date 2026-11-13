@@ -68,7 +68,10 @@ export async function pass(m: Manifest, o: AuthOptions, refresh: boolean) {
     if (v) process.env[n] = v;
   }
   // Rafraîchissement sans humain d'abord, puis la sonde qui fait foi.
-  if (refresh) await collectChecks(m, { ...o, browser: false }, true).catch(() => []);
+  // Le PC (coffre de référence) répare tout ; les autres hôtes seulement leurs CLI et leur stockage, pour qu'aucun
+  // hôte ne pousse ses copies vers les secrets GitHub ou la flotte.
+  const only = process.platform === "win32" || process.env.AY_AUTH_REFRESH_ALL === "1" ? o.only : ["cli", "store"];
+  if (refresh) await collectChecks(m, { ...o, only, browser: false }, true).catch(() => []);
   const checks = await collectChecks(m, { ...o, browser: false }, false);
   const dir = stateDir();
   mkdirSync(dir, { recursive: true });
