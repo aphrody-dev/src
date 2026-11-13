@@ -415,6 +415,10 @@ Usage:
   env-kit secret <info|list|set|exec|pipe|has|rm|import>  OS secret store (DPAPI / systemd-creds); values in via stdin, out via child env/stdin only
   env-kit auth status [--json] [--only k,..]  Every auth: CLIs, Chrome, tokens, store, CI secrets, ssh, WireGuard, tunnels
   env-kit auth repair [--browser]      Fix without password; --browser opens sign-in pages the owner clicks
+  env-kit auth login [cli...]          Log in the CLIs whose check fails, device flow (RFC 8628) when headless
+  env-kit auth oidc [--dry-run]        GitHub Actions OIDC -> GCP Workload Identity Federation ([auth.oidc])
+  env-kit auth mint cloudflare --perm "<group>,..." [--ttl s] -- <cmd>   Scoped, expiring token for one command
+  env-kit auth mint gcp --sa <email> [--ttl s] -- <cmd>                  Keyless service-account token (impersonation)
   env-kit auth gh-secrets [--dry-run]  gh secret set from the store (infra/deploy.toml [auth.github])
   env-kit auth tunnels [--dry-run]     cloudflared tokens from the Cloudflare API into systemd-creds
   env-kit auth rotate cloudflare       Roll CLOUDFLARE_API_TOKEN through the API; store, .env, user env, then gh-secrets
@@ -518,6 +522,7 @@ ${formatIdentities(ids)}`);
       browser: flag("--browser"),
       dryRun: flag("--dry-run"),
       only: only?.split(","),
+      args: argv[1] === "mint" ? argv.slice(2) : argv[1] === "login" ? argv.slice(2).filter((a) => !a.startsWith("-")) : undefined,
       persist: (k, v) => setCredentialEverywhere(envPath, k, v),
     });
   }

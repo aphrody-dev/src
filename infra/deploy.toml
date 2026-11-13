@@ -247,6 +247,26 @@ tunnels = { cloudflared-mig-prd = "mig-prd", cloudflared-prod = "prod" }
 wireguard = ["prod", "vps"]
 units = ["shenron-cloudflare-s3-renew", "rg-steam-depot"]
 
+# Keyless CI (docs/infra/AUTH-ECOSYSTEM.md). `ay auth oidc` creates the GitHub Actions OIDC federation
+# into GCP idempotently; workflows then use google-github-actions/auth with
+# workload_identity_provider = projects/<number>/locations/global/workloadIdentityPools/<pool>/providers/<provider>
+# and service_account, `permissions: id-token: write`, no JSON key. `replaces`: long-lived CI secret ->
+# the OIDC mechanism that makes it unnecessary (reported by `ay auth status --only oidc` while present).
+[auth.oidc.gcp]
+project = "aphrody"
+project_number = "468000409790"
+pool = "github"
+provider = "aphrody-dev"
+issuer = "https://token.actions.githubusercontent.com"
+condition = "assertion.repository_owner=='aphrody-dev'"
+service_account = "yolo-automation@aphrody.iam.gserviceaccount.com"
+repos = ["aphrody-dev/src"]
+account = "yohanpierre15@gmail.com"
+
+[auth.oidc.replaces]
+CARGO_REGISTRY_TOKEN = "crates.io trusted publishing (RFC 3691, rust-lang/crates-io-auth-action) : lier aphrody-labs sur crates.io, puis gh secret delete CARGO_REGISTRY_TOKEN --org aphrody-labs"
+NPM_TOKEN = "npm trusted publishing (OIDC, GA 2025-07-31) : configurer chaque paquet, puis supprimer le secret"
+
 # Public keys leaked in aphrody-labs/mesh-vn history (docs/publish/STATUS.md): rotate with
 # infra/fleet/wg/rotate-wg-win.sh (UAC), then remove the peer everywhere.
 [auth.wireguard]

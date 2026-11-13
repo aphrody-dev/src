@@ -17,6 +17,13 @@ describe("auth manifest", () => {
       for (const n of names) expect(n).toMatch(/^[A-Z][A-Z0-9_]+$/);
   });
 
+  test("keyless CI federation is declared without spaces (gcloud.cmd goes through cmd.exe)", () => {
+    const g = loadManifest(root).auth.oidc?.gcp;
+    expect(g?.issuer).toBe("https://token.actions.githubusercontent.com");
+    expect(g?.condition).toContain("aphrody-dev");
+    for (const v of [g!.condition, g!.pool, g!.provider, g!.service_account]) expect(v).not.toMatch(/\s/);
+  });
+
   test("host script is valid bash and embeds no value", () => {
     const s = hostScript({ tunnels: { "cloudflared-x": "x" }, wireguard: ["wg0"], units: ["certbot"] }, ["ssh-ed25519 AAAAC3Nza test"], false);
     expect(s).toContain("REPAIR=0");

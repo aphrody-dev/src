@@ -49,8 +49,24 @@ interface Manifest {
     hosts?: Record<string, HostAuth>;
     /** WireGuard public keys known to be leaked: any peer still using one is reported invalid. */
     wireguard?: { revoked?: string[] };
+    /** Keyless CI: GitHub Actions OIDC federations, and the long-lived secrets each one replaces. */
+    oidc?: { gcp?: OidcGcp; replaces?: Record<string, string> };
   };
   cloud?: { cloudflare_account_id?: string };
+}
+
+export interface OidcGcp {
+  project: string;
+  project_number: string;
+  pool: string;
+  provider: string;
+  issuer: string;
+  /** CEL condition on the GitHub OIDC claims (mandatory for the GitHub issuer); no spaces (gcloud.cmd goes through cmd.exe). */
+  condition: string;
+  service_account: string;
+  repos: string[];
+  /** gcloud account that administers the pool (project owner). */
+  account: string;
 }
 
 export interface AuthOptions {
@@ -59,6 +75,8 @@ export interface AuthOptions {
   only?: string[];
   browser?: boolean;
   dryRun?: boolean;
+  /** Positional arguments after the subcommand (login targets, mint provider and command). */
+  args?: string[];
   /** Persist a renewed credential (store + .env + user env); provided by the CLI. */
   persist?: (key: string, value: string) => void;
 }
@@ -66,6 +84,10 @@ export interface AuthOptions {
 const CMD_SHIMS = new Set(["gcloud", "npm", "agy"]);
 
 const LOCAL = process.platform === "win32" ? "pc" : (process.env.HOSTNAME ?? "local");
+
+/** No local browser: ssh session, or Linux without a display. Logins then use the device flow (RFC 8628). */
+export const HEADLESS =
+  !!process.env.SSH_CONNECTION || (process.platform === "linux" && !process.env.DISPLAY && !process.env.WAYLAND_DISPLAY);
 
 function sh(cmd: string, args: string[], opts: { input?: string; timeout?: number; env?: NodeJS.ProcessEnv } = {}) {
   const r = spawnSync(cmd, args, {
@@ -113,8 +135,17 @@ function checkGh(o: AuthOptions): Check[] {
       const t = sh("gh", ["auth", "token"], { env });
       if (t.ok && t.out) o.persist("GITHUB_TOKEN", t.out);
       out.push({ kind: "cli", target: "gh", host: LOCAL, status: "fixed", proof: `keyring login ${k.out}; GITHUB_TOKEN/GH_TOKEN re-exported` });
+    } else if (o.browser && !o.dryRun) {
+      // Device flow (one-time code): gh prints the code, the owner approves it once in any browser.
+      const l = spawnSync("gh", ["auth", "login", "--hostname", "github.com", "--git-protocol", "ssh", "--web", ...(HEADLESS ? [] : ["--clipboard"]), "--scopes", "workflow,admin:org"], { stdio: "inherit", timeout: 600_000, env });
+      const again = sh("gh", ["api", "user", "-q", ".login"], { env });
+      if (again.ok && o.persist) {
+        const t = sh("gh", ["auth", "token"], { env });
+        if (t.ok && t.out) o.persist("GITHUB_TOKEN", t.out);
+      }
+      out.push({ kind: "cli", target: "gh", host: LOCAL, status: again.ok ? "fixed" : "action", proof: `gh auth login --web (device code) -> ${l.status === 0 ? again.out : `code ${l.status}`}` });
     } else
-      out.push({ kind: "cli", target: "gh", host: LOCAL, status: "invalid", proof: clean(r.err), fix: "gh auth login --web (navigateur)" });
+      out.push({ kind: "cli", target: "gh", host: LOCAL, status: "invalid", proof: clean(r.err), fix: "ay auth login gh (device code, un clic)" });
   }
   const scopes = sh("gh", ["api", "-i", "user"]);
   const line = scopes.out.split("\n").find((l) => /^x-oauth-scopes:/i.test(l));
@@ -149,7 +180,7 @@ function checkGcloud(o: AuthOptions): Check[] {
       continue;
     }
     const sa = acct.endsWith(".iam.gserviceaccount.com");
-    if (!sa && o.browser && !o.dryRun) {
+    if (!sa && o.browser && !o.dryRun && !HEADLESS) {
       const r = sh("gcloud", ["auth", "login", acct, "--brief", "--update-adc"], { timeout: 600_000 });
       out.push({ kind: "cli", target, host: LOCAL, status: r.ok ? "fixed" : "action", proof: `gcloud auth login ${acct} -> ${r.ok ? "ok" : clean(r.err)}` });
       if (r.ok) accounts.add(acct);
@@ -157,7 +188,7 @@ function checkGcloud(o: AuthOptions): Check[] {
     }
     out.push({ kind: "cli", target, host: LOCAL, status: "action",
       proof: `gcloud auth list: ${acct} sans identifiants`,
-      fix: sa ? `clé ou impersonation pour ${acct} (env-kit accounts init-gcloud)` : `ay auth repair --browser (gcloud auth login ${acct})` });
+      fix: sa ? `sans clé : ay auth mint gcp --sa ${acct} -- <cmd> (impersonation, jeton 1 h)` : HEADLESS ? `sans navigateur : ay auth mint gcp --sa <compte de service> -- <cmd>` : `ay auth login gcloud (gcloud auth login ${acct})` });
   }
   const adc = sh("gcloud", ["auth", "application-default", "print-access-token", "--quiet"], { timeout: 60_000 });
   out.push({ kind: "cli", target: "gcloud:adc", host: LOCAL, status: adc.ok ? "ok" : "action",
@@ -171,7 +202,8 @@ interface Simple {
   bin: string;
   args: string[];
   ok: (r: ReturnType<typeof sh>) => string | false;
-  login?: string[];
+  /** Login command, device flow first when there is no local browser. */
+  login?: (headless: boolean) => string[];
   fix: string;
   /** Persist the renewed token after a browser login. */
   after?: () => [string, string] | undefined;
@@ -183,33 +215,40 @@ const npmToken = (): [string, string] | undefined => {
 };
 
 const SIMPLE: Simple[] = [
-  { target: "cf", bin: "cf", args: ["whoami", "--json"], fix: "CLOUDFLARE_API_TOKEN (ay secret set) ou cf auth login (navigateur)",
+  { target: "cf", bin: "cf", args: ["whoami", "--json"], fix: "CLOUDFLARE_API_TOKEN (ay secret set) ; agents : ay auth mint cloudflare", login: () => ["auth", "login"],
     ok: (r) => { try { const j = JSON.parse(r.out); return j.authenticated && j.tokenValid ? `authenticated, ${j.authSource}` : false; } catch { return false; } } },
-  { target: "wrangler", bin: "wrangler", args: ["whoami", "--json"], fix: "CLOUDFLARE_API_TOKEN ou wrangler login (navigateur)", login: ["login"],
+  { target: "wrangler", bin: "wrangler", args: ["whoami", "--json"], fix: "CLOUDFLARE_API_TOKEN ou ay auth login wrangler (--device sans navigateur)",
+    login: (h) => ["login", ...(h ? ["--device"] : [])],
     ok: (r) => (r.ok ? "whoami --json ok" : false) },
-  { target: "vercel", bin: "vercel", args: ["whoami"], fix: "vercel login (navigateur)", login: ["login"],
+  { target: "vercel", bin: "vercel", args: ["whoami"], fix: "ay auth login vercel", login: () => ["login"],
     ok: (r) => (r.ok ? r.out.split("\n").pop()! : false) },
-  { target: "npm", bin: "npm", args: ["whoami"], fix: "ay auth repair --browser (npm login --auth-type=web)", login: ["login", "--auth-type=web"],
+  { target: "npm", bin: "npm", args: ["whoami"], fix: "ay auth login npm (npm login --auth-type=web)", login: () => ["login", "--auth-type=web"],
     ok: (r) => (r.ok ? r.out : false), after: npmToken },
-  { target: "claude", bin: "claude", args: ["auth", "status"], fix: "claude /login (navigateur)",
+  { target: "claude", bin: "claude", args: ["auth", "status"], fix: "ay auth login claude ; hôte sans navigateur : claude setup-token",
+    login: (h) => (h ? ["setup-token"] : ["auth", "login"]),
     ok: (r) => { try { const j = JSON.parse(r.out); return j.loggedIn ? `loggedIn, ${j.authMethod}` : false; } catch { return false; } } },
+  { target: "codex", bin: "codex", args: ["login", "status"], fix: "ay auth login codex (--device-auth sans navigateur)",
+    login: (h) => ["login", ...(h ? ["--device-auth"] : [])],
+    ok: (r) => (r.ok ? clean(r.out || r.err) || "logged in" : false) },
   { target: "agy", bin: "agy", args: ["--version"], fix: "connexion Antigravity (compte Google, navigateur)",
     ok: (r) => (r.ok || r.out ? `présent (auth Google gérée par Antigravity)` : false) },
 ];
 
 function checkSimple(o: AuthOptions): Check[] {
-  return SIMPLE.map((s): Check => {
+  const pick = o.args?.length ? SIMPLE.filter((s) => o.args!.includes(s.target)) : SIMPLE;
+  return pick.map((s): Check => {
     if (!has(s.bin)) return { kind: "cli", target: s.target, host: LOCAL, status: "skip", proof: `${s.bin} absent` };
     const r = sh(s.bin, s.args, { timeout: 60_000 });
     const okText = s.ok(r);
     if (okText) return { kind: "cli", target: s.target, host: LOCAL, status: "ok", proof: `${s.bin} ${s.args.join(" ")} -> ${clean(okText)}` };
     if (o.browser && s.login && !o.dryRun) {
-      const l = spawnSync(s.bin, s.login, { stdio: "inherit", timeout: 600_000, shell: process.platform === "win32" && CMD_SHIMS.has(s.bin) });
+      const login = s.login(HEADLESS);
+      const l = spawnSync(s.bin, login, { stdio: "inherit", timeout: 600_000, shell: process.platform === "win32" && CMD_SHIMS.has(s.bin) });
       const again = s.ok(sh(s.bin, s.args, { timeout: 60_000 }));
       const t = again && s.after?.();
       if (t && o.persist) o.persist(t[0], t[1]);
       return { kind: "cli", target: s.target, host: LOCAL, status: again ? "fixed" : "action",
-        proof: `${s.bin} ${s.login.join(" ")} -> ${l.status === 0 ? "ok" : `code ${l.status}`}` };
+        proof: `${s.bin} ${login.join(" ")} -> ${l.status === 0 ? "ok" : `code ${l.status}`}` };
     }
     return { kind: "cli", target: s.target, host: LOCAL, status: "invalid", proof: `${s.bin} ${s.args.join(" ")} -> ${clean(r.err || r.out) || `code ${r.code}`}`, fix: s.fix };
   });
@@ -572,31 +611,174 @@ export async function rotateCloudflare(m: Manifest, o: AuthOptions): Promise<Che
   }
 }
 
+// --- Keyless CI: GitHub Actions OIDC -> GCP Workload Identity Federation ------------------------------
+
+const gc = (g: OidcGcp, args: string[], timeout = 90_000) =>
+  sh("gcloud", [...args, `--project=${g.project}`, `--account=${g.account}`, "--quiet"], { timeout });
+
+const principalSet = (g: OidcGcp, repo: string) =>
+  `principalSet://iam.googleapis.com/projects/${g.project_number}/locations/global/workloadIdentityPools/${g.pool}/attribute.repository/${repo}`;
+
+/**
+ * `status`: reads the pool, the provider and the service-account bindings. `apply` (`ay auth oidc`):
+ * creates what is missing, idempotently. Also flags every long-lived CI secret that an OIDC
+ * mechanism of `[auth.oidc.replaces]` makes unnecessary.
+ */
+export function checkOidc(m: Manifest, o: AuthOptions, apply: boolean): Check[] {
+  const out: Check[] = [];
+  const g = m.auth.oidc?.gcp;
+  if (g && has("gcloud")) {
+    const loc = ["--location=global"];
+    let pool = gc(g, ["iam", "workload-identity-pools", "describe", g.pool, ...loc, "--format=value(state)"]);
+    if (!pool.ok && apply && !o.dryRun)
+      pool = gc(g, ["iam", "workload-identity-pools", "create", g.pool, ...loc, "--display-name=GitHub-Actions", "--format=value(state)"]);
+    out.push({ kind: "oidc", target: `gcp:${g.pool}`, host: "gcp", status: pool.ok ? "ok" : apply ? "invalid" : "action",
+      proof: `workload-identity-pools describe ${g.pool} -> ${pool.ok ? pool.out || "ACTIVE" : clean(pool.err)}`, fix: pool.ok ? undefined : "ay auth oidc" });
+    const pv = ["iam", "workload-identity-pools", "providers"];
+    const mapping = "google.subject=assertion.sub,attribute.repository=assertion.repository,attribute.repository_owner=assertion.repository_owner,attribute.ref=assertion.ref,attribute.workflow_ref=assertion.job_workflow_ref";
+    let prov = gc(g, [...pv, "describe", g.provider, `--workload-identity-pool=${g.pool}`, ...loc, "--format=value(attributeCondition)"]);
+    if (prov.ok && prov.out !== g.condition && apply && !o.dryRun)
+      prov = gc(g, [...pv, "update-oidc", g.provider, `--workload-identity-pool=${g.pool}`, ...loc, `--attribute-condition=${g.condition}`, `--attribute-mapping=${mapping}`, "--format=value(attributeCondition)"]);
+    else if (!prov.ok && apply && !o.dryRun)
+      prov = gc(g, [...pv, "create-oidc", g.provider, `--workload-identity-pool=${g.pool}`, ...loc, `--issuer-uri=${g.issuer}`, `--attribute-mapping=${mapping}`, `--attribute-condition=${g.condition}`, "--format=value(attributeCondition)"]);
+    const condOk = prov.ok && (prov.out === g.condition || prov.out === "");
+    out.push({ kind: "oidc", target: `gcp:${g.pool}/${g.provider}`, host: "gcp", status: condOk ? "ok" : "action",
+      proof: `providers describe ${g.provider} -> ${prov.ok ? `condition ${prov.out || "(créée)"}` : clean(prov.err)}`, fix: condOk ? undefined : "ay auth oidc" });
+    const pol = gc(g, ["iam", "service-accounts", "get-iam-policy", g.service_account, "--format=json"]);
+    const members = new Set<string>(
+      pol.ok ? ((JSON.parse(pol.out).bindings ?? []) as { role: string; members: string[] }[]).filter((b) => b.role === "roles/iam.workloadIdentityUser").flatMap((b) => b.members) : [],
+    );
+    for (const repo of g.repos) {
+      const who = principalSet(g, repo);
+      let ok = members.has(who);
+      if (!ok && apply && !o.dryRun && pool.ok)
+        ok = gc(g, ["iam", "service-accounts", "add-iam-policy-binding", g.service_account, "--role=roles/iam.workloadIdentityUser", `--member=${who}`, "--format=none"]).ok;
+      out.push({ kind: "oidc", target: `gcp:${repo}`, host: "gcp", status: ok ? (members.has(who) ? "ok" : "fixed") : "action",
+        proof: `${g.service_account} roles/iam.workloadIdentityUser -> ${ok ? "principalSet du dépôt lié" : "absent"}`, fix: ok ? undefined : "ay auth oidc" });
+    }
+  }
+  const remote = new Set<string>();
+  for (const [scope, owners] of [["--repo", Object.keys(m.auth.github?.repo_secrets ?? {})], ["--org", Object.keys(m.auth.github?.org_secrets ?? {})]] as const)
+    for (const owner of owners) {
+      const l = sh("gh", ["secret", "list", scope, owner, "--json", "name", "-q", ".[].name"]);
+      for (const n of l.out.split("\n").filter(Boolean)) remote.add(n);
+    }
+  for (const [name, by] of Object.entries(m.auth.oidc?.replaces ?? {}))
+    if (remote.has(name))
+      out.push({ kind: "oidc", target: name, host: "github", status: "action", proof: "secret longue durée encore présent sur GitHub", fix: by });
+  return out;
+}
+
+// --- Short-lived, least-privilege credentials for one command (agents) -------------------------------
+
+/**
+ * `ay auth mint cloudflare --perm "Workers Scripts Write,DNS Write" [--ttl 900] -- cmd ...`: an account
+ * token with only those permission groups, `expires_on` = now + ttl, injected as CLOUDFLARE_API_TOKEN
+ * into the child, deleted when it exits (expired leftovers named ay-mint-* are purged first).
+ * `ay auth mint gcp [--sa <email>] [--account <caller>] [--ttl 3600] -- cmd ...`: keyless service-account access token
+ * (`gcloud auth print-access-token --impersonate-service-account`), as CLOUDSDK_AUTH_ACCESS_TOKEN and
+ * GOOGLE_OAUTH_ACCESS_TOKEN. No value is printed.
+ */
+export async function mint(m: Manifest, o: AuthOptions): Promise<number> {
+  const a = o.args ?? [];
+  const sep = a.indexOf("--");
+  const head = sep >= 0 ? a.slice(0, sep) : a;
+  const cmd = sep >= 0 ? a.slice(sep + 1) : [];
+  const opt = (k: string) => (head.includes(k) ? head[head.indexOf(k) + 1] : undefined);
+  const provider = head[0];
+  const ttl = Math.max(60, Number(opt("--ttl") ?? (provider === "gcp" ? 3600 : 900)));
+  if (!cmd.length) {
+    console.error("usage : ay auth mint cloudflare --perm \"<groupe>,...\" [--ttl s] -- <cmd> | ay auth mint gcp --sa <email> [--ttl s] -- <cmd>");
+    return 2;
+  }
+  const env: NodeJS.ProcessEnv = { ...process.env };
+  let cleanup = async () => {};
+  if (provider === "cloudflare") {
+    const acct = m.cloud?.cloudflare_account_id ?? process.env.CLOUDFLARE_ACCOUNT_ID;
+    const want = (opt("--perm") ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+    if (!want.length) throw new Error("--perm requis (noms de groupes de permissions Cloudflare)");
+    const groups = (await cfApi(`/accounts/${acct}/tokens/permission_groups`)) as { id: string; name: string; scopes: string[] }[];
+    const sel = want.map((w) => groups.find((g) => g.name.toLowerCase() === w.toLowerCase()) ?? (() => { throw new Error(`groupe de permissions inconnu : ${w}`); })());
+    const zone = sel.filter((g) => g.scopes.some((x) => x.includes(".zone")));
+    const account = sel.filter((g) => !zone.includes(g));
+    const res = `com.cloudflare.api.account.${acct}`;
+    const policies = [
+      ...(account.length ? [{ effect: "allow", resources: { [res]: "*" }, permission_groups: account.map(({ id }) => ({ id })) }] : []),
+      ...(zone.length ? [{ effect: "allow", resources: { [res]: { "com.cloudflare.api.account.zone.*": "*" } }, permission_groups: zone.map(({ id }) => ({ id })) }] : []),
+    ];
+    const tokens = (await cfApi(`/accounts/${acct}/tokens?per_page=100`)) as { id: string; name: string; expires_on?: string }[];
+    for (const t of tokens)
+      if (t.name.startsWith("ay-mint-") && t.expires_on && Date.parse(t.expires_on) < Date.now())
+        await cfApi(`/accounts/${acct}/tokens/${t.id}`, { method: "DELETE" }).catch(() => {});
+    const exp = new Date(Date.now() + ttl * 1000).toISOString().replace(/\.\d+Z$/, "Z");
+    const t = (await cfApi(`/accounts/${acct}/tokens`, { method: "POST", body: JSON.stringify({ name: `ay-mint-${Date.now()}`, policies, expires_on: exp }) })) as { id: string; value: string };
+    env.CLOUDFLARE_API_TOKEN = t.value;
+    env.CLOUDFLARE_ACCOUNT_ID = acct;
+    console.error(`ay auth mint : jeton Cloudflare ${t.id} (${sel.map((g) => g.name).join(", ")}), expire ${exp}`);
+    cleanup = async () => {
+      await cfApi(`/accounts/${acct}/tokens/${t.id}`, { method: "DELETE" }).catch(() => {});
+    };
+  } else if (provider === "gcp") {
+    const sa = opt("--sa") ?? m.auth.oidc?.gcp?.service_account;
+    if (!sa) throw new Error("--sa requis");
+    // The caller account needs roles/iam.serviceAccountTokenCreator on the service account.
+    const caller = opt("--account") ?? m.auth.oidc?.gcp?.account;
+    const r = sh("gcloud", ["auth", "print-access-token", `--impersonate-service-account=${sa}`, ...(caller ? [`--account=${caller}`] : []), `--lifetime=${Math.min(ttl, 43200)}`, "--quiet"], { timeout: 60_000 });
+    if (!r.ok || !r.out) {
+      console.error(`ay auth mint gcp : ${clean(r.err.split("\n").filter((l) => !l.startsWith("WARNING")).join("\n"))} (roles/iam.serviceAccountTokenCreator requis sur ${sa})`);
+      return 1;
+    }
+    env.CLOUDSDK_AUTH_ACCESS_TOKEN = r.out.split("\n").pop()!;
+    env.GOOGLE_OAUTH_ACCESS_TOKEN = env.CLOUDSDK_AUTH_ACCESS_TOKEN;
+    console.error(`ay auth mint : jeton d'accès ${sa} (impersonation, ${Math.min(ttl, 43200)} s, sans clé)`);
+  } else {
+    console.error(`ay auth mint : fournisseur inconnu ${provider}. Attendu : cloudflare, gcp`);
+    return 2;
+  }
+  try {
+    const r = spawnSync(cmd[0]!, cmd.slice(1), { stdio: "inherit", env, shell: process.platform === "win32" });
+    return r.status ?? 1;
+  } finally {
+    await cleanup();
+  }
+}
+
 // --- Entry ------------------------------------------------------------------------------------------
 
-const KINDS = ["cli", "browser", "token", "store", "ci", "fleet", "tunnel-api"] as const;
+const KINDS = ["cli", "browser", "token", "store", "ci", "oidc", "fleet", "tunnel-api"] as const;
 
 export async function runAuth(sub: string, o: AuthOptions): Promise<number> {
   const m = loadManifest(o.root);
   const want = (k: string) => !o.only?.length || o.only.includes(k);
   const repair = sub === "repair";
   let checks: Check[] = [];
-  if (sub === "status" || sub === "repair") {
+  if (sub === "mint") return mint(m, o);
+  if (sub === "login") {
+    // Device flow first (RFC 8628) where the CLI has it; only the CLIs whose check fails are logged in.
+    const t = o.args ?? [];
+    const lo = { ...o, browser: true };
+    if (!t.length || t.includes("gh")) checks.push(...checkGh(lo));
+    if (!t.length || t.includes("gcloud")) checks.push(...checkGcloud(lo));
+    checks.push(...checkSimple(lo));
+  } else if (sub === "status" || sub === "repair") {
     if (want("store")) checks.push(...checkStore());
     if (want("cli")) checks.push(...(repair ? checkGh(o) : checkGh({ ...o, persist: undefined })), ...checkGcloud(repair ? o : { ...o, browser: false }), ...checkSimple(repair ? o : { ...o, browser: false }));
     if (want("browser")) checks.push(...checkBrowser());
     if (want("token")) checks.push(...(await checkTokens()));
     if (want("ci")) checks.push(...syncGithubSecrets(m, o, repair, await rejectedSecrets()));
+    if (want("oidc")) checks.push(...checkOidc(m, o, false));
     if (want("fleet")) checks.push(...checkFleet(m, o, repair));
     if (want("tunnel-api")) checks.push(...(await checkTunnelsApi(m)));
   } else if (sub === "gh-secrets") {
     checks = syncGithubSecrets(m, o, true, await rejectedSecrets());
   } else if (sub === "rotate") {
     checks = await rotateCloudflare(m, o);
+  } else if (sub === "oidc") {
+    checks = checkOidc(m, o, true);
   } else if (sub === "tunnels") {
     checks = await deployTunnels(m, o);
   } else {
-    console.error(`ay auth: sous-commande inconnue ${sub}. Attendu : status, repair, gh-secrets, tunnels, rotate`);
+    console.error(`ay auth: sous-commande inconnue ${sub}. Attendu : status, repair, login, oidc, mint, gh-secrets, tunnels, rotate`);
     return 2;
   }
   if (o.json) console.log(JSON.stringify(checks, null, 2));
