@@ -229,3 +229,12 @@ oven-sh/bun Rust
 mozilla-firefox/firefox C++
 google/dawn C++
 gfx-rs/wgpu Rust
+unixwin/niubash Rust
+unixwin/WinuxCmd C++
+unixwin/rubash Rust
+unixwin/niu-git Python
+unixwin/ruline Rust
+unixwin/oh-my-niu Python
+unixwin/shellbench Python
+unixwin/diffcorpus Python
+unixwin/wpm-source PowerShell
