@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="Volt, the Aphrody pet ({state})">
+  <!-- Volt, the Aphrody pet: original artwork (MIT OR Apache-2.0), drawn only from the brand identity:
+       the rounded 48 dp tile as body, a screen face with amber eyes, the amber bolt of the monogram as
+       antenna. It depicts no existing character. Poses and CSS come from crates/aphrody-ui brand::pet.
+       Placeholders: {body} {body_dark} {face} {eye} {bolt} {mouth} {extras} {style} {state}
+       {root_t} {arm_l_t} {arm_r_t} {eyes_t} {bolt_op}. -->
+  {style}
+  <ellipse cx="48" cy="89" rx="22" ry="3.5" fill="#000000" opacity="0.18"/>
+  <g class="root" transform="{root_t}">
+    <rect class="arm-l" transform="{arm_l_t}" x="12" y="47.5" width="13" height="7" rx="3.5" fill="{body_dark}"/>
+    <rect class="arm-r" transform="{arm_r_t}" x="71" y="47.5" width="13" height="7" rx="3.5" fill="{body_dark}"/>
+    <rect x="33" y="76" width="10" height="8" rx="4" fill="{body_dark}"/>
+    <rect x="53" y="76" width="10" height="8" rx="4" fill="{body_dark}"/>
+    <path d="M48 30V22" stroke="{body_dark}" stroke-width="3" stroke-linecap="round"/>
+    <path class="bolt" opacity="{bolt_op}" fill="{bolt}" d="M51 7L42 19H47.5L45 28L55 15.5H49.5L52 7Z"/>
+    <rect x="22" y="29" width="52" height="51" rx="16" fill="{body}"/>
+    <rect x="29" y="37" width="38" height="26" rx="10" fill="{face}"/>
+    <g class="eyes" transform="{eyes_t}" fill="{eye}">
+      <rect x="37" y="45.5" width="6" height="9" rx="3"/>
+      <rect x="53" y="45.5" width="6" height="9" rx="3"/>
+    </g>
+    <path d="{mouth}" fill="none" stroke="{eye}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="31" y="67" width="34" height="7" rx="3.5" fill="#FFFFFF" opacity="0.18"/>
+  </g>
+  {extras}
+</svg>
