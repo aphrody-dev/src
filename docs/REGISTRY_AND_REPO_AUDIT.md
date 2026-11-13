@@ -65,7 +65,7 @@ Tous les `package.json` first-party ont été unifiés sous le scope `@aphrody/*
 - `apps/aphrody-app` : `aphrody-core`, `aphrody-wasm`, `aphrody-host` (binaire `aphrody-app`), `aphrody-android`
 - `packages/env-kit/loaders/rust` : renommé de `sovereign-env` vers `aphrody-env`
 - `packages/pi-opencode/rust-core` : `pi_opencode_native`
-- `crates/*` : `xtk`, `depot-cli` (`depot`), `depot-core`, `depot-graph`, `depot-ingest` (`gitingest`), `ring3-agent` (`r3d`), `rust-stack`, `gamescope-cli`, `gamescope-core`, `gamescope-wgsl`, `gamescope-web-wasm`, `wslg-cli`, `cosmic-compat`, `dx12-winui-core`, `hypr-tiler`, `smithay-wayland-wire`, `unix-distro`, `unix-cachyos`, `unix-uutils`, `stack-bench`
+- `crates/*` : `xtk`, `depot-cli` (`depot`), `depot-core`, `depot-graph`, `depot-ingest` (`gitingest`), `ring3-agent` (`r3d`), `rust-stack`, `gamescope-cli`, `gamescope-core`, `gamescope-wgsl`, `gamescope-web-wasm`, `wslg-cli`, `cosmic-compat`, `dx12-hal`, `hypr-tiler`, `smithay-wayland-wire`, `unix-distro`, `unix-cachyos`, `unix-uutils`, `stack-bench`
 
 ### 2.3 Inventaire Public `npm` & `crates.io` et Script d'Assainissement
 

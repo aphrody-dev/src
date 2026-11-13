@@ -1,0 +1,63 @@
+# GPU HAL (dx12-hal) and its users on GitHub-hosted runners: windows-msvc and linux-gnu (dx12-001, nt-001).
+# fr1 stays reserved to Chromium/LLVM; ci.yml does not build these Windows-only crates.
+# Toolchain from rust-toolchain.toml (rustup on the runner). Runner images relevés dans nt.yml (2026-11-12).
+name: hal
+on:
+  push:
+    branches: [main]
+    paths:
+      - "crates/dx12-hal/**"
+      - "crates/wslg-cli/**"
+      - "crates/smithay-wayland-wire/**"
+      - "packages/ffi-bridge/**"
+      - ".github/workflows/hal.yml"
+  pull_request:
+    paths:
+      - "crates/dx12-hal/**"
+      - "crates/wslg-cli/**"
+      - "crates/smithay-wayland-wire/**"
+      - "packages/ffi-bridge/**"
+      - ".github/workflows/hal.yml"
+  workflow_dispatch:
+concurrency:
+  group: hal-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+permissions: { contents: read }
+jobs:
+  rust:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-2025-vs2026, target: x86_64-pc-windows-msvc }
+          - { os: ubuntu-latest, target: x86_64-unknown-linux-gnu }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    env:
+      CARGO_TERM_COLOR: never
+      RUSTC_WRAPPER: ""
+    defaults:
+      run: { shell: bash }
+    steps:
+      - uses: actions/checkout@v7
+        with: { submodules: false }
+      - name: Toolchain (rust-toolchain.toml)
+        run: rustup show active-toolchain || rustup toolchain install
+      - name: Check dx12-hal, wslg-cli, smithay-wayland-wire
+        run: cargo check --target ${{ matrix.target }} -p dx12-hal -p wslg-cli -p smithay-wayland-wire --all-targets
+      - name: dx12-hal C ABI test (no GPU needed; empty crate on Linux)
+        run: cargo test --target ${{ matrix.target }} -p dx12-hal --lib capi_
+      - name: dx12_hal cdylib
+        if: runner.os == 'Windows'
+        run: cargo build --target ${{ matrix.target }} -p dx12-hal --release --lib
+  bun:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with: { submodules: false }
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version-file: package.json }
+      - run: bun install --frozen-lockfile
+      - name: ffi-bridge dx12-hal binding (loads nothing on Linux)
+        run: bun --no-env-file test packages/ffi-bridge/dx12-hal.test.ts

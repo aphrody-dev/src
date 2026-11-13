@@ -3,9 +3,10 @@ use cosmic_compat::{
     CosmicSessionEnvironment, CosmicTheme, LayerAnchor, LayerShellManager, LayerSurface, LayerType,
     OmarchyPaletteBridge, WslgHiDpiScalingDescriptor, WslgProtocolDescriptor,
 };
-use dx12_winui_core::{
+use crate::host::WinUiDispatcherQueue;
+use dx12_hal::{
     CommandQueues, DirectCompositionEngine, Dx12Context, GpuFence, SharedGpuTexture,
-    WinUiDispatcherQueue, select_high_performance_adapter,
+    select_high_performance_adapter,
 };
 use hypr_tiler::{
     DwindleTree, DxgDamageRegion, DxgDmaBufDamageTracker, GapsConfig, HyprWindow,

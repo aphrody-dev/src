@@ -110,7 +110,7 @@ F:	crates/gamescope-wgsl/
 F:	crates/wslg-cli/
 F:	crates/hypr-tiler/
 F:	crates/cosmic-compat/
-F:	crates/dx12-winui-core/
+F:	crates/dx12-hal/
 F:	crates/smithay-wayland-wire/
 F:	third_party/wgpu/
 F:	third_party/winit/
@@ -226,7 +226,7 @@ LAYER L2 PLATFORM ABSTRACTION (Windows, Linux, Cloudflare, Vercel, C ABI)
 M:	skill:microsoft skill:windows-machine agent:claude <contact@aphrody.com>
 S:	Supported
 F:	crates/core-capi/
-F:	crates/dx12-winui-core/
+F:	crates/dx12-hal/
 F:	crates/unix-*/
 F:	crates/remote/
 F:	infra/ffi-bridge/

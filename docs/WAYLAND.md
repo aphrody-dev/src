@@ -10,7 +10,7 @@ Native Rust 2024 WSLg compositor and protocol engine replacing legacy Weston/RDP
 C:\src\crates\wayland\
 ├── Cargo.toml                      # Rust 2024 workspace
 └── crates\
-    ├── dx12-winui-core\            # D3D12 Ultimate device, GPU fences, NT shared textures, DirectComposition & WinUI DispatcherQueue
+    ├── dx12-hal\                   # D3D12 Ultimate device, GPU fences, NT shared textures, DirectComposition, C ABI dx12_hal.dll
     ├── smithay-wayland-wire\       # Pure-Rust Wayland binary wire protocol, AF_HYPERV (hv_sock) transport, DMA-BUF & Fractional Scale globals
     ├── hypr-tiler\                 # Hyprland Dwindle BSP, Master-Stack, WindowRuleV2, 120Hz spring physics, Omarchy keybinds & /dev/dxg damage coalescer
     ├── cosmic-compat\              # COSMIC layer-shell, workspaces, Material 3 & Omarchy Aether RON theme bridge, HiDPI zero-blur protocol descriptors
@@ -21,7 +21,7 @@ C:\src\crates\wayland\
 
 ## Key Subsystems & Omarchy WSLg Patch
 
-1. **Direct3D 12 Ultimate & Zero-Copy `/dev/dxg` Bridge (`dx12-winui-core` + `hypr-tiler::omarchy`)**:
+1. **Direct3D 12 Ultimate & Zero-Copy `/dev/dxg` Bridge (`dx12-hal` + `hypr-tiler::omarchy`)**:
    - Targets NVIDIA GeForce RTX 4070 (`0x10DE:0x2786`, Ada Lovelace `sm_89`, 12 GB VRAM, Feature Level `12_2`).
    - Allocates and imports cross-VM NT shared GPU textures (`DXGI_FORMAT_R8G8B8A8_UNORM`) paired with `DxgDmaBufDamageTracker`, coalescing Wayland surface damage regions into minimal bounding scissor rects for zero-copy `/dev/dxg` DMA-BUF presentation.
 2. **Omarchy Keyboard-First Tiling Model (`hypr-tiler`)**:

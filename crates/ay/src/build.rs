@@ -11,7 +11,7 @@ use std::process::Command;
 
 /// Crates that only build for Windows targets (unconditional `windows`/`windows-sys` use).
 pub const WINDOWS_ONLY: &[&str] =
-    &["stack-bench", "dx12-winui-core", "smithay-wayland-wire", "cosmic-compat", "wslg-cli"];
+    &["stack-bench", "dx12-hal", "smithay-wayland-wire", "cosmic-compat", "wslg-cli"];
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Scope {

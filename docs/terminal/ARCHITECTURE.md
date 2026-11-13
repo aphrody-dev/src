@@ -41,7 +41,7 @@ Dépendances absorbées dans `third_party/` (forks aphrody-labs, `packages/machi
   reste le moteur web ; intelligent-terminal n'en embarque que `base/numerics` dans `oss/chromium`. Sur prd, la
   validation C++ utilise le clang/lld système (Arch Linux) ; elle ne produit aucun binaire consommé par le build
   Windows (MSBuild, vcpkg, NuGet).
-- Pile UI existante : `crates/dx12-winui-core` (Rust, `windows`) et `third_party/windows-rs` (monorepo,
+- Pile UI existante : `crates/dx12-hal` (Rust, `windows`) et `third_party/windows-rs` (monorepo,
   `MERGED.toml`) côté Rust natif ; `third_party/microsoft-ui-xaml`, `third_party/WindowsAppSDK`,
   `third_party/webui`, `third_party/fluentui`, `third_party/fast` côté UI Microsoft ; `third_party/wterm`,
   `third_party/ghostty-web`, `third_party/opentui`, `third_party/edit`, `third_party/terminal-control`,

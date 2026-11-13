@@ -17,9 +17,6 @@ pub enum Dx12Error {
     #[error("DirectComposition device initialization failed")]
     DirectCompositionFailed,
 
-    #[error("DispatcherQueueController initialization failed")]
-    DispatcherQueueFailed,
-
     #[error("GPU fence wait timeout ({0} ms)")]
     FenceTimeout(u32),
 }

@@ -1,11 +1,15 @@
 [package]
 repository.workspace = true
-description = "dx12-winui-core: part of the Aphrody monorepo"
-name = "dx12-winui-core"
+description = "dx12-hal: D3D12 + DirectComposition hardware layer (L2) with a C ABI, part of the Aphrody monorepo"
+name = "dx12-hal"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
+
+# rlib for wslg-cli and smithay-wayland-wire; cdylib `dx12_hal.dll` for bun:ffi (packages/ffi-bridge, apps/nt).
+[lib]
+crate-type = ["rlib", "cdylib"]
 
 [dependencies]
 tracing.workspace = true
@@ -14,6 +18,7 @@ thiserror.workspace = true
 # Windows-only crate (lib.rs is cfg(windows)): no windows-rs in Linux builds.
 [target.'cfg(windows)'.dependencies]
 windows.workspace = true
+serde_json.workspace = true
 
 [dev-dependencies]
 tracing-subscriber.workspace = true

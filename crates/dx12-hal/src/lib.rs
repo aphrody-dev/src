@@ -1,7 +1,10 @@
-//! D3D12 + DirectComposition/WinUI host primitives. Windows only: the crate is empty elsewhere.
+//! dx12-hal (L2): D3D12 devices, queues, fences, shared NT-handle textures and DirectComposition,
+//! plus the `dx12_hal_*` C ABI ([`capi`]). Windows only: the crate is empty elsewhere.
+//! The WinUI 3 host (DispatcherQueue) lives in wslg-cli (`wslg_cli::host`), not here.
 #![cfg(windows)]
 
 pub mod adapter;
+pub mod capi;
 pub mod device;
 pub mod direct_composition;
 pub mod errors;
@@ -11,7 +14,7 @@ pub mod shared_memory;
 
 pub use adapter::{list_adapters, select_high_performance_adapter, AdapterInfo};
 pub use device::{Dx12Context, Dx12UltimateFeatures};
-pub use direct_composition::{DirectCompositionEngine, SwapChainConfig, WinUiDispatcherQueue};
+pub use direct_composition::{DirectCompositionEngine, SwapChainConfig};
 pub use errors::{Dx12Error, Result};
 pub use fence::GpuFence;
 pub use queue::{CommandQueues, DescriptorHeaps};
@@ -83,9 +86,17 @@ mod tests {
         let dcomp = DirectCompositionEngine::new().expect("Failed to initialize DirectComposition");
         let visual = dcomp.create_visual().expect("Failed to create DComp visual");
         let _ = visual;
+    }
 
-        // WinUI Core DispatcherQueue
-        let dispatcher = WinUiDispatcherQueue::new_dedicated_thread().expect("Failed to create WinUI DispatcherQueue");
-        let _ = dispatcher;
+    #[test]
+    fn capi_reports_adapters_as_json() {
+        assert_eq!(capi::dx12_hal_abi_version(), capi::DX12_HAL_ABI_VERSION);
+        let p = capi::dx12_hal_adapters_json();
+        assert!(!p.is_null());
+        // SAFETY: `p` is a NUL-terminated string from the C ABI, released once below.
+        let s = unsafe { std::ffi::CStr::from_ptr(p) }.to_str().unwrap().to_owned();
+        unsafe { capi::dx12_hal_free(p) };
+        let v: serde_json::Value = serde_json::from_str(&s).unwrap();
+        assert!(v.is_array() || v.get("error").is_some(), "{s}");
     }
 }

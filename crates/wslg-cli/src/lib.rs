@@ -1,5 +1,7 @@
 #[cfg(windows)]
 pub mod app;
+#[cfg(windows)]
+pub mod host;
 
 #[cfg(windows)]
 pub use app::run;

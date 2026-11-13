@@ -1,38 +1,8 @@
 use crate::errors::{Dx12Error, Result};
 use tracing::info;
-use windows::System::DispatcherQueueController;
 use windows::Win32::Foundation::*;
 use windows::Win32::Graphics::DirectComposition::*;
 use windows::Win32::Graphics::Dxgi::*;
-use windows::Win32::System::WinRT::{
-    CreateDispatcherQueueController, DispatcherQueueOptions, DQTAT_COM_NONE, DQTYPE_THREAD_CURRENT,
-};
-
-pub struct WinUiDispatcherQueue {
-    pub controller: DispatcherQueueController,
-}
-
-impl WinUiDispatcherQueue {
-    pub fn new_on_current_thread() -> Result<Self> {
-        let options = DispatcherQueueOptions {
-            dwSize: std::mem::size_of::<DispatcherQueueOptions>() as u32,
-            threadType: DQTYPE_THREAD_CURRENT,
-            apartmentType: DQTAT_COM_NONE,
-        };
-        unsafe {
-            let controller = CreateDispatcherQueueController(options)
-                .map_err(|_| Dx12Error::DispatcherQueueFailed)?;
-            Ok(Self { controller })
-        }
-    }
-
-    pub fn new_dedicated_thread() -> Result<Self> {
-        let controller = DispatcherQueueController::CreateOnDedicatedThread()
-            .map_err(|e| Dx12Error::WindowsError(e))?;
-        info!("WinUI Core DispatcherQueueController created on dedicated thread");
-        Ok(Self { controller })
-    }
-}
 
 pub struct DirectCompositionEngine {
     pub dcomp_device: IDCompositionDevice,

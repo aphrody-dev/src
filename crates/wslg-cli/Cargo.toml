@@ -27,6 +27,6 @@ thiserror.workspace = true
 
 # The compositor host runs on Windows only; elsewhere the binaries print an error.
 [target.'cfg(windows)'.dependencies]
-dx12-winui-core.workspace = true
+dx12-hal.workspace = true
 smithay-wayland-wire.workspace = true
 windows.workspace = true

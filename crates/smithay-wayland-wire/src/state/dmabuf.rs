@@ -1,4 +1,4 @@
-use dx12_winui_core::LinuxDrmFormat;
+use dx12_hal::LinuxDrmFormat;
 use std::collections::HashMap;
 use windows::Win32::Foundation::HANDLE;
 

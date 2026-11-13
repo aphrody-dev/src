@@ -4937,9 +4937,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "92773504d58c093f6de2459af4af33faa518c13451eb8f2b5698ed3d36e7c813"
 
 [[package]]
-name = "dx12-winui-core"
+name = "dx12-hal"
 version = "0.2.0"
 dependencies = [
+ "serde_json",
  "thiserror 2.0.21",
  "tracing",
  "tracing-subscriber",
@@ -12394,7 +12395,7 @@ name = "smithay-wayland-wire"
 version = "0.2.0"
 dependencies = [
  "byteorder",
- "dx12-winui-core",
+ "dx12-hal",
  "thiserror 2.0.21",
  "tracing",
  "windows 0.62.2",
@@ -15506,7 +15507,7 @@ version = "0.2.0"
 dependencies = [
  "clap",
  "cosmic-compat",
- "dx12-winui-core",
+ "dx12-hal",
  "hypr-tiler",
  "serde",
  "serde_json",
