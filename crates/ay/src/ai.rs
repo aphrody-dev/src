@@ -81,7 +81,7 @@ pub enum AiCmd {
     },
     /// Add dotenv keys from stdin to the first env file; existing keys are kept (names printed only)
     Import,
-    /// Distributed inference fabric (infra/ai/fabric.toml): `up [--only a,b] [--split x,y]`, `status`, `down`,
+    /// Distributed inference fabric (infra/ai/fabric.toml): `up [--only a,b] [--split x,y]`, `status`, `warm`, `down`,
     /// `bench`, `node <id>`; runs `ai-os fabric` from the checkout (bun), else the installed `ai-os`
     Fabric {
         #[arg(trailing_var_arg = true, allow_hyphen_values = true)]

@@ -35,6 +35,14 @@ bytes = 3106738272
 sha256 = "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8"
 url = "https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/resolve/main/gemma-4-E2B-it-Q4_K_M.gguf"
 
+[model."qwen3-0.6b"]
+# unsloth/Qwen3-0.6B-GGUF, Q4_K_M (oid LFS, 2026-11-13). Architecture sans partage de KV entre couches : modèle de
+# mesure du tissu (9,5 Mio par couche, une couche distante se charge en quelques minutes sur le lien montant du PC).
+path = "Qwen3-0.6B-Q4_K_M.gguf"
+bytes = 396705472
+sha256 = "ac2d97712095a558e31573f62f466a3f9d93990898b0ec79d7c974c1780d524a"
+url = "https://huggingface.co/unsloth/Qwen3-0.6B-GGUF/resolve/main/Qwen3-0.6B-Q4_K_M.gguf"
+
 # --- Nœuds ------------------------------------------------------------------------------------
 
 [[node]]

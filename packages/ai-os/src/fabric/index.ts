@@ -120,7 +120,9 @@ export function remoteLine(env: Record<string, string>, action: string) {
   return [
     `S=; [ "$(id -u)" = 0 ] || S="sudo -n"`,
     `$S mkdir -p /opt/aphrody/fabric`,
-    `$S tee /opt/aphrody/fabric/node.sh >/dev/null`,
+    // Renommage atomique : une unité en cours lit encore l'ancien fichier (sh lit son script au fil de l'eau).
+    `$S tee /opt/aphrody/fabric/node.sh.new >/dev/null`,
+    `$S mv -f /opt/aphrody/fabric/node.sh.new /opt/aphrody/fabric/node.sh`,
     `exec $S env ${kv} sh /opt/aphrody/fabric/node.sh ${shq(action)}`,
   ].join(" && ");
 }
@@ -180,12 +182,14 @@ export async function reachable(host: string, port: number, ms = 3000) {
   });
 }
 
+const enabledIds = (f: Fabric) =>
+  f.node.filter((n) => n.enabled !== false).map((n) => n.id);
 const workers = (f: Fabric, only?: string[]) =>
   f.node.filter(
     (n) =>
       n.role !== "coordinator" &&
-      n.enabled !== false &&
-      (!only?.length || only.includes(n.id)),
+      // --only nomme explicitement un nœud : il est tenté même désactivé par défaut (fr2).
+      (only?.length ? only.includes(n.id) : n.enabled !== false),
   );
 
 // ------------------------------------------------------------------------------------------------
@@ -295,6 +299,7 @@ type State = {
   nodes: NodeState[];
   args: string[];
   tag: string;
+  model?: string;
 };
 const readState = (): State | null => {
   try {
@@ -340,11 +345,26 @@ export type UpOpts = {
   split?: number[];
   local?: boolean;
   noWarm?: boolean;
+  /** Alias de [model.*] (défaut : coordinator.model) ; retenu dans l'état pour status, bench et ensure. */
+  model?: string;
+};
+
+/** Configuration avec le modèle réellement servi (état du dernier `up`). */
+const served = (root: string) => {
+  const f = loadFabric(root);
+  const m = readState()?.model;
+  if (m && f.model[m]) f.coordinator.model = m;
+  return f;
 };
 
 /** Admet les nœuds (condition + santé), démarre leurs rpc-server, puis le coordinateur avec --rpc. */
 export async function up(o: UpOpts = {}, root = srcRoot()) {
   const f = loadFabric(root);
+  if (o.model) {
+    if (!f.model[o.model])
+      throw new Error(`modèle inconnu dans fabric.toml : ${o.model}`);
+    f.coordinator.model = o.model;
+  }
   const health = new Health();
   const nodes: NodeState[] = [];
   if (!o.local)
@@ -428,6 +448,7 @@ export async function up(o: UpOpts = {}, root = srcRoot()) {
     nodes,
     args,
     tag: f.release.tag,
+    model: f.coordinator.model,
   };
   writeFileSync(statePath(), JSON.stringify(state, null, 2));
   const ok = await waitHealthy(coordinatorUrl(f), 600_000);
@@ -447,8 +468,30 @@ export async function up(o: UpOpts = {}, root = srcRoot()) {
   };
 }
 
-export async function status(root = srcRoot()) {
+/** Bascule : coordinateur muet (llama.cpp s'arrête quand un rpc-server disparaît) -> nouvel `up` avec les nœuds
+ *  encore admis, sinon GPU seul. À lancer périodiquement (tâche planifiée) ; ne fait rien si tout répond. */
+export async function ensure(root = srcRoot()) {
   const f = loadFabric(root);
+  const ok = !!(
+    await fetch(`${coordinatorUrl(f)}/health`, {
+      signal: AbortSignal.timeout(3000),
+    }).catch(() => null)
+  )?.ok;
+  if (ok) return { action: "none", healthy: true };
+  const prev = readState();
+  const h = new Health();
+  for (const n of prev?.nodes ?? [])
+    if (n.admitted) h.record(n.id, PROVIDER, false, "overload", 0);
+  h.close();
+  return {
+    action: "restart",
+    previous: prev?.rpc ?? [],
+    ...(await up({ model: prev?.model }, root)),
+  };
+}
+
+export async function status(root = srcRoot()) {
+  const f = served(root);
   const s = readState();
   const url = coordinatorUrl(f);
   const healthy = !!(
@@ -457,7 +500,10 @@ export async function status(root = srcRoot()) {
     )
   )?.ok;
   const nodes = await Promise.all(
-    workers(f).map(async (n) => {
+    workers(f, [
+      ...enabledIds(f),
+      ...(s?.nodes ?? []).filter((n) => n.admitted).map((n) => n.id),
+    ]).map(async (n) => {
       const port = n.port ?? 50052;
       const listening = await reachable(n.reach ?? "", port);
       if (n.os !== "linux") return { id: n.id, reach: n.reach, listening };
@@ -507,7 +553,10 @@ export async function down(root = srcRoot()) {
   const f = loadFabric(root);
   await stopCoordinator();
   const nodes = await Promise.all(
-    workers(f)
+    workers(
+      f,
+      f.node.map((n) => n.id),
+    )
       .filter((n) => n.os === "linux")
       .map(async (n) => ({
         id: n.id,
@@ -520,7 +569,7 @@ export async function down(root = srcRoot()) {
 
 /** Une génération réelle ; tokens/s lus dans `timings` de llama-server. */
 export async function bench(prompt: string, n = 128, root = srcRoot()) {
-  const f = loadFabric(root);
+  const f = served(root);
   const t0 = performance.now();
   const r = await fetch(`${coordinatorUrl(f)}/v1/chat/completions`, {
     method: "POST",

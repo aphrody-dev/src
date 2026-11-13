@@ -25,7 +25,8 @@ load_ok() {
 }
 mem_avail_mb() { awk '/^MemAvailable:/ { print int($2 / 1024) }' /proc/meminfo; }
 mem_need_mb() { echo "${MEM:-2G}" | awk '{ v = $1 + 0; u = substr($1, length($1)); if (u == "G") v *= 1024; print v + 2048 }'; }
-building() { pgrep -x 'ninja|autoninja|siso|reproxy|clang|clang\+\+|cc1plus|rustc|ld\.lld|lld-link' >/dev/null 2>&1; }
+BUILD_RE='ninja|autoninja|siso|reproxy|clang|clang\+\+|cc1plus|rustc|ld\.lld|lld-link'
+building() { pgrep -x "$BUILD_RE" >/dev/null 2>&1; }
 
 # Raison du refus sur stdout, code 1 ; rien et code 0 si admis. $1 = fils propres à ignorer (watch).
 gate() {
@@ -33,7 +34,7 @@ gate() {
   case "${GATE:-always}" in
     always) ;;
     no-build)
-      building && { echo "build Chromium/LLVM en cours"; return 1; }
+      building && { echo "build en cours : $(pgrep -xl "$BUILD_RE" | head -n1)"; return 1; }
       load_ok "$own" || { echo "charge $(load1) >= $half"; return 1; } ;;
     proxy)
       systemctl is-active --quiet nginx || { echo "nginx inactif : le proxy passe d'abord"; return 1; }

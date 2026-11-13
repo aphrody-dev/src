@@ -1,12 +1,13 @@
 // ai-os fabric : tissu d'inférence distribué (infra/ai/fabric.toml). Sorties JSON sur stdout.
-//   ai-os fabric up [--only fr1,prd] [--split 1,7] [--local] [--no-warm]  admet les nœuds, démarre rpc-server puis le coordinateur
+//   ai-os fabric up [--only fr1,prd] [--split 1,7] [--local] [--no-warm] [--model alias]  admet les nœuds, démarre rpc-server puis le coordinateur
 //   ai-os fabric status                                        coordinateur, nœuds (condition, charge, plafonds systemd)
 //   ai-os fabric warm [--only fr1]                            nœuds : GGUF local vérifié, cache de tenseurs rempli
+//   ai-os fabric ensure                                        bascule : coordinateur muet -> up (nœuds admis, sinon GPU seul)
 //   ai-os fabric down                                          arrête le coordinateur et les rpc-server
 //   ai-os fabric bench [--tokens N] [prompt]                   une génération réelle, tokens/s
 //   ai-os fabric node <id>                                     nœud Windows : rpc-server au premier plan
 import { parseArgs } from "node:util";
-import { bench, down, serveNode, status, up, warm } from "./index";
+import { bench, down, ensure, serveNode, status, up, warm } from "./index";
 
 const { positionals, values } = parseArgs({
   args: Bun.argv.slice(2),
@@ -17,6 +18,7 @@ const { positionals, values } = parseArgs({
     local: { type: "boolean" },
     "no-warm": { type: "boolean" },
     tokens: { type: "string" },
+    model: { type: "string" },
   },
 });
 const [cmd, ...rest] = positionals;
@@ -30,12 +32,16 @@ switch (cmd ?? "status") {
       split: list(values.split)?.map(Number),
       local: values.local,
       noWarm: values["no-warm"],
+      model: values.model,
     });
     print(r);
     process.exit(r.ok ? 0 : 1);
   }
   case "status":
     print(await status());
+    break;
+  case "ensure":
+    print(await ensure());
     break;
   case "warm":
     print(await warm(list(values.only)));
