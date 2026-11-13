@@ -56,7 +56,6 @@ FROM rust-base AS rust-plan
 COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 COPY .cargo/config.toml .cargo/config.toml
 COPY crates/ crates/
-COPY third_party/patches/ third_party/patches/
 RUN cargo chef prepare --recipe-path /recipe.json
 
 FROM rust-base AS rust-build
@@ -67,7 +66,6 @@ ARG CARGO_BUILD_JOBS
 ENV CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS}
 COPY rust-toolchain.toml ./
 COPY .cargo/config.toml .cargo/config.toml
-COPY third_party/patches/ third_party/patches/
 COPY --from=rust-plan /recipe.json /recipe.json
 # Dependencies only: this layer is reused (and exported to the registry cache) until Cargo.lock changes.
 RUN --mount=type=cache,id=cargo-registry,target=/opt/cargo/registry,sharing=locked \

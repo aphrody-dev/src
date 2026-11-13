@@ -6,7 +6,6 @@
 !rust-toolchain.toml
 !.cargo/config.toml
 !crates/
-!third_party/patches/
 !package.json
 !bun.lock
 !packages/
