@@ -17,7 +17,7 @@ name = "aphrody-factory"
 path = "src/main.rs"
 
 [dependencies]
-aphrody-conformance = { version = "0.2.0", path = "../conformance" }
+aphrody-conformance = { version = "0.3.0", path = "../conformance" }
 serde = { workspace = true, features = ["derive", "std"] }
 serde_json = { workspace = true, features = ["std"] }
 toml.workspace = true

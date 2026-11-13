@@ -1,5 +1,6 @@
 #!/usr/bin/env bun
 // ay release: one release flow run on fr1 (config: packages/release/release.toml). Dry-run unless `publish` is given.
+//   ay release freeze [--check]   set (or verify) every version field from VERSION, see docs/VERSIONING.md
 //   ay release [plan|dry-run|publish] [--only crates,npm,pypi,vcpkg,github] [--verify] [--json] [--out DIR]
 // plan     registry state only (no build); dry-run (default) adds cargo publish --dry-run, bun publish --dry-run,
 //          maturin wheel + twine check, vcpkg git-registry generated locally; publish needs every NEW package listed
@@ -23,6 +24,8 @@ import {
 
 const root = process.env.SRC_ROOT ?? join(import.meta.dir, "..", "..", "..");
 const argv = process.argv.slice(2);
+// ay release freeze [--check]: VERSION -> Cargo.toml, path deps, package.json (src/freeze.ts, docs/VERSIONING.md).
+if (argv[0] === "freeze") (await import("./freeze.ts")).main(argv.slice(1), root);
 const mode = (["plan", "dry-run", "publish"].includes(argv[0] ?? "") ? argv.shift() : "dry-run") as "plan" | "dry-run" | "publish";
 const flag = (n: string) => argv.includes(n);
 const opt = (n: string) => {
@@ -34,7 +37,8 @@ const out = opt("--out") ?? join(root, "target", "release-plan");
 const json = flag("--json");
 const cfg = Bun.TOML.parse(readFileSync(join(import.meta.dir, "..", "release.toml"), "utf8")) as any;
 const ws = (Bun.TOML.parse(readFileSync(join(root, "Cargo.toml"), "utf8")) as any).workspace.package;
-const version: string = ws.version;
+// Monorepo version = VERSION (docs/VERSIONING.md); `ay release freeze --check` keeps Cargo.toml equal to it.
+const version: string = readFileSync(join(root, "VERSION"), "utf8").trim();
 const tag = `${cfg.tag_prefix}${version}`;
 const log = (s: string) => json || console.error(s);
 

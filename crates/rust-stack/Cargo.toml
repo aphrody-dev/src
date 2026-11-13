@@ -32,4 +32,4 @@ serde_json = { workspace = true }
 sha2 = { workspace = true }
 tokio = { workspace = true, features = ["io-util", "macros", "net", "rt-multi-thread", "sync", "time"] }
 ureq = { workspace = true, features = ["json"] }
-corelib = { version = "0.2.0", package = "aphrody-corelib", path = "../corelib" }
+corelib = { version = "0.3.0", package = "aphrody-corelib", path = "../corelib" }

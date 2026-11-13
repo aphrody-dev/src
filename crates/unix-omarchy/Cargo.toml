@@ -7,7 +7,7 @@ license.workspace = true
 description = "Sovereign Omarchy + CachyOS + Arch Linux GitLab fusion engine: Aether theme compiler, plugin marketplace scanner, PKGBUILD synthesizer, and native WSL2 distro builder"
 
 [dependencies]
-unix-cachyos = { version = "0.2.0", path = "../unix-cachyos" }
+unix-cachyos = { version = "0.3.0", path = "../unix-cachyos" }
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true

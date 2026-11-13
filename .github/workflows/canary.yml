@@ -38,6 +38,9 @@ jobs:
         with:
           ref: ${{ env.SHA }}
           token: ${{ steps.app.outputs.token || github.token }}
+          # Full history without blobs: the release notes are the git log since the last stable tag.
+          fetch-depth: 0
+          filter: blob:none
           submodules: false
       - name: Toolchain
         run: bun scripts/toolchain.ts install
@@ -58,10 +61,20 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          dir="${{ steps.pkg.outputs.dir }}"
+          stable=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n1)
+          {
+            echo "Canary ${{ steps.pkg.outputs.ver }} from main@$SHA (docs/VERSIONING.md). Not for production."
+            echo
+            echo "sha256: \`$(cut -d' ' -f1 "$dir/aphrody-$TARGET.tar.xz.sha256")\`  aphrody-$TARGET.tar.xz"
+            echo
+            echo "## Changes since ${stable:-the first commit} ($(git rev-list --count ${stable:+$stable..}"$SHA") commits, last 200)"
+            git log --no-merges --format='- %s (%h)' -n 200 ${stable:+$stable..}"$SHA" | cut -c1-300
+          } > "$dir/NOTES.md"
           gh release delete canary --cleanup-tag --yes 2>/dev/null || true
           gh release create canary --target "$SHA" --prerelease --latest=false \
             --title "canary ${{ steps.pkg.outputs.ver }}" \
-            --notes "Canary ${{ steps.pkg.outputs.ver }} from main@$SHA (docs/VERSIONING.md). Not for production." \
+            --notes-file "$dir/NOTES.md" \
             "${{ steps.pkg.outputs.dir }}"/aphrody-$TARGET.tar.xz "${{ steps.pkg.outputs.dir }}"/aphrody-$TARGET.tar.xz.sha256
       - name: Canary ring (fr1, side by side)
         run: install -D -m755 "$CARGO_TARGET_DIR/$TARGET/dist/ay" "$HOME/.local/bin/ay-canary" && "$HOME/.local/bin/ay-canary" --version

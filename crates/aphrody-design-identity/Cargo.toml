@@ -13,7 +13,7 @@ default = ["fs"]
 fs = []
 
 [dependencies]
-aphrody-design-sprite-sheet = { version = "0.2.0", path = "../aphrody-design-sprite-sheet" }
+aphrody-design-sprite-sheet = { version = "0.3.0", path = "../aphrody-design-sprite-sheet" }
 image = { workspace = true, features = ["png", "webp"] }
 png = { workspace = true }
 serde.workspace = true

@@ -23,10 +23,10 @@ pub fn check_versioning_integrity(root: &Path, findings: &mut Vec<ArchFinding>) 
                         path: "package.json".into(),
                         line: None,
                         message: format!(
-                            "Root package.json has missing or invalid version `{}` (expected CalVer YYYY.MM.PATCH, e.g. 2026.11.0)",
+                            "Root package.json has missing or invalid version `{}` (expected the SemVer of VERSION, docs/VERSIONING.md)",
                             ver.unwrap_or("(none)")
                         ),
-                        remediation: "Set `\"version\": \"2026.11.0\"` in root `package.json`.".into(),
+                        remediation: "Run `ay release freeze` (copies VERSION into package.json and Cargo.toml).".into(),
                     });
                 }
             }

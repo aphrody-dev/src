@@ -12,7 +12,7 @@ repository.workspace = true
 name = "aphrody_docs"
 
 [dependencies]
-bun-flat = { version = "0.2.0", package = "aphrody-bun-flat", path = "../bun-flat" }
+bun-flat = { version = "0.3.0", package = "aphrody-bun-flat", path = "../bun-flat" }
 rusqlite = { workspace = true, features = ["bundled"] }
 serde_json.workspace = true
 ureq.workspace = true
