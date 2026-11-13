@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 import { mkdtempSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { accepts, type Fleet, place, providerCmd, routeTarget } from "./runner.ts";
+import { accepts, defaultClis, type Fleet, place, providerCmd, routeTarget } from "./runner.ts";
 
 const NASTY = `a & b | c ^ d %PATH% "q" < in > out ; $(x) \`y\``;
 const task = {
@@ -105,4 +105,11 @@ test("route: prd forwards heavy and foreign tasks", () => {
   expect(routeTarget(FLEET, "prd", { role: "reviewer", host: "prd" })).toBe("fr1");
   expect(routeTarget(FLEET, "fr1", { role: "deployer", host: "any" })).toBe("prd");
   expect(routeTarget(FLEET, "fr1", { role: "coder", host: "any" })).toBeNull();
+});
+
+test("default CLIs: claude, codex, opencode, installed and logged in only", () => {
+  const home = mkdtempSync(join(tmpdir(), "clis-"));
+  expect(defaultClis(() => true, { CLAUDE_CODE_OAUTH_TOKEN: "x", OPENAI_API_KEY: "y" }, home)).toEqual(["claude", "codex"]);
+  expect(defaultClis((c) => c !== "claude", { CLAUDE_CODE_OAUTH_TOKEN: "x", OPENAI_API_KEY: "y" }, home)).toEqual(["codex"]);
+  expect(defaultClis(() => true, {}, home)).toEqual([]);
 });

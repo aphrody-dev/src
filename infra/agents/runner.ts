@@ -24,7 +24,7 @@ import {
   unlinkSync,
   writeFileSync,
 } from "node:fs";
-import { hostname } from "node:os";
+import { homedir, hostname } from "node:os";
 import { join, resolve } from "node:path";
 import { resolveExe } from "../../packages/ai-os/src/llm/agents.ts";
 
@@ -568,13 +568,30 @@ function inScope(t: Task, f: string): boolean {
   );
 }
 
+// Editing task with no `providers` (ciWatch, github-events, templates): default coding CLIs in this
+// order, kept when installed and logged in; quota/auth failures still move on to the next one.
+const DEFAULT_CLIS = ["claude", "codex", "opencode"];
+export function defaultClis(
+  has: (cli: string) => boolean = (c) => !!Bun.which(c),
+  env: Record<string, string | undefined> = { ...process.env, ...credEnv() },
+  home = homedir(),
+): string[] {
+  const authed: Record<string, () => boolean> = {
+    claude: () =>
+      !!(env.CLAUDE_CODE_OAUTH_TOKEN || env.ANTHROPIC_API_KEY) ||
+      existsSync(join(home, ".claude", ".credentials.json")),
+    codex: () => !!env.OPENAI_API_KEY || existsSync(join(home, ".codex", "auth.json")),
+    opencode: () => existsSync(join(home, ".local", "share", "opencode", "auth.json")),
+  };
+  return DEFAULT_CLIS.filter((c) => has(c) && authed[c]!());
+}
 async function runTask(t: Task, claimedPath: string) {
   if (t.role === "growth") t.approval = "owner"; // enforced in code, whatever the JSON says
   const named = t.providers?.length
     ? t.providers
     : TEXT_ROLES.has(t.role)
       ? await relayChain()
-      : [];
+      : defaultClis();
   const editing = named.some((p) => CLIS.has(p.split(":")[0]));
   const unlock = editing ? await lockCheckout() : () => {};
   try {
@@ -729,7 +746,7 @@ async function runTaskLocked(t: Task, claimedPath: string, named: string[]) {
     !TEXT_ROLES.has(t.role) &&
     !named.some((p) => CLIS.has(p.split(":")[0]))
   )
-    (result as Record<string, unknown>).reason = "no_cli_provider"; // ai-os must name a coding CLI
+    (result as Record<string, unknown>).reason = "no_cli_provider"; // none named and no default CLI installed + logged in
   writeFileSync(join(out, "result.json"), JSON.stringify(result, null, 2));
   t.attempts = attempts;
   const maxA = t.max_attempts ?? 3;
