@@ -13,7 +13,7 @@ Monorepo público de Aphrody: motor de juegos y suite creativa en abierto (Bevy,
 - Sin aprobación ni humano en el bucle: decidir, ejecutar, verificar e informar.
 - Todo directo a `main`; sin ramas ni worktrees; nunca push a un upstream.
 - Interfaz única: `just` y `ay` (`docs/NAMING.md`). Rust compila en CI o en fr1, nunca en la estación de trabajo; prd es solo producción y fr2 el edge.
-- La IA vive solo en `packages/ai-os`.
+- La IA vive solo en `packages/ai-os`; proveedores y modelos se descubren en ejecución.
 - Se publica una vez que el escaneo de secretos está limpio.
 
 ## Límites
