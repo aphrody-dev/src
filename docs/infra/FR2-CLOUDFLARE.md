@@ -254,3 +254,69 @@ Verdicts : `docs/reviews/gemini-2026-11-13-fr2-cloudflare.md` (Gemini 4 Carbon H
 - Passe 5 : **12/20**. Corrigé : AOP sur SNI et Host (contournement par SNI différent), fichier temporaire root prévisible remplacé par `mktemp` sous `/etc/nginx/aop`, prune refusé avant 15 min et limité aux certificats non liés, restauration vérifiée, `storedClientId` distingue fichier absent et hôte injoignable, `destinations`/`self_hosted_domains` non conservés au PUT, contrôle AOP sur le certificat lié à dbfr, documentation de `CF_PROOF_TOKEN` et de la rotation AOP. Restent ouverts après la passe 5, faits ensuite : rotation AOP sans OAuth (jeton `aop-rotate`), mesure automatique des critères du port 22, CA SSH des terminaux navigateur, paquets signés pour cloudflared. Reste : sonde négative AOP hors flotte (impossible depuis le PC : 80/443 de fr2 y sont filtrés par nft avant nginx).
 - Passe 7 : **12/20**. Corrigé : statuts `*.aphrody.app` et webos réels (404/302, dérive webos relue et figée), versions cloudflared, dates du port 22 par hôte, clés d'hôte hors TOFU, garde `CF_AOP_TOKEN`, validation SSH sur la vraie clé, `sshd -T -C` par utilisateur, contrôle de la politique Access, attestations datées, DoH réessayé sur 429/5xx, lecture dotenv correcte. Reste : sonde négative `fleet-only.inc` depuis une IP hors flotte (impossible depuis le PC : nft filtre avant nginx).
 - Passe 6 : **12/20**. Corrigé : run unique cité partout, sonde fr1 (mesh → fr2), continuité des sondes, CA SSH validée sur copie et principals limités, unité de sonde sans dépendance à un nom d'unité propre à un hôte et durcie, secrets lus sans exécution, clés d'hôte épinglées, `aop.ts` charge `lib.ts` après avoir posé le jeton, ordre des passes.
+
+## 8. fr2 en CDN complet : services Cloudflare gratuits, utilisés ou non (relevé live 2026-11-13 ~05:30 UTC)
+
+Relevé en lecture seule : `cf` 1.0.0-beta.31 avec le jeton de compte du coffre (`ay secret exec CLOUDFLARE_API_TOKEN -- cf …`), limites lues sur developers.cloudflare.com le même jour. Abonnements du compte (`cf accounts subscriptions get`) : **R2 Paid** seulement, donc **Workers Free** ; les 5 zones sont en **Free Website**. Aucune configuration Cloudflare ni aucun service de fr2 n'a été modifié.
+
+### 8.1 Utilisés (22)
+
+| Service | Preuve (commande `cf`) | Limite gratuite (source) | Verdict |
+|---|---|---|---|
+| CDN / proxy DNS | `zones list` : 5 zones (aphrody.com, aphrody.app, rosegriffon.fr, dragonballfr.com, 3dland.tech), plan Free | bande passante non facturée ([plans](https://www.cloudflare.com/plans/)) | garder : tout le public passe par l'anycast |
+| Workers | `workers scripts search` : 10 scripts (aphrody, aphrody-app, aphrody-app-site, aphrody-com, aphrody-deploy, aphrody-email-worker, aphrody-github, aphrody-webos, api-aphrody-com, bun-video-showcase) | 100 000 req/jour, 10 ms CPU, 100 Workers, 5 crons ([limits](https://developers.cloudflare.com/workers/platform/limits/#account-plan-limits)) | garder ; le calcul lourd reste sur prd (10 ms CPU) |
+| Workers Static Assets | sites statiques (section 2) | 20 000 fichiers/version, 25 Mio/fichier ([limits](https://developers.cloudflare.com/workers/platform/limits/#static-assets)) | garder (remplace Pages) |
+| R2 | `r2 buckets list` : 11 buckets (aphrody-archive, -assets, -chromium, -dist, -lore, -video, bun-lib, bun-os-private, dbfr-backups, rosegriffon-cdn, shenron-cdn) | 10 Go-mois, 1 M classe A, 10 M classe B/mois, egress gratuit ([r2 pricing](https://developers.cloudflare.com/r2/pricing/#free-tier)) | garder ; au-delà, facturé (R2 Paid actif) |
+| Workers KV | `kv namespaces list` : 1 | 100 000 lectures, 1 000 écritures/jour, 1 Go ([kv pricing](https://developers.cloudflare.com/kv/platform/pricing/)) | garder |
+| D1 | `d1 list` : aphrody-app | 5 M lignes lues, 100 000 écrites/jour, 5 Go ([d1 pricing](https://developers.cloudflare.com/d1/platform/pricing/)) | garder |
+| Queues | `queues list` : aphrody-app-jobs, github-events | 10 000 opérations/jour, rétention 24 h ([changelog 2026-02-04](https://developers.cloudflare.com/changelog/post/2026-02-04-queues-free-plan/), [limits](https://developers.cloudflare.com/queues/platform/limits/)) | garder |
+| Durable Objects (SQLite) | `durable-objects namespaces list` : aphrody-app_Room | 100 000 req/jour, 13 000 Go-s/jour, 5 Go ([do pricing](https://developers.cloudflare.com/durable-objects/platform/pricing/)) | garder ; c'est aussi la voie du push temps réel vers les hôtes (§ 8.4) |
+| Workflows | `workflows list` : aphrody-app-ingest | inclus Free, état gardé 3 j ([workflows pricing](https://developers.cloudflare.com/workflows/reference/pricing/)) | garder |
+| Vectorize | `vectorize list` : bun-native | 30 M dimensions interrogées/mois, 100 index ([vectorize pricing](https://developers.cloudflare.com/vectorize/platform/pricing/)) | garder |
+| AI Gateway | `ai-gateway gateways list` : aphrody, default | 100 000 logs au total ([ai-gateway limits](https://developers.cloudflare.com/ai-gateway/reference/limits/#existing-ai-gateway-customers)) | garder |
+| Tunnel | `tunnels list` : auto-usa, fr2, mig-prd, prod, shenron-dbfr | 1 000 tunnels, 25 réplicas ([account limits](https://developers.cloudflare.com/cloudflare-one/account-limits/#cloudflare-tunnel)) | garder |
+| Access (Zero Trust Free) | `zero-trust access applications list` : 9 apps | plan Zero Trust Free ([cloudflare-one](https://developers.cloudflare.com/cloudflare-one/)) | garder |
+| Turnstile | `turnstile widgets list` : aphrody-auth-turnstile | plan Free ([plans](https://developers.cloudflare.com/turnstile/plans/)) | garder |
+| Email Routing | `email-routing rules list-account` : 7 règles (dont inbound-worker) | entrant gratuit, Worker soumis aux limites CPU Free ([email limits](https://developers.cloudflare.com/email-service/platform/limits/#routing-to-workers-on-the-workers-free-plan)) | garder |
+| WAF custom rules | `rulesets list --zone` : phase `http_request_firewall_custom` sur aphrody.com et aphrody.app | 5 règles/zone ([custom rules](https://developers.cloudflare.com/waf/custom-rules/)) | garder |
+| Rate limiting | phase `http_ratelimit` sur aphrody.com (`fr2-rl-edge`) | 1 règle/zone ([rate limiting](https://developers.cloudflare.com/waf/rate-limiting-rules/)) | garder ; quota atteint sur aphrody.com |
+| Cache rules | phase `http_request_cache_settings` sur 4 zones | 10 règles/zone ([cache rules](https://developers.cloudflare.com/cache/how-to/cache-rules/#availability)) | garder |
+| Redirect rules | phase `http_request_dynamic_redirect` sur aphrody.com, aphrody.app | inclus Free | garder |
+| Origin rules | phase `http_request_origin` sur rosegriffon.fr (origine 9443) | inclus Free | garder |
+| Secrets Store | `secrets-store stores list` : default-secrets-store | 1 store, 100 secrets (bêta ouverte) ([secrets store](https://developers.cloudflare.com/secrets-store/manage-secrets/#limits)) | garder |
+| Notifications | `alerting policies list` : 3 (budget, jetons de service expirants et divulgués) | inclus | garder |
+
+### 8.2 Gratuits, disponibles, non utilisés (10)
+
+| Service | Preuve | Limite gratuite (source) | Verdict |
+|---|---|---|---|
+| Workers AI direct | aucun binding relevé (AI Gateway seul) | 10 000 neurones/jour, modèles lourds réservés au Paid ([pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/), [changelog 2026-07-28](https://developers.cloudflare.com/changelog/post/2026-07-28-models-require-workers-paid/)) | à adopter derrière AI Gateway pour les petites tâches (classement, embeddings vers Vectorize) |
+| Images (transformations) | `images list` : 0 | 5 000 transformations uniques/mois ([images](https://developers.cloudflare.com/images/pricing/#images-free)) | à adopter pour les vignettes de cdn.rosegriffon.fr et shenron-cdn plutôt qu'un redimensionneur sur fr2 |
+| Browser Rendering | non utilisé | 10 min de navigateur/jour, 3 navigateurs simultanés ([limits](https://developers.cloudflare.com/browser-run/limits/#workers-free)) | non : trop court pour les preuves `agent-browser`, qui restent sur le PC |
+| Workers Builds | non utilisé | 3 000 min/mois, 2 vCPU ([limits](https://developers.cloudflare.com/workers/ci-cd/builds/limits-and-pricing/)) | non : les builds restent sur fr1 (CI) |
+| Hyperdrive | `hyperdrive list` : 0 | disponible sur Free ([faq](https://developers.cloudflare.com/hyperdrive/reference/faq/#is-hyperdrive-available-on-the-workers-free-plan)) | le jour où un Worker lit le postgres de prd |
+| Pages | `pages list` : 0 | 100 projets ([limits](https://developers.cloudflare.com/pages/platform/limits/#projects)) | non : Static Assets le remplace |
+| Logpush (jeux de zone) | `logpush account-jobs list` : 0 | disponible sur Free selon le jeu de données ; Workers Trace Events = Paid ([logpush](https://developers.cloudflare.com/logs/logpush/#availability)) | non : journald et fleet-health suffisent |
+| Cache Response Rules | non utilisé | 10 règles/zone ([availability](https://developers.cloudflare.com/cache/how-to/cache-response-rules/#availability)) | à adopter si une origine renvoie des en-têtes de cache faux |
+| IP Access rules | non utilisé | 50 000 règles, pas de blocage par pays sur Free ([ip access](https://developers.cloudflare.com/waf/tools/ip-access-rules/#availability)) | non : `fr2-edge-fw` filtre déjà à l'origine |
+| Web Analytics | non vérifiable par `cf` | gratuit ([analytics](https://developers.cloudflare.com/analytics/types-of-analytics/#web-analytics)) | non : GTM/consentement déjà en place sur les sites |
+
+### 8.3 Payants ou indisponibles sur Free : remplacement auto-hébergé (6 verdicts)
+
+| Besoin | Cloudflare | Remplacement | Verdict |
+|---|---|---|---|
+| Répartition de charge et basculement d'origine | Load Balancing = add-on payant ([load-balancing](https://developers.cloudflare.com/load-balancing/)) | HAProxy du cluster (`infra/cluster`, mTLS 7444) + répliques de tunnel, déjà en service sur les 3 hôtes | gardé, aucun daemon ajouté |
+| Sondes d'origine | Health Checks : non disponibles sur Free ([health-checks](https://developers.cloudflare.com/health-checks/)) | `fleet-health.timer` (2 min) + `just ping` + `fleet-notify` | gardé |
+| Vidéo (stockage, encodage, diffusion) | Stream : prépayé ; `stream videos list` refusé (10002) ([stream pricing](https://developers.cloudflare.com/stream/pricing/)) | ffmpeg (`infra/fleet/ffmpeg-lgpl`) sur fr1 vers R2 `aphrody-video`, servi par Worker et cache de zone | gardé ; à encoder sur fr1, jamais sur fr2 |
+| Courriel sortant | Email Sending : indisponible sur Workers Free ([email pricing](https://developers.cloudflare.com/email-service/platform/pricing/#plan-pricing)) | Resend (`fleet-notify`, `FLEET_RESEND_KEY`) | gardé (service externe, aucun MTA sur fr2) |
+| Rate limiting au-delà d'1 règle/zone | 1 règle sur Free ([rate limiting](https://developers.cloudflare.com/waf/rate-limiting-rules/)) | `limit_req` nginx sur les vhosts de repli de fr2 | gardé sur les vhosts existants ; aucun proxy ajouté |
+| File d'attente de trafic | Waiting Room : Business ou Enterprise ([waiting-room](https://developers.cloudflare.com/waiting-room/#availability)) | aucun | rejeté : pas de pic de trafic à absorber |
+
+### 8.4 Plafonds à surveiller
+
+- Workers 100 000 req/jour pour tout le compte (10 scripts) et 10 ms CPU : au premier 429 ou `exceededCpu` en production, passer en Workers Paid plutôt que de déplacer le trafic sur fr2.
+- Queues 10 000 opérations/jour : chaque message coûte une écriture, une lecture et un acquittement, soit au plus environ 3 300 événements GitHub par jour.
+- Rate limiting : la seule règle gratuite d'aphrody.com est prise (`fr2-rl-edge`).
+- Push temps réel vers `/srv/src` (item 1, non livré) : un Durable Object SQLite (gratuit, WebSocket en hibernation) dans le Worker `aphrody-github` suffit, sans port entrant sur les hôtes. Ce n'est qu'une conception, rien n'est déployé.
+
+fr2 reste minimal : nginx de repli, HAProxy du cluster, cloudflared, pare-feu. Aucun daemon n'est ajouté par cet inventaire.
