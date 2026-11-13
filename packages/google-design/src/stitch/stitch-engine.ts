@@ -1,8 +1,12 @@
 /**
- * Google Stitch Live Design Engine & DESIGN.md Specification Processor
+ * Local Material 3 wireframe generator (offline Stitch-like scaffold) and DESIGN.md helpers.
+ * The Stitch API client of src is packages/ai-os/src/google/stitch (absorbed google-labs-code/stitch-sdk);
+ * DESIGN.md parsing goes through src/design-md (absorbed google-labs-code/design.md).
  * 100% Pure Bun v1.4.4 - Zero External Dependencies
  * Conforms to upstream google-labs-code/design.md & stitch-sdk specifications.
  */
+
+import { ParserHandler } from "../design-md/parser/handler.ts";
 
 export interface DesignMdDoc {
   name: string;
@@ -70,63 +74,39 @@ ${doc.components.map((c) => `- \`${c}\``).join("\n")}
 }
 
 /**
- * Parse a DESIGN.md text file into structured tokens and prose
+ * Parse a DESIGN.md file (google-labs-code/design.md format) through the absorbed parser
+ * (src/design-md/parser): front matter and fenced yaml blocks, H2 sections for the prose.
  */
 export function parseDesignMd(content: string): DesignMdDoc {
-  const nameMatch = content.match(/name:\s*([^\n]+)/);
-  const name = nameMatch ? nameMatch[1].trim() : "Google Design Spec";
-
-  const overviewMatch = content.match(
-    /## Overview\s+([\s\S]*?)(?=## Colors|$)/,
-  );
-  const overview = overviewMatch ? overviewMatch[1].trim() : "";
-
-  const colors: Record<string, string> = {};
-  const colorBlockMatch = content.match(
-    /## Colors[\s\S]*?```yaml([\s\S]*?)```/,
-  );
-  if (colorBlockMatch) {
-    const lines = colorBlockMatch[1].split("\n");
-    for (const line of lines) {
-      const kv = line.match(/^\s*([a-zA-Z0-9_-]+):\s*['"]?([^'"]+)['"]?/);
-      if (kv && kv[1] !== "colors") {
-        colors[kv[1]] = kv[2].trim();
-      }
-    }
-  }
-
-  const typography: Record<string, string> = {};
-  const typoBlockMatch = content.match(
-    /## Typography[\s\S]*?```yaml([\s\S]*?)```/,
-  );
-  if (typoBlockMatch) {
-    const lines = typoBlockMatch[1].split("\n");
-    for (const line of lines) {
-      const kv = line.match(/^\s*([a-zA-Z0-9_-]+):\s*['"]?([^'"]+)['"]?/);
-      if (kv && kv[1] !== "typography") {
-        typography[kv[1]] = kv[2].trim();
-      }
-    }
-  }
-
+  const r = new ParserHandler().execute({ content });
+  const ds = r.success ? r.data : undefined;
+  const flat = (o: Record<string, unknown> | undefined) =>
+    Object.fromEntries(
+      Object.entries(o ?? {}).map(([k, v]) => [
+        k,
+        typeof v === "object" && v !== null
+          ? Object.values(v).join(" ")
+          : String(v),
+      ]),
+    );
+  const section = (h: string) =>
+    ds?.documentSections
+      ?.find((s) => s.heading === h)
+      ?.content.replace(/^.*\n/, "")
+      .replace(/```[\s\S]*?```/g, "")
+      .trim() ?? "";
   return {
-    name,
-    overview,
-    colors,
-    typography,
-    spacing: { grid: "8dp", compactMargin: "16dp", expandedMargin: "24dp" },
-    components: [
-      "M3TopAppBar",
-      "M3Button",
-      "M3Card",
-      "M3NavigationRail",
-      "M3TextField",
-    ],
-    proseGuidelines: [
-      "Strict adherence to Google Material 3 Expressive tokens.",
-      "Surface elevation defined purely through tonal luminance, not hard borders.",
-      "4dp/8dp harmonic grid system across all layouts.",
-    ],
+    name: ds?.name ?? "Google Design Spec",
+    overview: section("Overview"),
+    colors: flat(ds?.colors),
+    typography: flat(ds?.typography),
+    spacing: flat(ds?.spacing),
+    components: Object.keys(ds?.components ?? {}).length
+      ? Object.keys(ds!.components!)
+      : [...section("Components").matchAll(/`([^`]+)`/g)].map((m) => m[1]!),
+    proseGuidelines: [...section("Colors").matchAll(/^- (.+)$/gm)].map(
+      (m) => m[1]!,
+    ),
   };
 }
 

@@ -22,6 +22,7 @@ import {
   type SurfaceMode,
 } from "./src/spec/prd-design-md.ts";
 import { generateAssetBank } from "./src/assets/index.ts";
+import { runDesignMd } from "./src/design-md/cli.ts";
 
 const args = process.argv.slice(2);
 const command = args[0] || "help";
@@ -264,6 +265,13 @@ async function main() {
       break;
     }
 
+    case "lint":
+    case "export":
+    case "spec": {
+      process.exitCode = await runDesignMd(args);
+      break;
+    }
+
     case "stitch": {
       const prompt =
         args.slice(1).join(" ") || "Google Cloud Management Console";
@@ -332,7 +340,10 @@ Commands:
   tokens [--seed <hex>]         Compile universal tokens across all 7 surfaces
   hct <hex>                     Analyze color in CAM16 / HCT perceptual space
   symbols [query]               Search crisp Material Symbols vector catalog
-  stitch <prompt>               Generate Material 3 UI screen wireframe from prompt
+  lint <DESIGN.md> [--format text]   Lint a DESIGN.md (google-labs-code/design.md format)
+  export <DESIGN.md> --format f Export tokens: css-tailwind, json-tailwind, dtcg, css-vars
+  spec [--format json]          DESIGN.md format specification
+  stitch <prompt>               Local Material 3 wireframe (Stitch API: ay design stitch / ai-os stitch)
   mdx                           Generate & format full MDX documentation suite in bun docs
   serve [--port 3030]           Start the Google Design & Material 3 local mirror server
   help                          Show this help message

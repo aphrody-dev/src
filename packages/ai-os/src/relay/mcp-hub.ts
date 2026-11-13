@@ -6,6 +6,9 @@
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { outboundFetch } from "./outbound.ts";
+import { McpHttpClient } from "./mcp-http.ts";
+import { gcloudHeaders } from "../google/auth.ts";
+import { DEFAULT_STITCH_API_URL } from "../google/stitch/src/constants.ts";
 
 type Conf = {
   type?: string;
@@ -19,34 +22,13 @@ type Conf = {
 };
 
 // Serveurs MCP distants de Google intégrés au relais, authentifiés par le jeton OAuth du compte gcloud actif
-// (aucune clé d'API) : Stitch (https://stitch.googleapis.com/mcp, extension officielle gemini-cli-extensions/stitch).
-// Projet de facturation : RELAY_GCP_QUOTA_PROJECT, sinon le projet gcloud courant.
-// gcloud est lancé sans bloquer la boucle d'événements (un spawnSync gelait tout le relais plusieurs secondes),
-// et le jeton est gardé 45 min (durée de vie 1 h).
-let gcloudCache: { at: number; h: Record<string, string> } | null = null;
-const gcloudToken = async () => {
-  if (gcloudCache && Date.now() - gcloudCache.at < 45 * 60_000)
-    return gcloudCache.h;
-  const run = async (a: string[]) => {
-    const p = Bun.spawn(["gcloud", ...a], { stdout: "pipe", stderr: "ignore" });
-    return (await new Response(p.stdout).text()).trim();
-  };
-  const [token, project] = await Promise.all([
-    run(["auth", "print-access-token"]),
-    Bun.env.RELAY_GCP_QUOTA_PROJECT ?? run(["config", "get-value", "project"]),
-  ]);
-  const h = {
-    authorization: `Bearer ${token}`,
-    "x-goog-user-project": project,
-  };
-  gcloudCache = { at: Date.now(), h };
-  return h;
-};
+// (aucune clé d'API, src/google/auth.ts) : Stitch (stitch.googleapis.com/mcp, même URL que le client absorbé
+// src/google/stitch). Les outils sont exposés sous stitch__<outil>.
 const BUILTIN: Record<string, Conf> = {
   stitch: {
     type: "http",
-    url: "https://stitch.googleapis.com/mcp",
-    dynamicHeaders: gcloudToken,
+    url: Bun.env.STITCH_BASE_URL ?? DEFAULT_STITCH_API_URL,
+    dynamicHeaders: gcloudHeaders,
   },
 };
 type Remote = {
@@ -140,31 +122,23 @@ class StdioServer {
   }
 }
 
+// Serveur http agrégé : transport partagé avec le client Stitch (mcp-http.ts) sur outboundFetch. tools/list et
+// tools/call d'un outil readOnlyHint sont des lectures, cachées ; le reste passe par le singleflight.
 class HttpServer {
-  private seq = 0;
-  constructor(private conf: Conf) {}
-  async call(method: string, params: unknown, readOnly = false) {
-    // tools/list et tools/call d'un outil readOnlyHint : lectures, cachées ; le reste passe par le singleflight.
-    const r = await outboundFetch(this.conf.url!, {
-      deterministic: method === "tools/list" || readOnly,
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        accept: "application/json, text/event-stream",
-        "mcp-protocol-version": "2025-11-25",
-        ...(this.conf.headers ?? {}),
-        ...((await this.conf.dynamicHeaders?.()) ?? {}),
-      },
-      body: JSON.stringify({ jsonrpc: "2.0", id: ++this.seq, method, params }),
+  private c: McpHttpClient;
+  constructor(conf: Conf) {
+    this.c = new McpHttpClient({
+      url: conf.url!,
+      headers: conf.headers,
+      dynamicHeaders: conf.dynamicHeaders,
+      fetch: (u, i) => outboundFetch(u, i),
     });
-    const body = await r.text();
-    // Réponse JSON ou flux SSE à un seul message.
-    const json = body.trimStart().startsWith("{")
-      ? body
-      : (body.match(/^data: (.+)$/m)?.[1] ?? "{}");
-    const m = JSON.parse(json);
-    if (m.error) throw rpcError(m.error);
-    return m.result;
+  }
+  async call(method: string, params: unknown, readOnly = false) {
+    if (method === "initialize") return this.c.connect();
+    return this.c.request(method, params, {
+      init: { deterministic: method === "tools/list" || readOnly },
+    });
   }
 }
 

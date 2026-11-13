@@ -17,7 +17,12 @@
     "./research": "./src/research/index.ts",
     "./tui": "./src/tui/index.ts",
     "./relay": "./src/relay/protocols.ts",
-    "./relay/server": "./src/relay/server.ts"
+    "./relay/server": "./src/relay/server.ts",
+    "./stitch": "./src/google/stitch/src/index.ts",
+    "./stitch/tools": "./src/google/stitch/src/tools.ts",
+    "./jules": "./src/google/jules/index.ts",
+    "./google": "./src/google/cli.ts",
+    "./relay/mcp-http": "./src/relay/mcp-http.ts"
   },
   "scripts": {
     "test": "bun test test",

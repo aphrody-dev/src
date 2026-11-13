@@ -13,7 +13,15 @@ const subs: Record<string, string> = {
   review: "./review/cli.ts",
 };
 const sub = Bun.argv[2];
-if (sub && subs[sub]) {
+if (sub === "jules" || sub === "stitch") {
+  const g = await import("./google/cli.ts");
+  const rest = Bun.argv.slice(3);
+  process.exit(
+    await g.guarded(() =>
+      sub === "jules" ? g.julesCli(rest) : g.stitchCli(rest),
+    ),
+  );
+} else if (sub && subs[sub]) {
   const same = Bun.argv === process.argv;
   Bun.argv.splice(2, 1);
   if (!same) process.argv.splice(2, 1);

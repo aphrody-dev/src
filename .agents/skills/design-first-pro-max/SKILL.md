@@ -63,6 +63,13 @@ Maintain `DESIGN.md` alongside `PRD.md` combining machine-readable YAML design t
 7. `## Components` (explicit state tokens and wireframe maquette tree)
 8. `## Do's and Don'ts` (explicit anti-slop bans)
 
+The monorepo design system is `packages/design/DESIGN.md` (never copied). Validate any DESIGN.md with the absorbed linter, then push it to Stitch:
+```powershell
+ay design lint [<file>] --format text     # default: packages/design/DESIGN.md
+ay design export --format css-vars|dtcg|css-tailwind|json-tailwind
+ay design push <stitchProjectId> [<file>]  # upload_design_md through the absorbed Stitch client
+```
+
 ### Stage 4: Sovereign Open Creative Asset Generation (`gds assets`)
 Source all icons, themes, fonts, sprites, companions, wallpapers, 3D meshes, and acoustic feedback from `@aphrody/google-design` instead of ad-hoc Unicode glyphs or unverified external CDNs:
 ```powershell
@@ -119,5 +126,6 @@ All four scores — Performance, Accessibility, Best Practices, SEO — plus `gd
 - [`third_party/humanizer`](third_party/humanizer): Empirical catalog of 26 AI prose tells and neutral rewriting rules.
 - [`third_party/ui-ux-pro-max-skill`](third_party/ui-ux-pro-max-skill): Pre-delivery UX, contrast, touch-target, and responsive checklists.
 - [`third_party/threejs-skills`](third_party/threejs-skills): Three.js r186, WebGPU, TSL shaders, PBR lighting, and glTF 2.0 pipelines.
-- [`third_party/design-md`](third_party/design-md) & [`third_party/awesome-design-md`](third_party/awesome-design-md): Official `DESIGN.md` token/prose schema and real-world design system analyses.
+- [`packages/google-design/src/design-md`](packages/google-design/src/design-md): absorbed `google-labs-code/design.md` linter and exporters (bun-native, fork `third_party/design-md`); [`third_party/awesome-design-md`](third_party/awesome-design-md): real-world design system analyses.
+- [`packages/ai-os/src/google/stitch`](packages/ai-os/src/google/stitch): the single Stitch client of src (absorbed `stitch-sdk`), also served by the relay as `stitch__*` tools; Stitch skills mirrored as `.agents/skills/stitch-*`.
 - [`third_party/omarchy/themes`](third_party/omarchy/themes): Canonical workstation color palettes integrated into `gds`.

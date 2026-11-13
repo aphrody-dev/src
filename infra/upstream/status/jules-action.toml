@@ -1,0 +1,9 @@
+# Upstream status of the jules-action stack (aphrody-labs/jules-action), written by `ay upstream mark`.
+# Keys: patch slug (Electron's munge of the subject). Doc: docs/upstream/STRATEGY.md.
+
+[patch."fix_pass_inputs_through_env_to_prevent_script_injection_pin_actions_chec"]
+subject = "fix: pass inputs through env to prevent script injection, pin actions/checkout by SHA"
+status = "submitted"
+note = "script injection fix"
+pr = "https://github.com/google-labs-code/jules-action/pull/21"
+updated = "2026-11-13"

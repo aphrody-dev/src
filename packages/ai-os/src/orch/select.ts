@@ -19,6 +19,8 @@ import type { RunnerState } from "./queue";
 
 /** CLI que le runner sait lancer (infra/agents/runner.ts providerCmd), adressées « cli » ou « cli:modèle ». */
 export const AGENT_CLIS = ["claude", "codex", "opencode", "pi", "agy"];
+/** Fournisseur distant du runner (« jules[:owner/repo] », ai-os jules run --wait) : jamais choisi sans demande. */
+export const JULES = "jules";
 
 export type Needs = {
   /** L'étape modifie des fichiers : seules les CLI d'agents conviennent (llm_ask ne répond qu'en texte). */
@@ -194,7 +196,19 @@ export function rank(
         (!needs.reasoning || c.reasoning === true) &&
         (!needs.context ||
           (typeof c.context === "number" && c.context >= needs.context))));
-  const pool = all.filter(fits);
+  // Jules (src/google/jules) travaille sur le dépôt GitHub, pas sur la copie de l'hôte : candidat sur demande
+  // explicite seulement (`models: ["jules"]`, `["jules:owner/repo"]` ou `only: ["^jules"]`).
+  const askedJules = [...(needs.models ?? []), ...(needs.only ?? [])].some(
+    (m) => typeof m === "string" && /^\^?jules(:|$)/.test(m),
+  );
+  const withJules: Candidate[] =
+    askedJules && !all.some((c) => c.id === JULES)
+      ? [
+          ...all,
+          { id: JULES, kind: "cli", tools: true, why: "Jules (cloud, GitHub)" },
+        ]
+      : all;
+  const pool = withJules.filter(fits);
   const score = (c: Candidate) => {
     const s = health.stats(host, c.id);
     const rel = (s.ok + 1) / (s.n + 2);

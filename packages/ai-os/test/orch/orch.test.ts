@@ -293,3 +293,19 @@ test("expansion : les dépendants du parent attendent les étapes générées", 
     events.indexOf("start:after"),
   );
 });
+
+test("routage : Jules seulement sur demande explicite, dépôt dans l'emplacement modèle", () => {
+  const h = new Health(join(process.env.AGENT_HOME!, "rank-jules.sqlite"));
+  const all = [{ id: "claude", kind: "cli" as const, why: "" }];
+  expect(rank("pc", all, { edit: true }, h)).not.toContain("jules");
+  expect(
+    rank(
+      "pc",
+      all,
+      { edit: true, models: ["jules:aphrody-labs/src"] },
+      h,
+    ).slice(0, 2),
+  ).toEqual(["jules:aphrody-labs/src", "jules"]);
+  expect(rank("pc", all, { only: ["^jules"] }, h)).toEqual(["jules"]);
+  h.close();
+});

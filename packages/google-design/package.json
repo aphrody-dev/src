@@ -12,7 +12,8 @@
     "./spec": "./src/spec/prd-design-md.ts",
     "./assets": "./src/assets/index.ts",
     "./pets": "./src/pets/index.ts",
-    "./symbols": "./src/symbols/catalog.ts"
+    "./symbols": "./src/symbols/catalog.ts",
+    "./design-md": "./src/design-md/index.ts"
   },
   "bin": {
     "gds": "./cli.ts"
@@ -26,7 +27,8 @@
     "fmt": "bun fmt",
     "mdx": "bun run cli.ts mdx",
     "verify": "bun run cli.ts verify",
-    "assets": "bun run cli.ts assets --out dist/assets"
+    "assets": "bun run cli.ts assets --out dist/assets",
+    "lint": "bun run src/cli.ts lint"
   },
   "dependencies": {},
   "devDependencies": {},

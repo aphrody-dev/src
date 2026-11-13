@@ -34,7 +34,15 @@ function inChild(dir: string, code: string) {
 }
 
 test("no shell in provider argv, prompt intact", () => {
-  for (const p of ["opencode", "pi", "agy:gemini-4", "codex", "claude"]) {
+  for (const p of [
+    "opencode",
+    "pi",
+    "agy:gemini-4",
+    "codex",
+    "claude",
+    "jules",
+    "jules:aphrody-labs/src",
+  ]) {
     let built: { cmd: string[]; stdin?: string };
     try {
       built = providerCmd(p, { ...task }, 1);
@@ -112,4 +120,18 @@ test("default CLIs: claude, codex, opencode, installed and logged in only", () =
   expect(defaultClis(() => true, { CLAUDE_CODE_OAUTH_TOKEN: "x", OPENAI_API_KEY: "y" }, home)).toEqual(["claude", "codex"]);
   expect(defaultClis((c) => c !== "claude", { CLAUDE_CODE_OAUTH_TOKEN: "x", OPENAI_API_KEY: "y" }, home)).toEqual(["codex"]);
   expect(defaultClis(() => true, {}, home)).toEqual([]);
+});
+
+test("jules provider runs ai-os jules run --wait with the repo from the model slot", () => {
+  const b = providerCmd("jules:aphrody-labs/src", { ...task }, 1);
+  expect(b.cmd.slice(2)).toEqual([
+    "jules",
+    "run",
+    "--wait",
+    "--repo",
+    "aphrody-labs/src",
+    "-",
+  ]);
+  expect(b.cmd[1]).toMatch(/packages[\\/]ai-os[\\/]src[\\/]cli\.ts$/);
+  expect(b.stdin).toBe(task.prompt);
 });

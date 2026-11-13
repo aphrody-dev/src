@@ -1,0 +1,129 @@
+# google-labs-code forks (aphrody-labs/<repo>, third_party/<checkout>): mirror model, no patch on the fork.
+# The bun-native code lives in src (absorbed); each [stack.<x>.absorbed] records the upstream commit the copy
+# was taken from, the upstream paths and where they live in src. `ay upstream sync google-labs [--push]` keeps the
+# forks even (daily on prd), `ay upstream status <stack>` shows one; `bun packages/ai-os/src/google/absorb.ts check` lists upstream changes to absorbed paths since that
+# commit. Roles: .agents/skills/google-labs-stitch-jules-design. A real fix goes to the fork as a branch, then a PR upstream.
+
+[stack.design-md]
+model = "mirror"
+upstream = "google-labs-code/design.md"
+upstream_url = "https://github.com/google-labs-code/design.md.git"
+ref = "main"
+fork = "aphrody-labs/design.md"
+branch = "main"
+checkout = "third_party/design-md"
+forge = "github"
+rules = "common"
+runner = "prd"
+
+[stack.design-md.absorbed]
+commit = "1ed38aa9dd4451b9039f9aeb9ed1d2579edafddf"
+paths = ["packages/cli/src/linter", "docs/spec.md"]
+into = "packages/google-design/src/design-md"
+
+[stack.stitch-sdk]
+model = "mirror"
+upstream = "google-labs-code/stitch-sdk"
+upstream_url = "https://github.com/google-labs-code/stitch-sdk.git"
+ref = "main"
+fork = "aphrody-labs/stitch-sdk"
+branch = "main"
+checkout = "third_party/stitch-sdk"
+forge = "github"
+rules = "common"
+runner = "prd"
+
+[stack.stitch-sdk.absorbed]
+commit = "f6aa86cde10c3f490acf09a63cc044582a50821d"
+paths = ["packages/sdk/src", "packages/sdk/generated/src", "packages/sdk/test/fixtures/responses"]
+into = "packages/ai-os/src/google/stitch"
+
+[stack.jules-sdk]
+model = "mirror"
+upstream = "google-labs-code/jules-sdk"
+upstream_url = "https://github.com/google-labs-code/jules-sdk.git"
+ref = "main"
+fork = "aphrody-labs/jules-sdk"
+branch = "main"
+checkout = "third_party/jules-sdk"
+forge = "github"
+rules = "common"
+runner = "prd"
+
+[stack.jules-sdk.absorbed]
+commit = "19fc117ac5cb961f393257b99d0b939848e75b52"
+paths = ["packages/core/src"]
+into = "packages/ai-os/src/google/jules"
+
+[stack.stitch-skills]
+model = "mirror"
+upstream = "google-labs-code/stitch-skills"
+upstream_url = "https://github.com/google-labs-code/stitch-skills.git"
+ref = "main"
+fork = "aphrody-labs/stitch-skills"
+branch = "main"
+checkout = "third_party/stitch-skills"
+forge = "github"
+rules = "common"
+runner = "prd"
+
+[stack.stitch-skills.absorbed]
+commit = "0337446dadde6f8c94210444e2aa9d546126480f"
+paths = ["plugins"]
+into = ".agents/skills"
+
+[stack.jules-skills]
+model = "mirror"
+upstream = "google-labs-code/jules-skills"
+upstream_url = "https://github.com/google-labs-code/jules-skills.git"
+ref = "main"
+fork = "aphrody-labs/jules-skills"
+branch = "main"
+checkout = "third_party/jules-skills"
+forge = "github"
+rules = "common"
+runner = "prd"
+
+[stack.jules-skills.absorbed]
+commit = "7a76d3bfcf4258ee437d65b5d12e54b51c395de5"
+paths = ["skills"]
+into = ".agents/skills"
+
+# Carries one patch (script injection fix, PR google-labs-code/jules-action#21): branch model until it merges.
+[stack.jules-action]
+model = "branch"
+upstream = "google-labs-code/jules-action"
+upstream_url = "https://github.com/google-labs-code/jules-action.git"
+ref = "main"
+fork = "aphrody-labs/jules-action"
+branch = "main"
+checkout = "third_party/jules-action"
+forge = "github"
+rules = "common"
+runner = "prd"
+
+[stack.jules-awesome-list]
+model = "mirror"
+upstream = "google-labs-code/jules-awesome-list"
+upstream_url = "https://github.com/google-labs-code/jules-awesome-list.git"
+ref = "main"
+fork = "aphrody-labs/jules-awesome-list"
+branch = "main"
+checkout = "third_party/jules-awesome-list"
+forge = "github"
+rules = "common"
+runner = "prd"
+
+[stack.stax]
+model = "mirror"
+upstream = "google-labs-code/stax"
+upstream_url = "https://github.com/google-labs-code/stax.git"
+ref = "main"
+fork = "aphrody-labs/stax"
+branch = "main"
+checkout = "third_party/stax"
+forge = "github"
+rules = "common"
+runner = "prd"
+
+# action-setup is archived upstream (pnpm/action-setup fork, MIT): kept as a frozen fork, not followed.

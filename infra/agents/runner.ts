@@ -251,10 +251,11 @@ function shellCmd(cmd: string): string[] {
 // ---------- providers ----------
 // A task names what runs it (ai-os decides; this file never picks):
 //   "<cli>" or "<cli>:<model>"  coding CLI (claude, codex, opencode, pi, agy), optional model
+//   "jules" or "jules:<owner/repo>"  Google Jules cloud session on GitHub (ai-os jules run --wait), ends with a PR
 //   "<provider>/<model>"         model from relay llm_models, answered through relay llm_ask (text only)
 // With no name, the relay's llm_models answer (available providers, relay order) is used as is.
 // Prompt goes on stdin where the CLI supports it (no argv length or quoting limits).
-const CLIS = new Set(["claude", "codex", "opencode", "pi", "agy"]);
+const CLIS = new Set(["claude", "codex", "opencode", "pi", "agy", "jules"]);
 export function providerCmd(
   p: string,
   t: Task,
@@ -339,6 +340,20 @@ export function providerCmd(
           "--dangerously-skip-permissions",
           ...m("--model"),
         ]),
+      };
+    case "jules":
+      // Remote agent (packages/ai-os/src/google): works on the GitHub repo, not on the local checkout.
+      return {
+        cmd: [
+          process.execPath,
+          join(SRC, "packages", "ai-os", "src", "cli.ts"),
+          "jules",
+          "run",
+          "--wait",
+          ...m("--repo"),
+          "-",
+        ],
+        stdin: t.prompt,
       };
     default:
       throw new Error(`unknown cli ${cli}`);
