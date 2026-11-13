@@ -1,6 +1,6 @@
 //! `aphrody-remote`: pure-Rust SSH client behind `ay ssh` (russh + russh-sftp), replacing
 //! OpenSSH client invocations. Reads `~/.ssh/config` aliases, verifies host keys against
-//! known_hosts, authenticates with ssh-agent then identity files, and maps deploy.toml nodes
+//! known_hosts, authenticates with ssh-agent then identity files, and maps infra/deploy.toml nodes
 //! (`usa`, `fr1`, `fr2`) to their ssh aliases.
 
 pub mod cli;

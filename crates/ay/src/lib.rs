@@ -91,6 +91,9 @@ pub enum Cmd {
     /// OS secret store (DPAPI on Windows, systemd-creds on Linux): info, list, set, exec, pipe, import
     #[command(disable_help_flag = true)]
     Secret(Rest),
+    /// Conformance suites: [--fetch] [suite...] writes conformance/results/; `channels [platform]` refreshes Chrome pins
+    #[command(disable_help_flag = true)]
+    Conformance(Rest),
     /// Build the workspace for a cross-compilation preset (--list shows toolchain status)
     Build(build::BuildArgs),
     /// Machine profile: OS, firmware/SMBIOS, CPUID, PCI, GPUs, disks, virtualization, toolchains
@@ -128,6 +131,7 @@ pub enum Route {
     /// `bun packages/env-kit/src/cli.ts <args>` (TypeScript, run in place by bun).
     EnvKit(Vec<String>),
     Ssh(Vec<String>),
+    Conformance(Vec<String>),
     Rt(Vec<String>),
     Chromium(chromium::Tool, Vec<String>),
     Build(build::BuildArgs),
@@ -147,7 +151,7 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Doctor(r) => Route::Xtk(prefixed(&["doctor"], &r.args)),
         Cmd::Lock(r) => Route::Xtk(prefixed(&["lock"], &r.args)),
         Cmd::Manifests(r) => match r.args.first().map(String::as_str) {
-            Some("verify") => Route::Depot("ay", prefixed(&["manifests"], &r.args[1..])),
+            Some("verify") => Route::Xtk(prefixed(&["manifests", "--check"], &r.args[1..])),
             _ => Route::Xtk(prefixed(&["manifests"], &r.args)),
         },
         Cmd::Git(r) => {
@@ -172,6 +176,7 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Bench(r) => Route::Bench(r.args),
         Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
         Cmd::Ssh(r) => Route::Ssh(r.args),
+        Cmd::Conformance(r) => Route::Conformance(r.args),
         Cmd::Rt(r) => Route::Rt(r.args),
         Cmd::Gclient(r) => Route::Chromium(chromium::Tool::Gclient, r.args),
         Cmd::Fetch(r) => Route::Chromium(chromium::Tool::Fetch, r.args),
@@ -214,12 +219,26 @@ fn run_route(route: Route) -> i32 {
         Route::External(program, args) => exec::run_external(program, &args),
         Route::EnvKit(args) => exec::run_env_kit(&args),
         Route::Ssh(args) => remote::run("ay ssh", &args, &repo_root()),
+        Route::Conformance(args) => run_conformance(&args),
         Route::Rt(args) => rt::run("ay rt", &args),
         Route::Chromium(tool, args) => chromium::run(tool, &args),
         Route::Build(args) => build::run(args),
         Route::Sys(args) => run_sys(args),
         Route::Up(args) => up::run(args),
         Route::SelfUpdate(args) => self_update::run(args),
+    }
+}
+
+fn run_conformance(args: &[String]) -> i32 {
+    match aphrody_conformance::cli::run(&repo_root(), args) {
+        Ok(out) => {
+            print!("{out}");
+            0
+        }
+        Err(err) => {
+            eprint!("{err}");
+            2
+        }
     }
 }
 
@@ -249,14 +268,14 @@ pub fn run(args: &[String]) -> i32 {
 }
 
 /// Repository root: `$SRC_ROOT`, else the nearest ancestor of the current directory that holds
-/// `src.lock.json`, else the current directory.
+/// `identity.toml` (or `src.lock.json`), else the current directory.
 pub fn repo_root() -> PathBuf {
     if let Some(root) = std::env::var_os("SRC_ROOT").filter(|v| !v.is_empty()) {
         return PathBuf::from(root);
     }
     let cwd = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
     cwd.ancestors()
-        .find(|dir| dir.join("src.lock.json").is_file())
+        .find(|dir| dir.join("identity.toml").is_file() || dir.join("src.lock.json").is_file())
         .map(PathBuf::from)
         .unwrap_or(cwd)
 }
@@ -378,6 +397,12 @@ mod tests {
             parse("self-update --version 0.3.0"),
             Route::SelfUpdate(self_update::SelfUpdateArgs { check: false, version: Some("0.3.0".into()) })
         );
+    }
+
+    #[test]
+    fn conformance_and_manifests_verify() {
+        assert_eq!(parse("conformance --fetch wpt"), Route::Conformance(v(&["--fetch", "wpt"])));
+        assert_eq!(parse("manifests verify"), Route::Xtk(v(&["manifests", "--check"])));
     }
 
     #[test]

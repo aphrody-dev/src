@@ -251,3 +251,24 @@ units = ["shenron-cloudflare-s3-renew", "rg-steam-depot"]
 # infra/fleet/wg/rotate-wg-win.sh (UAC), then remove the peer everywhere.
 [auth.wireguard]
 revoked = ["up+fbCDKsbVlLZSFXR3k4U3I784oSqwO8/ijyHSM/yM="]
+
+# =============================================================================
+# Container images (infra/docker, docs/infra/DEPLOY.md). One entry per image built by
+# infra/docker/docker-bake.hcl and run by infra/docker/compose.yaml (service = compose service).
+# host_port = the deploy.toml green port, 127.0.0.1 only; nginx/cloudflared switch blue -> green.
+# Rollback: SRC_TAG=<previous sha> just docker-up <profile> <ctx>.
+# =============================================================================
+[containers]
+registry = "ghcr.io/aphrody-dev"
+platforms = ["linux/amd64", "linux/arm64"]
+
+[containers.images]
+ai-os = { target = "ai-os", services = ["ai-os-relay", "ai-os-gateway"], host_ports = [28790, 24000], profile = "core", nodes = ["usa"] }
+aphrody = { target = "aphrody", services = ["aphrody"], host_ports = [23000], profile = "core", nodes = ["usa"] }
+yolo = { target = "yolo", services = ["yolo"], host_ports = [23092], profile = "core", nodes = ["usa"] }
+rust-stack = { target = "rust-stack", services = ["rust-stack"], host_ports = [24100], profile = "core", nodes = ["usa"] }
+r3d = { target = "r3d", services = ["r3d"], host_ports = [28080], profile = "core", nodes = ["usa"] }
+loreserver = { target = "loreserver", services = ["loreserver"], host_ports = [31339], profile = "core", nodes = ["usa"] }
+r2-site = { target = "r2-site", services = ["downloads", "cdn"], host_ports = [28797, 28796], profile = "edge", nodes = ["fr2", "usa"] }
+api-gateway = { target = "api-gateway", services = ["api-gateway"], host_ports = [28081], profile = "edge", nodes = ["fr2", "usa"] }
+llama = { upstream = "ghcr.io/ggml-org/llama.cpp:server-b12316", services = ["llama"], host_ports = [28088], profile = "ai", nodes = ["usa"] }

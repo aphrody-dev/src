@@ -1,6 +1,6 @@
 # Authentifications et accès réseau du parc
 
-État relevé le 2026-11-13 (UTC) sur le PC, fr2 (`ssh cdn`) et prd (`ssh prd`) avec `ay auth status`. fr1 n'est que lu (`repair = false`). Inventaire : `deploy.toml` (`[nodes.*]`, `[auth.*]`). Code : `packages/env-kit/src/{auth,secret-store}.ts`, routé par `ay auth` et `ay secret` (`crates/ay/src/exec.rs`).
+État relevé le 2026-11-13 (UTC) sur le PC, fr2 (`ssh cdn`) et prd (`ssh prd`) avec `ay auth status`. fr1 n'est que lu (`repair = false`). Inventaire : `infra/deploy.toml` (`[nodes.*]`, `[auth.*]`). Code : `packages/env-kit/src/{auth,secret-store}.ts`, routé par `ay auth` et `ay secret` (`crates/ay/src/exec.rs`).
 
 ## Mécanisme
 

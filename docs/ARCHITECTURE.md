@@ -9,11 +9,11 @@ Inspiré de NT (HAL sous l'Executive, sous les sous-systèmes) et des components
 | Couche | Rôle (analogue) | Contenu actuel |
 |---|---|---|
 | L0 toolchain | compilateurs, pins (LLVM partagé, rustc nightly, bun 1.4.4) | `rust-toolchain.toml`, `tools/`, `third_party/` (hors graphe first-party) |
-| L1 base | `//base` : primitives portables, sans `cfg(target_os)` ni windows-rs, sans service | `crates/core`, `corelib`, `depot-core`, `depot-cas`, `lore-base`, `lore-io`, `lore-error-set(-macro)`, `lore-macro`, `aphrody-design-shared`, `aphrody-design-tokens`, `gamescope-core`, `tv-core`, `tv-i18n` |
+| L1 base | `//base` : primitives portables, sans `cfg(target_os)` ni windows-rs, sans service | `crates/core`, `depot-core`, `depot-cas`, `lore-base`, `lore-io`, `lore-error-set(-macro)`, `lore-macro`, `aphrody-design-shared`, `aphrody-design-tokens`, `gamescope-core`, `tv-core`, `tv-i18n` |
 | L2 plateforme | HAL : Windows, Linux, Cloudflare, Vercel, réseau, C ABI de base | `sys`, `net`, `core-capi`, `dx12-winui-core`, `unix-*`, `remote`, `lore-credential`, `lore-fuse`, `steam-depot`, `gamescope-wgsl`, `smithay-wayland-wire`, `hypr-tiler`, `cosmic-compat`, `tv-ffmpeg` (FFmpeg libav* en liaison dynamique) ; `packages/core` (bun:ffi sur core-capi), `net`, `machine`, `runtime-adapter` ; `infra/*` |
-| L3 services | Executive : VCS, build, design, web | `crates/*` par défaut : `lore*` (stockage, révision, transport, serveur, backends aws/hashicorp), `depot-*` (gclient, cipd, vpython, re, graph...), `xtask`, `up`, `rt`, `archguard`, `factory`, `conformance`, `bench`, `next`, `react`, `ui`, design ; C ABI de services `ffi`, `lore-capi` ; `packages/*` par défaut |
+| L3 services | Executive : VCS, build, design, web | `crates/*` par défaut : `lore*` (stockage, révision, transport, serveur, backends aws/hashicorp), `depot-*` (gclient, cipd, vpython, re, graph...), `xtask`, `up`, `rt`, `archguard`, `corelib`, `factory`, `conformance`, `bench`, `next`, `react`, `ui`, design ; C ABI de services `ffi`, `lore-capi` ; `packages/*` par défaut |
 | L4 agent | sous-système agent | `packages/ai-os` (core, llm, relay, research, gateway, tui ; ses sous-dossiers sont des sous-couches), `crates/agent-context`, `crates/agent-py`, `crates/ring3-agent`, `plugins/` |
-| L5 surfaces | embedders (`//chrome`) | CLIs : `ay`, `aphrody-cli`, `depot-cli`, `lore-client`, `gamescope-cli`, `wslg-cli`, `tv-cli` ; `ai-os` (CLI `src/cli.ts`, gateway, tui) ; `apps/*` (dont `apps/nt`) |
+| L5 surfaces | embedders (`//chrome`) | CLIs : `ay` (dont `ay conformance`, ex-`aphrody-cli`), `depot-cli`, `lore-client`, `gamescope-cli`, `wslg-cli`, `tv-cli` ; `ai-os` (CLI `src/cli.ts`, gateway, tui) ; `apps/*` (dont `apps/nt`) |
 
 La liste exacte vient de `just checkdeps --graph` ; ce tableau est un résumé.
 
@@ -49,28 +49,25 @@ Choix : `just` + bun workspaces + cargo, sans turbo (raisons : PHILOSOPHY.md §6
 ## 4. Racine du dépôt
 
 ```
-Cargo.toml          un seul workspace ; [workspace.dependencies] = une version par crate
-Cargo.lock
-deny.toml           politique cargo-deny (licences, bans, sources ; §11)
-package.json        workspaces bun
-bun.lock
-rust-toolchain.toml nightly épinglée
-.cargo/config.toml  vendored-sources, cranelift dev (sans cdylib ni LTO), rust-lld
-identity.toml       noms renommables (source unique, §6)
-src.lock.json       verrou généré ; DEPS en est dérivé (`ay manifests`)
-pyproject.toml      workspace uv (tools/lore, packages/ai-os/python/*)
-uv.lock             Python : un seul lock (docs/deps/POLICY.md)
-justfile            point d'entrée unique
-DEPS                gclient : dépendances externes épinglées (40 caractères)
-DEPS.rules          racine des règles de couches (checkdeps)
-MAINTAINERS         propriétaires par sous-système
-README.md AGENTS.md CLAUDE.md LICENSE-*
-crates/ packages/ apps/ third_party/ infra/ tools/ docs/ scripts/
+Cargo.toml Cargo.lock   un seul workspace ; [workspace.dependencies] = une version par crate
+package.json bun.lock   workspaces bun
+rust-toolchain.toml     nightly épinglée ; tools.toml : pins des binaires L0 (`ay up`)
+deny.toml               politique cargo-deny (licences, bans, sources ; §11)
+identity.toml           identité du produit, source unique (§6) ; marque aussi la racine
+src.lock.json           seul pin des dépôts externes ; DEPS et .gitmodules en sont dérivés (pin-001)
+DEPS .gitmodules        dérivés (`ay manifests`, gate `ay manifests --check`), jamais édités à la main
+DEPS.rules              racine des règles de couches (checkdeps)
+dist-workspace.toml     configuration cargo-dist (lue à la racine du workspace par dist)
+justfile                point d'entrée unique
+MAINTAINERS             propriétaires par sous-système (format kernel, édité à la main)
+README.md AGENTS.md CLAUDE.md GEMINI.md LICENSE-* .env.example .gitignore .gitattributes .graphifyignore
+.github/ .cargo/ .agents/ .claude/
+crates/ packages/ apps/ third_party/ infra/ tools/ docs/ scripts/ conformance/ licenses/ plugins/
 ```
 
-À fondre ailleurs : Dockerfile, compose.yaml, cloudbuild.yaml, flake.nix, deploy.ps1/.sh, install.ps1/.sh, graphify-out/, var/ ; deploy.toml, tools.toml, depot-artifacts.toml, dist-workspace.toml vers infra/ ou Cargo.toml. Conflit noté : l'ancienne cible retirait MAINTAINERS de la racine ; la directive du 2026-11-12 le garde (format kernel) et prime.
+Rangés le 2026-11-13 : `deploy.toml` -> `infra/deploy.toml` (flotte, hébergement, auth) ; `cloudbuild.yaml` -> `infra/gcloud/` ; `.gitlab-ci.yml` -> `infra/gitlab/gitlab-ci.yml` (chemin à déclarer côté GitLab, infra/gitlab/README.md) ; `flake.nix` -> `infra/nix/` ; `install.ps1`/`install.sh` -> `scripts/` (amorce de dix lignes vers `ay up --bootstrap`) ; `deploy.ps1`/`deploy.sh` supprimés (doublons de `just deploy` = `ay deploy`) ; `.repo/` supprimé (manifeste `repo` jamais consommé). Dockerfile, compose.yaml et .dockerignore -> `infra/docker/` (Dockerfile.dockerignore, docker-bake.hcl ; agent conteneurs). Locaux et ignorés, jamais suivis : `.env`, `var/`, `graphify-out/`, `target/`, `node_modules/`. CI de référence : `.github/workflows` ; GitLab et Cloud Build sont des miroirs optionnels.
 
-`apps/` et `third_party/` sont exclus du workspace Cargo (`[workspace] exclude`). `apps/` = produits déployables, sous-modules épinglés par DEPS (rosegriffon, shenron, r2b, auto) ou arbres fusionnés (`apps/nt`, ex-`aphrody-labs/nt`, CI `.github/workflows/nt.yml`), avec leurs propres gates : checkdeps n'inspecte que leur unité racine, pas leur intérieur. `third_party/` = upstream, une copie par projet, verrouillée dans `src.lock.json`, sans patch local.
+`apps/` et `third_party/` sont exclus du workspace Cargo (`[workspace] exclude`). `apps/` = produits déployables, sous-modules épinglés par DEPS (rosegriffon, shenron, r2b, auto) ou arbres fusionnés (`apps/nt`, ex-`aphrody-labs/nt`, CI `.github/workflows/nt.yml`), avec leurs propres gates : checkdeps n'inspecte que leur unité racine, pas leur intérieur. `third_party/` = upstream, une copie par projet, verrouillée dans `src.lock.json`, sans patch local (seule exception : `third_party/patches/`, §11).
 
 ## 5. Bibliothèque commune (core)
 
@@ -82,15 +79,17 @@ crates/ packages/ apps/ third_party/ infra/ tools/ docs/ scripts/
 
 C ABI (`core_abi_version() == 1`) : `core_free`, `core_languages`, `core_parse_json`, `core_query_json`, `core_blake3_hex`, `core_index_json`, `core_index_each`. Sorties JSON, erreurs `{"error": ...}`. En-tête : `cbindgen --config crates/core-capi/cbindgen.toml crates/core-capi -o crates/core-capi/include/aphrody_core.h`. On ajoute des symboles sans en casser ; un changement incompatible incrémente `core_abi_version`. `@aphrody/core` ouvre la bibliothèque en deux temps : résoudre `core_abi_version` seul, refuser si la version diffère, puis seulement lier le reste de la table (TICKET abi-001 si ce n'est pas encore le cas).
 
+Ce que `crates/core` n'est pas : `crates/corelib` (`aphrody-corelib`, L3 depuis le 2026-11-13 : il tire wgpu et sert des produits, donc ni L1 ni L2) n'est pas une seconde bibliothèque commune mais le support des produits shenron/rosegriffon (GPU wgpu, formats RE CRI/UTF/AOB, horloge d'émulation, formats Epic, format Boq, filtrage réseau). Ses parties génériques sont des enveloppes de bibliothèques amont : le filtrage réseau passe par `adblock` (Brave adblock-rust 0.13.5, MPL-2.0) depuis le 2026-11-13, le moteur maison est supprimé. Aucune fonction n'existe dans les deux crates ; `crates/ffi` (C ABI de services, L3) expose `corelib::web`.
+
 Distribution : `dlopen` ne charge pas une bibliothèque depuis la mémoire d'un exécutable `bun build --compile` ; la cdylib est donc livrée à côté du binaire ou extraite vers un cache disque vérifié par BLAKE3 (pas de `/tmp` noexec). Le binaire `ay` (Rust) lie `crates/core` statiquement et n'a pas ce problème.
 
-Grammaires : 13 avec extracteur dédié ; les autres découvertes par `crates/core/build.rs` (`third_party/ECOSYSTEM.toml` ou `third_party/tree-sitter-*`, symboles `aphrody_grammar_<nom>*`). `APHRODY_GRAMMARS=0` désactive. Index : `bun packages/core/src/cli.ts index [root]` vers `var/index/core.db` (cible : `XDG_CACHE_HOME` / `%LOCALAPPDATA%`, var/ devant quitter la racine). Les préfixes `aphrody_*`/`APHRODY_*` des symboles C et variables sont des noms figés hors `ay identity apply` : TICKET identity-001 (les neutraliser en `core_*`/`SRC_*`).
+Grammaires : 13 avec extracteur dédié ; les autres découvertes par `crates/core/build.rs` (`third_party/ECOSYSTEM.toml` ou `third_party/tree-sitter-*`, symboles `aphrody_grammar_<nom>*`). `APHRODY_GRAMMARS=0` désactive. Index : `bun packages/core/src/cli.ts index [root]` vers `var/index/core.db` (cible : `XDG_CACHE_HOME` / `%LOCALAPPDATA%`, var/ devant quitter la racine). Les préfixes `aphrody_*`/`APHRODY_*` des symboles C et variables sont des noms figés hors `just identity apply` : TICKET identity-001 (les neutraliser en `core_*`/`SRC_*`).
 
 ## 6. Identité renommable et multiplateforme
 
-- Une source : `identity.toml` (name, cli, scope npm, crate_prefix, domain, remotes). `ay identity apply` réécrit les manifestes, `ay identity check` garde la CI.
-- Aucun nom de produit ni chemin absolu en dur : `env!("CARGO_PKG_NAME")`, racine détectée (`.lore` / `Cargo.toml`) ou `SRC_ROOT`, `XDG_*`, `%LOCALAPPDATA%`.
-- Chaque binaire compile et teste sur windows-msvc et linux-gnu ; scripts .sh/.ps1 remplacés par des recettes just.
+- Une source : `identity.toml` (product, cli, naming : scope npm et préfixes, orgs, domains, products.*). `just identity apply` (`bun scripts/identity.ts apply`) réécrit les champs copiés (Cargo.toml `[workspace.package]`, nom et `[[bin]]` de crates/ay, `package.json#name` et clés `@scope/` des dépendances) ; `just identity check` garde `just check` et la CI. Lecteurs directs : crates/xtask (vars DEPS), packages/forge (valeurs par défaut des forges), tout paquet via `import identity from "<racine>/identity.toml"`. Les configurations d'hôte (nginx, mail, DNS) restent littérales : elles décrivent l'état déployé.
+- Aucun nom de produit ni chemin absolu en dur : `env!("CARGO_PKG_NAME")`, racine détectée par `identity.toml` (ARCHITECTURE-ROOT.md invariant 6) ou `SRC_ROOT`, `XDG_*`, `%LOCALAPPDATA%`.
+- Chaque binaire compile et teste sur windows-msvc et linux-gnu ; scripts .sh/.ps1 remplacés par des recettes just. Exceptions par nature, en `cfg(windows)` : `dx12-winui-core` (D3D12, DirectComposition ; vide sur Linux) et l'hôte `wslg-cli` (sur Linux, les binaires sortent en erreur). `smithay-wayland-wire` et `cosmic-compat` compilent et testent sur Linux ; seuls le transport Hyper-V et le mappage D3D12 des dmabufs sont `cfg(windows)`. TICKET dx12-001 : scinder `dx12-winui-core` en HAL D3D12 (L2) et hôte WinUI 3 (L5).
 
 ## 7. Règles de fusion (sans régression)
 
@@ -107,8 +106,8 @@ Grammaires : 13 avec extracteur dédié ; les autres découvertes par `crates/co
 | checkdeps-001 | soldé le 2026-11-13 : l'entrée CLI est `packages/ai-os/src/cli.ts`, hors de `src/core` ; ai-os est une seule unité L4 | — |
 | checkdeps-002 | ARCH-017 d'archguard double checkdeps pour les couches mais porte aussi les frontières de domaine | traduire ces frontières en règles `-` (ex. L3 services système sans `dx12-winui-core`/`steam-depot`, agent sans `next`/`react`) avant de retirer ARCH-017 et d'appeler checkdeps depuis `ay arch check` |
 | checkdeps-003 | `apps/rosegriffon` : cycle `rg-db` <-> `rg-types`, vu par un passage manuel de checkdeps à profondeur 3 (hors gate src) | à corriger dans le dépôt rosegriffon, par son propre gate |
-| checkdeps-004 | Python (workspace uv racine `pyproject.toml` : tools/lore, packages/ai-os/python/*) hors checkdeps et test-affected | lire pyproject.toml, ajouter `uv run pytest` à test-affected |
-| pin-001 | épinglage multiple : DEPS, src.lock.json, sous-modules, vendored-sources | une seule source (src.lock.json), DEPS et .gitmodules générés |
+| checkdeps-004 | soldé le 2026-11-13 : chaque `pyproject.toml` à `[project]` est une unité `uv` (arêtes `[tool.uv.sources]`) ; `just test-affected` lance `uv run pytest` sur les unités touchées. `apps/nt` n'a aucune arête de build vers `crates/*` ou `infra/*` (aucune référence dans ses .csproj, CMake ou TS), rien à déclarer | — |
+| pin-001 | soldé le 2026-11-13 : `src.lock.json` est le seul pin des dépôts ; `ay manifests` en dérive DEPS et .gitmodules, `ay manifests --check` signale toute dérive (fichier ou gitlink différent du verrou) ; `.repo/` et la génération de MAINTAINERS retirés ; les crates restent épinglées par Cargo.lock (vendored-sources = copie hors ligne de Cargo.lock, pas un second pin) | dérive restante signalée par le gate : `apps/rosegriffon` (gitlink ff692b5 vs verrou f5d61f9) à résoudre par `ay lock` côté propriétaire du produit |
 | toolchain-001 | cranelift (dev) incompatible avec la LTO LLVM et limité sur windows-msvc | cranelift seulement en dev hors cdylib ; trancher clang-cl vs cl.exe (conflit ouvert) |
 | taskgraph-001 | cache distant R2 pour sccache non configuré | backend S3 de sccache vers R2 sur les runners, après lecture de la doc sccache |
 
@@ -265,7 +264,7 @@ Not used, with the reason:
 - webrender 0.70.1: Blitz uses vello.
 - nova_vm 1.0.0: too young (2003 downloads).
 
-Maintenance note: the `denoland/deno_core` GitHub repo is archived (`repos.tsv`: archived=true, last push 2026-02-27). The crate is still published from the Deno monorepo (0.413.0, 2026-10-21). The `js` trait keeps a switch to `boa` or `rquickjs` cheap if publishing stops.
+Maintenance note: the `denoland/deno_core` GitHub repo is archived (archived=true, last push 2026-02-27). The crate is still published from the Deno monorepo (0.413.0, 2026-10-21). The `js` trait keeps a switch to `boa` or `rquickjs` cheap if publishing stops.
 
 MSRV: the workspace declares `rust-version = "1.97"` because `oxc 0.158.0` declares `rust-version = "1.97.0"`. `rust-toolchain.toml` pins 1.99.1, the current stable on 2026-11-12. CI also runs a 1.97 check job, and the MSRV moves only when a pinned dependency requires it.
 
@@ -396,22 +395,23 @@ candidates --(candidate parser)--> {variants[], utility, value, modifier, import
 | aarch64/x86_64-apple-darwin | v8 | prebuilt rusty_v8 static lib |
 | wasm32-unknown-unknown | boa | toolchain crates (transpile, css, tailwind, rsc, registry) plus a boa-backed runtime subset; renderer via wgpu WebGPU. No V8, no net server |
 
-`cargo check` passed for `x86_64-pc-windows-msvc`, `x86_64-unknown-linux-gnu` and `wasm32-unknown-unknown` on the M0 skeleton. The other targets join the CI matrix in M0.
+`cargo check --workspace` runs on `x86_64-unknown-linux-gnu` (prd) and `x86_64-pc-windows-msvc` (CI); the Windows-host crates of the WSLg stack are empty on Linux (see §6).
 
-### 11. License policy
+### 11. Politique de licences
 
-- **Project license**: MIT OR Apache-2.0.
-- **Allowed dependency licenses**: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, Zlib, Unicode-3.0, CC0-1.0, Unlicense, and MPL-2.0 under the rule below.
-- **MPL-2.0** (lightningcss, stylo, selectors, cssparser, servo): used unmodified, as registry dependencies only. No MPL file is copied, patched or vendored into this repo. If a fix is needed, it goes upstream and the pin is bumped. A `[patch]` entry against an MPL crate is forbidden.
-- **Denied**: GPL, LGPL, AGPL (any version), SSPL, BUSL and other non-OSI licenses, plus any code whose license GitHub reports as NOASSERTION, unless a manual review clears it and the review is recorded here.
-- **Reviewed exception (2026-11-13)**: `ffmpeg-next` / `ffmpeg-sys-next` (WTFPL, permissive) are allowed per crate in `deny.toml` `[licenses] exceptions`. FFmpeg libav* (LGPL-2.1+) is linked dynamically from the system or vcpkg, never vendored, so `crates/tv-*` stay MIT OR Apache-2.0 (LGPL-2.1 §6). Builds must use an FFmpeg configured without `--enable-gpl`/`--enable-nonfree`. Only `tv-*` crates may depend on `tv-ffmpeg` (`-crates/tv-ffmpeg` in `crates/DEPS.rules`, re-allowed in `crates/tv-cli`).
-- **Study-only**: Bun (`oven-sh/bun`). GitHub reports NOASSERTION (`repos.tsv`). Its `LICENSE.md` at `43850629` says Bun itself is MIT but statically links LGPL-2 JavaScriptCore/WebKit and bundles other C/C++ code, so the tree is mixed. Contributors may read it and describe the ideas, but must not copy, translate line by line or vendor its code. The same applies to Zed/GPUI (NOASSERTION).
-- **Test suites as oracles**: upstream suites are fetched at pinned commits into the ignored `conformance/upstream/` and run there. They are not committed, so their licenses (Test262 BSD-style, WPT 3-Clause BSD, Bun NOASSERTION) do not enter the source tree.
-- **Enforcement**: `cargo-deny` (`deny.toml`, added in M0) with `licenses`, `bans` (no `openssl-sys`, which keeps the TLS stack on rustls) and `sources` (crates.io, the `aphrody-dev` git forks, plus `third_party/patches/` path patches) runs in CI before merge to main.
+- **Licence du projet** : MIT OR Apache-2.0.
+- **Licences de dépendances admises** : MIT, Apache-2.0 (y compris WITH LLVM-exception), BSD-2-Clause, BSD-3-Clause, ISC, Zlib, Unicode-3.0, CC0-1.0, Unlicense, et MPL-2.0 selon la règle suivante (liste exécutable : `deny.toml`).
+- **MPL-2.0** (lightningcss, stylo, selectors, cssparser, servo, adblock) : dépendances de registre utilisées sans modification. Aucun fichier MPL n'est copié, patché ni vendorisé ; un correctif part en amont et le pin monte. Une entrée `[patch]` visant une crate MPL est interdite.
+- **Patchs** : `third_party/` ne reçoit aucune modification locale. Seule exception, `third_party/patches/<crate>/` : crates de registre non MPL patchées via `[patch.crates-io]` (aujourd'hui quinn-proto, glob-match), chacune avec un README qui donne l'amont, le correctif et la condition de retrait. `docs/patches/series` n'indexe que des patchs suivis dans l'arbre.
+- **Refusées** : GPL, LGPL, AGPL (toutes versions), SSPL, BUSL et autres licences non OSI, ainsi que tout code dont GitHub rapporte la licence NOASSERTION, sauf revue manuelle consignée ici.
+- **Exception revue (2026-11-13)** : `ffmpeg-next` / `ffmpeg-sys-next` (WTFPL, permissive) admises crate par crate dans `deny.toml` `[licenses] exceptions`. FFmpeg libav* (LGPL-2.1+) est lié dynamiquement depuis le système ou vcpkg, jamais vendorisé : `crates/tv-*` restent MIT OR Apache-2.0 (LGPL-2.1 §6). Le test `tv-ffmpeg` `ffmpeg_build_is_lgpl` (`cargo test -p tv-ffmpeg -- --ignored`, obligatoire avant toute distribution) échoue si la libavutil chargée annonce `--enable-gpl` ou `--enable-nonfree`. Constat du 2026-11-13 : le FFmpeg d'Arch sur prd (2:9.0.2-2) est construit avec `--enable-gpl` ; un binaire `tv-*` lié à lui n'est pas distribuable sous MIT OR Apache-2.0, la distribution doit lier un FFmpeg LGPL (port vcpkg `ffmpeg` sans la feature `gpl`, triplets de `infra/vcpkg`). Seules les crates `tv-*` dépendent de `tv-ffmpeg` (`-crates/tv-ffmpeg` dans `crates/DEPS.rules`, relevé dans `crates/tv-cli`).
+- **Étude seulement** : Bun (`oven-sh/bun`, licence GitHub NOASSERTION ; son `LICENSE.md` au commit `43850629` : Bun MIT mais JavaScriptCore/WebKit LGPL-2 liés statiquement). Lecture et description des idées permises ; copie, traduction ligne à ligne et vendorisation interdites. Idem Zed/GPUI (NOASSERTION).
+- **Suites de test comme oracles** : récupérées aux commits épinglés dans `conformance/upstream/` (ignoré) et exécutées là ; jamais commitées, leurs licences (Test262, WPT, Bun) n'entrent pas dans l'arbre.
+- **Application** : `cargo-deny` (`deny.toml`) avec `licenses`, `bans` (pas d'`openssl-sys` : TLS sur rustls) et `sources` (crates.io, forks git `aphrody-dev`, patchs `third_party/patches/`) en CI avant main.
 
-### 12. Cross-cutting decisions
+### 12. Décisions transverses
 
-- **Errors**: `thiserror` in library crates and one `miette`-style diagnostic renderer in `cli`. The choice is made in M1 and pinned then.
-- **Concurrency**: tokio for I/O. JS runs on isolate threads, never on tokio worker threads. CPU-heavy work (parse, bundle, scan) goes to rayon-style pools inside rolldown and oxide.
-- **Cache**: `.aphrody/cache/<kind>/<blake-or-sha256>`, zstd-compressed and content-addressed, shared by `dev`, `build` and `test`.
-- **Telemetry**: none.
+- **Erreurs** : `thiserror` dans les bibliothèques, un seul rendu de diagnostics façon `miette` dans les CLIs.
+- **Concurrence** : tokio pour les E/S ; le JS tourne sur des threads d'isolat, jamais sur les workers tokio ; le travail CPU (parse, bundle, scan) va dans des pools rayon.
+- **Cache** : `<cache OS>/aphrody/<kind>/<blake3>` (`XDG_CACHE_HOME`, `%LOCALAPPDATA%`), compressé zstd et adressé par contenu, partagé par `dev`, `build` et `test`.
+- **Télémétrie** : aucune.

@@ -43,6 +43,6 @@ Chainguard et distroless revendiquent ~0 CVE connue sur les images minimales ; D
 | Image de build / CI avec PM | `wolfi-base` (apk, glibc) ou `debian:trixie-slim` |
 | Debug rapide | `alpine:3.24` |
 | Build x86-64-v3 optimisé | `cachyos/cachyos-v3` (lourd : 426 Mo) uniquement comme builder multi-stage |
-| Reproductibilité bit à bit | nix `dockerTools.buildLayeredImage` (flake.nix existe déjà dans src) |
+| Reproductibilité bit à bit | nix `dockerTools.buildLayeredImage` (infra/nix/flake.nix existe déjà dans src) |
 
 Épingler par digest (`@sha256:`), jamais par tag.

@@ -51,7 +51,7 @@ C:\src/
 │   └── skills/                # Single source of truth for all agent skills (17)
 ├── .claude/
 │   ├── settings.json          # bypassPermissions, allow-all, PreToolUse -> shared guard
-│   └── skills -> ../.agents/skills   # junction/symlink, created by install.ps1 / install.sh
+│   └── skills -> ../.agents/skills   # junction/symlink, created by ay up --bootstrap
 ├── .gemini/settings.json      # graphify hook-guard for Gemini CLI
 ├── packages/
 │   ├── ai-os/                 # Core AI & Unified Context-Optimized MCP Server

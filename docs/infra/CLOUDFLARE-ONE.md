@@ -71,3 +71,20 @@
 - upstream downloads, en une ligne (fr2) : `sudo sed -i 's|^    server 127.0.0.1:18797;.*|    server 10.200.77.5:8797;|' /etc/nginx/sites/downloads.aphrody.com.conf && sudo nginx -t && sudo systemctl reload nginx` (copie : `/root/downloads.aphrody.com.conf.pre-mig`).
 - tout le pilote : `systemctl disable --now cloudflared-mig-prd` (prd), puis supprimer les objets `mig-*` listés ci-dessus (DNS, apps, politique, route, cible, règle WAF, tunnel) et `conf.d/mig-tunnel.conf`.
 - WireGuard n'est pas modifié : c'est le repli.
+
+## Plan : ingress direct (sans détour par fr2) et SSH Access (2026-11-13, non exécuté)
+
+Non exécuté : aucun backend aphrody n'écoute sur prd (le chemin direct répondrait 502 comme le chemin actuel, donc rien à valider) et SSH Access exige WARP sur le PC (UAC, action du propriétaire). Chaque étape a un retour arrière d'une ligne.
+
+1. **Ingress direct, hostname par hostname** (supprime CF -> fr2 -> relais `127.0.0.1:18xxx` -> CF -> tunnel). Préalable : le backend écoute sur prd (`ss -Htln 'sport = :<port>'`).
+   - ajouter l'ingress au tunnel `mig-prd` (configuration distante, `cf` en `--dry-run` d'abord) : `<host> -> http://127.0.0.1:<port>`, avant la règle finale `http_status:404` ;
+   - remplacer l'enregistrement A de `<host>` (IP fr2) par un CNAME proxifié vers `72153924-6650-4dd4-bced-f8b6731edcd8.cfargotunnel.com` ;
+   - les limites nginx de fr2 deviennent des règles de rate limiting WAF de zone sur `<host>` ;
+   - validation : `curl -sI https://<host>/` même code qu'avant, `cf-ray` présent, aucune entrée dans l'access log de fr2 ;
+   - retour arrière (une ligne) : remettre l'enregistrement A de `<host>` sur l'IP de fr2 (`cf dns records update <zone> <record-id> --type A --content <ip fr2> --proxied`).
+   - `downloads.aphrody.com` public est un domaine personnalisé R2 (docs/infra/MIGRATION-VERCEL-CF.md) : il ne passe ni par fr2 ni par le tunnel, rien à changer.
+2. **SSH Access for Infrastructure vers prd** (cible `mig-prd`, app `mig-prd-ssh` déjà créées).
+   - CA : récupérer la clé publique de la CA SSH Access (`GET /accounts/<id>/access/gateway_ca`), l'écrire dans `/etc/ssh/cf_ca.pub` sur prd et poser `/etc/ssh/sshd_config.d/50-cf-ca.conf` = `TrustedUserCAKeys /etc/ssh/cf_ca.pub` ; `sshd -t && systemctl reload sshd`. Additif : les clés actuelles restent valides. Retour arrière : `rm /etc/ssh/sshd_config.d/50-cf-ca.conf && systemctl reload sshd`.
+   - split tunnel : le profil WARP par défaut exclut 10.0.0.0/8, donc 10.200.77.5 ne passe jamais par WARP. Retirer `10.0.0.0/8` des exclusions et y remettre 10.0.0.0/9, 10.128.0.0/10, 10.192.0.0/13, 10.200.0.0/18, 10.200.64.0/21, 10.200.72.0/22, 10.200.76.0/24, 10.200.78.0/23, 10.200.80.0/20, 10.200.96.0/19, 10.200.128.0/17, 10.201.0.0/16, 10.202.0.0/15, 10.204.0.0/14, 10.208.0.0/12, 10.224.0.0/11 (tout 10/8 sauf 10.200.77.0/24). Retour arrière : remettre l'exclusion `10.0.0.0/8`.
+   - WARP sur le PC (propriétaire), enrôlement dans `aphrody-labs`, puis `ssh root@10.200.77.5` doit passer par Access (journal Access « ssh »).
+   - ssh public :22 fermé seulement après 7 jours sans incident ; WireGuard reste le repli.

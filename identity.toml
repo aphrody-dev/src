@@ -1,0 +1,36 @@
+# Single source of the product identity. Renaming = edit this file, `just identity apply`, `just check`.
+# Gate: `just identity check` (in `just check` and CI). Readers: scripts/identity.ts (apply/check of the manifests),
+# crates/xtask (DEPS vars), packages via `import identity from "<root>/identity.toml"` (Bun TOML import).
+# This file also marks the repository root (nearest ancestor holding identity.toml, else $SRC_ROOT).
+
+[product]
+name = "aphrody"
+display = "Aphrody Labs"
+repo = "src"
+
+[cli]
+binary = "ay"            # [[bin]] of crates/ay
+crate = "aphrody"        # package name of crates/ay
+
+[naming]
+npm_scope = "@aphrody"   # every packages/*/package.json#name and the root package
+crate_prefix = "aphrody-" # crates.io-colliding member names carry it (docs/NAMING.md)
+env_prefix = "APHRODY_"
+symbol_prefix = "aphrody_"
+
+[orgs]
+main = "aphrody-dev"     # github.com/<main>/<product.repo> = this repository
+lab = "aphrody-labs"     # forks and products (apps/*)
+
+[domains]
+root = "aphrody.com"
+home = "labs.aphrody.com"
+git = "git.aphrody.com"
+contact = "contact@aphrody.com"
+
+# Sub-products with their own binary; their npm name is <npm_scope>/<binary>.
+[products.ai-os]
+binary = "ai-os"
+path = "packages/ai-os"
+home_env = "AGENT_HOME"
+home_default = "~/.agent"

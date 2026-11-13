@@ -120,10 +120,11 @@ function maskSql(m: Mask, col: string): [string, (string | number)[]] {
   const params: (string | number)[] = [];
   if (m.scopes && !m.scopes.includes("*")) {
     if (m.scopes.length === 0) return ["0", []];
+    // `s` or `s:*` as an index range: ';' (0x3B) is the code point right after ':' (0x3A).
     parts.push(
-      `(${m.scopes.map(() => `${col}scope = ? OR substr(${col}scope, 1, ?) = ?`).join(" OR ")})`,
+      `(${m.scopes.map(() => `${col}scope = ? OR (${col}scope >= ? AND ${col}scope < ?)`).join(" OR ")})`,
     );
-    for (const s of m.scopes) params.push(s, s.length + 1, `${s}:`);
+    for (const s of m.scopes) params.push(s, `${s}:`, `${s};`);
   }
   if (m.sources) {
     if (m.sources.length === 0) return ["0", []];
@@ -161,7 +162,10 @@ export class Context {
     this.db.run(
       "CREATE INDEX IF NOT EXISTS entries_at ON entries(at DESC, rid DESC)",
     );
-    this.db.run("CREATE INDEX IF NOT EXISTS entries_scope ON entries(scope)");
+    this.db.run("DROP INDEX IF EXISTS entries_scope");
+    this.db.run(
+      "CREATE INDEX IF NOT EXISTS entries_scope_at ON entries(scope, at DESC, rid DESC)",
+    );
     this.db.run("CREATE INDEX IF NOT EXISTS entries_source ON entries(source)");
     // KV-cache: embeddings keyed by (embedder, content hash); recompute only on change.
     this.db.run(
@@ -204,23 +208,34 @@ export class Context {
     return r ? this.row(r) : undefined;
   }
 
-  /** Most recent visible entries. Scopes and sources filter in SQL (before LIMIT); `allow` pages until `limit` is met. */
+  /** Most recent visible entries. Scopes and sources filter in SQL (before LIMIT); `allow` pages
+   * with a keyset cursor (at, rid) inside one read transaction, so concurrent writers neither
+   * duplicate nor skip rows. */
   list(mask: Mask = {}, limit = 1000): Entry[] {
     const [where, params] = maskSql(mask, "");
-    const q = this.db.query<any, (string | number)[]>(
-      `SELECT * FROM entries${where ? ` WHERE ${where}` : ""} ORDER BY at DESC, rid DESC LIMIT ? OFFSET ?`,
+    const cond = (extra: string) =>
+      [where, extra].filter(Boolean).join(" AND ") || "1";
+    const first = this.db.query<any, (string | number)[]>(
+      `SELECT * FROM entries WHERE ${cond("")} ORDER BY at DESC, rid DESC LIMIT ?`,
     );
-    const out: Entry[] = [];
-    for (let off = 0; out.length < limit; off += limit) {
-      const rows = q.all(...params, limit, off);
-      for (const r of rows) {
-        const e = this.row(r);
-        if (!mask.allow || mask.allow(e)) out.push(e);
-        if (out.length === limit) break;
+    const next = this.db.query<any, (string | number)[]>(
+      `SELECT * FROM entries WHERE ${cond("(at < ? OR (at = ? AND rid < ?))")} ORDER BY at DESC, rid DESC LIMIT ?`,
+    );
+    return this.db.transaction(() => {
+      const out: Entry[] = [];
+      let rows = first.all(...params, limit);
+      while (rows.length) {
+        for (const r of rows) {
+          const e = this.row(r);
+          if (!mask.allow || mask.allow(e)) out.push(e);
+          if (out.length === limit) return out;
+        }
+        if (rows.length < limit || !mask.allow) break;
+        const last = rows[rows.length - 1];
+        rows = next.all(...params, last.at, last.at, last.rid, limit);
       }
-      if (rows.length < limit || !mask.allow) break;
-    }
-    return out;
+      return out;
+    })();
   }
 
   private row(r: any): Entry {

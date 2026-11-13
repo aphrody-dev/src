@@ -1,3 +1,6 @@
+//! Wayland wire protocol, state and compositor for WSLg. Portable; the Windows host parts (Hyper-V
+//! socket transport, D3D12 mapping of dmabufs) are `cfg(windows)`.
+
 pub mod compositor;
 pub mod protocol;
 pub mod state;
@@ -7,7 +10,9 @@ pub mod wire;
 pub use compositor::{WaylandCompositor, WaylandGlobal};
 pub use protocol as proto;
 pub use state as st;
-pub use transport::{hyperv::SockAddrHv, LoopbackTransport, WaylandTransport};
+#[cfg(windows)]
+pub use transport::hyperv::SockAddrHv;
+pub use transport::{LoopbackTransport, WaylandTransport};
 pub use wire::{WaylandArgument, WaylandMessage, WireError};
 
 #[cfg(test)]
@@ -97,6 +102,7 @@ mod tests {
         assert_eq!(surf.current.buffer_id, Some(100));
     }
 
+    #[cfg(windows)]
     #[test]
     fn test_dmabuf_d3d12_shared_mapping() {
         let mut table = st::D3D12SharedMappingTable::new();

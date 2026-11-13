@@ -14,6 +14,7 @@ pub struct WaylandGlobal {
 pub struct WaylandCompositor {
     pub globals: Vec<WaylandGlobal>,
     pub surfaces: st::SurfaceRegistry,
+    #[cfg(windows)]
     pub dmabuf_table: st::D3D12SharedMappingTable,
     pub seat: st::WaylandSeat,
     pub outputs: Vec<st::WaylandOutput>,
@@ -26,6 +27,7 @@ impl WaylandCompositor {
         let mut compositor = Self {
             globals: Vec::new(),
             surfaces: st::SurfaceRegistry::new(),
+            #[cfg(windows)]
             dmabuf_table: st::D3D12SharedMappingTable::new(),
             seat: st::WaylandSeat::new("seat0"),
             outputs: vec![st::WaylandOutput::new_rtx4070_120hz(1)],

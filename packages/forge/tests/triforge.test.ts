@@ -151,8 +151,8 @@ describe("Sovereign GitLab Infra, .gitlab-ci.yml & cloudbuild.yaml Validation", 
       srcPath("infra", "gitlab", "setup-triforge.ps1"),
       srcPath("infra", "gitlab", "setup-triforge.sh"),
       srcPath("infra", "gitlab", "README.md"),
-      srcPath(".gitlab-ci.yml"),
-      srcPath("cloudbuild.yaml"),
+      srcPath("infra", "gitlab", "gitlab-ci.yml"),
+      srcPath("infra", "gcloud", "cloudbuild.yaml"),
     ];
 
     for (const file of files) {
@@ -170,7 +170,7 @@ describe("Sovereign GitLab Infra, .gitlab-ci.yml & cloudbuild.yaml Validation", 
     expect(compose).toContain("2224:22");
     expect(compose).toContain("archlinux-pkgctl");
 
-    const gitlabCi = readFileSync(srcPath(".gitlab-ci.yml"), "utf-8");
+    const gitlabCi = readFileSync(srcPath("infra", "gitlab", "gitlab-ci.yml"), "utf-8");
     expect(gitlabCi).toContain("lint-anti-slop");
     expect(gitlabCi).toContain("build-bun-rust-go");
     expect(gitlabCi).toContain("test-gate");
@@ -178,7 +178,7 @@ describe("Sovereign GitLab Infra, .gitlab-ci.yml & cloudbuild.yaml Validation", 
     expect(gitlabCi).toContain("wck-seo-100");
     expect(gitlabCi).toContain("triforge-mirror");
 
-    const cloudbuild = readFileSync(srcPath("cloudbuild.yaml"), "utf-8");
+    const cloudbuild = readFileSync(srcPath("infra", "gcloud", "cloudbuild.yaml"), "utf-8");
     expect(cloudbuild).toContain("europe-west1");
     expect(cloudbuild).toContain("us-central1");
     expect(cloudbuild).toContain("bunos");

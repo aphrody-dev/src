@@ -2,12 +2,12 @@
 
 ## Name
 
-- **Brand**: Aphrody Labs, home `labs.aphrody.com`, the lab of Aphrody (`aphrody-dev` is the main org, like `vercel`;
-  `aphrody-labs` is the lab org, like `vercel-labs`).
-- **Binary**: `aphrody`.
-- **Crates**: `aphrody` (the CLI) and `aphrody-<dir>` for each workspace member.
-- **npm**: `@aphrody/*` (platform binaries as optionalDependencies, per OS and arch).
-- **Repository**: `github.com/aphrody-labs/labs` (private, in the `aphrody-labs` organization, the lab org; `aphrody-dev` is the main org).
+Single source: [`identity.toml`](../identity.toml) at the repository root (`just identity check` gates it, `just identity apply` rewrites the copies; docs/ARCHITECTURE-ROOT.md invariant 5). This section only explains the values.
+
+- **Brand**: Aphrody Labs, home `labs.aphrody.com` (`[domains].home`); `aphrody-dev` is the main org (this repository: `github.com/aphrody-dev/src`), `aphrody-labs` the lab org (forks, products under `apps/`).
+- **Binary**: `ay` (`[cli].binary`), package `aphrody` (`[cli].crate`, crates/ay). The former labs binary `aphrody` (crates/aphrody-cli) is now `ay conformance`.
+- **Crates**: a member keeps its directory name unless it would collide on crates.io; then it takes `[naming].crate_prefix` (`aphrody-`). Names are never re-prefixed on a move.
+- **npm**: `[naming].npm_scope` (`@aphrody/*`); sub-products in `[products.*]` are `<scope>/<binary>` (`@aphrody/ai-os`).
 
 ## Availability evidence (2026-11-12)
 
@@ -31,12 +31,12 @@ member, check `https://crates.io/api/v1/crates/aphrody-<dir>`.
 
 ## What the owner must do
 
-Created: `aphrody-labs/labs` (private), forks `aphrody-labs/lore`, `aphrody-labs/UnrealEngine` (private). Nothing published.
+Created: forks `aphrody-labs/lore`, `aphrody-labs/UnrealEngine` (private). Nothing published.
 
 | Registry | Item | Notes |
 |---|---|---|
-| GitHub | repository `aphrody-labs/labs` | created, private, empty; the source of truth is Lore |
-| crates.io | crate `aphrody` | names are held only by publishing; publish `crates/cli` 0.0.x when ready (`publish = false` until then) |
+| GitHub | repository `aphrody-dev/src` | this monorepo; `aphrody-labs/labs` was merged into it on 2026-11-12 and is not used |
+| crates.io | crate `aphrody` | names are held only by publishing; publish `crates/ay` 0.0.x when ready (`publish = false` until then) |
 | npm | `@aphrody/cli` and per-platform packages | scope already owned; publish with the first binary release |
 | DNS | `labs.aphrody.com` records | homepage and conformance dashboard |
 

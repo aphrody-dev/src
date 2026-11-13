@@ -23,9 +23,9 @@ Engineered around the foundational standards of **Linus Torvalds** (`Linux`, `Gi
 | Pillar | Root Manifest | Orchestrators & Commands | Scope |
 | :--- | :--- | :--- | :--- |
 | **1. Git Superproject** | [`.gitmodules`](.gitmodules), [`.gitattributes`](.gitattributes), [`src.lock.json`](src.lock.json) | `xtk lock`, `xtk slim-all`, `frg status`, `frg remotes` | 25 first-party submodules + Git Scalar (`protocol.version=2`, `core.fsmonitor`, `index.version=4`, `commit-graph`, `multi-pack-index`) + Tri-Forge (`GitHub`, `GitLab`, `Google Git`) |
-| **2. Chromium (`depot_tools`)** | [`DEPS`](DEPS), [`third_party/chromium/.gclient`](third_party/chromium/.gclient) | `depot gclient`, `depot siso`, `depot gn`, `depot manifests` | Deterministic `gclient` `DEPS` pins (`git_dependencies = 'SYNC'`, `vars`, `deps`, `recursedeps`, `hooks`) generated directly from `src.lock.json` |
+| **2. Chromium (`depot_tools`)** | [`DEPS`](DEPS), [`third_party/chromium/.gclient`](third_party/chromium/.gclient) | `depot gclient`, `depot siso`, `depot gn`, `depot manifests` | Deterministic `gclient` `DEPS` pins (`git_dependencies = 'SYNC'`, `vars`, `deps`, `recursedeps`, `hooks`) derived from `src.lock.json` by `ay manifests` (`--check` gate) |
 | **3. Linux Kernel (`7.4+`)** | [`MAINTAINERS`](MAINTAINERS), [`docs/patches/series`](docs/patches/series) | `depot maintainer <path>`, `xtk audit-vcs` | Standard Linux Kernel `MAINTAINERS` (`M:`, `S:`, `T:`, `F:`), 5-remote kernel topology (`origin`, `torvalds`, `stable`, `next`, `gki`), and declarative Quilt/`b4` patch series |
-| **4. Android AOSP & GKI** | [`.repo/manifests/default.xml`](.repo/manifests/default.xml) | `depot repo`, `xtk manifests`, `frg pillars` | Google `repo` XML manifest pinning `android.googlesource.com` (`platform/manifest`, `kernel/build` Kleaf), `chromium.googlesource.com`, `git.kernel.org`, and `aphrody-dev` |
+| **4. Android AOSP & GKI** | `third_party/aosp` (when checked out) | `xtk audit-vcs` | audited only; no generated `repo` manifest (pin-001: one pin, `src.lock.json`) |
 
 ---
 
@@ -45,7 +45,7 @@ Engineered around the foundational standards of **Linus Torvalds** (`Linux`, `Gi
 just doctor          # Verify all 17 compiler, VCS, depot_tools, cloud, and AI CLI toolchains (xtk)
 just vcs-audit       # Audit all 4 VCS pillars (Git + Chromium DEPS + Kernel MAINTAINERS + AOSP repo)
 just arch-check      # Enforce 12-rule domain-purity, zero-npm, zero-emoji & host safety gate (archguard)
-just lock            # Regenerate C:\src\src.lock.json + DEPS + .repo/manifests/default.xml + MAINTAINERS
+just lock            # Lock the checkout in src.lock.json, then derive DEPS + .gitmodules (just manifests-check verifies)
 just env-doctor      # Audit masked C:\src\.env vault, NTFS ACLs, and editor auth sync
 just rust-stack serve # Launch 4.80 MB Pure-Rust Auth + UI + WebUI + OpenAI Gateway (:4320)
 just deploy          # One-click Vercel-style build + OCI + R2 + VPS/Cloud deployment
@@ -54,12 +54,11 @@ just verify-all      # Run Bun, Cargo, and Go + 3-way FFI test suites end-to-end
 
 ## Labs (merged from `C:\labs`, 2026-11-12)
 
-Aphrody Labs (`aphrody-labs/labs`): self-hosted Vercel-like platform and `aphrody` single binary (V8 JS runtime, Next.js/Tailwind/shadcn compatibility, native renderer). Target architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Aphrody Labs (`aphrody-labs/labs`): self-hosted Vercel-like platform; its former `aphrody` binary is now `ay conformance` (V8 JS runtime, Next.js/Tailwind/shadcn compatibility, native renderer). Target architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 | Path | Content |
 |---|---|
-| `crates/aphrody-cli` | package `aphrody-labs-cli`, binary `aphrody` (labs `crates/cli`; becomes `ay` subcommands later) |
-| `crates/conformance`, `conformance/` | pinned conformance suites (`upstreams.toml`, `expected/`) |
+| `crates/conformance`, `conformance/` | pinned conformance suites (`upstreams.toml`, `expected/`), CLI `ay conformance` (ex-`crates/aphrody-cli`) |
 | `crates/lore*`, `licenses/lore`, `tools/lore` | Lore VCS, absorbed (MIT) |
 | `crates/apm` | APM crate |
 | `third_party/patches/{quinn-proto,glob-match}` | patched crates (`[patch.crates-io]`) |

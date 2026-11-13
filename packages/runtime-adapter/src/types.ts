@@ -44,6 +44,6 @@ export type CronHandler = (ctx: Ctx) => Promise<void> | void;
 export interface AppDef {
   name: string;
   fetch(req: Request, ctx: Ctx): Promise<Response> | Response;
-  /** name -> handler. Schedules live in deploy.toml ([hosting.<app>].crons), never here. */
+  /** name -> handler. Schedules live in infra/deploy.toml ([hosting.<app>].crons), never here. */
   crons?: Record<string, CronHandler>;
 }

@@ -1,6 +1,6 @@
 # Hosting policy: Cloudflare Free + VPS (Vercel Hobby on hold)
 
-Date 2026-11-12. Source of truth: `deploy.toml` (`[nodes.*]`, `[services.*]`, `[hosting.*]`). Renderer: `bun scripts/deploy-target.ts <app> <cf|vercel|vps> [--preview]`. Portable runtime: `packages/runtime-adapter`.
+Date 2026-11-12. Source of truth: `infra/deploy.toml` (`[nodes.*]`, `[services.*]`, `[hosting.*]`). Renderer: `bun scripts/deploy-target.ts <app> <cf|vercel|vps> [--preview]`. Portable runtime: `packages/runtime-adapter`.
 
 ## Free-tier limits (read from the official docs on 2026-11-12)
 
@@ -24,7 +24,7 @@ Source conflict: the `cloudflare.config.ts` docs name the Worker field `bindings
 2. Dynamic code on Workers only if it stays under 10 ms CPU and 100k req/day for the whole account. Otherwise it runs on the VPS (prd) and the Worker proxies to it.
 3. State goes to the VPS when it exceeds D1/KV quotas (KV allows only 1,000 writes/day). Small read-mostly data can go to D1/KV.
 4. Vercel: **no target while the team's softBlock lasts (since 2026-06)**. Once it is lifted, only non-commercial apps (`commercial = false`) may go there; the generator refuses commercial apps and any cron that runs more than once a day.
-5. Every app renders for all 3 targets. Nothing is hardcoded: IPs, ports, buckets and domains come from deploy.toml, and secrets from Workers secrets, Vercel env or `/etc/aphrody/<app>.env` (0600).
+5. Every app renders for all 3 targets. Nothing is hardcoded: IPs, ports, buckets and domains come from infra/deploy.toml, and secrets from Workers secrets, Vercel env or `/etc/aphrody/<app>.env` (0600).
 
 ## App matrix
 

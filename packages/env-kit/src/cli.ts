@@ -415,7 +415,7 @@ Usage:
   env-kit secret <info|list|set|exec|pipe|has|rm|import>  OS secret store (DPAPI / systemd-creds); values in via stdin, out via child env/stdin only
   env-kit auth status [--json] [--only k,..]  Every auth: CLIs, Chrome, tokens, store, CI secrets, ssh, WireGuard, tunnels
   env-kit auth repair [--browser]      Fix without password; --browser opens sign-in pages the owner clicks
-  env-kit auth gh-secrets [--dry-run]  gh secret set from the store (deploy.toml [auth.github])
+  env-kit auth gh-secrets [--dry-run]  gh secret set from the store (infra/deploy.toml [auth.github])
   env-kit auth tunnels [--dry-run]     cloudflared tokens from the Cloudflare API into systemd-creds
   env-kit auth rotate cloudflare       Roll CLOUDFLARE_API_TOKEN through the API; store, .env, user env, then gh-secrets
 `);

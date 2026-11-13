@@ -38,6 +38,6 @@ Gap 1: we stop at h2; Chrome is already on h3 (QUIC). Gap 2: our cipher choice c
 
 ## Test targets
 
-Central config: `[test_targets]` in `deploy.toml`, mirrored in `packages/net/targets.json`. Tests tagged `e2e:auth` need `APHRODY_CDP_URL` (a logged-in Chrome started with `--remote-debugging-port` and `--user-data-dir=$APHRODY_CHROME_PROFILE`) and skip otherwise. No cookie or token is read or stored.
+Central config: `[test_targets]` in `infra/deploy.toml`, mirrored in `packages/net/targets.json`. Tests tagged `e2e:auth` need `APHRODY_CDP_URL` (a logged-in Chrome started with `--remote-debugging-port` and `--user-data-dir=$APHRODY_CHROME_PROFILE`) and skip otherwise. No cookie or token is read or stored.
 
 Inventory (rg, excluding vendor/third_party/node_modules/target): `example.com|org|net` appears in 196 files (152 of them tests), `httpbin` in 0, `localhost:<port>` in 128. Most are pure parser or rewriter fixtures (crates/next, apps/r2b, apps/shenron); they keep RFC 2606 hosts because a unit test must not depend on the network. Only tests that actually perform I/O move to `test_targets`.

@@ -152,7 +152,19 @@ test("context: scope mask applies before LIMIT (no starvation by newer out-of-sc
     })),
     now,
   );
+  await ctx.ingest(
+    { id: "near", source: "memory", scope: "teams", text: "not team" },
+    now - 20_000,
+  );
   expect(ctx.list({ scopes: ["team"] }, 5).map((e) => e.id)).toEqual(["old"]);
+  const plan = ctx.db
+    .query(
+      "EXPLAIN QUERY PLAN SELECT * FROM entries WHERE scope = ? OR (scope >= ? AND scope < ?)",
+    )
+    .all("team", "team:", "team;")
+    .map((r: any) => r.detail)
+    .join(" ");
+  expect(plan).toContain("entries_scope_at");
   expect(ctx.list({ scopes: ["team:a"], sources: ["doc"] }, 5)).toEqual([]);
   expect(ctx.list({ scopes: ["*"] }, 3).length).toBe(3);
   expect(

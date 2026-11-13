@@ -128,8 +128,8 @@ a `source = "ubi"` entry with `repo` and the tag template.
 
 ## 4. Workstation bootstrap (`ay up --bootstrap`) and the install scripts
 
-`install.ps1` and `install.sh` stay the entry points for now and are not removed. Every step they
-perform has a declarative equivalent in `tools.toml`, applied by `ay up --bootstrap` (tools first,
+`scripts/install.ps1` and `scripts/install.sh` are ten-line bootstraps: they build `ay` once (`cargo install --path crates/ay`) and run `ay up --bootstrap`. Every step the former root scripts
+performed has a declarative equivalent in `tools.toml`, applied by `ay up --bootstrap` (tools first,
 then the items below, then `ay doctor`). `ay up --check` lists the items with their state (`ok`,
 `differs`, `missing`) without counting them in the exit code.
 
@@ -238,7 +238,7 @@ which objects are current.
 5. Pages and loaders resolve logical names through the manifest, so a deploy is atomic for clients:
    they see either the old manifest and old objects, or the new manifest and new objects.
 
-Buckets per service are in `deploy.toml` (`r2_bucket`); the CDN origin is `fr2`. Garbage
+Buckets per service are in `infra/deploy.toml` (`r2_bucket`); the CDN origin is `fr2`. Garbage
 collection of keys no longer referenced by any `releases/*.json` is a later step and not
 implemented. Only step 2 is implemented in `ay` today (`crates/up/src/assets.rs`, tested); upload
 stays with `wrangler` until the deploy engine takes it over.

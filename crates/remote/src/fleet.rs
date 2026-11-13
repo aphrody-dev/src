@@ -1,4 +1,4 @@
-//! Fleet nodes from `deploy.toml` (`[nodes.<name>]` with `ssh_alias`) and target resolution:
+//! Fleet nodes from `infra/deploy.toml` (`[nodes.<name>]` with `ssh_alias`) and target resolution:
 //! `all`, a comma list, node names or ssh aliases.
 
 use std::collections::BTreeMap;
@@ -35,7 +35,7 @@ struct DeployToml {
 
 /// Parse the `[nodes.*]` tables; nodes listed in [`DEFAULT_ORDER`] come first, others follow by name.
 pub fn parse_nodes(text: &str) -> Result<Vec<Node>> {
-    let doc: DeployToml = toml::from_str(text).context("deploy.toml")?;
+    let doc: DeployToml = toml::from_str(text).context("infra/deploy.toml")?;
     let mut nodes: Vec<Node> = doc
         .nodes
         .into_iter()
@@ -53,9 +53,9 @@ pub fn parse_nodes(text: &str) -> Result<Vec<Node>> {
     Ok(nodes)
 }
 
-/// Load nodes from `<root>/deploy.toml`; a missing file means no fleet.
+/// Load nodes from `<root>/infra/deploy.toml`; a missing file means no fleet.
 pub fn load_nodes(root: &Path) -> Result<Vec<Node>> {
-    let path = root.join("deploy.toml");
+    let path = root.join("infra").join("deploy.toml");
     match std::fs::read_to_string(&path) {
         Ok(text) => parse_nodes(&text).with_context(|| path.display().to_string()),
         Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(Vec::new()),
@@ -77,7 +77,7 @@ pub fn resolve_targets(spec: &str, nodes: &[Node]) -> Result<Vec<Target>> {
     for item in spec.split(',').map(str::trim).filter(|s| !s.is_empty()) {
         let batch: Vec<Target> = if item.eq_ignore_ascii_case("all") {
             if nodes.is_empty() {
-                bail!("`all` needs [nodes.*] in deploy.toml (none found)");
+                bail!("`all` needs [nodes.*] in infra/deploy.toml (none found)");
             }
             nodes.iter().map(node_target).collect()
         } else if let Some(n) = nodes.iter().find(|n| n.name.eq_ignore_ascii_case(item)) {

@@ -54,3 +54,12 @@ docker compose -f docker-compose.gitlab.yml up -d
 ```
 
 Reverse-proxy `git.aphrody.com` to `127.0.0.1:8929` and `registry.aphrody.com` to `127.0.0.1:5050` via Caddy or Cloudflare Tunnel (`infra/mesh-vn`). SSH Git traffic listens on TCP `:2224`.
+
+## Pipeline file
+
+The pipeline is `infra/gitlab/gitlab-ci.yml` (moved out of the repository root on 2026-11-13). GitLab only reads it once the project's CI configuration path points to it:
+
+```sh
+glab api -X PUT projects/aphrody-dev%2Fsrc -f ci_config_path=infra/gitlab/gitlab-ci.yml
+# rollback: glab api -X PUT projects/aphrody-dev%2Fsrc -f ci_config_path=
+```

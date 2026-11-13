@@ -41,7 +41,7 @@ Managed via `env-kit accounts` with isolated `gcloud` named configurations shari
 - **Offline docs**: `third_party/docs-ecosystem/` (Docker, Kubernetes, nix.dev, Arch/Alpine image repos), pinned in `src.lock.json`, refreshed by `just docs-sync`.
 - **Agent autonomy**: agents run unrestricted by default. The PreToolUse guard `.agents/scripts/pre-tool-guard.ts` serves `agy` only (`.agents/hooks.json`), controlled by `AGENT_GUARD=off|warn|enforce` (default `off`). Claude Code does not run it: the `permissions.deny` rules of `.claude/settings.json` replace it (see `CLAUDE.md`).
 - **Orchestration**: `just orch` / `just lifecycle` (`packages/ai-os/src/orch`, doc `packages/ai-os/docs/ORCHESTRATOR.md`) split work into task graphs run in parallel across the fleet, pick engines from what is installed and discovered (no model chain in code), fail over on quota/429/auth and open fix tickets. External effects (publish, send, spend) need an owner rule in `.agents/owner-rules.json`; otherwise they are drafted into `var/agents/outbox/`. `pre-tool-guard.ts` enforces the same rule for commands.
-- **Skills**: `.agents/skills/` is the single source of truth. Claude Code reads it through the `.claude/skills` junction created by `install.ps1` (on Unix: `ln -s ../.agents/skills .claude/skills`).
+- **Skills**: `.agents/skills/` is the single source of truth. Claude Code reads it through the `.claude/skills` junction created by `ay up --bootstrap` (`[[link]] claude-skills`; symlink on Unix).
 
 ## 6. Steam Ecosystem Knowledge (`steam` plugin)
 

@@ -1,4 +1,4 @@
-# Sovereign Corelib (`sovereign-corelib`)
+# corelib (`aphrody-corelib`)
 
 Unified sovereign core library consolidating GPU, RE (Reverse Engineering), Emulation, and WASM surfaces for **Shenron** (`apps/shenron`) and **RoseGriffon** (`apps/rosegriffon`).
 
@@ -8,7 +8,7 @@ Unified sovereign core library consolidating GPU, RE (Reverse Engineering), Emul
 
 ```mermaid
 flowchart TD
-    Corelib["crates/corelib (sovereign-corelib)"]
+    Corelib["crates/corelib (aphrody-corelib)"]
     Corelib --> GPU["GPU Surface (wgpu 30, RenderTarget, RowLayout, Readback)"]
     Corelib --> RE["RE Surface (CRI CPK, CRILAYLA, @UTF Table, AOB Scanning)"]
     Corelib --> EMU["Emulation Surface (SimulationClock, InputState, SovereignVfs)"]

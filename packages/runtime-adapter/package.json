@@ -1,7 +1,7 @@
 {
   "name": "@aphrody/runtime-adapter",
   "version": "0.1.0",
-  "description": "One app entrypoint for Cloudflare Workers, Vercel Functions and Bun.serve on the VPS: storage, KV, SQL, cron and env selected by deploy.toml + env",
+  "description": "One app entrypoint for Cloudflare Workers, Vercel Functions and Bun.serve on the VPS: storage, KV, SQL, cron and env selected by infra/deploy.toml + env",
   "private": true,
   "type": "module",
   "main": "./src/index.ts",

@@ -3,6 +3,7 @@
 //! M0: no runner exists yet, so every suite reports `total = 0` (docs/ROADMAP.md).
 
 pub mod channels;
+pub mod cli;
 
 use std::collections::BTreeMap;
 use std::path::Path;

@@ -22,6 +22,7 @@ path = "src/lib.rs"
 
 [dependencies]
 archguard.workspace = true
+aphrody-conformance = { version = "0.2.0", path = "../conformance" }
 clap.workspace = true
 depot-cli.workspace = true
 depot-cipd.workspace = true

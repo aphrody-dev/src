@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
-//! Google Boq (`batchexecute`) Wire Protocol, Sovereign Adblock Engine. The C ABI over them lives in `crates/ffi` (`aphrody_*`).
+//! Google Boq (`batchexecute`) wire protocol and adblock glue over Brave's `adblock` crate. The C ABI over them lives in `crates/ffi` (`aphrody_*`).
 //!
-//! Consolidates `crates/aphrody-boq`, `crates/aphrody-chromium-ffi`, and `crates/brave-adblock`
-//! from `yolo-rs/yolo-web` into `sovereign-corelib` (`corelib::web`) with zero external bloat.
+//! Consolidates `crates/aphrody-boq` and `crates/aphrody-chromium-ffi` from `yolo-rs/yolo-web`; the
+//! former in-house filter engine is replaced by the upstream `adblock` crate (Brave, MPL-2.0).
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::collections::HashSet;
 
 // ============================================================================
 // 1. Google Boq (`batchexecute`) Request Encoder & Streamed Response Parser
@@ -119,7 +118,7 @@ pub fn boq_first_envelope(raw: &str) -> Option<Value> {
 }
 
 // ============================================================================
-// 2. Sovereign Adblock & Cosmetic Filter Engine (ABP / Hosts / Cosmetic Rules)
+// 2. Adblock: network filtering by Brave's `adblock` crate (upstream, MPL-2.0); this file is glue only
 // ============================================================================
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -134,171 +133,68 @@ pub struct AdblockCheckResult {
     pub exception: Option<String>,
 }
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
+/// ABP/uBO network and cosmetic rules plus hosts-format lines, all evaluated by `adblock::Engine`.
+/// `cosmetic_hide_selectors` keeps only the generic `##selector` rules (valid on every site);
+/// site-specific and exception cosmetic rules come from [`Self::hide_selectors_for`].
 pub struct SovereignAdblockEngine {
-    pub blocked_domains: HashSet<String>,
-    pub exception_domains: HashSet<String>,
-    pub blocked_substrings: Vec<String>,
-    pub important_substrings: Vec<String>,
+    engine: adblock::Engine,
     pub cosmetic_hide_selectors: Vec<String>,
 }
 
 impl SovereignAdblockEngine {
     #[must_use]
     pub fn from_rules(rules_text: &str) -> Self {
-        let mut engine = Self::default();
-        engine.add_rules(rules_text);
-        engine
+        use adblock::lists::{FilterFormat, FilterSet, ParseOptions};
+        // debug = true keeps the raw filter text, reported in `filter` / `exception`.
+        let mut set = FilterSet::new(true);
+        let (hosts, standard): (Vec<&str>, Vec<&str>) = rules_text
+            .lines()
+            .map(str::trim)
+            .filter(|l| !l.is_empty())
+            .partition(|l| l.starts_with("0.0.0.0 ") || l.starts_with("127.0.0.1 "));
+        set.add_filter_list(standard.join("\n"), ParseOptions::default());
+        set.add_filter_list(hosts.join("\n"), ParseOptions { format: FilterFormat::Hosts, ..ParseOptions::default() });
+        let cosmetic_hide_selectors = standard
+            .iter()
+            .filter_map(|l| l.strip_prefix("##"))
+            .map(str::trim)
+            .filter(|sel| !sel.is_empty() && !sel.starts_with('+'))
+            .map(str::to_string)
+            .collect();
+        Self { engine: adblock::Engine::new_with_filter_set(set), cosmetic_hide_selectors }
     }
 
-    pub fn add_rules(&mut self, rules_text: &str) {
-        for raw_line in rules_text.lines() {
-            let line = raw_line.trim();
-            if line.is_empty() || line.starts_with('!') || line.starts_with('[') {
-                continue;
-            }
-            // Cosmetic filter: `##.ad-banner` or `example.com##.ad-banner`
-            if let Some((_domain_part, selector)) = line.split_once("##") {
-                let sel = selector.trim();
-                if !sel.is_empty() {
-                    self.cosmetic_hide_selectors.push(sel.to_string());
-                }
-                continue;
-            }
-            if line.starts_with('#') {
-                continue;
-            }
-            // Hosts format: `0.0.0.0 doubleclick.net` or `127.0.0.1 ads.example.com`
-            if let Some(rest) = line.strip_prefix("0.0.0.0 ").or_else(|| line.strip_prefix("127.0.0.1 ")) {
-                let host = rest.split_whitespace().next().unwrap_or("").trim().to_ascii_lowercase();
-                if !host.is_empty() && host != "localhost" {
-                    self.blocked_domains.insert(host);
-                }
-                continue;
-            }
-            // Exception rule: `@@||example.com^`
-            if let Some(exc) = line.strip_prefix("@@") {
-                let cleaned = Self::extract_domain_anchor(exc);
-                if !cleaned.is_empty() {
-                    self.exception_domains.insert(cleaned);
-                }
-                continue;
-            }
-            // Domain anchor rule: `||doubleclick.net^`
-            if line.starts_with("||") {
-                let is_important = line.contains("$important");
-                let cleaned = Self::extract_domain_anchor(line);
-                if !cleaned.is_empty() {
-                    if is_important {
-                        self.important_substrings.push(cleaned.clone());
-                    }
-                    self.blocked_domains.insert(cleaned);
-                }
-                continue;
-            }
-            // Generic substring filter
-            let pattern = line.split('$').next().unwrap_or(line).trim().to_ascii_lowercase();
-            if !pattern.is_empty() {
-                if line.contains("$important") {
-                    self.important_substrings.push(pattern);
-                } else {
-                    self.blocked_substrings.push(pattern);
-                }
-            }
+    /// Check a request: `source_url` is the page that issued it (empty = unknown, treated as
+    /// third-party by adblock), `request_type` an adblock/webRequest type (`script`, `image`,
+    /// `xmlhttprequest`, `sub_frame`, `document`, `other`, ...).
+    #[must_use]
+    pub fn check_request(&self, url: &str, source_url: &str, request_type: &str) -> AdblockCheckResult {
+        let Ok(request) = adblock::request::Request::new(url, source_url, request_type, "GET") else {
+            return AdblockCheckResult { matched: false, blocked: false, important: false, filter: None, exception: None };
+        };
+        let r = self.engine.check_network_request(&request);
+        AdblockCheckResult {
+            matched: r.filter.is_some() || r.exception.is_some(),
+            blocked: r.should_block(),
+            important: r.important,
+            filter: r.filter.and_then(|f| f.raw_line),
+            exception: r.exception.and_then(|f| f.raw_line),
         }
-        self.cosmetic_hide_selectors.sort();
-        self.cosmetic_hide_selectors.dedup();
     }
 
-    fn extract_domain_anchor(rule: &str) -> String {
-        let without_prefix = rule.trim_start_matches("||");
-        let core = without_prefix
-            .split(['^', '/', '$', '*'])
-            .next()
-            .unwrap_or("")
-            .trim()
-            .to_ascii_lowercase();
-        core
-    }
-
-    fn extract_url_host(url: &str) -> String {
-        let after_scheme = url
-            .split_once("://")
-            .map(|(_, rest)| rest)
-            .unwrap_or(url);
-        let host_port = after_scheme.split(['/', '?', '#']).next().unwrap_or("");
-        host_port.split(':').next().unwrap_or("").to_ascii_lowercase()
-    }
-
+    /// A request whose page is unknown: adblock treats it as third-party, type `other`.
+    /// Callers that know the page and the resource type use [`Self::check_request`].
     #[must_use]
     pub fn check_network_url(&self, url: &str) -> AdblockCheckResult {
-        let lower_url = url.to_ascii_lowercase();
-        let host = Self::extract_url_host(&lower_url);
+        self.check_request(url, "", "other")
+    }
 
-        // 1. Check important rules first (override exceptions)
-        for imp in &self.important_substrings {
-            if lower_url.contains(imp) {
-                return AdblockCheckResult {
-                    matched: true,
-                    blocked: true,
-                    important: true,
-                    filter: Some(format!("||{imp}^$important")),
-                    exception: None,
-                };
-            }
-        }
-
-        // 2. Check domain exceptions
-        if !host.is_empty() {
-            for exc in &self.exception_domains {
-                if &host == exc || host.ends_with(&format!(".{exc}")) {
-                    return AdblockCheckResult {
-                        matched: true,
-                        blocked: false,
-                        important: false,
-                        filter: None,
-                        exception: Some(format!("@@||{exc}^")),
-                    };
-                }
-            }
-        }
-
-        // 3. Check blocked domain anchors
-        if !host.is_empty() {
-            for dom in &self.blocked_domains {
-                if &host == dom || host.ends_with(&format!(".{dom}")) {
-                    return AdblockCheckResult {
-                        matched: true,
-                        blocked: true,
-                        important: false,
-                        filter: Some(format!("||{dom}^")),
-                        exception: None,
-                    };
-                }
-            }
-        }
-
-        // 4. Check substring filters
-        for sub in &self.blocked_substrings {
-            if lower_url.contains(sub) {
-                return AdblockCheckResult {
-                    matched: true,
-                    blocked: true,
-                    important: false,
-                    filter: Some(sub.clone()),
-                    exception: None,
-                };
-            }
-        }
-
-        AdblockCheckResult {
-            matched: false,
-            blocked: false,
-            important: false,
-            filter: None,
-            exception: None,
-        }
+    /// Site-specific hide selectors for a page (`example.org##sel`, minus `#@#` exceptions), sorted.
+    #[must_use]
+    pub fn hide_selectors_for(&self, page_url: &str) -> Vec<String> {
+        let mut v: Vec<String> = self.engine.url_cosmetic_resources(page_url).hide_selectors.into_iter().collect();
+        v.sort();
+        v
     }
 }
 
@@ -331,40 +227,38 @@ mod tests {
         let rules = "\
             ! Sovereign Filter List\n\
             ||doubleclick.net^\n\
-            ||ads.example.com^$important\n\
+            ||ads.google.com^$important\n\
             @@||partner.doubleclick.net^\n\
             0.0.0.0 telemetry.tracker.io\n\
             /pagead/js/\n\
+            ||cdn.tracker.io^$third-party\n\
             ##.ConsentBanner\n\
-            example.com##.sponsored-slot\n\
+            google.com##.sponsored-slot\n\
         ";
         let engine = SovereignAdblockEngine::from_rules(rules);
 
-        let r1 = engine.check_network_url("https://ad.doubleclick.net/pixel.gif");
+        let r1 = engine.check_request("https://ad.doubleclick.net/pixel.gif", "https://news.site.org/", "image");
         assert!(r1.blocked);
         assert_eq!(r1.filter.as_deref(), Some("||doubleclick.net^"));
 
-        // Exception subdomain should not be blocked
-        let r2 = engine.check_network_url("https://partner.doubleclick.net/sdk.js");
+        let r2 = engine.check_request("https://partner.doubleclick.net/sdk.js", "https://news.site.org/", "script");
         assert!(!r2.blocked);
         assert_eq!(r2.exception.as_deref(), Some("@@||partner.doubleclick.net^"));
 
-        // Important rule overrides
-        let r3 = engine.check_network_url("https://ads.example.com/banner.js");
-        assert!(r3.blocked);
-        assert!(r3.important);
+        let r3 = engine.check_request("https://ads.google.com/banner.js", "https://news.site.org/", "script");
+        assert!(r3.blocked && r3.important);
 
-        // Hosts rule
-        let r4 = engine.check_network_url("https://telemetry.tracker.io/collect");
-        assert!(r4.blocked);
+        assert!(engine.check_request("https://telemetry.tracker.io/collect", "https://news.site.org/", "xmlhttprequest").blocked);
 
-        // Clean URL
-        let r5 = engine.check_network_url("https://aphrody.com/search?q=bun");
-        assert!(!r5.blocked);
+        // $third-party: blocked from another site, allowed first-party.
+        assert!(engine.check_request("https://cdn.tracker.io/a.js", "https://news.site.org/", "script").blocked);
+        assert!(!engine.check_request("https://cdn.tracker.io/a.js", "https://cdn.tracker.io/", "script").blocked);
 
-        assert_eq!(
-            engine.cosmetic_hide_selectors,
-            vec![".ConsentBanner".to_string(), ".sponsored-slot".to_string()]
-        );
+        assert!(!engine.check_network_url("https://aphrody.com/search?q=bun").blocked);
+
+        // Generic rules only; the google.com rule stays scoped to google.com.
+        assert_eq!(engine.cosmetic_hide_selectors, vec![".ConsentBanner".to_string()]);
+        assert!(engine.hide_selectors_for("https://www.google.com/").contains(&".sponsored-slot".to_string()));
+        assert!(!engine.hide_selectors_for("https://news.site.org/").contains(&".sponsored-slot".to_string()));
     }
 }

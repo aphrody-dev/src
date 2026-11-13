@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 /**
  * 3-VPS Sovereign Datacenter Search Cluster Coordinator (fr1 + fr2 + usa)
- * Models the exact WireGuard/MASQUE 10.200.77.0/24 cluster defined in C:\src\deploy.toml:
- *   - fr1 (deploy.toml nodes.*.public_ip / mesh_ip, OVH EU): Primary Search Edge Ingress, Autocomplete & BM25 Shard 0
- *   - fr2 (deploy.toml nodes.*.public_ip / mesh_ip, OVH EU): Headless Chromium CDP Crawler Pool, Spacedrive & BM25 Shard 1
- *   - usa (deploy.toml nodes.*.public_ip / mesh_ip, Hostinger US): Strict Google Search / Gemini Grounding Egress ONLY
+ * Models the exact WireGuard/MASQUE 10.200.77.0/24 cluster defined in infra/deploy.toml:
+ *   - fr1 (infra/deploy.toml nodes.*.public_ip / mesh_ip, OVH EU): Primary Search Edge Ingress, Autocomplete & BM25 Shard 0
+ *   - fr2 (infra/deploy.toml nodes.*.public_ip / mesh_ip, OVH EU): Headless Chromium CDP Crawler Pool, Spacedrive & BM25 Shard 1
+ *   - usa (infra/deploy.toml nodes.*.public_ip / mesh_ip, Hostinger US): Strict Google Search / Gemini Grounding Egress ONLY
  */
-import fleet from "../../../../deploy.toml";
+import fleet from "../../../../infra/deploy.toml";
 import { ChromiumBunCrawler, type CrawlPageResult } from "./crawler.ts";
 import {
   APHRODY_TOP1_SUBDOMAIN_CATALOG,

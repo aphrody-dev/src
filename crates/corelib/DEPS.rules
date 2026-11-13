@@ -1,2 +1,3 @@
 # checkdeps layer rules (see docs/ARCHITECTURE.md). Inherited by subdirectories.
-layer = 1
+# L3: product support library (wgpu, adblock); not //base (docs/ARCHITECTURE.md §5).
+layer = 3

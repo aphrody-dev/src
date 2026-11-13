@@ -1,3 +1,6 @@
+//! D3D12 + DirectComposition/WinUI host primitives. Windows only: the crate is empty elsewhere.
+#![cfg(windows)]
+
 pub mod adapter;
 pub mod device;
 pub mod direct_composition;

@@ -25,7 +25,7 @@ Activate this skill when packaging OCI v1.1 container images without a Docker da
    ```
 
 ## Regional Egress Invariant
-Node roles come from `deploy.toml` (`[nodes.*].role`), never from this skill:
+Node roles come from `infra/deploy.toml` (`[nodes.*].role`), never from this skill:
 - `usa` (`ssh prd`) hosts all production backends (`role = "production"`, `allow_non_google_workloads = true`).
 - `fr2` (`ssh cdn`) is the proxy, vhost and CDN edge.
 - `fr1` (`ssh vps`) builds Chromium and LLVM only; nothing is deployed there.

@@ -27,6 +27,6 @@ ln -sfn /etc/letsencrypt/live/<domaine> /etc/nginx/certs/<domaine>
 - `--cert-name` = domaine apex ; wildcard `*.<domaine>` systématique sur les zones Cloudflare.
 - Sources versionnées : `infra/fleet/fr2/nginx/` (sites + snippets).
 
-Contrôle : `ay auth status --only fleet` (unité `certbot` de fr2, `[auth.hosts.fr2]` de deploy.toml). Le 2026-11-13, les lignées aphrody.com, dragonballfr.com et rosegriffon.fr avaient des fichiers copiés dans `live/` au lieu de liens (certbot : « expected cert.pem to be a symlink », unité en échec) ; les fichiers ont été versés dans `archive/` comme nouvelle version et `live/` refait en liens, `certbot renew --dry-run` ok. Ne jamais copier dans `live/` : `certbot certonly --cert-name` ou un lien.
+Contrôle : `ay auth status --only fleet` (unité `certbot` de fr2, `[auth.hosts.fr2]` de infra/deploy.toml). Le 2026-11-13, les lignées aphrody.com, dragonballfr.com et rosegriffon.fr avaient des fichiers copiés dans `live/` au lieu de liens (certbot : « expected cert.pem to be a symlink », unité en échec) ; les fichiers ont été versés dans `archive/` comme nouvelle version et `live/` refait en liens, `certbot renew --dry-run` ok. Ne jamais copier dans `live/` : `certbot certonly --cert-name` ou un lien.
 
 État au 2026-11-12 : aphrody.com et aphrody.app (wildcards, expirent le 2027-02-05) gérés par certbot ; rpbey.fr = copie statique depuis fr1 (expire le 2027-02-05), à passer en webroot après bascule DNS OVH.

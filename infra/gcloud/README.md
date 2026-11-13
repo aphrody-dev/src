@@ -83,3 +83,7 @@ gcloud auth login contact@aphrody.com --configuration=org-contact
 $env:CLOUDSDK_ACTIVE_CONFIG_NAME = "org-contact"
 gcloud auth application-default login --project=aphrody
 ```
+
+## Cloud Build
+
+The build config is `infra/gcloud/cloudbuild.yaml` (moved out of the repository root on 2026-11-13). Triggers must name it: `gcloud builds triggers update <trigger> --build-config=infra/gcloud/cloudbuild.yaml`; manual run: `gcloud builds submit --config infra/gcloud/cloudbuild.yaml .`.

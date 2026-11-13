@@ -1,5 +1,6 @@
 // Sovereign Tri-Forge (GitHub + GitLab + Google Git) & Arch/CachyOS/Omarchy Upstream Engine
 import { SRC_ROOT } from "./root.ts";
+import identity from "../../../identity.toml";
 import { existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -32,13 +33,13 @@ export function getDefaultTriForgeConfig(
   const gitlabBaseUrl = (
     process.env.GITLAB_BASE_URL || "https://gitlab.com"
   ).replace(/\/+$/, "");
-  const gitlabGroup = process.env.GITLAB_GROUP || "aphrody-dev";
+  const gitlabGroup = process.env.GITLAB_GROUP || identity.orgs.main;
   const gitlabSelfBaseUrl = (
-    process.env.GITLAB_SELF_BASE_URL || "https://git.aphrody.com"
+    process.env.GITLAB_SELF_BASE_URL || `https://${identity.domains.git}`
   ).replace(/\/+$/, "");
-  const gitlabSelfGroup = process.env.GITLAB_SELF_GROUP || "aphrody";
-  const githubOrg = process.env.GITHUB_ORG || "aphrody-dev";
-  const orgOwnerEmail = process.env.APHRODY_ORG_EMAIL || "contact@aphrody.com";
+  const gitlabSelfGroup = process.env.GITLAB_SELF_GROUP || identity.product.name;
+  const githubOrg = process.env.GITHUB_ORG || identity.orgs.main;
+  const orgOwnerEmail = process.env.APHRODY_ORG_EMAIL || identity.domains.contact;
   const gcpProjectId = process.env.GCP_PROJECT_ID || "aphrody";
   const gcpProjectNumber = process.env.GCP_PROJECT_NUMBER || "468000409790";
   const gcpRegion = process.env.GCP_REGION || "europe-west1";

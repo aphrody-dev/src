@@ -29,7 +29,7 @@ homepage = "https://labs.aphrody.com"
 archguard = { version = "0.1.0", path = "crates/archguard" }
 aphrody-design-shared = { version = "0.2.0", path = "crates/aphrody-design-shared" }
 aphrody-design-tokens = { version = "0.2.0", path = "crates/aphrody-design-tokens" }
-corelib = { version = "0.1.0", package = "sovereign-corelib", path = "crates/corelib", default-features = false }
+corelib = { version = "0.2.0", package = "aphrody-corelib", path = "crates/corelib", default-features = false }
 depot-cli = { version = "0.2.0", path = "crates/depot-cli" }
 depot-core = { version = "0.2.0", path = "crates/depot-core" }
 depot-cas = { version = "0.2.0", path = "crates/depot-cas" }

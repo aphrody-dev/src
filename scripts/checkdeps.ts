@@ -16,6 +16,7 @@
 // Edge policy: lower layer -> allowed; same layer -> allowed (cycles are errors); upper layer
 // -> error unless ! rule. Unlayered units -> error. Exit code 1 on any error.
 //
+// Units: Cargo.toml [package], package.json, pyproject.toml [project] (uv; edges from [tool.uv.sources]).
 // Usage: bun scripts/checkdeps.ts [--root DIR] [--json] [--graph] [--affected REF]
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
@@ -30,7 +31,7 @@ type Scope = {
 type Unit = {
   dir: string;
   name: string;
-  kind: "cargo" | "bun";
+  kind: "cargo" | "bun" | "uv";
   deps: string[];
 };
 type Finding = {
@@ -93,6 +94,7 @@ function walk(dir: string, depth: number, max: number) {
   if (depth > max || !existsSync(dir)) return;
   const cargo = join(dir, "Cargo.toml");
   const pkg = join(dir, "package.json");
+  const py = join(dir, "pyproject.toml");
   if (existsSync(cargo)) {
     const t = readToml(cargo);
     if (t?.package?.name)
@@ -113,6 +115,16 @@ function walk(dir: string, depth: number, max: number) {
           deps: [],
         });
     } catch {}
+  } else if (existsSync(py)) {
+    // Python (uv): a [project] is a unit; a bare [tool.uv.workspace] root is not.
+    const t = readToml(py);
+    if (t?.project?.name)
+      units.set(rel(dir), {
+        dir: rel(dir),
+        name: t.project.name,
+        kind: "uv",
+        deps: [],
+      });
   }
   for (const e of readdirSync(dir, { withFileTypes: true })) {
     if (e.isDirectory() && !SKIP.has(e.name) && !e.name.startsWith("."))
@@ -155,6 +167,36 @@ for (const u of units.values()) {
         const d = p && unitOf(p);
         if (d && d !== u.dir) out.add(d);
       }
+    }
+  } else if (u.kind === "uv") {
+    // Edges: [tool.uv.sources] entries that are workspace members or local paths.
+    const t = readToml(join(abs, "pyproject.toml")) ?? {};
+    const deps = new Set(
+      [
+        ...(t.project?.dependencies ?? []),
+        ...Object.values<string[]>(
+          t.project?.["optional-dependencies"] ?? {},
+        ).flat(),
+      ].map((d: string) =>
+        d
+          .split(/[\s<>=!~;\[(]/)[0]!
+          .toLowerCase()
+          .replaceAll("_", "-"),
+      ),
+    );
+    for (const [name, spec] of Object.entries<any>(t.tool?.uv?.sources ?? {})) {
+      if (!deps.has(name.toLowerCase().replaceAll("_", "-"))) continue;
+      const d = spec?.path
+        ? unitOf(join(abs, spec.path))
+        : spec?.workspace
+          ? [...units.values()].find(
+              (x) =>
+                x.kind === "uv" &&
+                x.name.toLowerCase().replaceAll("_", "-") ===
+                  name.toLowerCase().replaceAll("_", "-"),
+            )?.dir
+          : undefined;
+      if (d && d !== u.dir) out.add(d);
     }
   } else {
     const j = JSON.parse(readFileSync(join(abs, "package.json"), "utf8"));

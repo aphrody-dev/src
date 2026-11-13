@@ -8,9 +8,12 @@ authors.workspace = true
 license.workspace = true
 
 [dependencies]
-windows.workspace = true
 tracing.workspace = true
 thiserror.workspace = true
+
+# Windows-only crate (lib.rs is cfg(windows)): no windows-rs in Linux builds.
+[target.'cfg(windows)'.dependencies]
+windows.workspace = true
 
 [dev-dependencies]
 tracing-subscriber.workspace = true

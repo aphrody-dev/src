@@ -1,6 +1,6 @@
 # Migration Vercel + Cloudflare (2026-11-12)
 
-Source de vérité hôtes/IP : `C:\src\deploy.toml` (`[nodes.*]`). Workers : `C:\src\infra\fleet\workers\`. Secrets : Workers secrets / Vercel env uniquement.
+Source de vérité hôtes/IP : `C:\src\infra/deploy.toml` (`[nodes.*]`). Workers : `C:\src\infra\fleet\workers\`. Secrets : Workers secrets / Vercel env uniquement.
 Relevé live 2026-11-12 (ssh cdn/prd, API Cloudflare). Zones CF : aphrody.com, aphrody.app, dragonballfr.com, rosegriffon.fr (hors périmètre), 3dland.tech (pending).
 
 ## Vhosts fr2 (/etc/nginx/sites)
@@ -47,8 +47,8 @@ Relevé live 2026-11-12 (ssh cdn/prd, API Cloudflare). Zones CF : aphrody.com, a
 
 ## Restes codés en dur
 
-- `packages/chromium-bun/src/search/cluster-3vps.ts` : lit `deploy.toml` (fait).
-- `apps/shenron/deploy/cloudflare/cdn-worker.ts` (ALLOWED_GARAGE_ORIGINS), `cdn-origin.ts`, `crates/remote` (tests), `packages/env-kit/src/accounts.ts`, `infra/internal/providers/vps.go`, `apps/shenron/scripts/**` : à passer en vars Worker / lecture deploy.toml. `apps/rosegriffon/**` : hors périmètre.
+- `packages/chromium-bun/src/search/cluster-3vps.ts` : lit `infra/deploy.toml` (fait).
+- `apps/shenron/deploy/cloudflare/cdn-worker.ts` (ALLOWED_GARAGE_ORIGINS), `cdn-origin.ts`, `crates/remote` (tests), `packages/env-kit/src/accounts.ts`, `infra/internal/providers/vps.go`, `apps/shenron/scripts/**` : à passer en vars Worker / lecture infra/deploy.toml. `apps/rosegriffon/**` : hors périmètre.
 
 ## Bascule 2026-11-12 (backends prd absents)
 

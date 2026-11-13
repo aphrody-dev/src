@@ -1,6 +1,6 @@
 # Architecture
 
-One repo for the agent stack, from GPU runtime to the user-facing surfaces. Names come from `identity.toml`.
+One repo for the agent stack, from GPU runtime to the user-facing surfaces. Names come from the root `identity.toml` (`[products.ai-os]`).
 Workspaces: bun (`packages/*`), cargo (`crates/*`), uv (`python/*`). Native code builds on the shared Chromium LLVM
 toolchain (see `C:\src\docs\llvm\UNIFIED-TOOLCHAIN.md`); native CI runs on the `prd` self-hosted runner, never on the dev PC.
 
@@ -77,7 +77,7 @@ L = legacy src packages. Approach: SDK = native vendor SDK, FORK = code from our
 | 0005 | OpenClaw/Hermes/pi/opencode code is MIT; ported code keeps notices in `NOTICE` + `licenses/`.                        |
 | 0006 | Native builds on the prd runner with the Chromium LLVM toolchain; GitHub-hosted CI runs bun tests only.              |
 | 0007 | Windows native first (no WSL); Linux second; Cloudflare/Vercel through runtime-adapter.                              |
-| 0008 | Product name only in `identity.toml`.                                                                                |
+| 0008 | Product name only in root `identity.toml`.                                                                               |
 
 ## Context (attention-style selection)
 

@@ -1,8 +1,10 @@
+#[cfg(windows)]
 pub mod dmabuf;
 pub mod output;
 pub mod seat;
 pub mod surface;
 
+#[cfg(windows)]
 pub use dmabuf::{D3D12SharedMappingTable, DmaBufImport, DmaBufPlane};
 pub use output::{OutputMode, WaylandOutput};
 pub use seat::{KeyboardModifiers, KeyboardState, PointerState, WaylandSeat};

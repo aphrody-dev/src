@@ -7,19 +7,21 @@ Cible commune avec la session labs (référence : `labs/docs/ROOT-ARCHITECTURE.m
 ## 1. Invariants (contrôlés par `ay arch check --strict` et `just ci`)
 
 1. **Un seul de chaque.** Un workspace Cargo (`crates/*`), un workspace bun (`packages/*`), une toolchain Rust (`rust-toolchain.toml`, une nightly épinglée). Un seul `Cargo.lock`, `bun.lock`, `src.lock.json` (dépôts) et `justfile`. `[workspace.dependencies]` donne une version par crate.
-2. **À plat.** `crates/<couche>-<nom>`, `packages/<nom>`, `third_party/<nom>`, sur un seul niveau, sans dossier de catégorie (modèle Chromium). La catégorie devient une métadonnée. Les crates existants changent de dossier mais gardent leur nom de package, pour ne casser aucun dépendant.
+2. **À plat.** `crates/<couche>-<nom>`, `packages/<nom>`, `third_party/<nom>`, sur un seul niveau, sans dossier de catégorie (modèle Chromium). La catégorie devient une métadonnée. Un déplacement de dossier ne renomme jamais un package (aucun dépendant cassé) ; un renommage ne passe que par l'invariant 5. Les deux règles ne se recouvrent pas : 2 régit le chemin, 5 le nom.
 3. **Un projet amont = un dossier.** Les forks d'un même réseau GitHub sont réunis :
    - `origin` = fork `aphrody-labs`, `upstream` = projet amont ;
    - un fork tiers qui porte des commits devient un remote supplémentaire du même clone (exemple : `reactos` dans `third_party/LiberNT`), pas une seconde copie ;
    - les patchs vivent dans les forks, épinglés par commit, jamais dans une copie vendorisée.
 4. **Rien de régénérable n'est versionné.** `third_party/` (matérialisé depuis `src.lock.json`), `third_party/crates` (`cargo vendor` via `just vendor` : `Cargo.lock` et la source-replace de `.cargo/config.toml` restent versionnés, le build tourne hors ligne), `target/`, `node_modules/`, `var/`.
-5. **Identité unique.** `identity.toml` à la racine contient : nom du dépôt, CLI, scope npm, préfixe des crates, domaine, remotes git et Lore.
-   - `ay identity apply` réécrit les `name`, `[[bin]]`, `package.json#name` et remotes ;
-   - `ay identity check` sert de garde de CI ;
-   - le code n'écrit aucun nom de produit en dur : il utilise `env!("CARGO_PKG_NAME")`, `CARGO_BIN_NAME` ou une crate `identity` générée par build.rs ;
+5. **Identité unique.** `identity.toml` à la racine contient : produit et dépôt, CLI (binaire `ay`, package `aphrody`), scope npm, préfixes (`crate_prefix`, `env_prefix`, `symbol_prefix`), orgs (`aphrody-dev`, `aphrody-labs`), domaines, sous-produits.
+   - `just identity apply` (`bun scripts/identity.ts apply`) réécrit les champs copiés : `[workspace.package]` (authors, repository, homepage), nom et `[[bin]]` de crates/ay, `package.json#name` et clés `@scope/` ;
+   - `just identity check` garde `just check` et la CI (étape « Identity gate ») ;
+   - préfixe des crates : seuls les noms qui entreraient en collision sur crates.io le portent (docs/NAMING.md) ; il n'est pas réappliqué aux noms existants, ce qui casserait l'invariant 2 ;
+   - le code n'écrit aucun nom de produit en dur : `env!("CARGO_PKG_NAME")` partout, `env!("CARGO_BIN_NAME")` seulement dans une cible `[[bin]]` (Cargo ne le définit pas pour une lib), sinon lecture d'identity.toml (Rust : crates/xtask ; TS : import TOML de Bun) ;
    - renommer tient en une PR : identity.toml, puis `apply`, puis `just ci`.
-6. **Aucun chemin absolu, lien ni jonction.**
-   - Les chemins sont relatifs à la racine, détectée par `Cargo.toml` ou `.lore`.
+6. **Aucun chemin absolu, lien ni jonction versionné.**
+   - La règle vise l'arbre suivi par git : aucun lien ni jonction n'y est commité, aucun alias de dossier à la racine. Les liens créés par les outils dans des dossiers ignorés restent permis : `node_modules/` (bun install), cache gclient, `.claude/skills` (`ay up --bootstrap`). `ay git audit` ne signale que les jonctions de la racine.
+   - Les chemins sont relatifs à la racine : le plus proche ancêtre qui contient `identity.toml` (fichier unique, absent des sous-crates, contrairement à `Cargo.toml`), sinon `SRC_ROOT`, sinon `.lore`.
    - Sinon ils viennent des variables d'environnement (`XDG_*`, `%LOCALAPPDATA%`, `SystemRoot`).
 7. **Multiplateforme.** Chaque binaire compile et teste sur windows-msvc et linux-gnu. `just` appelle des binaires Rust ou bun : aucun `.sh` ni `.ps1` requis. Les recettes propres à un OS sont marquées `[windows]` ou `[unix]`.
 8. **Pas de régression.** Après chaque phase, les nombres de tests doivent être égaux ou supérieurs à la base. Une phase qui casse est annulée. Exécution sur prd ou fr2 uniquement : consigne du propriétaire, aucune compilation sur le PC ni sur fr1.

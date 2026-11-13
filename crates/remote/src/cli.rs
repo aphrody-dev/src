@@ -49,7 +49,7 @@ enum Cmd {
         #[command(flatten)]
         common: Common,
     },
-    /// List fleet nodes (deploy.toml) and their resolved ssh settings
+    /// List fleet nodes (infra/deploy.toml) and their resolved ssh settings
     Hosts,
     /// Connect, authenticate and run `uname -srm` on every node (or the given targets)
     Check {
@@ -90,7 +90,7 @@ impl Ctx {
     }
 }
 
-/// Entry point for `ay ssh`; `root` is the repository root holding deploy.toml.
+/// Entry point for `ay ssh`; `root` is the repository root holding infra/deploy.toml.
 pub fn run(prog: &str, args: &[String], root: &Path) -> i32 {
     let argv = std::iter::once(prog.to_string()).chain(args.iter().cloned());
     let cli = match Cli::try_parse_from(argv) {
@@ -317,7 +317,7 @@ fn hosts(ctx: &Ctx) {
     }
     table(&rows);
     let extra: Vec<String> =
-        // Node names resolve to their deploy.toml alias, so a same-named Host block is never used.
+        // Node names resolve to their infra/deploy.toml alias, so a same-named Host block is never used.
         ctx.ssh
             .aliases()
             .into_iter()

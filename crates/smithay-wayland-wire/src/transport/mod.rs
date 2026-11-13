@@ -1,3 +1,4 @@
+#[cfg(windows)]
 pub mod hyperv;
 
 use crate::wire::{WaylandMessage, WireError};

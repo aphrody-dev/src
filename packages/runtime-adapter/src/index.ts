@@ -1,6 +1,6 @@
 /**
  * One app entrypoint, three hosts. Backends come from env only (filled by
- * scripts/deploy-target.ts from deploy.toml [hosting.<app>]), never hardcoded:
+ * scripts/deploy-target.ts from infra/deploy.toml [hosting.<app>]), never hardcoded:
  *   STORAGE = r2:<binding> | s3 (S3_BUCKET, S3_ENDPOINT, S3_REGION) | fs:<dir>
  *   KV      = cf:<binding> | redis (REDIS_URL)
  *   SQL     = d1:<binding> | url (DATABASE_URL: postgres://… or sqlite://…)

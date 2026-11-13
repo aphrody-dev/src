@@ -20,14 +20,14 @@ jobs:
         with:
           token: ${{ secrets.SUBMODULES_TOKEN || github.token }}
           submodules: false
-      - name: Workspace submodules (crates/* only, not apps or third_party)
-        run: git submodule update --init --depth 1 crates/bench crates/ring3-agent crates/rust-stack
       - name: Rust (ay and its libraries)
         run: |
           cargo build -p aphrody
           cargo test -p aphrody -p depot-gclient -p depot-cas -p depot-cipd -p aphrody-up -p aphrody-rt -p archguard -p agent-context
       - name: Layered dependency gate (checkdeps)
         run: bun scripts/checkdeps.ts
+      - name: Identity gate (identity.toml vs manifests)
+        run: bun scripts/identity.ts check
       - name: Architecture gate
         run: target/debug/ay arch check --strict
       - name: Go deploy engine

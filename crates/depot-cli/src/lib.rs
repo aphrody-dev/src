@@ -31,7 +31,6 @@ enum Commands {
     Slim(SlimArgs),
     Clone(CloneArgs),
     Artifacts(ArtifactSubArgs),
-    Manifests(ManifestsArgs),
     Maintainer(MaintainerArgs),
     Ignore(IgnoreArgs),
     Info(InfoArgs),
@@ -533,16 +532,7 @@ pub struct ArtifactInitArgs {
     pub name: String,
 }
 
-// Manifests & Maintainer
-#[derive(FromArgs, PartialEq, Debug)]
-#[argh(subcommand, name = "manifests")]
-/// Verify Chromium DEPS, AOSP .repo/manifests/default.xml, Kernel MAINTAINERS, and Quilt patch series
-pub struct ManifestsArgs {
-    /// monorepo root path (default: C:\src)
-    #[argh(positional)]
-    pub root: Option<PathBuf>,
-}
-
+// Maintainer (manifest drift: `ay manifests --check`, crates/xtask)
 #[derive(FromArgs, PartialEq, Debug)]
 #[argh(subcommand, name = "maintainer")]
 /// Lookup Linux Kernel style MAINTAINERS ownership for any monorepo path
@@ -709,7 +699,6 @@ pub fn run(cmd: &str, args: &[String]) -> i32 {
         println!("  slim        Apply Git Scalar and maintenance optimizations");
         println!("  clone       Minimal blobless clone with Git Scalar");
         println!("  artifacts   Blake3 content-addressed binary artifact management");
-        println!("  manifests   Verify Chromium DEPS, AOSP repo XML & Kernel MAINTAINERS");
         println!("  maintainer  Query subsystem ownership via root MAINTAINERS");
         println!("  ignore      Standard .gitignore and .llmignore templates");
         println!("  info        Display environment, native NT kernel32 telemetry");
@@ -847,10 +836,6 @@ pub fn run(cmd: &str, args: &[String]) -> i32 {
                 i.name,
             ),
         },
-
-        Commands::Manifests(m) => manifests::run_manifests_verify(
-            &m.root.unwrap_or_else(|| PathBuf::from(r"C:\src")),
-        ),
 
         Commands::Maintainer(m) => manifests::run_maintainer_lookup(&m.root, &m.target),
 

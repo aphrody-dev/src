@@ -30,7 +30,7 @@ pub fn run_external(program: &str, args: &[String]) -> i32 {
 }
 
 /// The env-kit CLI (`packages/env-kit/src/cli.ts`), run in place by bun: `ay auth` and `ay secret`.
-/// `SRC_ROOT` is passed on so env-kit finds deploy.toml from any working directory.
+/// `SRC_ROOT` is passed on so env-kit finds infra/deploy.toml from any working directory.
 pub fn run_env_kit(args: &[String]) -> i32 {
     let root = crate::repo_root();
     let cli = root.join("packages").join("env-kit").join("src").join("cli.ts");

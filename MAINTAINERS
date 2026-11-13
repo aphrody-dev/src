@@ -92,7 +92,7 @@ S:	Supported
 W:	https://about.aphrody.com
 T:	git https://github.com/aphrody-dev/infra.git
 T:	git https://github.com/aphrody-dev/mesh-vn.git
-F:	deploy.toml
+F:	infra/deploy.toml
 F:	infra/
 F:	infra/ffi-bridge/
 F:	infra/mesh-vn/

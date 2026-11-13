@@ -72,7 +72,7 @@ browsers *ids:
 slim-all:
     ay git slim --all --root "{{root}}"
 
-# Generate deterministic src.lock.json + Chromium DEPS + AOSP default.xml + Kernel MAINTAINERS
+# Lock every repository of the checkout in src.lock.json (pin-001), then derive DEPS and .gitmodules
 lock:
     ay lock --root "{{root}}" --out "{{root}}/src.lock.json"
 
@@ -88,9 +88,17 @@ deps-lock *flags:
 deps-bump *flags:
     ay lock --deps --bump --root "{{root}}" {{flags}}
 
-# Synchronize governance manifests (DEPS, .repo/manifests/default.xml, MAINTAINERS, docs/patches/series)
+# Derive DEPS, .gitmodules and patch series from src.lock.json (pin-001)
 manifests:
     ay manifests --root "{{root}}"
+
+# Gate: derived manifests and gitlinks match src.lock.json
+manifests-check:
+    ay manifests --check --root "{{root}}"
+
+# identity.toml gate / rewrite / lookup (check | apply | get <key>)
+identity cmd="check" *args:
+    bun "{{root}}/scripts/identity.ts" {{cmd}} {{args}} --root "{{root}}"
 
 # Run full 4-pillar VCS governance audit (Git + Chromium + Kernel + AOSP)
 vcs-audit:
@@ -174,7 +182,7 @@ agent prompt turns="100":
 
 # Same, on the fr1 build runner through GitHub Actions (.github/workflows/claude.yml)
 agent-ci prompt:
-    gh workflow run claude.yml -R aphrody-dev/src -f prompt="{{prompt}}"
+    gh workflow run claude.yml -f prompt="{{prompt}}"
 
 # Format entire Bun workspace
 fmt:
@@ -244,9 +252,9 @@ fleet-bootstrap role:
 toolchains-lock:
     bun "{{root}}/scripts/toolchains-lock.ts"
 
-# Nix alternative to containers: dev shell from flake.nix
+# Nix alternative to containers: dev shell from infra/nix/flake.nix
 nix-shell:
-    nix develop "{{root}}"
+    nix develop "{{root}}/infra/nix"
 
 # Refresh the local offline docs mirrors (Docker, Kubernetes, Nix, Arch/Alpine images)
 docs-sync:
@@ -267,31 +275,31 @@ index-gen:
 # Regenerate the core C header (cbindgen)
 core-header:
     cbindgen --config crates/core-capi/cbindgen.toml crates/core-capi -o crates/core-capi/include/aphrody_core.h
-# --- Labs (merged from C:\labs): aphrody CLI, Lore, Chromium factory ---
+# --- Labs (merged from C:\labs): conformance (ay conformance), Lore, Chromium factory ---
 
-# Aphrody CLI + conformance harness build.
+# ay + conformance harness build.
 lab-build:
-    cargo build -p aphrody-labs-cli -p aphrody-conformance
+    cargo build -p aphrody -p aphrody-conformance
 
-# Distribution build of the aphrody binary: fat LTO, 1 CGU, stripped.
+# Distribution build of ay: fat LTO, 1 CGU, stripped.
 lab-dist:
-    cargo build --release -p aphrody-labs-cli
+    cargo build --release -p aphrody
 
 # Fast local optimized build with debug assertions.
 lab-iter:
-    cargo build --profile iteration -p aphrody-labs-cli
+    cargo build --profile iteration -p aphrody
 
-# Run the aphrody CLI.
+# Run ay from source.
 lab-dev *args:
-    cargo run -p aphrody-labs-cli -- {{args}}
+    cargo run -p aphrody -- {{args}}
 
 # Conformance suites (writes conformance/results/).
 lab-conformance *suites:
-    cargo run -p aphrody-labs-cli -- x conformance --fetch {{suites}}
+    cargo run -p aphrody -- conformance --fetch {{suites}}
 
-# Refresh Chrome Stable/Beta/Dev/Canary pins (native: aphrody x channels).
+# Refresh Chrome Stable/Beta/Dev/Canary pins (ay conformance channels).
 lab-channels:
-    cargo run -q -p aphrody-labs-cli -- x channels
+    cargo run -q -p aphrody -- conformance channels
 
 # Re-absorb Lore from aphrody-labs/lore.
 lab-lore-sync:
@@ -325,9 +333,9 @@ lab-factory-status:
 lab-factory-fetch version:
     rclone copyto r2-chromium:aphrody-chromium/labs_agent/{{version}}/linux-x64.tar.zst target/labs_agent-{{version}}-linux-x64.tar.zst
 
-# Smallest aphrody binary: profile min + rebuilt std with immediate-abort.
+# Smallest ay binary: profile min + rebuilt std with immediate-abort.
 lab-min:
-    cargo build --profile min -p aphrody-labs-cli -Zbuild-std=std,panic_abort --target x86_64-pc-windows-msvc
+    cargo build --profile min -p aphrody -Zbuild-std=std,panic_abort --target x86_64-pc-windows-msvc
 
 # Central terminal stack (docs/terminal/ARCHITECTURE.md): Linux validation of the forks on prd at the src.lock.json pins (cpp | rust | all)
 terminal-prd step="all" jobs="4":
@@ -366,6 +374,8 @@ test-affected ref="origin/main":
     bunp=$(printf '%s\n' "$out" | awk -F'\t' '$1=="bun" && $3 ~ /^packages\// {printf "%s/%s ", "{{root}}", $3}')
     [ -z "$pkgs" ] || cargo test $pkgs
     [ -z "$bunp" ] || bun test $bunp
+    pyp=$(printf '%s\n' "$out" | awk -F'\t' '$1=="uv" {printf "%s/%s ", "{{root}}", $3}')
+    [ -z "$pyp" ] || uv run pytest $pyp
 
 # Pre-push gate: format, layered deps, architecture rules
 check:
@@ -373,6 +383,7 @@ check:
     cargo fmt --all --check
     bun check -b
     just checkdeps
+    just identity check
     ay arch check --root "{{root}}"
 
 # --- Agent fleet (docs/agents/AGENT-FIRST.md). `just <recipe>` is the single agent interface. ---

@@ -11,7 +11,7 @@
 | depot-vpython | crates/depot-vpython | `ay vpy` : specs vpython sur `uv run` avec lock haché | PyPI/uv |
 | steam-depot | crates/steam-depot | VDF, découverte Steam, Proton | jeux (hors PM générique) |
 | unix-cachyos / unix-distro | crates/ | génère pacman.conf v3, makepkg.conf (`-march=raptorlake` en dur), profils scx_lavd/BORE | pacman/CachyOS |
-| flake.nix | racine | devShell nix (nixos-unstable, 4 systèmes) | nix |
+| infra/nix/flake.nix | infra/nix | devShell nix (nixos-unstable, 4 systèmes) | nix |
 | vcpkg | apps/rosegriffon/tools/iecode-cpp (vcpkg.json + overlay-ports) | dépendances C++ d'une app | vcpkg |
 | bun | bun.lock, `source = "bun"` | outils JS (wrangler, hostinger-api-mcp) | npm |
 | cargo-binstall | tools.toml (ubi) | binaires de crates | crates.io |

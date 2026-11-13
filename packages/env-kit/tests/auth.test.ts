@@ -9,7 +9,7 @@ import { formatChecks, hostScript, loadManifest } from "../src/auth";
 const root = resolve(import.meta.dir, "..", "..", "..");
 
 describe("auth manifest", () => {
-  test("deploy.toml declares hosts and GitHub secrets by name only", () => {
+  test("infra/deploy.toml declares hosts and GitHub secrets by name only", () => {
     const m = loadManifest(root);
     expect(Object.keys(m.nodes)).toContain("usa");
     expect(m.auth.hosts?.usa?.tunnels).toBeDefined();
