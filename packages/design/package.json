@@ -18,7 +18,7 @@
     "check": "bun run src/build.ts --check",
     "test": "bun test",
     "figma": "bun run src/figma.ts --modes 4",
-    "lint": "designmd lint DESIGN.md"
+    "lint": "bun run ../google-design/src/design-md/cli.ts lint DESIGN.md"
   },
   "dependencies": {
     "@material/material-color-utilities": "0.4.0",
@@ -26,8 +26,5 @@
     "material-symbols": "0.49.0",
     "@material-symbols/svg-400": "0.49.0"
   },
-  "license": "MIT OR Apache-2.0",
-  "devDependencies": {
-    "@google/design.md": "0.4.0"
-  }
+  "license": "MIT OR Apache-2.0"
 }

@@ -48,7 +48,7 @@ Décision du propriétaire, 2026-11-13 : toutes les UI actuelles sont rejetées 
 | Tokens Material Web | `@material/web/tokens/versions/v0_192/_md-sys-*.scss` : échelle typographique, formes, mouvement, élévation, états ; `material-foundation/material-tokens` est archivé (dernier push 2023-08-15) | paquet installé, `gh api` |
 | Material Symbols | `google/material-design-icons` (Apache-2.0), npm `material-symbols` 0.49.0 (polices variables Outlined/Rounded/Sharp) et `@material-symbols/svg-400` 0.49.0 ; catalogue https://fonts.google.com/icons | registre npm |
 | Figma | Material 3 Design Kit officiel : https://www.figma.com/community/file/1035203688168086460/material-3-design-kit (redirection vérifiée) ; nos variables : fichier `2xsZi5wLPAYLGNCLZ2ZJUv` (équipe Aphrody, plan Professional, 4 modes par collection), voir `packages/design/tokens/figma.json` | MCP Figma `whoami`, `use_figma` |
-| design.md | `google-labs-code/design.md` (Apache-2.0, HEAD `1ed38aa9dd`), npm `@google/design.md` 0.4.0, CLI `designmd lint` ; format front matter YAML `version: alpha` | `docs/spec.md` du dépôt |
+| design.md | `google-labs-code/design.md` (Apache-2.0, HEAD `1ed38aa9dd`), npm `@google/design.md` 0.4.0, CLI `designmd lint`, absorbé en bun pur dans `packages/google-design/src/design-md` (`ay design lint`, aucune dépendance npm) ; format front matter YAML `version: alpha` | `docs/spec.md` du dépôt |
 
 Police : Google Sans Flex, SIL OFL 1.1 sans Reserved Font Name (google/fonts `ofl/googlesansflex`, voir `assets/brand/brand.toml`) ; le nom ne doit pas servir de nom de produit.
 

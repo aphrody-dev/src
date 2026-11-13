@@ -37,7 +37,7 @@ Source de vérité : `packages/design` (tokens, DESIGN.md, composants), `docs/ui
 
 - Serveur `stitch` intégré au relais (`packages/ai-os/src/relay/mcp-hub.ts`, https://stitch.googleapis.com/mcp, jeton gcloud). Outils exposés sous `mcp__relay__stitch__*` quand le relais est connecté.
 - Donner à Stitch `packages/design/DESIGN.md` (format google-labs-code/design.md, version alpha) comme système ; toute maquette Stitch est ensuite reconstruite en Material Web, jamais collée.
-- Lint : `bun x -p @google/design.md designmd lint packages/design/DESIGN.md` (0 erreur exigée).
+- Lint : `ay design lint` (linter absorbé dans `packages/google-design/src/design-md`, lit `packages/design/DESIGN.md` par défaut) ou `bun run --cwd packages/design lint` ; 0 erreur exigée.
 
 ## Revue
 
