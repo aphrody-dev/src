@@ -33,7 +33,7 @@
     },
     "packages/chromium-bun": {
       "name": "@aphrody/chromium-bun",
-      "version": "2.1.0",
+      "version": "0.0.0",
       "bin": {
         "chromium-bun": "./src/cli.ts",
       },
@@ -95,6 +95,13 @@
         "shell-matrix": "./src/cli.ts",
       },
     },
+    "packages/upstream": {
+      "name": "@aphrody/upstream",
+      "version": "1.0.0",
+      "bin": {
+        "upstream": "./src/cli.ts",
+      },
+    },
     "packages/wck": {
       "name": "@aphrody/wck",
       "version": "1.0.0",
@@ -134,6 +141,8 @@
     "@aphrody/runtime-adapter": ["@aphrody/runtime-adapter@workspace:packages/runtime-adapter"],
 
     "@aphrody/shell-matrix": ["@aphrody/shell-matrix@workspace:packages/shell-matrix"],
+
+    "@aphrody/upstream": ["@aphrody/upstream@workspace:packages/upstream"],
 
     "@aphrody/wck": ["@aphrody/wck@workspace:packages/wck"],
 
