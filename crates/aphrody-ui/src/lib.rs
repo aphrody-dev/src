@@ -12,13 +12,16 @@
 //!
 //! Brand colors come from `packages/design` (Material Color Utilities from assets/brand/brand.toml);
 //! see docs/ui/STACK.md.
-#![forbid(unsafe_code)]
 #![allow(clippy::struct_excessive_bools, clippy::doc_markdown, clippy::too_many_lines)]
 
+#[cfg(feature = "brand")]
 pub mod brand;
 pub mod color;
 pub mod components;
+#[cfg(feature = "layout")]
 pub mod layout;
+#[cfg(feature = "next")]
 pub mod next;
+#[cfg(feature = "react")]
 pub mod react;
 pub mod shared;

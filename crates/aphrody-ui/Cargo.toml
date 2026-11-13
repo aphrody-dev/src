@@ -19,9 +19,16 @@ all = "warn"
 [[bin]]
 name = "aphrody-brand"
 path = "src/bin/aphrody-brand.rs"
+required-features = ["brand"]
 
 [features]
-default = ["std", "serde"]
+# color, components and shared are always built; the heavy modules are opt-out features so a renderer
+# (GPUI, WebGPU) can depend on `aphrody-ui = { default-features = false, features = ["std", "serde"] }`.
+default = ["std", "serde", "layout", "react", "next", "brand"]
+layout = ["dep:lightningcss"]
+react = ["layout", "dep:oxc_allocator", "dep:oxc_ast", "dep:oxc_parser", "dep:oxc_span"]
+next = ["react", "dep:sha2", "dep:walkdir", "dep:toml"]
+brand = ["dep:resvg", "dep:toml"]
 # Allocating helpers (CSS export, presets) of the color module.
 std = []
 # PNG/JPEG decode for `color::image`.
@@ -36,18 +43,19 @@ base64 = { workspace = true }
 image = { workspace = true, optional = true, features = ["png", "jpeg"] }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
-lightningcss = { workspace = true }
+lightningcss = { workspace = true, optional = true }
 taffy = { workspace = true, features = ["std", "taffy_tree", "flexbox", "grid", "block_layout", "content_size"] }
 bevy = { workspace = true, optional = true, features = ["std", "bevy_ui"] }
 egui = { workspace = true, optional = true }
-oxc_allocator = { workspace = true }
-oxc_ast = { workspace = true }
-oxc_parser = { workspace = true }
-oxc_span = { workspace = true }
-sha2 = { workspace = true }
-toml = { workspace = true }
-walkdir = { workspace = true }
-resvg = { version = "0.50.0", default-features = false, features = ["text"] }
+oxc_allocator = { workspace = true, optional = true }
+oxc_ast = { workspace = true, optional = true }
+oxc_parser = { workspace = true, optional = true }
+oxc_span = { workspace = true, optional = true }
+sha2 = { workspace = true, optional = true }
+toml = { workspace = true, optional = true }
+walkdir = { workspace = true, optional = true }
+resvg = { version = "0.50.0", default-features = false, features = ["text"], optional = true }
 
 [dev-dependencies]
+sha2 = { workspace = true }
 serde_json = { workspace = true, features = ["float_roundtrip"] }

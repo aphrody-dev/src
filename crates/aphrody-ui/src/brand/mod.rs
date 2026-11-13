@@ -52,6 +52,8 @@ pub enum Error {
     Manifest(String),
     Svg(String),
     Render(String),
+    /// An external encoder of the web stages (hb-subset, woff2_compress, avifenc, cwebp, ktx, ffmpeg, cargo, wasm-opt, bun).
+    Tool(String),
 }
 
 impl fmt::Display for Error {
@@ -61,6 +63,7 @@ impl fmt::Display for Error {
             Self::Manifest(m) => write!(f, "brand.toml: {m}"),
             Self::Svg(m) => write!(f, "svg: {m}"),
             Self::Render(m) => write!(f, "render: {m}"),
+            Self::Tool(m) => write!(f, "tool: {m}"),
         }
     }
 }
@@ -92,6 +95,18 @@ pub struct Manifest {
     pub product: Vec<Product>,
     #[serde(default)]
     pub badge: Vec<Badge>,
+    /// Web asset stages (web.rs): absent sections are skipped.
+    pub symbols: Option<web::Symbols>,
+    #[serde(default)]
+    pub font: Vec<web::Font>,
+    pub images: Option<web::Images>,
+    #[serde(default)]
+    pub wallpaper: Vec<web::Wallpaper>,
+    #[serde(default)]
+    pub capture: Vec<web::Capture>,
+    pub model: Option<web::Model>,
+    pub environment: Option<web::Environment>,
+    pub gpu: Option<web::Gpu>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -129,6 +144,9 @@ pub struct Product {
     pub deploy: Vec<String>,
     #[serde(default)]
     pub ico: Vec<String>,
+    /// Also write the MSIX package logos (icons/<id>/msix/: Square150x150Logo, Square44x44Logo, StoreLogo).
+    #[serde(default)]
+    pub msix: bool,
 }
 
 #[derive(Debug, Deserialize)]
@@ -510,6 +528,10 @@ struct Ctx<'a> {
     gen_dir: PathBuf,
     svg: Svg,
     report: Report,
+    /// Drawing (filled SVG template) of every org and product, for the raster, 3D and animated stages.
+    drawings: BTreeMap<String, String>,
+    /// gen/-relative path -> (size, sha256 hex) of every output, for gen/manifest.json.
+    hashes: BTreeMap<String, (u64, String)>,
 }
 
 impl Ctx<'_> {
@@ -517,6 +539,7 @@ impl Ctx<'_> {
         let bytes = bytes.as_ref();
         write(&self.gen_dir.join(rel), bytes)?;
         self.report.files.push((format!("assets/brand/gen/{rel}"), bytes.len() as u64));
+        self.hashes.insert(rel.to_string(), (bytes.len() as u64, web::sha256_hex(bytes)));
         Ok(())
     }
 }
@@ -534,7 +557,18 @@ pub fn build(opts: &BuildOptions) -> Result<Report> {
         )));
     }
     let gen_dir = brand_dir.join("gen");
-    let mut cx = Ctx { root: &opts.root, gen_dir, svg, report: Report::default() };
+    // gen/ is entirely derived: start from nothing so that no stale file survives into the manifest.
+    if gen_dir.exists() {
+        fs::remove_dir_all(&gen_dir).map_err(|e| Error::Io(gen_dir.clone(), e))?;
+    }
+    let mut cx = Ctx {
+        root: &opts.root,
+        gen_dir,
+        svg,
+        report: Report::default(),
+        drawings: BTreeMap::new(),
+        hashes: BTreeMap::new(),
+    };
     let src = |name: &str| read(&brand_dir.join("src").join(name)).map(|s| if name.ends_with(".svg") { strip_comments(&s) } else { s });
     let (mark_t, tile_t, word_t, og_t) = (src("mark.svg")?, src("tile.svg")?, src("wordmark.svg")?, src("og.svg")?);
 
@@ -588,6 +622,12 @@ pub fn build(opts: &BuildOptions) -> Result<Report> {
             ("symbol", &symbol),
         ]);
         icon_set(&mut cx, &p.id, &p.name, &tile, container)?;
+        if p.msix {
+            // MSIX visual assets (Package.appxmanifest): 150 and 50 px full drawing, 44 px small variant.
+            for (file, side, d) in [("Square150x150Logo", 150, tile.clone()), ("StoreLogo", 50, tile.clone()), ("Square44x44Logo", 44, small(&tile))] {
+                cx.put(&format!("icons/{}/msix/{file}.png", p.id), cx.svg.png(&d, side, side)?)?;
+            }
+        }
         let url = format!("github.com/aphrody-labs/src/tree/main/{}", p.path);
         social(&mut cx, &og_t, &palette, &font, &p.id, &tile, &p.name, &p.tagline, &url)?;
         banner(&mut cx, &p.id, &tile, &p.name, &p.tagline, argb(md::hue::at(&md::hue::TILE_80, p.hue)))?;
@@ -599,18 +639,9 @@ pub fn build(opts: &BuildOptions) -> Result<Report> {
     badges(&mut cx, &manifest, &palette, &font)?;
     stats_cards(&mut cx, &palette, &font)?;
 
-    // Index of the output, for the CDN upload and the archive of a build.
-    let mut index = String::from("{\n  \"version\": ");
-    let _ = write!(index, "{},\n  \"files\": {{\n", manifest.brand.version);
-    let files: Vec<String> = cx
-        .report
-        .files
-        .iter()
-        .map(|(f, n)| format!("    \"{}\": {n}", f.trim_start_matches("assets/brand/gen/")))
-        .collect();
-    index.push_str(&files.join(",\n"));
-    index.push_str("\n  }\n}\n");
-    cx.put("index.json", index)?;
+    // Web stages: symbols, fonts, responsive images, wallpapers, captures and video, animated
+    // logos, 3D, environment, wasm + WebGPU; then gen/manifest.json (sha256 of every file).
+    web::run(&mut cx, &manifest, &brand_dir)?;
     Ok(cx.report)
 }
 
@@ -624,6 +655,7 @@ fn font_stack(brand: &Brand) -> String {
 
 fn icon_set(cx: &mut Ctx<'_>, id: &str, name: &str, drawing: &str, theme: u32) -> Result<()> {
     let dir = format!("icons/{id}");
+    cx.drawings.insert(id.to_string(), drawing.to_string());
     let optimized = cx.svg.optimize(drawing)?;
     cx.put(&format!("{dir}/icon.svg"), &optimized)?;
     let mut pngs = BTreeMap::new();

@@ -20,7 +20,7 @@ fn hex(c: u32) -> String {
 fn check(name: &str, rgba: &[u8]) {
     let digest: String = Sha256::digest(rgba).iter().map(|b| format!("{b:02x}")).collect();
     let path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/visual").join(format!("{name}.sha256"));
-    if std::env::var_os("APHRODY_UPDATE_GOLDENS").is_some() {
+    if std::env::var("APHRODY_UPDATE_GOLDENS").as_deref() == Ok("1") {
         fs::create_dir_all(path.parent().unwrap()).unwrap();
         fs::write(&path, format!("{digest}\n")).unwrap();
         return;
@@ -45,12 +45,37 @@ fn brand_sources_render_identically() {
 }
 
 #[test]
-fn brand_roles_meet_contrast() {
-    let p = Palette::new();
-    for (bg, fg) in [("surface", "on-surface"), ("primary", "on-primary"), ("primary-container", "on-primary-container")] {
-        for s in [&p.light, &p.dark] {
-            let ratio = aphrody_ui::brand::contrast(s.argb(bg), s.argb(fg));
-            assert!(ratio >= 4.5, "{bg}/{fg}: {ratio:.2}");
+fn every_on_role_meets_contrast_in_all_six_modes() {
+    mod tokens {
+        include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../packages/design/tokens/tokens.rs"));
+    }
+    use tokens::md;
+    let modes: [(&str, &[(&str, u32)]); 6] = [
+        ("light", md::light::ALL),
+        ("dark", md::dark::ALL),
+        ("light-medium-contrast", md::light_medium_contrast::ALL),
+        ("dark-medium-contrast", md::dark_medium_contrast::ALL),
+        ("light-high-contrast", md::light_high_contrast::ALL),
+        ("dark-high-contrast", md::dark_high_contrast::ALL),
+    ];
+    let argb = |rgba: u32| rgba.rotate_right(8);
+    for (mode, roles) in modes {
+        let get = |name: &str| roles.iter().find(|(k, _)| *k == name).map(|(_, v)| argb(*v));
+        let min = if mode.ends_with("high-contrast") { 7.0 } else { 4.5 };
+        let mut checked = 0;
+        for (name, value) in roles {
+            let Some(base) = name.strip_prefix("on-") else { continue };
+            let bg = match base {
+                "surface-variant" => "surface",
+                other => other,
+            };
+            let Some(bg) = get(bg) else { continue };
+            let ratio = aphrody_ui::brand::contrast(argb(*value), bg);
+            assert!(ratio >= min, "{mode} {name}: {ratio:.2} < {min}");
+            checked += 1;
         }
+        assert!(checked >= 14, "{mode}: only {checked} pairs");
+        let outline = aphrody_ui::brand::contrast(get("outline").unwrap(), get("surface").unwrap());
+        assert!(outline >= 3.0, "{mode} outline/surface: {outline:.2}");
     }
 }
