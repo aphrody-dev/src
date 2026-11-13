@@ -23,7 +23,10 @@ describe("Epic Games & Unreal Engine Sovereign SDK", () => {
   test("Basic Auth header formats client credentials", () => {
     const header = getEpicBasicAuth("test_client", "test_secret");
     expect(header.startsWith("Basic ")).toBeTrue();
-    const decoded = Buffer.from(header.replace("Basic ", ""), "base64").toString("utf-8");
+    const decoded = Buffer.from(
+      header.replace("Basic ", ""),
+      "base64",
+    ).toString("utf-8");
     expect(decoded).toBe("test_client:test_secret");
   });
 
@@ -53,7 +56,11 @@ describe("Epic Games & Unreal Engine Sovereign SDK", () => {
     expect(summary.fileVersionUE4).toBe(522);
     expect(summary.nameCount).toBe(2);
 
-    const names = parseUAssetNameTable(buffer, summary.nameOffset, summary.nameCount);
+    const names = parseUAssetNameTable(
+      buffer,
+      summary.nameOffset,
+      summary.nameCount,
+    );
     expect(names).toEqual(["None", "HeroActor"]);
   });
 
@@ -118,7 +125,9 @@ describe("Epic Games & Unreal Engine Sovereign SDK", () => {
     expect(meta.isCompressed).toBeTrue();
     expect(meta.version).toBe(3);
 
-    const rawPayload = new TextEncoder().encode("Unreal Engine Chunk Payload Data ".repeat(8));
+    const rawPayload = new TextEncoder().encode(
+      "Unreal Engine Chunk Payload Data ".repeat(8),
+    );
     const { chunkBytes, sha1Hex } = encodeEgsChunkContainer(rawPayload, true);
     const decoded = decodeEgsChunkContainer(chunkBytes, sha1Hex);
     expect(decoded.sha1Verified).toBeTrue();
@@ -128,19 +137,31 @@ describe("Epic Games & Unreal Engine Sovereign SDK", () => {
   });
 
   test("CDN URL formatters and EAC SHA-256 integrity catalog verifier", () => {
-    const chunkUrl = formatEgsChunkUrl("https://content.epicgames.com", "a1b2c3d4", "guid-1234");
-    expect(chunkUrl).toBe("https://content.epicgames.com/ChunksV4/a1/guid-1234.chunk");
+    const chunkUrl = formatEgsChunkUrl(
+      "https://content.epicgames.com",
+      "a1b2c3d4",
+      "guid-1234",
+    );
+    expect(chunkUrl).toBe(
+      "https://content.epicgames.com/ChunksV4/a1/guid-1234.chunk",
+    );
 
     const eacUrl = formatEacModuleUrl("DBXV2_TEST", "win64");
-    expect(eacUrl).toBe("https://modules-cdn.eac-prod.on.epicgames.com/modules/dbxv2test/win64/eac_module.bin");
+    expect(eacUrl).toBe(
+      "https://modules-cdn.eac-prod.on.epicgames.com/modules/dbxv2test/win64/eac_module.bin",
+    );
 
     const exeBytes = new Uint8Array([0x4d, 0x5a, 0x90, 0x00, 0x03, 0x00]);
     const entry = computeEacIntegrityEntry("Binaries/Win64/Game.exe", exeBytes);
     expect(
-      verifyEacIntegrityCatalog([entry], { "Binaries/Win64/Game.exe": exeBytes }).valid,
+      verifyEacIntegrityCatalog([entry], {
+        "Binaries/Win64/Game.exe": exeBytes,
+      }).valid,
     ).toBeTrue();
     expect(
-      verifyEacIntegrityCatalog([entry], { "Binaries/Win64/Game.exe": new Uint8Array([0]) }).valid,
+      verifyEacIntegrityCatalog([entry], {
+        "Binaries/Win64/Game.exe": new Uint8Array([0]),
+      }).valid,
     ).toBeFalse();
   });
 });
