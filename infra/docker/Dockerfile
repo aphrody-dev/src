@@ -27,8 +27,6 @@ ARG CARGO_BUILD_JOBS=4
 
 FROM oven/bun:${BUN_VERSION}-alpine AS bun-alpine
 FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS go-alpine
-# glibc bun binary for the Arch dev image only (copied out, the base image is not used).
-FROM oven/bun:${BUN_VERSION} AS bun-glibc
 
 # =============================================================================================
 # Rust toolchain (native to the build host).
@@ -49,7 +47,7 @@ RUN rustup-init -y --no-modify-path --profile minimal --default-toolchain "${RUS
 RUN set -eu; case "${BUILDARCH}" in arm64) a=aarch64 s="${ZIG_SHA256_ARM64}";; *) a=x86_64 s="${ZIG_SHA256_AMD64}";; esac; \
     curl -fsSL -o /tmp/zig.tar.xz "https://ziglang.org/download/${ZIG_VERSION}/zig-${a}-linux-${ZIG_VERSION}.tar.xz"; \
     echo "${s}  /tmp/zig.tar.xz" | sha256sum -c -; mkdir -p /opt/zig; tar -xJf /tmp/zig.tar.xz -C /opt/zig --strip-components=1; rm /tmp/zig.tar.xz
-RUN --mount=type=cache,id=cargo-registry,target=/opt/cargo/registry \
+RUN --mount=type=cache,id=cargo-registry,target=/opt/cargo/registry,sharing=locked \
     cargo install --locked "cargo-chef@${CARGO_CHEF_VERSION}" "cargo-zigbuild@${CARGO_ZIGBUILD_VERSION}" && rm -rf /opt/cargo/.package-cache
 WORKDIR /build
 
@@ -72,14 +70,14 @@ COPY .cargo/config.toml .cargo/config.toml
 COPY third_party/patches/ third_party/patches/
 COPY --from=rust-plan /recipe.json /recipe.json
 # Dependencies only: this layer is reused (and exported to the registry cache) until Cargo.lock changes.
-RUN --mount=type=cache,id=cargo-registry,target=/opt/cargo/registry \
-    --mount=type=cache,id=cargo-git,target=/opt/cargo/git \
+RUN --mount=type=cache,id=cargo-registry,target=/opt/cargo/registry,sharing=locked \
+    --mount=type=cache,id=cargo-git,target=/opt/cargo/git,sharing=locked \
     t=$([ "$TARGETARCH" = arm64 ] && echo aarch64-unknown-linux-musl || echo x86_64-unknown-linux-musl); \
     cargo chef cook --zigbuild --profile "${CARGO_PROFILE}" --target "$t" ${RUST_PACKAGES} --recipe-path /recipe.json
 COPY Cargo.toml Cargo.lock ./
 COPY crates/ crates/
-RUN --mount=type=cache,id=cargo-registry,target=/opt/cargo/registry \
-    --mount=type=cache,id=cargo-git,target=/opt/cargo/git \
+RUN --mount=type=cache,id=cargo-registry,target=/opt/cargo/registry,sharing=locked \
+    --mount=type=cache,id=cargo-git,target=/opt/cargo/git,sharing=locked \
     set -eu; t=$([ "$TARGETARCH" = arm64 ] && echo aarch64-unknown-linux-musl || echo x86_64-unknown-linux-musl); \
     cargo zigbuild --locked --profile "${CARGO_PROFILE}" --target "$t" ${RUST_PACKAGES} --bins; \
     d=target/$t/$([ "${CARGO_PROFILE}" = dev ] && echo debug || echo "${CARGO_PROFILE}"); mkdir -p /out; \
@@ -228,7 +226,13 @@ RUN pacman -Syu --noconfirm --needed \
 ENV PATH=/root/.cargo/bin:/root/.bun/bin:/usr/local/go/bin:/root/.local/bin:${PATH}
 RUN rustup default "${RUST_TOOLCHAIN}" && rustup component add rustfmt clippy rust-analyzer rust-src
 COPY --from=go-alpine /usr/local/go /usr/local/go
-COPY --from=bun-glibc /usr/local/bin/bun /root/.bun/bin/bun
+# glibc bun from the official release, verified against SHASUMS256.txt (no Debian-based oven/bun stage).
+RUN base="https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}" \
+ && curl -fsSLo /tmp/bun-linux-x64.zip "${base}/bun-linux-x64.zip" \
+ && curl -fsSL "${base}/SHASUMS256.txt" | grep " bun-linux-x64.zip$" | (cd /tmp && sha256sum -c -) \
+ && unzip -q /tmp/bun-linux-x64.zip -d /tmp \
+ && install -Dm755 /tmp/bun-linux-x64/bun /root/.bun/bin/bun \
+ && rm -rf /tmp/bun-linux-x64 /tmp/bun-linux-x64.zip
 ENV SRC_ROOT=/src AGENT_GUARD=off
 WORKDIR /src
 CMD ["zsh"]
