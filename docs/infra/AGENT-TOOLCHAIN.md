@@ -35,9 +35,33 @@ Le champ `hosts` vaut pc, prd, fr1 ou fr2 (absent : tous). Sur Linux, l'hôte se
 - agy : aphrody-skills (69 skills) et web-quality-skills (6). Codex : aphrody-skills installé et activé (69 skills).
 - `just agents-sync --check` : aucun écart.
 
+## Exécution automatique
+
+- Front unique : `ay agents install|sync|check|list` (crates/ay, route bun vers `packages/machine/src/toolchain.ts`), `just agents-sync [check]`. Les autres verbes de `ay agents` restent l'orchestrateur ai-os.
+- PC : tâches `\\Aphrody\\AgentsSync` (toutes les heures) et `\\Aphrody\\AgentsSyncLogon` (ouverture de session), posées par `infra/agents/install-pc.sh` ; `apply-user.ts` appelle aussi l'applier.
+- Flotte : `infra/fleet/bin/agents-sync.sh` lancé par `aphrody-agents-sync.timer` (toutes les heures, après `src-checkout-update`). Il applique pour root et agent depuis `/srv/src` ; `SRC_SPARSE` contient `.agents`, `.claude-plugin`, `plugins` et `packages/machine`. Le tout est poussé par `fleet-resilience-remote.sh`. Un utilisateur sans aucun agent est ignoré (root sur fr2).
+- Secrets HTTP : `headers = { En-tête = "SECRET" }` pose un `headersHelper` (`packages/machine/src/mcp-headers.ts`) qui lit le coffre env-kit au lancement. `DEVELOPERKNOWLEDGE_API_KEY` ne vit plus que dans le coffre : elle a été retirée de `HKCU\\Environment` et sert le serveur `developer-knowledge` (connecté). Le serveur homonyme du plugin google-cloud-developer, qui attend la variable d'env, reste en échec.
+
+## Mesures du 2026-11-13 (`check` : 0 écart partout)
+
+| Hôte | Utilisateur | Claude (plugins actifs, MCP) | Codex | agy |
+|---|---|---|---|---|
+| pc | aphro | 21 plugins, 14 MCP ; `claude -p` neutre : 207 skills dont 69 aphrody-skills | aphrody-skills | aphrody-skills 69, web-quality-skills 6 |
+| prd | root | 17, 7 | aphrody-skills | aphrody-skills 69, web-quality-skills 6 |
+| prd | agent | 17, 7 ; `claude -p` dans /tmp : 197 skills dont 69 aphrody-skills | aphrody-skills | absent |
+| fr1 | root | 17, 7 (Claude passé de 2.1.96 à 2.1.323, agy à 1.5.8) | absent | aphrody-skills 69, web-quality-skills 6 |
+| fr1 | agent | 20, 7 | aphrody-skills | absent |
+| fr2 | agent | 17, 8 | aphrody-skills | absent |
+| fr2 | root | aucun agent installé | | |
+
+Avant : 12 skills utilisateur sur le PC, aucune sur la flotte ; plugins et MCP posés à la main sur le PC seulement.
+
+## Décision : APM et vercel-labs/skills non adoptés
+
+- vercel-labs/skills (`npx skills`, fork aphrody-labs/skills@e781cb4d0743) installe des skills en copiant ou en liant dans les dossiers de chaque agent (`~/.claude/skills`, `~/.agents/skills`...). Cela fait une copie hors cache par agent, ou un lien, deux choses interdites. Les marketplaces natives (Claude, Codex, agy) font déjà ce travail depuis la marketplace racine.
+- microsoft/apm (fork aphrody-labs/apm@1a6c1df655b7) est un gestionnaire Python (`apm.yml`, `apm install`). Le passer sur bun reviendrait à le réécrire, et son manifeste ferait doublon avec `toolchain.toml`.
+- Les deux forks restent épinglés dans `third_party/forks.txt` comme référence. `toolchain.toml` et `ay agents` sont le seul front ; à réexaminer si un format de paquet d'agents commun aux CLI devient standard.
+
 ## Reste
 
-- Flotte (prd, fr1, fr2 ; utilisateurs root et agent) : il manque l'unité `aphrody-agents-sync.timer` et l'ajout de `.agents`, `.claude-plugin`, `plugins` et `packages/machine` à `SRC_SPARSE` (`infra/fleet/*/resilience.conf`). Sur fr1, root a un Claude 2.1.96 ; sur fr2, root n'a ni claude ni bun.
-- PC : la correction de dérive tourne quand on lance `apply-user.ts` ou `just agents-sync` ; aucune tâche planifiée ne la déclenche encore.
-- `DEVELOPERKNOWLEDGE_API_KEY` est dans l'env utilisateur Windows (choix de l'audit `docs/tooling/AI-TOOLING-AUDIT.md`), donc hors du seul coffre.
-- `ay agents` et l'intégration APM / vercel-labs/skills (forks aphrody-labs/apm, aphrody-labs/skills) ne sont pas faits.
+- Gemini CLI : présente pour agent sur prd (extension aphrody-skills liée), absente ailleurs.
