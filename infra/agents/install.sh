@@ -27,7 +27,7 @@ git -C "$SRC" pull --ff-only --quiet origin main || true
 install -m 0755 "$SRC/infra/agents/pre-push" "$SRC/.git/hooks/pre-push"
 
 # 2. Agent CLIs (upstream packages, global bun installs). Claude Code uses its own native installer.
-need claude || curl -fsSL https://claude.ai/install.sh | bash
+claude --version >/dev/null 2>&1 || curl -fsSL https://claude.ai/install.sh | bash
 for spec in codex:@openai/codex opencode:opencode-ai pi:@earendil-works/pi-coding-agent; do
   bin=${spec%%:*}; pkg=${spec#*:}
   # Check the bun global bin itself: a same-named wrapper elsewhere on PATH does not count.
