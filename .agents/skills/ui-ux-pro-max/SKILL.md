@@ -39,7 +39,9 @@ Domaines : `ux` (règles UX/a11y, défaut), `web` (interface app/native : zones 
 
 1. Accessibilité : contraste 4,5:1 (AA vérifié par `bun test --cwd packages/design`), focus visible, libellés, clavier.
 2. Interaction : cibles 44x44 px min (48 dp en M3), retour de chargement, pas d'état au survol seul.
-3. Performance : CLS 0, LCP < 1,2 s, INP < 50 ms ; espace réservé aux médias.
+3. Performance : objectifs internes src CLS 0, LCP < 1,2 s, INP < 50 ms (seuils « bons » Core Web Vitals : LCP 2,5 s, INP 200 ms, CLS 0,1) ; espace réservé aux médias.
+
+Scores BM25 non comparables d'un domaine à l'autre : `--brief` juxtapose, ne classe pas.
 4. Style : un seul langage visuel par surface, cohérent avec le type de produit (`--domain product`).
 5. Mise en page : mobile d'abord, aucun défilement horizontal, zoom jamais bloqué.
 6. Typographie et couleur : 16 px de base, interligne 1,5, tokens sémantiques seuls.

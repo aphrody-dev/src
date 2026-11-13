@@ -80,7 +80,7 @@ const tokenize = (s: string) =>
     .toLowerCase()
     .replace(/[^\p{L}\p{N}_\s]/gu, " ")
     .split(/\s+/)
-    .filter((w) => w.length > 2);
+    .filter((w) => w.length > 1); // garde ui, ux, 3d, ar
 
 function bm25(docs: string[], query: string, k1 = 1.5, b = 0.75): [number, number][] {
   const corpus = docs.map(tokenize);

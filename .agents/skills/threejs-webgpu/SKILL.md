@@ -4,7 +4,7 @@ description: Scènes 3D et rendu GPU de src. Utiliser avant toute scène three.j
 license: MIT
 metadata:
   upstream: "CloudAI-X/threejs-skills@0e181866f095 (fork aphrody-labs/threejs-skills)"
-  verified: "2026-11-13 : three.js r187 (2026-10-30), gfx-rs/wgpu v30.0.2 (2026-11-12), gh api releases/latest"
+  verified: "2026-11-13, gh api repos/<o>/<r>/releases/latest : mrdoob/three.js r187 publié 2026-10-30, gfx-rs/wgpu v30.0.2 publié 2026-11-12"
 ---
 
 # threejs-webgpu
@@ -18,7 +18,7 @@ Deux voies, une seule par surface :
 
 ## Règles
 
-1. bun seul : `bun add three` dans le paquet, page servie par `Bun.serve` (HTML importé, bundler de bun). Outils glTF : `bun x @gltf-transform/cli inspect|validate|optimize`.
+1. bun seul : `bun add three` dans le paquet, page servie par `Bun.serve` (HTML importé, bundler de bun). Outils glTF : `bun x @gltf-transform/cli@4.5.1 inspect|validate|optimize` (version épinglée, registre npm du 2026-11-13, y compris dans les références).
 2. Version : vérifier `gh api repos/mrdoob/three.js/releases/latest` avant de citer une API ; les références ci-dessous visent r186, relire les notes de version r187 avant d'écrire du code dépendant d'une API récente.
 3. Renderer : `new WebGPURenderer({ antialias: true })`, `await renderer.init()` avant le premier rendu, `renderer.setAnimationLoop`. Matériaux nodaux (`MeshStandardNodeMaterial`, TSL) plutôt que `ShaderMaterial` GLSL.
 4. Couleurs de scène, fonds et HUD : rôles M3 de `packages/design/tokens/tokens.json` (jamais de hex recopié) ; HUD en Material Web par-dessus le canvas.

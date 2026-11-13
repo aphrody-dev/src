@@ -113,7 +113,12 @@ function mcpArgv(s: Mcp): string[] | null {
 /** Serveurs HTTP de [[claude.mcp]] repris par un autre agent (`mcp = [noms]` de [codex] ou [agy]) : même URL, sans secret. */
 function sharedMcp(m: Manifest, names: string[] | undefined): { name: string; url: string }[] {
   const all = (m.claude?.mcp ?? []).filter((x) => here(x) && x.url && !x.headers && !x.secrets && x.state !== "absent");
-  return (names ?? []).flatMap((n) => all.filter((x) => x.name === n).map((x) => ({ name: x.name, url: fill(x.url!) })));
+  return (names ?? []).flatMap((n) => {
+    const x = all.find((y) => y.name === n);
+    // Nom absent, hors hôte, à en-têtes ou à secrets : signalé (jamais un « ok » silencieux).
+    if (!x) return [{ name: n, url: "" }];
+    return [{ name: x.name, url: fill(x.url!) }];
+  });
 }
 
 /** Dossier d'un plugin de la marketplace racine : source locale dans src, sinon copie du cache Claude. */
@@ -261,8 +266,13 @@ export async function toolchain({ check }: { check: boolean }): Promise<string[]
     // MCP partagés (relay = Stitch et Gemini du relais, figma) ; `agy mcp add` met à jour une entrée existante.
     const ml = run(["agy", "mcp", "list"]).out.split("\n").slice(1);
     for (const x of sharedMcp(m, m.agy.mcp)) {
-      const row = ml.find((l) => l.split(/\s+/)[0] === x.name);
-      const ok = !!row && row.includes(x.url) && /\benabled\b/.test(row);
+      if (!x.url) {
+        out.push(`info agy mcp ${x.name} : pas d'entrée [[claude.mcp]] HTTP sans secret pour ${HOST}`);
+        continue;
+      }
+      // Colonnes NAME TYPE STATUS COMMAND/URL : comparaison exacte du nom, de l'état et de l'URL.
+      const cols = ml.map((l) => l.trim().split(/\s+/)).find((c) => c[0] === x.name);
+      const ok = !!cols && cols[2] === "enabled" && cols[3] === x.url;
       note(ok, `agy mcp ${x.name}`);
       if (ok || check) continue;
       const r = run(["agy", "mcp", "add", x.name, x.url]);
@@ -288,6 +298,10 @@ export async function toolchain({ check }: { check: boolean }): Promise<string[]
     // MCP partagés : URL streamable HTTP ; l'OAuth éventuel (figma) se fait au premier appel ou par `codex mcp login`.
     const cm = json<{ name: string; enabled: boolean; transport: { type: string; url?: string } }[]>(["codex", "mcp", "list", "--json"]) ?? [];
     for (const x of sharedMcp(m, m.codex.mcp)) {
+      if (!x.url) {
+        out.push(`info codex mcp ${x.name} : pas d'entrée [[claude.mcp]] HTTP sans secret pour ${HOST}`);
+        continue;
+      }
       const cur = cm.find((c) => c.name === x.name);
       const ok = !!cur && cur.enabled && cur.transport.url === x.url;
       note(ok, `codex mcp ${x.name}`);
