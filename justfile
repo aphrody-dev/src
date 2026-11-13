@@ -306,6 +306,11 @@ ci-lint:
 build-all *args:
     timeout 14400 ssh vps 'sudo systemd-run --unit=build-all --uid=ubuntu --collect --wait --pipe --property=Nice=10 --setenv=HOME=/home/ubuntu bash /srv/src/infra/fleet/bin/build-all.sh {{args}}'
 
+# Ship build-all images to prd or fr2 from fr1 (ghcr packages are private: pulled on fr1, streamed to the target) and
+# compose up the named services with --wait (usage: just deploy-images prd <sha> core ai-os-relay ai-os-gateway)
+deploy-images host sha profile *services:
+    timeout 1800 ssh vps 'bash /srv/src/infra/fleet/bin/deploy-images.sh {{host}} {{sha}} {{profile}} {{services}}'
+
 # --- Containers (upstream only: docker buildx bake + compose; docs/infra/DEPLOY.md) ---
 # Builds run in CI (images.yml, GitHub-hosted); fr1 is Chromium/LLVM only; prd and fr2 only pull and run. The PC has no local engine:
 # docker contexts fr1 (ssh://vps), prd (ssh://prd), fr2 (ssh://cdn).
