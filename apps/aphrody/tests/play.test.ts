@@ -14,9 +14,13 @@ describe("/play page", () => {
     expect(html).not.toMatch(/<script(?![^>]*\bsrc=)(?![^>]*application\/json)[^>]*>/);
   });
 
-  it("allows wasm and nothing third-party", () => {
+  it("allows wasm and only the first-party CDN", () => {
     expect(PLAY_CSP).toContain("'wasm-unsafe-eval'");
     expect(PLAY_CSP).not.toContain("'unsafe-eval'");
-    expect(PLAY_CSP).not.toMatch(/https:\/\//);
+    // The only external origin is the first-party CDN that serves the wasm build (game.yml publishes it).
+    expect(PLAY_CSP.match(/https:\/\/[^\s;]+/g)).toEqual([
+      "https://cdn.aphrody.com",
+      "https://cdn.aphrody.com",
+    ]);
   });
 });
