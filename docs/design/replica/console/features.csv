@@ -1,0 +1,35 @@
+feature,area,priority,original,clone,notes
+Profile picker with avatars and add user,onboarding,must,yes,no,S01
+Profile switch overlay,onboarding,should,yes,no,S02
+Home row of game tiles with last-played focus,home,must,yes,no,S03 S04
+Focus cursor with d-pad stick keyboard and touch,input,must,yes,no,spatial_next exists in gamescope-core
+Selected tile scale and border stroke animation,home,must,yes,no,Smooth exists
+Round system menu row,home,must,yes,no,S05; original icon set required
+Status bar clock battery controller indicator,home,must,yes,no,S04 S19
+Button hint footer (confirm back options),input,must,yes,no,original glyphs
+Nav bar with media games explore search settings,navigation,must,yes,no,S03
+Back and home navigation,navigation,must,yes,no,F10
+Game library grid with sort and storage info,library,must,yes,no,S11
+Game hub page with hero and play button,library,should,yes,no,S09
+Trophy list and progress,achievements,should,yes,no,S10; own achievement schema
+Store home with blocks and nav,store,should,yes,no,S06
+Collection and product pages,store,should,yes,no,S07 S08; mock catalogue first
+Search with results,search,should,yes,no,S15
+News feed cards,explore,could,yes,no,S12
+Media and app library tiles,apps,could,yes,no,S13 S14
+Settings list and option dialogs,settings,must,yes,no,S16 S23
+Software options dialog on tile,home,could,yes,no,S18
+Clock and month calendar,widgets,could,yes,no,S19
+Launcher card grid with bracket selection,home,could,yes,no,S20
+Local chat rooms with whiteboard,social,could,yes,no,S21 companion party chat
+Nearby host list,social,could,yes,no,S22
+Theme and color schemes,theming,should,yes,no,tokens from packages/design
+HDR and frame pacing of the shell,render,should,yes,no,hdr.rs pacing.rs
+Companion app home mirroring console state,companion,should,yes,no,apps/aphrody-app
+Companion remote controller pad,companion,could,yes,no,
+Real store accounts and payments,store,could,yes,skip,network service and regulated
+Trophy and friend sync across consoles,social,could,yes,skip,needs backend and users
+Official game art and covers,content,must,yes,skip,licensed; use original or user-owned art
+Platform trademarks logos and console shapes,brand,must,yes,skip,trademarks
+Streaming provider integrations,apps,could,yes,skip,third-party marks and licenses
+Sounds and system music,audio,could,yes,skip,licensed
