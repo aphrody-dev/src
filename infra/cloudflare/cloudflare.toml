@@ -28,7 +28,8 @@ ingress = [
   { hostname = "aphrody.com", service = "http://127.0.0.1:19300" },
   { hostname = "*.aphrody.com", service = "http://127.0.0.1:19300" },
   # aphrody-app VPS port (deploy.toml hosting.aphrody-app.port): same target fr2 used, nothing listens yet (502 parity).
-  { hostname = "*.aphrody.app", service = "http://127.0.0.1:3010" },
+  # *.aphrody.app is the Worker aphrody-deploy (packages/deploy); names it passes through without a backend answer 404, not 502.
+  { hostname = "*.aphrody.app", service = "http_status:404" },
   { service = "http_status:404" },
 ]
 

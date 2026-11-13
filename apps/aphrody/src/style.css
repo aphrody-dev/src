@@ -78,7 +78,7 @@ body {
   width: 100%;
   background-color: var(--bg-color);
   color: var(--text-color);
-  font-family: Roboto, Arial, Helvetica, sans-serif;
+  font-family: var(--md-ref-typeface-plain);
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;

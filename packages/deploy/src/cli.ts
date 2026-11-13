@@ -10,6 +10,7 @@
 // Container deploys stay under `ay deploy up|build|smoke|ps|shell|run|products` (just docker-*).
 import { readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
+import { componentsBundle } from "./m3.ts";
 import { affected, buildRegistry, loadProjects, SRC_ROOT } from "./registry.ts";
 import { previewUrl, type Deployment, type Project } from "./state.ts";
 
@@ -119,6 +120,23 @@ async function upload(
   };
   await Promise.all(Array.from({ length: 8 }, one));
   return { files: files.length, bytes };
+}
+
+/** Registry (projects, inventory, labs, tokens) and the Material Web bundle served at aphrody.app/_/md.js. */
+async function publishPlatform(commit: string): Promise<string> {
+  const reg = await buildRegistry(commit);
+  const r = await call("PUT", "/api/registry", reg);
+  const md = await componentsBundle(SRC_ROOT);
+  const up = await fetch(`${API}/api/assets/md.js`, {
+    method: "PUT",
+    headers: {
+      authorization: `Bearer ${TOKEN}`,
+      "content-type": "text/javascript",
+    },
+    body: md,
+  });
+  if (!up.ok) throw new Error(`md.js upload: HTTP ${up.status}`);
+  return `registry: ${r.projects} projects, ${reg.inventory.length} units, ${reg.labs.length} labs cards; md.js ${md.length} bytes`;
 }
 
 async function githubDeployment(
@@ -312,11 +330,7 @@ async function main(): Promise<number> {
     return 0;
   }
   if (sub === "registry") {
-    const reg = await buildRegistry(git("rev-parse", "HEAD"));
-    const r = await call("PUT", "/api/registry", reg);
-    console.log(
-      `registry: ${r.projects} projects, ${reg.inventory.length} units, ${reg.labs.length} labs cards`,
-    );
+    console.log(await publishPlatform(git("rev-parse", "HEAD")));
     return 0;
   }
   if (sub === "ci") {
@@ -324,8 +338,7 @@ async function main(): Promise<number> {
     const after = flag("--after") ?? git("rev-parse", "HEAD");
     const only = flags("--project");
     const all = loadProjects();
-    const reg = await buildRegistry(after);
-    await call("PUT", "/api/registry", reg);
+    console.log(await publishPlatform(after));
     let targets: Project[];
     if (only.length) targets = all.filter((p) => only.includes(p.name));
     else if (!before || /^0+$/.test(before)) targets = all;

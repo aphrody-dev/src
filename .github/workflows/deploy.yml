@@ -27,6 +27,8 @@ jobs:
         with: { fetch-depth: 0 }
       - uses: oven-sh/setup-bun@v2
         with: { bun-version-file: package.json }
+      # Material Web (@aphrody/design) is bundled into the pages: workspace dependencies from bun.lock.
+      - run: bun install --frozen-lockfile
       - name: deploy
         run: |
           set -eu

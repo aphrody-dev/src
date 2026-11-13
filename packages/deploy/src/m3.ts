@@ -1,27 +1,16 @@
-// Material 3 color roles from the brand seed (assets/brand/brand.toml), as `--md-sys-color-*` custom properties
-// for light and dark (prefers-color-scheme). Color science: the MCU port of packages/google-design (HCT, dynamic
-// schemes). packages/design (tokens/tokens.css, generated from the same brand.toml with MCU) wins when present.
+// Design inputs of the aphrody.com and aphrody.app pages, all from the monorepo design system (skill ui-system):
+// tokens from packages/design/tokens/tokens.css (Material Color Utilities from assets/brand/brand.toml), Material
+// Web components from packages/design/src/components.ts (bundled by bun), Google Sans Flex, the brand mark.
+// No color, radius, duration or font value is written here: CSS only references `--md-sys-*` / `--md-ref-*`.
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import {
-  generateDynamicTheme,
-  type SchemeVariant,
-} from "../../google-design/src/color-utils/hct.ts";
-
-const kebab = (k: string) => k.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
 
 export interface Brand {
   name: string;
-  seed: string;
-  variant: SchemeVariant;
-  accent: string;
   mark: string;
 }
 
-const DEFAULT_MARK =
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="var(--md-sys-color-primary)"/><path d="M32 14 49 48h-8.4l-3.5-7.6H26.9L23.4 48H15Zm-2.4 20h4.8L32 28.2Z" fill="var(--md-sys-color-on-primary)"/></svg>';
-
-/** Brand values from assets/brand (brand.toml, src/mark.svg); defaults to the same seed when absent. */
+/** Brand name and mark from assets/brand (brand.toml, src/mark.svg). */
 export function readBrand(root: string): Brand {
   const toml = join(root, "assets", "brand", "brand.toml");
   const svg = join(root, "assets", "brand", "src", "mark.svg");
@@ -33,39 +22,41 @@ export function readBrand(root: string): Brand {
         .replace(/<\?xml[^>]*>\s*/, "")
         .replace(/<!--[\s\S]*?-->/g, "")
         .trim()
-    : DEFAULT_MARK;
-  if (!/aria-hidden/.test(mark))
+    : "";
+  if (mark && !/aria-hidden/.test(mark))
     mark = mark.replace("<svg", '<svg aria-hidden="true"');
-  return {
-    name: b.name ?? "Aphrody",
-    seed: b.seed ?? "#3355FF",
-    variant: (b.variant ?? "vibrant") as SchemeVariant,
-    accent: b.accent ?? "#FFB300",
-    mark,
-  };
+  return { name: b.name ?? "Aphrody", mark };
 }
 
-export function m3Css(
-  seed: string,
-  variant: SchemeVariant = "vibrant",
-): string {
-  const t = generateDynamicTheme(seed, variant);
-  const vars = (s: Record<string, string>) =>
-    Object.entries(s)
-      .map(([k, v]) => `--md-sys-color-${kebab(k)}:${v}`)
-      .join(";");
-  return `:root{${vars(t.light as unknown as Record<string, string>)}}@media (prefers-color-scheme:dark){:root{${vars(t.dark as unknown as Record<string, string>)}}}`;
-}
-
-/** Material 3 tokens CSS: packages/design/tokens/tokens.css when present (single design system), else generated. */
+/** packages/design/tokens/tokens.css, minified (comments and whitespace only). */
 export function tokensCss(root: string): string {
   const f = join(root, "packages", "design", "tokens", "tokens.css");
-  if (existsSync(f))
-    return readFileSync(f, "utf8")
-      .replace(/\/\*[\s\S]*?\*\//g, "")
-      .replace(/\s+/g, " ")
-      .replace(/\s*([{}:;,])\s*/g, "$1")
-      .trim();
-  const b = readBrand(root);
-  return m3Css(b.seed, b.variant);
+  if (!existsSync(f))
+    throw new Error(`${f} missing: bun run --cwd packages/design build`);
+  return readFileSync(f, "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\s+/g, " ")
+    .replace(/\s*([{};,])\s*/g, "$1")
+    .trim();
+}
+
+/** CSS `font` + `letter-spacing` of an M3 type role, from the typescale tokens. */
+export const type = (role: string) =>
+  `font:var(--md-sys-typescale-${role}-weight) var(--md-sys-typescale-${role}-size)/var(--md-sys-typescale-${role}-line-height) var(--md-sys-typescale-${role}-font);letter-spacing:var(--md-sys-typescale-${role}-tracking)`;
+
+/** Google Sans Flex (brand.toml `font`), served by Google Fonts. */
+export const FONT_LINK =
+  '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..1000&display=swap">';
+
+/** Material Web bundle (packages/design/src/components.ts) for the browser, minified. */
+export async function componentsBundle(root: string): Promise<string> {
+  const r = await Bun.build({
+    entrypoints: [join(root, "packages", "design", "src", "components.ts")],
+    target: "browser",
+    format: "esm",
+    minify: true,
+  });
+  if (!r.success)
+    throw new Error(`Material Web bundle: ${r.logs.map(String).join("\n")}`);
+  return r.outputs[0]!.text();
 }

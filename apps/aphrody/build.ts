@@ -11,7 +11,7 @@ import {
 import { dirname, extname, join } from "path";
 import { brotliCompressSync, constants as zc } from "node:zlib";
 import { validateWeb, formatReport } from "../../packages/wck/src/index";
-import { getMaterialCssSubset } from "./src/design/material-tokens";
+import { componentsBundle, tokensCss } from "../../packages/deploy/src/m3";
 import { buildCsp, readGoogleConfig } from "./src/google/config";
 import {
   adsTxt,
@@ -82,7 +82,7 @@ for (const r of [bootBuild]) {
 // 2. CSS: legacy stylesheet + generated M3 token subset + M3 layer, minified.
 const rawCss = [
   readFileSync(join(ROOT, "src", "style.css"), "utf-8"),
-  getMaterialCssSubset(),
+  tokensCss(join(ROOT, "..", "..")), // packages/design/tokens/tokens.css (skill ui-system)
   readFileSync(join(ROOT, "src", "m3.css"), "utf-8"),
 ].join("\n");
 emit("style.css", minifyCss(rawCss));
@@ -160,15 +160,8 @@ if (existsSync(publicDir)) {
   for (const f of readdirSync(publicDir))
     copyFileSync(join(publicDir, f), join(DIST_DIR, f));
 }
-const petAtlasSrc = join(
-  ROOT,
-  "../../packages/google-design/assets/pets/sprites/spritesheet.webp",
-);
-if (existsSync(petAtlasSrc)) {
-  const petAtlasDst = join(DIST_DIR, "assets/pets/sprites/spritesheet.webp");
-  mkdirSync(dirname(petAtlasDst), { recursive: true });
-  copyFileSync(petAtlasSrc, petAtlasDst);
-}
+// Material Web (packages/design/src/components.ts), loaded as a module by the holding page.
+emit("md.js", await componentsBundle(join(ROOT, "..", "..")));
 
 // 5. Pre-compress text assets (gzip + brotli) for in-memory serving.
 const COMPRESS = new Set([

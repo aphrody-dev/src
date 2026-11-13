@@ -4,73 +4,73 @@
   "aphrody.app": 200,
   "aphrody.com": 200,
   "api.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 302,
+    "why": "API d'aphrody.app (Worker aphrody-deploy) ; / redirige vers /api/projects"
   },
   "api.aphrody.com": 200,
   "app-audio.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 404,
+    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "app-cad.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 404,
+    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "app-compositing.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 404,
+    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "app-documents.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 404,
+    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "app-generation.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 404,
+    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "app-images.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 404,
+    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "app-interface-layouts.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 404,
+    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "app-layout.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 404,
+    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "app-pdf.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 404,
+    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "app-photo-processing.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 404,
+    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "app-slides.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 404,
+    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "app-tables.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 404,
+    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "app-vectors.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 404,
+    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "app-video.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 404,
+    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "art.aphrody.com": {
     "status": 502,
     "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
   },
   "auth.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 404,
+    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "auth.aphrody.com": 200,
   "bot.aphrody.com": 200,
@@ -88,14 +88,14 @@
   "console.aphrody.com": 302,
   "control.aphrody.com": 302,
   "craft.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 404,
+    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "creator.aphrody.com": 200,
   "dbfr.aphrody.com": 200,
   "deploy.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 302,
+    "why": "redirection vers https://aphrody.app/dashboard (Worker aphrody-deploy)"
   },
   "design.aphrody.com": {
     "status": 502,
@@ -115,8 +115,8 @@
     "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
   },
   "git.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 302,
+    "why": "redirection vers https://github.com/aphrody-labs/src (Worker aphrody-deploy)"
   },
   "https://aphrody.com/api/health": {
     "status": 503,
@@ -169,8 +169,8 @@
     "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
   },
   "source.aphrody.app": {
-    "status": 502,
-    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+    "status": 302,
+    "why": "redirection vers https://github.com/aphrody-labs/src (Worker aphrody-deploy)"
   },
   "ssh-fr2.aphrody.com": 302,
   "ssh-prd.aphrody.com": 302,

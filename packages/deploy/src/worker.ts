@@ -44,6 +44,16 @@ export interface Env {
 }
 
 const APEX = new Set(["aphrody.app", "www.aphrody.app"]);
+const MDJS = "deploys/_platform/md.js";
+// Names of the zone that had no backend (tunnel catch-all to prd:3010, nothing listening): served by the platform.
+const ALIASES: Record<string, (u: URL) => string | "api"> = {
+  "api.aphrody.app": () => "api",
+  "deploy.aphrody.app": () => "https://aphrody.app/dashboard",
+  "git.aphrody.app": (u) =>
+    `https://github.com/aphrody-labs/src${u.pathname === "/" ? "" : u.pathname}`,
+  "source.aphrody.app": (u) =>
+    `https://github.com/aphrody-labs/src${u.pathname === "/" ? "" : u.pathname}`,
+};
 const JSONH = {
   "content-type": "application/json; charset=utf-8",
   "cache-control": "no-store",
@@ -52,7 +62,7 @@ const HTMLH = {
   "content-type": "text/html; charset=utf-8",
   "cache-control": "no-store",
   "content-security-policy":
-    "default-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+    "default-src 'none'; script-src 'self'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
   "x-content-type-options": "nosniff",
   "strict-transport-security": "max-age=63072000; includeSubDomains",
   "referrer-policy": "strict-origin-when-cross-origin",
@@ -171,6 +181,15 @@ async function api(req: Request, env: Env, url: URL): Promise<Response> {
         latest,
       })),
     );
+  }
+  // PUT /api/assets/md.js: Material Web bundle (packages/design/src/components.ts), built by CI.
+  if (seg[0] === "assets" && seg[1] === "md.js" && method === "PUT") {
+    if (!(await authorize(req, env)))
+      return json({ error: "unauthorized" }, 401);
+    await env.BUCKET.put(MDJS, req.body, {
+      httpMetadata: { contentType: "text/javascript; charset=utf-8" },
+    });
+    return json({ ok: true });
   }
   if (seg[0] === "registry" && method === "PUT") {
     const a = await authorize(req, env);
@@ -338,6 +357,22 @@ export default {
           301,
         );
       if (url.pathname.startsWith("/api/")) return api(req, env, url);
+      if (url.pathname === "/_/md.js") {
+        const o = await env.BUCKET.get(MDJS);
+        if (!o)
+          return new Response("// Material Web bundle not uploaded yet\n", {
+            status: 404,
+            headers: { "content-type": "text/javascript" },
+          });
+        return new Response(o.body, {
+          headers: {
+            "content-type": "text/javascript; charset=utf-8",
+            "cache-control": "public, max-age=300",
+            etag: o.httpEtag,
+            "x-content-type-options": "nosniff",
+          },
+        });
+      }
       if (
         url.pathname === "/dashboard" ||
         url.pathname.startsWith("/dashboard/")
@@ -360,6 +395,17 @@ export default {
         404,
       );
     }
+    const alias = ALIASES[host]?.(url);
+    if (alias === "api") {
+      if (url.pathname === "/")
+        return Response.redirect("https://aphrody.app/api/projects", 302);
+      return api(
+        req,
+        env,
+        new URL(`/api${url.pathname}${url.search}`, "https://aphrody.app"),
+      );
+    }
+    if (alias) return Response.redirect(alias, 302);
     const pv = parsePreviewHost(host, zone);
     if (pv) {
       let s = await readState(env.BUCKET, pv.project);
