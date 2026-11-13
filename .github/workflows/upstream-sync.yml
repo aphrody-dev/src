@@ -1,0 +1,51 @@
+# Continuous upstream tracking for the Epic Games and Bevy surface (docs/epic/RESOURCES.md):
+# 1. fast-forwards every aphrody-labs fork listed in third_party/forks.txt whose upstream owner
+#    is EpicGames, bevyengine or a tracked community project (gh repo sync, default branch);
+# 2. regenerates docs/epic/snapshot.json (repos, branches, head commits, releases) from the
+#    GitHub GraphQL API and commits it on main when it changed.
+# GitHub-hosted runner only. Needs APHRODY_DEPLOY_TOKEN with contents:write on aphrody-labs forks.
+name: upstream-sync
+on:
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+concurrency:
+  group: upstream-sync
+  cancel-in-progress: false
+permissions: { contents: write }
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ secrets.APHRODY_DEPLOY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: false
+      - uses: oven-sh/setup-bun@v2
+      - name: Sync forks with upstream
+        run: |
+          fail=0
+          grep -E '^(EpicGames|bevyengine|trumank|FabianFG|UE4SS-RE|legendary-gl|3ddelano)/' third_party/forks.txt | cut -d' ' -f1 | sort -u > upstreams.txt
+          while read -r up; do
+            name="${up#*/}"
+            if gh repo sync "aphrody-labs/$name" --source "$up" >/dev/null 2>log.txt; then
+              echo "synced $up"
+            else
+              echo "::warning::sync failed for $up: $(tail -1 log.txt)"
+              fail=$((fail+1))
+            fi
+          done < upstreams.txt
+          echo "failures=$fail" >> "$GITHUB_STEP_SUMMARY"
+      - name: Regenerate snapshot
+        run: bun scripts/upstream-recon.ts docs/epic/snapshot.json
+      - name: Commit snapshot
+        run: |
+          git config user.name aphrody-dev
+          git config user.email contact@aphrody.com
+          git add docs/epic/snapshot.json
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "docs/epic : instantane upstream regenere (upstream-sync)"
+          git pull --rebase origin main
+          git push origin HEAD:main

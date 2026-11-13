@@ -6,7 +6,7 @@ Checked 2026-11-13 with `gh api`, Context7 (`/websites/dev_epicgames`) and the w
 
 | Item | Fact | Source |
 | :--- | :--- | :--- |
-| Unreal Engine (C++) | Latest stable: 5.8, 2026-06-17, last planned UE5 major (UE 6: see below) | dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-8-release-notes |
+| Unreal Engine (C++) | Latest stable: 5.8 (2026-06-17), latest tag 5.8.4-release per docs/epic/snapshot.json, last planned UE5 major (UE 6: see below) | dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-8-release-notes |
 | UE source access | Private `EpicGames/UnrealEngine`; link GitHub account at unrealengine.com/ue4-on-github | `gh api repos/EpicGames/Signup/readme`; `gh api repos/EpicGames/UnrealEngine` returns private |
 | UE royalty | 5% above first US$1M gross per product; 3.5% under Launch Everywhere with Epic; EGS and Fab revenue excluded | unrealengine.com/release (secondary quotes; EULA not read) |
 | Lore (Rust VCS) | MIT, pre-1.0, v0.13.0 2026-11-06, centralized content-addressed, built into UEFN; docs epicgames.github.io/lore | `gh api repos/EpicGames/lore` |
@@ -21,6 +21,11 @@ Checked 2026-11-13 with `gh api`, Context7 (`/websites/dev_epicgames`) and the w
 - UEFN: v43.00 (2026-11-01) adds Verse material inheritance; Verse does not run on the client yet. v42.40 (2026-10-15): UEFN source assets licensable on Fab, `text_channel` API in `/Verse.org/Chat` (dev.epicgames.com/documentation/fortnite release notes).
 - MetaHuman: Creator web app access closed 2026-11-05, then 90 more days to retrieve gallery MetaHumans (forums.unrealengine.com/t/metahuman-creator-web-application-is-being-discontinued/2695297); creation is in-engine. UE 5.8 ships a MetaHuman Devkit and Animator markerless mocap (State of Unreal 2026 news page).
 - Licensing (unrealengine.com/ue-devs-can-now-choose-to-train-ai-models-on-their-projects): UE and MetaHuman projects can opt in to AI training; UEFN, Verse and island content fall under the Fortnite Developer Rules/Terms, not the UE EULA.
+
+## Verse language
+
+- Reference: The Verse book, verselang.github.io/book (repo verselang/book, CC0-1.0); Context7 `/websites/verselang_github_io_book`.
+- Effect specifiers: `<computes>` `<reads>` `<writes>` `<allocates>` `<transacts>` `<decides>` (can fail) `<suspends>` (async) `<converges>` `<diverges>` `<predicts>` (client) `<dictates>` (server). Failure contexts: a `<decides>` call must sit in `if` or `or`, or in a `<decides>` function; a failed transaction rolls back every `set`.
 
 ## Build CLI and CI (Context7 `/websites/dev_epicgames_unreal-engine`)
 
@@ -54,20 +59,27 @@ Checked 2026-11-13 with `gh api`, Context7 (`/websites/dev_epicgames`) and the w
 
 ## Community
 
-| Repo | Lang | License | Use |
-| :--- | :--- | :--- | :--- |
-| trumank/repak | Rust | Apache-2.0 | .pak read/write |
-| AstroTechies/unrealmodding | Rust | MIT | unreal_asset parser |
-| FabianFG/CUE4Parse | C# | Apache-2.0 | asset/IoStore parsing |
-| 4sval/FModel | C# | GPL-3.0 | asset explorer (CUE4Parse) |
-| UE4SS-RE/RE-UE4SS | C++ | MIT | injectable scripting/modding |
-| legendary-gl/legendary | Python | GPL-3.0 | EGS CLI launcher, 0.21.1 |
-| Heroic-Games-Launcher/HeroicGamesLauncher | TS | GPL-3.0 | GUI launcher, v2.22.4 |
-| RareDevs/Rare | Python | GPL-3.0 | Qt UI over legendary |
-| 3ddelano/epic-online-services-godot | C++ | MIT | EOS for Godot 4.2+ |
-| devphmd/eos (eos-sys, eos-rs 0.1.1) | Rust | Apache-2.0 | only Rust EOS bindings found; 1 star, last push 2026-04-24 |
+Source of every row: `gh api graphql` (repository: primaryLanguage, licenseInfo, pushedAt, latestRelease), 2026-11-13.
+
+| Repo | Lang | License | Last push | Latest release | Use |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| trumank/repak | Rust | Apache-2.0 | 2026-02-20 | v0.2.3 | .pak read/write |
+| AstroTechies/unrealmodding | Rust | MIT | 2026-07-18 | none | unreal_asset parser |
+| FabianFG/CUE4Parse | C# | Apache-2.0 | 2026-11-11 | 1.2.2.202611 | asset/IoStore parsing |
+| 4sval/FModel | C# | GPL-3.0 | 2026-11-08 | nov-2026 | asset explorer (CUE4Parse) |
+| UE4SS-RE/RE-UE4SS | C++ | MIT | 2026-11-12 | v4.0.0 | injectable scripting/modding |
+| legendary-gl/legendary | Python | GPL-3.0 | 2026-11-04 | 0.21.1 | EGS CLI launcher |
+| Heroic-Games-Launcher/HeroicGamesLauncher | TypeScript | GPL-3.0 | 2026-11-13 | v2.22.4 | GUI launcher |
+| RareDevs/Rare | Python | GPL-3.0 | 2026-10-09 | 1.12.0 | Qt UI over legendary |
+| 3ddelano/epic-online-services-godot | C++ | MIT | 2026-10-29 | 2.3.1 | EOS for Godot |
+| devphmd/eos (eos-sys, eos-rs 0.1.1 on crates.io) | Rust | Apache-2.0 | 2026-04-24 | none | only Rust EOS bindings found |
 
 Launcher protocol references (unofficial, from `legendary/api/egs.py`, `legendary/models/manifest.py`, `legendary/lfs/egl.py`): OAuth at `account-public-service-prod03.ol.epicgames.com`, manifest magic `0x44BEC00C` (zlib body: meta, chunk list, file list, custom fields), installs in `%PROGRAMDATA%\Epic\EpicGamesLauncher\Data\Manifests\*.item` (JSON). The launcher client credentials are Epic's; do not commit them (`docs/PUBLISH-AUDIT.md`).
+
+## Continuous tracking
+
+- `.github/workflows/upstream-sync.yml` (every 6 h): `gh repo sync` of each aphrody-labs fork of EpicGames, bevyengine and tracked community repos listed in `third_party/forks.txt`, then `bun scripts/upstream-recon.ts` regenerates `docs/epic/snapshot.json` (every repo: license, branches count, default-branch head commit, latest release) and commits it on main.
+- Bevy: all 18 non-archived `bevyengine` repos forked into aphrody-labs (bevy latest release v0.20.1 per snapshot). `aphrody-labs/bevy` is archived, so its sync fails until it is unarchived.
 
 ## In this repository
 
