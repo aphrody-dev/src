@@ -14,6 +14,11 @@
 !apps/aphrody/
 !apps/yolo/
 !apps/r2-site/
+!docs/ALPHABET.md
+!docs/reviews/
+!third_party/forks.txt
+!assets/brand/brand.toml
+!assets/brand/src/
 **/target/
 **/node_modules/
 **/dist/

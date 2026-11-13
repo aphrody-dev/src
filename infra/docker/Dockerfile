@@ -134,6 +134,13 @@ RUN --mount=type=cache,id=bun-cache,target=/root/.bun/install/cache \
 FROM bun-deps AS bun-build
 COPY packages/ packages/
 COPY apps/aphrody/ apps/aphrody/
+# apps/aphrody/build.ts (page holding) lit l'organisation et des métriques mesurées sur l'arbre.
+COPY docs/ALPHABET.md docs/ALPHABET.md
+COPY docs/reviews/ docs/reviews/
+COPY third_party/forks.txt third_party/forks.txt
+COPY assets/brand/brand.toml assets/brand/brand.toml
+COPY assets/brand/src/ assets/brand/src/
+COPY --parents crates/*/Cargo.toml ./
 COPY apps/r2-site/ apps/r2-site/
 COPY infra/fleet/workers/ infra/fleet/workers/
 # Each app: its own build step (static dist/), then the server bundled into one file next to dist/.
