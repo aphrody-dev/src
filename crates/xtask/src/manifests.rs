@@ -177,7 +177,7 @@ pub fn run(root: &Path, check: bool) -> i32 {
         }
     }
     for (path, commit) in &links {
-        match lock.repositories.get(&path) {
+        match lock.repositories.get(path.as_str()) {
             Some(r) if &r.commit == commit => {}
             Some(r) => {
                 eprintln!("manifests: gitlink {path} at {commit}, src.lock.json pins {} (run `ay lock`)", r.commit);
