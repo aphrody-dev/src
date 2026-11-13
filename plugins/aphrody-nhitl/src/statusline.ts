@@ -10,13 +10,24 @@ const sid = String(d.session_id ?? "nosid");
 let mode = readState<{ mode?: string }>("mode", sid, {}).mode || "";
 if (!mode) {
   try {
-    mode = JSON.parse(readFileSync(`${CLAUDE_DIR}/settings.json`, "utf8")).permissions?.defaultMode ?? "default";
+    mode =
+      JSON.parse(readFileSync(`${CLAUDE_DIR}/settings.json`, "utf8"))
+        .permissions?.defaultMode ?? "default";
   } catch {
     mode = "?";
   }
 }
-const short: Record<string, string> = { bypassPermissions: "bypass", acceptEdits: "edits", dontAsk: "dontAsk", default: "manual", plan: "plan", auto: "auto" };
-const agents = Object.values(readState<Record<string, { sid: string; ts: number }>>("agents", "all", {})).filter((a) => a.ts > Date.now() - 6 * 3600_000);
+const short: Record<string, string> = {
+  bypassPermissions: "bypass",
+  acceptEdits: "edits",
+  dontAsk: "dontAsk",
+  default: "manual",
+  plan: "plan",
+  auto: "auto",
+};
+const agents = Object.values(
+  readState<Record<string, { sid: string; ts: number }>>("agents", "all", {}),
+).filter((a) => a.ts > Date.now() - 6 * 3600_000);
 const mine = agents.filter((a) => a.sid === sid).length;
 const parts = [
   "nhitl",

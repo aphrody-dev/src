@@ -7,10 +7,18 @@ try {
     const last = (await f.exists()) ? Number(await f.text()) || 0 : 0;
     if (Date.now() - last > 86_400_000) {
       await Bun.write(lock, String(Date.now()));
-      const p = Bun.spawn(["claude", "-p", "/learn", "--dangerously-skip-permissions"], {
-        cwd: `${H}/.claude`, env: { ...process.env, LEARN_AUTO_CHILD: "1" },
-        stdin: "ignore", stdout: "ignore", stderr: "ignore", detached: true, windowsHide: true,
-      });
+      const p = Bun.spawn(
+        ["claude", "-p", "/learn", "--dangerously-skip-permissions"],
+        {
+          cwd: `${H}/.claude`,
+          env: { ...process.env, LEARN_AUTO_CHILD: "1" },
+          stdin: "ignore",
+          stdout: "ignore",
+          stderr: "ignore",
+          detached: true,
+          windowsHide: true,
+        },
+      );
       p.unref();
     }
   }

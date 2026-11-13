@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env -S bun --no-env-file
 // claude-nhitl: launch Claude Code headless with no human in the loop.
 //
 // Usage: bun claude-nhitl.ts [options] [--] <prompt...>      (prompt "-" = read stdin)
@@ -13,14 +13,29 @@
 // Contract for runners: stdout = Claude Code stream-json lines (last one is {"type":"result",...});
 // stderr first line = `nhitl-run {"sid":...,"log":...,"cwd":...}`; exit code = claude's exit code
 // (1 also when the result reports is_error). The full stream is also written to <log-dir>/<sid>.jsonl.
-import { mkdirSync } from "node:fs";
-import { HOME, writeGoal } from "../src/lib.ts";
+// Run it with `bun --no-env-file`: entries bun loaded from a .env of the launch directory are
+// never passed to claude (an ANTHROPIC_API_KEY there would override the claude.ai login).
+// As root (Linux), Claude Code refuses bypassPermissions: claude runs as NHITL_RUN_AS (default
+// agent, the runner user of infra/agents) through runuser; IS_SANDBOX is never forced. No such user: exit 2.
+import { chownSync, mkdirSync } from "node:fs";
+import { envWithoutDotenv, HOME, writeGoal } from "../src/lib.ts";
 
 const argv = Bun.argv.slice(2);
 const opt: Record<string, string | boolean> = {};
 const addDirs: string[] = [];
 const prompt: string[] = [];
-const valued = new Set(["goal", "resume", "session-id", "cwd", "model", "max-turns", "max-budget-usd", "log-dir", "append-system-prompt", "add-dir"]);
+const valued = new Set([
+  "goal",
+  "resume",
+  "session-id",
+  "cwd",
+  "model",
+  "max-turns",
+  "max-budget-usd",
+  "log-dir",
+  "append-system-prompt",
+  "add-dir",
+]);
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i]!;
   if (a === "--") {
@@ -31,40 +46,137 @@ for (let i = 0; i < argv.length; i++) {
     const v = argv[++i] ?? "";
     if (a === "--add-dir") addDirs.push(v);
     else opt[a.slice(2)] = v;
-  } else if (a === "--continue" || a === "--quiet" || a === "-h" || a === "--help") opt[a.replace(/^-+/, "")] = true;
+  } else if (
+    a === "--continue" ||
+    a === "--quiet" ||
+    a === "-h" ||
+    a === "--help"
+  )
+    opt[a.replace(/^-+/, "")] = true;
   else prompt.push(a);
 }
 if (opt.help || opt.h) {
-  console.log((await Bun.file(import.meta.path).text()).split("\n").slice(1, 15).map((l) => l.replace(/^\/\/ ?/, "")).join("\n"));
+  console.log(
+    (await Bun.file(import.meta.path).text())
+      .split("\n")
+      .slice(1, 15)
+      .map((l) => l.replace(/^\/\/ ?/, ""))
+      .join("\n"),
+  );
   process.exit(0);
 }
 
 let text = prompt.join(" ");
 if (text === "-") text = await Bun.stdin.text();
 const resume = typeof opt.resume === "string" ? opt.resume : "";
-const uuidRx = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const sid = resume && uuidRx.test(resume) ? resume : typeof opt["session-id"] === "string" ? opt["session-id"] : crypto.randomUUID();
+const uuidRx =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const sid =
+  resume && uuidRx.test(resume)
+    ? resume
+    : typeof opt["session-id"] === "string"
+      ? opt["session-id"]
+      : crypto.randomUUID();
 if (!text && !opt.goal) {
   console.error("claude-nhitl: prompt or --goal required (see --help)");
   process.exit(2);
 }
-if (!text) text = `Objectif : ${opt.goal}. Travailler jusqu'au bout sans poser de question ; terminer par NHITL_DONE.`;
-if (typeof opt.goal === "string" && opt.goal) writeGoal(sid, opt.goal);
-
+if (!text)
+  text = `Objectif : ${opt.goal}. Travailler jusqu'au bout sans poser de question ; terminer par NHITL_DONE.`;
 const cwd = typeof opt.cwd === "string" ? opt.cwd : process.cwd();
-const logDir = typeof opt["log-dir"] === "string" ? opt["log-dir"] : `${HOME}/.claude/learning/runs`;
+
+// Root: find the unprivileged user that will run claude.
+let runAs: { name: string; uid: number; gid: number; home: string } | null =
+  null;
+if (process.platform !== "win32" && process.getuid?.() === 0) {
+  const name = process.env.NHITL_RUN_AS || "agent";
+  const pw = Bun.spawnSync(["getent", "passwd", name], {
+    stdout: "pipe",
+    stderr: "ignore",
+  })
+    .stdout.toString()
+    .trim()
+    .split(":");
+  if (pw.length < 7 || pw[2] === "0") {
+    console.error(
+      `claude-nhitl: root, et l'utilisateur non-root « ${name} » est absent ; Claude Code refuse bypassPermissions en root. Créer l'utilisateur ou définir NHITL_RUN_AS.`,
+    );
+    process.exit(2);
+  }
+  runAs = { name, uid: Number(pw[2]), gid: Number(pw[3]), home: pw[5]! };
+}
+if (typeof opt.goal === "string" && opt.goal) {
+  const p = writeGoal(sid, opt.goal, runAs?.home);
+  if (runAs)
+    for (const x of [
+      p,
+      `${runAs.home}/.claude/state/nhitl`,
+      `${runAs.home}/.claude/state`,
+      `${runAs.home}/.claude`,
+    ])
+      chownSync(x, runAs.uid, runAs.gid);
+}
+const logDir =
+  typeof opt["log-dir"] === "string"
+    ? opt["log-dir"]
+    : `${HOME}/.claude/learning/runs`;
 mkdirSync(logDir, { recursive: true });
 const logPath = `${logDir}/${sid}.jsonl`;
 
-const args = ["claude", "-p", text, "--permission-mode", "bypassPermissions", "--permission-prompts", "none", "--output-format", "stream-json", "--verbose"];
+const args = [
+  ...(runAs ? ["runuser", "-u", runAs.name, "--"] : []),
+  "claude",
+  "-p",
+  text,
+  "--permission-mode",
+  "bypassPermissions",
+  "--permission-prompts",
+  "none",
+  "--output-format",
+  "stream-json",
+  "--verbose",
+];
 if (resume) args.push("--resume", resume);
 else if (opt.continue) args.push("--continue");
 else args.push("--session-id", sid);
-for (const k of ["model", "max-turns", "max-budget-usd", "append-system-prompt"]) if (typeof opt[k] === "string") args.push(`--${k}`, opt[k] as string);
+for (const k of [
+  "model",
+  "max-turns",
+  "max-budget-usd",
+  "append-system-prompt",
+])
+  if (typeof opt[k] === "string") args.push(`--${k}`, opt[k] as string);
 for (const d of addDirs) args.push("--add-dir", d);
 
-console.error(`nhitl-run ${JSON.stringify({ sid, log: logPath, cwd })}`);
-const child = Bun.spawn(args, { cwd, stdin: "ignore", stdout: "pipe", stderr: "inherit", env: { ...process.env, NHITL_RUN: "1" }, windowsHide: true });
+function childEnv(): Record<string, string> {
+  const e = envWithoutDotenv(
+    process.env,
+    process.cwd(),
+    !process.execArgv.includes("--no-env-file"),
+  );
+  e.NHITL_RUN = "1";
+  if (runAs) {
+    delete e.IS_SANDBOX;
+    Object.assign(e, {
+      HOME: runAs.home,
+      USER: runAs.name,
+      LOGNAME: runAs.name,
+    });
+  }
+  return e;
+}
+
+console.error(
+  `nhitl-run ${JSON.stringify({ sid, log: logPath, cwd, user: runAs?.name })}`,
+);
+const child = Bun.spawn(args, {
+  cwd,
+  stdin: "ignore",
+  stdout: "pipe",
+  stderr: "inherit",
+  env: childEnv(),
+  windowsHide: true,
+});
 const sink = Bun.file(logPath).writer();
 const dec = new TextDecoder();
 let buf = "";
