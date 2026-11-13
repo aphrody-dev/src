@@ -36,7 +36,7 @@ Source: unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show (2026-
 ## Verse language
 
 - Reference: The Verse book, verselang.github.io/book (repo verselang/book, CC0-1.0); Context7 `/websites/verselang_github_io_book`.
-- Effect specifiers: `<computes>` `<reads>` `<writes>` `<allocates>` `<transacts>` `<decides>` (can fail) `<suspends>` (async) `<converges>` (guaranteed to terminate) `<diverges>` (may not terminate) `<predicts>` (client) `<dictates>` (server). Failure contexts: a `<decides>` call must sit in `if` or `or`, or in a `<decides>` function; a failed transaction rolls back every `set`.
+- Effect specifiers: `<computes>` `<reads>` `<writes>` `<allocates>` `<transacts>` `<decides>` (can fail) `<suspends>` (async) `<converges>` (guaranteed to terminate) `<diverges>` (may not terminate) `<predicts>` (may run predictively on clients; everything it calls must also predict). Functions are server-authoritative (`dictates` effect) by default; `dictates` has no specifier (verselang.github.io/book/13_effects/). Failure contexts: a `<decides>` call must sit in `if` or `or`, or in a `<decides>` function; a failed transaction rolls back every `set`.
 
 ## Build CLI and CI (Context7 `/websites/dev_epicgames_unreal-engine`)
 
@@ -54,7 +54,7 @@ Source: unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show (2026-
 
 ## Epic Online Services (EOS)
 
-- SDK 1.19.2.1, 2026-09-22 (UNVERIFIED on an Epic page: third-party winget-extras#2576 and Redpoint changelog; official notes at dev.epicgames.com/docs/epic-online-services/release-notes). Download onlineservices.epicgames.com/sdk.
+- SDK 1.19.2.1-CL58105819, 2026-09-22 (dev.epicgames.com/docs/epic-online-services/release-notes, read 2026-11-13). Notable changes: EAS access tokens grow up to 8 KB from 2026-10-01 (never assume a fixed token size); `EOS_AntiCheatClient_GetSystemRequirementStatus` (Secure Boot, TPM); Apple CTC tokens in `EOS_Ecom_Checkout`. 1.19.1.2 (2026-05-19): Windows on Arm (no Social Overlay; anti-cheat only for emulated x64). 1.19.0.3 (2026-02-10): no 32-bit Windows/Android, `EOS_Initialize` no longer raises main-thread priority on Windows. 1.17.1.3: four-part version numbers; `EOS_Ecom_QueryOwnership` for durable ownership. Download onlineservices.epicgames.com/sdk.
 - C API rules (Context7): `EOS_Initialize` once; one `EOS_Platform_Create` handle per game; `EOS_Platform_Tick` every frame, callbacks only fire inside Tick; not thread-safe, call from the game thread; `EOS_Platform_Release` once then `EOS_Shutdown`, no re-init in the same process; shut EOS down before the host platform SDK; remove every `AddNotify` with its `RemoveNotify`.
 - Interfaces (handles from `EOS_Platform_Get*Interface`): Achievements, Anti-Cheat client/server, Auth, Connect, Custom Invites, Ecom, Friends, Leaderboards, Lobby, Metrics, Mods, P2P, Player Data Storage, Presence, Progression Snapshot, RTC/RTC Admin, Reports, Sanctions, Sessions, Stats, Title Storage, User Info (eos-fundamentals/eos-platform-interface). Epic Account Services (Auth, Friends, Presence) need an Epic account; Game Services (Connect, Lobby, P2P...) accept any identity provider and use Product User IDs.
 - Login types (`EOS_Auth_Credentials`): Password, ExchangeCode, PersistentAuth, Developer (Dev Auth Tool, `Id`=`localhost:<port>`, `Token`=credential name, dev only), RefreshToken, AccountPortal, ExternalAuth.
