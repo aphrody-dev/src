@@ -249,3 +249,23 @@ unixwin/wpm-gui Svelte
 quinn-rs/quinn Rust
 devongovett/glob-match Rust
 oils-for-unix/oils Python
+# Jeu et graphisme (2026-11-13) ; ownership : docs/gaming/OWNERSHIP.md. Un seul Wine, un seul Proton, un seul DXVK :
+# les variantes (Valve, CachyOS, GE) sont des remotes du même checkout, jamais des copies.
+wine-mirror/wine C
+ValveSoftware/Proton Python
+doitsujin/dxvk C++
+HansKristian-Work/vkd3d-proton C
+ValveSoftware/gamescope C++
+KhronosGroup/Vulkan-Headers C++
+KhronosGroup/Vulkan-Loader C
+KhronosGroup/Vulkan-ValidationLayers C++
+KhronosGroup/Vulkan-Tools C++
+microsoft/DirectX-Headers C++
+microsoft/DirectXShaderCompiler C++
+ublue-os/bazzite Shell
+ValveSoftware/steam-devices Shell
+ValveSoftware/GameNetworkingSockets C++
+Open-Wine-Components/umu-launcher Python
+flightlessmango/MangoHud C++
+FeralInteractive/gamemode C
+landaire/steamroom Rust
