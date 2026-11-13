@@ -9,10 +9,10 @@
 import { chmodSync, mkdtempSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { api } from "./lib";
-
 // Dedicated token aop-rotate (SSL and Certificates Write + Zone Read on aphrody.com only, vault CF_AOP_TOKEN): no OAuth.
+// Set before lib.ts is loaded (dynamic import), so its token resolution can only ever see this token.
 if (Bun.env.CF_AOP_TOKEN) process.env.CLOUDFLARE_API_TOKEN = Bun.env.CF_AOP_TOKEN;
+const { api } = await import("./lib");
 const prune = Bun.argv.includes("--prune");
 const hosts = Bun.argv.slice(2).filter((x) => !x.startsWith("--")).length ? Bun.argv.slice(2).filter((x) => !x.startsWith("--")) : ["dbfr.aphrody.com"];
 const zoneOf = async (h: string) => {
