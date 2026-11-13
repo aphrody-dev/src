@@ -10,12 +10,14 @@ repository.workspace = true
 
 [lib]
 name = "diffutils_flat"
-# The upstream unit tests need pretty_assertions and run in the fork.
-test = false
 doctest = false
 
 [dependencies]
 regex.workspace = true
+
+[dev-dependencies]
+# The upstream unit tests of bre.rs.
+pretty_assertions = "1.4"
 
 # Verbatim upstream code: the fork's lints apply upstream, not the workspace's.
 [lints]
