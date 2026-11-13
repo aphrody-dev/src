@@ -48,7 +48,7 @@ Kept in the Worker (unchanged, nothing lost): host routing of the Craft studios 
 
 ## Gaps (not done)
 
-- Bazzite and CachyOS: they are 64-bit distros; v86 is 32-bit x86 only. A 64-bit path (container2wasm with QEMU) was started on fr1 by a separate agent; its result is not recorded here yet.
+- Bazzite and CachyOS: they are 64-bit distros; v86 is 32-bit x86 only. The 64-bit path is container2wasm (see the next section); it is not wired into `/os`.
 - Smithay (Wayland compositor library) and the gamescope binary need Linux DRM, libinput and a GPU stack; they do not compile to WebAssembly. The in-browser equivalent here is the DOM window manager plus the gamescope WGSL pipeline; no Wayland protocol is implemented, `apps/unixwin` (a Windows layer) is not used.
 - Steam Gaming Mode, Proton, ujust and Bazzite or CachyOS tooling do not exist in the browser; Steam is a link, not a client.
 - Real emulator frames (needs a user ROM), gamepad hardware, Firefox and Safari, mobile and 4K are not tested. Game wasm presence depends on `target/game-web` at build time.
@@ -58,3 +58,11 @@ Kept in the Worker (unchanged, nothing lost): host routing of the Craft studios 
 ## Production check (aphrody.com, 2026-11-13)
 
 `aphrody.com` serves `dist/` from R2 through `apps/aphrody/edge/worker.ts`; headers come from `dist/_headers`, and only paths the Worker lists as dynamic reach the Bun origin. Found on the live site: `/os` and the vendor files were served, but the CSP was the site-wide one (it blocks the font and would block wasm), and `/os/catalog.json` returned the HTML 404 page because it was not routed to the origin. Fixed in the repo: `_headers` rules for `/os` and `/os/*` (same CSP as `server.ts`), and `/os/catalog.json`, `/os/api/*`, `/os/vm/*` added to the Worker's dynamic paths. Not yet verified on prod: it needs the next `ay deploy aphrody` and the Worker deploy, and the prd origin image must contain the new routes.
+
+## 64-bit distro in a tab: container2wasm test (fr1, headless Chrome 157, not integrated)
+
+- Tool: ktock/container2wasm (Apache-2.0), built from `main` at 3f0f9be4 (no releases or tags; the stock `c2w` fails because its Dockerfile pins a missing `v0.8.4`, worked around with `--assets` on the local clone). Command: `nice ./c2w --to-js --assets <clone> cachyos/cachyos:latest <out>/`, about 23 min on the loaded fr1.
+- Result: CachyOS (x86_64, kernel 6.1.0 from c2w) reached a bash prompt 16.4 to 17 s after navigation (3 runs, bundle served locally); `echo`, `/etc/os-release` (CachyOS Linux) and `uname` worked.
+- Cost: bundle 1.1 GB (rootfs `.data` 1.1 GB, QEMU wasm 41 MB; about 395 MB and 16 MB gzipped), tab JS heap about 1.1 GB, renderer RSS about 2.1 GB (approximate). Needs `COOP: same-origin` and `COEP: require-corp` (`SharedArrayBuffer`); without them the page dies without a prompt. Networking was not tested.
+- Bazzite: image manifest 256 layers, 4.45 GB compressed, not pulled. c2w boots its own kernel and init, so the image's systemd session, Steam, gamescope and Vulkan would not run (no GPU in the guest). Not run; do not read this as measured.
+- Bundle stays on fr1 in `/srv/webos-c2w/`; serving it from `/os` would need the COOP/COEP headers on that route, which conflicts with the frame and CDN loads of the current CSP, and an R2 upload of the 1.1 GB file.
