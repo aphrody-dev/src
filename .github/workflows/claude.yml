@@ -28,21 +28,26 @@ jobs:
     timeout-minutes: 120
     steps:
       - id: app
-        # GitHub App aphrody-labs-submodules (ay auth github-app) : jeton d'installation de 1 h, contents: read.
-        if: vars.SUBMODULES_APP_CLIENT_ID != ''
+        # GitHub App aphrody-labs (docs/infra/GITHUB-APP.md) : jeton d'installation de 1 h, borné aux permissions listées.
+        if: vars.APHRODY_APP_CLIENT_ID != '' && !github.event.pull_request.head.repo.fork
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          client-id: ${{ vars.SUBMODULES_APP_CLIENT_ID }}
-          private-key: ${{ secrets.SUBMODULES_APP_KEY }}
+          client-id: ${{ vars.APHRODY_APP_CLIENT_ID }}
+          private-key: ${{ secrets.APHRODY_APP_KEY }}
           owner: aphrody-labs
-          permission-contents: read
+          permission-contents: write
+          permission-pull-requests: write
+          permission-issues: write
+          permission-actions: read
       - uses: actions/checkout@v5
         with:
-          token: ${{ steps.app.outputs.token || secrets.SUBMODULES_TOKEN || github.token }}
+          token: ${{ steps.app.outputs.token || github.token }}
           fetch-depth: 0
       - uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Commits et commentaires signés par l'App : ils déclenchent ci/judge, contrairement à GITHUB_TOKEN.
+          github_token: ${{ steps.app.outputs.token || github.token }}
           prompt: ${{ github.event.inputs.prompt }}
           claude_args: |
             --permission-mode bypassPermissions

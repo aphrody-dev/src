@@ -126,13 +126,40 @@ function childEnv(extra: Record<string, string> = {}): Record<string, string> {
       (process.env.AGENTS_KEEP_ENV === "1" || !SCRUB.test(k))
     )
       e[k] = v;
-  return { ...e, ...credEnv(), ...extra };
+  const { CF_QUEUES_TOKEN: _q, ...cred } = credEnv(); // queue token: githubEvents() only
+  return { ...e, ...cred, ...extra };
 }
 
 // Long-lived CLI credentials for the runner user (Linux): encrypted with `systemd-creds --user`
 // (`ay secret set NAME`, docs/infra/AUTH.md) in ~/.config/credstore.encrypted/NAME, decrypted
 // into the children's environment only (never argv, logs or files). Cached per worker for 10 min.
-const CRED_NAMES = ["CLAUDE_CODE_OAUTH_TOKEN", "GH_TOKEN"];
+// GitHub: with APHRODY_APP_KEY + APHRODY_APP_CLIENT_ID (App aphrody-labs, docs/infra/GITHUB-APP.md),
+// GH_TOKEN is a 1 h installation token minted here; the private key never reaches the children.
+// GH_TOKEN from the credstore stays the fallback while the App credentials are absent.
+const CRED_NAMES = [
+  "CLAUDE_CODE_OAUTH_TOKEN",
+  "GH_TOKEN",
+  "CF_QUEUES_TOKEN",
+  "APHRODY_APP_KEY",
+  "APHRODY_APP_CLIENT_ID",
+];
+const APP_ONLY = ["APHRODY_APP_KEY", "APHRODY_APP_CLIENT_ID"];
+function appToken(creds: Record<string, string>): string | undefined {
+  if (!creds.APHRODY_APP_KEY || !creds.APHRODY_APP_CLIENT_ID) return undefined;
+  const r = Bun.spawnSync(
+    [process.execPath, join(HERE, "..", "..", "packages", "env-kit", "src", "github-app.ts"), "token", "--owner", "aphrody-labs"],
+    {
+      stdout: "pipe",
+      stderr: "pipe",
+      timeout: 60_000,
+      env: { PATH: process.env.PATH ?? "", HOME: process.env.HOME ?? "", APHRODY_APP_KEY: creds.APHRODY_APP_KEY, APHRODY_APP_CLIENT_ID: creds.APHRODY_APP_CLIENT_ID },
+    },
+  );
+  const t = r.stdout.toString().trim();
+  if (r.exitCode === 0 && t) return t;
+  log("github_app_token", { error: r.stderr.toString().trim().slice(-200) });
+  return undefined;
+}
 let credCache: { at: number; env: Record<string, string> } | null = null;
 function credEnv(): Record<string, string> {
   if (WIN || !process.env.HOME) return {};
@@ -147,6 +174,9 @@ function credEnv(): Record<string, string> {
     );
     if (r.exitCode === 0) env[name] = r.stdout.toString().trim();
   }
+  const app = appToken(env);
+  if (app) env.GH_TOKEN = env.GITHUB_TOKEN = app;
+  for (const k of APP_ONLY) delete env[k];
   credCache = { at: Date.now(), env };
   return env;
 }
@@ -933,11 +963,30 @@ function ciWatch() {
   }
 }
 
+// App webhooks (ship host only): Cloudflare queue github-events -> tasks (infra/agents/github-events.ts).
+function githubEvents() {
+  if (HOST !== FLEET.ship.host) return;
+  const env = credEnv();
+  if (!env.CF_QUEUES_TOKEN) return;
+  const r = Bun.spawnSync([process.execPath, join(HERE, "github-events.ts"), "pull"], {
+    stdout: "pipe",
+    stderr: "pipe",
+    timeout: 90_000,
+    env: { ...process.env, ...env, SRC_ROOT: SRC, AGENTS_HOME: HOME, AGENTS_HOST: HOST },
+  });
+  const out = r.stdout.toString().trim();
+  if (r.exitCode === 0) {
+    const j = JSON.parse(out || "{}");
+    if (j.pulled) log("github_events", j);
+  } else log("github_events", { error: r.stderr.toString().trim().slice(-300) });
+}
+
 function health() {
   ensureDirs();
   up();
   requeueOrphans();
   ciWatch();
+  githubEvents();
   schedule();
   const h = { ts: now(), host: HOST, src: SRC, clis: probe(), queue: counts() };
   writeFileSync(join(STATE, "health.json"), JSON.stringify(h, null, 2));

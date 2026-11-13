@@ -1,0 +1,47 @@
+# Publication crates.io sans jeton longue durée (docs/infra/GITHUB-APP.md, section crates.io).
+# Trusted publishing : rust-lang/crates-io-auth-action échange le jeton OIDC du job (id-token: write) contre un jeton
+# crates.io temporaire, révoqué par l'étape post. Pré-requis par crate : une configuration GitHub enregistrée sur
+# crates.io (dépôt aphrody-labs/src, workflow crates-publish.yml), posée par
+# `ay auth github-app crates-trust --crates a,b` ; le premier publish d'une crate reste manuel (règle crates.io).
+name: crates-publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      crates:
+        description: "Crates du workspace, séparées par des espaces, dans l'ordre de dépendance"
+        required: true
+      dry_run:
+        description: "cargo publish --dry-run (sans échange OIDC)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: crates-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - id: auth
+        if: ${{ !inputs.dry_run }}
+        uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9 # v1.0.6
+      - name: cargo publish
+        env:
+          CRATES: ${{ inputs.crates }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
+        run: |
+          set -euo pipefail
+          for c in $CRATES; do
+            [[ "$c" =~ ^[A-Za-z0-9_-]+$ ]] || { echo "::error::nom refusé : $c"; exit 1; }
+            if [ "$DRY_RUN" = true ]; then cargo publish -p "$c" --dry-run; else cargo publish -p "$c"; fi
+            echo "### $c $([ "$DRY_RUN" = true ] && echo '(dry-run)')" >> "$GITHUB_STEP_SUMMARY"
+          done

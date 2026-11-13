@@ -1,0 +1,196 @@
+// Événements de l'App GitHub « aphrody-labs » -> file d'agents (docs/infra/GITHUB-APP.md).
+// Le Worker aphrody-github (infra/cloudflare/workers/github-app) vérifie la signature et pousse un résumé dans la
+// file Cloudflare `github-events` ; ce script, lancé par `runner.ts health` sur l'hôte ship (prd, toutes les 2 min),
+// la vide par le consommateur HTTP pull (jeton CF_QUEUES_TOKEN : Queues Read + Write), écrit les tâches dans
+// var/agents/queue/new/ au format du runner, puis acquitte. Un message non traité revient après 2 min (bail).
+//   bun infra/agents/github-events.ts pull [--dry-run]
+import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { join, resolve } from "node:path";
+
+export type GithubEvent = {
+  v: 1;
+  delivery: string;
+  event: string;
+  action?: string;
+  kind: "ci_red" | "push_main" | "release" | "security" | "installation";
+  repo?: string;
+  ref?: string;
+  sha?: string;
+  url?: string;
+  title?: string;
+  actor?: string;
+  at: string;
+};
+
+export type QueueTask = {
+  v: 1;
+  id: string;
+  role: string;
+  host: string;
+  prompt: string;
+  commit?: { paths: string[]; message: string };
+  approval?: "none" | "owner";
+  created_by: string;
+  created_at: string;
+};
+
+const SRC_REPO = "aphrody-labs/src";
+// Dépôts dont le code vit dans le checkout du runner (src et ses sous-modules sous apps/) : seuls ceux-là donnent
+// des tâches qui modifient et committent ; les autres produisent un rapport.
+const inCheckout = (repo = "") => repo === SRC_REPO || /^aphrody-labs\/(rosegriffon|shenron|r2b|auto)$/.test(repo);
+const short = (s = "") => s.slice(0, 12);
+const clean = (s = "") => s.replace(/[`\r\n]/g, " ").slice(0, 200);
+
+/** Tâche du runner pour un événement, ou null (installation, bruit). Les push sont regroupés : voir coalesce(). */
+export function eventTask(e: GithubEvent, host: string, now = new Date().toISOString()): QueueTask | null {
+  const base = { v: 1 as const, host, created_by: `github-app:${e.event}`, created_at: now };
+  const repo = e.repo ?? "";
+  switch (e.kind) {
+    case "ci_red":
+      // Même identifiant que ciWatch (runner.ts) pour src : une seule tâche par commit rouge.
+      return {
+        ...base,
+        id: repo === SRC_REPO ? `ci-fix-${short(e.sha)}` : `gh-ci-${repo.replace("/", "-")}-${short(e.sha)}`,
+        role: "sre",
+        prompt: `GitHub Actions is red on ${repo} default branch: "${clean(e.title)}" at ${e.sha} (${e.url}). Run \`git pull --ff-only origin main\` first. If a newer run of the same workflow on main is green, or HEAD already reverts ${short(e.sha)}, stop without changes. Otherwise read the failing log with \`gh run view --log-failed -R ${repo} <run id from the URL>\`. ${inCheckout(repo) ? "Fix the root cause with the smallest change in this checkout (submodules live under apps/), run the matching `just` recipe locally, and stop. Do not commit: the runner commits." : "This repository is not in the checkout: if the failure is transient infrastructure, rerun it once with `gh run rerun --failed`; otherwise write the diagnosis and the proposed patch in your final answer."}`,
+        ...(inCheckout(repo) ? { commit: { paths: [""], message: `fix: CI rouge sur ${repo} à ${short(e.sha)} (webhook App)` } } : {}),
+      };
+    case "release":
+      return {
+        ...base,
+        id: `gh-release-${repo.replace("/", "-")}-${String(e.ref).replace(/[^\w.-]/g, "_")}`,
+        role: "deployer",
+        prompt: `Release ${e.ref} of ${repo} was published (${e.url}). Verify it without changing anything: assets present and non-empty (\`gh release view ${e.ref} -R ${repo} --json assets\`), checksums file matches the assets when present, and the version is what tools.toml / src.lock.json pin if this repository is pinned there. Report mismatches in your final answer; do not publish, delete or edit releases.`,
+      };
+    case "security":
+      return {
+        ...base,
+        id: `gh-sec-${e.delivery.slice(0, 18)}`,
+        role: "sre",
+        prompt: `Security alert on ${repo} (${e.event}, ${e.action}): "${clean(e.title)}" ${e.url}. Read it with \`gh api\` on that URL's API path. If it is a vulnerable dependency, bump it within declared bounds and run \`just checkdeps\`; if it is code scanning, fix the code; if it is a leaked secret, rotate it with \`ay secret set\` / \`ay auth rotate\` without ever printing the value, then dismiss the alert as revoked. ${inCheckout(repo) ? "Do not commit: the runner commits." : "The repository is not in the checkout: report the fix in your final answer."}`,
+        ...(inCheckout(repo) ? { commit: { paths: [""], message: `security: ${e.event} sur ${repo} (webhook App)` } } : {}),
+      };
+    default:
+      return null;
+  }
+}
+
+type PushState = Record<string, { from?: string; to: string; last_enqueued?: string; titles: string[] }>;
+const REVIEW_EVERY_MS = 3_600_000;
+
+/** Regroupe les push sur main : au plus une revue par dépôt et par heure, sur la plage depuis la dernière revue. */
+export function coalesce(state: PushState, pushes: GithubEvent[], host: string, now = new Date()): QueueTask[] {
+  for (const e of pushes) {
+    if (!e.repo || !e.sha) continue;
+    const s = (state[e.repo] ??= { to: e.sha, titles: [] });
+    s.to = e.sha;
+    s.titles = [...s.titles, clean(e.title)].slice(-20);
+  }
+  const out: QueueTask[] = [];
+  for (const [repo, s] of Object.entries(state)) {
+    if (!s.titles.length) continue;
+    if (s.last_enqueued && now.getTime() - Date.parse(s.last_enqueued) < REVIEW_EVERY_MS) continue;
+    const range = s.from ? `${s.from}..${s.to}` : `${s.to}~${Math.min(s.titles.length, 20)}..${s.to}`;
+    out.push({
+      v: 1,
+      id: `gh-review-${repo.replace("/", "-")}-${short(s.to)}`,
+      role: "reviewer",
+      host,
+      created_by: "github-app:push",
+      created_at: now.toISOString(),
+      prompt: `Review the commits pushed to ${repo} main in range ${range} (${s.titles.length} push(es): ${s.titles.join(" | ")}). Use \`gh api repos/${repo}/compare/${range.replace("..", "...")}\`. Look only for correctness bugs, security regressions and leaked secrets. For each confirmed problem open one issue with \`gh issue create -R ${repo}\` (title prefixed "review:"), unless an open issue already covers it. Do not modify code.`,
+    });
+    s.from = s.to;
+    s.titles = [];
+    s.last_enqueued = now.toISOString();
+  }
+  return out;
+}
+
+// --- consommateur HTTP pull -----------------------------------------------------------------------------------
+
+const CF = "https://api.cloudflare.com/client/v4";
+
+async function cf(path: string, token: string, body?: unknown): Promise<any> {
+  const r = await fetch(`${CF}${path}`, { method: body ? "POST" : "GET", headers: { authorization: `Bearer ${token}`, "content-type": "application/json" }, body: body ? JSON.stringify(body) : undefined });
+  const j: any = await r.json().catch(() => ({}));
+  if (!r.ok || j.success === false) throw new Error(`Cloudflare ${path} : HTTP ${r.status} ${JSON.stringify(j.errors ?? []).slice(0, 200)}`);
+  return j.result;
+}
+
+function accountId(src: string): string {
+  if (process.env.CLOUDFLARE_ACCOUNT_ID) return process.env.CLOUDFLARE_ACCOUNT_ID;
+  const t = Bun.TOML.parse(readFileSync(join(src, "infra", "deploy.toml"), "utf8")) as any;
+  const id = t.cloud?.cloudflare_account_id;
+  if (!id) throw new Error("cloudflare_account_id absent de infra/deploy.toml");
+  return id;
+}
+
+export async function pull(o: { src: string; home: string; host: string; dryRun?: boolean }): Promise<{ pulled: number; tasks: string[] }> {
+  const token = process.env.CF_QUEUES_TOKEN;
+  if (!token) return { pulled: 0, tasks: [] };
+  const acct = accountId(o.src);
+  const q = ((await cf(`/accounts/${acct}/queues?per_page=100`, token)) as { queue_id: string; queue_name: string }[]).find((x) => x.queue_name === "github-events");
+  if (!q) throw new Error("file github-events absente");
+  const res = await cf(`/accounts/${acct}/queues/${q.queue_id}/messages/pull`, token, { batch_size: 100, visibility_timeout_ms: 120_000 });
+  const msgs = (res?.messages ?? []) as { body: unknown; lease_id: string }[];
+  const dirs = Object.fromEntries(["tmp", "new", "claimed", "done", "failed"].map((d) => [d, join(o.home, "queue", d)]));
+  const state = join(o.home, "state");
+  for (const d of [...Object.values(dirs), state]) mkdirSync(d, { recursive: true });
+  const known = (id: string) => ["new", "claimed", "done", "failed"].some((d) => readdirSync(dirs[d]!).some((f) => f.startsWith(id)));
+  const tasks: QueueTask[] = [];
+  const pushes: GithubEvent[] = [];
+  for (const m of msgs) {
+    let e: GithubEvent;
+    try {
+      e = (typeof m.body === "string" ? JSON.parse(m.body) : m.body) as GithubEvent;
+    } catch {
+      continue;
+    }
+    if (e.kind === "push_main") pushes.push(e);
+    else {
+      const t = eventTask(e, o.host);
+      if (t) tasks.push(t);
+    }
+  }
+  // CI rouge : comme ciWatch, une seule tâche ouverte par dépôt, sur le dernier commit rouge reçu.
+  const ciPrefix = (id: string) => id.replace(/[0-9a-f]{12}$/, "");
+  const open = (p: string) => ["new", "claimed"].some((d) => readdirSync(dirs[d]!).some((f) => f.startsWith(p)));
+  const lastCi = new Map<string, QueueTask>();
+  for (const t of tasks) if (t.role === "sre" && /^(ci-fix-|gh-ci-)/.test(t.id)) lastCi.set(ciPrefix(t.id), t);
+  for (let i = tasks.length - 1; i >= 0; i--) {
+    const t = tasks[i]!;
+    if (!/^(ci-fix-|gh-ci-)/.test(t.id)) continue;
+    if (lastCi.get(ciPrefix(t.id)) !== t || open(ciPrefix(t.id))) tasks.splice(i, 1);
+  }
+  const pf = join(state, "github-push.json");
+  const ps: PushState = existsSync(pf) ? JSON.parse(readFileSync(pf, "utf8")) : {};
+  tasks.push(...coalesce(ps, pushes, o.host));
+  const written: string[] = [];
+  for (const t of tasks) {
+    if (known(t.id) || written.includes(t.id)) continue;
+    written.push(t.id);
+    if (o.dryRun) continue;
+    const tmp = join(dirs.tmp!, `${t.id}.json`);
+    writeFileSync(tmp, JSON.stringify(t, null, 2));
+    renameSync(tmp, join(dirs.new!, `${t.id}.json`));
+  }
+  if (!o.dryRun) {
+    writeFileSync(pf, JSON.stringify(ps, null, 2));
+    if (msgs.length) await cf(`/accounts/${acct}/queues/${q.queue_id}/messages/ack`, token, { acks: msgs.map((m) => ({ lease_id: m.lease_id })), retries: [] });
+  }
+  return { pulled: msgs.length, tasks: written };
+}
+
+if (import.meta.main) {
+  const [cmd] = process.argv.slice(2);
+  if (cmd !== "pull") {
+    console.error("usage : bun infra/agents/github-events.ts pull [--dry-run]");
+    process.exit(2);
+  }
+  const src = resolve(process.env.SRC_ROOT ?? join(import.meta.dir, "..", ".."));
+  const home = resolve(process.env.AGENTS_HOME ?? join(src, "var", "agents"));
+  const host = process.env.AGENTS_HOST ?? "prd";
+  const r = await pull({ src, home, host, dryRun: process.argv.includes("--dry-run") });
+  console.log(JSON.stringify(r));
+}
