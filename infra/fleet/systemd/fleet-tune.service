@@ -1,0 +1,10 @@
+[Unit]
+Description=Fleet storage/memory tuning (sysctl, zram, swapfile, noatime), re-applied at boot (infra/fleet/bin/fleet-tune.sh)
+After=local-fs.target swap.target
+ConditionPathExists=/etc/fleet/tune.conf
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/fleet-tune.sh apply
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,8 @@
+[Unit]
+Description=Daily fleet disk cleanup
+[Timer]
+OnCalendar=*-*-* 05:23:00
+RandomizedDelaySec=20min
+Persistent=true
+[Install]
+WantedBy=timers.target

@@ -68,3 +68,11 @@ ssh : clés uniquement sur les trois nœuds (`PasswordAuthentication no`, root `
 - fr1 : `build.slice` (MemoryHigh 34G, MemoryMax 38G, oomd kill à 80 % de pression). NativeLink worker en Nice=5.
 - prd : `fleet-apps.slice` (CPUWeight 50, MemoryHigh 6G, MemoryMax 8G, oomd) pour commons-relay, aphrody-gpu-depot et agent-relay-broker.
 - Transferts : `nice -n 19 ionice -c3`, `--bwlimit` ≤ 10 MB/s vers prd. Avant d'écrire sur une cible qui existe déjà : `rsync --dry-run --itemize-changes`, puis `--backup --backup-dir=<cible>.rsync-backup-<date>`.
+
+## Disque, swap, FS et sysctl (fleet-tune)
+
+- `infra/fleet/bin/fleet-tune.sh apply|check|clean` (installé dans `/usr/local/bin`), configuration par hôte `infra/fleet/<hôte>/tune.conf` copiée dans `/etc/fleet/tune.conf`. `fleet-tune.service` le réapplique à chaque boot, `fleet-clean.timer` (05:23) nettoie chaque jour.
+- Mémoire : zram en priorité 100 (zram-generator sur fr2 et prd, `zram-swap.service` maison sur fr1), swapfile en priorité 10 (fr1 8 Gio ext4, fr2 2 Gio ext4, prd 8 Gio btrfs nocow créé par `btrfs filesystem mkswapfile` dans le sous-volume `/swap`). `vm.swappiness` 150 sur fr2 et prd, 100 sur fr1 ; `vm.page-cluster` 0 ; `dirty_bytes` dimensionnés par hôte dans `/etc/sysctl.d/95-fleet-tune.conf`.
+- FS : `noatime` partout. La racine de prd n'a pas de ligne fstab (montée par la cmdline du noyau) : elle est remontée en `noatime` au boot par `fleet-tune.service`. btrfs garde `compress=zstd:1,space_cache=v2,discard=async`. `fstrim.timer` actif sur les trois hôtes.
+- Nettoyage (quotas dans `tune.conf`) : cibles cargo (`CACHEDIR.TAG`) inactives depuis N jours, jamais pendant que le verrou lourd est tenu ; caches bun et sccache au-dessus de leur plafond ; `docker builder prune --keep-storage`, images inutilisées de plus de 14 j ; `journalctl --vacuum-size`.
+- Noyau : aucun changement appliqué ici. Tout changement de noyau passe par docs/linux et `fleet-reboot-precheck.sh` ; jamais de reboot depuis fleet-tune.

@@ -1,0 +1,9 @@
+[Unit]
+Description=Fleet disk cleanup with quotas (cargo targets, sccache, bun cache, docker/podman, journal)
+ConditionPathExists=/etc/fleet/tune.conf
+[Service]
+Type=oneshot
+Nice=19
+IOSchedulingClass=idle
+CPUWeight=10
+ExecStart=/usr/local/bin/fleet-tune.sh clean
