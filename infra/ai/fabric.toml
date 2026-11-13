@@ -1,0 +1,105 @@
+# Tissu d'inférence distribué (llama.cpp RPC) : un llama-server coordinateur sur le GPU du PC, des
+# ggml-rpc-server sur les autres hôtes, joints uniquement par WireGuard. Lu par packages/ai-os/src/fabric
+# (`ai-os fabric up|status|down`, `ay ai fabric ...`). Doc : docs/ai/DISTRIBUTED-INFERENCE.md.
+#
+# [release]  binaires officiels ggml-org/llama.cpp, empreintes = `digest` de l'API GitHub des assets
+#            (gh api repos/ggml-org/llama.cpp/releases/tags/b<tag>), relevées le 2026-11-13. Jamais de
+#            compilation sur le PC ; sur prd seulement via infra/fleet/bin/heavy.sh.
+# [model.*]  GGUF servis par le coordinateur ; `path` relatif au cache de modèles (dédupliqué, liens durs).
+# [[node]]   hôte de calcul : `bind` = adresse WireGuard d'écoute (jamais 0.0.0.0), `reach` = adresse vue
+#            du coordinateur, `gate` = condition d'admission (vérifiée au démarrage puis toutes les
+#            `watch_s` secondes par le chien de garde : le nœud se retire seul), plafonds systemd.
+
+[coordinator]
+node = "pc"
+host = "127.0.0.1"
+port = 8090
+model = "gemma4-e2b"
+ctx = 8192
+cache = "~/.local/share/ay/ai"
+# Adresses WireGuard du coordinateur : seules sources admises sur le port RPC des nœuds (nft).
+mesh = ["10.200.77.2", "10.200.78.2"]
+
+[release]
+tag = "b12340"
+commit = "8954f194837d2ec4d5f67f20c81b84abe63883ba"
+windows-x86_64 = { asset = "llama-b12340-bin-win-cuda-13.5-x64.zip", sha256 = "31013c2a0d7ed93489862613a08f34658861996741b310ee3fa9e27ec139642b" }
+windows-x86_64-cudart = { asset = "cudart-llama-bin-win-cuda-13.5-x64.zip", sha256 = "c2bf4cc202bfbaaa7a0b75f5082457c3811326947bb216059b72839d844e9cba" }
+linux-x86_64 = { asset = "llama-b12340-bin-ubuntu-x64.tar.gz", sha256 = "5bc0276548147e56aa03f97b201b1cb3b43cbda6e388f1f2f4c8d82b56313856" }
+
+[model.gemma4-e2b]
+# unsloth/gemma-4-E2B-it-GGUF, Q4_K_M : sha256 = oid LFS de l'API Hugging Face (relevé 2026-11-13), identique
+# sur le PC et sur chaque nœud (`warm`) pour que le cache de tenseurs de rpc-server serve les mêmes empreintes.
+path = "gemma-4-E2B-it-Q4_K_M.gguf"
+bytes = 3106738272
+sha256 = "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8"
+url = "https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/resolve/main/gemma-4-E2B-it-Q4_K_M.gguf"
+
+# --- Nœuds ------------------------------------------------------------------------------------
+
+[[node]]
+id = "pc"
+os = "windows"
+role = "coordinator"
+# Parts relatives des couches (-ts, ordre llama.cpp : nœuds RPC puis CUDA0). Sans part sur chaque nœud admis,
+# llama.cpp répartit selon la mémoire libre et donnerait l'essentiel au CPU d'un VPS (47 Gio libres sur fr1).
+share = 7
+# Moteur principal : RTX 4070 12 Go (CUDA 13.5, pilote 621.14, relevé nvidia-smi 2026-11-13).
+
+[[node]]
+id = "fr1"
+ssh = "vps"
+os = "linux"
+bind = "10.200.77.1"
+reach = "10.200.77.1"
+port = 50052
+threads = 8
+share = 1
+cpu_quota = "800%"
+memory_max = "24G"
+# Hôte Chromium/LLVM : admis seulement sans build en cours (ni ninja/siso/clang/rustc, ni build.slice chargé).
+gate = "no-build"
+watch_s = 15
+
+[[node]]
+id = "prd"
+ssh = "prd"
+os = "linux"
+# Lien direct PC <-> prd (interface `prod`, 10.200.78.0/30) : seul le PC peut joindre ce port.
+bind = "10.200.78.1"
+reach = "10.200.78.1"
+port = 50052
+threads = 2
+share = 1
+cpu_quota = "200%"
+memory_max = "6G"
+# Production : charge < nproc/2, verrou lourd libre (flock -n), shenron-chat-v2 sain, mémoire disponible.
+gate = "prd"
+heavy_lock = "/var/lock/aphrody-heavy.lock"
+priority_url = "http://127.0.0.1:8799/health"
+watch_s = 10
+
+[[node]]
+id = "fr2"
+ssh = "cdn"
+os = "linux"
+bind = "10.200.77.3"
+reach = "10.200.77.3"
+port = 50052
+threads = 2
+cpu_quota = "100%"
+memory_max = "2G"
+# Proxy prioritaire : nginx actif et charge < nproc/2 ; 11 Go de RAM, contribution marginale.
+gate = "proxy"
+watch_s = 10
+enabled = false
+
+[[node]]
+# Second hôte Windows à GPU NVIDIA : absent de l'inventaire au 2026-11-13 (deploy.toml, fleet.toml,
+# docs/infra, ~/.ssh/config, pairs WireGuard). Il rejoint le tissu dès que `reach` répond sur `port`
+# (voir « Intégrer le second hôte GPU » dans docs/ai/DISTRIBUTED-INFERENCE.md).
+id = "gpu2"
+os = "windows"
+reach = ""
+port = 50052
+gate = "reachable"

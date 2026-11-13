@@ -105,7 +105,9 @@ export function providers(): Provider[] {
   out.push(
     compat(
       "fabric",
-      (env("AI_FABRIC_URL") ?? "http://127.0.0.1:8090").replace(/\/+$/, "").replace(/\/v1$/, ""),
+      (env("AI_FABRIC_URL") ?? "http://127.0.0.1:8090")
+        .replace(/\/+$/, "")
+        .replace(/\/v1$/, ""),
     ),
   );
   for (const pair of (env("RELAY_OPENAI_ENDPOINTS") ?? "")
