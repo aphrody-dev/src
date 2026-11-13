@@ -37,3 +37,75 @@ forge = "gerrit"
 gerrit = "https://chromium-review.googlesource.com"
 rules = "chromium"
 runner = "fr1"
+
+
+# Linux system stacks (docs/linux/OWNERSHIP.md, docs/linux/PATCHSETS.md). Series model: the fork mirrors
+# upstream on its default branch (merge-upstream API at each `sync --push`), our patches live in
+# infra/upstream/patches/<stack>/ and are checked against the upstream tip every day on prd (git only).
+# Kernel source patchsets we only follow (zen, xanmod, liquorix, GKI, ChromeOS) are in
+# infra/linux/patchsets.toml, read by `ay linux status`.
+
+[stack.linux-cachyos]
+model = "series"
+upstream = "CachyOS/linux-cachyos"
+upstream_url = "https://github.com/CachyOS/linux-cachyos.git"
+ref = "master"
+fork = "aphrody-labs/linux-cachyos"
+branch = "master"
+checkout = "third_party/linux-cachyos"
+series = "infra/upstream/patches/linux-cachyos"
+forge = "github"
+rules = "common"
+runner = "prd"
+
+[stack.cachyos-pkgbuilds]
+model = "series"
+upstream = "CachyOS/CachyOS-PKGBUILDS"
+upstream_url = "https://github.com/CachyOS/CachyOS-PKGBUILDS.git"
+ref = "master"
+fork = "aphrody-labs/CachyOS-PKGBUILDS"
+branch = "master"
+checkout = "third_party/CachyOS-PKGBUILDS"
+series = "infra/upstream/patches/cachyos-pkgbuilds"
+forge = "github"
+rules = "common"
+runner = "prd"
+
+[stack.kernel-patches]
+model = "series"
+upstream = "CachyOS/kernel-patches"
+upstream_url = "https://github.com/CachyOS/kernel-patches.git"
+ref = "master"
+fork = "aphrody-labs/kernel-patches"
+branch = "master"
+checkout = "third_party/kernel-patches"
+series = "infra/upstream/patches/kernel-patches"
+forge = "github"
+rules = "common"
+runner = "prd"
+
+[stack.liquorix]
+model = "series"
+upstream = "damentz/liquorix-package"
+upstream_url = "https://github.com/damentz/liquorix-package.git"
+ref = "7.3/master" # follows the kernel series; `ay linux sync --write` moves it with infra/linux/patchsets.toml
+fork = "aphrody-labs/liquorix-package"
+branch = "7.3/master"
+checkout = "third_party/liquorix-package"
+series = "infra/upstream/patches/liquorix"
+forge = "github"
+rules = "common"
+runner = "prd"
+
+[stack.scx]
+model = "series"
+upstream = "sched-ext/scx"
+upstream_url = "https://github.com/sched-ext/scx.git"
+ref = "main"
+fork = "aphrody-labs/scx"
+branch = "main"
+checkout = "third_party/scx"
+series = "infra/upstream/patches/scx"
+forge = "github"
+rules = "common"
+runner = "prd"

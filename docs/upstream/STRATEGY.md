@@ -95,6 +95,8 @@ bun : `aphrody-labs/bun` = `oven-sh/bun` `9ea3c693a2` (« Bump to 1.4.5 ») + 15
 | 13 | build: xwin 0.10.0, which reads the current Visual Studio manifest | proposé | oven-sh/bun#48784, ouverte | bun Windows |
 | 14 | docs: sizes Bun.gzipSync and Bun.deflateSync give for the utils examples | proposé | oven-sh/bun#48786, ouverte | audit bun |
 
+Piles Linux (2026-11-13) : `linux-cachyos` (1 patch, `_llvm_prefix`), `cachyos-pkgbuilds`, `kernel-patches`, `liquorix`, `scx` (séries vides), modèle « série », patchs dans `infra/upstream/patches/<pile>/`, synchronisées sur prd avec bun ; patchsets suivis sans fork dans `infra/linux/patchsets.toml` (`docs/linux/PATCHSETS.md`).
+
 Pas de pile `bunx-sh/bun` : org abandonnée par le propriétaire le 2026-11-13.
 
 Chromium : série vide ; `aphrody-labs/chromium` `main` était à 908 commits de retard, avancé en avance rapide le 2026-11-13 (0/0 depuis).

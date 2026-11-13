@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Aphrody local manifest for the GKI kernel manifests (kernel/manifest common-android18-7.3 and
+     common-android-mainline, read 2026-11-13): drops the Pixel 6 device tree and the JDK, which a GKI
+     kernel build does not need. Usage on fr1 (docs/linux/ANDROID-CHROMIUMOS.md):
+       repo init -u https://android.googlesource.com/kernel/manifest -b common-android18-7.3 \
+         --reference=/srv/build/mirror/android --partial-clone --clone-filter=blob:none
+       mkdir -p .repo/local_manifests && cp aphrody-gki.xml .repo/local_manifests/
+       repo sync -c -j4 --no-tags -->
+<manifest>
+  <remove-project name="kernel/devices/google/raviole" />
+  <remove-project name="platform/prebuilts/jdk/jdk11" />
+</manifest>

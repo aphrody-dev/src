@@ -1,0 +1,52 @@
+# Distribution matrix of `ay pkg` (docs/linux/OWNERSHIP.md). One entry per target format; `image` is
+# the build container, pinned by digest (Docker Hub registry API, 2026-11-13). `ci = true`: built by
+# .github/workflows/linux-pkg.yml on ubuntu-latest; otherwise the files are generated and linted only.
+#
+# Debian and Ubuntu are output targets for users of those distributions: their containers serve to build
+# and test the .deb only, never as a base of src's own toolchain (docs/deps/POLICY.md, rule 1.4).
+
+[distro.arch]
+format = "arch"
+image = "docker.io/library/archlinux:base-devel@sha256:fa2d4ce3310ddd90a4208e5168be8ad367da5129af1245f38fd2d803bcbe3239"
+ci = true
+
+[distro.cachyos]
+format = "arch"
+image = "docker.io/cachyos/cachyos-v3:latest@sha256:f8aff6dd7aaedc724f92092223b8ab28a48c186e468e6585dbf8564a0f0b1cae"
+ci = true
+
+[distro.debian]
+format = "debian"
+image = "docker.io/library/debian:trixie-slim@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2"
+ci = true
+
+[distro.ubuntu]
+format = "debian"
+image = "docker.io/library/ubuntu:26.04@sha256:065aa8626841f16057b78b027b464cd59c4fac36c204c72dcbf48d66f5fa8a96"
+ci = true
+
+[distro.alpine]
+format = "alpine"
+image = "docker.io/library/alpine:3.24.4@sha256:f59abe656b692d901e184be3445e084786602108599d2a51d229c0f5a48c71bf"
+ci = true
+
+[distro.nix]
+format = "nix"
+image = "docker.io/nixos/nix:2.35.6@sha256:b49cb33f3a7e5cf3933ad8774529de0e3807ec5cf54987aa7ccdfb49f2fc55ed"
+# nixos-26.05 head, git ls-remote github.com/NixOS/nixpkgs, 2026-11-13.
+nixpkgs = "github:NixOS/nixpkgs/ac588ef1c914865dad517b337ea0eb9694a4021c"
+ci = true
+
+[distro.oci]
+format = "docker"
+ci = true
+
+# Portage: Gentoo and Chromium OS (chromiumos-overlay). Generated and checked for syntax only.
+[distro.portage]
+format = "portage"
+ci = false
+
+# Android: Soong module (Android.bp), only for recipes that list the `android` target.
+[distro.android]
+format = "soong"
+ci = false

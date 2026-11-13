@@ -1,0 +1,13 @@
+# Daily read of the live versions of the kernel patchsets and GPU stacks (infra/linux/patchsets.toml),
+# recorded in var/linux/status.json. Installed on prd by infra/upstream/install.sh with @SRC@ and @BUN@.
+[Unit]
+Description=Aphrody Linux patchsets: live versions vs pins
+After=network-online.target
+
+[Service]
+Type=oneshot
+Nice=19
+IOSchedulingClass=idle
+Environment=SRC_ROOT=@SRC@
+ExecStart=@BUN@ @SRC@/packages/linux/src/cli.ts status --record
+TimeoutStartSec=10min

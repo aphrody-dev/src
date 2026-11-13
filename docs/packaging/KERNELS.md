@@ -32,7 +32,7 @@ Lecture : l'essentiel du gain CachyOS vient de la compilation (LTO/AutoFDO/Prope
 
 | Noyau | Ordonnanceur | Compilation | Préemption/HZ | sched_ext | Cible |
 |---|---|---|---|---|---|
-| linux-cachyos | EEVDF (défaut), BORE en option | Clang ThinLTO + AutoFDO (+ Propeller [NV]), paquets v3/v4/znver4 | full, 1000 Hz [NV] | oui | desktop, build |
+| linux-cachyos | BORE sur EEVDF par défaut (`_cpusched=cachyos` active `SCHED_BORE`, PKGBUILD lu le 2026-11-13 ; corrige l'ancienne ligne), EEVDF seul avec `_cpusched=eevdf` | Clang ThinLTO + AutoFDO (+ Propeller [NV]), paquets v3/v4/znver4 | full, 1000 Hz [NV] | oui | desktop, build |
 | linux-cachyos-server | EEVDF | idem | moins préemptif, HZ plus bas [NV] | oui | serveur |
 | Arch linux | EEVDF | GCC, x86-64 générique | PREEMPT_DYNAMIC, 1000 Hz (prd, /proc/config.gz) | oui (prd) | généraliste |
 | Arch linux-zen | EEVDF + réglages latence | GCC, générique | full [NV] | oui [NV] | desktop |

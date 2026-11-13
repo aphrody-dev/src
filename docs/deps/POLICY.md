@@ -20,6 +20,7 @@ les tranche. Seul écart : les images `distroless/*-debian13` citées dans `RECO
    3. un fork `aphrody-labs` épinglé par commit (`src.lock.json` puis DEPS), seulement quand il porte un patch ou une optimisation ;
    4. le gestionnaire système, en dernier recours : winget sous Windows ; dans les conteneurs, apk (Alpine), pacman (Arch) ou nix.
    Jamais apt, snap ni image Debian/Ubuntu. flatpak/Flathub sert uniquement aux applications de bureau Linux, hors chaîne de build.
+   Exception bornée (2026-11-13, demande du propriétaire) : Debian et Ubuntu sont des **cibles de sortie** de `ay pkg` (`infra/pkg`, `docs/linux/OWNERSHIP.md`) ; leurs conteneurs épinglés par digest servent seulement à construire et tester nos `.deb` en CI, et l'image `base-debian` à ce test. Aucun outil de src n'en dépend, apt reste interdit sur le PC.
 2. **Un lock par écosystème, à la racine** : `Cargo.lock`, `bun.lock`, `uv.lock`, `infra/go.sum` et `src.lock.json` (dépôts git). DEPS, `.repo/manifests/default.xml` et MAINTAINERS en sont générés par `ay lock`. Un sous-module `apps/*` garde le lock de son propre dépôt.
 3. **Une version par paquet.**
    - Rust : chaque dépendance crates.io est déclarée une seule fois dans `[workspace.dependencies]` ; les membres écrivent `{ workspace = true }` et peuvent seulement ajouter des `features` ou `optional`.

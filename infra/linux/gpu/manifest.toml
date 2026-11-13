@@ -1,0 +1,34 @@
+# GPU and compute download manifest (docs/linux/GPU.md). Official vendor and distribution sources only;
+# src redistributes none of these files (NVIDIA driver and CUDA: NVIDIA licences; ROCm: AMD repository).
+# Versions read live on 2026-11-13 and followed by `ay linux status` (infra/linux/patchsets.toml).
+
+[nvidia]
+open_kernel_modules = "620.70.06"          # github.com/NVIDIA/open-gpu-kernel-modules release, MIT/GPL-2.0
+cuda = "13.5.0"                            # developer.download.nvidia.com/compute/cuda/redist/redistrib_13.5.0.json (2026-11-04)
+cuda_apt_package = "cuda-toolkit-13-5"
+cuda_repo = "https://developer.download.nvidia.com/compute/cuda/repos/{distro}/x86_64/"
+cuda_repo_distros = ["debian13", "ubuntu2404", "ubuntu2604"]
+cuda_keyring = "cuda-keyring_1.1-1_all.deb"
+container_toolkit = "1.20.2"               # nvidia.github.io/libnvidia-container stable/deb; GitHub latest release says v1.20.1
+container_toolkit_key = "https://nvidia.github.io/libnvidia-container/gpgkey"
+container_toolkit_repo = "https://nvidia.github.io/libnvidia-container/stable/deb/$(ARCH) /"
+
+[nvidia.arch]   # archlinux.org packages, 2026-11-13: nvidia-open 615.78.08 (extra), 620.70.06 (extra-testing), cuda 13.4.3
+packages = ["nvidia-open", "nvidia-utils", "cuda", "nvidia-container-toolkit"]
+cachyos_kernel_module = "linux-cachyos-nvidia-open"
+
+[amd]
+rocm = "7.2.4"                             # repo.radeon.com/rocm/apt/7.2.4 (dists jammy, noble)
+rocm_key = "https://repo.radeon.com/rocm/rocm.gpg.key"
+rocm_repo = "https://repo.radeon.com/rocm/apt/7.2.4"
+rocm_repo_suites = ["jammy", "noble"]
+therock = "therock-10.1"                   # github.com/ROCm/TheRock latest release (2026-10-05); Arch extra-testing rocm-hip-sdk 10.0
+
+[amd.arch]      # archlinux.org, 2026-11-13: rocm-hip-sdk 7.2.4, vulkan-radeon 26.2.7, linux-firmware-amdgpu
+packages = ["rocm-hip-sdk", "rocminfo", "vulkan-radeon", "linux-firmware-amdgpu"]
+
+[amd.debian]    # Debian main: mesa (RADV), rocminfo 7.2.4 in forky/sid
+packages = ["mesa-vulkan-drivers", "rocminfo"]
+
+[amd.alpine]    # Alpine v3.24: RADV only, no ROCm build
+packages = ["mesa-vulkan-ati"]

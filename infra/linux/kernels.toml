@@ -1,0 +1,49 @@
+# Kernel flavors built from aphrody-labs/linux-cachyos (linux-cachyos/PKGBUILD + the series in
+# infra/upstream/patches/linux-cachyos). Each `env` entry overrides a `: "${_name:=default}"` knob of
+# the PKGBUILD. `ay linux build <flavor>` prints (or with --run starts) the build; docs/linux/PATCHSETS.md.
+#
+# Where: fr1 in a CachyOS container, `nice -n 19`, only while no Chromium/LLVM build runs there (the
+# build stops itself when one starts), or GitHub Actions (.github/workflows/linux-kernel.yml).
+# Never on the PC, never on prd.
+
+[toolchain]
+# LLVM shared with Chromium (docs/llvm/UNIFIED-TOOLCHAIN.md). On fr1 the factory checkout holds it; the
+# bin directory has clang, ld.lld, llvm-ar, llvm-nm, llvm-objcopy, llvm-objdump, llvm-readelf and
+# llvm-strip (listed on fr1 2026-11-13, clang 24.0.0git 86922d51). No llvm-profdata: AutoFDO and
+# Propeller use the system LLVM until the factory publishes it.
+fr1 = "/srv/chromium/src/third_party/llvm-build/Release+Asserts/bin"
+# Containers and CI: the clang/llvm/lld packages of the image (empty prefix).
+ci = ""
+
+# Builder images, pinned by digest (Docker Hub, read 2026-11-13). v3 runs on fr1 (Haswell, x86-64-v3)
+# and on GitHub runners; v4 needs an AVX-512 host.
+[image]
+v3 = "docker.io/cachyos/cachyos-v3:latest@sha256:f8aff6dd7aaedc724f92092223b8ab28a48c186e468e6585dbf8564a0f0b1cae"
+v4 = "docker.io/cachyos/cachyos-v4:latest@sha256:503f41011945ab02843747ce4532e43970d66c388ed6813e39df5488495e1348"
+
+# prd: AMD EPYC 9354P (Zen 4), container host. Server knobs of linux-cachyos-server (EEVDF, 300 Hz,
+# lazy preemption, THP madvise) with clang ThinLTO and -march=znver4 instead of its GCC build.
+[flavor.prd]
+image = "v3"
+env = { _processor_opt = "zen4", _cpusched = "eevdf", _cachy_config = "no", _HZ_ticks = "300", _preempt = "lazy", _hugepage = "madvise", _use_llvm_lto = "thin" }
+
+# Portable desktop kernel, CachyOS defaults (BORE on EEVDF, 1000 Hz, full preemption), x86-64-v3.
+[flavor.desktop-v3]
+image = "v3"
+env = { _processor_opt = "generic_v3", _use_llvm_lto = "thin" }
+
+# Same for x86-64-v4 machines (AVX-512).
+[flavor.desktop-v4]
+image = "v3"
+env = { _processor_opt = "generic_v4", _use_llvm_lto = "thin" }
+
+# KVM guests of the fleet class of fr1/fr2 (Haswell, x86-64-v3). Kept buildable for measurements;
+# fr1/fr2 stay on the Ubuntu kernel (docs/packaging/RECOMMENDATION.md).
+[flavor.kvm-v3]
+image = "v3"
+env = { _processor_opt = "generic_v3", _cpusched = "eevdf", _cachy_config = "no", _HZ_ticks = "300", _preempt = "lazy", _hugepage = "madvise", _use_llvm_lto = "thin" }
+
+# AutoFDO pass 1 (profile collection build). Pass 2 sets _autofdo_profile_name to the profile.
+[flavor.prd-autofdo]
+image = "v3"
+env = { _processor_opt = "zen4", _cpusched = "eevdf", _cachy_config = "no", _HZ_ticks = "300", _preempt = "lazy", _hugepage = "madvise", _use_llvm_lto = "thin", _autofdo = "yes", _build_debug = "yes" }

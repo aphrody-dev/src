@@ -1,0 +1,58 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: aphrody-dev <dev@aphrody.com>
+Date: Fri, 13 Nov 2026 04:33:33 +0100
+Subject: linux-cachyos: build with an LLVM toolchain directory (_llvm_prefix)
+
+Kbuild takes LLVM=<dir>/ to use clang, ld.lld and the llvm binutils of
+one directory. With _llvm_prefix set, the build uses that toolchain (the
+LLVM shared with Chromium in Aphrody) instead of the clang, llvm and lld
+packages, which leave makedepends.
+
+Upstream-Status: Inappropriate [Aphrody toolchain layout; generic enough to propose later]
+
+diff --git a/linux-cachyos/PKGBUILD b/linux-cachyos/PKGBUILD
+index 4c13ff2a479d4226d84676024c98464b256931b4..7ee3ed619c3ba679739e4b201158ed4b2ebed510 100644
+--- a/linux-cachyos/PKGBUILD
++++ b/linux-cachyos/PKGBUILD
+@@ -112,6 +112,11 @@
+ # function address equality.
+ : "${_use_kcfi:=no}"
+ 
++# Directory of the LLVM toolchain to build with (clang, ld.lld, llvm-ar, llvm-nm, llvm-objcopy,
++# llvm-strip, llvm-readelf), passed to Kbuild as LLVM=<dir>/ (Documentation/kbuild/llvm.rst).
++# Empty: the clang, llvm and lld packages of the system.
++: "${_llvm_prefix:=}"
++
+ # Build the zfs module in to the kernel
+ # WARNING: The ZFS module doesn't build with selected RT sched due to licensing issues.
+ # If you use ZFS, refrain from building the RT kernel
+@@ -236,14 +241,22 @@ validpgpkeys=(
+ if _is_lto_kernel; then
+     # pahole needs the --lang_exclude fix for merged LTO CUs to generate
+     # BTF for Rust modules
+-    makedepends+=(clang llvm lld 'pahole>=1:1.32-2')
+     source+=("${_patchsource}/misc/dkms-clang.patch")
+-    BUILD_FLAGS=(
+-        CC=clang
+-        LD=ld.lld
+-        LLVM=1
+-        LLVM_IAS=1
+-    )
++    if [ -n "$_llvm_prefix" ]; then
++        makedepends+=('pahole>=1:1.32-2')
++        BUILD_FLAGS=(
++            LLVM="${_llvm_prefix%/}/"
++            LLVM_IAS=1
++        )
++    else
++        makedepends+=(clang llvm lld 'pahole>=1:1.32-2')
++        BUILD_FLAGS=(
++            CC=clang
++            LD=ld.lld
++            LLVM=1
++            LLVM_IAS=1
++        )
++    fi
+ fi
+ 
+ # WARNING The ZFS module doesn't build with selected RT sched due to licensing issues.

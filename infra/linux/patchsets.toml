@@ -1,0 +1,155 @@
+# Kernel patchsets, distro kernels and GPU stacks that src follows (docs/linux/PATCHSETS.md).
+# `ay linux status` reads the live upstream value of every entry with its `method` and compares it with
+# `pinned`; `ay linux sync --write` moves the pins (daily on prd: infra/linux/systemd). The entries that
+# carry Aphrody patches are also stacks of `ay upstream` (infra/upstream/stacks.toml).
+#
+# Methods: kernel-org (releases.json), github-pkgbuild (version vars of a PKGBUILD), github-dirs, github-files,
+# github-branches, github-release, gitlab-tags, git-heads (git ls-remote), cuda-redist, html-dirs.
+# `pattern` is a regex whose first group is the version; the highest version wins.
+
+[patchset.mainline]
+group = "kernel"
+method = "kernel-org"
+channel = "mainline"
+pinned = "7.4-rc2"
+
+[patchset.stable]
+group = "kernel"
+method = "kernel-org"
+channel = "stable"
+pinned = "7.3.4"
+
+[patchset.longterm]
+group = "kernel"
+method = "kernel-org"
+channel = "longterm"
+pinned = "6.18.63"
+
+# Tier 1. linux-cachyos PKGBUILD (fork aphrody-labs/linux-cachyos, stack linux-cachyos).
+[patchset.cachyos]
+group = "kernel"
+method = "github-pkgbuild"
+repo = "CachyOS/linux-cachyos"
+path = "linux-cachyos/PKGBUILD"
+vars = ["_major", "_minor"]
+pinned = "7.3.4"
+fork = "aphrody-labs/linux-cachyos"
+
+# Per-series patch directories (sched/0001-bore-cachy.patch, misc/...) consumed by the PKGBUILD.
+[patchset.cachyos-patches]
+group = "kernel"
+method = "github-dirs"
+repo = "CachyOS/kernel-patches"
+pattern = '^(\d+\.\d+)$'
+pinned = "7.4"
+fork = "aphrody-labs/kernel-patches"
+
+# BORE: version of the newest stable patch (patches/stable/0001-linux<k>-bore-<v>.patch).
+[patchset.bore]
+group = "kernel"
+method = "github-files"
+repo = "firelzrd/bore-scheduler"
+path = "patches/stable"
+pattern = '-bore-(\d+\.\d+\.\d+)\.patch$'
+pinned = "7.0.0"
+
+[patchset.scx]
+group = "kernel"
+method = "github-release"
+repo = "sched-ext/scx"
+pinned = "v1.1.4"
+fork = "aphrody-labs/scx"
+
+[patchset.zen]
+group = "kernel"
+method = "github-branches"
+repo = "zen-kernel/zen-kernel"
+pattern = '^(\d+\.\d+)/main$'
+pinned = "7.3"
+fork = "aphrody-labs/zen-kernel"
+
+# XanMod left GitHub (xanmod/linux archived 2024-10-25); GitLab is the live source.
+[patchset.xanmod]
+group = "kernel"
+method = "gitlab-tags"
+project = "xanmod/linux"
+pattern = '^(\d+\.\d+\.\d+)-xanmod\d+$'
+pinned = "7.3.4"
+
+[patchset.liquorix]
+group = "kernel"
+method = "github-branches"
+repo = "damentz/liquorix-package"
+pattern = '^(\d+\.\d+)/master$'
+pinned = "7.3"
+fork = "aphrody-labs/liquorix-package"
+
+# Clear Linux: clearlinux-pkgs/linux and clearlinux/distribution archived by Intel (2025-08). Kept as a
+# record so status flags it; nothing is forked or tracked further.
+[patchset.clear]
+group = "kernel"
+method = "github-release"
+repo = "clearlinux-pkgs/linux"
+pinned = ""
+excluded = "archived upstream (2025-08)"
+
+[patchset.gki]
+group = "android"
+method = "git-heads"
+url = "https://android.googlesource.com/kernel/common"
+pattern = '^android(\d+-\d+\.\d+)$'
+pinned = "18-7.3"
+
+[patchset.chromeos]
+group = "chromiumos"
+method = "git-heads"
+url = "https://chromium.googlesource.com/chromiumos/third_party/kernel"
+pattern = '^chromeos-(\d+\.\d+)$'
+pinned = "6.12"
+
+[patchset.chromiumos-release]
+group = "chromiumos"
+method = "git-heads"
+url = "https://chromium.googlesource.com/chromiumos/manifest"
+pattern = '^release-R(\d+)-\d+\.B$'
+pinned = "159"
+
+# GPU and compute (docs/linux/GPU.md). Download manifests only: nothing proprietary is redistributed.
+[patchset.nvidia-open]
+group = "gpu"
+method = "github-release"
+repo = "NVIDIA/open-gpu-kernel-modules"
+pinned = "620.70.06"
+
+[patchset.cuda]
+group = "gpu"
+method = "cuda-redist"
+url = "https://developer.download.nvidia.com/compute/cuda/redist/"
+pinned = "13.5.0"
+
+[patchset.nvidia-container-toolkit]
+group = "gpu"
+method = "github-release"
+repo = "NVIDIA/nvidia-container-toolkit"
+pinned = "v1.20.1"
+
+[patchset.rocm]
+group = "gpu"
+method = "html-dirs"
+url = "https://repo.radeon.com/rocm/apt/"
+pattern = '^(\d+\.\d+\.\d+)/$'
+pinned = "7.2.4"
+
+[patchset.therock]
+group = "gpu"
+method = "github-release"
+repo = "ROCm/TheRock"
+pinned = "therock-10.1"
+
+# Windows cross toolchain (docs/linux/CROSS-WINDOWS.md).
+[patchset.llvm-mingw]
+group = "cross"
+method = "github-release"
+repo = "mstorsjo/llvm-mingw"
+pinned = "20261104"
+fork = "aphrody-labs/llvm-mingw"

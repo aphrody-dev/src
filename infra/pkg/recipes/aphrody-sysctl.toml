@@ -1,0 +1,25 @@
+# One recipe = one package on every distro of infra/pkg/distros.toml (`ay pkg gen aphrody-sysctl`).
+name = "aphrody-sysctl"
+version = "1.0.0"
+release = 1
+date = "2026-11-13"
+summary = "Kernel tunables of the Aphrody fleet (sysctl.d)"
+description = "Network and memory sysctl settings used on the Aphrody serving hosts, installed as a sysctl.d drop-in."
+license = "MIT OR Apache-2.0"
+homepage = "https://github.com/aphrody-labs/src"
+maintainer = "aphrody-dev <dev@aphrody.com>"
+arch = "all"
+portage_category = "sys-kernel"
+targets = ["arch", "debian", "alpine", "portage", "nix", "docker"]
+
+[[files]]
+src = "infra/fleet/sysctl/90-aphrody-serve.conf"
+dest = "/usr/lib/sysctl.d/90-aphrody-serve.conf"
+mode = "644"
+
+[depends]
+arch = ["procps-ng"]
+debian = ["procps"]
+alpine = ["procps"]
+portage = ["sys-process/procps"]
+nix = []

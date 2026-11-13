@@ -1,0 +1,59 @@
+# Unified package recipes (infra/pkg, `ay pkg`): one recipe -> PKGBUILD, debian/, APKBUILD, ebuild,
+# Android.bp, Nix and an OCI layer; each CI pair builds and install-tests it in the distro container
+# pinned by digest in infra/pkg/distros.toml. Docs: docs/linux/OWNERSHIP.md.
+# Action versions: latest releases read with `gh api repos/<action>/releases/latest` on 2026-11-13.
+name: linux-pkg
+on:
+  push:
+    branches: [main]
+    paths: ["infra/pkg/**", "infra/linux/**", "infra/fleet/sysctl/**", "packages/linux/**", ".github/workflows/linux-pkg.yml"]
+  pull_request:
+    paths: ["infra/pkg/**", "infra/linux/**", "packages/linux/**"]
+  workflow_dispatch:
+concurrency:
+  group: linux-pkg-${{ github.ref }}
+  cancel-in-progress: true
+permissions: { contents: read }
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2.2.0
+        with: { bun-version-file: package.json }
+      - run: bun test packages/linux
+      - run: bun packages/linux/src/cli.ts pkg check
+      - name: Shell syntax of the generated recipes and of the Linux scripts
+        run: |
+          bun packages/linux/src/cli.ts pkg gen all --out "$RUNNER_TEMP/pkg"
+          find "$RUNNER_TEMP/pkg" \( -name PKGBUILD -o -name APKBUILD -o -name '*.ebuild' -o -name build.sh \) -exec bash -n {} \;
+          shellcheck -S warning infra/linux/gpu/*.sh infra/linux/build/kernel.sh infra/linux/android/mirror.sh
+          sh infra/linux/gpu/nvidia.sh --dry-run
+          sh infra/linux/gpu/amd.sh --dry-run
+      - id: m
+        run: echo "matrix=$(bun packages/linux/src/cli.ts pkg matrix --json)" >> "$GITHUB_OUTPUT"
+  build:
+    needs: plan
+    name: ${{ matrix.recipe }} / ${{ matrix.distro }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2.2.0
+        with: { bun-version-file: package.json }
+      - run: bun packages/linux/src/cli.ts pkg build ${{ matrix.recipe }} --distro ${{ matrix.distro }} --out "$RUNNER_TEMP/pkg"
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pkg-${{ matrix.recipe }}-${{ matrix.distro }}
+          path: |
+            ${{ runner.temp }}/pkg/*.pkg.tar.zst
+            ${{ runner.temp }}/pkg/*.deb
+            ${{ runner.temp }}/pkg/repo/**/*.apk
+          if-no-files-found: ignore
+          retention-days: 14

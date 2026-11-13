@@ -1,0 +1,26 @@
+# Kernel flavor build (infra/linux/kernels.toml) from aphrody-labs/linux-cachyos + our series, in the
+# CachyOS container pinned by digest. Manual only: `ay linux build <flavor> --host ci --run`. The fleet
+# alternative is fr1 (preemptible, Chromium LLVM); never the PC, never prd. Docs: docs/linux/PATCHSETS.md.
+name: linux-kernel
+on:
+  workflow_dispatch:
+    inputs:
+      flavor: { description: "flavor of infra/linux/kernels.toml", default: "prd" }
+permissions: { contents: read }
+jobs:
+  kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2.2.0
+        with: { bun-version-file: package.json }
+      - name: Disk space for a ThinLTO kernel tree
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL && df -h /
+      - run: bun packages/linux/src/cli.ts build "${{ inputs.flavor }}" --host ci --env >> "$GITHUB_ENV"
+      - run: WORK="$RUNNER_TEMP/kernel" SRC="$GITHUB_WORKSPACE" sh infra/linux/build/kernel.sh
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: kernel-${{ inputs.flavor }}
+          path: ${{ runner.temp }}/kernel/out/*.pkg.tar.zst
+          retention-days: 14

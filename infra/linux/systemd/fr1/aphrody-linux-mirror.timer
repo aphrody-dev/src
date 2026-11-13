@@ -1,0 +1,10 @@
+[Unit]
+Description=Weekly Aphrody partial kernel mirror refresh
+
+[Timer]
+OnCalendar=Sun *-*-* 03:00:00 UTC
+RandomizedDelaySec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target

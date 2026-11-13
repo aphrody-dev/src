@@ -77,6 +77,12 @@ pub enum Cmd {
     /// Patch stacks of the bun and Chromium forks: status, sync, check, pr, mark, gc, export (packages/upstream)
     #[command(disable_help_flag = true)]
     Upstream(Rest),
+    /// Linux system layer: patchset versions, sync, patch stacks, kernel builds on fr1 or CI (packages/linux)
+    #[command(disable_help_flag = true)]
+    Linux(Rest),
+    /// Package recipes for every distro: list, matrix, gen, build, check (packages/linux, infra/pkg)
+    #[command(disable_help_flag = true)]
+    Pkg(Rest),
     /// bun-LFS (third_party/lfs/bun, GitHub CI): build, logs, wsl (runs `just lfs-<sub>`)
     #[command(disable_help_flag = true)]
     Lfs(Rest),
@@ -224,6 +230,8 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Bench(r) => Route::Bench(r.args),
         Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
         Cmd::Upstream(r) => Route::Package("upstream", r.args),
+        Cmd::Linux(r) => Route::Package("linux", r.args),
+        Cmd::Pkg(r) => Route::Package("linux", prefixed(&["pkg"], &r.args)),
         Cmd::Lfs(r) => {
             let (sub, rest) = r.args.split_first().map_or(("build", &[][..]), |(s, rest)| (s.as_str(), rest));
             Route::External("just", prefixed(&[format!("lfs-{sub}").as_str()], rest))
@@ -498,6 +506,12 @@ mod tests {
     fn upstream_runs_the_bun_package() {
         assert_eq!(parse("upstream status bun --json"), Route::Package("upstream", v(&["status", "bun", "--json"])));
         assert_eq!(parse("upstream --help"), Route::Package("upstream", v(&["--help"])));
+    }
+
+    #[test]
+    fn linux_and_pkg_run_the_linux_package() {
+        assert_eq!(parse("linux status --json"), Route::Package("linux", v(&["status", "--json"])));
+        assert_eq!(parse("pkg gen all --target arch"), Route::Package("linux", v(&["pkg", "gen", "all", "--target", "arch"])));
     }
 
     #[test]

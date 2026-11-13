@@ -1,0 +1,55 @@
+# Base images of the Linux layer (infra/linux/images): built from upstream images pinned by digest,
+# pushed to ghcr.io/<owner>/base-<distro>, with build provenance. Consumers pin the digest printed in
+# the job summary (`<image>@sha256:...`), never a tag. Docs: docs/linux/OWNERSHIP.md.
+name: linux-images
+on:
+  push:
+    branches: [main]
+    paths: ["infra/linux/images/**", "infra/linux/cross-windows/**", ".github/workflows/linux-images.yml"]
+  schedule:
+    - cron: "17 4 * * 1" # weekly: picks up the distributions' security updates
+  workflow_dispatch:
+concurrency:
+  group: linux-images-${{ github.ref }}
+  cancel-in-progress: false
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+  attestations: write
+jobs:
+  image:
+    name: base-${{ matrix.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: arch-v3, context: infra/linux/images/arch }
+          - { name: alpine, context: infra/linux/images/alpine }
+          - { name: debian, context: infra/linux/images/debian }
+          - { name: nix, context: infra/linux/images/nix }
+          - { name: cross-windows, context: infra/linux/cross-windows }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4.4.1
+      - uses: docker/login-action@v4.8.0
+        with: { registry: ghcr.io, username: "${{ github.actor }}", password: "${{ secrets.GITHUB_TOKEN }}" }
+      - id: build
+        uses: docker/build-push-action@v7.4.0
+        with:
+          context: ${{ matrix.context }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/base-${{ matrix.name }}:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/base-${{ matrix.name }}:latest
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          cache-from: type=gha,scope=base-${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=base-${{ matrix.name }}
+      - uses: actions/attest-build-provenance@v4.2.2
+        with:
+          subject-name: ghcr.io/${{ github.repository_owner }}/base-${{ matrix.name }}
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true
+      - run: echo "ghcr.io/${{ github.repository_owner }}/base-${{ matrix.name }}@${{ steps.build.outputs.digest }}" >> "$GITHUB_STEP_SUMMARY"
