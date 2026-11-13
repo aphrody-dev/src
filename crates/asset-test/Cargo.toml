@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "asset-test"
+publish = false
+description = "Asset validators for assets/library: FFmpeg (tv-ffmpeg) decode of audio, resvg render of SVG, craft-formats probe, glTF structural validation and a headless Bevy load, TTF/OTF parse. Prints one JSON line per asset."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "asset-test"
+path = "src/main.rs"
+
+[features]
+default = ["bevy-load"]
+# Headless Bevy load of every GLB; disable for a quick build without the engine.
+bevy-load = ["dep:bevy"]
+
+[dependencies]
+tv-ffmpeg.workspace = true
+# Same rev as crates/craft-formats (docs/games/PLAN.md step 3).
+craft-svg = { git = "https://github.com/storytold/craft-libs", rev = "a9949872bd91ecf6bcec4e86339e3f50ad007fb9" }
+craft-webp = { git = "https://github.com/storytold/craft-libs", rev = "a9949872bd91ecf6bcec4e86339e3f50ad007fb9" }
+craft-exr = { git = "https://github.com/storytold/craft-libs", rev = "a9949872bd91ecf6bcec4e86339e3f50ad007fb9", features = ["decode"] }
+resvg = { workspace = true }
+serde.workspace = true
+serde_json.workspace = true
+gltf = "1.4.1"
+ttf-parser = "0.25.1"
+toml = { workspace = true }
+bevy = { workspace = true, optional = true, features = [
+  "std", "async_executor", "bevy_asset", "bevy_log", "bevy_render", "bevy_core_pipeline", "bevy_camera",
+  "bevy_light", "bevy_mesh", "bevy_pbr", "bevy_color", "bevy_image", "bevy_shader", "bevy_world_serialization",
+  "bevy_scene", "bevy_gltf", "png", "hdr", "zstd_rust", "multi_threaded",
+] }

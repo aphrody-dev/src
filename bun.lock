@@ -62,6 +62,16 @@
         "@aphrody/design": "workspace:*",
       },
     },
+    "packages/assets": {
+      "name": "@aphrody/assets",
+      "version": "0.1.0",
+      "bin": {
+        "assets": "./src/cli.ts",
+      },
+      "devDependencies": {
+        "gltf-validator": "2.0.0-dev.3.10",
+      },
+    },
     "packages/bun-parity": {
       "name": "@aphrody/bun-parity",
       "version": "1.0.0",
@@ -138,6 +148,13 @@
         "gds": "./cli.ts",
       },
     },
+    "packages/i18n": {
+      "name": "@aphrody/i18n",
+      "version": "0.1.0",
+      "bin": {
+        "aphrody-i18n": "./src/cli.ts",
+      },
+    },
     "packages/linux": {
       "name": "@aphrody/linux",
       "version": "1.0.0",
@@ -169,6 +186,17 @@
       "version": "0.1.0",
       "bin": {
         "shell-matrix": "./src/cli.ts",
+      },
+    },
+    "packages/site": {
+      "name": "@aphrody/site",
+      "version": "0.1.0",
+      "bin": {
+        "aphrody-site": "./src/cli.ts",
+      },
+      "dependencies": {
+        "@aphrody/design": "workspace:*",
+        "@aphrody/wck": "workspace:*",
       },
     },
     "packages/upstream": {
@@ -214,6 +242,8 @@
 
     "@aphrody/aphrody": ["@aphrody/aphrody@workspace:apps/aphrody"],
 
+    "@aphrody/assets": ["@aphrody/assets@workspace:packages/assets"],
+
     "@aphrody/bun-parity": ["@aphrody/bun-parity@workspace:packages/bun-parity"],
 
     "@aphrody/bun-plugins": ["@aphrody/bun-plugins@workspace:packages/bun-plugins"],
@@ -238,6 +268,8 @@
 
     "@aphrody/google-design": ["@aphrody/google-design@workspace:packages/google-design"],
 
+    "@aphrody/i18n": ["@aphrody/i18n@workspace:packages/i18n"],
+
     "@aphrody/linux": ["@aphrody/linux@workspace:packages/linux"],
 
     "@aphrody/machine": ["@aphrody/machine@workspace:packages/machine"],
@@ -253,6 +285,8 @@
     "@aphrody/runtime-adapter": ["@aphrody/runtime-adapter@workspace:packages/runtime-adapter"],
 
     "@aphrody/shell-matrix": ["@aphrody/shell-matrix@workspace:packages/shell-matrix"],
+
+    "@aphrody/site": ["@aphrody/site@workspace:packages/site"],
 
     "@aphrody/upstream": ["@aphrody/upstream@workspace:packages/upstream"],
 
@@ -433,6 +467,8 @@
     "fdir": ["fdir@6.5.0", "", { "peerDependencies": { "picomatch": "^3 || ^4" }, "optionalPeers": ["picomatch"] }, "sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg=="],
 
     "fsevents": ["fsevents@2.3.3", "", { "os": "darwin", "hasInstallScript": true }, "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw=="],
+
+    "gltf-validator": ["gltf-validator@2.0.0-dev.3.10", "", {}, "sha512-odJ4k0tRkGXiDGn78yDBg+fBbAIvBnXxh3RwAta0emSxGtyagFE8B4xELB1oYe3S5RD8Ci3uZAsZaascH2LAEQ=="],
 
     "kleur": ["kleur@4.1.5", "", {}, "sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ=="],
 

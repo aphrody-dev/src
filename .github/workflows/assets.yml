@@ -1,0 +1,69 @@
+# Asset tests (docs/games/ASSET-TESTS.md): every asset of assets/library decoded by our own vendors.
+# Rust parts (tv-ffmpeg/FFmpeg, resvg, craft-libs, gltf crate, headless Bevy) build and run on fr1; the Bun
+# parts (Bun.Image, Khronos glTF-Validator, sha256) and the merged report run in the same job. The
+# fingerprint step re-tests whenever the manifest or a decoder fork/crate pin changes.
+name: assets
+on:
+  push:
+    branches: [main]
+    paths:
+      - "assets/library/**"
+      - "packages/assets/**"
+      - "crates/asset-test/**"
+      - "crates/tv-ffmpeg/**"
+      - "crates/craft-formats/**"
+      - "src.lock.json"
+      - "Cargo.lock"
+      - ".github/workflows/assets.yml"
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+concurrency:
+  group: assets-${{ github.ref }}
+  cancel-in-progress: false
+permissions: { contents: read }
+jobs:
+  test:
+    runs-on: [self-hosted, fr1]
+    timeout-minutes: 90
+    env:
+      RUSTC_WRAPPER: ""
+      CARGO_TERM_COLOR: never
+      CARGO_TARGET_DIR: ${{ github.workspace }}/../assets-target
+      HEAVY_WAIT_MAX: "2700"
+      SRC_ROOT: ${{ github.workspace }}
+      ASSETS_STORE: /srv/artifacts/assets
+    steps:
+      - uses: actions/checkout@v7
+        with: { submodules: false }
+      - name: Fingerprint (manifest + fork pins + decoder crates)
+        id: fp
+        run: |
+          export PATH="$HOME/.bun/bin:$PATH"
+          bun --cwd packages/assets install --frozen-lockfile
+          bun -e 'import {fingerprint} from "./packages/assets/src/retest.ts"; console.log("fp=" + await fingerprint(process.cwd()))' >> "$GITHUB_OUTPUT"
+      - name: Fetch remote assets into the store
+        run: |
+          export PATH="$HOME/.bun/bin:$PATH"
+          mkdir -p "$ASSETS_STORE"
+          bun packages/assets/src/cli.ts fetch --remote
+      - name: Build asset-test (FFmpeg, resvg, craft-libs, gltf, Bevy headless)
+        run: cargo build -q -j8 -p asset-test --profile iteration
+      - name: Rust validators
+        run: "\"$CARGO_TARGET_DIR/iteration/asset-test\" . > asset-test.jsonl"
+      - name: Recursive test, merged report
+        run: |
+          export PATH="$HOME/.bun/bin:$PATH"
+          bun packages/assets/src/cli.ts test --recursive --strict --rust-results=asset-test.jsonl --out=var/assets-test --md=var/assets-test/ASSET-TESTS.md
+      - name: Bun tests of the tester
+        run: |
+          export PATH="$HOME/.bun/bin:$PATH"
+          bun test ./packages/assets/tests/asset-test
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: asset-test-report-${{ steps.fp.outputs.fp }}
+          path: |
+            var/assets-test/report.json
+            var/assets-test/ASSET-TESTS.md
+            asset-test.jsonl

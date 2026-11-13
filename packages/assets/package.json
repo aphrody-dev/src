@@ -13,7 +13,9 @@
     "test": "bun test"
   },
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "gltf-validator": "2.0.0-dev.3.10"
+  },
   "license": "MIT OR Apache-2.0",
   "repository": {
     "type": "git",
