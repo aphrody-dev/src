@@ -287,3 +287,25 @@ test("redirection avec fragment refusée, métadonnées sans alias OpenID", asyn
     404,
   );
 });
+
+test("boucle locale : port libre si la redirection enregistrée n'en a pas (RFC 8252 §7.3)", async () => {
+  const { redirectMatches } = await import("../../src/relay/oauth.ts");
+  expect(
+    redirectMatches(
+      "http://localhost/callback",
+      "http://localhost:47932/callback",
+    ),
+  ).toBe(true);
+  expect(
+    redirectMatches(
+      "http://localhost/callback",
+      "http://localhost:47932/other",
+    ),
+  ).toBe(false);
+  expect(
+    redirectMatches("http://127.0.0.1:9/cb", "http://127.0.0.1:10/cb"),
+  ).toBe(false);
+  expect(
+    redirectMatches("https://a.example/cb", "https://a.example:444/cb"),
+  ).toBe(false);
+});

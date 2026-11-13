@@ -104,6 +104,30 @@ export const badRedirect = (u: string) => {
   }
 };
 
+/**
+ * Correspondance exacte, sauf le port des redirections http en boucle locale (RFC 8252 §7.3) : un client
+ * natif enregistre `http://127.0.0.1/callback` et écoute sur un port éphémère (Claude Code le fait).
+ */
+export const redirectMatches = (registered: string, presented: string) => {
+  if (registered === presented) return true;
+  try {
+    const a = new URL(registered);
+    const b = new URL(presented);
+    return (
+      a.protocol === "http:" &&
+      b.protocol === "http:" &&
+      isLoopbackHost(a.hostname) &&
+      a.hostname === b.hostname &&
+      !a.port &&
+      a.pathname === b.pathname &&
+      a.search === b.search &&
+      !b.hash
+    );
+  } catch {
+    return false;
+  }
+};
+
 /** Hôte interdit pour la récupération d'un Client ID Metadata Document (SSRF). */
 const privateHost = (h: string) =>
   isLoopbackHost(h) ||
@@ -508,7 +532,11 @@ export function createOAuth(o: OAuthOptions) {
       q.get("redirect_uri") ??
       (c?.redirect_uris.length === 1 ? c.redirect_uris[0] : "");
     // Sans client ni redirection valides, aucune redirection (RFC 6749 §4.1.2.1).
-    if (!c || !redirect || !c.redirect_uris.includes(redirect))
+    if (
+      !c ||
+      !redirect ||
+      !c.redirect_uris.some((r) => redirectMatches(r, redirect))
+    )
       return err("invalid_request", "client_id ou redirect_uri invalide");
     const p: Pending = {
       kind: "code",
