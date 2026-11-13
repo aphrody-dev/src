@@ -7,6 +7,7 @@
 name = "aphrody"
 display = "Aphrody Labs"
 repo = "src"
+repo_org = "lab"      # key of [orgs] owning the repository: github.com/aphrody-labs/src (moved 2026-11-13)
 
 [cli]
 binary = "ay"            # [[bin]] of crates/ay
@@ -24,7 +25,7 @@ xtask = "xtk"
 unix-omarchy = "aphrody-omarchy"
 
 [orgs]
-main = "aphrody-dev"     # github.com/<main>/<product.repo> = this repository
+main = "aphrody-dev"     # main org (published packages, forks of upstream tools)
 lab = "aphrody-labs"     # forks and products (apps/*)
 
 [domains]

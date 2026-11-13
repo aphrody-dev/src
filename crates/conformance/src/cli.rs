@@ -54,6 +54,13 @@ fn channels(root: &Path, args: &[String]) -> Result<String, String> {
         Some(p) if p.starts_with('-') => {
             return Err(format!("error: unknown argument '{p}'\n\n{USAGE}"));
         }
+        Some(p)
+            if !p
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_') =>
+        {
+            return Err(format!("error: invalid platform '{p}'\n\n{USAGE}"));
+        }
         Some(p) => p,
         None => "Linux",
     };
@@ -70,7 +77,8 @@ fn channels(root: &Path, args: &[String]) -> Result<String, String> {
     }
     // Only the first line carries the timestamp: an unchanged pin set leaves the file untouched.
     let body = |t: &str| t.split_once('\n').map_or("", |(_, b)| b).to_string();
-    let unchanged = std::fs::read_to_string(&path).is_ok_and(|old| body(&old) == body(&toml));
+    let unchanged = std::fs::read_to_string(&path)
+        .is_ok_and(|old| body(&old.replace("\r\n", "\n")) == body(&toml));
     if !unchanged {
         std::fs::write(&path, &toml).map_err(|e| format!("{}: {e}", path.display()))?;
     }
@@ -102,5 +110,6 @@ mod tests {
         assert!(run(root, &["channels".into(), "--nope".into()]).is_err());
         assert_eq!(channels_file("Linux"), "chrome-channels.toml");
         assert_eq!(channels_file("Windows"), "chrome-channels-windows.toml");
+        assert!(run(root, &["channels".into(), "../x".into()]).is_err());
     }
 }

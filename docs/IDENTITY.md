@@ -4,7 +4,7 @@
 
 Single source: [`identity.toml`](../identity.toml) at the repository root (`just identity check` gates it, `just identity apply` rewrites the copies; docs/ARCHITECTURE-ROOT.md invariant 5). This section only explains the values.
 
-- **Brand**: Aphrody Labs, home `labs.aphrody.com` (`[domains].home`); `aphrody-dev` is the main org (this repository: `github.com/aphrody-dev/src`), `aphrody-labs` the lab org (forks, products under `apps/`).
+- **Brand**: Aphrody Labs, home `labs.aphrody.com` (`[domains].home`); `aphrody-dev` is the main org, `aphrody-labs` the lab org (this repository `github.com/aphrody-labs/src` since 2026-11-13, `[product].repo_org`; forks, products under `apps/`).
 - **Binary**: `ay` (`[cli].binary`), package `aphrody` (`[cli].crate`, crates/ay). The former labs binary `aphrody` (crates/aphrody-cli) is now `ay conformance`.
 - **Crates**: a member keeps its directory name unless it would collide on crates.io; then it takes `[naming].crate_prefix` (`aphrody-`). Names are never re-prefixed on a move.
 - **npm**: `[naming].npm_scope` (`@aphrody/*`); sub-products in `[products.*]` are `<scope>/<binary>` (`@aphrody/ai-os`).
@@ -35,7 +35,7 @@ Created: forks `aphrody-labs/lore`, `aphrody-labs/UnrealEngine` (private). Nothi
 
 | Registry | Item | Notes |
 |---|---|---|
-| GitHub | repository `aphrody-dev/src` | this monorepo; `aphrody-labs/labs` was merged into it on 2026-11-12 and is not used |
+| GitHub | repository `aphrody-labs/src` | this monorepo (moved from `aphrody-dev/src` on 2026-11-13); `aphrody-labs/labs` was merged into it on 2026-11-12 |
 | crates.io | crate `aphrody` | names are held only by publishing; publish `crates/ay` 0.0.x when ready (`publish = false` until then) |
 | npm | `@aphrody/cli` and per-platform packages | scope already owned; publish with the first binary release |
 | DNS | `labs.aphrody.com` records | homepage and conformance dashboard |

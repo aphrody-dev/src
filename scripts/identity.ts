@@ -18,7 +18,12 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 
 export type Identity = {
-  product: { name: string; display: string; repo: string };
+  product: {
+    name: string;
+    display: string;
+    repo: string;
+    repo_org?: "main" | "lab";
+  };
   cli: { binary: string; crate: string };
   naming: {
     npm_scope: string;
@@ -46,7 +51,7 @@ export const loadIdentity = (root: string) =>
   Bun.TOML.parse(readFileSync(join(root, "identity.toml"), "utf8")) as Identity;
 
 export const repoUrl = (id: Identity) =>
-  `https://github.com/${id.orgs.main}/${id.product.repo}`;
+  `https://github.com/${id.orgs[id.product.repo_org ?? "main"]}/${id.product.repo}`;
 
 type Edit = {
   file: string;
@@ -226,6 +231,23 @@ export function plan(root: string, id = loadIdentity(root)): Edit[] {
   });
   const byName = new Map(expected.map((e) => [String(e.pkg.name), e.want]));
   const valid = new Set(expected.map((e) => e.want));
+  if (valid.size !== expected.length) {
+    const seen = new Map<string, string>();
+    for (const e of expected) {
+      const prev = seen.get(e.want);
+      if (prev)
+        edits.push({
+          file: e.file,
+          what: "name collision",
+          have: `${e.want} (also ${prev})`,
+          want: "one workspace per name",
+          apply: () => {
+            throw new Error(`${e.file} and ${prev} would both be ${e.want}`);
+          },
+        });
+      seen.set(e.want, e.file);
+    }
+  }
   for (const { file, pkg, want } of expected) {
     const renames: [string, string, string][] = []; // [field, from, to]
     for (const field of DEP_FIELDS)
