@@ -30,6 +30,13 @@ Source: unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show (2026-
 - MetaHuman: Creator web app access closed 2026-11-05, then 90 more days to retrieve gallery MetaHumans (forums.unrealengine.com/t/metahuman-creator-web-application-is-being-discontinued/2695297); creation is in-engine. UE 5.8 ships a MetaHuman Devkit and Animator markerless mocap (State of Unreal 2026 news page).
 - Licensing (unrealengine.com/ue-devs-can-now-choose-to-train-ai-models-on-their-projects): UE and MetaHuman projects can opt in to AI training; UEFN, Verse and island content fall under the Fortnite Developer Rules/Terms, not the UE EULA.
 
+## UEFN and Fab (Context7 `/websites/dev_epicgames_fortnite`, dev.epicgames.com/documentation/en-us/fab/licenses-and-pricing-in-fab)
+
+- UEFN scripting: a Verse device is `class(creative_device)` with `OnBegin<override>()<suspends>:void`; `@editable` fields appear in the editor Details panel (editable-properties-in-verse); devices subscribe to events such as `InteractedWithEvent.Subscribe(...)`.
+- Publishing: not from UEFN itself; UEFN checks project size and memory, then the Creator Portal handles versions, media and release (publishing-projects-in-unreal-editor-for-fortnite).
+- Fab licenses: CC-BY (free only) or Standard (free or paid). Standard has Personal and Professional price tiers with the same rights; Personal applies when the buyer group made at most US$100,000 gross revenue in the digital content industry in the last 12 months. Standard allows commercial use, modification and any tool; no resale of the asset alone; no credit required. The NoAI tag requires the Standard license. Assets bought on the old UE Marketplace keep the Epic Content License. Binding text: fab.com/eula.
+- Epic Games Terms of Service (updated 2026-05-27) do not apply to Unreal Engine, the Epic Games Store or Fab.
+
 ## Verse language
 
 - Reference: The Verse book, verselang.github.io/book (repo verselang/book, CC0-1.0); Context7 `/websites/verselang_github_io_book`.
