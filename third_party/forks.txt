@@ -154,3 +154,10 @@ aphrody-labs/vcpkg
 aphrody-labs/llvm-project
 openclaw/openclaw TypeScript
 NousResearch/hermes-agent Python
+vercel-labs/agent-skills JavaScript
+anthropics/skills Python
+modelcontextprotocol/rust-sdk Rust
+modelcontextprotocol/typescript-sdk TypeScript
+a2aproject/A2A Shell
+agentclientprotocol/agent-client-protocol Rust
+BerriAI/litellm Python
