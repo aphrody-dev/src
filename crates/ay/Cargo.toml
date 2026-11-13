@@ -47,8 +47,6 @@ rt = { version = "0.2.0", package = "aphrody-rt", path = "../rt" }
 # `ay docs` (Bun docs index) and `ay flat` / `ay hash` / `ay time` (bun fork crates, flattened).
 aphrody-docs = { version = "0.2.0", path = "../docs" }
 bun-flat = { version = "0.2.0", package = "aphrody-bun-flat", path = "../bun-flat" }
-# `ay steam`: Steam data as JSON (VDF, appinfo, manifests, compat tools, Proton env).
-bun-steam = { version = "1.4.8", package = "steam-depot", path = "../steam-depot" }
 # `ay self-update` against the dist releases (blocking API, no async runtime in ay itself).
 axoupdater = { workspace = true, features = ["blocking"] }
 

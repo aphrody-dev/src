@@ -31,7 +31,6 @@ Areas:
   chromium   chromium (fr1 build chain), gclient, fetch, gn, ninja, cipd, cl, vpy, engines (V8, JSC, Dawn, wgpu)
   fleet      ssh, deploy, auth, secret, vault, ai, agents
   measure    bench, time
-  gaming     gaming (Steam, Proton, Vulkan, DirectX via packages/gaming), steam (Steam data as JSON)
 
 Every command takes --help; machine output is --json where offered.
 Plan: docs/ay/MIGRATION.md; command table: docs/NAMING.md";
@@ -75,9 +74,6 @@ pub enum Cmd {
     /// Gamescope mode (runs the `gamescope-rs` binary)
     #[command(disable_help_flag = true)]
     Scope(Rest),
-    /// Gaming stack (packages/gaming): status, apps, proton, layers, dx, steamcmd, run, skills
-    #[command(disable_help_flag = true)]
-    Gaming(Rest),
     /// Patch stacks of the bun and Chromium forks: status, sync, check, pr, mark, gc, export (packages/upstream)
     #[command(disable_help_flag = true)]
     Upstream(Rest),
@@ -238,7 +234,6 @@ pub fn route(cmd: Cmd) -> Route {
         }
         Cmd::Bench(r) => Route::Bench(r.args),
         Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
-        Cmd::Gaming(r) => Route::Package("gaming", r.args),
         Cmd::Upstream(r) => Route::Package("upstream", r.args),
         Cmd::Linux(r) => Route::Package("linux", r.args),
         Cmd::Pkg(r) => Route::Package("linux", prefixed(&["pkg"], &r.args)),
@@ -513,12 +508,6 @@ mod tests {
         assert_eq!(parse("engines matrix --json"), Route::Low(LowCmd::Engines(Rest { args: v(&["matrix", "--json"]) })));
         assert_eq!(parse("agents plan goal"), Route::Low(LowCmd::Agents(Rest { args: v(&["plan", "goal"]) })));
         assert_eq!(run(&v(&["chromium", "--dry-run", "status"])), 0);
-    }
-
-    #[test]
-    fn gaming_runs_the_bun_package() {
-        assert_eq!(parse("gaming status --json"), Route::Package("gaming", v(&["status", "--json"])));
-        assert!(matches!(parse("steam apps --filter proton"), Route::Low(_)));
     }
 
     #[test]

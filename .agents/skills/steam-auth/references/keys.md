@@ -10,8 +10,8 @@
   (https://steamcommunity.com/dev/apiterms, fetched 2026-11-12).
 - Sent as the `key` parameter or the `x-webapi-key` request header (same partner page).
   The plugin MCP server always uses the header, so the key never appears in a URL
-  (`web_api_call` sets `x-webapi-key` in `apps/rosegriffon/plugins/steam/servers/steam-mcp.ts`).
-- In this plugin, set `STEAM_WEB_API_KEY` in the environment (see `apps/rosegriffon/plugins/steam/README.md`).
+  (`web_api_call` sets `x-webapi-key` in `plugins/steam/servers/steam-mcp.ts`).
+- In this plugin, set `STEAM_WEB_API_KEY` in the environment (see `plugins/steam/README.md`).
 
 ## Publisher Web API key
 

@@ -26,7 +26,6 @@ import {
   type Review,
   type Status,
 } from "./patch.ts";
-import { mirrorStatus, mirrorSync, type MirrorRow, type MirrorStack } from "./mirror.ts";
 import { applyRegistry, saveEntry } from "./registry.ts";
 import { bunPrBody, check, type Finding } from "./rules.ts";
 import {
@@ -117,7 +116,6 @@ type StackReport = {
   behind?: number;
   ahead?: number;
   last_sync?: unknown;
-  mirror?: MirrorRow[];
   patches: {
     index: number;
     id: string;
@@ -148,7 +146,6 @@ async function stackStatus(
   };
   try {
     if (s.optional && !repoExists(s.fork)) return { ...rep, present: false };
-    if (s.model === "mirror") return { ...rep, source: "api", mirror: mirrorStatus(s as MirrorStack) };
     const dir = stackDir(root, s);
     let patches: Patch[] = [];
     if (s.model === "series") {
@@ -272,12 +269,6 @@ function printStatus(reps: StackReport[], markdown: boolean): void {
     }
     console.log(head);
     if (r.error) console.log(`  erreur : ${r.error}`);
-    if (r.mirror) {
-      for (const m of r.mirror)
-        console.log(`  ${m.branch.padEnd(16)} ${m.in_sync ? "à jour" : "en retard"}  ${m.fork_tip?.slice(0, 12) ?? "absente"} <- ${m.source_tip?.slice(0, 12) ?? "?"}  ${m.source}`);
-      console.log("");
-      continue;
-    }
     for (const p of r.patches)
       console.log(
         `  ${String(p.index).padStart(2)} ${p.id.padEnd(10)} ${STATUS_FR[p.status].padEnd(18)} ${p.subject.slice(0, 70)}\n` +
@@ -293,7 +284,6 @@ async function sync(root: string, s: StackConfig, o: Opts): Promise<number> {
     console.log(`${s.name} : ${s.fork} absent, ignoré`);
     return 0;
   }
-  if (s.model === "mirror") return mirrorSync(root, s as MirrorStack, o.flags.has("push"));
   const dir = ensureCheckout(root, s);
   if (!o.flags.has("no-fetch")) fetchBoth(dir, s);
   const at = new Date().toISOString();
@@ -657,13 +647,7 @@ export async function main(argv: string[]): Promise<number> {
       const chosen =
         o.args[1] === "all"
           ? stacks
-          : (o.args[1] ?? "")
-              .split(",")
-              .flatMap((n) =>
-                stacks.some((x) => x.group === n && x.name !== n)
-                  ? stacks.filter((x) => x.group === n)
-                  : [pick(stacks, n)],
-              );
+          : (o.args[1] ?? "").split(",").map((n) => pick(stacks, n));
       let code = 0;
       for (const s of chosen) code = Math.max(code, await sync(root, s, o));
       return code;

@@ -234,17 +234,6 @@ vm.page-cluster = 0
     }
 }
 
-/// Proton options of the CachyOS desktop profile (proton-cachyos), applied on top of the shared plan.
-pub const CACHYOS_PROTON_OPTIONS: &[(&str, &str)] = &[
-    ("WINE_FULLSCREEN_FSR", "1"),
-    ("DXVK_NVAPI_ALLOW_OTHER_DRIVERS", "1"),
-    ("PROTON_ENABLE_NVAPI", "1"),
-    ("PROTON_ENABLE_WAYLAND", "1"),
-    ("WINE_VK_WAYLAND", "1"),
-    ("DXVK_ASYNC", "1"),
-    ("PROTON_FORCE_LARGE_ADDRESS_AWARE", "1"),
-];
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProtonWineOrchestrator {
     pub env_vars: BTreeMap<String, String>,
@@ -260,21 +249,23 @@ impl Default for ProtonWineOrchestrator {
 }
 
 impl ProtonWineOrchestrator {
-    /// Launch environment of the gaming owner (`bun_steam::proton::launch_plan` over the host
-    /// probe: ntsync, caches, llvmpipe, anti-cheat runtimes; docs/gaming/OWNERSHIP.md), plus the
-    /// CachyOS desktop options below for the variables that plan leaves unset.
     pub fn new() -> Self {
-        let host = bun_steam::proton::probe_host();
-        let plan = bun_steam::proton::launch_plan(&bun_steam::proton::LaunchTuning::default(), &host);
-        let mut env_vars: BTreeMap<String, String> = plan.env.into_iter().collect();
-        for (k, v) in CACHYOS_PROTON_OPTIONS {
-            env_vars.entry((*k).to_string()).or_insert_with(|| (*v).to_string());
-        }
+        let mut env_vars = BTreeMap::new();
+        env_vars.insert("PROTON_USE_NTSYNC".to_string(), "1".to_string());
+        env_vars.insert("PROTON_EAC_RUNTIME".to_string(), "1".to_string());
+        env_vars.insert("PROTON_BATTLEYE_RUNTIME".to_string(), "1".to_string());
+        env_vars.insert("WINE_FULLSCREEN_FSR".to_string(), "1".to_string());
+        env_vars.insert("DXVK_NVAPI_ALLOW_OTHER_DRIVERS".to_string(), "1".to_string());
+        env_vars.insert("PROTON_ENABLE_NVAPI".to_string(), "1".to_string());
+        env_vars.insert("PROTON_ENABLE_WAYLAND".to_string(), "1".to_string());
+        env_vars.insert("WINE_VK_WAYLAND".to_string(), "1".to_string());
+        env_vars.insert("DXVK_ASYNC".to_string(), "1".to_string());
+        env_vars.insert("PROTON_FORCE_LARGE_ADDRESS_AWARE".to_string(), "1".to_string());
 
         Self {
             env_vars,
-            syscall_user_dispatch_supported: cfg!(target_os = "linux"),
-            ntsync_device_available: host.ntsync,
+            syscall_user_dispatch_supported: true,
+            ntsync_device_available: true,
             wayland_driver_enabled: true,
         }
     }
@@ -376,12 +367,10 @@ mod tests {
     #[test]
     fn test_proton_orchestrator() {
         let orch = ProtonWineOrchestrator::new();
-        assert_eq!(
-            orch.env_vars.get("PROTON_USE_NTSYNC").is_some(),
-            orch.ntsync_device_available
-        );
+        assert_eq!(orch.env_vars.get("PROTON_USE_NTSYNC").unwrap(), "1");
+        assert_eq!(orch.env_vars.get("PROTON_EAC_RUNTIME").unwrap(), "1");
         assert_eq!(orch.env_vars.get("PROTON_ENABLE_WAYLAND").unwrap(), "1");
-        assert_eq!(orch.verify_anticheat_compatibility(), cfg!(target_os = "linux"));
+        assert!(orch.verify_anticheat_compatibility());
         assert!(!ProtonWineOrchestrator::get_package_patch_manifest().is_empty());
     }
 }

@@ -307,15 +307,6 @@
       "excerpt": "19 tâches prd (ci-fix-* sre, deps-update) en échec immédiat reason=no_cli_provider : ciWatch() et le gabarit deps-update.json n'écrivent pas `providers`, runTaskLocked refuse alors tout rôle d'édition",
       "fix": "ciWatch et tasks/deps-update.json doivent nommer les CLI (ou passer par ai-os orch) ; runner.ts en cours d'édition par une autre session (GitHub App), non modifié ici",
       "reason": "2026-11-13 04:50 : constaté dans var/agents/results/*/result.json sur prd"
-    },
-    {
-      "location": "apps/rosegriffon/plugins/steam + packages/gaming",
-      "category": "coordination",
-      "severity": "info",
-      "status": "fixed",
-      "excerpt": "MCP steam : parseurs TypeScript retirés, local_apps/read_vdf/app_paths passent par ay steam (crates/steam-depot) ; un ay antérieur au commit gaming répond « no steam command »",
-      "fix": "ay à jour (CI) ou AY_BIN ; stack rosegriffon-stack (rg-steam-depot, rg-steam-initial) et son jeton non modifiés ; carte docs/gaming/OWNERSHIP.md",
-      "reason": "2026-11-13 : couche gaming unifiée, commits séparés de ceux de l agent rosegriffon"
     }
   ]
 }

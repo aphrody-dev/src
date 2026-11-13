@@ -11,5 +11,3 @@ serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
 raw-cpuid.workspace = true
-# Proton launch plan of the gaming owner (docs/gaming/OWNERSHIP.md).
-bun-steam = { version = "1.4.8", package = "steam-depot", path = "../steam-depot" }

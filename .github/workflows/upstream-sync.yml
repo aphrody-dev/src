@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      GH_TOKEN: ${{ secrets.APHRODY_DEPLOY_TOKEN }}
+      GH_TOKEN: ${{ secrets.APHRODY_DEPLOY_TOKEN || github.token }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -39,6 +39,8 @@ jobs:
           done < upstreams.txt
           echo "failures=$fail" >> "$GITHUB_STEP_SUMMARY"
       - name: Regenerate snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: bun scripts/upstream-recon.ts docs/epic/snapshot.json
       - name: Commit snapshot
         run: |

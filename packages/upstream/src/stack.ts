@@ -10,7 +10,7 @@ import {
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { join, resolve } from "node:path";
 import {
   commitTree,
   commits,
@@ -35,7 +35,7 @@ import {
 
 export type StackConfig = {
   name: string;
-  model: "branch" | "series" | "mirror";
+  model: "branch" | "series";
   upstream: string;
   upstream_url: string;
   github_upstream?: string; // GitHub mirror of a non-GitHub upstream (compare API)
@@ -50,7 +50,6 @@ export type StackConfig = {
   runner: string;
   optional?: boolean;
   lint_workflows?: string[];
-  group?: string; // `ay upstream sync <group>` selects every stack of the group (stacks.d/<group>.toml)
 };
 
 export function repoRoot(): string {
@@ -72,23 +71,10 @@ export function loadStacks(
   root = repoRoot(),
   file = join(root, "infra", "upstream", "stacks.toml"),
 ): StackConfig[] {
-  // stacks.toml, then every stacks.d/<group>.toml next to it (group = file name unless set).
-  const read = (f: string, group?: string): StackConfig[] => {
-    const doc = Bun.TOML.parse(readFileSync(f, "utf8")) as {
-      stack?: Record<string, Omit<StackConfig, "name">>;
-    };
-    return Object.entries(doc.stack ?? {}).map(([name, s]) => ({ name, ...(group ? { group } : {}), ...s }));
+  const doc = Bun.TOML.parse(readFileSync(file, "utf8")) as {
+    stack?: Record<string, Omit<StackConfig, "name">>;
   };
-  const dropins = join(dirname(file), "stacks.d");
-  return [
-    ...read(file),
-    ...(existsSync(dropins)
-      ? readdirSync(dropins)
-          .filter((f) => f.endsWith(".toml"))
-          .sort()
-          .flatMap((f) => read(join(dropins, f), f.slice(0, -5)))
-      : []),
-  ];
+  return Object.entries(doc.stack ?? {}).map(([name, s]) => ({ name, ...s }));
 }
 
 export function stackDir(root: string, s: StackConfig): string {

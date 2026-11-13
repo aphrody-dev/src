@@ -43,8 +43,6 @@ aliases.
 | `ay forge` | `frg` | forge |
 | `ay wl` | `wslg-rs`, `wslg-cosmic-hypr` | Wayland compositor (Linux, Windows, web) |
 | `ay scope` | `gamescope-rs` | gamescope mode |
-| `ay steam root/libraries/apps/vdf/compat/host/env` | `plugins/steam/lib/steam.ts` parsers, `steam-inspect.ts` | Steam data of the host as JSON from `crates/steam-depot` (one VDF/ACF/appinfo parser) |
-| `ay gaming status/apps/proton/layers/dx/forks/steamcmd/run/skills` | (new) | gaming stack, run by bun from `packages/gaming`: Proton, Vulkan layers, DirectX, official steamcmd and Proton wrappers (docs/gaming/OWNERSHIP.md) |
 | `ay lfs` | `just lfs-<sub>` (third_party/lfs/bun, GitHub CI) | bun-LFS build, logs, WSL import |
 | `ay wsl`, `ay userland` | `unix-distro`, `omarchy-wsl` | WSL distribution, Rust userland |
 
