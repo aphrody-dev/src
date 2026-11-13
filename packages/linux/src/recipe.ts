@@ -223,8 +223,8 @@ export function generate(root: string, r: Recipe, format: Format, distro?: Distr
       put(
         "build.sh",
         `#!/bin/sh\n${header(r)}set -eu\n` +
-          // -i puts the public key in /etc/apk/keys (root in the container): the repo index is trusted.
-          `apk add --no-cache alpine-sdk\nabuild-keygen -ain\n` +
+          // Public key copied to /etc/apk/keys so the repo index is trusted (`-i` needs doas).
+          `apk add --no-cache alpine-sdk\nabuild-keygen -an\ncp /root/.abuild/*.rsa.pub /etc/apk/keys/\n` +
           `cd /w/${dir} && abuild -F -d -P /w/repo\n` +
           `apk add --no-cache --allow-untrusted $(find /w/repo -name '${r.name}-${r.version}-r${r.release - 1}.apk')\n` +
           r.files.map((f) => `test -f ${f.dest}\n`).join("") +
