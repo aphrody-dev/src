@@ -2,15 +2,16 @@
 /**
  * @aphrody/chromium-bun — Dual-Runtime Architecture Bridge (Host Bun JSC/WebKit <-> Guest Browser V8)
  * Consolidated from `yolo-rs/yolo-web/packages/bun-v8-bridge` & `packages/chromium`.
+ * Forks only (aphrody-labs, third_party/forks.txt); V8 and lol-html have no fork and are not listed.
  */
 
 export type RuntimePlane = "host-bun-webkit" | "guest-browser-v8";
 
 export interface ForkedRepoEntry {
   readonly name: string;
-  readonly fullName: `aphrody-dev/${string}`;
+  readonly fullName: `aphrody-labs/${string}`;
   readonly upstream: string;
-  readonly url: `https://github.com/aphrody-dev/${string}`;
+  readonly url: `https://github.com/aphrody-labs/${string}`;
   readonly plane: RuntimePlane;
   readonly category:
     | "runtime"
@@ -35,9 +36,9 @@ export const BUN_CHROMIUM_UPSTREAM_REPOS: readonly ForkedRepoEntry[] = [
   },
   {
     name: "WebKit",
-    fullName: "aphrody-dev/WebKit",
+    fullName: "aphrody-labs/WebKit",
     upstream: "oven-sh/WebKit",
-    url: "https://github.com/aphrody-dev/WebKit",
+    url: "https://github.com/aphrody-labs/WebKit",
     plane: "host-bun-webkit",
     category: "js-engine",
     pinnedCommit: "4d45755fed4aeef19e95beb90d3d0c884a2812bd",
@@ -45,35 +46,14 @@ export const BUN_CHROMIUM_UPSTREAM_REPOS: readonly ForkedRepoEntry[] = [
       "Bun's patched Apple WebKit / JavaScriptCore fork with Riptide GC, B3/FTL JIT, SIMD, and AoT runtime facts",
   },
   {
-    name: "v8",
-    fullName: "aphrody-dev/v8",
-    upstream: "v8/v8",
-    url: "https://github.com/aphrody-dev/v8",
-    plane: "guest-browser-v8",
-    category: "js-engine",
-    description:
-      "Upstream Chromium V8 JavaScript and WebAssembly engine (Ignition, Sparkplug, Maglev, TurboFan, Orinoco GC) for browser web rendering",
-  },
-  {
     name: "rusty_v8",
-    fullName: "aphrody-dev/rusty_v8",
+    fullName: "aphrody-labs/rusty_v8",
     upstream: "denoland/rusty_v8",
-    url: "https://github.com/aphrody-dev/rusty_v8",
+    url: "https://github.com/aphrody-labs/rusty_v8",
     plane: "guest-browser-v8",
     category: "v8-binding",
     description:
       "Zero-overhead Rust FFI bindings to Chromium V8 Isolates, Contexts, ScriptCompiler, and IsolateHandle",
-  },
-  {
-    name: "lol-html",
-    fullName: "aphrody-dev/lol-html",
-    upstream: "oven-sh/lol-html",
-    url: "https://github.com/aphrody-dev/lol-html",
-    plane: "host-bun-webkit",
-    category: "native-dep",
-    pinnedCommit: "725ce499aa9b71e38b7a2d0a9fbb6d7294a4079e",
-    description:
-      "Pure Rust low-output-latency streaming HTML parser and rewriter with CSS selector API powering Bun HTMLRewriter",
   },
 ] as const;
 

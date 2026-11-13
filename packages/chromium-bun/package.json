@@ -1,7 +1,8 @@
 {
   "name": "@aphrody/chromium-bun",
-  "version": "2.1.0",
-  "description": "Sovereign Bun v1.4.4 + Chromium Browser Engine, CDP Automation, SSRF/Shields Crawler & 3-VPS Datacenter RRF Search Cluster",
+  "version": "0.0.0",
+  "private": true,
+  "description": "CDP client, SSRF-guarded crawler, BM25 search shards, engine registry and runtime benchmarks, on bun",
   "type": "module",
   "main": "src/index.ts",
   "bin": {
@@ -15,8 +16,6 @@
     "check": "bun check",
     "fmt": "bun fmt"
   },
-  "dependencies": {},
-  "devDependencies": {},
   "license": "MIT OR Apache-2.0",
   "repository": {
     "type": "git",

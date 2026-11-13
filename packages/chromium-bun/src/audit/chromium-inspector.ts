@@ -1,5 +1,5 @@
 import { existsSync, statSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { CHROMIUM_DEPENDENCY_AUDIT } from "./purge-matrix.ts";
 import type { DependencyAudit } from "../types.ts";
 
@@ -41,8 +41,13 @@ export interface ChromiumInspectionResult {
   };
 }
 
-const CHROMIUM_ROOT = "C:\\src\\third_party\\chromium\\src";
-const DEPOT_TOOLS_ROOT = "C:\\src\\third_party\\depot_tools";
+// Repo root from this file (packages/chromium-bun/src/audit); overridable, never an absolute path in source.
+const REPO_ROOT = resolve(import.meta.dir, "..", "..", "..", "..");
+export const CHROMIUM_ROOT =
+  process.env.CHROMIUM_ROOT ??
+  join(REPO_ROOT, "third_party", "chromium", "src");
+export const DEPOT_TOOLS_ROOT =
+  process.env.DEPOT_TOOLS_ROOT ?? join(REPO_ROOT, "third_party", "depot_tools");
 
 export function probeExecutable(
   command: string,

@@ -166,8 +166,7 @@ export class ChromiumBunCrawler {
 
     try {
       const robotsUrl = `${origin}/robots.txt`;
-      await this.ssrf.validateUrl(robotsUrl);
-      const res = await fetch(robotsUrl, {
+      const res = await this.ssrf.fetch(robotsUrl, {
         headers: { "User-Agent": this.userAgent },
         signal: AbortSignal.timeout(4_000),
       });
@@ -229,12 +228,12 @@ export class ChromiumBunCrawler {
         "document.documentElement.outerHTML",
       );
     } else {
-      const res = await fetch(parsedUrl.href, {
+      // Every redirect hop goes back through the SSRF guard.
+      const res = await this.ssrf.fetch(parsedUrl.href, {
         headers: {
           "User-Agent": this.userAgent,
           Accept: "text/html,application/xhtml+xml",
         },
-        redirect: "follow",
         signal: AbortSignal.timeout(this.timeoutMs),
       });
       status = res.status;

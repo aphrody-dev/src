@@ -35,23 +35,77 @@ export function isForbiddenIpv4(ip: string): boolean {
   return false;
 }
 
+/** Expands an IPv6 literal (optionally with a dotted IPv4 tail) to 8 hextets; null if malformed. */
+export function parseIpv6(ip: string): number[] | null {
+  let s = ip
+    .toLowerCase()
+    .trim()
+    .replace(/^\[|\]$/g, "");
+  const zone = s.indexOf("%");
+  if (zone >= 0) s = s.slice(0, zone);
+  const tail = s.match(/(\d{1,3}(?:\.\d{1,3}){3})$/);
+  if (tail) {
+    const p = tail[1]!.split(".").map(Number);
+    if (p.some((n) => n > 255)) return null;
+    s = `${s.slice(0, -tail[1]!.length)}${((p[0]! << 8) | p[1]!).toString(16)}:${((p[2]! << 8) | p[3]!).toString(16)}`;
+  }
+  const halves = s.split("::");
+  if (halves.length > 2) return null;
+  const head = halves[0] ? halves[0].split(":") : [];
+  const rest = halves.length === 2 && halves[1] ? halves[1].split(":") : [];
+  const fill = 8 - head.length - rest.length;
+  if (halves.length === 1 ? head.length !== 8 : fill < 1) return null;
+  const all = [
+    ...head,
+    ...Array(halves.length === 2 ? fill : 0).fill("0"),
+    ...rest,
+  ];
+  const out: number[] = [];
+  for (const h of all) {
+    if (!/^[0-9a-f]{1,4}$/.test(h)) return null;
+    out.push(Number.parseInt(h, 16));
+  }
+  return out;
+}
+
+const v4of = (hi: number, lo: number) =>
+  `${hi >> 8}.${hi & 255}.${lo >> 8}.${lo & 255}`;
+
+/**
+ * Special-purpose IPv6 (RFC 6890 registry) is forbidden, and every IPv4-embedding form
+ * (compatible ::/96, mapped ::ffff:0:0/96, NAT64 64:ff9b::/96 and 64:ff9b:1::/48,
+ * 6to4 2002::/16) is judged on its embedded IPv4; Teredo 2001::/32 and malformed input are forbidden.
+ */
 export function isForbiddenIpv6(ip: string): boolean {
-  const norm = ip.toLowerCase().trim();
-  if (norm === "::1" || norm === "0:0:0:0:0:0:0:1") return true;
-  if (norm === "::" || norm === "0:0:0:0:0:0:0:0") return true;
-  if (norm.startsWith("fc") || norm.startsWith("fd")) return true;
-  if (
-    norm.startsWith("fe8") ||
-    norm.startsWith("fe9") ||
-    norm.startsWith("fea") ||
-    norm.startsWith("feb")
-  ) {
-    return true;
+  const h = parseIpv6(ip);
+  if (!h) return true;
+  const [a, b, c, d, e, f, g, i] = h as [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+  ];
+  if (a === 0 && b === 0 && c === 0 && d === 0 && e === 0) {
+    if (f === 0 || f === 0xffff)
+      return g === 0 && i <= 1 ? true : isForbiddenIpv4(v4of(g, i));
+    return true; // ::ffff:0:0:0/96 (SIIT) and other ::/80 forms
   }
-  if (norm.includes("::ffff:")) {
-    const v4 = norm.split("::ffff:")[1];
-    if (v4 && isForbiddenIpv4(v4)) return true;
-  }
+  if (a === 0x64 && b === 0xff9b)
+    return c === 0 && d === 0 && e === 0 && f === 0
+      ? isForbiddenIpv4(v4of(g, i))
+      : true;
+  if (a === 0x2002) return isForbiddenIpv4(v4of(b, c));
+  if (a === 0x2001 && b === 0) return true; // Teredo: tunnel relay, never a crawl target
+  if (a === 0x2001 && b === 0x0db8) return true; // documentation
+  if (a === 0x2001 && b < 0x200) return true; // 2001::/23 IETF protocol assignments
+  if (a === 0x0100 && b === 0 && c === 0 && d === 0) return true; // discard 100::/64
+  if ((a & 0xfe00) === 0xfc00) return true; // fc00::/7 unique local
+  if ((a & 0xffc0) === 0xfe80 || (a & 0xffc0) === 0xfec0) return true; // link/site local
+  if ((a & 0xff00) === 0xff00) return true; // multicast
   return false;
 }
 
@@ -134,6 +188,34 @@ export class SsrfGuard {
       if (err instanceof Error && err.message.startsWith("SSRF Guard:")) {
         throw err;
       }
+      throw new Error(
+        `SSRF Guard: Host "${hostname}" did not resolve (fail-closed).`,
+      );
+    }
+  }
+
+  /**
+   * fetch with every redirect hop re-validated (redirect: "manual", at most maxRedirects hops).
+   * DNS rebinding between validation and connect stays open: pinning the IP needs a dedicated
+   * connector or egress proxy.
+   */
+  async fetch(
+    targetUrl: string | URL,
+    init: RequestInit = {},
+    maxRedirects = 5,
+  ): Promise<Response> {
+    let url = new URL(targetUrl);
+    for (let hop = 0; ; hop++) {
+      await this.validateUrl(url);
+      const res = await fetch(url.href, { ...init, redirect: "manual" });
+      const location = res.headers.get("location");
+      if (res.status < 300 || res.status >= 400 || !location) return res;
+      if (hop >= maxRedirects) {
+        throw new Error(
+          `SSRF Guard: more than ${maxRedirects} redirects from ${targetUrl}`,
+        );
+      }
+      url = new URL(location, url);
     }
   }
 

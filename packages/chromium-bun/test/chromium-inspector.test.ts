@@ -1,11 +1,18 @@
 import { describe, expect, it } from "bun:test";
-import { inspectChromiumTree } from "../src/audit/chromium-inspector.ts";
+import {
+  CHROMIUM_ROOT,
+  DEPOT_TOOLS_ROOT,
+  inspectChromiumTree,
+} from "../src/audit/chromium-inspector.ts";
 import { existsSync } from "node:fs";
 
-describe("Chromium & depot_tools Sovereign Inspection", () => {
+// Integration probe of a local Chromium checkout: skipped where the tree is absent (CI).
+const hasTree = existsSync(CHROMIUM_ROOT) && existsSync(DEPOT_TOOLS_ROOT);
+
+describe.skipIf(!hasTree)("Chromium & depot_tools Sovereign Inspection", () => {
   it("should confirm Chromium root and depot_tools presence on disk", () => {
-    expect(existsSync("C:\\src\\third_party\\chromium\\src")).toBe(true);
-    expect(existsSync("C:\\src\\third_party\\depot_tools")).toBe(true);
+    expect(existsSync(CHROMIUM_ROOT)).toBe(true);
+    expect(existsSync(DEPOT_TOOLS_ROOT)).toBe(true);
   });
 
   it("should detect all key Chromium native subsystems", () => {
@@ -40,13 +47,14 @@ describe("Chromium & depot_tools Sovereign Inspection", () => {
     const inspection = inspectChromiumTree();
     const gn = inspection.toolchains.find((t) => t.tool.includes("gn"));
     expect(gn?.detected).toBe(true);
-    expect(gn?.version).toContain("2614");
+    // Contract of `gn --version`, not a pinned revision of the host tool.
+    expect(gn?.version).toMatch(/^\d+ \([0-9a-f]+\)$/);
 
     const node = inspection.toolchains.find((t) =>
       t.tool.includes("Chromium Bundled Node.js"),
     );
     expect(node?.detected).toBe(true);
-    expect(node?.version).toContain("v24.");
+    expect(node?.version).toMatch(/^v\d+\./);
   });
 
   it("should extract real Material 3 tokens from Chromium ui/color", () => {

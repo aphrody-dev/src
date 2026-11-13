@@ -36,3 +36,4 @@ jobs:
         run: |
           bun test packages/env-kit
           (cd packages/ai-os && bun test test)
+          (cd packages/chromium-bun && bun check && bun test test/ssrf.test.ts test/engines.test.ts test/layers.test.ts test/purge-matrix.test.ts test/winner-picker.test.ts test/chromium-inspector.test.ts)

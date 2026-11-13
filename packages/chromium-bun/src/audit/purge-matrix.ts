@@ -112,7 +112,7 @@ export const CHROMIUM_DEPENDENCY_AUDIT: DependencyAudit[] = [
     rationale:
       "Google Dawn is the canonical cross-platform C++ WebGPU implementation targeting D3D12, Vulkan, and Metal. Native RTX 4070 Ada Lovelace sm_89 execution.",
     replacementOrNativePath:
-      "Native WGPU C++ / Direct FFI Bridge (C:\\src\\third_party\\chromium\\src\\third_party\\dawn)",
+      "Native WGPU C++ / Direct FFI Bridge (third_party/chromium/src/third_party/dawn)",
     layer: 5,
   },
   {
@@ -122,7 +122,7 @@ export const CHROMIUM_DEPENDENCY_AUDIT: DependencyAudit[] = [
     rationale:
       "Undefeated 2D vector graphics rasterizer with GPU acceleration, SkParagraph, and SkUnicode font layout.",
     replacementOrNativePath:
-      "Native Skia C++ Library (C:\\src\\third_party\\chromium\\src\\third_party\\skia)",
+      "Native Skia C++ Library (third_party/chromium/src/third_party/skia)",
     layer: 5,
   },
   {
@@ -132,7 +132,7 @@ export const CHROMIUM_DEPENDENCY_AUDIT: DependencyAudit[] = [
     rationale:
       "LayoutNG, CSS compute, DOM hierarchy, and web standards rendering pipeline.",
     replacementOrNativePath:
-      "Blink LayoutNG / Platform (C:\\src\\third_party\\chromium\\src\\third_party\\blink)",
+      "Blink LayoutNG / Platform (third_party/chromium/src/third_party/blink)",
     layer: 5,
   },
   {
@@ -141,7 +141,7 @@ export const CHROMIUM_DEPENDENCY_AUDIT: DependencyAudit[] = [
     verdict: "KEEP_CHROMIUM_NATIVE",
     rationale:
       "V8 multi-tier JIT (TurboFan, Maglev, Liftoff WASM) optimized for long-running compute and deep browser engine integration.",
-    replacementOrNativePath: "V8 Engine C++ Core (C:\\src\\third_party\\chromium\\src\\v8)",
+    replacementOrNativePath: "V8 Engine C++ Core (third_party/chromium/src/v8)",
     layer: 5,
   },
   {
@@ -150,7 +150,7 @@ export const CHROMIUM_DEPENDENCY_AUDIT: DependencyAudit[] = [
     verdict: "KEEP_CHROMIUM_NATIVE",
     rationale:
       "Tile management, layer tree synchronization, and hardware-accelerated direct composition scheduler.",
-    replacementOrNativePath: "CC Compositor Tree (C:\\src\\third_party\\chromium\\src\\cc)",
+    replacementOrNativePath: "CC Compositor Tree (third_party/chromium/src/cc)",
     layer: 5,
   },
   {
@@ -160,17 +160,17 @@ export const CHROMIUM_DEPENDENCY_AUDIT: DependencyAudit[] = [
     rationale:
       "Chromium native desktop UI hierarchy and Material 3 ColorPipeline (sys/ref tokens, dynamic tonal palettes).",
     replacementOrNativePath:
-      "Native Views & ColorProvider (C:\\src\\third_party\\chromium\\src\\ui\\color, C:\\src\\third_party\\chromium\\src\\ui\\views)",
+      "Native Views & ColorProvider (third_party/chromium/src/ui/color, third_party/chromium/src/ui/views)",
     layer: 5,
   },
   {
     name: "siso-gn-autoninja",
-    relPath: "build/ + C:\\src\\third_party\\depot_tools",
+    relPath: "build/ + third_party/depot_tools",
     verdict: "KEEP_CHROMIUM_NATIVE",
     rationale:
       "Chromium next-generation build orchestration: Siso (Go/Rust Ninja replacement), GN metabuild, and autoninja.",
     replacementOrNativePath:
-      "Siso / GN Toolchain (C:\\src\\third_party\\depot_tools\\siso.bat, C:\\src\\third_party\\chromium\\src\\buildtools\\win\\gn.exe)",
+      "Siso / GN Toolchain (third_party/depot_tools/siso.bat, third_party/chromium/src/buildtools/win/gn.exe)",
     layer: 5,
   },
   {
@@ -180,7 +180,7 @@ export const CHROMIUM_DEPENDENCY_AUDIT: DependencyAudit[] = [
     rationale:
       "Performance-portable C++ SIMD library targeting AVX2 on Intel Core i7-13700F with compile-time zero overhead.",
     replacementOrNativePath:
-      "Native Highway SIMD (C:\\src\\third_party\\chromium\\src\\third_party\\highway)",
+      "Native Highway SIMD (third_party/chromium/src/third_party/highway)",
     layer: 5,
   },
   {
@@ -189,7 +189,7 @@ export const CHROMIUM_DEPENDENCY_AUDIT: DependencyAudit[] = [
     verdict: "KEEP_CHROMIUM_NATIVE",
     rationale: "Best-in-class hand-crafted assembly AV1 video decoder.",
     replacementOrNativePath:
-      "Native dav1d AV1 Decoder (C:\\src\\third_party\\chromium\\src\\third_party\\dav1d)",
+      "Native dav1d AV1 Decoder (third_party/chromium/src/third_party/dav1d)",
     layer: 5,
   },
   {
@@ -199,7 +199,7 @@ export const CHROMIUM_DEPENDENCY_AUDIT: DependencyAudit[] = [
     rationale:
       "Canonical OpenType text shaping engine required for world-class typography and complex script rendering.",
     replacementOrNativePath:
-      "Native HarfBuzz (C:\\src\\third_party\\chromium\\src\\third_party\\harfbuzz)",
+      "Native HarfBuzz (third_party/chromium/src/third_party/harfbuzz)",
     layer: 5,
   },
   {
@@ -209,7 +209,7 @@ export const CHROMIUM_DEPENDENCY_AUDIT: DependencyAudit[] = [
     rationale:
       "Google's hardened crypto library with assembly implementations of TLS 1.3, AES-GCM, and Post-Quantum cryptography.",
     replacementOrNativePath:
-      "Native BoringSSL (C:\\src\\third_party\\chromium\\src\\third_party\\boringssl)",
+      "Native BoringSSL (third_party/chromium/src/third_party/boringssl)",
     layer: 5,
   },
 ];
