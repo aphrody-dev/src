@@ -288,6 +288,24 @@ export function plan(root: string, id = loadIdentity(root)): Edit[] {
   return edits;
 }
 
+/** Anonymity gate (docs/IDENTITY.md): the personal terms come from APHRODY_PII_TERMS (comma list: CI secret, vault
+ * locally), never from the repository. Fail-closed in CI outside fork pull requests. Prints file:line only. */
+function piiGate(root: string): number {
+  const terms = (process.env.APHRODY_PII_TERMS ?? "").split(",").map((s) => s.trim()).filter((s) => s.length >= 4);
+  if (!terms.length) {
+    if (process.env.CI && process.env.GITHUB_EVENT_NAME !== "pull_request") {
+      console.error("identity: APHRODY_PII_TERMS unset, anonymity gate cannot run (fail-closed)");
+      return 1;
+    }
+    return 0; // local: env-kit secret exec APHRODY_PII_TERMS -- bun scripts/identity.ts check
+  }
+  const r = Bun.spawnSync(["git", "grep", "-n", "-I", "-i", "-F", ...terms.flatMap((x) => ["-e", x]), "--", ".", ":!third_party"], { cwd: root });
+  const hits = r.stdout.toString().split("\n").filter(Boolean).map((l) => l.split(":").slice(0, 2).join(":"));
+  for (const h of hits) console.error(`identity: personal data at ${h}`);
+  if (!hits.length) console.log(`identity: anonymity gate clean (${terms.length} terms)`);
+  return hits.length ? 1 : 0;
+}
+
 function main(argv: string[]) {
   const i = argv.indexOf("--root");
   const root = i >= 0 ? resolve(argv[i + 1]!) : findRoot();
@@ -313,7 +331,7 @@ function main(argv: string[]) {
     for (const e of edits)
       console.error(`identity: ${e.file} ${e.what}: ${e.have} != ${e.want}`);
     if (!edits.length) console.log("identity: manifests match identity.toml");
-    return edits.length ? 1 : 0;
+    return (edits.length ? 1 : 0) | piiGate(root);
   }
   if (cmd === "apply") {
     for (const [file, es] of Map.groupBy(edits, (e) => e.file)) {

@@ -30,6 +30,8 @@ jobs:
       - name: Layered dependency gate (checkdeps)
         run: bun scripts/checkdeps.ts
       - name: Identity gate
+        env:
+          APHRODY_PII_TERMS: ${{ secrets.APHRODY_PII_TERMS }}
         run: "[ ! -f scripts/identity.ts ] || bun scripts/identity.ts check"
       - name: Agent runner parses and answers
         run: AGENTS_HOME="$RUNNER_TEMP/agents" bun --no-env-file infra/agents/runner.ts status
