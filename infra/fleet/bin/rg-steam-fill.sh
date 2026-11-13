@@ -63,6 +63,19 @@ boot() {
   chown -R 1000:1000 "$SRV/cdn/static/nie"
 }
 
+# systemctl start of another oneshot; retried because a daemon-reload/reexec by another job drops
+# the D-Bus wait ("Connection reset by peer") even when the unit itself succeeds.
+unit() {
+  local i
+  for i in 1 2 3; do
+    systemctl start "$1" && return 0
+    [ "$(systemctl show "$1" -p Result --value)" = success ] &&
+      [ "$(systemctl show "$1" -p ActiveState --value)" = inactive ] && return 0
+    sleep 30
+  done
+  return 1
+}
+
 step() {
   local s=$1
   shift
@@ -79,6 +92,6 @@ step() {
 step update heavy depot update
 step verify heavy depot verify
 step boot heavy boot
-step cdn systemctl start rg-cdn-sync.service
+step cdn unit rg-cdn-sync.service
 step reload docker compose restart model-serve
 log "all steps done"
