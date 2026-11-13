@@ -44,6 +44,8 @@ mkdir -p "$HOME/.local/bin"
 cat > "$HOME/.local/bin/gemini" <<'EOF'
 #!/bin/sh
 # infra/agents/install.sh: gemini-cli in full-access mode (settings yolo ignored in 0.68).
+# Management subcommands reject --approval-mode (gemini extensions list: "Unknown arguments", fr2 2026-11-13).
+case ${1:-} in mcp|extensions|extension|skills|skill|hooks|hook|gemma|models) exec "$HOME/.bun/bin/gemini" "$@" ;; esac
 case " $* " in *" --approval-mode"*|*" -y "*|*" --yolo "*) exec "$HOME/.bun/bin/gemini" "$@" ;; esac
 exec "$HOME/.bun/bin/gemini" --approval-mode yolo "$@"
 EOF
