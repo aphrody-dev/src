@@ -48,6 +48,8 @@ image = ["dep:image"]
 serde = []
 embedded-fonts = []
 bevy = ["dep:bevy", "layout"]
+# wasm32 + WebGPU: Bevy `web` brings getrandom's wasm_js backend; without it the bevy feature does not compile for wasm32.
+web = ["bevy", "bevy/web", "bevy/webgpu"]
 egui = ["dep:egui"]
 
 [dependencies]
