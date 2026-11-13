@@ -6,6 +6,7 @@
 // Ne touche à aucun réglage de sécurité (UAC, Defender, connecteurs d'agent) : voir README.md.
 import { existsSync } from "node:fs";
 import { shells } from "./shells.ts";
+import { toolchain } from "./toolchain.ts";
 
 const check = process.argv.includes("--check");
 const LOCAL = process.env.LOCALAPPDATA!;
@@ -154,6 +155,9 @@ if (existsSync(wt)) {
 
 // 5. Shells : env.toml -> env.{sh,ps1,nu,fish}, complétions ay, configs du manifeste, lock, HKCU (shells.ts).
 results.push(...shells({ check }));
+
+// 5b. Outillage agent : infra/agents/toolchain.toml (marketplaces, plugins, MCP, skills épinglées), voir toolchain.ts.
+results.push(...(await toolchain({ check })));
 
 // 6. Contrôles en lecture seule : élévation (ce script ne modifie ni l'UAC ni sudo).
 const sudoOn = /Enabled\s+REG_DWORD\s+0x3/.test(

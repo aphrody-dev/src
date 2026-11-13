@@ -70,3 +70,45 @@ name = "DEVELOPERKNOWLEDGE_API_KEY"
 store = "env-kit"
 user_env = true
 mint = "gcloud services api-keys get-key-string 334a6698-4c5b-41b9-b896-7f8f1494fa5b --project aphrody --account yolo-automation@aphrody.iam.gserviceaccount.com"
+
+# --- Audit design / UI (2026-11-13, docs/ui/ECOSYSTEM-AUDIT.md) ---
+
+# Figma officiel (MCP https://mcp.figma.com/mcp + skills figma-use, design-to-code, code-connect, generate-library).
+[[claude.plugin]]
+id = "figma@claude-plugins-official"
+scope = "user"
+
+# Doublon tiers du précédent (skill figma-to-code + second serveur MCP "figma") : retiré.
+[[claude.plugin]]
+id = "figma-to-code-design-to-react-vue-and-html@anthropic-plugin-directory"
+scope = "user"
+state = "absent"
+
+# Skills upstream copiées depuis un commit épinglé (~/.claude/skills/<name>, témoin .source).
+[[claude.skill]]
+name = "gpui-kit"
+repo = "longbridge/gpui-kit"          # ex-longbridge/gpui-component, crate gpui-kit 0.9.1
+commit = "6f7f4d96982c476fc0cb3491c6c4d775371554f1"
+path = "skills/gpui-kit"
+license = "Apache-2.0"
+
+[[claude.skill]]
+name = "gpui-kit-design-guides"
+repo = "longbridge/gpui-kit"
+commit = "6f7f4d96982c476fc0cb3491c6c4d775371554f1"
+path = "skills/gpui-kit-design-guides"
+license = "Apache-2.0"
+
+[[claude.skill]]
+name = "webui-reference"
+repo = "microsoft/webui"              # v3.1.1
+commit = "30ca60aa4bdc1beab040dae32e1c10e195ec9113"
+path = "ai"
+license = "MIT"
+
+[[claude.skill]]
+name = "web-design-guidelines"
+repo = "vercel-labs/agent-skills"
+commit = "1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62"
+path = "skills/web-design-guidelines"
+license = "MIT"
