@@ -860,11 +860,13 @@ pub fn render_kernel_maintainers() -> String {
             "SOVEREIGN AI CONTROL PLANE & KNOWLEDGE ENGINE",
             "Supported",
             &[
-                "git https://github.com/aphrody-labs/agent.git",
+                "git https://github.com/aphrody-dev/src.git",
             ],
             &[
                 ".agents/",
-                "agent/",
+                "crates/agent-context/",
+                "crates/agent-py/",
+                "packages/ai-os/",
             ],
         ),
     ];

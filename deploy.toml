@@ -90,7 +90,7 @@ green_port = 23320
 r2_bucket = "rosegriffon-media"
 
 [services.ai-os]
-path = "C:/src/agent/packages/gateway"
+path = "packages/ai-os"
 runtime = "bun-fullstack"
 region = "eu-fr"
 nodes = ["usa"]
@@ -110,7 +110,7 @@ blue_port = 14100
 green_port = 24100
 
 [services.ai-triad]
-path = "C:/src/agent/packages/gateway"
+path = "packages/ai-os"
 runtime = "bun-fullstack"
 region = "us-google-egress"
 google_egress = true

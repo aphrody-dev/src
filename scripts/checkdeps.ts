@@ -48,8 +48,6 @@ const root = resolve(
 );
 const SCAN = [
   "crates",
-  "agent/crates",
-  "agent/packages",
   "packages",
   "apps",
   "infra",
@@ -178,7 +176,7 @@ for (const u of units.values()) {
 
 // 3. Scopes from DEPS.rules, inherited downward.
 // A line `sub/dir: directive` applies to that subdirectory. It lets the parent repo declare
-// rules for gitlinked submodules (agent/, apps/*) without writing into them.
+// rules for gitlinked submodules (apps/*) without writing into them.
 const scoped = new Map<string, string[]>();
 const scopeCache = new Map<string, Scope>();
 function scopeFor(dirRel: string): Scope {

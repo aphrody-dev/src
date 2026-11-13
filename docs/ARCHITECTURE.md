@@ -1,6 +1,6 @@
 # Architecture de src
 
-Document de référence unique. Remplace `docs/ROOT-ARCHITECTURE.md` et `docs/CORE.md` (fusionnés ici, 2026-11-12). Les principes et leurs sources sont dans [PHILOSOPHY.md](PHILOSOPHY.md). L'architecture interne de l'agent reste dans `agent/docs/ARCHITECTURE.md` (sous-module) et se range entièrement en L4/L5 ci-dessous.
+Document de référence unique. Remplace `docs/ROOT-ARCHITECTURE.md` et `docs/CORE.md` (fusionnés ici, 2026-11-12). Les principes et leurs sources sont dans [PHILOSOPHY.md](PHILOSOPHY.md). L'architecture interne de l'IA reste dans `packages/ai-os/docs/ARCHITECTURE.md` (paquet `@aphrody/ai-os`, fusionné à plat depuis aphrody-labs/agent le 2026-11-13) et se range entièrement en L4/L5 ci-dessous.
 
 ## 1. Modèle en couches
 
@@ -12,8 +12,8 @@ Inspiré de NT (HAL sous l'Executive, sous les sous-systèmes) et des components
 | L1 base | `//base` : primitives portables, sans `cfg(target_os)` ni windows-rs, sans service | `crates/core`, `corelib`, `depot-core`, `depot-cas`, `lore-base`, `lore-io`, `lore-error-set(-macro)`, `lore-macro`, `aphrody-design-shared`, `aphrody-design-tokens`, `gamescope-core`, `tv-core`, `tv-i18n` |
 | L2 plateforme | HAL : Windows, Linux, Cloudflare, Vercel, réseau, C ABI de base | `sys`, `net`, `core-capi`, `dx12-winui-core`, `unix-*`, `remote`, `lore-credential`, `lore-fuse`, `steam-depot`, `gamescope-wgsl`, `smithay-wayland-wire`, `hypr-tiler`, `cosmic-compat`, `tv-ffmpeg` (FFmpeg libav* en liaison dynamique) ; `packages/core` (bun:ffi sur core-capi), `net`, `machine`, `runtime-adapter` ; `infra/*` |
 | L3 services | Executive : VCS, build, design, web | `crates/*` par défaut : `lore*` (stockage, révision, transport, serveur, backends aws/hashicorp), `depot-*` (gclient, cipd, vpython, re, graph...), `xtask`, `up`, `rt`, `archguard`, `factory`, `conformance`, `bench`, `next`, `react`, `ui`, design ; C ABI de services `ffi`, `lore-capi` ; `packages/*` par défaut |
-| L4 agent | sous-système agent | `agent/` (core, research, mcp, agent-context, agent-py ; ses L0-L7 internes sont des sous-couches), `crates/ring3-agent`, `plugins/` |
-| L5 surfaces | embedders (`//chrome`) | CLIs : `ay`, `aphrody-cli`, `depot-cli`, `lore-client`, `gamescope-cli`, `wslg-cli`, `tv-cli` ; `agent/packages/gateway`, `tui` ; `apps/*` (dont `apps/nt`) |
+| L4 agent | sous-système agent | `packages/ai-os` (core, llm, relay, research, gateway, tui ; ses sous-dossiers sont des sous-couches), `crates/agent-context`, `crates/agent-py`, `crates/ring3-agent`, `plugins/` |
+| L5 surfaces | embedders (`//chrome`) | CLIs : `ay`, `aphrody-cli`, `depot-cli`, `lore-client`, `gamescope-cli`, `wslg-cli`, `tv-cli` ; `ai-os` (CLI `src/cli.ts`, gateway, tui) ; `apps/*` (dont `apps/nt`) |
 
 La liste exacte vient de `just checkdeps --graph` ; ce tableau est un résumé.
 
@@ -58,13 +58,13 @@ rust-toolchain.toml nightly épinglée
 .cargo/config.toml  vendored-sources, cranelift dev (sans cdylib ni LTO), rust-lld
 identity.toml       noms renommables (source unique, §6)
 src.lock.json       verrou généré ; DEPS en est dérivé (`ay manifests`)
-uv.lock             Python (agent/, sous-module)
+uv.lock             Python (packages/ai-os/python)
 justfile            point d'entrée unique
 DEPS                gclient : dépendances externes épinglées (40 caractères)
 DEPS.rules          racine des règles de couches (checkdeps)
 MAINTAINERS         propriétaires par sous-système
 README.md AGENTS.md CLAUDE.md LICENSE-*
-crates/ packages/ apps/ agent/ third_party/ infra/ tools/ docs/ scripts/
+crates/ packages/ apps/ third_party/ infra/ tools/ docs/ scripts/
 ```
 
 À fondre ailleurs : Dockerfile, compose.yaml, cloudbuild.yaml, flake.nix, deploy.ps1/.sh, install.ps1/.sh, graphify-out/, var/ ; deploy.toml, tools.toml, depot-artifacts.toml, dist-workspace.toml vers infra/ ou Cargo.toml. Conflit noté : l'ancienne cible retirait MAINTAINERS de la racine ; la directive du 2026-11-12 le garde (format kernel) et prime.
@@ -103,10 +103,10 @@ Grammaires : 13 avec extracteur dédié ; les autres découvertes par `crates/co
 
 | Ticket | Constat | Correction |
 |---|---|---|
-| checkdeps-001 | `agent/packages/core/src/cli.ts` importe gateway, tui, research : arêtes montantes L4 vers L5 et cycles | déplacer l'entrée CLI dans un package surface `agent/packages/cli` (L5) ; règles `!` dans `/DEPS.rules` d'ici là |
+| checkdeps-001 | soldé le 2026-11-13 : l'entrée CLI est `packages/ai-os/src/cli.ts`, hors de `src/core` ; ai-os est une seule unité L4 | — |
 | checkdeps-002 | ARCH-017 d'archguard double checkdeps pour les couches mais porte aussi les frontières de domaine | traduire ces frontières en règles `-` (ex. L3 services système sans `dx12-winui-core`/`steam-depot`, agent sans `next`/`react`) avant de retirer ARCH-017 et d'appeler checkdeps depuis `ay arch check` |
 | checkdeps-003 | `apps/rosegriffon` : cycle `rg-db` <-> `rg-types`, vu par un passage manuel de checkdeps à profondeur 3 (hors gate src) | à corriger dans le dépôt rosegriffon, par son propre gate |
-| checkdeps-004 | Python (`agent/pyproject.toml`, uv) hors checkdeps et test-affected | lire pyproject.toml, ajouter `uv run pytest` à test-affected |
+| checkdeps-004 | Python (`packages/ai-os/python/pyproject.toml`, uv) hors checkdeps et test-affected | lire pyproject.toml, ajouter `uv run pytest` à test-affected |
 | pin-001 | épinglage multiple : DEPS, src.lock.json, sous-modules, vendored-sources | une seule source (src.lock.json), DEPS et .gitmodules générés |
 | toolchain-001 | cranelift (dev) incompatible avec la LTO LLVM et limité sur windows-msvc | cranelift seulement en dev hors cdylib ; trancher clang-cl vs cl.exe (conflit ouvert) |
 | taskgraph-001 | cache distant R2 pour sccache non configuré | backend S3 de sccache vers R2 sur les runners, après lecture de la doc sccache |

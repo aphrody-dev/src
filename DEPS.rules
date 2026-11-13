@@ -1,11 +1,3 @@
 # checkdeps root rules (see docs/ARCHITECTURE.md, scripts/checkdeps.ts).
 # Per-directory DEPS.rules set `layer = N` and +allow / !ticketed / -forbid rules, inherited downward.
 # `sub/dir: directive` lines below cover gitlinked submodules that src does not write into.
-agent: layer = 4
-agent/packages/gateway: layer = 5
-agent/packages/tui: layer = 5
-# TICKET checkdeps-001: agent-core src/cli.ts lazily imports gateway, tui and research (upward + cycle).
-# Fix: move the CLI entry point into a surface package (agent/packages/cli, L5).
-agent/packages/core: !agent/packages/gateway
-agent/packages/core: !agent/packages/tui
-agent/packages/core: !agent/packages/research

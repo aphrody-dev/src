@@ -1,6 +1,6 @@
 # OpenClaw et Hermes Agent en natif Windows
 
-Mesuré le 2026-11-12 sur le PC (Windows 11 Insider 28120, sans WSL, sans runtime MSYS pour les outils de l'agent). Le dépôt unifié aphrody-labs/agent reprend cette liste.
+Mesuré le 2026-11-12 sur le PC (Windows 11 Insider 28120, sans WSL, sans runtime MSYS pour les outils de l'agent). Le paquet unifié packages/ai-os (fusion de aphrody-labs/agent) reprend cette liste.
 
 Forks : aphrody-labs/openclaw et aphrody-labs/hermes-agent, branche `windows-native`, clonés dans C:\src\third_party\ (ignorés par src). Chaque fork a un job CI `windows-native.yml` sur windows-latest.
 

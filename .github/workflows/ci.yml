@@ -25,7 +25,7 @@ jobs:
       - name: Rust (ay and its libraries)
         run: |
           cargo build -p aphrody
-          cargo test -p aphrody -p depot-gclient -p depot-cas -p depot-cipd -p aphrody-up -p aphrody-rt -p archguard
+          cargo test -p aphrody -p depot-gclient -p depot-cas -p depot-cipd -p aphrody-up -p aphrody-rt -p archguard -p agent-context
       - name: Layered dependency gate (checkdeps)
         run: bun scripts/checkdeps.ts
       - name: Architecture gate
@@ -33,4 +33,6 @@ jobs:
       - name: Go deploy engine
         run: go -C infra test ./...
       - name: Bun
-        run: bun test packages/env-kit
+        run: |
+          bun test packages/env-kit
+          (cd packages/ai-os && bun test test)

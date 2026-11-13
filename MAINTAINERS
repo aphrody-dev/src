@@ -237,8 +237,11 @@ F:	packages/runtime-adapter/
 LAYER L4 AGENT
 M:	agent:claude skill:claude-api <contact@aphrody.com>
 S:	Supported
-F:	agent/
+F:	crates/agent-context/
+F:	crates/agent-py/
 F:	crates/ring3-agent/
+F:	infra/fleet/prd/systemd/aphrody-relay.service
+F:	packages/ai-os/
 
 LAYER RULES, CHECKDEPS & TASK GRAPH
 M:	agent:claude skill:bun <contact@aphrody.com>

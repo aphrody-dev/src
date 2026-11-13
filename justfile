@@ -101,9 +101,26 @@ serve-forge port="4000":
 labs cmd="bench":
     bun run --cwd "{{root}}/third_party/labs" src/cli.ts {{cmd}}
 
-# Run Unified AI Control Plane & Real-Time Standards Sentinel
-ai-os cmd="watch":
-    bun run --cwd "{{root}}/packages/ai-os" src/cli.ts {{cmd}}
+# @aphrody/ai-os CLI: agent (init, run, tui, gateway, research, ...) or relay (`just ai-os relay serve`)
+ai-os *args:
+    bun run --cwd "{{root}}/packages/ai-os" src/cli.ts {{args}}
+
+# @aphrody/ai-os tests (inside the package, never `bun test` from the root)
+ai-os-test:
+    bun --cwd "{{root}}/packages/ai-os" test
+
+# Windows service AphrodyRelay (elevated): exe = published artefact relay-service of .github/workflows/ai-os.yml
+[windows]
+relay-install exe:
+    pwsh -NoProfile -File "{{root}}/packages/ai-os/native/relay-windows/install.ps1" -ServiceExe "{{exe}}"
+
+# Linux user unit of the relay (prd and Linux hosts; source in infra/fleet/prd/systemd)
+[unix]
+relay-install:
+    install -Dm644 "{{root}}/infra/fleet/prd/systemd/aphrody-relay.service" "$HOME/.config/systemd/user/aphrody-relay.service"
+    systemctl --user daemon-reload
+    systemctl --user enable --now aphrody-relay
+    systemctl --user restart aphrody-relay
 
 # Run Pi + OpenCode + Locally Uncensored + Symphony/Ralph harness
 pi-opencode cmd="tui":
@@ -144,6 +161,7 @@ verify-all:
     ay doctor
     bun test "{{root}}/packages/env-kit" "{{root}}/packages/pi-opencode" "{{root}}/packages/ai-triad"
     bun test "{{root}}/.agents/scripts/pre-tool-guard.test.ts"
+    bun --cwd "{{root}}/packages/ai-os" test
     cargo test --manifest-path "{{root}}/crates/rust-stack/Cargo.toml"
     cargo test --workspace --manifest-path "{{root}}/Cargo.toml"
     go -C "{{root}}/infra" test ./...

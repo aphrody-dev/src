@@ -55,7 +55,7 @@ Ce que src reprend de chaque modèle, ce qu'il refuse, et pourquoi. Marquage : [
 |---|---|---|---|
 | Graphe de tâches + filtre par changement + cache distant ; le cache distant est implémentable par tout serveur HTTP suivant l'API Remote Cache (endpoints v8) | turborepo.dev/docs/core-concepts/remote-caching [V] | Le graphe : `checkdeps --affected REF` calcule unités touchées + dépendants transitifs ; `just test-affected` teste seulement celles-là | turbo : refusé. Il peut cacher n'importe quelle tâche déclarée, mais au grain du package : il faudrait redéclarer le graphe Cargo dans turbo.json/package.json, alors que sccache cache déjà au grain de l'unité de compilation rustc. Il ajouterait un binaire, une config et un second graphe. Le cache distant R2 vaut pour cargo/sccache (TICKET taskgraph-001), pas pour turbo |
 | just comme point d'entrée | `justfile` [V] | Oui : `just check`, `just checkdeps`, `just affected` | Makefiles, scripts .sh/.ps1 |
-| bun workspaces, uv pour Python | `package.json`, `agent/pyproject.toml` [V] | Oui | npm/pnpm/yarn, pip |
+| bun workspaces, uv pour Python | `package.json`, `packages/ai-os/python/pyproject.toml` [V] | Oui | npm/pnpm/yarn, pip |
 
 ## 7. FFI / interop et toolchain LLVM
 
@@ -63,7 +63,7 @@ Ce que src reprend de chaque modèle, ce qu'il refuse, et pourquoi. Marquage : [
 |---|---|---|---|
 | C ABI générée par cbindgen | `crates/core-capi` (cbindgen.toml) [V] | Oui : une seule frontière native, versionnée | Bindings écrits à la main |
 | bun:ffi pour consommer la C ABI | `packages/core` [V] | Oui | napi tant que bun:ffi suffit (napi = Node, ABI plus lourde) |
-| pyo3 pour Python | `agent/crates/agent-py` [V] | Oui, côté agent seulement | — |
+| pyo3 pour Python | `crates/agent-py` [V] | Oui, côté agent seulement | — |
 | windows-rs depuis le dépôt (pas crates.io) + windows-bindgen | consigne propriétaire | Oui, en L2 uniquement | `winapi`, bindings ad hoc |
 | Toolchain LLVM partagée (clang, lld, rustc sur le même LLVM) pour la LTO inter-langages | `docs/llvm/` | Oui comme cible L0 | Conflit ouvert MSVC vs LLVM pour nt (non tranché ici) |
 
