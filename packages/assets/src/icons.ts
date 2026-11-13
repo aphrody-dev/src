@@ -111,6 +111,19 @@ export const VENDORS: Vendor[] = [
     site: "https://www.unrealengine.com",
   },
   {
+    id: "emulatorjs",
+    name: "EmulatorJS",
+    owner: "EmulatorJS contributors",
+    site: "https://emulatorjs.org",
+    icon: "https://raw.githubusercontent.com/EmulatorJS/EmulatorJS/main/docs/Logo.svg",
+  },
+  {
+    id: "windows",
+    name: "Windows",
+    owner: "Microsoft Corporation",
+    site: "https://www.microsoft.com/windows",
+  },
+  {
     id: "github",
     name: "GitHub",
     owner: "GitHub, Inc.",

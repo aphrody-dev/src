@@ -27,6 +27,15 @@
     "bytes": 788
   },
   {
+    "id": "emulatorjs",
+    "name": "EmulatorJS",
+    "owner": "EmulatorJS contributors",
+    "origin": "https://raw.githubusercontent.com/EmulatorJS/EmulatorJS/main/docs/Logo.svg",
+    "file": "emulatorjs.svg",
+    "sha256": "0e89bf69f698144a0467308376dbfde3bc1c6f8af9d84fc3460c6638729c2c1c",
+    "bytes": 6248
+  },
+  {
     "id": "epic",
     "name": "Epic Games",
     "owner": "Epic Games, Inc.",
@@ -133,6 +142,15 @@
     "file": "unreal.png",
     "sha256": "df954dfd321b4209d7ec74f50176858405e5606b64cae28b42288d1a8e4ece6f",
     "bytes": 1097
+  },
+  {
+    "id": "windows",
+    "name": "Windows",
+    "owner": "Microsoft Corporation",
+    "origin": "https://www.microsoft.com/favicon.ico?v2",
+    "file": "windows.ico",
+    "sha256": "90cdaf487716184e4034000935c605d1633926d348116d198f355a98b8c6cd21",
+    "bytes": 17174
   },
   {
     "id": "winget",

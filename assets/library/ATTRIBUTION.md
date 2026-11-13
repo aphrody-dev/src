@@ -162,6 +162,7 @@ Favicons and touch icons fetched from each product's own site by `ay assets icon
 - `icons/vendors/alpine.svg`: Alpine Linux, trademark of Alpine Linux Development Team; origin https://alpinelinux.org/favicon.svg; sha256 9e3f70ddede85511c8f6577ca73ab9bb551a9a7522c0b5e1c4ee5079963f61be
 - `icons/vendors/artcraft.png`: ArtCraft, trademark of storytold; origin https://raw.githubusercontent.com/storytold/artcraft/main/crates/desktop/artcraft/icons/128x128%402x.png; sha256 a5175644c66b4ecda1a2b4b2301287b976a6c37d32c5308f629d541355c2aa17
 - `icons/vendors/bevy.png`: Bevy, trademark of Bevy Foundation; origin https://bevy.org/assets/favicon.png; sha256 ac69ab5d0d6c5f0d63e106a8c1003a0981dd202f8446811dbf24ff1effb11cda
+- `icons/vendors/emulatorjs.svg`: EmulatorJS, trademark of EmulatorJS contributors; origin https://raw.githubusercontent.com/EmulatorJS/EmulatorJS/main/docs/Logo.svg; sha256 0e89bf69f698144a0467308376dbfde3bc1c6f8af9d84fc3460c6638729c2c1c
 - `icons/vendors/epic.ico`: Epic Games, trademark of Epic Games, Inc.; origin https://www.epicgames.com/favicon.ico; sha256 d72592a16964d610ed4f8c4d65de2433f9082e364e6cefeb25a858677de01601
 - `icons/vendors/fdroid.png`: F-Droid, trademark of F-Droid Limited and contributors; origin https://f-droid.org/assets/apple-touch-icon_ypJwtCrcixeH_qV6LdcMYk1anFIR9o-_ufR__1wNdJY=.png; sha256 cfb10ac7fa533e80120d76652bb544884db8c2bf7111aae5828a80602161997e
 - `icons/vendors/flathub.png`: Flathub, trademark of Flathub contributors; origin https://dl.flathub.org/assets/_next/public/apple-touch-icon.png; sha256 6d73cf429193e54d82b1fa788a6c7a44d7e17be52a40175348d1036c3fb25871
@@ -174,5 +175,6 @@ Favicons and touch icons fetched from each product's own site by `ay assets icon
 - `icons/vendors/ruffle.png`: Ruffle, trademark of Ruffle contributors; origin https://ruffle.rs/favicon-180.png; sha256 78967562ad8bd25f1db988c855c414d738ba7d410e5b144de32ad71f548d30f8
 - `icons/vendors/steam.ico`: Steam, trademark of Valve Corporation; origin https://store.steampowered.com/favicon.ico; sha256 9f890a9debcdfccc339149a7943be9aff9e4c9203c2fa37d5671a5b2c88503ad
 - `icons/vendors/unreal.png`: Unreal Engine, trademark of Epic Games, Inc.; origin https://www.unrealengine.com/cosmos/static/favicons/apple-touch-icon.png; sha256 df954dfd321b4209d7ec74f50176858405e5606b64cae28b42288d1a8e4ece6f
+- `icons/vendors/windows.ico`: Windows, trademark of Microsoft Corporation; origin https://www.microsoft.com/favicon.ico?v2; sha256 90cdaf487716184e4034000935c605d1633926d348116d198f355a98b8c6cd21
 - `icons/vendors/winget.ico`: winget, trademark of Microsoft Corporation; origin https://learn.microsoft.com/favicon.ico; sha256 90cdaf487716184e4034000935c605d1633926d348116d198f355a98b8c6cd21
 - `icons/vendors/xbox.png`: Xbox, trademark of Microsoft Corporation; origin https://www.xbox.com/favicon-180.png; sha256 4e3acb7b512b9c2bda2be7223c1ffa73662ee83467f63cfa33e56fab0c184a93

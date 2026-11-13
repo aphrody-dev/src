@@ -51,39 +51,48 @@ async function steamIds(): Promise<number[]> {
   for (const k of Object.keys(fc ?? {}))
     for (const it of fc[k]?.items ?? [])
       if (typeof it.id === "number") ids.add(it.id);
-  const top = await getJson(
-    "https://store.steampowered.com/search/results/?query&start=0&count=100&filter=topsellers&json=1&cc=us",
-  );
-  for (const it of top?.items ?? []) {
-    const m = String(it.logo ?? "").match(/\/apps\/(\d+)\//);
-    if (m) ids.add(Number(m[1]));
-  }
+  for (const filter of ["topsellers", "popularnew", "specials"])
+    for (let start = 0; start < 500; start += 100) {
+      const top = await getJson(
+        `https://store.steampowered.com/search/results/?query&start=${start}&count=100&filter=${filter}&json=1&cc=us`,
+      );
+      for (const it of top?.items ?? []) {
+        const m = String(it.logo ?? "").match(/\/apps\/(\d+)\//);
+        if (m) ids.add(Number(m[1]));
+      }
+      if (!top?.items?.length) break;
+    }
   return [...ids];
 }
 
-export async function syncSteam(root: string, limit: number): Promise<number> {
+export async function syncSteam(
+  root: string,
+  limit: number,
+  jobs = 4,
+): Promise<number> {
   const db = open(root);
   const ids = (await steamIds()).slice(0, limit);
   const put =
     db.prepare(`INSERT OR REPLACE INTO games(store,ext_id,name,url,cover,platforms,genres,free,developer,release,desc,synced)
     VALUES('steam',?,?,?,?,?,?,?,?,?,?,?)`);
   let n = 0;
-  for (const id of ids) {
+  const one = async (id: number) => {
     const desc: Record<string, string> = {};
     let base: any = null;
-    for (const [loc, l] of LANGS) {
-      const r = await getJson(
-        `https://store.steampowered.com/api/appdetails?appids=${id}&cc=us&l=${l}`,
-      );
-      const d = r?.[id]?.success ? r[id].data : null;
-      await sleep(1500);
-      if (!d) continue;
-      if (loc === "en") base = d;
-      desc[loc] = String(d.short_description ?? "")
-        .replace(/<[^>]+>/g, "")
-        .slice(0, 300);
-    }
-    if (!base || base.type !== "game") continue;
+    await Promise.all(
+      LANGS.map(async ([loc, l]) => {
+        const r = await getJson(
+          `https://store.steampowered.com/api/appdetails?appids=${id}&cc=us&l=${l}`,
+        );
+        const d = r?.[id]?.success ? r[id].data : null;
+        if (!d) return;
+        if (loc === "en") base = d;
+        desc[loc] = String(d.short_description ?? "")
+          .replace(/<[^>]+>/g, "")
+          .slice(0, 300);
+      }),
+    );
+    if (!base || base.type !== "game") return;
     const pf = Object.entries(base.platforms ?? {})
       .filter(([, v]) => v)
       .map(([k]) => k)
@@ -103,7 +112,14 @@ export async function syncSteam(root: string, limit: number): Promise<number> {
       new Date().toISOString(),
     );
     n++;
-  }
+  };
+  // Worker pool: `jobs` apps at once (5 locale requests each); getJson backs off on 429.
+  let next = 0;
+  await Promise.all(
+    Array.from({ length: jobs }, async () => {
+      while (next < ids.length) await one(ids[next++]!);
+    }),
+  );
   return n;
 }
 

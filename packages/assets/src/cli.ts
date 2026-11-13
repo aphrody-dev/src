@@ -176,7 +176,7 @@ switch (cmd) {
   }
   case "games": {
     if (pos[0] === "sync") {
-      const steam = await syncSteam(root, num("limit", 60));
+      const steam = await syncSteam(root, num("limit", 60), num("jobs", 4));
       const epic = await syncEpic(root);
       console.log(
         `steam ${steam}, epic ${epic}, exported ${await exportJson(root)}`,
