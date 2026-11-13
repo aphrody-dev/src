@@ -362,7 +362,7 @@ a{color:var(--md-sys-color-primary)}
 .scene{position:absolute;inset:0}.scene>svg{display:block;width:100%;height:100%}
 .scene{--star:var(--md-sys-color-on-primary-container);--h1:color-mix(in srgb,var(--md-sys-color-tertiary) 35%,var(--md-sys-color-primary-container));--h2:color-mix(in srgb,var(--md-sys-color-tertiary) 55%,var(--md-sys-color-surface));--h3:color-mix(in srgb,var(--md-sys-color-tertiary) 75%,var(--md-sys-color-surface-container-lowest));--h4:var(--md-sys-color-tertiary);--pine:color-mix(in srgb,var(--md-sys-color-tertiary) 70%,#000);--pet-body:var(--md-sys-color-primary);--pet-dark:var(--md-sys-color-primary-container)}
 .scene .stars{opacity:0}:root[data-theme=ember] .scene .stars{opacity:.7}
-h1{margin:0 0 12px;font-weight:800;font-size:clamp(4rem,14vw,10.5rem);line-height:.9;letter-spacing:-.045em}
+h1{margin:0 0 .2em;font-weight:800;font-size:clamp(4rem,14vw,10.5rem);line-height:.9;letter-spacing:-.045em}
 h2{${type("headline-large")};margin:0 0 24px}
 h3{${type("title-large")};margin:0}
 .lead{${type("headline-small")};max-width:24ch;margin:0 0 28px;color:var(--md-sys-color-on-surface)}
