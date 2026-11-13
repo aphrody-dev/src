@@ -9,9 +9,9 @@
     <title>Yolo — Reproducible Fullstack Aphrody Bun v1.4.4 Framework</title>
     <meta
       name="description"
-      content="Deterministic fullstack Bun v1.4.4 framework with AST SQLite module graph, HTMLRewriter SSR CSP nonces, Material Design 3 HCT tokens, Aphrody Pet, and 3-VPS cluster search."
+      content="Deterministic fullstack Bun v1.4.4 framework with AST SQLite module graph, HTMLRewriter SSR CSP nonces, Material 3 tokens (Material Color Utilities), Material Symbols, and 3-VPS cluster search."
     />
-    <meta name="theme-color" content="#1A73E8" />
+    <meta name="theme-color" content="#1242FF" />
     <link rel="canonical" href="https://yolo.aphrody.com/" />
     <link rel="icon" type="image/svg+xml" href="/assets/brand-mark.svg" />
     <link rel="stylesheet" href="/style.css" />
@@ -38,7 +38,7 @@
       <nav class="primary-tabs" aria-label="Framework sections">
         <button type="button" class="nav-tab is-active" data-panel="overview">
           <span class="nav-icon-slot" aria-hidden="true"></span
-          ><span>Overview &amp; Pet</span>
+          ><span>Overview</span>
         </button>
         <button type="button" class="nav-tab" data-panel="graph">
           <span class="nav-icon-slot" aria-hidden="true"></span
@@ -120,63 +120,6 @@
             </div>
           </div>
 
-          <div
-            class="pet-studio card-surface"
-            aria-label="Aphrody Pet Companion Studio"
-          >
-            <div class="section-head">
-              <h2>Aphrody Pet Codex v2</h2>
-              <span class="badge-pill" id="pet-status-badge"
-                >idle · 16-way gaze</span
-              >
-            </div>
-            <div class="pet-stage-box">
-              <aphrody-pet
-                id="yolo-pet"
-                src="/assets/pets/sprites/spritesheet.webp"
-                size="128"
-                label="Aphrody Pixel Companion"
-              ></aphrody-pet>
-            </div>
-            <p class="helper-text">
-              Move pointer near the companion to trigger 16-direction gaze
-              tracking, or select a deterministic Codex state or one-shot
-              animation:
-            </p>
-            <div
-              class="chip-group"
-              id="pet-controls"
-              role="group"
-              aria-label="Pet animation controls"
-            >
-              <button
-                type="button"
-                class="chip-btn is-selected"
-                data-pet-mode="ambient"
-              >
-                Ambient
-              </button>
-              <button type="button" class="chip-btn" data-pet-state="working">
-                Working
-              </button>
-              <button type="button" class="chip-btn" data-pet-state="thinking">
-                Thinking
-              </button>
-              <button type="button" class="chip-btn" data-pet-state="sleeping">
-                Sleeping
-              </button>
-              <button type="button" class="chip-btn" data-pet-play="waving">
-                Wave
-              </button>
-              <button
-                type="button"
-                class="chip-btn"
-                data-pet-play="celebrating"
-              >
-                Celebrate
-              </button>
-            </div>
-          </div>
         </div>
       </section>
 

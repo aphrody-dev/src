@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 /**
  * Yolo Streaming HTMLRewriter SSR Engine
- * Injects cryptographic per-request CSP nonces, dynamic Material Design 3 HCT CSS variables,
+ * Injects cryptographic per-request CSP nonces, Material 3 color roles (@aphrody/design, Material Color Utilities),
  * canonical metadata, and initial deterministic JSON hydration state.
  */
-import { generateDynamicTheme } from "../../../../packages/google-design/src/color-utils/hct.ts";
-import { exportWebCss } from "../../../../packages/google-design/src/theme-builder/exporter.ts";
+import { tokens } from "../../../../packages/design/src/index.ts";
+import { schemeCss, type Variant } from "../../../../packages/design/src/runtime.ts";
+
+/** Brand seed (assets/brand/brand.toml via packages/design/tokens). */
+export const BRAND_SEED = tokens.source.seed;
 
 export interface YoloSsrRenderOptions {
   nonce: string;
@@ -19,10 +22,9 @@ export function generateCspNonce(): string {
   return Buffer.from(random).toString("base64");
 }
 
-export function buildM3InlineThemeCss(seedHex = "#1A73E8"): string {
-  const validHex = /^#[0-9a-fA-F]{6}$/.test(seedHex) ? seedHex : "#1A73E8";
-  const theme = generateDynamicTheme(validHex, "tonal_spot", 0.0);
-  return exportWebCss(theme);
+export function buildM3InlineThemeCss(seedHex = BRAND_SEED): string {
+  const validHex = /^#[0-9a-fA-F]{6}$/.test(seedHex) ? seedHex : BRAND_SEED;
+  return schemeCss(validHex, tokens.source.variant as Variant);
 }
 
 export function renderSsrDocument(

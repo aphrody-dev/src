@@ -1,20 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 /**
  * Yolo Fullstack Client Entry
- * Registers <aphrody-pet>, consumes build-time M3 virtual icon modules,
+ * Consumes build-time Material Symbols modules (@aphrody/design bun plugin),
  * and drives AST Module Graph, Bun Primitives, M3 Symbols, and 3-VPS Cluster inspectors.
  */
 import iconBolt from "m3:icon/rounded/bolt?size=18";
 import iconLayers from "m3:icon/rounded/layers?size=18";
-import iconPets from "m3:icon/rounded/pets?size=18";
+import iconDashboard from "m3:icon/rounded/dashboard?size=18";
 import iconSearch from "m3:icon/rounded/search?size=18";
 import iconTerminal from "m3:icon/rounded/terminal?size=18";
-import {
-  type AphrodyPetElement,
-  defineAphrodyPet,
-} from "../../../../packages/google-design/src/pets/element.ts";
-
-defineAphrodyPet();
 
 interface SsrBootstrapState {
   bunVersion?: string;
@@ -34,7 +28,7 @@ function readSsrState(): SsrBootstrapState {
 
 function decorateNavIcons(): void {
   const iconMap: Record<string, string> = {
-    overview: iconPets,
+    overview: iconDashboard,
     graph: iconLayers,
     primitives: iconBolt,
     icons: iconTerminal,
@@ -105,33 +99,6 @@ function setupThemeAndSeed(): void {
     const styleEl = document.getElementById("yolo-m3-theme");
     if (styleEl) styleEl.textContent = css;
   });
-}
-
-function setupPetControls(): void {
-  const pet = document.getElementById("yolo-pet") as AphrodyPetElement | null;
-  const badge = document.getElementById("pet-status-badge");
-  const buttons = Array.from(
-    document.querySelectorAll<HTMLButtonElement>("#pet-controls .chip-btn"),
-  );
-  if (!pet) return;
-
-  for (const btn of buttons) {
-    btn.addEventListener("click", () => {
-      for (const b of buttons) b.classList.toggle("is-selected", b === btn);
-      if (btn.dataset.petMode === "ambient") {
-        pet.clearState();
-        pet.play(null);
-        if (badge) badge.textContent = "ambient · 16-way gaze";
-      } else if (btn.dataset.petState) {
-        pet.play(null);
-        pet.setState(btn.dataset.petState);
-        if (badge) badge.textContent = `state:${btn.dataset.petState}`;
-      } else if (btn.dataset.petPlay) {
-        pet.play(btn.dataset.petPlay);
-        if (badge) badge.textContent = `play:${btn.dataset.petPlay}`;
-      }
-    });
-  }
 }
 
 async function loadGraph(rescan = false): Promise<void> {
@@ -301,7 +268,6 @@ function bootstrap(): void {
   decorateNavIcons();
   setupNavigation();
   setupThemeAndSeed();
-  setupPetControls();
 
   document
     .getElementById("rescan-graph-btn")

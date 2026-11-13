@@ -25,8 +25,8 @@ describe("@aphrody/yolo — Reproducible Fullstack Bun v1.4.4 Framework", () => 
       const csp = homeRes.headers.get("content-security-policy") || "";
       expect(csp).toContain("nonce-");
       const html = await homeRes.text();
-      expect(html).toContain("<aphrody-pet");
-      expect(html).toContain("--md-sys-color-primary");
+      expect(html).not.toContain("<aphrody-pet");
+      expect(html).toContain("--md-sys-color-primary:#1242FF");
 
       const primRes = await fetch(`${base}/api/primitives`);
       expect(primRes.status).toBe(200);
@@ -62,13 +62,10 @@ describe("@aphrody/yolo — Reproducible Fullstack Bun v1.4.4 Framework", () => 
       };
       expect(search.hits.length).toBeGreaterThan(0);
 
-      const petSprite = await fetch(
-        `${base}/assets/pets/sprites/spritesheet.webp`,
-      );
-      expect(petSprite.status).toBe(200);
-      expect((await petSprite.arrayBuffer()).byteLength).toBeGreaterThan(
-        100_000,
-      );
+      const font = await fetch(`${base}/assets/fonts/GoogleSansFlex-latin.woff2`);
+      expect(font.status).toBe(200);
+      const favicon = await fetch(`${base}/favicon.ico`);
+      expect(favicon.status).toBe(200);
 
       if (findLocalChromiumBinary()) {
         const audit = await auditUrlInRealChromium(`${base}/`, {

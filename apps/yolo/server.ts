@@ -7,11 +7,13 @@
 import { existsSync, readFileSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
 import { ThreeVpsSearchCluster } from "../../packages/chromium-bun/src/search/cluster-3vps.ts";
-import { searchM3Icons } from "../../packages/google-design/src/symbols/catalog.ts";
+import { symbolSvg } from "../../packages/design/src/bun-plugin.ts";
+import { searchSymbols } from "../../packages/design/src/runtime.ts";
 import { buildYoloApp } from "./build.ts";
 import { YoloModuleGraph } from "./src/framework/graph.ts";
 import { runBunFullstackDiagnostics } from "./src/framework/primitives.ts";
 import {
+  BRAND_SEED,
   buildM3InlineThemeCss,
   generateCspNonce,
   renderSsrDocument,
@@ -133,7 +135,7 @@ export async function startYoloServer(options?: {
       }
 
       if (path === "/api/theme") {
-        const seed = url.searchParams.get("seed") || "#1A73E8";
+        const seed = url.searchParams.get("seed") || BRAND_SEED;
         return Response.json(
           { seed, css: buildM3InlineThemeCss(seed) },
           { headers: securityHeaders() },
@@ -142,7 +144,12 @@ export async function startYoloServer(options?: {
 
       if (path === "/api/icons") {
         const q = url.searchParams.get("q") || "";
-        const icons = searchM3Icons(q).slice(0, 24);
+        const icons = await Promise.all(
+          (await searchSymbols(q, 24)).map(async (name) => ({
+            name,
+            svg: await symbolSvg("rounded", name, 24),
+          })),
+        );
         return Response.json(
           { count: icons.length, icons },
           { headers: securityHeaders() },
@@ -162,7 +169,7 @@ export async function startYoloServer(options?: {
 
       if (path === "/" || path === "/index.html") {
         const nonce = generateCspNonce();
-        const seed = url.searchParams.get("seed") || "#1A73E8";
+        const seed = url.searchParams.get("seed") || BRAND_SEED;
         const html = renderSsrDocument(htmlTemplate, {
           nonce,
           seedHex: seed,

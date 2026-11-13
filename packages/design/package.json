@@ -9,7 +9,9 @@
     "./tokens.json": "./tokens/tokens.json",
     "./tokens.css": "./tokens/tokens.css",
     "./components": "./src/components.ts",
-    "./symbols.css": "./src/symbols.css"
+    "./symbols.css": "./src/symbols.css",
+    "./bun-plugin": "./src/bun-plugin.ts",
+    "./runtime": "./src/runtime.ts"
   },
   "scripts": {
     "build": "bun run src/build.ts",
@@ -21,7 +23,8 @@
   "dependencies": {
     "@material/material-color-utilities": "0.4.0",
     "@material/web": "2.5.0",
-    "material-symbols": "0.49.0"
+    "material-symbols": "0.49.0",
+    "@material-symbols/svg-400": "0.49.0"
   },
   "license": "MIT OR Apache-2.0",
   "devDependencies": {

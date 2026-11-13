@@ -14,18 +14,15 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 import { brotliCompressSync, constants as zlibConstants } from "node:zlib";
-import {
-  iconsPlugin,
-  m3IconPlugin,
-  m3TokensPlugin,
-} from "../../packages/bun-plugins/m3-icons-plugin.ts";
+import { symbolsPlugin } from "../../packages/design/src/bun-plugin.ts";
 import { YoloModuleGraph } from "./src/framework/graph.ts";
 
 const APP_ROOT = import.meta.dir;
 const DIST_DIR = join(APP_ROOT, "dist");
-const DESIGN_ASSETS = join(APP_ROOT, "../../packages/google-design/assets");
+const DESIGN_ASSETS = join(APP_ROOT, "../../packages/design/assets");
+const BRAND_ICONS = join(APP_ROOT, "../../assets/brand/gen/icons/yolo");
 
-const BRAND_MARK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none"><rect width="24" height="24" rx="6" fill="#0B57D0"/><path d="M12 4.5L18.8 18.8H15.6L14.2 15.5H9.8L8.4 18.8H5.2L12 4.5ZM10.9 12.9H13.1L12 10.1L10.9 12.9Z" fill="#FFFFFF"/></svg>`;
+const BRAND_MARK_SVG = readFileSync(join(BRAND_ICONS, "icon.svg"), "utf8");
 
 function minifyCss(css: string): string {
   return css
@@ -59,7 +56,6 @@ export async function buildYoloApp(): Promise<{
 }> {
   rmSync(DIST_DIR, { recursive: true, force: true });
   mkdirSync(join(DIST_DIR, "assets/fonts"), { recursive: true });
-  mkdirSync(join(DIST_DIR, "assets/pets/sprites"), { recursive: true });
 
   // 1. Scan AST module graph into .yolo/graph.sqlite
   const graph = new YoloModuleGraph(
@@ -77,7 +73,7 @@ export async function buildYoloApp(): Promise<{
     format: "esm",
     minify: true,
     splitting: false,
-    plugins: [m3IconPlugin, iconsPlugin(), m3TokensPlugin("#1A73E8")],
+    plugins: [symbolsPlugin],
   });
 
   if (!bundle.success) {
@@ -102,15 +98,7 @@ export async function buildYoloApp(): Promise<{
       join(DESIGN_ASSETS, "fonts/GoogleSansCode-latin.woff2"),
       join(DIST_DIR, "assets/fonts/GoogleSansCode-latin.woff2"),
     ],
-    [
-      join(DESIGN_ASSETS, "pets/sprites/spritesheet.webp"),
-      join(DIST_DIR, "assets/pets/sprites/spritesheet.webp"),
-    ],
-    [
-      join(DESIGN_ASSETS, "pets/sprites/spritesheet.png"),
-      join(DIST_DIR, "assets/pets/sprites/spritesheet.png"),
-    ],
-    [join(DESIGN_ASSETS, "brand/favicon.ico"), join(DIST_DIR, "favicon.ico")],
+    [join(BRAND_ICONS, "favicon.ico"), join(DIST_DIR, "favicon.ico")],
   ];
 
   for (const [src, dst] of assetPairs) {
