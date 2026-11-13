@@ -1,0 +1,68 @@
+# Build caches of the PC and the fleet, read by scripts/cache.ts (just cache-status | cache-gc | cache-sync).
+# Strategy, measurements and decisions: docs/infra/CACHE.md. Caps of the VPS live in infra/fleet/<host>/tune.conf
+# (fleet-tune.sh clean, fleet-clean.timer); this file lists what status reports and what the PC gc enforces.
+# `path` is POSIX on the VPS and relative to the user profile (or absolute C:/...) on the PC.
+
+[host.pc]
+ssh = ""
+caches = [
+  { name = "bun", path = ".bun/install/cache", cap_mb = 3072, gc = "bun" },
+  { name = "src-node_modules", path = "C:/src/node_modules" },
+  { name = "src-target", path = "C:/src/target", cap_mb = 0, gc = "rm" },  # the PC never compiles
+  { name = "cargo-registry", path = ".cargo/registry" },
+  { name = "cargo-git", path = ".cargo/git" },
+  { name = "rustup", path = ".rustup" },
+  { name = "toolchain-157", path = ".local/share/aphrody/toolchain" },
+  { name = "sccache", path = "AppData/Local/Mozilla/sccache" },
+  { name = "uv", path = "AppData/Local/uv/cache" },
+  { name = "vcpkg", path = "AppData/Local/vcpkg" },
+]
+
+[host.fr1]
+ssh = "vps"
+caches = [
+  { name = "target-ubuntu", path = "/home/ubuntu/build/target" },
+  { name = "target-ci", path = "/home/ubuntu/actions-runner/_work/src/ci-target" },
+  { name = "target-canary", path = "/home/ubuntu/actions-runner/_work/src/canary-target" },
+  { name = "target-ay", path = "/home/ubuntu/build/ay-target" },
+  { name = "target-ay-llvm24", path = "/home/ubuntu/build/ay-target-llvm24" },
+  { name = "sccache", path = "/home/ubuntu/.cache/sccache" },
+  { name = "cargo-home", path = "/home/ubuntu/.cargo" },
+  { name = "cargo-build-home", path = "/home/ubuntu/build/cargo" },
+  { name = "rustup", path = "/home/ubuntu/.rustup" },
+  { name = "bun", path = "/home/ubuntu/.bun/install/cache" },
+  { name = "docker", path = "/var/lib/docker" },
+]
+
+[host.fr2]
+ssh = "cdn"
+caches = [
+  { name = "cargo-home", path = "/home/ubuntu/.cargo" },
+  { name = "rustup", path = "/home/ubuntu/.rustup" },
+  { name = "bun", path = "/home/ubuntu/.bun/install/cache" },
+  { name = "replica-fr1", path = "/var/cache/aphrody/replica/fr1" },
+  { name = "docker", path = "/var/lib/docker" },
+]
+
+[host.prd]
+ssh = "prd"
+caches = [
+  { name = "bun-agent", path = "/home/agent/.bun/install/cache" },
+  { name = "rustup-root", path = "/root/.rustup" },
+  { name = "docker", path = "/var/lib/docker" },
+]
+
+# cache-sync: content-addressed (BLAKE3) reproducible tar.zst snapshots of fr1's immutable download caches,
+# pushed over the WireGuard mesh to fr2 (default, no cost) or to R2 (--r2, existing bucket, one snapshot kept).
+[sync]
+from = "fr1"
+to = "fr2"
+mesh = "ubuntu@10.200.77.3"   # fr2 on wg1, reached from fr1
+dest = "/var/cache/aphrody/replica/fr1"
+r2 = "r2:aphrody-archive/cache/fr1"
+zstd_level = 19
+keep = 1
+sources = [
+  { name = "cargo-crates", path = "/home/ubuntu/.cargo/registry/cache" },
+  { name = "bun", path = "/home/ubuntu/.bun/install/cache" },
+]

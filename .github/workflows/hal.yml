@@ -35,7 +35,11 @@ jobs:
     timeout-minutes: 90
     env:
       CARGO_TERM_COLOR: never
-      RUSTC_WRAPPER: ""
+      # Hosted runners: sccache on the GitHub Actions cache (free, per repository; docs/infra/CACHE.md).
+      # Non-incremental so workspace crates are cacheable too.
+      RUSTC_WRAPPER: sccache
+      SCCACHE_GHA_ENABLED: "true"
+      CARGO_INCREMENTAL: "0"
     defaults:
       run: { shell: bash }
     steps:
@@ -45,6 +49,7 @@ jobs:
         with: { bun-version-file: package.json }
       - name: Toolchain (Chromium 157 rustc, rustup chromium-157 named by rust-toolchain.toml)
         run: bun scripts/toolchain.ts install
+      - uses: mozilla-actions/sccache-action@v0.0.11
       - name: Check dx12-hal, wslg-cli, smithay-wayland-wire
         run: cargo check --target ${{ matrix.target }} -p dx12-hal -p wslg-cli -p smithay-wayland-wire --all-targets
       - name: dx12-hal C ABI test (no GPU needed; empty crate on Linux)

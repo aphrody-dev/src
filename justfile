@@ -124,6 +124,18 @@ deps-lock *flags:
 deps-bump *flags:
     ay lock --deps --bump --dedupe --root "{{root}}" {{flags}}
 
+# Build caches of the PC and fr1/fr2/prd (docs/infra/CACHE.md, infra/fleet/cache.toml): sizes, free disk, sccache hits
+cache-status *args:
+    bun "{{root}}/scripts/cache.ts" status {{args}}
+
+# Enforce cache caps: PC per cache.toml, VPS through fleet-tune.sh clean (tune.conf); --dry-run to preview
+cache-gc *args:
+    bun "{{root}}/scripts/cache.ts" gc {{args}}
+
+# fr1 download caches as reproducible tar.zst (BLAKE3-named) to fr2 over WireGuard, or --r2; --dry-run to preview
+cache-sync *args:
+    bun "{{root}}/scripts/cache.ts" sync {{args}}
+
 # Derive DEPS, .gitmodules and patch series from src.lock.json (pin-001)
 manifests:
     ay manifests --root "{{root}}"

@@ -22,6 +22,12 @@ case $role in
 esac
 [ "$jobs" -ge 1 ] || jobs=1
 export CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-$jobs} MAKEFLAGS=${MAKEFLAGS:--j$jobs} CMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL:-$jobs}
+# Build caches (docs/infra/CACHE.md): one cargo target dir per user on the btrfs /home (zstd, noatime, reflink),
+# one sccache dir capped like fleet-tune.sh clean (SCCACHE_MAX_MB of tune.conf). RUSTC_WRAPPER only when unset:
+# an explicit value wins, including the empty one of ci.yml and of .cargo/config.toml readers.
+export CARGO_TARGET_DIR=${CARGO_TARGET_DIR:-$HOME/build/target}
+export SCCACHE_DIR=${SCCACHE_DIR:-$HOME/.cache/sccache} SCCACHE_CACHE_SIZE=${SCCACHE_CACHE_SIZE:-40G}
+command -v sccache >/dev/null 2>&1 && export RUSTC_WRAPPER=${RUSTC_WRAPPER-sccache}
 # Shared by every user (agent, ubuntu, root): created 0666, then opened read-only (flock(2) needs no write access).
 [ -e "$lock" ] || (umask 0; : > "$lock") 2>/dev/null
 exec 9<"$lock"

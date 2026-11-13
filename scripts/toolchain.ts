@@ -43,7 +43,9 @@ async function install(): Promise<number> {
     const tmp = join(tmpdir(), `${f.package}.tar.xz`);
     await Bun.write(tmp, bytes);
     mkdirSync(dest, { recursive: true });
-    await $`tar -xJf ${tmp} -C ${dest}`;
+    // Archive on stdin, cwd = dest: no drive-letter path for tar (GNU tar of Git for Windows reads `C:...`
+    // as host:path, "Cannot connect to C: resolve failed", hal run 43368917150).
+    await $`tar -xJf - < ${tmp}`.cwd(dest);
     rmSync(tmp, { force: true });
     writeFileSync(stamp, `${f.source_sha256}\n`);
     console.log(`installed ${f.package} -> ${dest}`);
