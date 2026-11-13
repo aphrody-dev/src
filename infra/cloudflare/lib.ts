@@ -7,6 +7,7 @@ export type Rec = { type: string; content: string; proxied?: boolean; rollback?:
 export type Rule = {
   zone: string; phase: string; ref: string; description: string; expression: string; action: string;
   ratelimit?: { characteristics: string[]; period: number; requests_per_period: number; mitigation_timeout: number };
+  action_parameters?: Record<string, unknown>; // e.g. set_cache_settings (phase http_request_cache_settings)
 };
 export type Cfg = {
   account: string;

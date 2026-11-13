@@ -91,10 +91,11 @@ if (want("rules")) {
     const ep = await api<any>("GET", `/zones/${zid}/rulesets/phases/${r.phase}/entrypoint`).catch(() => null);
     const rule: any = { ref: r.ref, description: r.description, expression: r.expression, action: r.action, enabled: true };
     if (r.ratelimit) rule.ratelimit = r.ratelimit;
+    if (r.action_parameters) rule.action_parameters = r.action_parameters;
     const cur = ep?.rules?.find((x: any) => x.ref === r.ref);
-    // The API adds defaults to ratelimit (requests_to_origin...): compare only the keys declared here.
-    const rlSame = !r.ratelimit || Object.entries(r.ratelimit).every(([k, v]) => JSON.stringify(cur?.ratelimit?.[k]) === JSON.stringify(v));
-    if (cur && cur.expression === r.expression && cur.action === r.action && rlSame) continue;
+    // The API adds defaults to ratelimit (requests_to_origin...) and action_parameters: compare only the keys declared here.
+    const same = (want: Record<string, unknown> | undefined, live: any) => !want || Object.entries(want).every(([k, v]) => JSON.stringify(live?.[k]) === JSON.stringify(v));
+    if (cur && cur.expression === r.expression && cur.action === r.action && same(r.ratelimit, cur.ratelimit) && same(r.action_parameters, cur.action_parameters)) continue;
     say(cur ? "update" : "create", `${r.zone} ${r.phase} ${r.ref}`);
     if (!apply) continue;
     if (!ep) await api("PUT", `/zones/${zid}/rulesets/phases/${r.phase}/entrypoint`, { rules: [rule] });

@@ -1,0 +1,41 @@
+# Repli public sans prd (2026-11-13 04:45 UTC), suite de 2026-11-13T0331Z-prd.txt (0/13 relevés pendant le reboot)
+## Carte des 10 URL sondées par fleet-resilience-proof.sh (un relevé = 10 URL ; 13 relevés pendant le reboot de 03:32)
+aphrody.com/               Worker aphrody + R2 aphrody-dist        indépendant de prd (statique)
+aphrody.app/               Worker aphrody-deploy (domaine perso)   indépendant de prd (statique)
+api.aphrody.com/v1/health  Worker api-aphrody-com                  indépendant de prd
+cdn.aphrody.com/           Worker cdn-aphrody-com (R2)             indépendant de prd (statique)
+downloads.aphrody.com/     Worker downloads-aphrody-com (404)      indépendant de prd
+creator.aphrody.com/health Worker creator-aphrody-com              indépendant de prd (statique)
+rpbey.fr/                  nginx fr1, fichiers statiques           indépendant de prd (DNS hors Cloudflare -> fr1)
+ai.aphrody.com/            tunnel mig-prd -> LB 19300 -> conteneur aphrody (prd seul)       dynamique sans état
+dragonballfr.com/          A proxifié -> prd (shenron-site + shenron-postgres)              état
+rosegriffon.fr/            A proxifié -> prd:8443 (règle d'origine) -> pile rosegriffon (pg) état
+=> les 3 dernières tombaient avec prd : chaque relevé échouait, d'où 0/13.
+## Corrections appliquées
+ai.aphrody.com : conteneur aphrody de secours sur fr1 et fr2 (même image que prd, copiée par le mesh, sans secrets ;
+  infra/cluster/standby.sh), serveurs HAProxy `backup` du pool aphrody (deploy.toml standby = ["fr1","fr2"],
+  option allbackups), les connecteurs mig-prd de fr1/fr2 servent quand celui de prd tombe.
+  Test : HAProxy fr1, `disable server pool_aphrody/prd` -> 200 servi par x-cluster-shard: fr2 ; réactivé -> prd.
+  Réponses du secours identiques à prd (sha256 de / pour aphrody.com et ai.aphrody.com).
+dragonballfr.com : règle de cache aphrody-origin-stale (HTML éligible, TTL de l'origine seulement : s-maxage=60,
+  stale-while-revalidate=600). Mesuré : MISS puis HIT ; requête RSC : DYNAMIC (non mise en cache).
+rosegriffon.fr : même règle, plus règle d'origine aphrody-origin-cacheable-port (port 9443) : Cloudflare ne met
+  jamais en cache une origine 8443 (developers.cloudflare.com/fundamentals/reference/network-ports, « caching
+  disabled »), mesuré DYNAMIC avant, MISS puis HIT après. prd : listen 9443 sur le bloc serveur du site
+  (rosegriffon-stack.conf), 9443 ouvert aux plages Cloudflare dans /etc/fleet/firewall.nft.
+  Cloudflare sert la copie en cache, périmée, quand l'origine renvoie 5xx ou est injoignable
+  (cache/guides/invalidate-cache « serves invalidated content stale by default »).
+## ssh prd 550 s (systemd-analyze, journal du boot -1)
+Démarrage : 1 min 51 s au total, sshd à 9,6 s du noyau (chaîne critique cloud-init-network) : rien à corriger.
+Arrêt : 4 min 30 (03:32:52 -> 03:37:22) : scope de session root avec un `dd` en état D (90 s d'arrêt, SIGKILL,
+  90 s « still around »), puis désactivation des swaps (55 s). DefaultTimeoutStopSec=45s, posé après ce reboot,
+  ramène les deux attentes à 45 s ; fleet-reboot-precheck refuse déjà les processus en D.
+Hors noyau : 4 min 17 (03:37:22 dernier journal -> 03:41:39 premier journal), côté hyperviseur Hostinger, hors
+  de portée de l'invité.
+## Non fait
+Postgres de secours (réplication en flux vers fr1) : non commencé, session close. Nouveau vrai reboot de prd : non
+  lancé (ordre du coordinateur). Le score pendant un reboot n'est donc pas re-mesuré.
+## Retour arrière (une ligne chacun)
+standby : ssh <vps|cdn> 'cd /srv/aphrody-src && sudo docker compose --profile core rm -sf aphrody' (HAProxy le marque DOWN)
+pool : retirer fr1/fr2 et standby de [cluster.services.aphrody] + bun infra/cluster/gen.ts + just cluster-deploy <m>
+cache/origine : cf.ts ne supprime pas : effacer la règle par ref (tableau de bord, ou API DELETE /zones/<zone>/rulesets/<entrypoint>/rules/<id>) puis retirer le bloc de cloudflare.toml

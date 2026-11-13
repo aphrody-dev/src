@@ -83,3 +83,12 @@ Suites : `DefaultTimeoutStopSec=45s` posé sur prd et fr2 (`common.sh sysctl_ser
 pas de repli public pendant un reboot de prd (backends uniques) : relève du LB cluster (docs/infra/CLUSTER.md) et de
 l'agent fr2 Cloudflare. Écoutes manuelles signalées et non persistantes par nature : tests e2e rosegriffon sur prd
 (`/root/src/rg-e2e`, `/tmp/nie-e2e`), `craft-stage-serve.ts` sur fr2.
+
+## Repli public sans prd (2026-11-13 04:45)
+
+Sur les 10 URL sondées, 7 ne dépendent pas de prd (Workers + R2, rpbey.fr sur fr1) ; les 3 autres sont maintenant
+couvertes : ai.aphrody.com par des conteneurs aphrody de secours sur fr1/fr2 (serveurs HAProxy `backup`,
+`infra/cluster/standby.sh`) ; dragonballfr.com et rosegriffon.fr par la copie en cache que Cloudflare sert périmée
+quand l'origine tombe (règle `aphrody-origin-stale` ; rosegriffon passe en origine 9443, le cache est désactivé sur 8443).
+Postgres de secours et nouveau reboot de mesure : non faits. Détail, cause des 550 s de ssh et retours arrière :
+[resilience/2026-11-13T0445Z-prd-failover.txt](resilience/2026-11-13T0445Z-prd-failover.txt).

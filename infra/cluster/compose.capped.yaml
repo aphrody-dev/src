@@ -5,3 +5,5 @@ services:
   downloads: { cgroup_parent: aphrody-cluster.slice, cpu_shares: 128, deploy: { resources: { limits: { cpus: "1.0", memory: 1g } } } }
   cdn: { cgroup_parent: aphrody-cluster.slice, cpu_shares: 128, deploy: { resources: { limits: { cpus: "1.0", memory: 1g } } } }
   api-gateway: { cgroup_parent: aphrody-cluster.slice, cpu_shares: 128, deploy: { resources: { limits: { cpus: "1.0", memory: 1g } } } }
+  # aphrody standby (deploy.toml [cluster.services.aphrody] standby): HAProxy backup, serves only while prd is down.
+  aphrody: { cgroup_parent: aphrody-cluster.slice, cpu_shares: 128, deploy: { resources: { limits: { cpus: "1.0", memory: 1g } } } }

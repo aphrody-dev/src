@@ -4,7 +4,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 type Check = { path: string; host: string; expect: string };
-type Svc = { mode?: "http" | "tcp"; pinned?: boolean; lb_port: number; targets: Record<string, string | string[]>; bluegreen?: { service: string; active?: "blue" | "green" }; check?: Check; cache?: "micro" | "honor" | "off" };
+type Svc = { mode?: "http" | "tcp"; pinned?: boolean; lb_port: number; targets: Record<string, string | string[]>; bluegreen?: { service: string; active?: "blue" | "green" }; standby?: string[]; check?: Check; cache?: "micro" | "honor" | "off" };
 type Member = { node: string; ssh: string; weight: number; slice?: Record<string, string> };
 type Cluster = {
   domain: string; mesh_port: number; stats_port: number; check_inter_ms: number; check_fall: number; check_rise: number;
@@ -35,8 +35,9 @@ function addrs(s: Svc, m: string): string[] {
   return Array.isArray(t) ? t : [t];
 }
 // HAProxy server lines for local origins: first primary, the rest backup, all health-checked.
-const originServers = (name: string, base: number, w: number | null, list: string[]) =>
-  list.map((a, i) => `    server ${i ? `${name}-b${i}` : name} ${a}${base ? ` id ${base + 100 * i}` : ""}${w ? ` weight ${w}` : ""}${i ? " backup" : ""} check`);
+// standby (svc.standby lists the member): every line is a backup, used only when all primary members are down.
+const originServers = (name: string, base: number, w: number | null, list: string[], standby = false) =>
+  list.map((a, i) => `    server ${i ? `${name}-b${i}` : name} ${a}${base ? ` id ${base + 100 * i}` : ""}${w ? ` weight ${w}` : ""}${i || standby ? " backup" : ""} check`);
 
 function haproxy(self: string): string {
   const out: string[] = [
@@ -102,15 +103,17 @@ function haproxy(self: string): string {
         "    http-request disable-l7-retry if !METH_GET !METH_HEAD",
       );
     }
+    if (s.standby?.length) out.push("    option allbackups");
     for (const m of names.filter((m) => s.targets[m])) {
       const w = c.members[m].weight;
+      const sb = s.standby?.includes(m) ?? false;
       if (m === self) {
-        if (cached(s)) out.push(`    server ${m} 127.0.0.1:${shardPort(s)} id ${id(m)} weight ${w} check`);
-        else out.push(...originServers(m, id(m), w, addrs(s, m)));
+        if (cached(s)) out.push(`    server ${m} 127.0.0.1:${shardPort(s)} id ${id(m)} weight ${w}${sb ? " backup" : ""} check`);
+        else out.push(...originServers(m, id(m), w, addrs(s, m), sb));
       } else {
         const h = sni(n, m);
         out.push(
-          `    server ${m} ${ipOf(m)}:${c.mesh_port} id ${id(m)} weight ${w} check ssl crt ${TLS}/host.pem ca-file ${TLS}/ca.pem verify required verifyhost ${h} sni str(${h}) check-sni ${h}`,
+          `    server ${m} ${ipOf(m)}:${c.mesh_port} id ${id(m)} weight ${w}${sb ? " backup" : ""} check ssl crt ${TLS}/host.pem ca-file ${TLS}/ca.pem verify required verifyhost ${h} sni str(${h}) check-sni ${h}`,
         );
       }
     }

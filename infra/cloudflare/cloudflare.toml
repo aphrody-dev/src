@@ -11,6 +11,9 @@ account = "ca22c1a51a145f919b54afa18d936516"
 [zones]
 "aphrody.com" = "963461271f885bc3f3c2bfd586f2b7ba"
 "aphrody.app" = "f4dab237b9811435da6fee0b5b3438d4"
+# Product zones: only the [[rules]] refs below are managed here (content and DNS stay with shenron / rosegriffon).
+"dragonballfr.com" = "255ff360c8d411f03086741b50539641"
+"rosegriffon.fr" = "3eaec2aa7c611a728fe1b514af6603e3"
 
 # Remote-managed tunnels. Connector: systemd unit + token in an encrypted systemd credential on the host.
 [tunnels.mig-prd]
@@ -135,6 +138,42 @@ description = "Per-IP rate limit on api/downloads/cdn (replaces fr2 nginx limit_
 expression = '(http.host in {"api.aphrody.com" "downloads.aphrody.com" "cdn.aphrody.com"})'
 action = "block"
 ratelimit = { characteristics = ["ip.src", "cf.colo.id"], period = 10, requests_per_period = 400, mitigation_timeout = 10 }
+
+# Sites whose only origin is prd (A record on prd, stateful backends): HTML eligible for the edge cache, TTL taken from
+# the origin Cache-Control only (bypass when absent, so private/no-store pages are never stored). Cloudflare then
+# serves the cached copy stale when the origin returns 5xx or is unreachable (prd reboot/crash), and serves it at once
+# while revalidating (origin stale-while-revalidate). Next.js RSC payloads (rsc header, _rsc query) stay uncached.
+# Rollback: cf.ts never deletes, so delete the rule by ref (dashboard or API DELETE .../rulesets/<id>/rules/<rule id>), then drop the block.
+[[rules]]
+zone = "dragonballfr.com"
+phase = "http_request_cache_settings"
+ref = "aphrody-origin-stale"
+description = "prd-only site: cache HTML per origin Cache-Control, served stale when prd is down"
+expression = '(http.host in {"dragonballfr.com" "www.dragonballfr.com"} and http.request.method in {"GET" "HEAD"} and not any(lower(http.request.headers.names[*])[*] in {"rsc" "next-router-prefetch" "next-router-state-tree" "authorization"}) and not http.request.uri.query contains "_rsc")'
+action = "set_cache_settings"
+action_parameters = { cache = true, edge_ttl = { mode = "bypass_by_default" }, browser_ttl = { mode = "respect_origin" }, serve_stale = { disable_stale_while_updating = false } }
+
+# Cloudflare never caches when the origin port is 8443 (fundamentals/reference/network-ports: "caching disabled"),
+# which is where the zone rule "rosegriffon prd origin port" sends every rosegriffon name. The site names go to 9443
+# instead (same prd host nginx server block, extra listen; prd /etc/fleet/firewall.nft opens 9443 to Cloudflare
+# with 8443). This rule comes after the rosegriffon one, so its port wins. Rollback: delete the rule by ref, then drop the block.
+[[rules]]
+zone = "rosegriffon.fr"
+phase = "http_request_origin"
+ref = "aphrody-origin-cacheable-port"
+description = "rosegriffon.fr/www: origin port 9443 (cacheable) instead of 8443"
+expression = '(http.host in {"rosegriffon.fr" "www.rosegriffon.fr"})'
+action = "route"
+action_parameters = { origin = { port = 9443 } }
+
+[[rules]]
+zone = "rosegriffon.fr"
+phase = "http_request_cache_settings"
+ref = "aphrody-origin-stale"
+description = "prd-only site: cache HTML per origin Cache-Control, served stale when prd is down"
+expression = '(http.host in {"rosegriffon.fr" "www.rosegriffon.fr"} and http.request.method in {"GET" "HEAD"} and not any(lower(http.request.headers.names[*])[*] in {"rsc" "next-router-prefetch" "next-router-state-tree" "authorization"}) and not http.request.uri.query contains "_rsc")'
+action = "set_cache_settings"
+action_parameters = { cache = true, edge_ttl = { mode = "bypass_by_default" }, browser_ttl = { mode = "respect_origin" }, serve_stale = { disable_stale_while_updating = false } }
 
 # Access: browser-rendered SSH (type ssh) + a service token for agents (cloudflared access ssh --service-token-*).
 [access]
