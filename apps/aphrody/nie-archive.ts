@@ -195,6 +195,23 @@ const MIGRATIONS: { version: number; name: string; statements: string[] }[] = [
         id unindexed, name, nickname, description, tokenize = 'unicode61 remove_diacritics 2')`,
     ],
   },
+  {
+    version: 3,
+    name: "search_content",
+    statements: [
+      // v2 built the indexes, but an external-content FTS5 table only fills from a rebuild
+      // once its shadow tables are consistent; recreating them makes the first rebuild index
+      // the rows that already exist.
+      "drop table if exists doc_fts",
+      "drop table if exists character_fts",
+      `create virtual table doc_fts using fts5(
+        path, title, body, content='doc', content_rowid='rowid',
+        tokenize = 'unicode61 remove_diacritics 2')`,
+      `create virtual table character_fts using fts5(
+        id, name, nickname, description, content='characters', content_rowid='rowid',
+        tokenize = 'unicode61 remove_diacritics 2')`,
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------- logging
@@ -241,18 +258,24 @@ async function exec(
   } catch (e) {
     return { ok: false, out: "", err: String(e), code: -1, ms: ms(t) };
   }
+  // `timeout: 0` means no limit (long archive builds), so only a positive value arms the timer.
   const limit = o.timeout ?? STAGE_TIMEOUT;
-  const timer = setTimeout(() => {
-    try {
-      p.kill("SIGKILL");
-    } catch {}
-  }, limit);
+  const timer =
+    limit > 0
+      ? setTimeout(() => {
+          try {
+            p.kill("SIGKILL");
+          } catch {
+            /* already gone */
+          }
+        }, limit)
+      : null;
   const [out, err] = await Promise.all([
     new Response(p.stdout).text(),
     new Response(p.stderr).text(),
   ]);
   const code = await p.exited;
-  clearTimeout(timer);
+  if (timer) clearTimeout(timer);
   return { ok: code === 0, out, err, code, ms: ms(t) };
 }
 
@@ -917,8 +940,9 @@ async function stageZukan() {
 
   // 3d. official portraits from the CDN the pages themselves use, stored locally
   steps++;
-  const portraits = ctx.cards.filter((c) => c.portrait);
-  let got = 0;
+  // A resumed state already carries local portrait paths; only remote URLs are fetched.
+  const portraits = ctx.cards.filter((c) => c.portrait?.startsWith("http"));
+  let got = ctx.cards.filter((c) => c.portrait?.startsWith("images/")).length;
   const missed: string[] = [];
   for (const c of portraits) {
     // A portrait is decoration: the card, stats and model are the archive. CDN hiccups are
@@ -1954,6 +1978,7 @@ function markSvg(n: number): string {
 async function stageDataset() {
   const t = performance.now();
   const before = failures.length;
+  let steps = 0;
   const all = [...ctx.byModel.values()].sort((a, b) =>
     (a.modelId ?? "").localeCompare(b.modelId ?? ""),
   );
@@ -2394,14 +2419,174 @@ async function stageSite() {
   });
 }
 
+/** 16. Survey: every remaining nie command family, exercised and captured as data. */
+async function stageSurvey() {
+  const t = performance.now();
+  const before = failures.length;
+  const s = join(D.data, "survey");
+  mkdirSync(s, { recursive: true });
+  let steps = 0;
+  const G = GAME;
+  // [label, argv, required?] — a required command failing fails the stage; the rest are
+  // environment-dependent extras (a Redis-backed index, a host-only tool) and are only noted.
+  const cmds: [string, string[], boolean][] = [
+    // `--data` is the decoded game-data root, i.e. the parent of `common/gamedata`; the
+    // archive's own dump lives under raw/gamedata/data.
+    [
+      "oc-morphologies",
+      [
+        "oc",
+        "morphologies",
+        "--data",
+        [join(OUT, "raw", "gamedata", "data"), join(OUT, "raw"), join(GAME, "data")].find(
+          (p) => existsSync(join(p, "common", "gamedata")),
+        ) ?? join(GAME, "data"),
+      ],
+      // The morphology files are shipped inside the CPKs; a decoded tree is required and the
+      // archive does not dump one, so an unavailable path is recorded, not fatal.
+      false,
+    ],
+    ["avatar-catalog", ["avatar", "catalog"], true],
+    ["avatar-parts", ["avatar", "parts", "--limit", "40"], true],
+    ["avatar-preset", ["avatar", "preset"], true],
+    ["avatar-export", ["avatar", "export", "-o", join(s, "avatar-resolved.json")], true],
+    ["mode-coverage", ["mode", "coverage", "-o", join(s, "mode-coverage.json")], false],
+    ["mode-export", ["mode", "export", "-o", join(s, "mode-catalog.json")], false],
+    ["vfs-ls", ["vfs", "ls", "data/common/sound_asset", "--game-dir", G], true],
+    [
+      "vfs-stat",
+      ["vfs", "stat", "data/common/chr/_face/01_IE1/c01000010/c01000010.g4md", "--game-dir", G],
+      true,
+    ],
+    ["vfs-chara", ["vfs", "chara", "Evans", "-j", "-n", "5", "--game-dir", G], true],
+    ["vfs-waza", ["vfs", "waza", "Fire", "-j", "-n", "5", "--game-dir", G], true],
+    ["format", ["format", join(D.models, "c01000010.glb")], true],
+    [
+      "textures",
+      ["textures", "--game-dir", G, "--limit", FULL ? "2000" : "120", "--manifest", join(s, "g4tx.ndjson")],
+      false,
+    ],
+    ["uniform-map", ["uniform-map", "--game-dir", G, "--out", join(s, "model-crc.ndjson")], false],
+    [
+      "seed-ui",
+      ["seed-ui", "--game-dir", G, "--db", join(s, "nie-survey.sqlite")],
+      false,
+    ],
+    [
+      "vfs-bundle",
+      ["vfs", "bundle", "--game-dir", G, "--out", join(s, "browser-vfs"), "--profile", "afubuki_lean"],
+      false,
+    ],
+  ];
+  for (const [label, argv, required] of cmds) {
+    const r = await step("survey", label, [NIE, ...argv], {
+      cwd: GAME,
+      timeout: STAGE_TIMEOUT,
+      quiet: true,
+    });
+    steps++;
+    if (r.ok) {
+      const body = `${r.out}\n`;
+      await put(join(s, `${label}.txt`), body);
+      const trimmed = r.out.trim();
+      if (trimmed.startsWith("{") || trimmed.startsWith("["))
+        await put(join(s, `${label}.json`), trimmed + "\n");
+      say(`  · survey/${label} ${r.ms}ms`);
+    } else if (required) {
+      // `step` already recorded the failure.
+      say(`  ! survey/${label} exit=${r.code}`);
+    } else {
+      // Optional command: keep the message with the data, never fail the stage on it.
+      failures.pop();
+      await put(join(s, `${label}.error.txt`), `${r.out}\n${r.err}\n`);
+      say(`  · survey/${label} (indisponible: ${(r.err || r.out).trim().split("\n")[0] ?? ""})`);
+    }
+  }
+  record({
+    stage: "survey",
+    ok: failures.length === before,
+    ms: ms(t),
+    steps,
+    failed: failures.length - before,
+    note: `${steps} command(s) -> data/survey`,
+  });
+}
+
+/** 17. Index: the app catalogue over the repository (files, crates, docs, tools, gaps). */
+async function stageIndex() {
+  const t = performance.now();
+  const before = failures.length;
+  const s = join(D.data, "atlas");
+  mkdirSync(s, { recursive: true });
+  const db = join(s, "nie-atlas.sqlite");
+  let steps = 0;
+  const build = await step(
+    "index",
+    "atlas-build",
+    [
+      NIE,
+      "atlas",
+      "build",
+      "--db",
+      db,
+      "--root",
+      ROOT,
+      // The archive database is a dataset store, not the atlas knowledge base: digesting it
+      // needs the `kb.*` schema the atlas builds itself, so the file scan runs alone here.
+      "--no-kb",
+      ...(FULL ? [] : ["--no-link"]),
+      "--json",
+    ],
+    { cwd: ROOT, timeout: STAGE_TIMEOUT * 3, quiet: true },
+  );
+  steps++;
+  if (build.ok) {
+    say(`  · index/atlas-build ${build.ms}ms`);
+    await put(join(s, "build.json"), build.out.trim() + "\n");
+  }
+  for (const [label, argv] of [
+    ["menu", ["atlas", "menu", "--db", db, "--json"]],
+    ["gaps", ["atlas", "gaps", "--db", db, "--json", "--limit", "50"]],
+    ["docs", ["atlas", "docs", "--db", db]],
+    ["dupes", ["atlas", "dupes", "--db", db]],
+    ["search", ["atlas", "search", "nie", "--db", db, "--json", "--limit", "50"]],
+    ["status", ["atlas", "status", "--db", db]],
+  ] as [string, string[]][]) {
+    const r = await step("index", label, [NIE, ...argv], {
+      cwd: ROOT,
+      timeout: STAGE_TIMEOUT,
+      quiet: true,
+    });
+    steps++;
+    if (!r.ok) continue;
+    await put(join(s, `${label}.txt`), `${r.out}\n`);
+    const trimmed = r.out.trim();
+    if (trimmed.startsWith("{") || trimmed.startsWith("["))
+      await put(join(s, `${label}.json`), trimmed + "\n");
+    say(`  · index/${label} ${r.ms}ms`);
+  }
+  record({
+    stage: "index",
+    ok: failures.length === before,
+    ms: ms(t),
+    steps,
+    failed: failures.length - before,
+    note: `${steps} atlas command(s)`,
+  });
+}
+
 /** 14. Pack: one archive, with a hash and a manifest that says what is inside. */
 async function stagePack() {
   const t = performance.now();
   const before = failures.length;
   const exclude = new Set([join(OUT, "pack")]);
+  // SQLite transient files (-wal, -shm, -journal) disappear when the connection closes: they
+  // are never part of the archive and would make tar fail on a vanished path.
+  const transientDb = /\.sqlite3?-(wal|shm|journal)$/;
   const files = [...walk(OUT)].filter(
     (p) =>
       ![...exclude].some((e) => p.startsWith(e)) &&
+      !transientDb.test(p) &&
       (PACK_RAW || !p.includes(`${join(OUT, "raw")}`)),
   );
   const manifest = {
@@ -2540,6 +2725,8 @@ const STAGES: Record<string, () => Promise<void>> = {
   theme: stageTheme,
   dataset: stageDataset,
   site: stageSite,
+  survey: stageSurvey,
+  index: stageIndex,
   pack: stagePack,
   publish: stagePublish,
 };
@@ -2557,6 +2744,8 @@ const ORDER = [
   "theme",
   "dataset",
   "site",
+  "survey",
+  "index",
   "pack",
   "publish",
 ];
