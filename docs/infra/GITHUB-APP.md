@@ -68,7 +68,7 @@ passe par la page « Permissions & events », puis chaque installation l'accepte
 | Release (`release.yml`, job host) | `GITHUB_TOKEN` : l'événement `release` ne déclenchait rien | jeton de l'App `contents: write` : `release` part au webhook et aux workflows en aval |
 | `claude.yml` | `GITHUB_TOKEN` (commits sans CI) | `github_token` de l'App : contents, pull_requests, issues write ; ses commits déclenchent judge/ci |
 | `ci-revert.yml` | push du revert par `GITHUB_TOKEN` (main jamais revérifié) | push par l'App : judge/ci tournent sur le revert |
-| Agents (`infra/agents/runner.ts`) | `GH_TOKEN` = PAT `gh auth token` dans le credstore prd | `APHRODY_APP_KEY` + `APHRODY_APP_CLIENT_ID` dans le credstore : `GH_TOKEN` = jeton d'installation de 1 h re-minté toutes les 5 min, borné à contents/pull_requests/issues/actions/security_events/secret_scanning_alerts (write) et checks/statuses/vulnerability_alerts (read) ; la clé n'atteint jamais les agents ; une tâche de plus de 55 min peut perdre GitHub à la fin ; le PAT reste repli tant que ces deux credentials manquent |
+| Agents (`infra/agents/runner.ts`) | `GH_TOKEN` = PAT `gh auth token` dans le credstore prd | `infra/agents/gh-token.ts` : jeton d'installation borné à contents/pull_requests/issues/actions/security_events/secret_scanning_alerts (write) et checks/statuses/vulnerability_alerts (read), en cache `var/agents/state/gh-token.json` (0600), re-minté 10 min avant expiration ; les tâches le reçoivent en `GH_TOKEN`, par un wrapper `gh` en tête de PATH (`var/agents/bin/gh`, relit le cache à chaque appel) et par un credential helper git (`GIT_CONFIG_*`) : aucune coupure, quelle que soit la durée ; la clé n'atteint jamais les agents ; le PAT reste repli tant que `APHRODY_APP_KEY`/`APHRODY_APP_CLIENT_ID` manquent |
 | Miroir steam-depot | push par PAT | sans objet : `aphrody-labs/steam-depot` tire src lui-même avec son `GITHUB_TOKEN` (`mirror.yml`, run 43356990212 vert) |
 | GHCR (`images.yml`) | `GITHUB_TOKEN` | inchangé : le Container registry n'accepte que `GITHUB_TOKEN` en Actions ou un PAT classic (docs « Working with the Container registry ») ; la permission `packages` de l'App sert l'API |
 | Runners auto-hébergés | aucun actif (fr1 hors ligne) | jeton d'enregistrement : `ay auth github-app token -- gh api -X POST orgs/aphrody-labs/actions/runners/registration-token` |
@@ -95,7 +95,7 @@ l'hôte ship toutes les 2 min, jeton `CF_QUEUES_TOKEN` Queues Read+Write) → `v
 - Vérifié le 2026-11-13 : livraisons `workflow_run`/`check_run`/`workflow_job` en 202 ; `pull --dry-run` : 24
   messages, 9 tâches (5 CI rouges src ramenées à 1 par la règle « une ouverte par dépôt »).
 
-## npm, Vercel, Cloudflare, crates.io
+## npm, crates.io, déploiements
 
 Une App GitHub n'authentifie aucun de ces services. Pont retenu pour chacun :
 
@@ -103,11 +103,8 @@ Une App GitHub n'authentifie aucun de ces services. Pont retenu pour chacun :
 |---|---|---|
 | npm | trusted publishing OIDC (`npm-publish.yml`, npm 12.2.2, `id-token: write`, provenance) | trusted publisher posé sur les 33 paquets (commit 4d19523) ; `NPM_TOKEN` d'org reste le repli du premier publish |
 | crates.io | trusted publishing OIDC : `crates-publish.yml` + `rust-lang/crates-io-auth-action@3268eb4` (v1.0.6), jeton temporaire révoqué en fin de job | aucune crate du workspace src n'est publiée sous `aphrody-dev` (les 370 crates du compte viennent d'autres dépôts) : `crates-trust` s'applique à la première crate publiée depuis src ; le premier publish reste manuel (règle crates.io) |
-| Vercel | intégration Git de Vercel = App `vercel` (la sienne) installée sur l'org, puis lien projet ↔ dépôt | projets `rg-api`, `rg-website`, `rg-discord` sans dépôt lié ; `POST /v9/projects/rg-website/link` répond « install the GitHub integration first » (App `vercel` absente d'aphrody-labs) |
-| Cloudflare | Workers Builds = App `cloudflare-workers-and-pages` ; pas de fédération OIDC pour l'API (recherche docs Cloudflare) | non installée ; déploiements par `cf deploy` avec jeton court `ay auth mint cloudflare` |
+| Déploiements web | aphrody.app tient le rôle de Vercel sur notre stack (docs/ALPHABET.md) : `cf deploy` et la CI, jetons Cloudflare courts (`ay auth mint cloudflare`) ; ni App Vercel ni Workers Builds | projets Vercel `rg-*` sans dépôt lié, laissés tels quels |
 
-Les webhooks GitHub de ces services passent par leur propre App ; seuls les événements GitHub (déploiements,
-statuts, releases) arrivent à notre App, puisqu'elle a `deployments` et `statuses`.
 
 ## Ancienne App
 
@@ -115,9 +112,3 @@ statuts, releases) arrivent à notre App, puisqu'elle a `deployments` et `status
 `SUBMODULES_APP_CLIENT_ID` supprimés de l'org et du coffre, enregistrement supprimé (page « Advanced ») le 2026-11-13 ;
 `gh api /apps/aphrody-labs-submodules` répond 404. Aucun secret `SUBMODULES_TOKEN` ni PAT ne reste dans les secrets
 Actions des dépôts aphrody-labs, aphrody-dev et yolo-rs (inventaire `gh secret list` du 2026-11-13).
-
-## Reste au propriétaire
-
-Vercel et Cloudflare Workers Builds : installer leurs propres Apps sur aphrody-labs
-(`https://github.com/apps/vercel/installations/new`, `https://github.com/apps/cloudflare-workers-and-pages/installations/new`),
-autoriser le compte côté Vercel / Cloudflare, puis lier les projets (`POST /v9/projects/<id>/link` côté Vercel).

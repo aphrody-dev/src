@@ -14,7 +14,7 @@ ci-revert.yml, claude.yml, crates-publish.yml). Moteur : relais `gemini_review` 
 | 6 | crates.io : la configuration de confiance ne contraint pas la branche | corrigé : `crates-publish.yml` ne tourne que sur `refs/heads/main` ; un environnement protégé reste possible plus tard |
 | 7 | Garde `!github.event.pull_request.head.repo.fork` inopérante hors `pull_request` | corrigé : retirée de ci-revert.yml et claude.yml (gardée là où `pull_request` déclenche : ci.yml, release.yml) |
 | 8 | `actions/checkout@v5` non épinglé | corrigé : `3d3c42e…` (v7.0.1) dans ci-revert.yml et claude.yml |
-| 9 | Jeton de 1 h, cache de 10 min | corrigé en partie : jeton re-minté toutes les 5 min, donc ≥ 55 min pour un enfant ; une tâche plus longue perd GitHub à la fin (limite documentée) |
+| 9 | Jeton de 1 h, cache de 10 min | corrigé : `infra/agents/gh-token.ts` (cache re-minté 10 min avant expiration, wrapper `gh` en tête de PATH, credential helper git) ; plus de coupure quelle que soit la durée |
 | 10 | `commit.paths: [""]` | réfuté : convention existante de `ciWatch`, le runner ne committe que les fichiers modifiés sous ces préfixes |
 | 11 | Plage de revue `sha~N` fausse | corrigé : `before` du push transmis par le Worker ; sans base connue, revue du dernier commit seul |
 | 12 | État des push muté même si la tâche est écartée | accepté sans changement : l'id dépend de `to`, une tâche écartée couvre déjà la même plage |

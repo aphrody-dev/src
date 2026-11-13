@@ -147,17 +147,15 @@ function childEnv(extra: Record<string, string> = {}): Record<string, string> {
       e[k] = v;
   const { CF_QUEUES_TOKEN: _q, ...cred } = credEnv(); // queue token: githubEvents() only
   for (const k of APP_ONLY) delete cred[k];
-  const gh = ghAppToken();
-  if (gh) cred.GH_TOKEN = cred.GITHUB_TOKEN = gh;
-  return { ...e, ...cred, ...extra };
+  return { ...e, ...cred, ...ghEnv(), ...extra };
 }
 
 // Long-lived CLI credentials for the runner user (Linux): encrypted with `systemd-creds --user`
 // (`ay secret set NAME`, docs/infra/AUTH.md) in ~/.config/credstore.encrypted/NAME, decrypted
 // into the children's environment only (never argv, logs or files). Cached per worker for 10 min.
 // GitHub: with APHRODY_APP_KEY + APHRODY_APP_CLIENT_ID (App aphrody-labs, docs/infra/GITHUB-APP.md),
-// GH_TOKEN is a 1 h installation token minted here; the private key never reaches the children.
-// GH_TOKEN from the credstore stays the fallback while the App credentials are absent.
+// ghEnv() replaces GH_TOKEN by the App token; the private key never reaches the children (gh-token.ts reads the
+// credstore itself). GH_TOKEN from the credstore stays the fallback while the App credentials are absent.
 const CRED_NAMES = [
   "CLAUDE_CODE_OAUTH_TOKEN",
   "GH_TOKEN",
@@ -166,38 +164,34 @@ const CRED_NAMES = [
   "APHRODY_APP_CLIENT_ID",
 ];
 const APP_ONLY = ["APHRODY_APP_KEY", "APHRODY_APP_CLIENT_ID"];
-// Installation token (1 h) re-minted every 5 min: a child started with it keeps at least 55 min of GitHub access.
-let ghCache: { at: number; token?: string } | null = null;
-function ghAppToken(): string | undefined {
-  if (ghCache && Date.now() - ghCache.at < 300_000) return ghCache.token;
-  ghCache = { at: Date.now(), token: appToken(credEnv()) };
-  return ghCache.token;
-}
-function appToken(creds: Record<string, string>): string | undefined {
-  if (!creds.APHRODY_APP_KEY || !creds.APHRODY_APP_CLIENT_ID) return undefined;
-  const r = Bun.spawnSync(
-    [
-      process.execPath,
-      join(HERE, "..", "..", "packages", "env-kit", "src", "github-app.ts"),
-      "token",
-      "--owner",
-      "aphrody-labs",
-      // Ce dont les rôles ont besoin (pousser sur main, issues, PR, relancer un run, alertes) ; jamais
-      // administration, secrets, workflows ni organisation.
-      "--perm",
-      "contents=write,pull_requests=write,issues=write,actions=write,checks=read,statuses=read,security_events=write,secret_scanning_alerts=write,vulnerability_alerts=read",
-    ],
-    {
-      stdout: "pipe",
-      stderr: "pipe",
-      timeout: 60_000,
-      env: { PATH: process.env.PATH ?? "", HOME: process.env.HOME ?? "", APHRODY_APP_KEY: creds.APHRODY_APP_KEY, APHRODY_APP_CLIENT_ID: creds.APHRODY_APP_CLIENT_ID },
-    },
-  );
+// GitHub for the children: infra/agents/gh-token.ts keeps a fresh installation token (cache file, re-minted
+// 10 min before expiry). Children get it three ways, so a task of any length never loses access:
+// GH_TOKEN at start, a `gh` wrapper first in PATH that re-reads it on every call, and a git credential helper.
+const GH_TOKEN_TS = join(HERE, "gh-token.ts");
+let ghWrapperDir: string | null | undefined;
+function ghEnv(): Record<string, string> {
+  if (WIN) return {};
+  const r = Bun.spawnSync([process.execPath, GH_TOKEN_TS], { stdout: "pipe", stderr: "pipe", timeout: 60_000, env: { ...process.env, SRC_ROOT: SRC, AGENTS_HOME: HOME } });
   const t = r.stdout.toString().trim();
-  if (r.exitCode === 0 && t) return t;
-  log("github_app_token", { error: r.stderr.toString().trim().slice(-200) });
-  return undefined;
+  if (r.exitCode !== 0 || !t) {
+    const err = r.stderr.toString().trim();
+    if (err) log("github_app_token", { error: err.slice(-200) });
+    return {};
+  }
+  if (ghWrapperDir === undefined) {
+    const w = Bun.spawnSync([process.execPath, GH_TOKEN_TS, "install", join(HOME, "bin")], { stdout: "pipe", env: { ...process.env, SRC_ROOT: SRC, AGENTS_HOME: HOME } });
+    ghWrapperDir = w.exitCode === 0 && w.stdout.toString().trim() ? join(HOME, "bin") : null;
+  }
+  return {
+    GH_TOKEN: t,
+    GITHUB_TOKEN: t,
+    ...(ghWrapperDir ? { PATH: `${ghWrapperDir}:${process.env.PATH ?? ""}` } : {}),
+    GIT_CONFIG_COUNT: "2",
+    GIT_CONFIG_KEY_0: "credential.https://github.com.helper",
+    GIT_CONFIG_VALUE_0: "",
+    GIT_CONFIG_KEY_1: "credential.https://github.com.helper",
+    GIT_CONFIG_VALUE_1: `!'${process.execPath}' '${GH_TOKEN_TS}' git`,
+  };
 }
 let credCache: { at: number; env: Record<string, string> } | null = null;
 function credEnv(): Record<string, string> {
