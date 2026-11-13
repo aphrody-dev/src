@@ -71,6 +71,7 @@ export async function generateText(
   const usage: Usage = { inputTokens: 0, outputTokens: 0 };
   const max = Math.max(1, o.maxSteps ?? 1);
   for (let i = 0; i < max; i++) {
+    o.signal?.throwIfAborted();
     const r = await o.model.chat({
       system: o.system,
       messages: [...input, ...response],

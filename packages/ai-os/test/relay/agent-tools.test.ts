@@ -72,7 +72,8 @@ test("JSON-RPC : lot vide, élément invalide, structuredContent objet seulement
     method: "tools/call",
     params: { name: "memory_add", arguments: {} },
   });
-  expect(bad.result.isError).toBe(true);
+  // Arguments that violate inputSchema are a protocol error (-32602), not a tool result.
+  expect(bad.error.code).toBe(-32602);
   const esc: any = await mcpRpc({
     jsonrpc: "2.0",
     id: 7,

@@ -103,3 +103,70 @@ test("agent workspace: a symlink inside AGENT_HOME cannot escape it", async () =
     Bun.env.AGENT_HOME = prev;
   }
 });
+
+test("OpenAI parts and stateless history; WS null frame and foreign Origin", async () => {
+  const { extractText, toHistory } = await import("../../src/gateway/index");
+  expect(
+    extractText([
+      { type: "text", text: "a" },
+      { type: "image_url" },
+      { type: "text", text: "b" },
+    ]),
+  ).toBe("ab");
+  expect(
+    toHistory([
+      { role: "system", content: "s" },
+      { role: "tool", content: "x" },
+      { role: "assistant", content: "y" },
+    ]),
+  ).toEqual([
+    { role: "system", content: "s" },
+    { role: "assistant", content: "y" },
+  ]);
+  const g = createGateway({
+    home: mkdtempSync(join(tmpdir(), "agent-gw-o-")),
+    model: await resolveModel("echo/gw"),
+  });
+  const post = (messages: unknown) =>
+    fetch(new URL("/v1/chat/completions", g.url).href, {
+      method: "POST",
+      body: JSON.stringify({ messages }),
+    });
+  expect(
+    (
+      await post([
+        { role: "user", content: "a" },
+        { role: "assistant", content: "b" },
+      ])
+    ).status,
+  ).toBe(400);
+  const r: any = await (
+    await post([{ role: "user", content: [{ type: "text", text: "hi" }] }])
+  ).json();
+  expect(r.choices[0].message.content).toBe("gw: hi");
+  const foreign = await fetch(new URL("/ws", g.url).href, {
+    headers: { origin: "https://evil.example", upgrade: "websocket" },
+  });
+  expect(foreign.status).toBe(403);
+  const ws = new WebSocket(new URL("/ws", g.url).href.replace("http", "ws"));
+  const reply = await new Promise<any>((res) => {
+    ws.onopen = () => ws.send("null");
+    ws.onmessage = (m) => res(JSON.parse(String(m.data)));
+  });
+  expect(reply.type).toBe("error");
+  ws.close();
+  g.stop();
+});
+
+test("MCP tools/call: non-object arguments and schema violations are -32602", async () => {
+  const { mcpRpc, text } = await import("../../src/relay/protocols");
+  const bad: any = await mcpRpc({
+    jsonrpc: "2.0",
+    id: 1,
+    method: "tools/call",
+    params: { name: "llm_models", arguments: [1] },
+  } as any);
+  expect(bad.error.code).toBe(-32602);
+  expect(text(undefined)).toBe("null");
+  expect(text({ text: "", steps: 1 })).toBe("");
+});

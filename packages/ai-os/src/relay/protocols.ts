@@ -42,12 +42,15 @@ export const fail = (
  * JSON-RPC 2.0 §5.1), sinon le code par défaut. */
 export const rpcCode = (e: any, d: number) =>
   Number.isInteger(e?.code) ? (e.code as number) : d;
-export const text = (v: unknown) =>
+export const text = (v: unknown): string =>
   typeof v === "string"
     ? v
-    : (v as any)?.text && Object.keys(v as any).length <= 4
-      ? String((v as any).text)
-      : JSON.stringify(v, null, 1);
+    : v !== null &&
+        typeof v === "object" &&
+        typeof (v as any).text === "string" &&
+        Object.keys(v).length <= 4
+      ? (v as any).text
+      : (JSON.stringify(v ?? null, null, 1) ?? String(v));
 
 export async function call(name: string, args: unknown) {
   if (typeof name !== "string")
@@ -166,8 +169,18 @@ export async function mcpRpc(r: Req): Promise<Res | null> {
                 -32602,
                 "Invalid params: name must be a non-empty string",
               );
+        const args = r.params?.arguments;
+        if (
+          args !== undefined &&
+          (args === null || typeof args !== "object" || Array.isArray(args))
+        )
+          return fail(
+            r.id,
+            -32602,
+            "Invalid params: arguments must be an object",
+          );
         try {
-          const v = await call(name, r.params?.arguments);
+          const v = await call(name, args);
           // Outil d'un serveur agrégé : son résultat MCP est renvoyé tel quel.
           if (!toolByName.has(name))
             return ok(r.id, complete(v as Record<string, unknown>));
@@ -187,15 +200,17 @@ export async function mcpRpc(r: Req): Promise<Res | null> {
           // serveur agrégé (son code). Les échecs d'exécution restent des résultats isError.
           const proto = e?.unknownTool
             ? fail(r.id, -32602, `Unknown tool: ${name}`)
-            : e?.rpc && Number.isInteger(e.code)
-              ? // Serveur agrégé antérieur à 2025-11-25 : -32601 pour un outil inconnu, normalisé en -32602.
-                fail(
-                  r.id,
-                  e.code === -32601 ? -32602 : e.code,
-                  e.message,
-                  e.data,
-                )
-              : null;
+            : e?.code === -32602 && !e?.rpc
+              ? fail(r.id, -32602, e.message) // arguments rejected by the tool's inputSchema
+              : e?.rpc && Number.isInteger(e.code)
+                ? // Serveur agrégé antérieur à 2025-11-25 : -32601 pour un outil inconnu, normalisé en -32602.
+                  fail(
+                    r.id,
+                    e.code === -32601 ? -32602 : e.code,
+                    e.message,
+                    e.data,
+                  )
+                : null;
           if (proto) return r.id === undefined ? null : proto;
           return ok(
             r.id,

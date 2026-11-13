@@ -61,9 +61,27 @@ export type GatewayOptions = {
   maxHistory?: number;
   /** Agent turns running at once across all sessions; beyond it requests get HTTP 429 (default 16). */
   maxConcurrentTurns?: number;
+  /** Turns waiting behind a running one in the same session; beyond it HTTP 429 (default 4). */
+  maxQueuedPerSession?: number;
 };
 
 export class Busy extends Error {}
+
+/** Text of an OpenAI message content: a string or an array of parts (`{type:"text", text}`). */
+export const extractText = (c: unknown): string =>
+  typeof c === "string"
+    ? c
+    : Array.isArray(c)
+      ? c.map((p) => (typeof p?.text === "string" ? p.text : "")).join("")
+      : "";
+
+/** OpenAI chat messages -> agent history (system/user/assistant text; tool traffic of other runtimes dropped). */
+export const toHistory = (msgs: any[]): Message[] =>
+  msgs.flatMap((m): Message[] =>
+    m?.role === "user" || m?.role === "assistant" || m?.role === "system"
+      ? [{ role: m.role, content: extractText(m.content) }]
+      : [],
+  );
 
 /** Drop the oldest messages down to `max`, starting at a user message so no tool result loses its tool call. */
 export function trimHistory(history: Message[], max: number) {
@@ -85,7 +103,9 @@ export function createGateway(o: GatewayOptions) {
   const maxSessions = o.maxSessions ?? 1000;
   const maxHistory = o.maxHistory ?? 200;
   const maxActive = o.maxConcurrentTurns ?? 16;
+  const maxQueued = o.maxQueuedPerSession ?? 4;
   let active = 0;
+  const waiting = new Map<string, number>();
   const touch = (session: string) => {
     seen.delete(session);
     seen.set(session, Date.now());
@@ -106,16 +126,32 @@ export function createGateway(o: GatewayOptions) {
     (o.channels ?? [webhookChannel()]).map((c) => [c.id, c]),
   );
   const queue = new Map<string, Promise<unknown>>(); // serialize turns per session
-  /** One agent turn; `ephemeral` sessions are not kept after the reply. */
-  const turn = (session: string, text: string, ephemeral = false) => {
-    if (active >= maxActive) return Promise.reject(new Busy("too many turns"));
-    active++;
+  /** One agent turn. `ephemeral`: not kept after the reply, history seeded by the caller, cancelled with `signal`. */
+  const turn = (
+    session: string,
+    text: string,
+    opts: {
+      ephemeral?: boolean;
+      history?: Message[];
+      signal?: AbortSignal;
+    } = {},
+  ) => {
+    const queued = waiting.get(session) ?? 0;
+    if (queued >= maxQueued)
+      return Promise.reject(new Busy("session queue full"));
+    waiting.set(session, queued + 1);
     const prev = queue.get(session) ?? Promise.resolve();
     const next = prev.then(async () => {
+      const left = (waiting.get(session) ?? 1) - 1;
+      if (left > 0) waiting.set(session, left);
+      else waiting.delete(session);
+      // The global slot is taken when the turn really starts, not while it waits in its session queue.
+      if (active >= maxActive) throw new Busy("too many turns");
+      active++;
       touch(session);
       evict();
-      const history = sessions.get(session) ?? [];
-      if (!ephemeral) sessions.set(session, history);
+      const history = opts.history ?? sessions.get(session) ?? [];
+      if (!opts.ephemeral) sessions.set(session, history);
       try {
         const r = await run({
           task: text,
@@ -124,18 +160,16 @@ export function createGateway(o: GatewayOptions) {
           cwd: o.cwd ?? o.home,
           history,
           allowShell: o.allowShell,
+          signal: opts.signal,
         });
         trimHistory(history, maxHistory);
         return r.text;
       } finally {
-        if (ephemeral) seen.delete(session);
+        active--;
+        if (opts.ephemeral) seen.delete(session);
         else touch(session); // idle time counts from the end of the turn
       }
     });
-    next.then(
-      () => active--,
-      () => active--,
-    );
     const settled = next
       .catch(() => {})
       .finally(() => {
@@ -177,10 +211,9 @@ export function createGateway(o: GatewayOptions) {
           if (!j || typeof j !== "object" || !Array.isArray(j.messages))
             return bad("messages must be an array");
           if (j.stream === true) return bad("stream is not supported");
-          const last = [...j.messages]
-            .reverse()
-            .find((m: any) => m?.role === "user");
-          if (!last) return bad("no user message");
+          const last = j.messages.at(-1);
+          if (last?.role !== "user")
+            return bad("the last message must be from the user");
           // Without `user` or `x-session` the turn is ephemeral: no history shared between clients.
           const named = j.user ?? req.headers.get("x-session");
           const session = named
@@ -188,12 +221,17 @@ export function createGateway(o: GatewayOptions) {
             : `openai-ephemeral:${crypto.randomUUID()}`;
           let text: string;
           try {
+            // Stateless clients send the whole conversation: it seeds the history of the ephemeral turn.
             text = await turn(
               session,
-              typeof last.content === "string"
-                ? last.content
-                : JSON.stringify(last.content ?? ""),
-              !named,
+              extractText(last.content),
+              named
+                ? {}
+                : {
+                    ephemeral: true,
+                    history: toHistory(j.messages.slice(0, -1)),
+                    signal: req.signal,
+                  },
             );
           } catch (e) {
             if (e instanceof Busy) return busy();
@@ -243,6 +281,13 @@ export function createGateway(o: GatewayOptions) {
     },
     fetch(req, srv) {
       if (new URL(req.url).pathname === "/ws") {
+        // Without a token the gateway trusts the loopback only: refuse cross-site pages (WebSocket hijacking).
+        const origin = req.headers.get("origin");
+        if (!o.token && origin) {
+          const host = URL.parse(origin)?.hostname;
+          if (host !== "localhost" && host !== "127.0.0.1" && host !== "[::1]")
+            return new Response("forbidden origin", { status: 403 });
+        }
         if (
           !authed(req) &&
           !same(new URL(req.url).searchParams.get("token"), o.token ?? "")
@@ -263,7 +308,7 @@ export function createGateway(o: GatewayOptions) {
             JSON.stringify({ type: "error", error: "bad json" }),
           );
         }
-        if (f.type !== "message")
+        if (!f || typeof f !== "object" || f.type !== "message")
           return void ws.send(
             JSON.stringify({ type: "error", error: "unknown frame" }),
           );

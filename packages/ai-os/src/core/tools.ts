@@ -85,6 +85,7 @@ export function makeTools(ctx: ToolCtx) {
           k: 8,
           budgetTokens: 1e9,
           weights: { recency: 0.05 },
+          redact: Bun.env,
         });
         return r.map((x) => x.text);
       },

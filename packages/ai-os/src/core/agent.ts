@@ -27,8 +27,7 @@ export type RunOptions = {
   signal?: AbortSignal;
 };
 
-/** Homes whose skills and docs were indexed recently: re-indexing every gateway turn is wasted I/O. */
-const indexed = new Map<string, number>();
+/** Skills and docs are re-indexed at most this often per store: every gateway turn would be wasted I/O. */
 const REINDEX_MS = 30_000;
 
 export const INSTRUCTIONS =
@@ -49,12 +48,16 @@ export async function run(o: RunOptions) {
   const memory = Memory.acquire(L.memoryDb);
   const skills = new Skills(L.skills, memory.ctx);
   try {
-    const key = L.memoryDb;
-    if (Date.now() - (indexed.get(key) ?? 0) > REINDEX_MS) {
-      await skills.sync();
-      await indexHomeDocs(o.home, memory.ctx);
-      indexed.set(key, Date.now());
-    }
+    // One indexing per store at a time; the state lives on the Memory instance (gone when it closes).
+    if (!memory.indexing && Date.now() - memory.indexedAt > REINDEX_MS)
+      memory.indexing = (async () => {
+        await skills.sync();
+        await indexHomeDocs(o.home, memory.ctx);
+        memory.indexedAt = Date.now();
+      })().finally(() => {
+        memory.indexing = undefined;
+      });
+    await memory.indexing;
     const selected = await memory.ctx.select(o.task, {
       sources: ["memory", "skill", "research", "doc"],
       ...cfg.context,

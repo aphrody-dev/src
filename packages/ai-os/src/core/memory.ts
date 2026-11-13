@@ -10,7 +10,7 @@ const shared = new Map<string, { m: Memory; refs: number }>();
 export class Memory {
   /** One open store per path, shared by concurrent users (gateway sessions, agent turns); closed when the last one releases. */
   static acquire(path: string): Memory {
-    const key = resolve(path);
+    const key = path === ":memory:" ? path : resolve(path);
     const e = shared.get(key) ?? { m: new Memory(key), refs: 0 };
     e.refs++;
     shared.set(key, e);
@@ -25,11 +25,15 @@ export class Memory {
   }
 
   readonly ctx: Context;
+  /** Skills/docs indexing of this store: the last run (ms) and the one in flight (shared by concurrent turns). */
+  indexedAt = 0;
+  indexing?: Promise<void>;
   constructor(
     path: string,
     embedder: Embedder | undefined = resolveEmbedder(),
   ) {
-    mkdirSync(dirname(resolve(path)), { recursive: true });
+    if (path !== ":memory:")
+      mkdirSync(dirname(resolve(path)), { recursive: true });
     this.ctx = new Context(path, embedder);
     this.ctx.db.run(
       "CREATE TABLE IF NOT EXISTS runs(id INTEGER PRIMARY KEY, task TEXT, result TEXT, steps INTEGER, at TEXT DEFAULT (datetime('now')))",
@@ -60,6 +64,7 @@ export class Memory {
       k: limit,
       budgetTokens: 1e9,
       weights: { recency: 0.05 },
+      redact: Bun.env,
     });
     return r.map((x) => x.text);
   }
