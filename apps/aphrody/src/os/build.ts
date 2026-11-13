@@ -1,4 +1,4 @@
-// Build step of /os: HTML in five locales, the client bundle, pet and wallpapers from the owner assets,
+// Build step of /os: HTML in five locales, the client bundle, logo and wallpapers from the owner assets,
 // pinned third-party runtimes (vendor.ts), and the stage textures shared with the immersive build.
 import { cpSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -14,30 +14,6 @@ export const WALLPAPERS = [
   "ember-dark-aurora",
 ];
 
-/** Volt (assets/brand/pet/pet.svg) with fixed colours for a plain <img>. */
-function petSvg(src: string): string {
-  const map: Record<string, string> = {
-    body: "#7fd0ff",
-    body_dark: "#3d7ea6",
-    face: "#1d1a2b",
-    eye: "#FFB300",
-    bolt: "#FFB300",
-    mouth: "M42 59Q48 63 54 59",
-    extras: "",
-    style: "",
-    state: "idle",
-    root_t: "",
-    arm_l_t: "",
-    arm_r_t: "",
-    eyes_t: "",
-    bolt_op: "1",
-  };
-  return readFileSync(src, "utf8").replace(
-    /\{(\w+)\}/g,
-    (_, k: string) => map[k] ?? "",
-  );
-}
-
 export async function buildOs(
   root: string,
   dist: string,
@@ -45,9 +21,7 @@ export async function buildOs(
 ): Promise<string[]> {
   const log: string[] = [];
   const repo = join(root, "..", "..");
-  const pet = join(repo, "assets", "brand", "pet", "pet.svg");
-  if (!existsSync(pet)) throw new Error(`pet artwork missing: ${pet}`);
-  emit("os/pet.svg", petSvg(pet));
+  emit("os/aphrody.svg", readFileSync(join(repo, "assets", "brand", "gen", "icons", "aphrody", "icon.svg")));
   for (const l of OS_LOCALES)
     emit(
       l === "en" ? "os/index.html" : `os/${l}/index.html`,

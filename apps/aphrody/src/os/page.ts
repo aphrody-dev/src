@@ -72,7 +72,7 @@ header.bar h1{margin:0;font-size:1.25rem}header.bar p{margin:0;color:var(--mut);
 .l-card button{flex:1;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:4px;padding:18px;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer;border-radius:6px}
 .l-card button:focus-visible,:root[data-input=pad] .l-card button:focus{outline:2px solid #7fd0ff;outline-offset:3px}
 .l-card svg{width:34px;height:34px;fill:none;stroke:#7fd0ff;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;margin-bottom:auto}
-.l-card .t{font-size:1.2rem;font-weight:700}.l-card .d{color:var(--mut);font-size:.9rem}
+.l-card .ico{margin-bottom:auto}.l-card .t{font-size:1.2rem;font-weight:700}.l-card .d{color:var(--mut);font-size:.9rem}
 :root:not(.stage-on) .l-card{background:#17202b;border:1px solid #34414f;border-radius:6px}
 #hint{position:fixed;left:0;right:0;bottom:0;padding:10px 24px;color:var(--mut);font-size:.85rem;background:linear-gradient(transparent,rgb(16 21 28/.9));pointer-events:none}
 #windows{position:fixed;inset:0;pointer-events:none;z-index:10}
@@ -118,7 +118,7 @@ export function renderOs(root: string, locale: OsLocale, pet: string): string {
   const t = (k: string) => esc(sub[k] ?? k);
   const tiles = APPS.map(
     (a) =>
-      `<li class="l-card"><button type="button" data-app="${a}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[a]}</svg><span class="t">${t(`os.app.${a}`)}</span><span class="d">${t(`os.app.${a}.d`)}</span></button></li>`,
+      `<li class="l-card"><button type="button" data-app="${a}">${a === "game" ? '<img class="ico" src="/os/aphrody.svg" alt="" width="34" height="34">' : `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[a]}</svg>`}<span class="t">${t(`os.app.${a}`)}</span><span class="d">${t(`os.app.${a}.d`)}</span></button></li>`,
   ).join("");
   const alt = OS_LOCALES.map(
     (l) =>
@@ -140,7 +140,7 @@ export function renderOs(root: string, locale: OsLocale, pet: string): string {
 </head>
 <body>
 <a class="skip" href="#home">${t("os.skip")}</a>
-<header class="bar"><img src="/os/pet.svg" alt="" width="44" height="44"><div><h1>${t("os.title")}</h1><p>${t("os.tagline")}</p></div><time id="clock"></time></header>
+<header class="bar"><img src="/favicon.svg" alt="" width="44" height="44"><div><h1>${t("os.title")}</h1><p>${t("os.tagline")}</p></div><time id="clock"></time></header>
 <main id="home"><h2>${t("os.apps")}</h2><ul class="tiles">${tiles}</ul></main>
 <div id="windows"></div>
 <p id="hint">${t("os.hint")}</p>
