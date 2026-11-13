@@ -20,6 +20,7 @@ case $role in
   *) echo "aphrody-heavy: builds run on fr1 (light ones also on prd), not on $role. Use: ssh vps aphrody-heavy $*" >&2
      exit 64 ;;
 esac
+limit=${HEAVY_LIMIT:-$limit} # HEAVY_LIMIT: load below which a job may start (nice 19 and idle I/O already yield to Chromium)
 [ "$jobs" -ge 1 ] || jobs=1
 export CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-$jobs} MAKEFLAGS=${MAKEFLAGS:--j$jobs} CMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL:-$jobs}
 # Build caches (docs/infra/CACHE.md): one cargo target dir per user on the btrfs /home (zstd, noatime, reflink),
