@@ -40,10 +40,7 @@ lint-anti-slop-gate:
   script:
     - test ! -f .env || (echo "FATAL: .env must never be committed" && exit 1)
     - bun --cwd packages/forge check
-    - |
-      if [ -f packages/google-design/src/cli.ts ]; then
-        bun run packages/google-design/src/cli.ts verify
-      fi
+    - bun test --cwd packages/design
 
 # 2. Build Bun v1.4.4 AOT CLIs, Rust WSLg/Unix Crates & Go 1.27 Infra Engine
 build-bun-packages:

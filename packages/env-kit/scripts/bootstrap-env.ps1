@@ -46,7 +46,7 @@ Set-UserEnvIfMissingOrTarget -Name 'GH_TOKEN' -Value $ghToken
 # 3. Figma credentials & local Material Icons dir
 $figmaVal = Get-NonEmptyEnv 'FIGMA_ACCESS_TOKEN'
 if (-not $figmaVal) { $figmaVal = Get-NonEmptyEnv 'FIGMA_TOKEN' }
-$figmaIconsDir = 'C:/src/packages/google-design/upstream/material-design-icons'
+$figmaIconsDir = 'C:/src/packages/design/node_modules/@material-symbols/svg-400'
 if ($figmaVal) {
   Set-UserEnvIfMissingOrTarget -Name 'FIGMA_ACCESS_TOKEN' -Value $figmaVal -Force
   Set-UserEnvIfMissingOrTarget -Name 'FIGMA_TOKEN' -Value $figmaVal -Force

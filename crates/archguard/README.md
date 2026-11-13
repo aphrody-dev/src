@@ -54,7 +54,7 @@ flowchart TD
     packages_env_kit["@aphrody/env-kit"]
     packages_epic_games["@aphrody/epic-games"]
     packages_forge["@aphrody/forge"]
-    packages_google_design["@aphrody/google-design"]
+    packages_design["@aphrody/design"]
     packages_knowledge_engine["@aphrody/knowledge-engine"]
     packages_pi_opencode["@aphrody/pi-opencode"]
     packages_wck["@aphrody/wck"]

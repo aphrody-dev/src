@@ -13,7 +13,6 @@ variable "PUSH_CACHE" { default = "false" }
 variable "CARGO_BUILD_JOBS" { default = "4" }
 
 group "default" { targets = ["services", "runtime"] }
-# yolo is not in the groups: it needs packages/google-design/upstream (local clones, not in git). Build it from a full workstation checkout.
 group "services" { targets = ["ai-os", "aphrody", "r2-site", "api-gateway", "loreserver", "r3d", "rust-stack"] }
 group "bun" { targets = ["ai-os", "aphrody", "r2-site", "api-gateway"] }
 group "rust" { targets = ["loreserver", "r3d", "rust-stack", "runtime"] }

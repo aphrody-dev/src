@@ -172,7 +172,7 @@ ENV PORT=3000 HEALTH_PATH=/ok APHRODY_DIST=/app/dist
 EXPOSE 3000
 CMD ["bun", "server.js"]
 
-# yolo: needs packages/google-design/upstream (local clones, not in git): build context = a full checkout.
+# yolo: build context = packages/ (design tokens, fonts and Material Symbols come from packages/design).
 FROM bun-deps AS yolo-build
 COPY packages/ packages/
 COPY apps/yolo/ apps/yolo/
