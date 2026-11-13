@@ -41,9 +41,10 @@
       "location": "pc codex",
       "category": "cli_login",
       "severity": "medium",
-      "status": "open",
+      "status": "fixed",
       "excerpt": "codex.cmd (~/.local/bin) pointait vers un codex.exe absent",
-      "fix": "shim retiré, bun add -g @openai/codex@0.167.2 ; ai-os nhitl login codex --hosts pc : code d appareil dans <RELAY_HOME>/device-code.txt, page ouverte ; validation du propriétaire"
+      "fix": "shim retiré, bun add -g @openai/codex@0.167.2 ; ai-os nhitl login codex --hosts pc : code d appareil dans <RELAY_HOME>/device-code.txt, page ouverte ; validation du propriétaire",
+      "reason": "2026-11-13 : codex login status = Logged in using ChatGPT (bun add -g @openai/codex 0.167.2, device-auth)"
     },
     {
       "location": "prd/fr2 gh",
