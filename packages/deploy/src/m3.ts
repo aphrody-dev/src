@@ -44,9 +44,46 @@ export function tokensCss(root: string): string {
 export const type = (role: string) =>
   `font:var(--md-sys-typescale-${role}-weight) var(--md-sys-typescale-${role}-size)/var(--md-sys-typescale-${role}-line-height) var(--md-sys-typescale-${role}-font);letter-spacing:var(--md-sys-typescale-${role}-tracking)`;
 
-/** Google Sans Flex (brand.toml `font`), served by Google Fonts. */
+/** Google Sans Flex (brand.toml `font`), served by Google Fonts. display=optional: the swap of a late font moved
+ * whole sections (CLS 0.30 traced on aphrody.com, 2026-11-13); a font that misses the first frame waits for the
+ * next visit instead of shifting the page. */
 export const FONT_LINK =
-  '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..1000&display=swap">';
+  '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..1000&display=optional">';
+
+/** M3 list and chip in native HTML (ul/li/a, span/a): the md-list-item shadow `role="listitem"` has no `list`
+ * parent for axe (aria-required-parent), and labels must not wait for JavaScript. Buttons keep Material Web but
+ * reserve their box before the upgrade, so `md.js` arriving late does not shift the page. */
+export const NATIVE_CSS = `
+.m3-list{list-style:none;margin:0;padding:8px 0;border-radius:var(--md-sys-shape-corner-medium);background:var(--md-sys-color-surface-container-low)}
+.m3-list a,.m3-list .row{display:flex;gap:16px;align-items:center;min-height:72px;padding:12px 24px 12px 16px;color:var(--md-sys-color-on-surface);text-decoration:none}
+.m3-list a:hover{background:color-mix(in srgb,var(--md-sys-color-on-surface) 8%,transparent)}
+.m3-list a:focus-visible{outline:3px solid var(--md-sys-color-secondary);outline-offset:-3px}
+.m3-list .txt{flex:1;min-width:0;display:flex;flex-direction:column}
+.m3-list .h{${type("body-large")}}
+.m3-list .s{${type("body-medium")};color:var(--md-sys-color-on-surface-variant)}
+.m3-list .t{${type("label-small")};color:var(--md-sys-color-on-surface-variant)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:8px}
+.chip{display:inline-flex;align-items:center;height:32px;padding:0 16px;border:1px solid var(--md-sys-color-outline);border-radius:var(--md-sys-shape-corner-small);color:var(--md-sys-color-on-surface);text-decoration:none;${type("label-large")}}
+a.chip:hover{background:color-mix(in srgb,var(--md-sys-color-on-surface) 8%,transparent)}
+a:focus-visible{outline:3px solid var(--md-sys-color-secondary);outline-offset:2px}
+:is(md-filled-button,md-filled-tonal-button,md-outlined-button,md-text-button):not(:defined){display:inline-flex;align-items:center;height:40px;padding:0 24px;${type("label-large")}}
+md-text-button:not(:defined){padding:0 12px}`;
+
+export interface ListRow {
+  headline: string; // already escaped HTML
+  supporting?: string;
+  trailing?: string;
+  href?: string;
+}
+
+/** Native M3 list (escaped HTML in, markup out). */
+export const m3List = (rows: ListRow[]): string =>
+  `<ul class="m3-list" role="list">${rows
+    .map((r) => {
+      const inner = `<span class="txt"><span class="h">${r.headline}</span>${r.supporting ? `<span class="s">${r.supporting}</span>` : ""}</span>${r.trailing ? `<span class="t">${r.trailing}</span>` : ""}`;
+      return `<li>${r.href ? `<a href="${r.href}">${inner}</a>` : `<span class="row">${inner}</span>`}</li>`;
+    })
+    .join("")}</ul>`;
 
 /** Material Web bundle for the browser, minified: the elements of src/client/md.ts, resolved from
  * packages/design/node_modules (the one Material Web install of the monorepo). */

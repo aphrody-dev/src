@@ -23,3 +23,16 @@ ACCESS_AUD = "bf80ec94abb4a869ceac0c0ff77ffa99de7ed36b1f4ed022afd863035a4cc67b"
 
 [observability]
 enabled = true
+
+# Web Analytics + Speed Insights (src/runtime.ts): one SQLite Durable Object per project.
+[[durable_objects.bindings]]
+name = "INSIGHTS"
+class_name = "Insights"
+
+[[migrations]]
+tag = "v1-insights"
+new_sqlite_classes = ["Insights"]
+
+# Image optimization (/_aphrody/image): Cloudflare Images binding, billed per unique transformation and month.
+[images]
+binding = "IMAGES"

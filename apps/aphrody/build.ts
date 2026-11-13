@@ -140,6 +140,7 @@ emit(
     "  X-Frame-Options: SAMEORIGIN",
     "  Referrer-Policy: strict-origin-when-cross-origin",
     "  Permissions-Policy: microphone=(), camera=(), geolocation=()",
+    "  Cross-Origin-Opener-Policy: same-origin",
     `  Content-Security-Policy: ${buildCsp(cfg)}`,
     "/atkinson-next.woff2",
     "  Cache-Control: public, max-age=31536000, immutable",

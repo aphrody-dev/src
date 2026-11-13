@@ -7,12 +7,20 @@
  * ORIGIN_URL is empty).
  */
 import {
+  readState,
   serveProduction,
   type R2Like,
 } from "../../../packages/deploy/src/serve.ts";
+import {
+  runtime,
+  type DONamespace,
+  type ImagesBinding,
+} from "../../../packages/deploy/src/runtime.ts";
 
 interface Env {
   BUCKET: R2Like;
+  INSIGHTS?: DONamespace; // Durable Object Insights of the Worker aphrody-deploy (script_name)
+  IMAGES?: ImagesBinding;
   ORIGIN_URL?: string;
   PROJECT?: string;
 }
@@ -42,12 +50,20 @@ export default {
         : url;
       return fetch(new Request(target, request));
     }
-    const r = await serveProduction(
-      env.BUCKET,
-      env.PROJECT ?? "aphrody",
-      request,
-      ctx,
-    );
+    const project = env.PROJECT ?? "aphrody";
+    // /_aphrody/*: analytics beacon, speed insights, image optimization, edge config (packages/deploy/src/runtime.ts).
+    if (url.pathname.startsWith("/_aphrody/")) {
+      const st = await readState(env.BUCKET, project);
+      const rt = await runtime(
+        request,
+        env,
+        project,
+        st?.production ?? "",
+        ctx,
+      );
+      if (rt) return rt;
+    }
+    const r = await serveProduction(env.BUCKET, project, request, ctx);
     return (
       r ??
       new Response(

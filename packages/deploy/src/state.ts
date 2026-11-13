@@ -88,6 +88,7 @@ export const keys = {
   file: (p: string, sha: string, path: string) =>
     `${ROOT}/${p}/${sha}/${path.replace(/^\/+/, "")}`,
   base: (p: string, sha: string) => `${ROOT}/${p}/${sha}`,
+  config: (p: string) => `${ROOT}/${p}/_config.json`, // edge config of the project (runtime.ts)
 };
 
 export const NAME = /^[a-z][a-z0-9-]{0,40}$/;

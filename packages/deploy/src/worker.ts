@@ -7,6 +7,14 @@
 //   any other *.aphrody.app host       passed through untouched to its origin (tunnel, R2, other Workers)
 import { bearerOk, verifyAccess } from "./access.ts";
 import {
+  forgetConfig,
+  insightsSummary,
+  readConfig,
+  runtime,
+  type DONamespace,
+  type ImagesBinding,
+} from "./runtime.ts";
+import {
   dashboard,
   labs,
   landing,
@@ -41,7 +49,12 @@ export interface Env {
   ACCESS_TEAM?: string; // aphrody-labs.cloudflareaccess.com
   ACCESS_AUD?: string; // AUD tag of the Access application on aphrody.app/dashboard
   ZONE?: string;
+  INSIGHTS?: DONamespace; // Durable Object Insights (analytics + speed insights)
+  IMAGES?: ImagesBinding; // Images binding (image optimization)
 }
+
+export { Insights } from "./runtime.ts";
+const PLATFORM = "aphrody-app"; // analytics project of the platform pages themselves
 
 const APEX = new Set(["aphrody.app", "www.aphrody.app"]);
 const MDJS = "deploys/_platform/md.js";
@@ -62,9 +75,11 @@ const HTMLH = {
   "content-type": "text/html; charset=utf-8",
   "cache-control": "no-store",
   "content-security-policy":
-    "default-src 'none'; script-src 'self'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+    "default-src 'none'; script-src 'self'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://aphrody.com; connect-src 'self'; manifest-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+  "cross-origin-opener-policy": "same-origin",
+  "permissions-policy": "camera=(), microphone=(), geolocation=()",
   "x-content-type-options": "nosniff",
-  "strict-transport-security": "max-age=63072000; includeSubDomains",
+  "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
   "referrer-policy": "strict-origin-when-cross-origin",
 };
 
@@ -219,6 +234,38 @@ async function api(req: Request, env: Env, url: URL): Promise<Response> {
   const a = await authorize(req, env);
   if (!a) return json({ error: "unauthorized" }, 401);
 
+  // GET /api/projects/<p>/insights?days=7: analytics and speed insights (Durable Object Insights)
+  if (seg[2] === "insights" && seg.length === 3 && method === "GET") {
+    const days = Number(url.searchParams.get("days") ?? 7);
+    return json(
+      (await insightsSummary(env, p, days)) ?? { error: "insights not bound" },
+    );
+  }
+  // GET|PUT /api/projects/<p>/config: edge config (JSON object, read by deployments at /_aphrody/config)
+  if (seg[2] === "config" && seg.length === 3) {
+    if (method === "GET") return json(await readConfig(env.BUCKET, p, true));
+    if (method === "PUT") {
+      const text = await req.text();
+      if (text.length > 64 * 1024)
+        return json({ error: "config over 64 KiB" }, 413);
+      let v: unknown;
+      try {
+        v = JSON.parse(text);
+      } catch {
+        return json({ error: "config must be JSON" }, 400);
+      }
+      if (!v || typeof v !== "object" || Array.isArray(v))
+        return json({ error: "config must be a JSON object" }, 400);
+      await putJson(env, keys.config(p), v);
+      forgetConfig(p);
+      return json({
+        ok: true,
+        keys: Object.keys(v as object).length,
+        by: a.by,
+      });
+    }
+  }
+
   // POST /api/projects/<p>/deployments {sha, branch, message, run}
   if (seg[2] === "deployments" && seg.length === 3 && method === "POST") {
     const b = (await req.json()) as Partial<Deployment>;
@@ -319,7 +366,15 @@ async function dash(req: Request, env: Env, url: URL): Promise<Response> {
     );
   const reg = await registry(env);
   const seg = url.pathname.split("/").filter(Boolean).slice(1);
-  if (!seg.length) return html(dashboard(reg, await views(env, reg), a.by));
+  if (!seg.length)
+    return html(
+      dashboard(
+        reg,
+        await views(env, reg),
+        a.by,
+        await insightsSummary(env, PLATFORM, 7).catch(() => null),
+      ),
+    );
   const project = reg.projects.find((x) => x.name === seg[0]);
   if (!project)
     return html("<!doctype html><title>404</title><p>Projet inconnu.</p>", 404);
@@ -348,9 +403,12 @@ async function dash(req: Request, env: Env, url: URL): Promise<Response> {
     );
   }
   const s = await readState(env.BUCKET, project.name, true);
-  return html(
-    projectPage(reg, project, s, await deployments(env, project.name, s)),
-  );
+  const [deps, ins, cfg] = await Promise.all([
+    deployments(env, project.name, s),
+    insightsSummary(env, project.name, 7).catch(() => null),
+    readConfig(env.BUCKET, project.name, true),
+  ]);
+  return html(projectPage(reg, project, s, deps, ins, cfg));
 }
 
 export default {
@@ -369,6 +427,8 @@ export default {
           301,
         );
       if (url.pathname.startsWith("/api/")) return api(req, env, url);
+      const rt = await runtime(req, env, PLATFORM, "", ctx);
+      if (rt) return rt;
       if (url.pathname === "/_/md.js") {
         const o = await env.BUCKET.get(MDJS);
         if (!o)
@@ -396,9 +456,37 @@ export default {
       if (url.pathname === "/labs") return html(labs(reg));
       if (url.pathname === "/robots.txt")
         return new Response(
-          "User-agent: *\nDisallow: /dashboard\nDisallow: /api/\n",
-          { headers: { "content-type": "text/plain" } },
+          "User-agent: *\nAllow: /\nDisallow: /dashboard\nDisallow: /api/\n\nSitemap: https://aphrody.app/sitemap.xml\n",
+          { headers: { "content-type": "text/plain; charset=utf-8" } },
         );
+      if (url.pathname === "/sitemap.xml")
+        return new Response(
+          `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${["/", "/labs"].map((p) => `<url><loc>https://aphrody.app${p}</loc>${reg.generatedAt ? `<lastmod>${reg.generatedAt.slice(0, 10)}</lastmod>` : ""}</url>`).join("")}</urlset>\n`,
+          {
+            headers: {
+              "content-type": "application/xml; charset=utf-8",
+              "cache-control": "public, max-age=3600",
+            },
+          },
+        );
+      if (url.pathname === "/favicon.svg" && reg.mark)
+        return new Response(
+          reg.mark.includes("xmlns=")
+            ? reg.mark
+            : reg.mark.replace(
+                "<svg",
+                '<svg xmlns="http://www.w3.org/2000/svg"',
+              ),
+          {
+            headers: {
+              "content-type": "image/svg+xml",
+              "cache-control": "public, max-age=86400",
+              "x-content-type-options": "nosniff",
+            },
+          },
+        );
+      if (url.pathname === "/favicon.ico")
+        return Response.redirect("https://aphrody.app/favicon.svg", 301);
       return html(
         landing(reg, await views(env, reg)).replace(
           "<h1",
@@ -426,7 +514,9 @@ export default {
         s = await readState(env.BUCKET, pv.project, true);
         sha = s ? resolveShort(s, pv.short) : undefined;
       }
-      if (sha)
+      if (sha) {
+        const rt = await runtime(req, env, pv.project, sha, ctx);
+        if (rt) return rt;
         return serveDeployment(
           env.BUCKET,
           pv.project,
@@ -435,6 +525,7 @@ export default {
           { "x-robots-tag": "noindex" },
           ctx,
         );
+      }
       return new Response("unknown deployment", {
         status: 404,
         headers: { "cache-control": "no-store" },
@@ -443,6 +534,13 @@ export default {
     const reg = await registry(env);
     const owner = reg.projects.find((p) => p.domains.includes(host));
     if (owner) {
+      if (url.pathname.startsWith("/_aphrody/")) {
+        const st = await readState(env.BUCKET, owner.name);
+        const rt = st?.production
+          ? await runtime(req, env, owner.name, st.production, ctx)
+          : null;
+        if (rt) return rt;
+      }
       const r = await serveProduction(env.BUCKET, owner.name, req, ctx);
       if (r) return r;
       return new Response("no production deployment yet", { status: 404 });

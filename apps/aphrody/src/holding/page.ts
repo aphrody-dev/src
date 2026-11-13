@@ -14,6 +14,8 @@ import {
 } from "../../../../packages/deploy/src/alphabet.ts";
 import {
   FONT_LINK,
+  NATIVE_CSS,
+  m3List,
   readBrand,
   tokensCss,
   type,
@@ -87,7 +89,8 @@ export function measure(root: string): {
   date: string;
   metrics: Metric[];
 } {
-  const commit = git(root, "rev-parse", "HEAD") || (process.env.GITHUB_SHA ?? "");
+  const commit =
+    git(root, "rev-parse", "HEAD") || (process.env.GITHUB_SHA ?? "");
   const date = git(root, "log", "-1", "--format=%cs");
   const metrics: Metric[] = [];
   const commits = git(root, "rev-list", "--count", "HEAD");
@@ -152,26 +155,30 @@ h1{${type("display-large")};margin:56px 0 16px}
 h2{${type("headline-medium")};margin:56px 0 16px}
 .lead{${type("headline-small")};max-width:40ch;color:var(--md-sys-color-on-surface-variant)}
 p{max-width:68ch}
-md-list{background:transparent;padding:0}md-list-item{--md-list-item-supporting-text-color:var(--md-sys-color-on-surface-variant)}
 .metric{display:block;margin-top:4px;${type("body-small")};color:var(--md-sys-color-on-surface-variant)}
 dl.metrics{display:grid;grid-template-columns:repeat(auto-fill,minmax(12rem,1fr));gap:16px;margin:0}
 dl.metrics div{background:var(--md-sys-color-surface-container-low);border-radius:var(--md-sys-shape-corner-medium);padding:16px}
 dl.metrics dt{${type("label-large")};color:var(--md-sys-color-on-surface-variant)}
 dl.metrics dd{margin:4px 0 0;${type("display-small")}}
-dl.metrics small{display:block;margin-top:4px;font-family:var(--md-ref-typeface-code);color:var(--md-sys-color-on-surface-variant)}
+dl.metrics dd small{display:block;margin-top:4px;font-family:var(--md-ref-typeface-code);color:var(--md-sys-color-on-surface-variant)}
 .actions{display:flex;flex-wrap:wrap;gap:8px}
 code{font-family:var(--md-ref-typeface-code)}
 footer{max-width:960px;margin:0 auto;padding:24px;color:var(--md-sys-color-on-surface-variant);${type("body-medium")}}`;
 
 function units(a: Alphabet, name: string, l: HoldingLocale): string {
   const rows = section(a, name)?.table?.rows ?? [];
-  return `<md-list>${rows
-    .map((r) => {
+  // A row is one link (to its directory), so the inline links of the table cells are dropped inside it.
+  const flat = (h: string) => h.replace(/<\/?a\b[^>]*>/g, "");
+  return m3List(
+    rows.map((r) => {
       const path = firstPath(r[1] ?? "");
-      const href = path ? ` type="link" href="${TREE}${esc(path)}"` : "";
-      return `<md-list-item${href}><div slot="headline">${esc(plain(r[0] ?? ""))}</div><div slot="supporting-text">${inline(r[2] ?? "")}<span class="metric">${T[l].metric} : ${inline(r[3] ?? "")}</span></div></md-list-item>`;
-    })
-    .join("")}</md-list>`;
+      return {
+        headline: esc(plain(r[0] ?? "")),
+        supporting: `${flat(inline(r[2] ?? ""))}<span class="metric">${T[l].metric} : ${flat(inline(r[3] ?? ""))}</span>`,
+        href: path ? `${TREE}${esc(path)}` : undefined,
+      };
+    }),
+  );
 }
 
 function prose(s: ReturnType<typeof section>): string {
@@ -197,9 +204,9 @@ export function renderHolding(
   const letter = section(a, "Lettre");
   const investors = section(a, "Investisseurs");
   const intro = a.intro[0] ?? "";
-  const metrics = `<dl class="metrics">${m.metrics.map((x) => `<div><dt>${esc(x.label[l])}</dt><dd>${esc(x.value)}</dd><small>${esc(x.source)}</small></div>`).join("")}</dl><p>${t.measured} <a href="https://github.com/aphrody-labs/src/commit/${esc(m.commit)}"><code>${esc(m.commit.slice(0, 7))}</code></a> (${esc(m.date)}).</p>`;
+  const metrics = `<dl class="metrics">${m.metrics.map((x) => `<div><dt>${esc(x.label[l])}</dt><dd>${esc(x.value)}<small>${esc(x.source)}</small></dd></div>`).join("")}</dl><p>${t.measured} <a href="https://github.com/aphrody-labs/src/commit/${esc(m.commit)}"><code>${esc(m.commit.slice(0, 7))}</code></a> (${esc(m.date)}).</p>`;
   const self = l === "fr" ? "/" : "/en";
-  return `<!doctype html><html lang="${l}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${t.title}</title><meta name="description" content="${esc(t.desc)}"><meta name="color-scheme" content="light dark"><link rel="canonical" href="https://aphrody.com${self === "/" ? "/" : self}"><link rel="alternate" hreflang="fr" href="https://aphrody.com/"><link rel="alternate" hreflang="en" href="https://aphrody.com/en"><link rel="alternate" hreflang="x-default" href="https://aphrody.com/"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta property="og:title" content="Aphrody"><meta property="og:description" content="${esc(t.desc)}"><meta property="og:url" content="https://aphrody.com${self === "/" ? "/" : self}"><meta property="og:image" content="https://aphrody.com/og-image.jpg"><meta name="aphrody-commit" content="${esc(m.commit)}"><meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"><meta property="og:type" content="website">${FONT_LINK}<link rel="stylesheet" href="/holding.css"><script type="module" src="/md.js"></script><script type="application/ld+json">${JSON.stringify(
+  return `<!doctype html><html lang="${l}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${t.title}</title><meta name="description" content="${esc(t.desc)}"><meta name="color-scheme" content="light dark"><link rel="canonical" href="https://aphrody.com${self === "/" ? "/" : self}"><link rel="alternate" hreflang="fr" href="https://aphrody.com/"><link rel="alternate" hreflang="en" href="https://aphrody.com/en"><link rel="alternate" hreflang="x-default" href="https://aphrody.com/"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta property="og:title" content="Aphrody"><meta property="og:description" content="${esc(t.desc)}"><meta property="og:url" content="https://aphrody.com${self === "/" ? "/" : self}"><meta property="og:image" content="https://aphrody.com/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Aphrody"><meta property="og:site_name" content="Aphrody"><meta property="og:locale" content="${l === "fr" ? "fr_FR" : "en_US"}"><meta name="twitter:card" content="summary_large_image"><link rel="manifest" href="/site.webmanifest"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="aphrody-commit" content="${esc(m.commit)}"><meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"><meta property="og:type" content="website">${FONT_LINK}<link rel="stylesheet" href="/holding.css"><script type="module" src="/md.js"></script><script src="/_aphrody/insights.js" defer></script><script type="application/ld+json">${JSON.stringify(
     {
       "@context": "https://schema.org",
       "@graph": [
@@ -243,5 +250,5 @@ export function renderHolding(
 
 /** Stylesheet of the holding page (dist/holding.css): design tokens, then the page layout. */
 export function holdingCss(root: string): string {
-  return tokensCss(root) + CSS;
+  return tokensCss(root) + NATIVE_CSS + CSS;
 }
