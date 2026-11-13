@@ -7,7 +7,7 @@
 use axoupdater::{AxoUpdater, ReleaseSource, ReleaseSourceType, UpdateRequest, Version};
 use std::path::{Path, PathBuf};
 
-pub const OWNER: &str = "aphrody-dev";
+pub const OWNER: &str = "aphrody-labs";
 pub const REPO: &str = "src";
 /// dist names artifacts and the receipt after the package.
 pub const APP: &str = "aphrody";
