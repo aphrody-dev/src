@@ -1,0 +1,28 @@
+[package]
+publish = false
+name = "aphrody-bun-flat"
+version.workspace = true
+edition.workspace = true
+license = "MIT"
+authors.workspace = true
+description = "Leaf Rust crates of the aphrody-labs/bun fork (wyhash, HdrHistogram, sort by number), flattened into one crate by `ay flat sync`"
+repository.workspace = true
+
+[lib]
+name = "bun_flat"
+
+[dependencies]
+serde.workspace = true
+toml.workspace = true
+
+[dev-dependencies]
+# wyhash's upstream tests print inputs with bstr (same major as the fork).
+bstr = { version = "1.13", default-features = false, features = ["alloc"] }
+blake3.workspace = true
+
+[[bench]]
+name = "flat"
+harness = false
+
+# Verbatim upstream code: the fork's lints apply upstream, not the workspace's.
+[lints]

@@ -1,0 +1,25 @@
+# Leaf crates of the aphrody-labs/bun fork, flattened into `aphrody-bun-flat` (one crate, one module per
+# upstream crate). `ay flat sync` regenerates src/<module>.rs and src/lib.rs from third_party/bun and
+# records the fork commit here; `ay flat check` fails when the copy and the fork disagree.
+# Never edit the generated files: change the fork, then resync. Plan: docs/ay/MIGRATION.md.
+
+fork = "aphrody-labs/bun"
+commit = "c7b36732e0091baf6b9cc87b1425cb19c9ebba38"
+
+[[module]]
+name = "wyhash"
+crate = "bun_wyhash"
+files = ["src/wyhash/lib.rs"]
+license = "MIT"
+
+[[module]]
+name = "histogram"
+crate = "bun_histogram"
+files = ["src/histogram/lib.rs"]
+license = "MIT (HdrHistogram layout: CC0 1.0 or BSD-2-Clause)"
+
+[[module]]
+name = "sort_by_number"
+crate = "bun_sort_by_number"
+files = ["src/sort_by_number/lib.rs"]
+license = "MIT"

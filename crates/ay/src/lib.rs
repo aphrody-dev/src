@@ -29,7 +29,7 @@ Areas:
   toolchain  up, doctor, sys, build, self-update, rt
   bun        bun (upstream watch), docs (Bun docs index), flat (fork crates in crates/bun-flat), hash, time
   chromium   chromium (fr1 build chain), gclient, fetch, gn, ninja, cipd, cl, vpy, engines (V8, JSC, Dawn, wgpu)
-  fleet      ssh, deploy, auth, secret, ai
+  fleet      ssh, deploy, auth, secret, ai, agents
   measure    bench, time
 
 Every command takes --help; machine output is --json where offered.
@@ -481,6 +481,7 @@ mod tests {
         assert!(matches!(parse("time -n 3 -- ay --version"), Route::Low(LowCmd::Time(_))));
         assert!(matches!(parse("chromium --dry-run build d8"), Route::Low(LowCmd::Chromium(_))));
         assert_eq!(parse("engines matrix --json"), Route::Low(LowCmd::Engines(Rest { args: v(&["matrix", "--json"]) })));
+        assert_eq!(parse("agents plan goal"), Route::Low(LowCmd::Agents(Rest { args: v(&["plan", "goal"]) })));
         assert_eq!(run(&v(&["chromium", "--dry-run", "status"])), 0);
     }
 
