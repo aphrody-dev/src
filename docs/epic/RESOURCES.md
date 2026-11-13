@@ -6,9 +6,6 @@ Checked 2026-11-13 with `gh api`, Context7 (`/websites/dev_epicgames`) and the w
 
 Source: unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show (2026-06-17).
 - Build once, deploy to traditional platforms, Fortnite or your own ecosystems (UE 6 aim).
-- Portable, interoperable content, code and economies through open standards.
-- Open model choice: the UE MCP interface is open, use Claude, Gemini or any model.
-- Lore: open source and free to use.
 
 ## Engine and languages
 
@@ -16,7 +13,6 @@ Source: unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show (2026-
 | :--- | :--- | :--- |
 | Unreal Engine (C++) | Latest stable 5.8 (2026-06-17); last planned UE5 major; the private repo had tag 5.8.4-release when read with an Epic-linked gh login on 2026-11-13 (`gh api graphql` repository.latestRelease), not visible to the CI snapshot | 5.8 release notes (dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-8-release-notes); State of Unreal 2026 page |
 | UE source access | Private `EpicGames/UnrealEngine`; link GitHub account at unrealengine.com/ue4-on-github | `gh api repos/EpicGames/Signup/readme`; `gh api repos/EpicGames/UnrealEngine` returns private |
-| UE royalty | Not recorded: the EULA text has not been read in a session (only secondary quotes) | unrealengine.com/eula |
 | Lore (Rust VCS) | MIT, pre-1.0, v0.13.0 2026-11-06, centralized content-addressed, built into UEFN; docs epicgames.github.io/lore | `gh api repos/EpicGames/lore` |
 | Lore SDKs | lore-js, lore-go, lore-python, lore-dotnet (MIT, no releases yet) | `gh api repos/EpicGames/lore-js` (and lore-go, lore-python, lore-dotnet) |
 | Zen | UE5 local/shared DDC and cook storage server, C++20, xmake; v5.8.27 2026-10-20; no open-source license (GitHub license=null, no LICENSE file, headers say Copyright Epic Games, All Rights Reserved) | `gh api repos/EpicGames/zen` |
@@ -24,7 +20,7 @@ Source: unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show (2026-
 ## Unreal Engine 6 and Verse direction
 
 - UE 6 (official, unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show, 2026-06-17, page text read on 2026-11-13): in development, Early Access targeted end of 2027. Three initiatives: gameplay programming model moves to Verse ("transactionalizes C++"); portable, interoperable content, code and economies through open standards; pipeline features such as MCP with integrations for Claude, Gemini and others. UE 5.8 is the last planned UE5 major release (5.9 kept as an option).
-- Same page: Lore is open source and free; EGS has 6,000+ games from 3,000+ partners and a full rebuild of the Launcher and storefront backend is under way; UE 5.8 MCP plugin is Experimental and model-agnostic.
+- Same page: a full rebuild of the Launcher and storefront backend is under way; the UE 5.8 MCP plugin is Experimental and model-agnostic.
 - Scene Graph: animation, itemization and gameplay abilities arrive as Verse-scriptable components (same page).
 - UEFN: v43.00 (2026-11-01) adds Verse material inheritance; Verse does not run on the client yet. v42.40 (2026-10-15): UEFN source assets licensable on Fab, `text_channel` API in `/Verse.org/Chat` (dev.epicgames.com/documentation/fortnite release notes).
 - MetaHuman: Creator web app access closed 2026-11-05, then 90 more days to retrieve gallery MetaHumans (forums.unrealengine.com/t/metahuman-creator-web-application-is-being-discontinued/2695297); creation is in-engine. UE 5.8 ships a MetaHuman Devkit and Animator markerless mocap (State of Unreal 2026 news page).
@@ -35,7 +31,7 @@ Source: unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show (2026-
 - UEFN scripting: a Verse device is `class(creative_device)` with `OnBegin<override>()<suspends>:void`; `@editable` fields appear in the editor Details panel (editable-properties-in-verse); devices subscribe to events such as `InteractedWithEvent.Subscribe(...)`.
 - Publishing: not from UEFN itself; UEFN checks project size and memory, then the Creator Portal handles versions, media and release (publishing-projects-in-unreal-editor-for-fortnite).
 - Fab licenses: CC-BY (free only) or Standard (free or paid). Standard has Personal and Professional price tiers with the same rights; Personal applies when the buyer group made at most US$100,000 gross revenue in the digital content industry in the last 12 months. Standard allows commercial use, modification and any tool; no resale of the asset alone; no credit required. The NoAI tag requires the Standard license. Assets bought on the old UE Marketplace keep the Epic Content License. Binding text: fab.com/eula.
-- Epic Games Terms of Service (updated 2026-05-27) do not apply to Unreal Engine, the Epic Games Store or Fab.
+- Epic Games Terms of Service (updated 2026-05-27, cdn1.epicgames.com/eulatracking-download/epicgames_tos/en/v2/r6/11807f59e3a9791c73e10754aa377d94.pdf) do not apply to Unreal Engine, the Epic Games Store or Fab.
 
 ## Verse language
 
@@ -53,8 +49,8 @@ Source: unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show (2026-
 
 ## AI tooling (Claude Code, MCP)
 
-- `EpicGames/unreal-engine-skills-for-claude-code-plugin` (MIT, v3.1.2): skills `unreal-mcp`, `create-toolset`, `unreal-skill`, SessionStart hook (needs bash). Installed here through the `aphrody` marketplace (`.claude-plugin/marketplace.json` à la racine, fork `aphrody-labs/unreal-engine-skills-for-claude-code-plugin`); also listed in `claude-plugins-official`.
-- Unreal MCP server (UE 5.8, Experimental): enable `ModelContextProtocol` and `AllToolsets` in the `.uproject`; start with `ModelContextProtocol.StartServer`, or `bAutoStartServer=True` under `[/Script/ModelContextProtocolEngine.ModelContextProtocolSettings]` in `Saved/Config/<Platform>Editor/EditorPerProjectUserSettings.ini`; write client config with `ModelContextProtocol.GenerateClientConfig ClaudeCode`. Default endpoint `http://127.0.0.1:8000/mcp`. Only three meta-tools are listed: `list_toolsets`, `describe_toolset`, `call_tool`. Optional stdio proxy `Engine/Plugins/Experimental/ModelContextProtocol/Extras/Proxy`.
+- `EpicGames/unreal-engine-skills-for-claude-code-plugin` (MIT; version:3.1.2 in `.claude-plugin/plugin.json` per `gh api` on 2026-11-13): skills `unreal-mcp`, `create-toolset`, `unreal-skill`, SessionStart hook (needs bash); listed in `claude-plugins-official`.
+- Unreal MCP server (UE 5.8, Experimental): enable `ModelContextProtocol` and `AllToolsets` in the `.uproject`; start with `ModelContextProtocol.StartServer`, or `bAutoStartServer=True` under `[/Script/ModelContextProtocolEngine.ModelContextProtocolSettings]` in `Saved/Config/<Platform>Editor/EditorPerProjectUserSettings.ini`; write client config with `ModelContextProtocol.GenerateClientConfig ClaudeCode`. Default endpoint `http://127.0.0.1:8000/mcp`. Only three meta-tools are listed: `list_toolsets`, `describe_toolset`, `call_tool`. Source: the plugin file `skills/unreal-mcp/references/setup.md`. Optional stdio proxy `Engine/Plugins/Experimental/ModelContextProtocol/Extras/Proxy`.
 
 ## Epic Online Services (EOS)
 
@@ -63,8 +59,8 @@ Source: unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show (2026-
 - Interfaces (handles from `EOS_Platform_Get*Interface`): Achievements, Anti-Cheat client/server, Auth, Connect, Custom Invites, Ecom, Friends, Leaderboards, Lobby, Metrics, Mods, P2P, Player Data Storage, Presence, Progression Snapshot, RTC/RTC Admin, Reports, Sanctions, Sessions, Stats, Title Storage, User Info (eos-fundamentals/eos-platform-interface). Epic Account Services (Auth, Friends, Presence) need an Epic account; Game Services (Connect, Lobby, P2P...) accept any identity provider and use Product User IDs.
 - Login types (`EOS_Auth_Credentials`): Password, ExchangeCode, PersistentAuth, Developer (Dev Auth Tool, `Id`=`localhost:<port>`, `Token`=credential name, dev only), RefreshToken, AccountPortal, ExternalAuth.
 - Web API token: `POST https://api.epicgames.dev/auth/v1/oauth/token`, `grant_type=client_credentials&deployment_id=...`, Basic auth with client id/secret from Developer Portal > Product Settings. Hierarchy organization > product > sandbox > deployment.
-- Store upload: `BuildPatchTool -mode=UploadBinary` with `-OrganizationID -ProductID -ArtifactID -ClientId -ClientSecretEnvVar -BuildRoot -CloudDir -BuildVersion -AppLaunch -AppArgs` (bpt-instructions-170; a 1.8.8 page exists, bpt-instructions-180: no trailing backslash before a quote, prefer forward slashes). Use `-ClientSecretEnvVar`; BPT has its own credentials, EOS game client ids are rejected.
-- Samples: `EpicGames/EOS-Getting-Started` (C#, OnlineSubsystemEOS, EGS mobile; min SDK 1.15.2).
+- Store upload: `BuildPatchTool -mode=UploadBinary` with `-OrganizationID -ProductID -ArtifactID -ClientId -ClientSecretEnvVar -BuildRoot -CloudDir -BuildVersion -AppLaunch -AppArgs` (dev.epicgames.com/docs/epic-games-store/publishing-tools/uploading-binaries/bpt-instructions-170; the newer bpt-instructions-180 page for BuildPatch Tool 1.8.8 adds: no trailing backslash before a quote, prefer forward slashes). Use `-ClientSecretEnvVar`; BPT has its own credentials, EOS game client ids are rejected.
+- Samples: `EpicGames/EOS-Getting-Started` (C#, OnlineSubsystemEOS, EGS mobile; README states min SDK 1.15.2, `gh api repos/EpicGames/EOS-Getting-Started/readme`).
 
 ## Other official open source (license = GitHub `license.spdx_id`)
 
@@ -86,14 +82,4 @@ Versions, licenses, push dates and releases: docs/epic/snapshot.json (`community
 
 Launcher protocol references (unofficial, derrod/legendary @170964e7: `legendary/api/egs.py`, `legendary/models/manifest.py:69` header_magic `0x44BEC00C`, `legendary/lfs/egl.py`): OAuth at `account-public-service-prod03.ol.epicgames.com`, zlib manifest body (meta, chunk list, file list, custom fields), installs in `%PROGRAMDATA%\Epic\EpicGamesLauncher\Data\Manifests\*.item` (JSON). The launcher client credentials are Epic's; do not commit them (`docs/PUBLISH-AUDIT.md`).
 
-## Continuous tracking
-
-- Forks: `infra/fleet/bin/fork-sync.sh` runs on fr1 every 6 h (`infra/fleet/fr1/systemd/fork-sync.timer`, user unit, existing gh login) and fast-forwards each aphrody-labs fork of EpicGames, bevyengine and the community repos above; first run 2026-11-13: 33 ok, 0 failed.
-- CI: `.github/workflows/upstream-sync.yml` (every 6 h) also syncs the forks with the aphrody-labs GitHub App token (docs/infra/GITHUB-APP.md), then runs `bun scripts/upstream-recon.ts` to regenerate `docs/epic/snapshot.json` (license, branch count, default-branch head, latest release per repo) and commits it on main.
-- Bevy: the 18 non-archived `bevyengine` repos are forked into aphrody-labs and listed in `third_party/forks.txt`; all synced on 2026-11-13.
-
-## In this repository
-
-- Forks: `third_party/forks.txt` is the only list (owners EpicGames, bevyengine and the community repos above).
-- `third_party/lore` and the `crates/lore*` crates carry Lore.
-- The former `packages/epic-games` stub (hand-written parsers, embedded launcher secret) was removed on 2026-11-13 (see `git log -- packages/epic-games`); use the upstream libraries above.
+Repository-side setup (forks, fork sync on fr1, CI snapshot, local plugin install): docs/epic/TRACKING.md.
