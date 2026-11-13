@@ -1,12 +1,22 @@
 {
   "name": "aphrody",
-  "owner": { "name": "aphrody-dev" },
+  "owner": {
+    "name": "aphrody-dev"
+  },
   "description": "Local plugins of the aphrody src monorepo.",
   "plugins": [
     {
       "name": "aphrody-nhitl",
       "source": "./aphrody-nhitl",
       "description": "No human in the loop hooks, status line and headless launcher (bun)."
+    },
+    {
+      "name": "unreal-engine-skills-for-claude-code",
+      "source": {
+        "source": "github",
+        "repo": "aphrody-labs/unreal-engine-skills-for-claude-code-plugin"
+      },
+      "description": "Epic Games official Unreal Editor MCP skills (unreal-mcp, create-toolset, unreal-skill), MIT, fork of EpicGames/unreal-engine-skills-for-claude-code-plugin."
     }
   ]
 }

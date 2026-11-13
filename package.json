@@ -17,7 +17,7 @@
     "fmt:check": "bun fmt --check",
     "arch": "ay arch check --strict",
     "doctor": "ay arch check --strict && ay doctor && ay doctor --deps && env-kit doctor && src-deploy doctor",
-    "test:packages": "bun test packages/env-kit packages/wck packages/epic-games",
+    "test:packages": "bun test packages/env-kit packages/wck",
     "deploy": "src-deploy up --all --dry-run",
     "deploy:live": "src-deploy up --all",
     "deps": "ay doctor --deps"
