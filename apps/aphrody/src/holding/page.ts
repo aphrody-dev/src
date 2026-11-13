@@ -65,10 +65,15 @@ const T = {
   },
 } as const;
 
-const git = (root: string, ...a: string[]) =>
-  Bun.spawnSync(["git", ...a], { cwd: root })
-    .stdout.toString()
-    .trim();
+// git absent (image de build Docker sans .git) : chaîne vide, les métriques git sont alors omises.
+const git = (root: string, ...a: string[]) => {
+  try {
+    const r = Bun.spawnSync(["git", ...a], { cwd: root });
+    return r.success ? r.stdout.toString().trim() : "";
+  } catch {
+    return "";
+  }
+};
 const countDirs = (dir: string, marker: string) =>
   existsSync(dir)
     ? readdirSync(dir, { withFileTypes: true }).filter(
@@ -82,7 +87,7 @@ export function measure(root: string): {
   date: string;
   metrics: Metric[];
 } {
-  const commit = git(root, "rev-parse", "HEAD");
+  const commit = git(root, "rev-parse", "HEAD") || (process.env.GITHUB_SHA ?? "");
   const date = git(root, "log", "-1", "--format=%cs");
   const metrics: Metric[] = [];
   const commits = git(root, "rev-list", "--count", "HEAD");
