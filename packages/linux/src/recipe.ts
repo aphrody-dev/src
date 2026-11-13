@@ -189,7 +189,7 @@ export function generate(root: string, r: Recipe, format: Format, distro?: Distr
           `pacman -Qi ${r.name} | head -3\n` +
           // Blocking lint: any namcap error (E:) on the PKGBUILD or the package fails the job.
           `pacman -S --noconfirm --needed namcap >/dev/null\n` +
-          `namcap /w/PKGBUILD /w/${r.name}-${r.version}-${r.release}-any.pkg.tar.zst | tee /w/namcap.txt\n` +
+          `namcap /w/PKGBUILD /w/${r.name}-${r.version}-${r.release}-any.pkg.tar.zst > /w/namcap.txt\ncat /w/namcap.txt\n` +
           `if grep -q ' E: ' /w/namcap.txt; then echo 'namcap: errors' >&2; exit 1; fi\n`,
         0o755,
       );

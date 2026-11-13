@@ -27,7 +27,7 @@ jobs:
       - name: Boot proof in QEMU (uname + APHRODY-BOOT-OK)
         run: |
           pkg=$(ls "$RUNNER_TEMP"/kernel/out/linux-*.pkg.tar.zst | grep -v -e '-headers-' -e '-dbg-' -e '-nvidia' -e '-zfs-' | head -1)
-          sh infra/linux/build/boot.sh "$pkg" "$RUNNER_TEMP/kernel/out/boot.log" | tee -a "$GITHUB_STEP_SUMMARY"
+          REQUIRE_KVM=1 sh infra/linux/build/boot.sh "$pkg" "$RUNNER_TEMP/kernel/out/boot.log" | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v7.0.2
         with:
           name: kernel-${{ inputs.flavor }}

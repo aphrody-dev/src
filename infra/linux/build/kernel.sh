@@ -47,14 +47,15 @@ docker rm -f "$NAME" >/dev/null 2>&1 || true
 trap 'docker rm -f "$NAME" >/dev/null 2>&1 || true' EXIT
 trap 'exit 130' INT TERM
 # shellcheck disable=SC2086
-docker run -d --name "$NAME" --cpu-shares 2 --blkio-weight 10 --cpus "$JOBS" --memory "${MEMORY:-16g}" \
+docker run -d --name "$NAME" --cpu-shares 2 --blkio-weight 10 --cpus "$JOBS" --memory "${MEMORY:-16g}" --memory-swap "${MEMORY:-16g}" \
   --pids-limit 8192 $mount_llvm -v "$WORK:/w" -e KNOBS="$KNOBS" -e JOBS="$JOBS" "$IMAGE" sh -c '
   set -eu
   pacman -Syu --noconfirm --needed base-devel git >/dev/null
   id build >/dev/null 2>&1 || useradd -m build
   chown -R build /w
   cd /w/linux-cachyos/linux-cachyos
-  env $KNOBS bash -c "source ./PKGBUILD && pacman -S --noconfirm --needed \"\${makedepends[@]}\"" >/dev/null
+  # --ask=4 accepts conflict removals (rustup of the image against rust of makedepends).
+  env $KNOBS bash -c "source ./PKGBUILD && pacman -S --noconfirm --ask=4 --needed \"\${makedepends[@]}\""
   # makepkg checks the .asc against validpgpkeys: a failed key fetch fails the build there.
   su build -c "cd /w/linux-cachyos/linux-cachyos && \
     (gpg --keyserver hkps://keys.openpgp.org --recv-keys E18447AC260021D31F3FF6C4C8A2A4774B8B63C4 E8B9AA39F054E30E8290D492C3C4820857F654FE || true) && \

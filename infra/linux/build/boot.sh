@@ -16,6 +16,7 @@ clang -static -nostdlib -ffreestanding -fno-stack-protector -fno-pic -O2 -fuse-l
   -o "$T/root/init" "$HERE/boot/init.c"
 (cd "$T/root" && echo init | cpio -o -H newc --quiet) > "$T/initramfs.cpio"
 if [ -w /dev/kvm ]; then accel=kvm cpu=${CPU:-host}; else accel=tcg cpu=${CPU:-max}; fi
+[ "$accel" = kvm ] || [ -z "${REQUIRE_KVM:-}" ] || { echo "boot: /dev/kvm unusable and REQUIRE_KVM set" >&2; exit 1; }
 echo "boot: kernel $kver, accel $accel, cpu $cpu"
 timeout "${TIMEOUT:-300}" qemu-system-x86_64 -machine q35 -accel "$accel" -cpu "$cpu" -smp 2 -m 1024 \
   -kernel "$T/usr/lib/modules/$kver/vmlinuz" -initrd "$T/initramfs.cpio" \

@@ -19,3 +19,19 @@
 | 10 | patch PKGBUILD fragile | déjà couvert : `ay upstream sync` vérifie chaque jour que la série s'applique sur la pointe amont (code 3 sinon) |
 | 11 | versions en dur, `usermod` sur root | versions suivies par `ay linux status --group gpu` ; `usermod` seulement pour `$SUDO_USER` |
 | 12 | pas de lint de paquets ni de boot QEMU | ouvert : namcap/lintian à ajouter à la matrice ; boot QEMU du noyau à ajouter à `linux-kernel.yml` |
+
+## Passe 2 (2026-11-13) : lint bloquant et preuve de boot
+
+- Moteur : antigravity (14,5 s), relais `gemini_ask` engine `agy`, sur description des changements (pas d'accès au code). Note provisoire : 14/20.
+- Livré : namcap (E: bloquant), lintian `--fail-on error,warning`, apkbuild-lint, après build et installation ; licences sous `/usr/share/licenses/<paquet>`, copyright DEP-5 complet. Boot : `infra/linux/build/boot/init.c` (PID 1 freestanding, modèle preinit de bun-LFS) + `boot.sh` (QEMU, KVM) ; preuve fr1 KVM sur linux-cachyos 7.3.3-1 : `APHRODY-UNAME Linux 7.3.3-1-cachyos x86_64 | #1 SMP PREEMPT_DYNAMIC Sun, 08 Nov 2026 21:25:49 +0000`, `APHRODY-BOOT-OK`, `uname -r` = dossier de modules du paquet. Job CI `boot-harness` à chaque changement.
+
+| # | Grief | Suite |
+|---|---|---|
+| 1 | `tee` masque le code de namcap | corrigé : sortie dans un fichier, code de namcap conservé sous `set -e` |
+| 2 | release seule ne prouve pas le binaire | accepté : release = dossier de modules du paquet extrait, `vmlinuz` du même paquet ; la ligne `version` (date de build) est journalisée |
+| 3 | modules non chargés | accepté : preuve de démarrage du noyau, pas du jeu de modules |
+| 4 | repli TCG silencieux | corrigé : `REQUIRE_KVM=1` en CI, échec si `/dev/kvm` inutilisable ; mode affiché |
+| 5 | lintian non épinglé | accepté : la version suit le conteneur épinglé par digest |
+| 6 | Alpine moins strict | réfuté : `abuild` construit, `apk add` installe et teste, puis `apkbuild-lint` |
+| 7 | swap non borné | corrigé : `--memory-swap` = `--memory` |
+| 8 | une seule preuve | `boot-harness` en CI à chaque changement ; preuve sur le noyau construit par `linux-kernel.yml` |

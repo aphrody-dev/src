@@ -49,7 +49,7 @@ jobs:
       - run: |
           f=$(curl -fsSL https://mirror.cachyos.org/repo/x86_64/cachyos/ | grep -oE 'linux-cachyos-[0-9][^"]*-x86_64\.pkg\.tar\.zst' | sort -uV | tail -1)
           curl -fsSLo "$RUNNER_TEMP/$f" "https://mirror.cachyos.org/repo/x86_64/cachyos/$f"
-          sh infra/linux/build/boot.sh "$RUNNER_TEMP/$f" "$RUNNER_TEMP/boot.log" | tee -a "$GITHUB_STEP_SUMMARY"
+          REQUIRE_KVM=1 sh infra/linux/build/boot.sh "$RUNNER_TEMP/$f" "$RUNNER_TEMP/boot.log" | tee -a "$GITHUB_STEP_SUMMARY"
   build:
     needs: plan
     name: ${{ matrix.recipe }} / ${{ matrix.distro }}
