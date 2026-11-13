@@ -1,0 +1,9 @@
+# Single source of naming; rename the product by editing this file only.
+[product]
+name = "agent"
+binary = "agent"
+org = "aphrody-labs"
+repo = "aphrody-labs/agent"
+npm_scope = "@aphrody"
+home_env = "AGENT_HOME"
+home_default = "~/.agent"

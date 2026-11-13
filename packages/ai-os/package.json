@@ -1,0 +1,11 @@
+{
+  "name": "agent",
+  "private": true,
+  "type": "module",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "agent": "bun packages/core/src/cli.ts",
+    "test": "bun test packages",
+    "check": "bun check -b packages/core/src/index.ts"
+  }
+}
