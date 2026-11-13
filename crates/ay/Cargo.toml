@@ -19,6 +19,8 @@ path = "src/main.rs"
 [lib]
 name = "ay"
 path = "src/lib.rs"
+# No doctests in ay; rustdoc does not see the build-script rlib of bun-flat nor aphrody-docs (fr1, 2026-11-13).
+doctest = false
 
 [dependencies]
 archguard.workspace = true
