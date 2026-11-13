@@ -11,3 +11,7 @@ Open: zstd level 19 on whole files in RAM, MEMORY.md path hard-coded to C--src, 
 ## Second pass
 
 Score 13/20. Then fixed: --days must match a decimal number (empty string rejected), byte comparison instead of a 64-bit hash, re-stat before delete (file changed while packing is kept), rmSync failure per file no longer aborts the loop, restore bounded by path.relative and written with flag wx (no overwrite race). Open: RAM-bound zstd 19, MEMORY.md path hard-coded, non-atomic config writes, import-time side effects.
+
+## Third pass (gemini.google.com, Carbon High, claude-in-chrome)
+
+Two submissions (full file 10.9 KB, then 3.9 KB excerpt, conversation bd5c00274ae51689): both ended with an empty answer after "Searching the web". No score obtained.

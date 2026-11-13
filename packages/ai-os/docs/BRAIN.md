@@ -21,3 +21,21 @@ One brain for Claude Code and agy (Antigravity CLI), owned by `@aphrody/ai-os`.
 - Verified headless without approval: `agy -p ... --output-format json` and `claude -p ... --output-format json` both
   ran a shell write and returned success.
 - agy config facts and sources: `docs/cli-reference/agy.md`; Claude Code: `docs/cli-reference/claude-code.md`.
+
+## Session summary (2026-11-13, consolidation of the agent context)
+
+- Goal: one brain and one no-human-in-the-loop setup for Claude Code and agy, owned by ai-os, with compressed storage.
+- Done: `ai-os brain` (absorb, sync, restore), unit tests `test/brain.test.ts`; `~/.claude/projects` 426 MB to 112 MB
+  (remaining files are the live sessions touched in the last 15 min); `~/.gemini/antigravity-cli/brain` 1.3 GB to 106 MB;
+  blob store 616 MB with byte-verified packing.
+- agy facts applied (sources in `docs/cli-reference/agy.md`): settings in `~/.gemini/antigravity-cli/settings.json`,
+  `toolPermission` and `artifactReviewPolicy` = `always-proceed`, hooks in `~/.gemini/config/hooks.json`, MCP in
+  `~/.gemini/config/mcp_config.json` (legacy copy merged), `trustedWorkspaces` 70 to 23 entries.
+- Claude facts applied (`docs/cli-reference/claude-code.md`): `AGENTS.md` is only loaded without a `CLAUDE.md`, so
+  `C:\src\CLAUDE.md` now imports `@AGENTS.md` and `@.agents/SOUL.md`.
+- Context compaction: memories 47 to 36 (duplicates of the global CLAUDE.md removed, fleet contradictions merged into
+  `fleet-roles`), GEMINI.md 15 KB to 8 KB (legacy directives replaced by a pointer to AGENTS.md plus the synced block),
+  project CLAUDE.md fleet roles aligned with the global rule (fr1 = builds, CI, training, heavy agents).
+- Verified: `claude -p` and `agy -p` each ran a shell write headless with no approval prompt.
+- Reviews: relay Gemini 8/20 then 13/20, fixes applied; third pass on gemini.google.com Carbon High returned an empty answer twice, see
+  `docs/reviews/brain-gemini-2026-11-13.md`.
