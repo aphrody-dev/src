@@ -21,7 +21,7 @@ zig_pinned
 has_version "$(lock_get cargo-zigbuild version)" cargo-zigbuild --version || install_archive_bin cargo-zigbuild cargo-zigbuild
 has_version "$(lock_get cargo-nextest version)" cargo-nextest nextest --version || install_archive_bin cargo-nextest cargo-nextest
 has_version "$(lock_get b3sum version)" b3sum --version || install_archive_bin b3sum b3sum_linux_x64_bin b3sum
-has_version "$(lock_get cbindgen version)" cbindgen --version || RUSTC_WRAPPER= cargo install --locked cbindgen --version "$(lock_get cbindgen version)" --root /usr/local >/dev/null
+has_version "$(lock_get cbindgen version)" cbindgen --version || RUSTC_WRAPPER= CARGO_BUILD_JOBS=2 nice -n 19 ionice -c3 cargo install --locked cbindgen --version "$(lock_get cbindgen version)" --root /usr/local >/dev/null
 has_version "$(lock_get cloudflared version)" cloudflared --version || install_archive_bin cloudflared cloudflared-linux-amd64 cloudflared
 
 # Cloudflare CLIs through bun (global, pinned).

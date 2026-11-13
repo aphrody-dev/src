@@ -115,7 +115,11 @@ docker_runtime() {
 docker_multiarch() {
   docker_runtime
   docker run --privileged --rm tonistiigi/binfmt:qemu-v10.1.3 --install arm64 >/dev/null 2>&1 || docker run --privileged --rm tonistiigi/binfmt --install arm64 >/dev/null
-  docker buildx inspect aphrody >/dev/null 2>&1 || docker buildx create --name aphrody --driver docker-container --driver-opt network=host --bootstrap >/dev/null
+  # BuildKit capped to 2 CPUs / 8 GiB (shared-host rule); builds go through infra/fleet/bin/heavy.sh.
+  docker buildx inspect aphrody >/dev/null 2>&1 || docker buildx create --name aphrody --driver docker-container \
+    --driver-opt network=host --driver-opt cpu-quota=200000 --driver-opt cpu-period=100000 --driver-opt memory=8g --bootstrap >/dev/null
+  docker update --cpus 2 --memory 8g --memory-swap 8g buildx_buildkit_aphrody0 >/dev/null 2>&1 || true
+  for h in "$(dirname "$0")/heavy.sh" "$(dirname "$0")/../bin/heavy.sh"; do [ -f "$h" ] && $SUDO install -m 0755 "$h" "$BIN/aphrody-heavy" && break; done
   docker buildx inspect aphrody | grep -E '^Platforms' | head -1
 }
 

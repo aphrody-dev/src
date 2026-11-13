@@ -213,7 +213,8 @@ docker-build targets="default":
 # amd64 build of a pushed commit ON prd (git context, no upload from the PC), loaded there, then health-checked
 # (usage: just docker-smoke, just docker-smoke bun main iteration)
 docker-smoke targets="smoke" ref="main" profile="release":
-    timeout 5400 ssh prd 'TAG=smoke CARGO_PROFILE={{profile}} CARGO_BUILD_JOBS=2 docker buildx bake --builder aphrody "https://github.com/aphrody-dev/src.git#{{ref}}" -f infra/docker/docker-bake.hcl --set "*.platform=linux/amd64" --set "*.attest=" --set "*.cache-from=" --load --progress quiet {{targets}}'
+    timeout 900 ssh prd 'cat > /usr/local/bin/aphrody-heavy && chmod 755 /usr/local/bin/aphrody-heavy' < "{{root}}/infra/fleet/bin/heavy.sh"
+    timeout 7200 ssh prd 'TAG=smoke CARGO_PROFILE={{profile}} CARGO_BUILD_JOBS=2 aphrody-heavy docker buildx bake --builder aphrody "https://github.com/aphrody-dev/src.git#{{ref}}" -f infra/docker/docker-bake.hcl --set "*.platform=linux/amd64" --set "*.attest=" --set "*.cache-from=" --load --progress quiet {{targets}}'
     timeout 900 ssh prd 'SRC_TAG=smoke sh -s' < "{{root}}/infra/docker/smoke.sh"
 
 # Deploy the compose stack: profile core on prd, edge on fr2 (usage: just docker-up, just docker-up edge fr2, SRC_TAG=<sha> to roll back)
@@ -245,7 +246,7 @@ docker-run recipe="verify-all":
 
 # Toolchain bootstrap of a fleet host from packages/machine/toolchains.lock.toml (usage: just fleet-bootstrap prd|fr1|fr2)
 fleet-bootstrap role:
-    tar -cf - -C "{{root}}/infra/fleet/bootstrap" common.sh {{role}}.sh -C "{{root}}/packages/machine" toolchains.lock.toml | timeout 120 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'rm -rf /tmp/aphrody-bootstrap && mkdir -p /tmp/aphrody-bootstrap && tar -xf - -C /tmp/aphrody-bootstrap'
+    tar -cf - -C "{{root}}/infra/fleet/bootstrap" common.sh {{role}}.sh -C "{{root}}/infra/fleet/bin" heavy.sh -C "{{root}}/packages/machine" toolchains.lock.toml | timeout 120 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'rm -rf /tmp/aphrody-bootstrap && mkdir -p /tmp/aphrody-bootstrap && tar -xf - -C /tmp/aphrody-bootstrap'
     timeout 1800 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'cd /tmp/aphrody-bootstrap && LOCK=$PWD/toolchains.lock.toml sh {{role}}.sh'
 
 # Regenerate the pinned toolchain manifest (versions + upstream checksums)
