@@ -9,11 +9,11 @@ The canonical cross-agent contract is [`AGENTS.md`](./AGENTS.md) plus [`.agents/
 
 ## Repository Conventions (checked by `archguard` and CI)
 
-- `packages/ai-os` (`@aphrody/ai-os`) is the sole AI product and owner of AI routing, MCP, skills, memory. Other units are generalist software; do not add AI features or AI-flavored copy outside `ai-os`.
+- Direction: game engine and creative suite, plan in `docs/games/PLAN.md`. `packages/ai-os` (`@aphrody/ai-os`) owns AI routing, MCP, skills and memory; keep AI features there.
 - Domain purity: `crates/*` is Rust 2024 only (no `.ts`/`.js`/npm). `packages/*` is Bun-only `@aphrody/*` (no root `Cargo.toml`/`go.mod`). Infra assembles upstream tools (no in-house engine, `docs/infra/UPSTREAM-STACK.md`). Upstream code lives in `third_party/`.
 - Root directories are whitelisted in `crates/archguard/src/constants.rs` (`ALLOWED_ROOT_PHYSICAL_DIRS`, mirrored in `archguard.rules.json`). A new root dir fails `ay arch check --strict` until it is added there. The root `.gitignore` is an allowlist: new tracked root files need a `!/name` entry.
 - No `postinstall`/`preinstall` scripts, no `binding.gyp`; prefer Bun built-ins (`bun:sqlite`, `Bun.SQL`, `bun:ffi`, `bun build --compile`) over npm dependencies.
-- UI work follows the Design-First Gate: PRD (_Cahier des charges_) + `DESIGN.md` before code, then `gds verify` and `wck` 100/100.
+- UI: any framework is accepted when the result is good-looking, optimized and functional; tokens come from `packages/design` and `crates/aphrody-ui` (`docs/DESIGN_SYSTEM.md`).
 - Zero emojis in code, Markdown, UI text, and commits. No `Co-Authored-By`, "Generated with", or other AI attribution in commits, PRs, or tags. Only `.env.example` is committed; the real `.env` is not.
 
 ## Commands
