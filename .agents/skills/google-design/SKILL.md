@@ -1,34 +1,34 @@
 ---
 name: google-design
-description: Principes généraux de conception tirés de la bibliothèque design.google (accessibilité et inclusion mondiale, densité, couleur, thème sombre, mouvement, son et haptique, connectivité faible, IA, voix, lisibilité, bien-être, revue de design). Utiliser pour cadrer ou critiquer une expérience au-delà des tokens : choix d'interaction, inclusion, IA dans le produit, contenu, revue. Pour les valeurs et composants, voir material-3 et ui-system.
+description: General design principles drawn from the design.google library (accessibility and global inclusion, density, color, dark theme, motion, sound and haptics, low connectivity, AI, voice, legibility, wellbeing, design review). Use to frame or critique an experience beyond tokens: interaction choices, inclusion, AI in the product, content, review. For values and components, see material-3 and ui-system.
 ---
 
 # google-design
 
-Source normalisée : `docs/design/specs/principles/google-design.md` (lisible) et `.json` (machine, schéma `docs/design/specs/spec.schema.json`). Chaque règle a un id stable `gd.<thème>.<nom>` et l'URL de l'article qui la fonde. design.google est propriétaire (conditions Google) : règles reformulées, aucune citation ni image ; index des articles : `docs/design/index/design.google.json`.
+Normalized source: `docs/design/specs/principles/google-design.md` (human-readable) and `.json` (machine, schema `docs/design/specs/spec.schema.json`). Each rule has a stable id `gd.<theme>.<name>` and the URL of the article it is based on. design.google is proprietary (Google terms): rules rephrased, no quotation or image; article index: `docs/design/index/design.google.json`.
 
-## Quand l'utiliser
+## When to use it
 
-- Cadrer un écran ou un flux neuf : public mondial, appareils modestes, connexion lente ou absente.
-- Concevoir une fonction d'IA, une interface vocale ou conversationnelle.
-- Critiquer une maquette ou préparer une revue de design.
-- Trancher entre simplicité et contrôle, densité et respiration, expressivité et sobriété.
+- Framing a new screen or flow: global audience, modest devices, slow or absent connection.
+- Designing an AI feature, a voice or conversational interface.
+- Critiquing a mockup or preparing a design review.
+- Deciding between simplicity and control, density and breathing room, expressiveness and restraint.
 
-## Principes directeurs
+## Guiding principles
 
-1. Inclusion d'abord : concevoir avec et pour des personnes aux capacités, langues, cultures et contextes variés ; tester avec elles, pas seulement pour elles.
-2. Contexte réel : supposer appareils d'entrée de gamme, réseau intermittent, données coûteuses ; l'état hors ligne est un état normal du produit.
-3. Clarté avant ornement, sans froideur : l'expressivité (forme, couleur, mouvement) sert la compréhension et l'émotion, jamais la décoration seule.
-4. Mouvement et son signifiants : chaque animation, son ou vibration explique un changement d'état ou guide l'attention.
-5. IA honnête : dire ce que le système sait faire et ne pas faire, montrer la confiance, laisser l'humain corriger et garder la main.
-6. Respect de l'attention : pas de mécanique d'engagement forcé ; aider l'utilisateur à atteindre son but puis à repartir.
-7. Système cohérent : mêmes règles et mêmes tokens partout ; la cohérence se vérifie au pixel et en revue.
-8. Lisibilité mesurée : typographie et contraste choisis pour la lecture réelle, polices variables pour adapter graisse et largeur.
+1. Inclusion first: design with and for people of varied abilities, languages, cultures and contexts; test with them, not only for them.
+2. Real context: assume entry-level devices, intermittent network, costly data; the offline state is a normal state of the product.
+3. Clarity before ornament, without coldness: expressiveness (shape, color, motion) serves understanding and emotion, never decoration alone.
+4. Meaningful motion and sound: every animation, sound or vibration explains a state change or guides attention.
+5. Honest AI: say what the system can and cannot do, show confidence, let the human correct and stay in control.
+6. Respect for attention: no forced-engagement mechanics; help the user reach their goal and then leave.
+7. Coherent system: same rules and same tokens everywhere; consistency is checked at the pixel and in review.
+8. Measured legibility: typography and contrast chosen for real reading, variable fonts to adapt weight and width.
 
-La liste complète, avec niveaux MUST/SHOULD/MAY et sources, est dans la spec ; citer l'id en revue.
+The full list, with MUST/SHOULD/MAY levels and sources, is in the spec; cite the id in review.
 
-## Liens
+## Links
 
-- Specs Material 3 et règles d'implémentation : skill `material-3`.
-- Cibles, tokens générés (`packages/design`), Figma, Stitch : skill `ui-system`.
-- Bibliothèque : https://design.google/library
+- Material 3 specs and implementation rules: skill `material-3`.
+- Targets, generated tokens (`packages/design`), Figma, Stitch: skill `ui-system`.
+- Library: https://design.google/library

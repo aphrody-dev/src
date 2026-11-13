@@ -1,39 +1,39 @@
 ---
 name: vercel-geist
-description: Référence Geist (système de design de Vercel) et bonnes pratiques de performance front de Vercel, réécrites en specs dans docs/design/specs. Utiliser pour évaluer ou concevoir une interface web dense et typographique (échelles de couleurs à rôles fixes, classes de texte, matériaux, grille, états et accessibilité des composants), fixer des objectifs Core Web Vitals, de cache ou d'images, ou pour un produit de src qui adopte explicitement Geist. Ne remplace pas ui-system : la cible web de src reste Material 3.
+description: Geist reference (Vercel's design system) and Vercel's front-end performance best practices, rewritten as specs in docs/design/specs. Use to evaluate or design a dense, typographic web interface (color scales with fixed roles, text classes, materials, grid, component states and accessibility), to set Core Web Vitals, caching or image targets, or for a src product that explicitly adopts Geist. Does not replace ui-system: the web target of src remains Material 3.
 ---
 
 # vercel-geist
 
-## Statut dans src
+## Status in src
 
-- Cible UI web : Material 3 via la skill `ui-system` (`@aphrody/design`, Material Web, Material Symbols). Geist n'y est pas une dépendance.
-- Geist sert de **référence de qualité** (densité, typographie, états, grille, accessibilité) et de cible **uniquement** pour un produit qui l'adopte explicitement (décision consignée dans son README).
-- vercel.com est propriétaire (https://vercel.com/legal/terms) : ne jamais copier texte, code, image, SVG, logo ou icône. Seuls les faits (noms de tokens, échelles, valeurs) sont repris.
-- Police Geist : SIL OFL 1.1 (vérifié via `gh api repos/vercel/geist-font/license`, release v1.9.2). La citer et la charger depuis sa distribution officielle ; ne pas versionner ses fichiers.
+- Web UI target: Material 3 via the `ui-system` skill (`@aphrody/design`, Material Web, Material Symbols). Geist is not a dependency there.
+- Geist serves as a **quality reference** (density, typography, states, grid, accessibility) and as a target **only** for a product that explicitly adopts it (decision recorded in its README).
+- vercel.com is proprietary (https://vercel.com/legal/terms): never copy text, code, image, SVG, logo or icon. Only facts (token names, scales, values) are reused.
+- Geist font: SIL OFL 1.1 (verified via `gh api repos/vercel/geist-font/license`, release v1.9.2). Credit it and load it from its official distribution; do not version its files.
 
-## Specs (source de vérité dans src)
+## Specs (source of truth in src)
 
-| Domaine | Lisible | Machine |
+| Domain | Human-readable | Machine |
 |---|---|---|
-| Tokens : couleurs, typo, matériaux, grille, espacements | `docs/design/specs/tokens/geist.md` | `tokens/geist.json` |
-| Composants : 75 fiches (variantes, tailles, états, a11y) | `docs/design/specs/components/geist.md` | `components/geist.json` |
-| Perf front : CWV, images, polices, cache, rendu | `docs/design/specs/perf/vercel-frontend.md` | `perf/vercel-frontend.json` |
+| Tokens: colors, type, materials, grid, spacing | `docs/design/specs/tokens/geist.md` | `tokens/geist.json` |
+| Components: 75 sheets (variants, sizes, states, a11y) | `docs/design/specs/components/geist.md` | `components/geist.json` |
+| Front-end perf: CWV, images, fonts, cache, rendering | `docs/design/specs/perf/vercel-frontend.md` | `perf/vercel-frontend.json` |
 
-Schéma : `docs/design/specs/spec.schema.json`. Index des pages lues : `docs/design/index/vercel.com.json`.
+Schema: `docs/design/specs/spec.schema.json`. Index of pages read: `docs/design/index/vercel.com.json`.
 
-## Règles essentielles
+## Essential rules
 
-1. Couleur : le numéro de pas fixe le rôle (100-300 fonds, 400-600 bordures, 700-800 fonds forts, 900-1000 texte). Transposer en M3 : rôles `surface*`, `outline*`, `on-surface*`, jamais de valeur Geist codée en dur (`geist.color.scale-steps`).
-2. Gray opaque par défaut ; transparence seulement pour ombres et voiles ; une seule bordure par arête (`geist.color.gray-vs-alpha`).
-3. Typo : styles nommés groupant taille, interlignage, approche et graisse ; Label pour une ligne, Copy pour du multiligne ; aucune taille arbitraire (`geist.type.classes`).
-4. Rayons limités à 6/12/16 px selon l'élévation (`geist.material.*`).
-5. Composants : chargement dans le contrôle, désactivation expliquée, icône seule nommée, focus piégé puis rendu, aria-live polite, couleur jamais seule (`geist.comp.*`).
-6. Perf : LCP ≤ 2,5 s, INP ≤ 200 ms, CLS ≤ 0,1 au P75 terrain ; cache CDN explicite avec stale-while-revalidate ; images AVIF/WebP sous liste blanche (`vercel.*`).
+1. Color: the step number sets the role (100-300 backgrounds, 400-600 borders, 700-800 strong backgrounds, 900-1000 text). Map to M3: roles `surface*`, `outline*`, `on-surface*`, never a hard-coded Geist value (`geist.color.scale-steps`).
+2. Opaque gray by default; transparency only for shadows and overlays; a single border per edge (`geist.color.gray-vs-alpha`).
+3. Type: named styles grouping size, line height, tracking and weight; Label for one line, Copy for multiline; no arbitrary size (`geist.type.classes`).
+4. Radii limited to 6/12/16 px depending on elevation (`geist.material.*`).
+5. Components: loading inside the control, disabling explained, icon-only named, focus trapped then returned, aria-live polite, color never alone (`geist.comp.*`).
+6. Perf: LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1 at field P75; explicit CDN cache with stale-while-revalidate; AVIF/WebP images under an allowlist (`vercel.*`).
 
-## Liens
+## Links
 
-- Règles transverses d'interface : skill `vercel-agent-skills:web-design-guidelines` (fork aphrody-labs/agent-skills, `plugins/labs/skills/web-design-guidelines`) ; ne pas dupliquer.
-- Perf web générique : skills `web-quality-skills:core-web-vitals`, `cloudflare:web-perf`.
-- Sources : https://vercel.com/geist/introduction, https://vercel.com/design/guidelines, https://vercel.com/docs/speed-insights/metrics, https://github.com/vercel/geist-font.
-- Relire en direct (`curl -H "Accept: text/markdown"`, ~1 requête/1,5 s) avant de citer une valeur ; mettre à jour `verified` dans les JSON.
+- Cross-cutting interface rules: skill `vercel-agent-skills:web-design-guidelines` (fork aphrody-labs/agent-skills, `plugins/labs/skills/web-design-guidelines`); do not duplicate.
+- Generic web perf: skills `web-quality-skills:core-web-vitals`, `cloudflare:web-perf`.
+- Sources: https://vercel.com/geist/introduction, https://vercel.com/design/guidelines, https://vercel.com/docs/speed-insights/metrics, https://github.com/vercel/geist-font.
+- Reread live (`curl -H "Accept: text/markdown"`, ~1 request/1.5 s) before citing a value; update `verified` in the JSON files.

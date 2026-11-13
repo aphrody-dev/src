@@ -1,38 +1,38 @@
 ---
 name: microsoft
-description: Méthode et références pour tout sujet Microsoft (Windows, DirectX/D3D12, .NET 10/11, C#, MSVC/STL, Rust de Microsoft, WinUI/WinAppSDK, Edge/WebGPU, Azure, GitHub org microsoft). Utiliser AVANT d'affirmer une version, une API, une feature, une date ou une recommandation Microsoft : les connaissances du modèle sont réputées périmées (on est en novembre 2026).
+description: Method and references for any Microsoft topic (Windows, DirectX/D3D12, .NET 10/11, C#, MSVC/STL, Microsoft's Rust, WinUI/WinAppSDK, Edge/WebGPU, Azure, GitHub org microsoft). Use BEFORE asserting a Microsoft version, API, feature, date or recommendation: the model's knowledge is assumed stale (it is November 2026).
 ---
 
-# Microsoft : protocole de vérité
+# Microsoft: truth protocol
 
-1. **Jamais de mémoire.** Toute version, API ou feature vient d'une source consultée dans la session et datée.
-2. Ordre des sources :
-   1. Code local : `C:\Users\aphro\nt\vendor\<repo>`, clones des dépôts Microsoft. Lire le fichier exact et citer chemin + date de commit.
-   2. Microsoft Learn MCP : `microsoft_docs_search` puis `microsoft_docs_fetch` ; `microsoft_code_sample_search` pour le code.
-   3. API live : `bun ${CLAUDE_PLUGIN_ROOT}/skills/microsoft/scripts/facts.ts <out.json>` interroge NuGet, crates.io, releases GitHub, release-metadata .NET et chromestatus. `bun .../edge-webplatform.ts` lit les notes de version Edge (WebGPU, WASM).
-   4. Index GitHub : `C:\Users\aphro\nt\docs\ms\data\repos.json`, environ 16 900 dépôts de 16 organisations, triés par dernier push ; régénérer avec msdex (archive `nt-archive`).
-   5. `gh api` pour un dépôt, une branche ou un fichier précis (ex. `gh api repos/dotnet/runtimelab/branches`).
-3. En cas de conflit (doc vs code vs release), signaler le conflit et privilégier : release publiée > code > doc. Exemples relevés : la roadmap WinAppSDK est périmée ; chromestatus affiche « Proposed » pour des features déjà livrées.
-4. Vérifier la version **installée** (`windows-machine` skill) avant de recommander un outil.
+1. **Never from memory.** Every version, API or feature comes from a source consulted in the session and dated.
+2. Source order:
+   1. Local code: `C:\Users\aphro\nt\vendor\<repo>`, clones of the Microsoft repositories. Read the exact file and cite path + commit date.
+   2. Microsoft Learn MCP: `microsoft_docs_search` then `microsoft_docs_fetch`; `microsoft_code_sample_search` for code.
+   3. Live API: `bun ${CLAUDE_PLUGIN_ROOT}/skills/microsoft/scripts/facts.ts <out.json>` queries NuGet, crates.io, GitHub releases, .NET release-metadata and chromestatus. `bun .../edge-webplatform.ts` reads the Edge release notes (WebGPU, WASM).
+   4. GitHub index: `C:\Users\aphro\nt\docs\ms\data\repos.json`, about 16,900 repositories from 16 organizations, sorted by last push; regenerate with msdex (archive `nt-archive`).
+   5. `gh api` for a specific repository, branch or file (e.g. `gh api repos/dotnet/runtimelab/branches`).
+3. On conflict (docs vs code vs release), report the conflict and prefer: published release > code > docs. Examples observed: the WinAppSDK roadmap is stale; chromestatus shows "Proposed" for features already shipped.
+4. Check the **installed** version (`windows-machine` skill) before recommending a tool.
 
-## Faits datés (2026-11-12)
+## Dated facts (2026-11-12)
 
-Détail dans `nt/docs/research/facts.json` et `nt/docs/plan/00-analyse.md`.
+Details in `nt/docs/research/facts.json` and `nt/docs/plan/00-analyse.md`.
 
-| Sujet | État |
+| Topic | State |
 |---|---|
-| .NET | 11.0.0 GA (2026-11-10, STS), 10.0.15 LTS ; C# 15 (unions, hiérarchies fermées) ; CoreCLR et NativeAOT en WASM ; Runtime Async ; x86-64-v2 minimum, R2R vise x86-64-v3 sous Windows |
-| D3D12 | Agility SDK 1.620.2 stable, 1.722.1 preview ; SM 6.10 et DXR 2.0 en preview seulement ; DXC v1.9.2609 ; work graphs dès Windows 11 24H2 (WDDM 3.2) ; export `D3D12SDKVersion` requis ; C++ = seul langage « supporté » |
-| C++ | MSVC STL : C++23 (82 papiers), `import std` ; C++26 quasi absent |
-| Rust MS | windows-rs repo 0.100/0.101 (`windows` sur crates.io bloqué à 0.62.2 → utiliser le repo) ; préférer `windows-bindgen` aux crates umbrella ; wdk 0.5.0 ; hyperlight 0.19 ; openvmm v0.4.0 ; mxc v1.0.1 ; litebox v0.1.0 ; nvx |
-| Web | Edge 157 / Chrome 158 stables ; WebGPU : Immediates (Edge 150), subgroup size control (152), `buffer_view` (153), fragment depth (156), atomic vec2u (157) |
-| WinUI | WinAppSDK 2.6.5 ; sources WinUI publiées (MIT), contributions de code non ouvertes |
-| Build Rust (pratique MS) | edit : `panic = "immediate-abort"` + `build-std` ; mxc/sudo : CFG, CET, crt-static ; openvmm : lto fat, `codegen-units = 1` |
+| .NET | 11.0.0 GA (2026-11-10, STS), 10.0.15 LTS; C# 15 (unions, closed hierarchies); CoreCLR and NativeAOT on WASM; Runtime Async; x86-64-v2 minimum, R2R targets x86-64-v3 on Windows |
+| D3D12 | Agility SDK 1.620.2 stable, 1.722.1 preview; SM 6.10 and DXR 2.0 in preview only; DXC v1.9.2609; work graphs from Windows 11 24H2 (WDDM 3.2); `D3D12SDKVersion` export required; C++ = the only "supported" language |
+| C++ | MSVC STL: C++23 (82 papers), `import std`; C++26 almost absent |
+| Rust MS | windows-rs repo 0.100/0.101 (`windows` on crates.io stuck at 0.62.2 → use the repo); prefer `windows-bindgen` to the umbrella crates; wdk 0.5.0; hyperlight 0.19; openvmm v0.4.0; mxc v1.0.1; litebox v0.1.0; nvx |
+| Web | Edge 157 / Chrome 158 stable; WebGPU: Immediates (Edge 150), subgroup size control (152), `buffer_view` (153), fragment depth (156), atomic vec2u (157) |
+| WinUI | WinAppSDK 2.6.5; WinUI sources published (MIT), code contributions not open |
+| Rust build (MS practice) | edit: `panic = "immediate-abort"` + `build-std`; mxc/sudo: CFG, CET, crt-static; openvmm: lto fat, `codegen-units = 1` |
 
-## Rust dans Windows
+## Rust in Windows
 
-Enquête complète : `C:\Users\aphro\nt\docs\research\rust-in-windows.md`. Le Windows Security Book (Learn) annonce l'extension de Rust dans le noyau. Binaires Rust signés Microsoft sur le build local : `win32kbase_rs.sys`, `wesp.sys`, `wesp_elam.sys`, DWriteCore, Sense ATP, sudo, et d'autres.
+Full investigation: `C:\Users\aphro\nt\docs\research\rust-in-windows.md`. The Windows Security Book (Learn) announces the extension of Rust in the kernel. Microsoft-signed Rust binaries on the local build: `win32kbase_rs.sys`, `wesp.sys`, `wesp_elam.sys`, DWriteCore, Sense ATP, sudo, and others.
 
-## Plugins Microsoft installés (scope user)
+## Installed Microsoft plugins (user scope)
 
-dotnet, dotnet-msbuild, dotnet-nuget, dotnet-test, dotnet-diag, dotnet-upgrade, dotnet11, dotnet-advanced (marketplace `dotnet-agent-skills`) ; windbg, winui, winappcli (`win-dev-skills`) ; azure (`azure-skills`) ; azure-sdk-{dotnet,typescript,rust} (`skills`) ; microsoft-docs (Learn MCP). Préférer leurs skills pour l'exécution, et ce skill pour la vérification des faits.
+dotnet, dotnet-msbuild, dotnet-nuget, dotnet-test, dotnet-diag, dotnet-upgrade, dotnet11, dotnet-advanced (marketplace `dotnet-agent-skills`); windbg, winui, winappcli (`win-dev-skills`); azure (`azure-skills`); azure-sdk-{dotnet,typescript,rust} (`skills`); microsoft-docs (Learn MCP). Prefer their skills for execution, and this skill for fact checking.

@@ -1,6 +1,6 @@
 ---
 name: humanizer
-description: Retirer les tics d'écriture IA d'un texte (français ou anglais) sans changer ce qu'il dit - texte d'interface, pages, docs, README, messages de commit, notes de version. Utiliser avant de livrer tout texte public de src et pendant la revue anti-slop d'une interface. Absorbe blader/humanizer (MIT) ; contrôle automatique par `gds audit-slop`.
+description: Remove AI writing tics from a text (French or English) without changing what it says - interface text, pages, docs, READMEs, commit messages, release notes. Use before shipping any public text of src and during the anti-slop review of an interface. Absorbs blader/humanizer (MIT); automatic check by `gds audit-slop`.
 license: MIT
 metadata:
   upstream: "blader/humanizer@b48c832f0f80 (fork aphrody-labs/humanizer)"
@@ -8,30 +8,30 @@ metadata:
 
 # humanizer
 
-Réécrire pour un lecteur précis, garder le sens, les faits et la longueur utile. Catalogue complet des 26 tics, avec exemples avant/après : `references/patterns.md` (upstream, anglais). Le lire en entier avant une réécriture longue.
+Rewrite for a specific reader, keep the meaning, the facts and the useful length. Full catalogue of the 26 tics, with before/after examples: `references/patterns.md` (upstream, English). Read it in full before a long rewrite.
 
-## Outils
+## Tools
 
 ```bash
-bun C:/src/packages/google-design/cli.ts audit-slop <chemin> [--json]   # code de sortie 1 si constat
-bun C:/src/packages/google-design/cli.ts humanize <fichier> [--write]    # réécritures mécaniques seules
+bun C:/src/packages/google-design/cli.ts audit-slop <path> [--json]   # exit code 1 if findings
+bun C:/src/packages/google-design/cli.ts humanize <file> [--write]    # mechanical rewrites only
 ```
 
-`gds humanize` ne remplace que les tournures sûres ; le reste se réécrit à la main d'après le catalogue.
+`gds humanize` only replaces safe phrasings; the rest is rewritten by hand from the catalogue.
 
-## Tics à retirer (résumé)
+## Tics to remove (summary)
 
-- Mise en scène : « pas X mais Y », chute dramatique d'une ligne, maximes creuses, préambule (« voici ce qu'il faut savoir »), réfutation d'un adversaire absent.
-- Rythme mécanique : triades forcées, débuts de phrase répétés, tirets cadratins partout, qualificatifs empilés, voix passive sans sujet.
-- Enflure : mots IA (en : delve, seamless, tapestry, unlock, elevate, robust, pivotal ; fr : « véritable », « incontournable », « au cœur de », « fluide », « révolutionner », « booster », « sublimer »), importance gonflée, langage commercial, autorité empruntée, « se positionne comme » au lieu de « est ».
-- Mise en forme par réflexe : gras décoratif, listes « **Libellé** : texte », titres décoratifs, guillemets typographiques mélangés.
-- Restes de chat : « Excellente question », « J'espère que cela aide », avertissements de date de connaissance, titre répété en première phrase, texte qui parle du document au lieu du sujet.
-- Mauvais lecteur : réexpliquer ce que le lecteur sait déjà.
+- Staging: "not X but Y", one-line dramatic punchline, hollow maxims, preamble ("here is what you need to know"), rebuttal of an absent opponent.
+- Mechanical rhythm: forced triads, repeated sentence openings, em dashes everywhere, stacked qualifiers, passive voice without a subject.
+- Inflation: AI words (en: delve, seamless, tapestry, unlock, elevate, robust, pivotal; fr: « véritable », « incontournable », « au cœur de », « fluide », « révolutionner », « booster », « sublimer »), inflated importance, sales language, borrowed authority, "positions itself as" instead of "is".
+- Reflex formatting: decorative bold, "**Label**: text" lists, decorative headings, mixed typographic quotes.
+- Chat leftovers: "Great question", "I hope this helps", knowledge-cutoff disclaimers, title repeated in the first sentence, text that talks about the document instead of the subject.
+- Wrong reader: re-explaining what the reader already knows.
 
-## Règles src
+## src rules
 
-1. Zéro emoji, zéro attribution IA, aucune promesse non mesurée (chiffres seulement s'ils sont sourcés).
-2. Français : espaces insécables avant `; : ! ?` dans les pages publiques, guillemets « », pas d'anglicisme quand un mot français existe.
-3. Interface : verbes d'action courts sur les boutons, messages d'erreur qui disent quoi faire, pas de point final sur les libellés.
-4. Ne pas réécrire : citations, texte légal, sorties de commande, code, noms propres, texte que l'auteur a voulu ainsi.
-5. Rendu : texte réécrit seul, puis une ligne par changement de sens éventuel ; jamais de commentaire sur la méthode.
+1. Zero emoji, zero AI attribution, no unmeasured promise (figures only if sourced).
+2. French: non-breaking spaces before `; : ! ?` in public pages, « » quotes, no anglicism when a French word exists.
+3. Interface: short action verbs on buttons, error messages that say what to do, no final period on labels.
+4. Do not rewrite: quotations, legal text, command output, code, proper nouns, text the author intended that way.
+5. Output: the rewritten text alone, then one line per possible change of meaning; never a comment on the method.

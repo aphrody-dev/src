@@ -1,16 +1,16 @@
 ---
 name: learn
-description: Boucle d'apprentissage locale (façon Hermes). Distille ~/.claude/learning/journal.jsonl en mémoires (un fait par fichier), fusionne/supprime les doublons et entrées périmées, et crée des skills à partir de procédures réussies répétées. Utiliser sur demande « learn », en fin de grosse tâche, ou quand le digest de début de session signale des entrées en attente.
+description: Local learning loop (Hermes style). Distills ~/.claude/learning/journal.jsonl into memories (one fact per file), merges/deletes duplicates and stale entries, and creates skills from repeated successful procedures. Use on a "learn" request, at the end of a big task, or when the start-of-session digest reports pending entries.
 ---
-Tout reste local. Aucune archive : on supprime ou on fusionne.
+Everything stays local. No archive: delete or merge.
 
-1. `bun ${CLAUDE_PLUGIN_ROOT}/skills/learn/scripts/digest.ts` : agrège le journal non traité (erreurs récurrentes, corrections du propriétaire, récupérations échec->succès, par projet) et liste les mémoires existantes avec leurs descriptions.
-2. Mémoires (`~/.claude/projects/<projet>/memory/`, ou le projet du `cwd` de l'entrée) :
-   - un fait durable par fichier `<slug>.md`, frontmatter `name`, `description` (une ligne, concrète), `metadata.type` (`user` | `feedback` | `project` | `reference`) ; corps : le fait, puis `**Why:**` et `**How to apply:**`.
-   - Corrections du propriétaire -> `feedback`. Erreur répétée avec contournement trouvé -> `reference`.
-   - Avant d'écrire : si un fichier couvre déjà le sujet, le mettre à jour ; fusionner les doublons (garder un fichier, supprimer les autres) ; supprimer ce qui est contredit ou obsolète (chemin disparu, outil retiré).
-   - `MEMORY.md` = index, une ligne par fichier : `- [Titre](fichier.md) — accroche`. Pas d'autre contenu.
-   - Ignorer le bruit ponctuel (faute de frappe, erreur unique sans leçon).
-3. Skills d'expérience : une procédure réussie vue ≥2 fois (mêmes commandes/étapes) et non couverte -> `C:\src\.agents\skills\<nom>\SKILL.md` (source unique, exposé à tous les agents par le plugin aphrody-skills ; commiter aussitôt) (frontmatter `name`, `description` déclencheuse ; corps : étapes minimales, commandes exactes vérifiées). Améliorer un skill existant plutôt qu'en créer un voisin.
-4. `bun ${CLAUDE_PLUGIN_ROOT}/skills/learn/scripts/digest.ts --done` : marque le journal traité (tronque les entrées traitées).
-Rapport : 3 lignes (mémoires créées/fusionnées/supprimées, skills créés).
+1. `bun ${CLAUDE_PLUGIN_ROOT}/skills/learn/scripts/digest.ts`: aggregates the unprocessed journal (recurring errors, owner corrections, failure->success recoveries, per project) and lists the existing memories with their descriptions.
+2. Memories (`~/.claude/projects/<project>/memory/`, or the project of the entry's `cwd`):
+   - one durable fact per `<slug>.md` file, frontmatter `name`, `description` (one line, concrete), `metadata.type` (`user` | `feedback` | `project` | `reference`); body: the fact, then `**Why:**` and `**How to apply:**`.
+   - Owner corrections -> `feedback`. Repeated error with a found workaround -> `reference`.
+   - Before writing: if a file already covers the topic, update it; merge duplicates (keep one file, delete the others); delete what is contradicted or obsolete (vanished path, removed tool).
+   - `MEMORY.md` = index, one line per file: `- [Title](file.md) — hook`. No other content.
+   - Ignore one-off noise (typo, single error with no lesson).
+3. Experience skills: a successful procedure seen ≥2 times (same commands/steps) and not covered -> `C:\src\.agents\skills\<name>\SKILL.md` (single source, exposed to all agents by the aphrody-skills plugin; commit right away) (frontmatter `name`, triggering `description`; body: minimal steps, exact verified commands). Improve an existing skill rather than creating a neighbouring one.
+4. `bun ${CLAUDE_PLUGIN_ROOT}/skills/learn/scripts/digest.ts --done`: marks the journal processed (truncates the processed entries).
+Report: 3 lines (memories created/merged/deleted, skills created).

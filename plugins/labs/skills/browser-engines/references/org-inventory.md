@@ -1,11 +1,11 @@
-# Écosystème web et navigateurs (inventaire GitHub, 2026-11-12)
+# Web and browser ecosystem (GitHub inventory, 2026-11-12)
 
-Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08-14&sort=stars` (max 30/org), exécuté le 2026-11-12. Colonnes : dépôt, étoiles, dernier push, langage, description (tronquée). Skill associé : [plugins/labs/skills/browser-engines](../SKILL.md). Mesures moteurs : [bench/REPORT.md](../../../../../docs/bench/REPORT.md).
+Source: `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08-14&sort=stars` (max 30/org), run on 2026-11-12. Columns: repository, stars, last push, language, description (truncated). Associated skill: [plugins/labs/skills/browser-engines](../SKILL.md). Engine measurements: [bench/REPORT.md](../../../../../docs/bench/REPORT.md).
 
 
 ## [GoogleChrome](https://github.com/GoogleChrome)
 
-| dépôt | ★ | push | lang | description |
+| repository | ★ | push | lang | description |
 |---|---|---|---|---|
 | [lighthouse](https://github.com/GoogleChrome/lighthouse) | 31051 | 2026-11-12 | JavaScript | Automated auditing, performance metrics, and best practices for the we |
 | [chrome-extensions-samples](https://github.com/GoogleChrome/chrome-extensions-samples) | 17858 | 2026-11-10 | JavaScript | Chrome Extensions Samples |
@@ -29,7 +29,7 @@ Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08
 
 ## [GoogleChromeLabs](https://github.com/GoogleChromeLabs)
 
-| dépôt | ★ | push | lang | description |
+| repository | ★ | push | lang | description |
 |---|---|---|---|---|
 | [squoosh](https://github.com/GoogleChromeLabs/squoosh) | 26187 | 2026-10-22 | TypeScript | Make images smaller using best-in-class codecs, right in the browser. |
 | [comlink](https://github.com/GoogleChromeLabs/comlink) | 12811 | 2026-11-05 | TypeScript | Comlink makes WebWorkers enjoyable. |
@@ -64,7 +64,7 @@ Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08
 
 ## [chromium](https://github.com/chromium)
 
-| dépôt | ★ | push | lang | description |
+| repository | ★ | push | lang | description |
 |---|---|---|---|---|
 | [chromium](https://github.com/chromium/chromium) | 25317 | 2026-11-12 | null | The official GitHub mirror of the Chromium source |
 | [permission.site](https://github.com/chromium/permission.site) | 1254 | 2026-10-21 | JavaScript | A site to test the interaction of web APIs and browser permissions. |
@@ -77,7 +77,7 @@ Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08
 
 ## [brave](https://github.com/brave)
 
-| dépôt | ★ | push | lang | description |
+| repository | ★ | push | lang | description |
 |---|---|---|---|---|
 | [brave-browser](https://github.com/brave/brave-browser) | 24189 | 2026-11-12 | null | Brave browser for Android, iOS, Linux, macOS, Windows. |
 | [brave-core](https://github.com/brave/brave-core) | 3779 | 2026-11-12 | C++ | Core engine for the Brave browser for mobile and desktop. For issues h |
@@ -112,7 +112,7 @@ Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08
 
 ## [imputnet](https://github.com/imputnet)
 
-| dépôt | ★ | push | lang | description |
+| repository | ★ | push | lang | description |
 |---|---|---|---|---|
 | [helium](https://github.com/imputnet/helium) | 22623 | 2026-11-12 | C++ | Private, fast, and honest web browser |
 | [helium-windows](https://github.com/imputnet/helium-windows) | 1488 | 2026-11-10 | C++ | Helium Browser for Windows |
@@ -132,7 +132,7 @@ Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08
 
 ## [servo](https://github.com/servo)
 
-| dépôt | ★ | push | lang | description |
+| repository | ★ | push | lang | description |
 |---|---|---|---|---|
 | [servo](https://github.com/servo/servo) | 38483 | 2026-11-12 | Rust | Servo aims to empower developers with a lightweight, high-performance  |
 | [webrender](https://github.com/servo/webrender) | 3380 | 2026-11-08 | Rust | A GPU-based renderer for the web |
@@ -163,7 +163,7 @@ Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08
 
 ## [lightpanda-io](https://github.com/lightpanda-io)
 
-| dépôt | ★ | push | lang | description |
+| repository | ★ | push | lang | description |
 |---|---|---|---|---|
 | [browser](https://github.com/lightpanda-io/browser) | 41946 | 2026-11-12 | Zig | Lightpanda: the headless browser designed for AI and automation |
 | [agent-skill](https://github.com/lightpanda-io/agent-skill) | 118 | 2026-11-05 | Shell | Lightpanda browser skill for agents |
@@ -185,14 +185,14 @@ Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08
 
 ## [h4ckf0r0day](https://github.com/h4ckf0r0day)
 
-| dépôt | ★ | push | lang | description |
+| repository | ★ | push | lang | description |
 |---|---|---|---|---|
 | [obscura](https://github.com/h4ckf0r0day/obscura) | 33213 | 2026-11-12 | Rust | The headless browser for AI agents and web scraping |
 | [obscura-benchmark](https://github.com/h4ckf0r0day/obscura-benchmark) | 12 | 2026-10-04 | Python | Obscura browser benchmark |
 
 ## [vercel-labs](https://github.com/vercel-labs)
 
-| dépôt | ★ | push | lang | description |
+| repository | ★ | push | lang | description |
 |---|---|---|---|---|
 | [agent-browser](https://github.com/vercel-labs/agent-browser) | 50188 | 2026-11-12 | Rust | Browser automation CLI for AI agents |
 | [skills](https://github.com/vercel-labs/skills) | 39093 | 2026-11-10 | TypeScript | The open agent skills tool - npx skills |
@@ -225,4 +225,4 @@ Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08
 | [ai-cli](https://github.com/vercel-labs/ai-cli) | 951 | 2026-11-11 | TypeScript | Generate anything from your terminal |
 | [ralph-loop-agent](https://github.com/vercel-labs/ralph-loop-agent) | 846 | 2026-09-16 | TypeScript | Continuous Autonomy for the AI SDK |
 
-Non vérifié : les orgs sans résultat ou avec moins de 30 dépôts actifs sont listées telles que renvoyées par l'API ; étoiles = instantané du 2026-11-12.
+Not verified: orgs with no results or fewer than 30 active repositories are listed as returned by the API; stars = snapshot of 2026-11-12.

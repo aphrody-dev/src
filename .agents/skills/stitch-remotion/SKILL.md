@@ -10,10 +10,10 @@ allowed-tools:
   - "web_fetch"
 ---
 
-> Miroir généré de google-labs-code/stitch-skills (stitch-skills/plugins/stitch-build/skills/remotion) par `bun packages/ai-os/src/google/absorb.ts skills --write` ; ne pas éditer ici.
-> Dans src : outils Stitch du relais `stitch__<outil>` (MCP `mcp__relay__stitch__*`, auth gcloud), CLI `ay design stitch <cmd>`
-> (upload, design-md, generate, html, download), DESIGN.md `ay design lint|export` (système : packages/design/DESIGN.md),
-> Jules `ay jules run|sessions` et outils `jules_run`, `jules_status`. JS/TS : bun uniquement.
+> Mirror generated from google-labs-code/stitch-skills (stitch-skills/plugins/stitch-build/skills/remotion) by `bun packages/ai-os/src/google/absorb.ts skills --write`; do not edit here.
+> In src: relay Stitch tools `stitch__<tool>` (MCP `mcp__relay__stitch__*`, gcloud auth), CLI `ay design stitch <cmd>`
+> (upload, design-md, generate, html, download), DESIGN.md `ay design lint|export` (system: packages/design/DESIGN.md),
+> Jules `ay jules run|sessions` and tools `jules_run`, `jules_status`. JS/TS: bun only.
 
 
 # Stitch to Remotion Walkthrough Videos

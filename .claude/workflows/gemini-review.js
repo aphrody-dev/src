@@ -1,10 +1,10 @@
 export const meta = {
   name: 'gemini-review',
-  description: 'Soumettre des livrables de src à Gemini via le relais, vérifier chaque défaut, archiver les verdicts',
-  whenToUse: 'Revue Gemini obligatoire des livrables de src (args : { files: ["chemin", ...] } relatifs à C:\\src)',
+  description: 'Submit src deliverables to Gemini via the relay, verify each defect, archive the verdicts',
+  whenToUse: 'Mandatory Gemini review of src deliverables (args: { files: ["path", ...] } relative to C:\\src)',
   phases: [
-    { title: 'Revue', detail: 'gemini_review du relais (MCP relay) par fichier' },
-    { title: 'Vérification', detail: 'chaque défaut annoncé est confirmé ou réfuté dans le code' },
+    { title: 'Review', detail: 'relay gemini_review (MCP relay) per file' },
+    { title: 'Verification', detail: 'each reported defect is confirmed or refuted in the code' },
   ],
 }
 
@@ -25,24 +25,24 @@ const VERDICT = {
 }
 
 const files = Array.isArray(args?.files) ? args.files : []
-if (!files.length) throw new Error('args.files requis')
+if (!files.length) throw new Error('args.files required')
 
 const results = await pipeline(
   files,
   (file) =>
     agent(
-      `Charge l'outil MCP mcp__relay__gemini_review via ToolSearch, lis ${file}, et appelle-le avec title="${file}" et content=le texte complet du fichier. ` +
-        `Rapporte la note /20 et chaque défaut annoncé (emplacement, affirmation, correction proposée), ainsi que l'URL de conversation renvoyée.`,
-      { label: `revue:${file}`, phase: 'Revue', schema: REVIEW },
+      `Load the MCP tool mcp__relay__gemini_review via ToolSearch, read ${file}, and call it with title="${file}" and content=the full text of the file. ` +
+        `Report the /20 score and each reported defect (location, claim, proposed fix), as well as the returned conversation URL.`,
+      { label: `review:${file}`, phase: 'Review', schema: REVIEW },
     ),
   (review, file) =>
     review &&
     parallel(
       review.defects.map((d) => () =>
         agent(
-          `Vérifie dans ${file} cette affirmation d'une revue externe, en lisant le code réel : « ${d.claim} » (emplacement : ${d.where}). ` +
-            `real=true uniquement si le défaut est présent et démontrable ; sinon real=false avec la preuve contraire.`,
-          { label: `verif:${file}`, phase: 'Vérification', schema: VERDICT, effort: 'low' },
+          `Verify in ${file} this claim from an external review, by reading the actual code: "${d.claim}" (location: ${d.where}). ` +
+            `real=true only if the defect is present and demonstrable; otherwise real=false with the counter-evidence.`,
+          { label: `verif:${file}`, phase: 'Verification', schema: VERDICT, effort: 'low' },
         ).then((v) => ({ ...d, verdict: v })),
       ),
     ).then((defects) => ({ ...review, defects: defects.filter(Boolean) })),
