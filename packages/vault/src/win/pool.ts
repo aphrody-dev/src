@@ -52,8 +52,8 @@ export function run<T>(op: Op): Promise<T> {
   });
 }
 
-export const dpapiProtect = (d: Uint8Array) => run<Uint8Array>({ op: "protect", data: d });
-export const dpapiUnprotect = (d: Uint8Array) => run<Uint8Array>({ op: "unprotect", data: d });
+export const dpapiProtect = (d: Uint8Array, entropy?: Uint8Array) => run<Uint8Array>({ op: "protect", data: d, entropy });
+export const dpapiUnprotect = (d: Uint8Array, entropy?: Uint8Array) => run<Uint8Array>({ op: "unprotect", data: d, entropy });
 export const helloStatus = (name: string) => run<{ provider: boolean; key: boolean; error?: string }>({ op: "hello-status", name });
 export const helloEnroll = (name: string, context: string) => run<boolean>({ op: "hello-enroll", name, context });
 export const helloWrap = (name: string, data: Uint8Array) => run<Uint8Array>({ op: "hello-wrap", name, data });

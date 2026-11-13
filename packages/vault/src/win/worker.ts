@@ -5,7 +5,7 @@ import { dpapiProtect, dpapiUnprotect, helloEnroll, helloStatus, helloUnwrap, he
 declare const self: Worker;
 
 export type Op =
-  | { op: "protect" | "unprotect"; data: Uint8Array }
+  | { op: "protect" | "unprotect"; data: Uint8Array; entropy?: Uint8Array }
   | { op: "hello-status"; name: string }
   | { op: "hello-enroll"; name: string; context: string }
   | { op: "hello-wrap"; name: string; data: Uint8Array }
@@ -16,8 +16,8 @@ self.onmessage = (ev: MessageEvent<{ id: number } & Op>) => {
   try {
     let out: unknown;
     switch (m.op) {
-      case "protect": out = dpapiProtect(m.data); break;
-      case "unprotect": out = dpapiUnprotect(m.data); break;
+      case "protect": out = dpapiProtect(m.data, m.entropy); break;
+      case "unprotect": out = dpapiUnprotect(m.data, m.entropy); break;
       case "hello-status": out = helloStatus(m.name); break;
       case "hello-enroll": helloEnroll(m.name, m.context); out = true; break;
       case "hello-wrap": out = helloWrap(m.name, m.data); break;

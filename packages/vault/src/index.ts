@@ -13,4 +13,4 @@ export * from "./hosts.ts";
 export * from "./sync.ts";
 export * from "./profiles.ts";
 export * from "./migrate.ts";
-export { helloStatus, helloEnroll } from "./win/pool.ts";
+export { helloStatus, helloEnroll, dpapiProtect as dpapiProtectRaw } from "./win/pool.ts";

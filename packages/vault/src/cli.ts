@@ -15,7 +15,7 @@ import { backup, restore } from "./profiles.ts";
 import { shred } from "./shred.ts";
 import { listSecrets, setSecret } from "./store.ts";
 import {
-  initHost, initPc, installHost, installTask, localFingerprint, remoteFingerprint, remoteStatus, rotateHost, sealOutbox, sync,
+  initHost, initPc, installHost, pushOnly, removeHost, installTask, localFingerprint, remoteFingerprint, remoteStatus, rotateHost, sealOutbox, sync,
 } from "./sync.ts";
 import { helloEnroll, helloStatus } from "./win/pool.ts";
 
@@ -25,10 +25,12 @@ const USAGE = `env-kit vault <command>
   import-chrome-csv FILE [--keep]   seal a Chromium password export, then shred FILE
   export-chrome-csv OUT        write name,url,username,password,note for a Chromium import
   doc put NAME FORMAT [--hello] (stdin) | doc pipe NAME FORMAT -- cmd | doc list | doc rm NAME FORMAT
-  sync [--force] [--host h,..] [--install-task [MIN]]   seal + push age envelopes to the hosts
+  sync [--force] [--host h,..] [--push-only] [--install-task [MIN]]   seal + push age envelopes;
+                               --push-only ships sealed envelopes without DPAPI (S4U task)
   status [--remote] [--json]   counts per kind, scope, outbox, last push (no value)
   rotate HOST | --master       new host identity (resealed, pushed) or new master key (docs resealed)
-  hosts [list | init H | install H]   host identity, apply timer, recipient in infra/vault/hosts.toml
+  hosts [list | init H | install H | remove H [--force]]   identity, apply timer, recipient (hosts.toml);
+                               remove: revoke on the host, purge outbox, drop it from hosts/policy/registry
   fp NAME [--host H]           BLAKE3 of a secret, local or on a host (proof without the value)
   backup [NAME..] | restore NAME [DEST]   agent Chromium profiles and user data (profiles.toml)
   hello status | hello enroll  Windows Hello key (Passport KSP) for documents (--hello)
@@ -152,6 +154,11 @@ export async function main(argv: string[]): Promise<number> {
         say(await installTask(m), json);
         return 0;
       }
+      if (flag(a, "--push-only")) {
+        const p = await pushOnly({ force: flag(a, "--force"), only: list(opt(a, "--host")) });
+        say(p, json);
+        return p.pushed.every((x) => !("error" in x) || !x.error) ? 0 : 1;
+      }
       let r: Awaited<ReturnType<typeof sync>>;
       try {
         r = await sync({ force: flag(a, "--force"), only: list(opt(a, "--host")) });
@@ -184,6 +191,7 @@ export async function main(argv: string[]): Promise<number> {
       say(await rotateHost(a[0]), json);
       return 0;
     }
+    case "host":
     case "hosts": {
       const [sub, h] = a;
       if (!sub || sub === "list") {
@@ -192,6 +200,7 @@ export async function main(argv: string[]): Promise<number> {
       }
       if (sub === "init" && h) return say(h === "pc" ? await initPc() : await initHost(h), json), 0;
       if (sub === "install" && h) return say(await installHost(h), json), 0;
+      if (sub === "remove" && h) return say(await removeHost(h, flag(a, "--force")), json), 0;
       break;
     }
     case "fp": {

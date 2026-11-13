@@ -12,6 +12,28 @@ import { join } from "node:path";
 import { localStore, type LocalStoreInfo, WIN } from "./paths.ts";
 import { dpapiProtect, dpapiUnprotect } from "./win/pool.ts";
 
+/**
+ * DPAPI file formats. v1 (env-kit): the raw DPAPI blob, fixed entropy "aphrody/env-kit/secret-store/v1".
+ * v2: "AYD2" + DPAPI blob whose entropy is "aphrody/vault/dpapi/v2|<NAME>": a blob renamed to another
+ * secret no longer decrypts. Both are read; every write is v2 (lazy migration). A raw DPAPI blob
+ * starts with 01 00 00 00 (dwVersion), so the magic cannot collide.
+ */
+export const DPAPI_V2 = new TextEncoder().encode("AYD2");
+export const entropyV2 = (name: string): Uint8Array => new TextEncoder().encode(`aphrody/vault/dpapi/v2|${name}`);
+export const isDpapiV2 = (b: Uint8Array): boolean => b.byteLength > 4 && DPAPI_V2.every((c, i) => b[i] === c);
+
+export async function dpapiEncode(name: string, data: Uint8Array): Promise<Uint8Array> {
+  const blob = await dpapiProtect(data, entropyV2(name));
+  const out = new Uint8Array(4 + blob.byteLength);
+  out.set(DPAPI_V2);
+  out.set(blob, 4);
+  return out;
+}
+
+export async function dpapiDecode(name: string, file: Uint8Array): Promise<Uint8Array> {
+  return isDpapiV2(file) ? dpapiUnprotect(file.subarray(4), entropyV2(name)) : dpapiUnprotect(file);
+}
+
 export const NAME = /^[A-Za-z_][A-Za-z0-9_.-]{0,127}$/;
 
 export function assertName(name: string): void {
@@ -59,13 +81,13 @@ export async function creds(user: boolean, args: string[], input?: Uint8Array): 
 /** Encrypts bytes with the local layer only (no file): DPAPI blob or systemd-creds credential. */
 export async function protect(name: string, data: Uint8Array): Promise<Uint8Array> {
   const info = localStore();
-  if (info.backend === "dpapi") return dpapiProtect(data);
+  if (info.backend === "dpapi") return dpapiEncode(name, data);
   return creds(info.backend === "systemd-creds-user", ["encrypt", `--name=${name}`, "-", "-"], data);
 }
 
 export async function unprotect(name: string, data: Uint8Array): Promise<Uint8Array> {
   const info = localStore();
-  if (info.backend === "dpapi") return dpapiUnprotect(data);
+  if (info.backend === "dpapi") return dpapiDecode(name, data);
   return creds(info.backend === "systemd-creds-user", ["decrypt", `--name=${name}`, "-", "-"], data);
 }
 
@@ -80,7 +102,7 @@ export async function setSecret(name: string, value: string | Uint8Array): Promi
   const file = join(info.dir, fileName(info, name));
   if (info.backend === "dpapi") {
     const tmp = `${file}.${process.pid}.tmp`;
-    await writeFile(tmp, await dpapiProtect(bytes), { mode: 0o600 });
+    await writeFile(tmp, await dpapiEncode(name, bytes), { mode: 0o600 });
     await rename(tmp, file);
     return;
   }
@@ -95,7 +117,7 @@ export async function getSecretBytes(name: string): Promise<Uint8Array | undefin
   const info = localStore();
   const file = await locate(info, name);
   if (!file) return undefined;
-  if (info.backend === "dpapi") return dpapiUnprotect(new Uint8Array(await readFile(file)));
+  if (info.backend === "dpapi") return dpapiDecode(name, new Uint8Array(await readFile(file)));
   return creds(info.backend === "systemd-creds-user", ["decrypt", `--name=${name}`, file, "-"]);
 }
 

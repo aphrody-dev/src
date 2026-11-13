@@ -13,7 +13,8 @@ use windows::Win32::Security::NCRYPT_DESCRIPTOR_HANDLE;
 use windows::core::{HSTRING, PCWSTR};
 use zeroize::{Zeroize, Zeroizing};
 
-const ENTROPY: &[u8] = b"aphrody/env-kit/secret-store/v1";
+/// v1 entropy (env-kit); v2 passes "aphrody/vault/dpapi/v2|<NAME>" (see local.rs).
+pub const ENTROPY: &[u8] = b"aphrody/env-kit/secret-store/v1";
 
 fn blob(b: &[u8]) -> CRYPT_INTEGER_BLOB {
     CRYPT_INTEGER_BLOB { cbData: b.len() as u32, pbData: b.as_ptr() as *mut u8 }
@@ -29,9 +30,9 @@ unsafe fn take(out: CRYPT_INTEGER_BLOB) -> Vec<u8> {
     v
 }
 
-pub fn dpapi_protect(data: &[u8]) -> Result<Vec<u8>> {
+pub fn dpapi_protect(data: &[u8], extra: &[u8]) -> Result<Vec<u8>> {
     let input = blob(data);
-    let entropy = blob(ENTROPY);
+    let entropy = blob(extra);
     let mut out = CRYPT_INTEGER_BLOB::default();
     unsafe {
         CryptProtectData(&input, PCWSTR::null(), Some(&entropy), None, None, CRYPTPROTECT_UI_FORBIDDEN, &mut out)
@@ -40,9 +41,9 @@ pub fn dpapi_protect(data: &[u8]) -> Result<Vec<u8>> {
     }
 }
 
-pub fn dpapi_unprotect(data: &[u8]) -> Result<Zeroizing<Vec<u8>>> {
+pub fn dpapi_unprotect(data: &[u8], extra: &[u8]) -> Result<Zeroizing<Vec<u8>>> {
     let input = blob(data);
-    let entropy = blob(ENTROPY);
+    let entropy = blob(extra);
     let mut out = CRYPT_INTEGER_BLOB::default();
     unsafe {
         CryptUnprotectData(&input, None, Some(&entropy), None, None, CRYPTPROTECT_UI_FORBIDDEN, &mut out)

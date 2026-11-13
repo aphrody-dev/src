@@ -59,6 +59,29 @@ describe.skipIf(linuxNoCreds)("local layer", () => {
   });
 });
 
+describe.skipIf(process.platform !== "win32")("DPAPI format v2", () => {
+  test("writes v2 bound to the name, reads v1, renamed blob refused, env-kit interop", async () => {
+    const dpapiProtect = V.dpapiProtectRaw;
+    const dir = join(root, "local");
+    await V.setSecret("VAULT_V2_A", FACTICE);
+    const a = readFileSync(join(dir, "VAULT_V2_A.dpapi"));
+    expect(a.subarray(0, 4).toString()).toBe("AYD2");
+    // v1 blob as env-kit wrote it before v2: still read.
+    writeFileSync(join(dir, "VAULT_V1_B.dpapi"), await dpapiProtect(new TextEncoder().encode(FACTICE)));
+    expect(await V.getSecret("VAULT_V1_B")).toBe(FACTICE);
+    // Renaming a v2 blob to another secret: DPAPI refuses (entropy carries the name).
+    copyFileSync(join(dir, "VAULT_V2_A.dpapi"), join(dir, "VAULT_V2_C.dpapi"));
+    expect(await V.getSecret("VAULT_V2_C").then(() => "opened", () => "refused")).toBe("refused");
+    // env-kit (sync API) reads both and writes v2.
+    const ek = await import("../../env-kit/src/secret-store.ts");
+    expect(ek.secretGet("VAULT_V2_A")).toBe(FACTICE);
+    expect(ek.secretGet("VAULT_V1_B")).toBe(FACTICE);
+    ek.secretSet("VAULT_V1_B", FACTICE);
+    expect(readFileSync(join(dir, "VAULT_V1_B.dpapi")).subarray(0, 4).toString()).toBe("AYD2");
+    expect(await V.getSecret("VAULT_V1_B")).toBe(FACTICE);
+  });
+});
+
 describe.skipIf(linuxNoCreds)("envelopes and documents", () => {
   test("AYV1 seal/open, AAD bound", async () => {
     const env = await V.seal("doc|json|x", new TextEncoder().encode(FACTICE));
@@ -146,7 +169,22 @@ describe.skipIf(!Bun.which("age") || linuxNoCreds)("age per host", () => {
     expect(new TextDecoder().decode(await V.ageDecryptFile(env, prd.identity))).toBe(FACTICE);
     await expect(V.ageDecryptFile(env, fr1.identity)).rejects.toThrow();
     expect(existsSync(join(root, "outbox", "prd", "PC_ONLY_TOKEN.age"))).toBe(false);
-    expect(V.taskXml("PC\\u", 5, "C:/src/packages/vault/src/cli.ts")).toContain("InteractiveToken");
+    expect(V.taskXml("PC\\u", 5, "C:/src/packages/vault/src/cli.ts")).toContain("<StateChange>SessionUnlock</StateChange>");
+    expect(V.taskXml("PC\\u", 5, "C:/src/packages/vault/src/cli.ts", "push")).toContain("<LogonType>S4U</LogonType>");
+  });
+});
+
+describe("host removal", () => {
+  test("forgetHost drops the table, its scopes in policy and registry", async () => {
+    await V.register("SCOPED_X", "token", ["pc", "fr1", "fr2"]);
+    const r = await V.forgetHost("fr2");
+    expect(r.registryScopes).toBe(1);
+    expect(r.policyScopes).toBeGreaterThan(0);
+    expect((await V.loadHosts()).map((h) => h.name)).not.toContain("fr2");
+    expect((await V.loadRegistry()).SCOPED_X!.scope).toEqual(["pc", "fr1"]);
+    expect(V.scopeOf("VAULT_PROOF_TOKEN", "token", await V.loadPolicy(), {})).toEqual(["pc", "prd"]);
+    expect(readFileSync(process.env.VAULT_HOSTS_FILE!, "utf8")).toContain("[fr1]");
+    await expect(V.forgetHost("pc")).rejects.toThrow();
   });
 });
 

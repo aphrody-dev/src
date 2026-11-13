@@ -44,6 +44,11 @@ export interface SecretStoreInfo {
 
 const NAME = /^[A-Za-z_][A-Za-z0-9_.-]{0,127}$/;
 const ENTROPY = new TextEncoder().encode("aphrody/env-kit/secret-store/v1");
+// Format v2 (shared with packages/vault/src/store.ts): "AYD2" + DPAPI blob, entropy bound to the name.
+// Both versions are read; writes are v2 (lazy migration). A raw DPAPI blob starts with 01 00 00 00.
+const DPAPI_V2 = new TextEncoder().encode("AYD2");
+const entropyV2 = (name: string) => new TextEncoder().encode(`aphrody/vault/dpapi/v2|${name}`);
+const isV2 = (b: Uint8Array) => b.byteLength > 4 && DPAPI_V2.every((c, i) => b[i] === c);
 
 function assertName(name: string): void {
   if (!NAME.test(name)) throw new Error(`invalid secret name: ${JSON.stringify(name)}`);
@@ -91,8 +96,8 @@ function locate(info: SecretStoreInfo, name: string): string | undefined {
 // --- Windows DPAPI (bun:ffi) ----------------------------------------------------------------
 
 type Dpapi = {
-  protect(data: Uint8Array): Uint8Array;
-  unprotect(blob: Uint8Array): Uint8Array;
+  protect(data: Uint8Array, entropy?: Uint8Array): Uint8Array;
+  unprotect(blob: Uint8Array, entropy?: Uint8Array): Uint8Array;
 };
 
 let dpapi: Dpapi | undefined;
@@ -116,12 +121,12 @@ function loadDpapi(): Dpapi {
     if (bytes.byteLength) b.writeBigUInt64LE(BigInt(ptr(bytes)), 8);
     return b;
   };
-  const call = (fn: "CryptProtectData" | "CryptUnprotectData", input: Uint8Array): Uint8Array => {
+  const call = (fn: "CryptProtectData" | "CryptUnprotectData", input: Uint8Array, extra: Uint8Array = ENTROPY): Uint8Array => {
     // Copy into a buffer bun owns for the duration of the call (ptr() needs a non-empty view).
     const data = new Uint8Array(Math.max(input.byteLength, 1));
     data.set(input);
     const inBlob = blob(data.subarray(0, input.byteLength));
-    const entropy = blob(ENTROPY);
+    const entropy = blob(extra);
     const out = Buffer.alloc(16);
     const ok =
       fn === "CryptProtectData"
@@ -138,8 +143,8 @@ function loadDpapi(): Dpapi {
     }
   };
   dpapi = {
-    protect: (d) => call("CryptProtectData", d),
-    unprotect: (b) => call("CryptUnprotectData", b),
+    protect: (d, e) => call("CryptProtectData", d, e),
+    unprotect: (b, e) => call("CryptUnprotectData", b, e),
   };
   return dpapi;
 }
@@ -170,7 +175,11 @@ export function secretSet(name: string, value: string | Uint8Array): void {
   const file = fileOf(info, name);
   if (info.backend === "dpapi") {
     const tmp = `${file}.${process.pid}.tmp`;
-    writeFileSync(tmp, loadDpapi().protect(bytes));
+    const blob = loadDpapi().protect(bytes, entropyV2(name));
+    const out = new Uint8Array(4 + blob.byteLength);
+    out.set(DPAPI_V2);
+    out.set(blob, 4);
+    writeFileSync(tmp, out);
     renameSync(tmp, file);
     return;
   }
@@ -183,7 +192,10 @@ export function secretGetBytes(name: string): Uint8Array | undefined {
   const info = storeInfo();
   const file = locate(info, name);
   if (!file) return undefined;
-  if (info.backend === "dpapi") return loadDpapi().unprotect(new Uint8Array(readFileSync(file)));
+  if (info.backend === "dpapi") {
+    const raw = new Uint8Array(readFileSync(file));
+    return isV2(raw) ? loadDpapi().unprotect(raw.subarray(4), entropyV2(name)) : loadDpapi().unprotect(raw);
+  }
   return creds(info, ["decrypt", `--name=${name}`, file, "-"]);
 }
 

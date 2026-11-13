@@ -15,7 +15,7 @@ import { mkdir, open as fopen, readdir, readFile, rename, rm, stat, writeFile } 
 import { join } from "node:path";
 import { ageEncrypt, ageKeygen, ageRecipientOf } from "./age.ts";
 import { b3, b3Files, keyedFingerprint, masterKey, RESERVED } from "./crypto.ts";
-import { type Host, loadHosts, loadPolicy, loadRegistry, scopeOf, setRecipient } from "./hosts.ts";
+import { forgetHost, type Host, loadHosts, loadPolicy, loadRegistry, scopeOf, setRecipient } from "./hosts.ts";
 import { infraDir, vaultRoot, WIN } from "./paths.ts";
 import { assertName, getSecretBytes, listSecrets, setSecret } from "./store.ts";
 
@@ -256,6 +256,19 @@ export async function rotateHost(name: string) {
   return { ...r, ...s };
 }
 
+/** Decommission: the host revokes every credential the vault applied, drops its inbox, identity and
+ *  timer; then the PC purges its outbox and state and removes the host from the versioned config.
+ *  `force` goes on with the local part when the host is unreachable (revocation left to do there). */
+export async function removeHost(name: string, force = false) {
+  const h = await hostByName(name);
+  const r = await ssh(h, `${REMOTE} decommission`);
+  if (r.code !== 0 && !force) throw new Error(`${name}: decommission failed (${r.err || r.code}); --force to remove locally only`);
+  await rm(outbox(name), { recursive: true, force: true });
+  for (const f of [`${name}.index.json`, `${name}.pushed.json`]) await rm(join(stateDir(), f), { force: true });
+  const cfg = await forgetHost(name);
+  return { host: name, remote: r.code === 0 ? r.out : `unreachable: ${r.err}`, ...cfg };
+}
+
 /** BLAKE3 of the credential on a host (decrypted there, piped into b3sum: never displayed). */
 export async function remoteFingerprint(name: string, secret: string): Promise<string> {
   assertName(secret); // validated before it reaches the remote shell
@@ -282,21 +295,35 @@ export async function localFingerprint(secret: string): Promise<string | undefin
 // --- Windows scheduled task ----------------------------------------------------------------------
 
 export const TASK = "aphrody-vault-sync";
+export const PUSH_TASK = "aphrody-vault-push";
 
 const xmlEsc = (s: string) => s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 
-/** Every `minutes`, while the owner is logged on (DPAPI user keys need the interactive token),
- *  hidden (`conhost --headless`), one instance at a time, 10 minute limit. */
-export function taskXml(user: string, minutes: number, cli: string): string {
-  const args = `--headless "${process.execPath}" run "${cli}" sync`;
+/**
+ * Two tasks:
+ * - `aphrody-vault-sync` (InteractiveToken: DPAPI user keys exist only in the logged-on session): seal +
+ *   push, at logon, at every unlock (SessionStateChangeTrigger SessionUnlock) and every `minutes`;
+ * - `aphrody-vault-push` (S4U: runs logged on or not, no DPAPI): pushes the envelopes already sealed in
+ *   outbox/ (`sync --push-only`), so a host rebuilt or wiped while the session is closed is refilled.
+ * Hidden (`conhost --headless` for the interactive one), one instance at a time, 10 minute limit.
+ */
+export function taskXml(user: string, minutes: number, cli: string, kind: "sync" | "push" = "sync"): string {
+  const push = kind === "push";
+  const cmd = push ? process.execPath : join(process.env.SystemRoot ?? "C:\\Windows", "System32", "conhost.exe");
+  const args = push ? `run "${cli}" sync --push-only` : `--headless "${process.execPath}" run "${cli}" sync`;
+  const u = xmlEsc(user);
+  const triggers = push
+    ? ""
+    : `
+    <LogonTrigger><Enabled>true</Enabled><UserId>${u}</UserId><Delay>PT1M</Delay></LogonTrigger>
+    <SessionStateChangeTrigger><Enabled>true</Enabled><StateChange>SessionUnlock</StateChange><UserId>${u}</UserId><Delay>PT30S</Delay></SessionStateChangeTrigger>`;
   return `<?xml version="1.0" encoding="UTF-16"?>
 <Task version="1.4" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
-  <RegistrationInfo><Description>aphrody vault: seal and push age envelopes to the fleet (docs/infra/VAULT.md)</Description></RegistrationInfo>
-  <Triggers>
-    <LogonTrigger><Enabled>true</Enabled><UserId>${xmlEsc(user)}</UserId><Delay>PT2M</Delay></LogonTrigger>
+  <RegistrationInfo><Description>aphrody vault: ${push ? "push sealed age envelopes (no DPAPI)" : "seal and push age envelopes"} to the fleet (docs/infra/VAULT.md)</Description></RegistrationInfo>
+  <Triggers>${triggers}
     <TimeTrigger><Repetition><Interval>PT${minutes}M</Interval><StopAtDurationEnd>false</StopAtDurationEnd></Repetition><StartBoundary>2026-01-01T00:00:00</StartBoundary><Enabled>true</Enabled></TimeTrigger>
   </Triggers>
-  <Principals><Principal id="Author"><UserId>${xmlEsc(user)}</UserId><LogonType>InteractiveToken</LogonType><RunLevel>LeastPrivilege</RunLevel></Principal></Principals>
+  <Principals><Principal id="Author"><UserId>${u}</UserId><LogonType>${push ? "S4U" : "InteractiveToken"}</LogonType><RunLevel>LeastPrivilege</RunLevel></Principal></Principals>
   <Settings>
     <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
     <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
@@ -307,21 +334,41 @@ export function taskXml(user: string, minutes: number, cli: string): string {
     <ExecutionTimeLimit>PT10M</ExecutionTimeLimit>
     <Priority>7</Priority>
   </Settings>
-  <Actions Context="Author"><Exec><Command>${xmlEsc(join(process.env.SystemRoot ?? "C:\\Windows", "System32", "conhost.exe"))}</Command><Arguments>${xmlEsc(args)}</Arguments><WorkingDirectory>${xmlEsc(vaultRoot())}</WorkingDirectory></Exec></Actions>
+  <Actions Context="Author"><Exec><Command>${xmlEsc(cmd)}</Command><Arguments>${xmlEsc(args)}</Arguments><WorkingDirectory>${xmlEsc(vaultRoot())}</WorkingDirectory></Exec></Actions>
 </Task>
 `;
 }
 
-export async function installTask(minutes = 5): Promise<{ task: string; code: number; out: string }> {
-  if (!WIN) throw new Error("installTask: Windows only (hosts use aphrody-vault-apply.timer)");
-  const user = `${process.env.USERDOMAIN}\\${process.env.USERNAME}`;
-  const cli = join(import.meta.dir, "cli.ts");
+async function registerTask(name: string, xml: string) {
   await mkdir(stateDir(), { recursive: true, mode: 0o700 });
-  const file = join(stateDir(), `${TASK}.xml`);
+  const file = join(stateDir(), `${name}.xml`);
   // schtasks /XML expects UTF-16 LE with BOM.
-  await writeFile(file, Buffer.concat([Buffer.from([0xff, 0xfe]), Buffer.from(taskXml(user, minutes, cli), "utf16le")]));
-  const p = Bun.spawn(["schtasks", "/Create", "/TN", TASK, "/XML", file, "/F"], { stdout: "pipe", stderr: "pipe" });
+  await writeFile(file, Buffer.concat([Buffer.from([0xff, 0xfe]), Buffer.from(xml, "utf16le")]));
+  const p = Bun.spawn(["schtasks", "/Create", "/TN", name, "/XML", file, "/F"], { stdout: "pipe", stderr: "pipe" });
   const [out, err, code] = await Promise.all([new Response(p.stdout).text(), new Response(p.stderr).text(), p.exited]);
   await rm(file, { force: true });
-  return { task: TASK, code, out: (out + err).trim() };
+  return { task: name, code, out: (out + err).trim() };
+}
+
+export async function installTask(minutes = 5) {
+  if (!WIN) throw new Error("installTask: Windows only (hosts use aphrody-vault-apply.timer)");
+  const domain = process.env.USERDOMAIN;
+  const name = process.env.USERNAME;
+  if (!domain || !name) throw new Error("installTask: USERDOMAIN/USERNAME absent");
+  const user = `${domain}\\${name}`;
+  const cli = join(import.meta.dir, "cli.ts");
+  return [await registerTask(TASK, taskXml(user, minutes, cli, "sync")), await registerTask(PUSH_TASK, taskXml(user, minutes, cli, "push"))];
+}
+
+/** Pushes what outbox/ already holds: no seal, no DPAPI, no secret in clear (S4U task). */
+export async function pushOnly(opts: { force?: boolean; only?: string[] } = {}) {
+  return withLock(async () => {
+    const hosts = (await loadHosts()).filter((h) => h.name !== "pc" && h.recipient && (!opts.only || opts.only.includes(h.name)));
+    const present = await Promise.all(hosts.map((h) => stat(join(outbox(h.name), "MANIFEST")).then(() => true, () => readdir(outbox(h.name)).then(() => true, () => false))));
+    const pushed = await Promise.all(
+      hosts.filter((_, i) => present[i]).map((h) => push(h, opts.force).catch((e) => ({ host: h.name, pushed: false, envelopes: 0, manifest: "", error: (e as Error).message }))),
+    );
+    await writeFile(join(stateDir(), "last-push.json"), JSON.stringify({ at: new Date().toISOString(), pushed }), { mode: 0o600 });
+    return { pushed };
+  });
 }

@@ -66,6 +66,12 @@ pub fn store_info() -> StoreInfo {
     StoreInfo { backend: Backend::SystemdCredsUser, dir: over.unwrap_or_else(|| cfg.join("credstore.encrypted")), legacy: vec![] }
 }
 
+/// DPAPI file format v2: b"AYD2" + blob with entropy bound to the name. v1 = raw blob, fixed entropy.
+pub const DPAPI_V2: &[u8; 4] = b"AYD2";
+pub fn entropy_v2(name: &str) -> Vec<u8> {
+    format!("aphrody/vault/dpapi/v2|{name}").into_bytes()
+}
+
 fn file_name(info: &StoreInfo, name: &str) -> String {
     if info.backend == Backend::Dpapi { format!("{name}.dpapi") } else { name.to_string() }
 }
@@ -118,7 +124,9 @@ pub async fn set_secret(name: &str, value: &[u8]) -> Result<()> {
         #[cfg(windows)]
         Backend::Dpapi => {
             let v = Zeroizing::new(value.to_vec());
-            let blob = tokio::task::spawn_blocking(move || crate::win::dpapi_protect(&v)).await.map_err(|_| Error::Os("join".into()))??;
+            let e = entropy_v2(name);
+            let mut blob = DPAPI_V2.to_vec();
+            blob.extend(tokio::task::spawn_blocking(move || crate::win::dpapi_protect(&v, &e)).await.map_err(|_| Error::Os("join".into()))??);
             let tmp = file.with_extension(format!("dpapi.{}.tmp", std::process::id()));
             tokio::fs::write(&tmp, blob).await?;
             tokio::fs::rename(&tmp, &file).await?;
@@ -142,8 +150,14 @@ pub async fn get_secret(name: &str) -> Result<Zeroizing<Vec<u8>>> {
     match info.backend {
         #[cfg(windows)]
         Backend::Dpapi => {
-            let blob = tokio::fs::read(&file).await?;
-            tokio::task::spawn_blocking(move || crate::win::dpapi_unprotect(&blob)).await.map_err(|_| Error::Os("join".into()))?
+            let raw = tokio::fs::read(&file).await?;
+            let e = entropy_v2(name);
+            tokio::task::spawn_blocking(move || match raw.strip_prefix(DPAPI_V2.as_slice()) {
+                Some(b) => crate::win::dpapi_unprotect(b, &e),
+                None => crate::win::dpapi_unprotect(&raw, crate::win::ENTROPY),
+            })
+            .await
+            .map_err(|_| Error::Os("join".into()))?
         }
         #[cfg(not(windows))]
         Backend::Dpapi => Err(Error::Os("DPAPI on Windows only".into())),

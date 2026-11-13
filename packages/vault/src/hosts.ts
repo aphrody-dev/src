@@ -52,6 +52,46 @@ export async function loadHosts(): Promise<Host[]> {
 const q = (s: string) => JSON.stringify(s);
 
 /** Rewrites one host's recipient in place (keeps comments and layout of hosts.toml). */
+/** Drops a TOML table (and the comment lines just above it) from a file, keeping the rest verbatim. */
+function dropTable(text: string, table: string): string {
+  const lines = text.split("\n");
+  const out: string[] = [];
+  let skip = false;
+  for (const l of lines) {
+    const sec = /^\[([^\]]+)\]\s*$/.exec(l);
+    if (sec) {
+      skip = sec[1] === table;
+      if (skip) while (out.length && /^#/.test(out.at(-1)!)) out.pop();
+    }
+    if (!skip) out.push(l);
+  }
+  return out.join("\n").replace(/\n{3,}/g, "\n\n");
+}
+
+/** Removes a host from hosts.toml, from every scope of policy.toml and of the local registry. */
+export async function forgetHost(host: string): Promise<{ policyScopes: number; registryScopes: number }> {
+  if (host === "pc") throw new Error("the PC cannot be removed");
+  await writeFile(hostsFile(), dropTable(await readFile(hostsFile(), "utf8"), host));
+  let policyScopes = 0;
+  const pol = (await readFile(policyFile(), "utf8")).split("\n").map((l) => {
+    const m = /^(\s*[A-Za-z_][A-Za-z0-9_.-]*\s*=\s*)\[(.*)\](.*)$/.exec(l);
+    if (!m || !new RegExp(`"${host}"`).test(m[2]!)) return l;
+    policyScopes++;
+    const kept = m[2]!.split(",").map((x) => x.trim()).filter((x) => x && x !== `"${host}"`);
+    return `${m[1]}[${kept.join(", ")}]${m[3]}`;
+  });
+  await writeFile(policyFile(), pol.join("\n"));
+  const reg = await loadRegistry();
+  let registryScopes = 0;
+  for (const e of Object.values(reg))
+    if (e.scope?.includes(host)) {
+      e.scope = e.scope.filter((h) => h !== host);
+      registryScopes++;
+    }
+  await saveRegistry(reg);
+  return { policyScopes, registryScopes };
+}
+
 export async function setRecipient(host: string, recipient: string): Promise<void> {
   const f = hostsFile();
   const lines = (await readFile(f, "utf8")).split("\n");

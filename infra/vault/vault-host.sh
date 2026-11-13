@@ -9,6 +9,7 @@
 #   receive           tar of age envelopes on stdin -> inbox (atomic swap), then apply
 #   apply             inbox/<NAME>.age -> credstore/<NAME> (systemd-creds), idempotent by BLAKE3,
 #                     revokes the credentials it applied earlier and no longer receives
+#   decommission      revoke every credential the vault applied, remove identity, timer, state, script
 #   fp NAME           BLAKE3 of the decrypted credential (proof without revealing it)
 #   status            counts
 set -euo pipefail
@@ -91,6 +92,19 @@ case "${1:-status}" in
     # Exit 0: transport succeeded; per-name failures are reported, not retried in a loop.
     echo "applied=$applied unchanged=$unchanged revoked=$revoked failed=$failed store=$STORE"
     ;;
+  decommission)
+    # Host leaves the vault: revoke what the vault applied, drop identity, state, timer and this script.
+    revoked=0
+    shopt -s nullglob
+    for p in "$VAULT"/applied/*; do n=$(basename "$p"); rm -f "$STORE/$n" "$p"; revoked=$((revoked+1)); done
+    rm -f "$STORE/$ID" "$STORE/$ID.new"
+    if [ "$(id -u)" = 0 ]; then S=(); U=/etc/systemd/system; else S=(--user); U="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user"; fi
+    [ -n "${VAULT_HOST_NO_SYSTEMD:-}" ] || systemctl "${S[@]}" disable --now aphrody-vault-apply.timer >/dev/null 2>&1 || true
+    rm -f "$U/aphrody-vault-apply.timer" "$U/aphrody-vault-apply.service"
+    [ -n "${VAULT_HOST_NO_SYSTEMD:-}" ] || systemctl "${S[@]}" daemon-reload >/dev/null 2>&1 || true
+    flock -u 9; rm -rf "$VAULT"; rm -f "$0"
+    echo "decommissioned revoked=$revoked"
+    ;;
   fp)
     n="${2:?NAME}"; [[ $n =~ $NAME_RE ]] && [ "$n" != "$ID" ] || { echo "fp: invalid name" >&2; exit 2; }
     creds decrypt --name="$n" "$STORE/$n" - | b3sum --no-names
@@ -99,5 +113,5 @@ case "${1:-status}" in
     shopt -s nullglob; in=("$VAULT"/inbox/*.age); ap=("$VAULT"/applied/*)
     echo "inbox=${#in[@]} applied=${#ap[@]} identity=$([ -f "$STORE/$ID" ] && echo yes || echo no) at=$(cat "$VAULT/applied.at" 2>/dev/null || echo never) store=$STORE"
     ;;
-  *) echo "usage: vault-host.sh keygen|recipient|receive|apply|fp NAME|status" >&2; exit 2 ;;
+  *) echo "usage: vault-host.sh keygen|recipient|receive|apply|decommission|fp NAME|status" >&2; exit 2 ;;
 esac

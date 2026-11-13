@@ -63,12 +63,12 @@ function blob(bytes: Uint8Array): Buffer {
   return b;
 }
 
-function dpapiCall(protect: boolean, input: Uint8Array): Uint8Array {
+function dpapiCall(protect: boolean, input: Uint8Array, extra: Uint8Array = ENTROPY): Uint8Array {
   const { crypt32, kernel32 } = L();
   const data = new Uint8Array(Math.max(input.byteLength, 1));
   data.set(input);
   const inBlob = blob(data.subarray(0, input.byteLength));
-  const entropy = blob(ENTROPY);
+  const entropy = blob(extra);
   const out = Buffer.alloc(16);
   const fn = protect ? crypt32.CryptProtectData : crypt32.CryptUnprotectData;
   const ok = fn(ptr(inBlob), null, ptr(entropy), null, null, CRYPTPROTECT_UI_FORBIDDEN, ptr(out));
@@ -86,8 +86,9 @@ function dpapiCall(protect: boolean, input: Uint8Array): Uint8Array {
   }
 }
 
-export const dpapiProtect = (d: Uint8Array): Uint8Array => dpapiCall(true, d);
-export const dpapiUnprotect = (b: Uint8Array): Uint8Array => dpapiCall(false, b);
+/** `entropy`: v1 = fixed ENTROPY; v2 = ENTROPY_V2 || name (store.ts), so a renamed blob no longer opens. */
+export const dpapiProtect = (d: Uint8Array, entropy?: Uint8Array): Uint8Array => dpapiCall(true, d, entropy);
+export const dpapiUnprotect = (b: Uint8Array, entropy?: Uint8Array): Uint8Array => dpapiCall(false, b, entropy);
 
 // --- Windows Hello (NCrypt, Passport KSP) ------------------------------------------------------
 

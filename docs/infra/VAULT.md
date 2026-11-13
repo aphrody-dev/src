@@ -12,7 +12,7 @@ Ce coffre unique sert tout `src`. Il range les jetons et clés d'API, les mots d
 
 | Hôte | Racine | Couche locale |
 |---|---|---|
-| PC (Windows) | `C:\src\var\secrets` | `local\<NOM>.dpapi` : DPAPI utilisateur (`CryptProtectData`, entropie `aphrody/env-kit/secret-store/v1`) |
+| PC (Windows) | `C:\src\var\secrets` | `local\<NOM>.dpapi` : DPAPI utilisateur (`CryptProtectData`), format v2 lié au nom (voir ci-dessous) |
 | VPS, utilisateur | `~/.local/share/aphrody/vault` (inbox, applied) | `~/.config/credstore.encrypted/<NOM>` : `systemd-creds --user` |
 | VPS, root | idem | `/etc/credstore.encrypted/<NOM>` : `systemd-creds` (clé d'hôte, plus TPM2 si présent) |
 
@@ -35,6 +35,7 @@ registry.json   type et portée par nom (aucune valeur)
 
 1. **Couche locale, liée à la machine.**
    - Windows : DPAPI utilisateur. Les appels FFI tournent dans un pool de Workers bun (`src/win/pool.ts`), jamais sur la boucle d'événements.
+   - Format des fichiers DPAPI. v1 (env-kit d'origine) : blob brut, entropie fixe `aphrody/env-kit/secret-store/v1`. v2 : `AYD2` suivi du blob, entropie `aphrody/vault/dpapi/v2|<NOM>`. Un blob v2 renommé vers un autre secret ne se déchiffre plus (`CryptUnprotectData` échoue). Les deux versions sont lues par `@aphrody/vault`, par env-kit (`secret-store.ts`) et par la crate Rust ; toute écriture produit du v2, ce qui migre chaque secret à sa prochaine écriture. Un blob DPAPI brut commence par `01 00 00 00`, donc le préfixe ne peut pas être confondu.
    - Option Windows Hello : une clé RSA-2048 dans le « Microsoft Passport Key Storage Provider » (NCrypt). Elle enveloppe la clé de chaque document `--hello`. Sceller fait une opération publique (`NCryptEncrypt`), sans geste. Ouvrir passe par `NCryptDecrypt` et demande le geste Hello.
    - Linux : `systemd-creds`. L'option `--user` lie le credential à l'UID et au machine-id.
 2. **Enveloppe de transport et de portabilité : age X25519, un destinataire par hôte.**
@@ -69,7 +70,11 @@ Aujourd'hui, seuls `VAULT_PROOF_TOKEN` et `CLAUDE_CODE_OAUTH_TOKEN` partent vers
 
 ## Synchronisation
 
-- **PC.** La tâche planifiée `aphrody-vault-sync` tourne toutes les 5 min et à l'ouverture de session (`env-kit vault sync --install-task 5`). Elle utilise `InteractiveToken`, car les clés DPAPI de l'utilisateur ne sont pas disponibles en S4U, et `conhost --headless` pour rester sans fenêtre. Elle ne lance qu'une instance à la fois.
+- **PC.** `env-kit vault sync --install-task 5` enregistre deux tâches :
+  - `aphrody-vault-sync` (`InteractiveToken`, `conhost --headless`) : scelle et pousse, à l'ouverture de session, à chaque déverrouillage (`SessionStateChangeTrigger` `SessionUnlock`) et toutes les 5 min ;
+  - `aphrody-vault-push` (S4U, « exécuter même si l'utilisateur n'est pas connecté ») : pousse sans rien déchiffrer les enveloppes déjà scellées dans `outbox/` (`sync --push-only`). Un VPS réinstallé ou vidé pendant que la session est fermée est donc rechargé ; testé le 2026-11-13 (poussée S4U acceptée par fr1).
+  - `env-kit secret set` et `env-kit vault add` scellent tout de suite pour les hôtes de la portée : la poussée ne dépend plus de la session.
+  - **Limite restante** : sceller exige DPAPI, donc la session de l'utilisateur (S4U n'a pas ses clés DPAPI). Un secret écrit hors du coffre (outil qui n'appelle ni `env-kit` ni `@aphrody/vault`) pendant que la session est fermée attend le prochain déverrouillage pour partir. Les tâches ne tournent que si le PC est allumé.
   1. **seal.** Pour chaque hôte, le PC chiffre en age chaque jeton de la portée. Une empreinte HMAC (clé maîtresse, hôte, destinataire, valeur) saute les valeurs inchangées. Un nom sorti de la portée est retiré.
   2. **push.** Le PC envoie `MANIFEST` (BLAKE3 de chaque enveloppe) et les enveloppes en `tar` par ssh sur le mesh (`fr2`, `fr1`, prd via `-J fr2 agent@10.200.77.5`) vers `vault-host.sh receive`. La poussée est sautée si le MANIFEST n'a pas changé, sauf toutes les 6 h (`VAULT_REPUSH_HOURS`).
 - **Hôte.** `receive` vérifie chaque ligne du MANIFEST et refuse un fichier altéré ou une archive sans MANIFEST, ce qui protège contre une révocation massive par erreur. Il bascule l'inbox de façon atomique, puis lance `apply`.
@@ -77,6 +82,7 @@ Aujourd'hui, seuls `VAULT_PROOF_TOKEN` et `CLAUDE_CODE_OAUTH_TOKEN` partent vers
   - Il révoque les credentials qu'il a lui-même appliqués quand ils ne sont plus reçus. Les autres ne sont jamais touchés.
   - `aphrody-vault-apply.timer` réapplique toutes les heures.
 - **Services.** Ils lisent `LoadCredentialEncrypted=<NOM>`. Une unité utilisateur cherche dans `~/.config/credstore.encrypted`, qui doit avoir été chiffré avec `--user` (`man systemd.exec`, systemd 261 sur fr2 ; `--user` existe depuis la v256). Un runner lit avec `systemd-creds --user decrypt --name=<NOM>`, comme `infra/agents/runner.ts`.
+- **Retrait d'un hôte.** `env-kit vault host remove <hôte>` (ou `hosts remove`) lance `vault-host.sh decommission` sur l'hôte : révocation de tous les credentials appliqués par le coffre, suppression de l'identité age, de l'inbox, de l'état, du timer et du script. Puis le PC purge `outbox/<hôte>` et son état, et retire l'hôte de `hosts.toml`, des portées de `policy.toml` et du registre. `--force` fait la partie locale si l'hôte est injoignable (révocation à refaire sur place). Testé en bac à sable sur fr1 : `applied=1`, rejeu refusé, `decommissioned revoked=1`, credstore vide, script et état supprimés.
 - **Rotation.**
   - `env-kit vault rotate <hôte>` crée une nouvelle identité sur l'hôte, met à jour `hosts.toml`, rescelle et pousse aussitôt.
   - `env-kit vault rotate --master` crée une nouvelle clé maîtresse et rescelle les documents.
