@@ -14,13 +14,13 @@ de requête. Le relevé reproductible et indexé (SQLite FTS5) est `relay recon`
 
 ## API observées
 
-| Appel | Rôle observé |
-|---|---|
-| `POST /_/BardChatUi/data/batchexecute?rpcids=…` | RPC batchexecute (Wiz) : 19 rpcids au chargement, `PCck7e`, `VxUbXb`, `aPya6c` à l'envoi d'un message |
-| `POST geminiweb-pa.clients6.google.com/v1/processSession` | suivi de session pendant la génération |
-| `signaler-pa.clients6.google.com/punctual/v1/chooseServer`, `/punctual/multi-watch/channel` | canal de notifications |
-| `waa-pa.clients6.google.com/$rpc/google.internal.waa.v1.Waa/Create` | attestation web (anti-abus) |
-| `/_/BardChatUi/cspreport`, `/cspreport/fine-allowlist` | rapports CSP |
+| Appel                                                                                       | Rôle observé                                                                                          |
+| ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `POST /_/BardChatUi/data/batchexecute?rpcids=…`                                             | RPC batchexecute (Wiz) : 19 rpcids au chargement, `PCck7e`, `VxUbXb`, `aPya6c` à l'envoi d'un message |
+| `POST geminiweb-pa.clients6.google.com/v1/processSession`                                   | suivi de session pendant la génération                                                                |
+| `signaler-pa.clients6.google.com/punctual/v1/chooseServer`, `/punctual/multi-watch/channel` | canal de notifications                                                                                |
+| `waa-pa.clients6.google.com/$rpc/google.internal.waa.v1.Waa/Create`                         | attestation web (anti-abus)                                                                           |
+| `/_/BardChatUi/cspreport`, `/cspreport/fine-allowlist`                                      | rapports CSP                                                                                          |
 
 Rpcids au chargement : otAQ7b, sJBwce, DYBcR, aPya6c, GPRiHf, maGuAc, ESY5D, MaZiqc, VxUbXb, FQjvN, o30O0e, ozz5Z, K4WWud,
 CNgdBe, I4z33b, cYRIkd, cCSu7, L5adhe, ku4Jyf.

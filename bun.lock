@@ -12,6 +12,14 @@
       "name": "@aphrody/infra-ffi-bridge",
       "version": "1.27.0",
     },
+    "packages/ai-os": {
+      "name": "@aphrody/ai-os",
+      "version": "0.2.0",
+      "bin": {
+        "ai-os": "./src/cli.ts",
+        "relay": "./src/relay/cli.ts",
+      },
+    },
     "packages/bun-parity": {
       "name": "@aphrody/bun-parity",
       "version": "1.0.0",
@@ -88,6 +96,8 @@
     },
   },
   "packages": {
+    "@aphrody/ai-os": ["@aphrody/ai-os@workspace:packages/ai-os"],
+
     "@aphrody/bun-parity": ["@aphrody/bun-parity@workspace:packages/bun-parity"],
 
     "@aphrody/bun-plugins": ["@aphrody/bun-plugins@workspace:packages/bun-plugins"],

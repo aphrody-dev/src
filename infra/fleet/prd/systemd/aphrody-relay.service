@@ -1,0 +1,31 @@
+# Unité systemd utilisateur du relais de @aphrody/ai-os (Linux : prd et postes), sans navigateur.
+# Source : packages/ai-os/src/relay ; copie de src attendue dans ~/src (SRC_ROOT).
+# Installation : install -Dm644 aphrody-relay.service ~/.config/systemd/user/aphrody-relay.service
+#                systemctl --user daemon-reload && systemctl --user enable --now aphrody-relay
+#                loginctl enable-linger "$USER"   (démarrage sans session ouverte)
+[Unit]
+Description=Aphrody relay (Claude Code <-> Gemini, MCP, A2A, ACP, TCP/TLS)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Environment=RELAY_GEMINI=agy
+Environment=RELAY_PORT=8790
+Environment=RELAY_TCP_PORT=8791
+Environment=SRC_ROOT=%h/src
+EnvironmentFile=-%h/.config/aphrody/relay.env
+ExecStart=%h/.bun/bin/bun %h/src/packages/ai-os/src/relay/cli.ts serve
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=%h/.local/state/aphrody %h/src
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+[Install]
+WantedBy=default.target

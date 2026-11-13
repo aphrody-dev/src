@@ -1,11 +1,35 @@
 {
-  "name": "agent",
-  "private": true,
+  "name": "@aphrody/ai-os",
+  "version": "0.2.0",
+  "description": "Aphrody AI OS: agent core (memory, skills, context, scheduler), single model bridge discovered at run time, relay (MCP, A2A, ACP, JSON-RPC over HTTP/WS/TCP/TLS), gateway, research, TUI",
   "type": "module",
-  "workspaces": ["packages/*"],
+  "private": true,
+  "bin": {
+    "ai-os": "./src/cli.ts",
+    "relay": "./src/relay/cli.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./core": "./src/core/index.ts",
+    "./llm": "./src/llm/index.ts",
+    "./llm/testing": "./src/llm/testing.ts",
+    "./gateway": "./src/gateway/index.ts",
+    "./research": "./src/research/index.ts",
+    "./tui": "./src/tui/index.ts",
+    "./relay": "./src/relay/protocols.ts",
+    "./relay/server": "./src/relay/server.ts"
+  },
   "scripts": {
-    "agent": "bun packages/core/src/cli.ts",
-    "test": "bun test packages",
-    "check": "bun check -b packages/core/src/index.ts"
+    "test": "bun test test",
+    "check": "bun check src/cli.ts",
+    "relay": "bun src/relay/cli.ts serve"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aphrody-dev/src.git",
+    "directory": "packages/ai-os"
   }
 }

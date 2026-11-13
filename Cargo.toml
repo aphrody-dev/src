@@ -34,6 +34,7 @@ depot-cli = { version = "0.2.0", path = "crates/depot-cli" }
 depot-core = { version = "0.2.0", path = "crates/depot-core" }
 depot-cas = { version = "0.2.0", path = "crates/depot-cas" }
 depot-cipd = { version = "0.2.0", path = "crates/depot-cipd" }
+agent-context = { version = "0.1.0", path = "crates/agent-context" }
 aphrody-core = { version = "0.2.0", path = "crates/core" }
 aphrody-core-capi = { version = "0.2.0", path = "crates/core-capi" }
 depot-re = { version = "0.2.0", path = "crates/depot-re" }

@@ -14,7 +14,7 @@ def test_roundtrip_shared_schema(tmp_path):
     assert hits[0]["id"] == mid
     out = json.loads(p.handle_tool_call("agent_memory_search", {"query": "French"}))
     assert "French" in out[0]["text"]
-    # same schema as packages/core/src/context.ts
+    # same schema as packages/ai-os/src/core/context.ts
     cols = {r[1] for r in sqlite3.connect(db).execute("PRAGMA table_info(entries)")}
     assert {"id", "source", "scope", "title", "text", "symbols", "at"} <= cols
     assert p.name() == "agent" and len(p.get_tool_schemas()) == 2

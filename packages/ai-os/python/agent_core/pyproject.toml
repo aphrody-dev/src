@@ -9,5 +9,5 @@ description = "pyo3 bridge to the agent Context store (crates/agent-py)."
 requires-python = ">=3.10"
 
 [tool.maturin]
-manifest-path = "../../crates/agent-py/Cargo.toml"
+manifest-path = "../../../../crates/agent-py/Cargo.toml"
 module-name = "agent_core"
