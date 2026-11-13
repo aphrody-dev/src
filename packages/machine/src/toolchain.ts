@@ -19,8 +19,8 @@ type Secret = { name: string; user_env?: boolean };
 type Manifest = {
   claude?: { marketplace?: Marketplace[]; plugin?: Plugin[]; mcp?: Mcp[]; skill?: Skill[] };
   skill?: { private?: (Hosts & { name: string })[] };
-  codex?: { marketplace: string; plugins: string[] };
-  agy?: { plugins: string[] };
+  codex?: { marketplace: string; plugins: string[]; mcp?: string[] };
+  agy?: { plugins: string[]; mcp?: string[] };
   gemini?: { extensions: string[] };
   cleanup?: { link_dirs: string[]; drop_skills?: string[] };
   secret?: Secret[];
@@ -108,6 +108,12 @@ function mcpArgv(s: Mcp): string[] | null {
   const kit = join(SRC, "packages", "env-kit", "src", "cli.ts");
   const bun = Bun.which("bun");
   return bun && existsSync(kit) && process.platform === "win32" ? [bun, kit, "secret", "exec", ...s.secrets, "--", ...cmd] : null;
+}
+
+/** Serveurs HTTP de [[claude.mcp]] repris par un autre agent (`mcp = [noms]` de [codex] ou [agy]) : même URL, sans secret. */
+function sharedMcp(m: Manifest, names: string[] | undefined): { name: string; url: string }[] {
+  const all = (m.claude?.mcp ?? []).filter((x) => here(x) && x.url && !x.headers && !x.secrets && x.state !== "absent");
+  return (names ?? []).flatMap((n) => all.filter((x) => x.name === n).map((x) => ({ name: x.name, url: fill(x.url!) })));
 }
 
 /** Dossier d'un plugin de la marketplace racine : source locale dans src, sinon copie du cache Claude. */
@@ -252,6 +258,16 @@ export async function toolchain({ check }: { check: boolean }): Promise<string[]
       const r = run(["agy", "plugin", "install", dir]);
       if (r.code !== 0) out.push(`ERR  agy plugin ${name} : ${last(r)}`);
     }
+    // MCP partagés (relay = Stitch et Gemini du relais, figma) ; `agy mcp add` met à jour une entrée existante.
+    const ml = run(["agy", "mcp", "list"]).out.split("\n").slice(1);
+    for (const x of sharedMcp(m, m.agy.mcp)) {
+      const row = ml.find((l) => l.split(/\s+/)[0] === x.name);
+      const ok = !!row && row.includes(x.url) && /\benabled\b/.test(row);
+      note(ok, `agy mcp ${x.name}`);
+      if (ok || check) continue;
+      const r = run(["agy", "mcp", "add", x.name, x.url]);
+      if (r.code !== 0) out.push(`ERR  agy mcp ${x.name} : ${last(r)}`);
+    }
   } else if (m.agy) out.push("info agy absent");
 
   // --- Codex : marketplace racine (Codex lit .claude-plugin/marketplace.json) et plugins à source locale.
@@ -268,6 +284,19 @@ export async function toolchain({ check }: { check: boolean }): Promise<string[]
       if (check || (has && !moved)) continue;
       const r = run(["codex", "plugin", "add", id]);
       if (r.code !== 0) out.push(`ERR  codex plugin ${id} : ${last(r)}`);
+    }
+    // MCP partagés : URL streamable HTTP ; l'OAuth éventuel (figma) se fait au premier appel ou par `codex mcp login`.
+    const cm = json<{ name: string; enabled: boolean; transport: { type: string; url?: string } }[]>(["codex", "mcp", "list", "--json"]) ?? [];
+    for (const x of sharedMcp(m, m.codex.mcp)) {
+      const cur = cm.find((c) => c.name === x.name);
+      const ok = !!cur && cur.enabled && cur.transport.url === x.url;
+      note(ok, `codex mcp ${x.name}`);
+      if (ok || check) continue;
+      if (cur) run(["codex", "mcp", "remove", x.name]);
+      // `codex mcp add` d'un serveur OAuth ouvre la connexion et attend : entrée écrite même sur délai dépassé.
+      const r = run(["codex", "mcp", "add", x.name, "--url", x.url]);
+      const added = (json<{ name: string }[]>(["codex", "mcp", "list", "--json"]) ?? []).some((c) => c.name === x.name);
+      if (r.code !== 0) out.push(added ? `info codex mcp ${x.name} : connexion OAuth à valider (codex mcp login ${x.name})` : `ERR  codex mcp ${x.name} : ${last(r)}`);
     }
   } else if (m.codex) out.push("info codex absent");
 

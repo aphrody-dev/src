@@ -228,9 +228,11 @@ hosts = ["pc"]
 [codex]
 marketplace = "aphrody"
 plugins = ["aphrody-skills@aphrody"]
+mcp = ["relay", "figma"]               # serveurs HTTP de [[claude.mcp]] (relay sert stitch__* et gemini_*)
 
 [agy]
 plugins = ["aphrody-skills@aphrody", "web-quality-skills@aphrody"]   # vercel-agent-skills : sans manifeste, refusé par agy
+mcp = ["relay", "figma"]
 
 [gemini]
 extensions = [".agents"]                # gemini extensions link {src}/.agents (CLI absent à ce jour)
