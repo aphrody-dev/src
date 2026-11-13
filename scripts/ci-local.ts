@@ -49,7 +49,7 @@ const J: Job[] = [
 const args = Bun.argv.slice(2);
 const opt = (k: string) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : undefined; };
 const only = opt("--only")?.split(",");
-const maxJobs = Number(opt("--jobs") ?? navigator.hardwareConcurrency / 2 | 0 || 4);
+const maxJobs = Number(opt("--jobs")) || ((navigator.hardwareConcurrency / 2) | 0) || 4;
 const canCompile = process.platform !== "win32";
 const picked = J.filter((j) => !only || only.includes(j.group) || only.includes(j.name));
 if (args.includes("--list")) { for (const j of picked) console.log(`${j.group}\t${j.name}`); process.exit(0); }
