@@ -25,6 +25,9 @@ install-updater = false
 # Release notes and artifacts on aphrody-dev/src GitHub Releases.
 hosting = "github"
 pr-run-mode = "plan"
+# Build only the `aphrody` package (`--package`), not `--workspace`: cdylib members such as
+# crates/agent-py cannot build for musl targets (release v0.2.0, 2026-11-13).
+precise-builds = true
 # release.yml carries one manual patch (checkout token for private submodules); re-apply it
 # after `dist generate`.
 allow-dirty = ["ci"]
