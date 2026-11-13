@@ -303,8 +303,8 @@ ci-lint:
 
 # Everything on fr1 from the synced /srv/src: images pushed to ghcr.io/aphrody-labs, ay, game wasm, site, artifacts in
 # /srv/artifacts/builds/<sha> (+ R2). Prints BUILD_SHA; then: SRC_TAG=<sha> just deploy core prd; SRC_TAG=<sha> just deploy edge fr2
-build-all *args:
-    timeout 14400 ssh vps 'sudo systemd-run --unit=build-all --uid=ubuntu --collect --wait --pipe --property=Nice=10 --setenv=HOME=/home/ubuntu bash /srv/src/infra/fleet/bin/build-all.sh {{args}}'
+build-all targets="default" *args:
+    timeout 14400 ssh vps 'sudo systemd-run --unit=build-all --uid=ubuntu --collect --wait --pipe --property=Nice=10 --setenv=HOME=/home/ubuntu --setenv=TARGETS="{{targets}}" bash /srv/src/infra/fleet/bin/build-all.sh {{args}}'
 
 # Ship build-all images to prd or fr2 from fr1 (ghcr packages are private: pulled on fr1, streamed to the target) and
 # compose up the named services with --wait (usage: just deploy-images prd <sha> core ai-os-relay ai-os-gateway)
