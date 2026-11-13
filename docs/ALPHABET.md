@@ -2,6 +2,11 @@
 
 Décision du propriétaire, 2026-11-13 : src est le holding, comme Alphabet (https://abc.xyz/). Un noyau qui finance et outille tout, des paris indépendants qui partagent ce noyau et peuvent être arrêtés sans toucher au reste. Ce document fait autorité pour l'organisation ; `docs/NAMING.md` et `AGENTS.md` restent la référence des noms et des règles.
 
+## Domaines
+
+- **aphrody.com** joue le rôle d'abc.xyz : vitrine sobre du holding, qui liste le noyau, les paris, les lettres et les métriques publiques. Aucun produit n'y vit.
+- **aphrody.app** joue le rôle de Vercel (équipe `aphrody-dev`) : plateforme de déploiement et tableau de bord des projets (apps, déploiements, domaines, logs, preview par commit), construite sur notre propre stack (Cloudflare Workers, R2, flotte), sans `vercel.json` ni dépendance à Vercel.
+
 ## Principes
 
 - **Un monorepo, une vérité** : tout vit dans `C:\src` sur `main`. Les forks sont dans `third_party/`, la liste est dans `third_party/forks.txt`, et les piles de patchs passent par `ay upstream`.
