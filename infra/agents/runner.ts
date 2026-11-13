@@ -126,7 +126,29 @@ function childEnv(extra: Record<string, string> = {}): Record<string, string> {
       (process.env.AGENTS_KEEP_ENV === "1" || !SCRUB.test(k))
     )
       e[k] = v;
-  return { ...e, ...extra };
+  return { ...e, ...credEnv(), ...extra };
+}
+
+// Long-lived CLI credentials for the runner user (Linux): encrypted with `systemd-creds --user`
+// (`ay secret set NAME`, docs/infra/AUTH.md) in ~/.config/credstore.encrypted/NAME, decrypted
+// into the children's environment only (never argv, logs or files). Cached per worker for 10 min.
+const CRED_NAMES = ["CLAUDE_CODE_OAUTH_TOKEN", "GH_TOKEN"];
+let credCache: { at: number; env: Record<string, string> } | null = null;
+function credEnv(): Record<string, string> {
+  if (WIN || !process.env.HOME) return {};
+  if (credCache && Date.now() - credCache.at < 600_000) return credCache.env;
+  const env: Record<string, string> = {};
+  for (const name of CRED_NAMES) {
+    const f = join(process.env.HOME, ".config", "credstore.encrypted", name);
+    if (!existsSync(f)) continue;
+    const r = Bun.spawnSync(
+      ["systemd-creds", "--user", `--name=${name}`, "decrypt", f, "-"],
+      { stdout: "pipe", stderr: "ignore" },
+    );
+    if (r.exitCode === 0) env[name] = r.stdout.toString().trim();
+  }
+  credCache = { at: Date.now(), env };
+  return env;
 }
 function sh(
   cmd: string[],
@@ -808,9 +830,15 @@ function probe(): Record<string, string> {
       res[p] = "missing";
       continue;
     }
-    const r = sh(argv0(p, [p === "tmux" ? "-V" : "--version"]), {
-      timeoutMs: 20_000,
-    });
+    let r = { exit: 127, out: "", err: "" };
+    try {
+      r = sh(argv0(p, [p === "tmux" ? "-V" : "--version"]), {
+        timeoutMs: 20_000,
+      });
+    } catch (e) {
+      res[p] = `unusable (${String(e).slice(0, 80)})`;
+      continue;
+    }
     res[p] =
       r.exit === 0
         ? (r.out || r.err).trim().split(/\r?\n/)[0]
