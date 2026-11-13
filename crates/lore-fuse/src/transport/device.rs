@@ -179,7 +179,8 @@ fn clone_device(master: BorrowedFd<'_>) -> Result<OwnedFd, FuseError> {
     let ret = unsafe {
         libc::ioctl(
             clone.as_raw_fd(),
-            FUSE_DEV_IOC_CLONE,
+            // glibc takes `c_ulong`, musl `c_int` (images build static musl).
+            FUSE_DEV_IOC_CLONE as _,
             &master_raw as *const u32,
         )
     };
