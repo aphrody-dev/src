@@ -3907,7 +3907,7 @@
             "path": "third_party/rubash",
             "url": "https://github.com/aphrody-labs/rubash.git",
             "upstream_url": "https://github.com/unixwin/rubash.git",
-            "commit": "19b784a41b506f0ddac744443d59a1d0c962f429",
+            "commit": "2fb9bc210f11312d732a8aa65c6bfa7708c3ecef",
             "branch": "master",
             "engine": "git",
             "pillar": "git",
