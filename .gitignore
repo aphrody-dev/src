@@ -84,9 +84,3 @@ graphify-out/
 !/scripts/
 
 packages/shell-matrix/bin/
-
-# Large binary design sources (Figma exports, >100 MB): reproducible, not in git
-assets/*.fig
-assets/*.zip
-apps/aphrody/NUL
-apps/.lst-*

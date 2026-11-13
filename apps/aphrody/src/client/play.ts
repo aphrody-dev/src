@@ -54,7 +54,9 @@ async function main() {
   }
   let mod: { default: (opts?: unknown) => Promise<unknown> };
   try {
-    mod = await import(/* @vite-ignore */ GAME_BASE + "game.js");
+    mod = await import(
+      /* @vite-ignore */ GAME_BASE + "game.js"
+    );
   } catch {
     state.error = "game.js missing";
     show(t.missing);

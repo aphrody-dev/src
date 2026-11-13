@@ -104,6 +104,16 @@ export const CONSOLE: Record<string, unknown> = {
   },
 };
 
+/** Ecosystems of the open catalog: everything but the Play Store driver (no scraping of Google Play). */
+const OPEN_ECOSYSTEMS = [
+  "bun",
+  "winget",
+  "aur",
+  "nix",
+  "flatpak",
+  "wasm-hub",
+] as const;
+
 export async function handleOs(
   req: Request,
   url: URL,
@@ -116,10 +126,21 @@ export async function handleOs(
     return data ? json(data, 200, req) : json({ error: "not_found" }, 404, req);
   }
   if (p === "/os/catalog.json") {
-    // Software only: games are served by /os/games.json.
     const q = (url.searchParams.get("q") || "").slice(0, 100);
-    const eco = url.searchParams.get("ecosystem") || "software";
-    return json(await store.searchDetailed(q, eco), 200, req);
+    const found = (
+      await Promise.all(
+        OPEN_ECOSYSTEMS.map((e) => store.search(q, e).catch(() => [])),
+      )
+    ).flat();
+    const seen = new Set<string>();
+    const packages = found
+      .filter((x) => (seen.has(x.id) ? false : (seen.add(x.id), true)))
+      .slice(0, 40);
+    return json(
+      { query: q, source: "open", count: packages.length, packages },
+      200,
+      req,
+    );
   }
   if (
     p === "/os/vm/alpine.iso" &&

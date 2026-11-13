@@ -16,8 +16,7 @@ export const GAMESCOPE_CSP = [
   "form-action 'none'",
 ].join("; ");
 
-export const GAMESCOPE_PERMISSIONS =
-  "microphone=(), camera=(), geolocation=(), gamepad=(self), fullscreen=(self)";
+export const GAMESCOPE_PERMISSIONS = "microphone=(), camera=(), geolocation=(), gamepad=(self), fullscreen=(self)";
 
 const STYLE = `
 :root{color-scheme:dark}

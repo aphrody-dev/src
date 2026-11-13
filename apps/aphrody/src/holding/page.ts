@@ -13,14 +13,6 @@ import {
   type,
 } from "../../../../packages/deploy/src/m3.ts";
 import { catalogs } from "../../../../packages/i18n/src/index.ts";
-import {
-  HOME_JS,
-  THEME_APPLY,
-  themeBlocks,
-} from "../../../../packages/deploy/src/ui.ts";
-
-/** Shared scripts, emitted by build.ts as /theme.js and /hero.js. */
-export const UI_SCRIPTS = { "ui.js": HOME_JS };
 
 export const HOME_LOCALES = ["fr", "en", "zh-CN", "ja", "es"] as const;
 export type HoldingLocale = (typeof HOME_LOCALES)[number];
@@ -52,7 +44,7 @@ const BASE: ProductBase[] = [
     id: "app",
     icon: "assets/brand/gen/owner/mark-512.png",
     url: "https://aphrody.app/",
-    state: "partial",
+    state: "built",
   },
   {
     id: "nt",
@@ -63,14 +55,7 @@ const BASE: ProductBase[] = [
   {
     id: "craft",
     icon: "assets/library/icons/vendors/artcraft.png",
-    url: "/craft",
     state: "planned",
-  },
-  {
-    id: "os",
-    icon: "assets/library/icons/vendors/alpine.svg",
-    url: "/os",
-    state: "built",
   },
 ];
 
@@ -271,6 +256,7 @@ export function holdingJsonLd(l: HoldingLocale): Record<string, unknown> {
           item: {
             "@type": "SoftwareApplication",
             name: name(p),
+            description: tr(l, `home.p.${p.id}.text`),
             applicationCategory: "DeveloperApplication",
             image: `https://aphrody.com${iconPath(p)}`,
             ...(p.url
@@ -280,6 +266,7 @@ export function holdingJsonLd(l: HoldingLocale): Record<string, unknown> {
                     : p.url,
                 }
               : {}),
+            provider: { "@id": "https://aphrody.com/#org" },
           },
         })),
       },
@@ -303,11 +290,11 @@ export function renderHolding(root: string, l: HoldingLocale): string {
       (x) => `<link rel="alternate" hreflang="${x}" href="${abs(x)}">`,
     ).join("") +
     `<link rel="alternate" hreflang="x-default" href="https://aphrody.com/">`;
-  const head = `<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(t("home.title"))}</title><meta name="description" content="${esc(t("home.desc"))}"><meta name="color-scheme" content="light dark"><link rel="canonical" href="${abs(l)}">${alternates}<link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="manifest" href="/site.webmanifest"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta property="og:type" content="website"><meta property="og:site_name" content="Aphrody"><meta property="og:title" content="${esc(t("home.title"))}"><meta property="og:description" content="${esc(t("home.desc"))}"><meta property="og:url" content="${abs(l)}"><meta property="og:image" content="https://aphrody.com/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:locale" content="${OG_LOCALE[l]}"><meta name="twitter:card" content="summary_large_image"><meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"><script>${THEME_APPLY}</script>${FONT_LINK}<link rel="stylesheet" href="/holding.css"><script type="module" src="/md.js"></script><script src="/_aphrody/insights.js" defer></script><script type="application/ld+json">${JSON.stringify(holdingJsonLd(l)).replace(/</g, "\\u003c")}</script>`;
+  const head = `<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(t("home.title"))}</title><meta name="description" content="${esc(t("home.desc"))}"><meta name="color-scheme" content="light dark"><link rel="canonical" href="${abs(l)}">${alternates}<link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="manifest" href="/site.webmanifest"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta property="og:type" content="website"><meta property="og:site_name" content="Aphrody"><meta property="og:title" content="${esc(t("home.title"))}"><meta property="og:description" content="${esc(t("home.desc"))}"><meta property="og:url" content="${abs(l)}"><meta property="og:image" content="https://aphrody.com/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Aphrody"><meta property="og:locale" content="${OG_LOCALE[l]}"><meta name="twitter:card" content="summary_large_image"><meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"><script>document.documentElement.dataset.theme=matchMedia("(prefers-color-scheme:dark)").matches?"ember":"dawn"</script>${FONT_LINK}<link rel="stylesheet" href="/holding.css"><script type="module" src="/md.js"></script><script src="/_aphrody/insights.js" defer></script><script type="application/ld+json">${JSON.stringify(holdingJsonLd(l)).replace(/</g, "\\u003c")}</script>`;
   const community = COMMUNITIES.map(
     (c) => `<a href="${c.url}">${c.name}</a>`,
   ).join(", ");
-  return `<!doctype html><html lang="${l}"><head>${head}</head><body><a class="skip" href="#main">${t("home.skip")}</a><header class="bar"><a class="brand" href="${pagePath(l)}">${brand.mark}<span>Aphrody</span></a><nav class="langs" aria-label="${esc(t("home.lang"))}">${langs}</nav></header><main id="main"><section class="hero" data-hero>${heroScene(t("home.alt"))}<div class="wrap"><h1>Aphrody</h1><p class="lead">${esc(t("app.tagline"))}</p><div class="actions"><md-filled-button href="/play">Play</md-filled-button><md-outlined-button href="https://aphrody.app/">aphrody.app</md-outlined-button></div></div></section><section class="block products" aria-labelledby="apps"><div class="wrap"><h2 id="apps">${t("home.apps")}</h2><ul role="list">${cards}</ul></div></section></main><footer><div class="wrap"><p>${esc(t("home.communities"))} ${community}.</p><p><a href="mailto:contact@aphrody.com">contact@aphrody.com</a></p><p>Aphrody, 2026</p></div></footer><script type="module" src="/stage-home.js"></script><script src=/ui.js defer></script></body></html>`;
+  return `<!doctype html><html lang="${l}"><head>${head}</head><body><a class="skip" href="#main">${t("home.skip")}</a><header class="bar"><a class="brand" href="${pagePath(l)}">${brand.mark}<span>Aphrody</span></a><nav class="langs" aria-label="${esc(t("home.lang"))}">${langs}</nav></header><main id="main"><section class="hero">${heroScene(t("home.alt"))}<div class="wrap"><h1>Aphrody</h1><p class="lead">${esc(t("app.tagline"))}</p><div class="actions"><md-filled-button href="/play">Play</md-filled-button><md-outlined-button href="https://aphrody.app/">aphrody.app</md-outlined-button></div></div></section><section class="block products" aria-labelledby="apps"><div class="wrap"><h2 id="apps">${t("home.apps")}</h2><ul role="list">${cards}</ul></div></section></main><footer><div class="wrap"><p>${esc(t("home.communities"))} ${community}.</p><p><a href="mailto:contact@aphrody.com">contact@aphrody.com</a></p><p>Aphrody, 2026</p></div></footer><script type="module" src="/stage-home.js"></script></body></html>`;
 }
 
 /** Real product art to publish: repository file and its path in dist (icons/<id>.<ext>). */
@@ -324,13 +311,22 @@ export function holding404(root: string): string {
   return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Page introuvable, Aphrody</title><meta name="robots" content="noindex"><meta name="color-scheme" content="light dark"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><script>document.documentElement.dataset.theme=matchMedia("(prefers-color-scheme:dark)").matches?"ember":"dawn"</script>${FONT_LINK}<link rel="stylesheet" href="/holding.css"></head><body><header class="bar"><a class="brand" href="/">${brand.mark}<span>Aphrody</span></a></header><main id="main"><section class="block"><div class="wrap"><h1>Page introuvable</h1><p class="lead">Cette adresse n'existe pas ou plus.</p><p><a href="/">Revenir à l'accueil</a> · <a href="/en" lang="en" hreflang="en">Back to the home page</a></p></div></section></main></body></html>`;
 }
 
+// Themes dawn (light) and ember (dark) from packages/design/tokens/themes.css: the plain blocks only.
+function themeBlocks(root: string): string {
+  const f = join(root, "packages", "design", "tokens", "themes.css");
+  const css = readFileSync(f, "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+  return [...css.matchAll(/:root\[data-theme="(?:dawn|ember)"\]\s*\{[^}]*\}/g)]
+    .map((m) => m[0])
+    .join("\n");
+}
+
 // M3 window size classes: compact < 600 dp, medium 600-839, expanded >= 840; the grid follows its container.
 // Motion is transform and opacity only (parallax on scroll, pet bob), off under prefers-reduced-motion.
 const CSS = `*{box-sizing:border-box}html{scroll-behavior:smooth;background:var(--md-sys-color-surface)}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{margin:0;background:var(--md-sys-color-surface);color:var(--md-sys-color-on-surface);${type("body-large")}}
 a{color:var(--md-sys-color-primary)}
 .skip{position:absolute;left:-999px}.skip:focus{left:16px;top:16px;z-index:3;background:var(--md-sys-color-surface-container-highest);padding:8px 16px;border-radius:var(--md-sys-shape-corner-small)}
-.bar{position:absolute;inset:0 0 auto 0;z-index:2;display:flex;align-items:center;gap:12px;padding:8px 72px 8px 16px;min-height:64px}
+.bar{position:absolute;inset:0 0 auto 0;z-index:2;display:flex;align-items:center;gap:12px;padding:8px 16px;min-height:64px}
 .bar .brand{display:flex;align-items:center;gap:12px;color:var(--md-sys-color-on-surface);text-decoration:none;${type("title-large")}}.bar svg{width:40px;height:40px}
 .langs{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
 .langs a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;border-radius:var(--md-sys-shape-corner-full);color:var(--md-sys-color-on-surface);text-decoration:none;${type("label-large")}}
@@ -351,7 +347,7 @@ section.block{padding-block:clamp(40px,6vw,88px)}
 .products{container-type:inline-size;background:var(--md-sys-color-surface)}
 .products ul{list-style:none;margin:0;padding:0;display:grid;gap:16px;grid-template-columns:1fr}
 @container (min-width:560px){.products ul{grid-template-columns:1fr 1fr}}
-@container (min-width:960px){.products ul{grid-template-columns:repeat(6,1fr)}.card{grid-column:span 2}.c-play{grid-column:span 4}.c-ay,.c-craft{grid-column:span 2}.c-os{grid-column:span 4}}
+@container (min-width:960px){.products ul{grid-template-columns:repeat(6,1fr)}.card{grid-column:span 2}.c-play{grid-column:span 4}.c-ay,.c-craft{grid-column:span 2}}
 .card{display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:var(--md-sys-shape-corner-extra-large);background:var(--md-sys-color-surface-container-low);border:1px solid var(--md-sys-color-outline-variant)}
 .card p{margin:0;color:var(--md-sys-color-on-surface-variant)}
 .card .open{margin-top:auto;align-self:flex-start}

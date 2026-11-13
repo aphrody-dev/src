@@ -11,8 +11,6 @@
     "start": "bun run server.ts",
     "test": "bun test",
     "pm": "bun run pm.ts",
-    "nie:archive": "bun run nie-archive.ts",
-    "bench": "bun run src/benchmark/stored.ts",
     "fmt": "bun fmt",
     "check": "bun check",
     "deploy:dry": "bunx wrangler@4.161.0 deploy --dry-run"

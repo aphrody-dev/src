@@ -8,11 +8,7 @@ const MATERIALS = ["aerial_grass_rock", "aerial_rocks_02"];
 
 export async function launcher(): Promise<void> {
   const root = document.getElementById("launcher");
-  if (
-    !root ||
-    new URLSearchParams(location.search).has("autostart") ||
-    !stageSupported().ok
-  ) {
+  if (!root || new URLSearchParams(location.search).has("autostart") || !stageSupported().ok) {
     root?.setAttribute("hidden", "");
     return;
   }
@@ -21,8 +17,7 @@ export async function launcher(): Promise<void> {
   addEventListener("pointerdown", unlock, { once: true });
   addEventListener("keydown", unlock, { once: true });
 
-  const q = <T extends HTMLElement>(id: string) =>
-    document.getElementById(id) as T;
+  const q = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
   const start = q<HTMLButtonElement>("l-start");
   const controls = q<HTMLButtonElement>("l-controls");
   const sound = q<HTMLButtonElement>("l-sound");
@@ -31,9 +26,7 @@ export async function launcher(): Promise<void> {
   let resolve!: () => void;
   const done = new Promise<void>((r) => (resolve = r));
   const handle = await startStage({
-    items: [start, controls, sound].map((b) =>
-      b.closest<HTMLElement>(".l-card")!,
-    ),
+    items: [start, controls, sound].map((b) => b.closest<HTMLElement>(".l-card")!),
     assetBase: "/stage",
     materials: MATERIALS,
     onFocus: () => (sounds.unlock(), sounds.play("rollover")),
@@ -49,9 +42,7 @@ export async function launcher(): Promise<void> {
   sound.addEventListener("click", () => {
     sounds.enabled = !sounds.enabled;
     sound.setAttribute("aria-pressed", String(sounds.enabled));
-    sound.querySelector(".l-state")!.textContent = sounds.enabled
-      ? sound.dataset.on!
-      : sound.dataset.off!;
+    sound.querySelector(".l-state")!.textContent = sounds.enabled ? sound.dataset.on! : sound.dataset.off!;
   });
   start.addEventListener("click", () => resolve());
   start.focus({ preventScroll: true });

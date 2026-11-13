@@ -5,9 +5,7 @@ import { parseMotion } from "../src/immersive/tokens.macro.ts";
 
 describe("motion tokens", () => {
   test("first declaration wins over the reduced-motion override", () => {
-    const m = parseMotion(
-      ":root{--md-sys-motion-duration-short2: 100ms;}@media (x){:root{--md-sys-motion-duration-short2: 0ms;}}",
-    );
+    const m = parseMotion(":root{--md-sys-motion-duration-short2: 100ms;}@media (x){:root{--md-sys-motion-duration-short2: 0ms;}}");
     expect(m.duration.short2).toBe(100);
   });
   test("real tokens are loaded in seconds", () => {
@@ -46,11 +44,7 @@ describe("spatial navigation", () => {
     expect(pickNext(row, 2, "right")).toBe(-1);
   });
   test("prefers the aligned neighbour", () => {
-    const g = [
-      { x: 0, y: 0, w: 100, h: 100 },
-      { x: 0, y: 300, w: 100, h: 100 },
-      { x: 400, y: 20, w: 100, h: 100 },
-    ];
+    const g = [{ x: 0, y: 0, w: 100, h: 100 }, { x: 0, y: 300, w: 100, h: 100 }, { x: 400, y: 20, w: 100, h: 100 }];
     expect(pickNext(g, 0, "down")).toBe(1);
     expect(pickNext(g, 0, "right")).toBe(2);
   });
@@ -68,8 +62,6 @@ describe("play launcher markup", () => {
     expect(html).toContain('<button id="l-start"');
     expect(html).toContain('aria-pressed="true"');
     expect(html).toContain("#launcher:not([hidden]) ~ #msg{visibility:hidden}");
-    expect(html).not.toMatch(
-      /<script(?![^>]*\bsrc=)(?![^>]*application\/json)[^>]*>/,
-    );
+    expect(html).not.toMatch(/<script(?![^>]*\bsrc=)(?![^>]*application\/json)[^>]*>/);
   });
 });
