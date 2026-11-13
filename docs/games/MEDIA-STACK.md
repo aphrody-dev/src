@@ -60,7 +60,7 @@ Source: `gh api repos/<owner>/<repo>` run on 2026-11-13 (stars, last push, SPDX)
 | Repo | License | Stars | Last push | Role |
 | :--- | :--- | ---: | :--- | :--- |
 | llvm/llvm-project | NOASSERTION (Apache-2.0 with LLVM exceptions, to confirm in LICENSE.TXT) | 41423 | 2026-11-13 | clang, lld, LLVM IR; fork already tracked as aphrody-labs/llvm-project |
-| tree-sitter/tree-sitter | MIT | 27461 | 2026-11-13 | incremental parser, C library with a stable C API |
+| tree-sitter/tree-sitter | MIT | 27461 | 2026-11-13 | incremental parser, runtime in plain C, interface in `tree_sitter/api.h` (Context7 /tree-sitter/tree-sitter; "stable" is not stated there) |
 
 ## Import/export through LLVM and tree-sitter: what is and is not built
 
