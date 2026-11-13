@@ -52,6 +52,17 @@ npm-publish-ci pkgs="packages/wck" dry="true":
 env-doctor:
     bun run --cwd "{{root}}/packages/env-kit" src/cli.ts doctor
 
+# Auth service of this host (env-kit auth-daemon.ts): real probe every 5 min, unattended refresh, one grouped notice per credential per 24 h
+[windows]
+auth-daemon-install:
+    schtasks /Create /F /SC ONLOGON /TN aphrody-auth-daemon /TR "\"$(bun -e 'process.stdout.write(process.execPath)')\" run --cwd \"{{root}}/packages/env-kit\" src/cli.ts auth daemon --every 5 --refresh 30"
+    schtasks /Run /TN aphrody-auth-daemon
+
+[unix]
+auth-daemon-install:
+    install -Dm644 "{{root}}/infra/fleet/systemd/aphrody-auth-daemon.service" "$HOME/.config/systemd/user/aphrody-auth-daemon.service"
+    systemctl --user daemon-reload && systemctl --user enable --now aphrody-auth-daemon
+
 # System and depot_tools ecosystem overview
 info:
     ay git info

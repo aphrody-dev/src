@@ -52,6 +52,18 @@ Ordre de résolution : stockage, puis `.env` (ACL NTFS, `env-kit doctor`). `env-
 | R2 S3 temporaire | `shenron-cloudflare-s3-renew` (prd, 10 min) | `/srv/shenron/config/cloudflare/api-token` (`LoadCredential=`) | timer | réparé : verrou et fichier `.next` d'une exécution interrompue (2026-11-12 17:31) bloquaient tout ; drop-in `10-stale-lock.conf` les purge |
 | Steam | `rg-steam-depot` (prd) | refresh token `/srv/rosegriffon/steam/steam-tokens.json` (0600, montage hôte persistant) ; copie coffre `STEAM_REFRESH_TOKEN` | `bun-steam-depot login-qr` (`bun scripts/steam-login.ts --qr`, QR renouvelé jusqu'à approbation) | actif : QR approuvé le 2026-11-13, expire 2027-06-12 ; `list` authentifié voit le manifeste du dépôt 2799861 |
 
+## Règle : pas de relance de connexion (`ay auth daemon`)
+
+Ordre du propriétaire du 2026-11-13 : plus de rafales de connexions ni d'états périmés.
+
+- Un seul service par hôte, `ay auth daemon` (`packages/env-kit/src/auth-daemon.ts`) : unité utilisateur `infra/fleet/systemd/aphrody-auth-daemon.service` sur prd et fr2, tâche planifiée `aphrody-auth-daemon` (à l'ouverture de session) sur le PC ; installation `just auth-daemon-install`.
+- Sonde réelle toutes les 5 min, valeurs relues dans le coffre à chaque passe ; `<état>/auth-state.json` n'est jamais plus vieux que 5 min et tout rapport s'appuie sur une sonde, jamais sur un état en cache.
+- Rafraîchissement sans humain toutes les 30 min (`repair` sans navigateur), et dans les CLI : refresh tokens (gcloud, codex), impersonation de compte de service, jetons d'installation de l'App GitHub, OIDC en CI.
+- Identifiants préférés : sans interaction et longue durée. Impersonation d'un compte de service plutôt qu'un login utilisateur gcloud ; `claude setup-token` (1 an) ; refresh token codex ; OIDC CI.
+- Dernier recours : un identifiant qui exige un clic est signalé au plus une fois par 24 h, tous regroupés dans une seule notification (`<état>/auth-pending.md`, notification Windows). Aucune page n'est ouverte et aucune connexion n'est relancée ; le propriétaire répond par `ay auth daemon --ack <cible>`, qui lance une seule connexion.
+- Tout agent qui relance une connexion hors de ce service viole NHITL (catégorie `login_spam` de l'index).
+- gcloud `org-contact` : plus de login utilisateur. La configuration utilise `yohanpierre15@gmail.com` avec `auth/impersonate_service_account = yolo-automation@aphrody` (rôle owner sur aphrody, alors que contact@aphrody.com n'a aucun rôle sur le projet) ; `gcloud projects describe aphrody --configuration org-contact` répond ACTIVE.
+
 ## Incidents et rotations du 2026-11-13 (UTC)
 
 - `GCP_ADMIN_SA_KEY` (compte `admin-sa@rgfr-8927d`) : clé `31555a22…` affichée dans la sortie d'outil d'une session d'agent, considérée compromise. Nouvelle clé `5de55ed8…` créée (configuration gcloud `owner-yohan`) et propagée : coffre DPAPI, `.env` (JSON brut entre apostrophes, lisible par bun et dotenv), `apps/rosegriffon/apps/rg-website/.env.local`, configuration gcloud `rosegriffon`. Aucun secret GitHub Actions ni copie sur prd ou fr2. Ancienne clé supprimée ; un échange JWT signé avec elle renvoie `invalid_grant` (« Invalid JWT Signature »).
@@ -65,6 +77,6 @@ Points encore ouverts : index NHITL, `just nhitl list --status open` (`var/agent
 ## Ce qui reste au propriétaire
 
 1. Rotation WireGuard du PC : `bash infra/fleet/wg/rotate-wg-win.sh` (une invite UAC), puis `ay auth status --only fleet` doit ne plus signaler `wireguard-key`.
-2. `ay auth repair --browser` : cliquer les consentements gcloud (2 comptes) et npm.
+2. gcloud : plus de consentement à cliquer (`org-contact` par impersonation) ; npm : trusted publishing (autre chantier).
 3. `SUBMODULES_TOKEN` : page du PAT fin ouverte dans Chrome (Contents: read sur aphrody-labs, 90 jours) ; après la passkey et « Generate », copier le jeton : il est lu au presse-papiers, rangé dans le coffre et poussé dans les secrets Actions de `aphrody-dev/src` et `aphrody-labs/src`.
 4. Steam : image `rosegriffon/steam-depot` reconstruite sur prd avec steam-depot d098b41 (`login-qr` présent) ; `bun scripts/steam-login.ts --qr` (apps/rosegriffon) affiche le QR dans Chrome, à approuver dans l'app Steam (fait le 2026-11-13 : approuvé, jeton rangé sur prd et dans le coffre).

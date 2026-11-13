@@ -59,9 +59,10 @@
       "location": "pc gcloud org-contact",
       "category": "owner_click",
       "severity": "medium",
-      "status": "open",
+      "status": "fixed",
       "excerpt": "gcloud auth login contact@aphrody.com : trois consentements reçus pour yohanpierre15@gmail.com (profil Chrome par défaut), BROWSER de gcloud non honoré sous Windows",
-      "fix": "ouvrir l URL OAuth affichée par gcloud dans le profil Chrome « Profile 4 » (contact@aphrody.com) avec login_hint, le rappel localhost:8085 restant à l écoute ; clic du propriétaire"
+      "fix": "login utilisateur abandonné : configuration org-contact = yohanpierre15@gmail.com + impersonation de yolo-automation@aphrody",
+      "reason": "2026-11-13 : gcloud projects describe aphrody --configuration org-contact = ACTIVE ; contact@aphrody.com n a aucun rôle sur le projet"
     },
     {
       "location": "pc npm",
@@ -252,6 +253,15 @@
       "excerpt": "Second hôte Windows à GPU NVIDIA demandé pour le tissu d inférence, absent de deploy.toml, fleet.toml, docs/infra, ~/.ssh/config et des pairs WireGuard",
       "fix": "nœud gpu2 prêt dans infra/ai/fabric.toml (reach vide), admis dès que son port 50052 répond ; étapes dans docs/ai/DISTRIBUTED-INFERENCE.md §4",
       "reason": "2026-11-13 : hôte non déclaré par le propriétaire"
+    },
+    {
+      "location": "agents (toutes sessions)",
+      "category": "login_spam",
+      "severity": "high",
+      "status": "fixed",
+      "excerpt": "relances répétées de connexions (gcloud org-contact x3, codex, npm, setup-token) et états d authentification périmés dans les rapports",
+      "fix": "ay auth daemon seul : sonde réelle toutes les 5 min, refresh sans humain, au plus un signalement groupé par identifiant et par 24 h, aucune page ouverte, --ack pour une seule connexion (docs/infra/AUTH.md)",
+      "reason": "règle du propriétaire du 2026-11-13 ; toute relance hors du service est une violation"
     }
   ]
 }

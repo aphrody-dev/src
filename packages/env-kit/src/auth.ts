@@ -39,7 +39,7 @@ interface HostAuth {
   repair?: boolean;
 }
 
-interface Manifest {
+export interface Manifest {
   nodes: Record<string, { ssh_alias: string; ssh_user?: string; role?: string }>;
   auth: {
     github?: {
@@ -810,6 +810,21 @@ export async function githubApp(o: AuthOptions): Promise<number> {
 
 const KINDS = ["cli", "browser", "token", "store", "ci", "oidc", "fleet", "tunnel-api"] as const;
 
+/** Sondes réelles (status) ou réparations sans mot de passe (repair) ; jamais de cache. */
+export async function collectChecks(m: Manifest, o: AuthOptions, repair: boolean): Promise<Check[]> {
+  const want = (k: string) => !o.only?.length || o.only.includes(k);
+  const checks: Check[] = [];
+  if (want("store")) checks.push(...checkStore());
+  if (want("cli")) checks.push(...(repair ? checkGh(o) : checkGh({ ...o, persist: undefined })), ...checkGcloud(repair ? o : { ...o, browser: false }), ...checkSimple(repair ? o : { ...o, browser: false }));
+  if (want("browser")) checks.push(...checkBrowser());
+  if (want("token")) checks.push(...(await checkTokens()));
+  if (want("ci")) checks.push(...syncGithubSecrets(m, o, repair, await rejectedSecrets()));
+  if (want("oidc")) checks.push(...checkOidc(m, o, false));
+  if (want("fleet")) checks.push(...checkFleet(m, o, repair));
+  if (want("tunnel-api")) checks.push(...(await checkTunnelsApi(m)));
+  return checks;
+}
+
 export async function runAuth(sub: string, o: AuthOptions): Promise<number> {
   const m = loadManifest(o.root);
   const want = (k: string) => !o.only?.length || o.only.includes(k);
@@ -825,14 +840,9 @@ export async function runAuth(sub: string, o: AuthOptions): Promise<number> {
     if (!t.length || t.includes("gcloud")) checks.push(...checkGcloud(lo));
     checks.push(...checkSimple(lo));
   } else if (sub === "status" || sub === "repair") {
-    if (want("store")) checks.push(...checkStore());
-    if (want("cli")) checks.push(...(repair ? checkGh(o) : checkGh({ ...o, persist: undefined })), ...checkGcloud(repair ? o : { ...o, browser: false }), ...checkSimple(repair ? o : { ...o, browser: false }));
-    if (want("browser")) checks.push(...checkBrowser());
-    if (want("token")) checks.push(...(await checkTokens()));
-    if (want("ci")) checks.push(...syncGithubSecrets(m, o, repair, await rejectedSecrets()));
-    if (want("oidc")) checks.push(...checkOidc(m, o, false));
-    if (want("fleet")) checks.push(...checkFleet(m, o, repair));
-    if (want("tunnel-api")) checks.push(...(await checkTunnelsApi(m)));
+    checks = await collectChecks(m, o, repair);
+  } else if (sub === "daemon") {
+    return (await import("./auth-daemon")).daemon(m, o);
   } else if (sub === "gh-secrets") {
     checks = syncGithubSecrets(m, o, true, await rejectedSecrets());
   } else if (sub === "rotate") {
@@ -842,7 +852,7 @@ export async function runAuth(sub: string, o: AuthOptions): Promise<number> {
   } else if (sub === "tunnels") {
     checks = await deployTunnels(m, o);
   } else {
-    console.error(`ay auth: sous-commande inconnue ${sub}. Attendu : status, repair, login, oidc, mint, github-app, gh-secrets, tunnels, rotate`);
+    console.error(`ay auth: sous-commande inconnue ${sub}. Attendu : status, repair, daemon, login, oidc, mint, github-app, gh-secrets, tunnels, rotate`);
     return 2;
   }
   if (o.json) console.log(JSON.stringify(checks, null, 2));
