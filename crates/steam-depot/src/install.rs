@@ -231,6 +231,19 @@ impl AppManifest {
         if (self.state_flags & state_flags::STATE_BACKUP_RUNNING) != 0 {
             list.push("Backup Running");
         }
+        // Higher bits per third_party/steamlocate-rs/src/app.rs (StateFlag::from_bit_offset); the
+        // Bun side reads them from here through `ay steam apps` (one table in the monorepo).
+        const HIGH: [(u64, &str); 8] = [
+            (1 << 16, "Reconfiguring"),
+            (1 << 17, "Validating"),
+            (1 << 18, "Adding Files"),
+            (1 << 19, "Preallocating"),
+            (1 << 20, "Downloading"),
+            (1 << 21, "Staging"),
+            (1 << 22, "Committing"),
+            (1 << 23, "Update Stopping"),
+        ];
+        list.extend(HIGH.iter().filter(|(bit, _)| self.state_flags & bit != 0).map(|(_, name)| *name));
         list
     }
 }

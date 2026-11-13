@@ -32,6 +32,7 @@ Areas:
   fleet      ssh, deploy, auth, secret, vault, ai, agents
   measure    bench, time
   gaming     gaming (Steam, Proton, Vulkan, DirectX via packages/gaming), steam (Steam data as JSON)
+  gaming     gaming (Steam, Proton, Vulkan, DirectX via packages/gaming), steam (Steam data as JSON)
 
 Every command takes --help; machine output is --json where offered.
 Plan: docs/ay/MIGRATION.md; command table: docs/NAMING.md";
@@ -75,6 +76,9 @@ pub enum Cmd {
     /// Gamescope mode (runs the `gamescope-rs` binary)
     #[command(disable_help_flag = true)]
     Scope(Rest),
+    /// Gaming stack (packages/gaming): status, apps, proton, layers, dx, steamcmd, run, skills
+    #[command(disable_help_flag = true)]
+    Gaming(Rest),
     /// Gaming stack (packages/gaming): status, apps, proton, layers, dx, steamcmd, run, skills
     #[command(disable_help_flag = true)]
     Gaming(Rest),
@@ -241,6 +245,7 @@ pub fn route(cmd: Cmd) -> Route {
         }
         Cmd::Bench(r) => Route::Bench(r.args),
         Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
+        Cmd::Gaming(r) => Route::Package("gaming", r.args),
         Cmd::Gaming(r) => Route::Package("gaming", r.args),
         Cmd::Upstream(r) => Route::Package("upstream", r.args),
         Cmd::Linux(r) => Route::Package("linux", r.args),
@@ -536,6 +541,12 @@ mod tests {
     #[test]
     fn brand_runs_the_brand_binary() {
         assert_eq!(parse("brand build --deploy"), Route::External("aphrody-brand", v(&["build", "--deploy"])));
+    }
+
+    #[test]
+    fn gaming_runs_the_bun_package() {
+        assert_eq!(parse("gaming status --json"), Route::Package("gaming", v(&["status", "--json"])));
+        assert!(matches!(parse("steam apps --filter proton"), Route::Low(_)));
     }
 
     #[test]
