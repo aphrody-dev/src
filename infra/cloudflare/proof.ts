@@ -1,12 +1,19 @@
 #!/usr/bin/env bun
 // Re-runs every Cloudflare edge check of docs/infra/FR2-CLOUDFLARE.md; exit 1 on any regression.
-//   bun infra/cloudflare/proof.ts [--md]      (just cf-proof)
+//   bun infra/cloudflare/proof.ts [--md] [--record]   (just cf-proof)
+// Expected HTTP status per hostname is frozen in expected-status.json (--record rewrites it from a reviewed run):
+// any drift (a 200 becoming 502, a 302 Access becoming 200) is a failure.
 // Vantage points: this machine = "internet" (not in the fr2 allow-list), ssh fr2/prd for fleet-side checks.
 import { connect } from "node:tls";
+import { join } from "node:path";
 import { api, cfg } from "./lib.ts";
 
 const FR2 = ["51.255.162.6", "2001:41d0:305:2100::a461"];
 const md = Bun.argv.includes("--md");
+const record = Bun.argv.includes("--record");
+const expFile = Bun.file(join(import.meta.dir, "expected-status.json"));
+const expected: Record<string, number> = !record && (await expFile.exists()) ? await expFile.json() : {};
+const seen: Record<string, number> = {};
 type Row = { check: string; target: string; ok: boolean; evidence: string };
 const rows: Row[] = [];
 const add = (check: string, target: string, ok: boolean, evidence: string) => rows.push({ check, target, ok, evidence });
@@ -52,8 +59,10 @@ await Promise.all([...hosts, ...extra].map(async (h) => {
   const { status, h: hd } = await head(`https://${h}/`);
   const ray = hd.get("cf-ray") ?? "";
   const access = (hd.get("location") ?? "").includes("cloudflareaccess.com");
-  const okStatus = h.startsWith("ssh-") ? access : status > 0 && (status < 500 || (status === 502 && expect502(h)));
-  add("edge", h, !onFr2 && !!ray && okStatus, `A ${a.slice(0, 2).join(",")} | ${status} | server ${hd.get("server")} | cf-ray ${ray.slice(-3)} | cache ${hd.get("cf-cache-status") ?? "-"}${access ? " | Access 302" : ""}`);
+  seen[h] = status;
+  const frozen = expected[h];
+  const okStatus = frozen !== undefined ? status === frozen : h.startsWith("ssh-") ? access : status > 0 && (status < 500 || (status === 502 && expect502(h)));
+  add("edge", h, !onFr2 && !!ray && okStatus, `A ${a.slice(0, 2).join(",")} | ${status} | server ${hd.get("server")} | cf-ray ${ray.slice(-3)} | cache ${hd.get("cf-cache-status") ?? "-"}${access ? " | Access 302" : ""}${frozen !== undefined ? ` | expected ${frozen}` : " | not frozen"}`);
 }));
 
 // 2. TLS issuer at the edge (Cloudflare-managed universal certificate).
@@ -72,9 +81,18 @@ for (const [name, t] of Object.entries(cfg.tunnels)) {
 }
 
 // 4. Access: protected apps redirect to the Access login.
-for (const h of ["ssh-fr2.aphrody.com", "ssh-prd.aphrody.com", "mig-depot.aphrody.com", "mig-commons.aphrody.com", "admin.aphrody.com", "control.aphrody.com"]) {
+for (const h of [...new Set([...cfg.access.apps.map((a) => a.domain), "mig-depot.aphrody.com", "mig-commons.aphrody.com"])]) {
   const { status, h: hd } = await head(`https://${h}/`);
   add("access", h, status === 302 && (hd.get("location") ?? "").includes("cloudflareaccess.com"), `${status} -> ${(hd.get("location") ?? "").split("?")[0]}`);
+}
+
+// 4b. /api on the apex: the Worker owns aphrody.com/*; /api must be answered at the edge with its frozen status.
+{
+  const u = "https://aphrody.com/api/health";
+  const { status, h: hd } = await head(u);
+  seen[u] = status;
+  const frozen = expected[u];
+  add("api-route", u, hd.get("server") === "cloudflare" && (frozen === undefined ? status > 0 : status === frozen), `${status} server ${hd.get("server")} cf-ray ${(hd.get("cf-ray") ?? "").slice(-3)}${frozen !== undefined ? ` | expected ${frozen}` : " | not frozen"}`);
 }
 
 // 5. origin lock-down: from here (internet) 80/443 of fr2 filtered, 22 open (break-glass); from prd (fleet) 443 open.
@@ -105,12 +123,30 @@ add("cache", "https://aphrody.com/ (2nd request)", c2.h.get("cf-cache-status") =
 
 // 8. agents: ssh through Access with the service token (no WARP), both directions.
 const viaAccess = (from: string, to: string, user: string) => sh(from,
-  `sudo bash -c 'set -a; . /etc/aphrody/secrets.env; set +a; timeout 40 ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/root/.ssh/known_hosts_access -o ProxyCommand="cloudflared access ssh --hostname %h --service-token-id $CF_ACCESS_CLIENT_ID --service-token-secret $CF_ACCESS_CLIENT_SECRET" ${user}@${to} hostname 2>/dev/null'`);
+  `sudo bash -c 'set -a; . /etc/aphrody/secrets.env; set +a; export TUNNEL_SERVICE_TOKEN_ID=$CF_ACCESS_CLIENT_ID TUNNEL_SERVICE_TOKEN_SECRET=$CF_ACCESS_CLIENT_SECRET; timeout 40 ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/root/.ssh/known_hosts_access -o ProxyCommand="cloudflared access ssh --hostname %h" ${user}@${to} hostname 2>/dev/null'`);
+// One token per host and per direction: the reverse use of each token must be refused.
 for (const [from, to, user] of [["fr2", "ssh-prd.aphrody.com", "root"], ["prd", "ssh-fr2.aphrody.com", "ubuntu"]]) {
   const out = viaAccess(from, to, user);
   add("access-ssh", `${from} -> ${to} (service token)`, out.length > 0, out ? `hostname=${out}` : "FAILED");
 }
+for (const [from, to] of [["fr2", "ssh-fr2.aphrody.com"], ["prd", "ssh-prd.aphrody.com"]]) {
+  const code = sh(from, `sudo bash -c 'set -a; . /etc/aphrody/secrets.env; set +a; printf "CF-Access-Client-Id: %s\nCF-Access-Client-Secret: %s\n" "$CF_ACCESS_CLIENT_ID" "$CF_ACCESS_CLIENT_SECRET" | curl -H @- -s -o /dev/null -w "%{http_code}" https://${to}/'`);
+  add("access-scope", `${from} token -> ${to} (must be refused)`, code === "403", `HTTP ${code} (token presented, refused)`);
+}
+for (const from of ["fr2", "prd"]) {
+  const code = sh(from, `sudo bash -c 'set -a; . /etc/aphrody/secrets.env; set +a; printf "CF-Access-Client-Id: %s\nCF-Access-Client-Secret: %s\n" "$CF_ACCESS_CLIENT_ID" "$CF_ACCESS_CLIENT_SECRET" | curl -H @- -s -o /dev/null -w "%{http_code}" https://admin.aphrody.com/'`);
+  add("access-scope", `${from} token -> admin.aphrody.com (owner only)`, code === "403", `HTTP ${code} (token presented, refused)`);
+}
 
+if (record) {
+  const other = rows.filter((r) => !r.ok && r.check !== "edge" && r.check !== "api-route");
+  if (other.length) {
+    console.error(`--record refused: ${other.length} non-status check(s) failing (${other.map((r) => r.check + " " + r.target).join("; ")})`);
+    process.exit(1);
+  }
+  await Bun.write(expFile, JSON.stringify(Object.fromEntries(Object.entries(seen).sort()), null, 2) + "\n");
+  console.error(`recorded ${Object.keys(seen).length} expected statuses: review \`git diff infra/cloudflare/expected-status.json\` before committing`);
+}
 rows.sort((a, b) => a.check.localeCompare(b.check) || a.target.localeCompare(b.target));
 const bad = rows.filter((r) => !r.ok);
 if (md) {

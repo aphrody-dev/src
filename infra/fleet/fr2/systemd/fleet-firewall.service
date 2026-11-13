@@ -1,0 +1,15 @@
+[Unit]
+Description=Bun OS fleet host firewall (nftables table inet fleet)
+Documentation=file:///etc/fleet/firewall.nft
+Wants=network-pre.target
+Before=network-pre.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=-/sbin/modprobe -a nf_conntrack nft_ct
+ExecStart=/usr/sbin/nft -f /etc/fleet/firewall.nft
+ExecStop=/usr/sbin/nft delete table inet fleet
+
+[Install]
+WantedBy=multi-user.target

@@ -104,40 +104,86 @@ if (want("rules")) {
 }
 
 // ---------------------------------------------------------------- access
+// One service token per host (fleet-agents-<host>), its secret stored only on that host; an app accepts a token only if
+// it lists it in `tokens` (ssh-prd <- fr2's token, ssh-fr2 <- prd's token): no shared, bidirectional credential, and
+// admin UIs accept no token at all. App policies are reconciled (owner policy first, then the listed token policies).
+// Atomic, locked rewrite of /etc/aphrody/secrets.env (root 600): the secret only travels on ssh stdin.
+function storeAccess(host: string, t: { client_id: string; client_secret: string }): boolean {
+  const env = `CF_ACCESS_CLIENT_ID=${t.client_id}\nCF_ACCESS_CLIENT_SECRET=${t.client_secret}\n`;
+  const script = "set -eu; umask 077; f=/etc/aphrody/secrets.env; exec 9>/run/lock/aphrody-secrets.lock; flock -w 30 9; " +
+    "t=$(mktemp /etc/aphrody/.secrets.XXXXXX); { [ -f $f ] && grep -v '^CF_ACCESS_CLIENT_' $f || true; cat; } > $t; " +
+    "install -m 600 -o root -g root $t $f; rm -f $t; grep -c '^CF_ACCESS_CLIENT_' $f";
+  const p = Bun.spawnSync(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=60", host, `sudo bash -c ${JSON.stringify(script)}`],
+    { stdin: Buffer.from(env), timeout: 180_000 });
+  return p.exitCode === 0 && p.stdout.toString().trim() === "2";
+}
+
 if (want("access")) {
   const A = cfg.account;
   const tokens = await api<any[]>("GET", `/accounts/${A}/access/service_tokens`);
-  let tok = tokens.find((t) => t.name === cfg.access.service_token);
-  if (!tok) {
-    say("create", `service token ${cfg.access.service_token} (secret piped to fr2/prd /etc/aphrody/secrets.env)`);
-    if (apply) {
-      const t = await api<any>("POST", `/accounts/${A}/access/service_tokens`, { name: cfg.access.service_token, duration: "8760h" });
-      const env = `CF_ACCESS_CLIENT_ID=${t.client_id}\nCF_ACCESS_CLIENT_SECRET=${t.client_secret}\n`;
-      for (const h of ["fr2", "prd"]) {
-        const p = Bun.spawnSync(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=15", h,
-          "sudo sh -c 'umask 077; f=/etc/aphrody/secrets.env; grep -v ^CF_ACCESS_CLIENT_ $f > $f.new 2>/dev/null; cat >> $f.new; mv $f.new $f; chmod 600 $f'"], { stdin: Buffer.from(env) });
-        console.log(`  service token stored on ${h}: ${p.exitCode === 0 ? "ok" : "FAILED"}`);
-      }
-      tok = t;
-    }
-  }
   const pols = await api<any[]>("GET", `/accounts/${A}/access/policies`);
-  let pol = pols.find((p) => p.name === `${cfg.access.service_token}-token`);
-  if (!pol) {
-    say("create", `policy ${cfg.access.service_token}-token (non_identity, service token)`);
-    if (apply && tok) pol = await api("POST", `/accounts/${A}/access/policies`, {
-      name: `${cfg.access.service_token}-token`, decision: "non_identity", include: [{ service_token: { token_id: tok.id } }], session_duration: "24h",
-    });
+  const polByToken = new Map<string, string>();
+  for (const st of cfg.access.service_tokens) {
+    let tok = tokens.find((t) => t.name === st.name);
+    if (!tok) {
+      say("create", `service token ${st.name} (secret piped to ${st.host} /etc/aphrody/secrets.env only)`);
+      if (apply) {
+        const t = await api<any>("POST", `/accounts/${A}/access/service_tokens`, { name: st.name, duration: "8760h" });
+        tok = t;
+        // The secret is shown once: on a failed store, rotate (new secret) and retry, then stop hard.
+        let cred = t;
+        for (let i = 0; i < 3 && !storeAccess(st.host, cred); i++) {
+          console.error(`  store on ${st.host} failed, rotating ${st.name} (attempt ${i + 1})`);
+          cred = await api<any>("POST", `/accounts/${A}/access/service_tokens/${t.id}/rotate`);
+          if (i === 2) throw new Error(`service token ${st.name}: secret could not be stored on ${st.host}`);
+        }
+        console.log(`  service token stored on ${st.host}: ok`);
+      }
+    }
+    let pol = pols.find((p) => p.name === `${st.name}-token`);
+    if (!pol) {
+      say("create", `policy ${st.name}-token (non_identity, service token)`);
+      if (apply && tok) pol = await api("POST", `/accounts/${A}/access/policies`, {
+        name: `${st.name}-token`, decision: "non_identity", include: [{ service_token: { token_id: tok.id } }], session_duration: "24h",
+      });
+    }
+    if (pol) polByToken.set(st.name, pol.id);
   }
   const apps = await api<any[]>("GET", `/accounts/${A}/access/apps?per_page=100`);
   for (const a of cfg.access.apps) {
-    const cur = apps.find((x) => x.name === a.name);
-    if (cur) continue;
-    say("create", `access app ${a.name} (${a.type}) ${a.domain}`);
-    if (apply) await api("POST", `/accounts/${A}/access/apps`, {
-      name: a.name, type: a.type, domain: a.domain, session_duration: "24h", app_launcher_visible: true,
-      policies: [{ id: cfg.access.owner_policy, precedence: 1 }, ...(pol ? [{ id: pol.id, precedence: 2 }] : [])],
+    const desired = [cfg.access.owner_policy, ...(a.tokens ?? []).map((t) => polByToken.get(t)).filter((x): x is string => !!x)];
+    const body = (cur?: any) => ({
+      ...(cur ?? {}), name: a.name, type: a.type, domain: a.domain, session_duration: cur?.session_duration ?? "24h",
+      app_launcher_visible: cur?.app_launcher_visible ?? true, policies: desired.map((id, i) => ({ id, precedence: i + 1 })),
     });
+    const cur = apps.find((x) => x.name === a.name);
+    if (!cur) {
+      say("create", `access app ${a.name} (${a.type}) ${a.domain} policies=${desired.length}`);
+      if (apply) await api("POST", `/accounts/${A}/access/apps`, body());
+      continue;
+    }
+    const have = (cur.policies ?? []).slice().sort((x: any, y: any) => x.precedence - y.precedence).map((p: any) => p.id);
+    if (have.join() === desired.join()) continue;
+    say("update", `access app ${a.name} policies ${have.length} -> ${desired.length} (${(a.tokens ?? []).join(",") || "owner only"})`);
+    if (apply) await api("PUT", `/accounts/${A}/access/apps/${cur.id}`, body(cur));
+  }
+  // Retired tokens (declared in retire_tokens): deleted only when no app references their policy any more
+  // (apps re-read after the reconciliation above); a failed policy delete stops before the token is touched.
+  const after = apply ? await api<any[]>("GET", `/accounts/${A}/access/apps?per_page=100`) : apps;
+  for (const name of cfg.access.retire_tokens ?? []) {
+    const t = tokens.find((x) => x.name === name);
+    if (!t) continue;
+    const p = pols.find((x) => x.name === `${name}-token`);
+    const users = p ? after.filter((a) => (a.policies ?? []).some((x: any) => x.id === p.id)).map((a) => a.name) : [];
+    if (users.length) {
+      console.error(`  keep ${name}: policy still used by ${users.join(", ")}`);
+      continue;
+    }
+    say("delete", `service token ${name} + policy ${name}-token (replaced by per-host tokens)`);
+    if (apply) {
+      if (p) await api("DELETE", `/accounts/${A}/access/policies/${p.id}`);
+      await api("DELETE", `/accounts/${A}/access/service_tokens/${t.id}`);
+    }
   }
 }
 

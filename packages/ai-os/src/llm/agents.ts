@@ -93,10 +93,21 @@ export async function agy(
   model?: string,
   conversation?: string,
 ): Promise<Answer> {
+  // Windows caps a command line at 32767 characters (ENAMETOOLONG): a long prompt goes to a private temp file
+  // and agy (an agent with file access) is told to read it. Mode plan: it reads, it does not edit.
+  let p = prompt;
+  if (prompt.length > 8000) {
+    const { mkdtempSync, writeFileSync } = await import("node:fs");
+    const { tmpdir } = await import("node:os");
+    const { join } = await import("node:path");
+    const file = join(mkdtempSync(join(tmpdir(), "agy-")), "prompt.md");
+    writeFileSync(file, prompt, { mode: 0o600 });
+    p = `Lis intégralement le fichier ${file} (${prompt.length} caractères) et réponds à la demande qu il contient, comme si son contenu était ce message.`;
+  }
   const argv = (m?: string) => [
     "agy",
     "-p",
-    prompt,
+    p,
     "--output-format",
     "json",
     "--mode",

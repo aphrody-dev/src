@@ -32,7 +32,8 @@ const resources = Object.fromEntries(zones.map((z) => [`com.cloudflare.api.accou
 const expires = new Date(Date.now() + 365 * 86400_000).toISOString().replace(/\.\d+Z$/, "Z");
 const existing = await cf<{ id: string; name: string }[]>("GET", `/accounts/${A}/tokens?per_page=100`);
 
-const SET = String.raw`umask 077; f=/etc/aphrody/secrets.env; v=$(cat); t=$(sudo mktemp); sudo sh -c "grep -v -E '^(CLOUDFLARE_API_TOKEN|CF_API_TOKEN)=' $f > $t 2>/dev/null; true"; printf 'CLOUDFLARE_API_TOKEN=%s\nCF_API_TOKEN=%s\n' "$v" "$v" | sudo tee -a $t >/dev/null; sudo install -m 600 -o root -g root $t $f; sudo rm -f $t; code=$(sudo sh -c ". $f; curl -s -o /dev/null -w '%{http_code}' -H \"Authorization: Bearer \$CF_API_TOKEN\" https://api.cloudflare.com/client/v4/zones?per_page=1"); echo "zones $code"`;
+// Atomic, locked rewrite (root 600); the value comes on stdin; verification passes the token to curl on stdin (-H @-), never argv.
+const SET = String.raw`sudo bash -c 'set -eu; umask 077; f=/etc/aphrody/secrets.env; exec 9>/run/lock/aphrody-secrets.lock; flock -w 30 9; v=$(cat); t=$(mktemp /etc/aphrody/.secrets.XXXXXX); { [ -f $f ] && grep -v -E "^(CLOUDFLARE_API_TOKEN|CF_API_TOKEN)=" $f || true; printf "CLOUDFLARE_API_TOKEN=%s\nCF_API_TOKEN=%s\n" "$v" "$v"; } > $t; install -m 600 -o root -g root $t $f; rm -f $t; . $f; printf "Authorization: Bearer %s\n" "$CF_API_TOKEN" | curl -H @- -s -o /dev/null -w "zones %{http_code}" https://api.cloudflare.com/client/v4/zones?per_page=1'`;
 
 for (const h of hosts) {
   const name = `fleet-${h}-dns`;

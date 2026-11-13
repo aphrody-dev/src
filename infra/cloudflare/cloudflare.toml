@@ -137,10 +137,16 @@ ratelimit = { characteristics = ["ip.src", "cf.colo.id"], period = 10, requests_
 # Access: browser-rendered SSH (type ssh) + a service token for agents (cloudflared access ssh --service-token-*).
 [access]
 owner_policy = "f3931268-9a0c-417c-b133-807ec2ca93e8" # mig-owner-only (contact@aphrody.com)
-service_token = "fleet-agents"                         # secret written to /etc/aphrody/secrets.env on fr2/prd only
+# One token per host, secret only on that host (CF_ACCESS_CLIENT_ID/SECRET in /etc/aphrody/secrets.env); an app lists the
+# tokens it accepts. fr2 -> prd ssh uses fleet-agents-fr2, prd -> fr2 uses fleet-agents-prd. Admin UIs: owner only.
+service_tokens = [
+  { name = "fleet-agents-fr2", host = "fr2" },
+  { name = "fleet-agents-prd", host = "prd" },
+]
+retire_tokens = ["fleet-agents"] # shared bidirectional token (Gemini review 2026-11-13)
 apps = [
-  { name = "fr2-ssh", type = "ssh", domain = "ssh-fr2.aphrody.com" },
-  { name = "prd-ssh", type = "ssh", domain = "ssh-prd.aphrody.com" },
+  { name = "fr2-ssh", type = "ssh", domain = "ssh-fr2.aphrody.com", tokens = ["fleet-agents-prd"] },
+  { name = "prd-ssh", type = "ssh", domain = "ssh-prd.aphrody.com", tokens = ["fleet-agents-fr2"] },
   # 502 before the migration, now served by prd: owner-only until the app has its own auth.
   { name = "aphrody-admin", type = "self_hosted", domain = "admin.aphrody.com" },
   { name = "aphrody-control", type = "self_hosted", domain = "control.aphrody.com" },

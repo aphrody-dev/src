@@ -14,7 +14,12 @@ export type Cfg = {
   tunnels: Record<string, Tunnel>;
   dns: Record<string, Record<string, Rec>>;
   rules: Rule[];
-  access: { owner_policy: string; service_token: string; apps: { name: string; type: string; domain: string }[] };
+  access: {
+    owner_policy: string;
+    service_tokens: { name: string; host: string }[];
+    retire_tokens?: string[];
+    apps: { name: string; type: string; domain: string; tokens?: string[] }[];
+  };
 };
 
 export const cfgPath = join(import.meta.dir, "cloudflare.toml");
