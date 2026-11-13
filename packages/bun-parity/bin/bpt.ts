@@ -20,8 +20,14 @@ async function main() {
     process.exit(0);
   }
 
-  if (args.includes("--version") || args.includes("-v") || command === "version") {
-    console.log("bpt (Bun Parity Tool) v1.0.0 (Full-Rust Bun v" + Bun.version + ")");
+  if (
+    args.includes("--version") ||
+    args.includes("-v") ||
+    command === "version"
+  ) {
+    console.log(
+      "bpt (Bun Parity Tool) v1.0.0 (Full-Rust Bun v" + Bun.version + ")",
+    );
     process.exit(0);
   }
 
@@ -47,17 +53,23 @@ async function main() {
     }
 
     case "patch": {
-      console.log("Synthesizing Chromium Parity Runtime Preload & Upstream Rust Patches...");
+      console.log(
+        "Synthesizing Chromium Parity Runtime Preload & Upstream Rust Patches...",
+      );
       const patchResult = await runFullAutoPatch({
         distPath: join(rootDir, "dist"),
         patchesDir: join(rootDir, "patches"),
       });
 
-      console.log(`[Artifact 1] Generated Runtime Preload: ${patchResult.preloadPath}`);
+      console.log(
+        `[Artifact 1] Generated Runtime Preload: ${patchResult.preloadPath}`,
+      );
       for (const p of patchResult.patchesGenerated) {
         console.log(`[Artifact 2] Generated Git/Rust Patch: ${p}`);
       }
-      console.log("[Verification] git -C C:\\src\\third_party\\bun apply --check PASSED cleanly.");
+      console.log(
+        "[Verification] git -C C:\\src\\third_party\\bun apply --check PASSED cleanly.",
+      );
 
       // Run post-patch scan to update reports
       const matrix = await runFullParityScan({
@@ -83,6 +95,11 @@ async function main() {
       console.log(formatTerminalSummary(matrix));
       console.log(`\nWritten reports:\n- ${mdPath}\n- ${jsonPath}`);
       break;
+    }
+
+    case "llms": {
+      const { main: llms } = await import("../src/llms/cli.ts");
+      process.exit(await llms(args.slice(1)));
     }
 
     case "test": {
@@ -114,6 +131,8 @@ COMMANDS:
   patch        Synthesize runtime preload patch and Rust patch queue for C:\\src\\third_party\\bun
   report       Generate full PARITY_REPORT.md and parity-matrix.json
   test         Execute test suite for all polyfilled and patched web APIs
+  llms extract Refresh test/llms/cases.json from https://bun.com/llms-full.txt (documented results)
+  llms run     Check the documented results with one or more Bun binaries: name=/path/to/bun ...
   help         Display this help message
   version      Print version information
 
