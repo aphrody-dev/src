@@ -28,3 +28,11 @@ From the root `Cargo.toml` of artcraft (79 top-level entries; only the matched o
 2. Run `just graph third_party/artcraft artcraft` on fr1 (graph recipe at justfile line 75) before choosing what to absorb.
 3. Map overlaps with `crates/aphrody-design-*` and the Bevy fork set before any refactor; no code is moved yet.
 4. Capture design-system tokens from the apps themselves (not the marketing site) once built on fr1.
+
+## Update (read from the Cargo.toml of photocraft, filmcraft, soundcraft, craft-libs, craft-launcher)
+
+- UI/GPU stack of the Craft Apps: egui 0.37 (+ egui_kittest for UI tests), pinned to `storytold/egui` rev `6d518fc7...` (egui, egui-winit, egui-wgpu, egui_glow, egui_extras, egui_system_font_provider, egui_inspection) and `storytold/winit` rev `a517b384...`; wgpu comes through egui-wgpu. Other crates: image 0.25, cpal 0.18 (soundcraft), kurbo 0.13 (craft-libs). Not the Bevy stack.
+- Forks kept so the pinned revisions stay reachable: `aphrody-labs/egui` (registered in forks.txt), `aphrody-labs/storytold-winit` and `aphrody-labs/storytold-wgpu` (renamed because `winit` and `wgpu` already exist in aphrody-labs as upstream forks; not registered in forks.txt, because `fork-sync` derives the target name from the upstream basename and would sync the wrong repo).
+- Omni API (`artcraft/_docs/artcraft_omni_api.md`): API-key auth (`artcraft_api_` prefix, key created at app.getartcraft.com, gated per account by staff), production base `https://api.storyteller.ai`, example path `POST /v1/omni_api/generate/video`; full reference at storyteller-docs.netlify.app (not read). No call was made.
+- Not forked, no license: `crafthub`, `craft-contrib`, `craft-skills`, `craft-wiki`, `craft-launcher-assets`, `font-preview-service`, `craft-pr-review-tool`; `harfbuzz` is NOASSERTION; `winprint.rs` is a BSD-3-Clause fork of a third party.
+- Consequence for the goal "flatten Storyteller + Craft + Bevy": the Craft Apps (egui/winit/wgpu) and Bevy (its own ECS and renderer on wgpu) share only wgpu and winit. A merge into one engine means choosing the UI layer (egui vs Bevy UI) and one pinned wgpu/winit pair; that decision is not made here.

@@ -373,3 +373,4 @@ storytold/materialcraft Rust
 storytold/effectcraft-corpus JavaScript
 storytold/cadcraft-corpus Shell
 storytold/discord-github-ticket-relay TypeScript
+storytold/egui Rust
