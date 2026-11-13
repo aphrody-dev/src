@@ -29,5 +29,7 @@ jobs:
         run: "[ ! -f scripts/identity.ts ] || bun scripts/identity.ts check"
       - name: Agent runner parses and answers
         run: AGENTS_HOME="$RUNNER_TEMP/agents" bun --no-env-file infra/agents/runner.ts status
+      - name: Agent runner tests (no shell, prompts with shell metacharacters)
+        run: AGENTS_HOME="$RUNNER_TEMP/agents" bun --no-env-file test infra/agents
       - name: Go deploy engine
         run: go -C infra test ./...
