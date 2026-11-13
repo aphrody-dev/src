@@ -6,6 +6,7 @@ import {
   readFileSync,
   rmSync,
   writeFileSync,
+  mkdirSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -60,12 +61,7 @@ describe("env-kit Bun/TypeScript core", () => {
         ].join("\n"),
         "utf8",
       );
-      Bun.spawnSync([
-        "powershell",
-        "-NoProfile",
-        "-Command",
-        `New-Item -ItemType Directory -Force -Path '${nested}' | Out-Null`,
-      ]);
+      mkdirSync(nested, { recursive: true });
 
       expect(resolveMonorepoEnvPath(nested)).toBe(rootEnv);
 
@@ -166,12 +162,7 @@ describe("env-kit Bun/TypeScript core", () => {
   test("syncAllEditorConfigs preserves UI settings while wiring providers and MCPs", () => {
     withTempDir((dir) => {
       const zedDir = join(dir, "Roaming", "Zed");
-      Bun.spawnSync([
-        "powershell",
-        "-NoProfile",
-        "-Command",
-        `New-Item -ItemType Directory -Force -Path '${zedDir}' | Out-Null`,
-      ]);
+      mkdirSync(zedDir, { recursive: true });
       writeFileSync(
         join(zedDir, "settings.json"),
         `// Comment header\n{\n  "ui_font_size": 16,\n  "theme": { "dark": "One Dark", },\n}\n`,
