@@ -7,31 +7,19 @@
 
 import {
   APP_URL,
-  ECOSYSTEM_LABELS,
   HOME,
   HREFLANG,
   LOCALES,
-  NEWS,
-  PACKAGE_ECOSYSTEMS,
   SITE_URL,
-  VERTICALS,
   localizedPath,
-  newsPath,
-  packageHubPath,
   pathGroups,
-  verticalPath,
   type Locale,
 } from "./site";
+import { PRODUCTS } from "../holding/page";
 import { WEBMCP_TOOLS } from "./webmcp-tools";
 import type { GoogleConfig } from "../google/config";
 
-export const SITEMAP_FILES = [
-  "sitemap-core.xml",
-  "sitemap-verticals.xml",
-  "sitemap-packages.xml",
-  "sitemap-news.xml",
-  "sitemap-images.xml",
-] as const;
+export const SITEMAP_FILES = ["sitemap-core.xml", "sitemap-images.xml"] as const;
 
 const NS_SITEMAP = "http://www.sitemaps.org/schemas/sitemap/0.9";
 const XML_HEAD = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -71,30 +59,15 @@ export function buildSitemaps(buildDate: string): Record<string, string> {
   const urlset = (extraNs: string, body: string) =>
     `${XML_HEAD}<urlset xmlns="${NS_SITEMAP}" xmlns:xhtml="http://www.w3.org/1999/xhtml"${extraNs}>\n${body}\n</urlset>\n`;
 
-  const newsItems = NEWS.flatMap((n) =>
-    LOCALES.map(
-      (l) =>
-        `<url><loc>${SITE_URL}${localizedPath(newsPath(n.slug), l)}</loc>` +
-        `<news:news><news:publication><news:name>Aphrody</news:name><news:language>${l}</news:language></news:publication>` +
-        `<news:publication_date>${n.date}</news:publication_date><news:title>${xmlEscape(n[l].title)}</news:title></news:news></url>`,
-    ),
-  ).join("\n");
-
   const imageUrl = (path: string, l: Locale) =>
     `<url><loc>${SITE_URL}${localizedPath(path, l)}</loc><image:image><image:loc>${SITE_URL}/og-image.png</image:loc></image:image></url>`;
-  const imagePaths = [...g.core, ...g.verticals];
+  const imagePaths = g.core;
   const images = imagePaths
     .flatMap((p) => LOCALES.map((l) => imageUrl(p, l)))
     .join("\n");
 
   const files: Record<string, string> = {
     "sitemap-core.xml": urlset("", urlEntries(g.core, buildDate)),
-    "sitemap-verticals.xml": urlset("", urlEntries(g.verticals, buildDate)),
-    "sitemap-packages.xml": urlset("", urlEntries(g.packages, buildDate)),
-    "sitemap-news.xml": urlset(
-      ' xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"',
-      newsItems,
-    ),
     "sitemap-images.xml": urlset(
       ' xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"',
       images,
@@ -113,7 +86,7 @@ export function buildSitemaps(buildDate: string): Record<string, string> {
 /** Every indexable absolute URL (used by IndexNow). */
 export function allIndexableUrls(): string[] {
   const g = pathGroups();
-  return [...g.core, ...g.verticals, ...g.packages, ...g.news].flatMap((p) =>
+  return g.core.flatMap((p) =>
     LOCALES.map((l) => SITE_URL + localizedPath(p, l)),
   );
 }
@@ -138,67 +111,37 @@ export function robotsTxt(): string {
   return `${groups.join("\n\n")}\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
 }
 
+/** llms.txt for AI crawlers and chatbots: who Aphrody is and what it offers, in plain language. */
 export function llmsTxt(): string {
-  const lines = [
+  return [
     "# Aphrody",
     "",
     `> ${HOME.en.description}`,
     "",
-    "Aphrody is an independent web portal. It is not affiliated with Google. Content is available in French and English.",
+    "Aphrody builds independent digital products, each with its own goals. Content is available in French and English.",
     "",
-    "## Topic hubs",
+    "## Products",
     "",
-    ...VERTICALS.map(
-      (v) =>
-        `- [${v.en.title}](${SITE_URL}/en${verticalPath(v.slug)}): ${v.en.description}`,
-    ),
+    ...PRODUCTS.map((p) => `- ${p.url ? `[${p.name}](${p.url})` : p.name} (${p.status.en}): ${p.text.en}`),
     "",
-    "## Machine-readable endpoints",
+    "## Contact",
     "",
-    `- [Suggestions](${SITE_URL}/api/q?q={query}): search suggestions`,
-    `- [Package catalog](${SITE_URL}/api/pm?q={query}): multi-ecosystem catalog search`,
-    `- [Benchmarks](${SITE_URL}/api/bnc): runtime micro-benchmarks, computed on demand`,
-    `- [Health](${SITE_URL}/ok): service status`,
+    "- contact@aphrody.com",
     "",
     "## Discovery",
     "",
     `- [Full content](${SITE_URL}/llms-full.txt)`,
     `- [Sitemap index](${SITE_URL}/sitemap.xml)`,
-    `- [Agent card](${SITE_URL}/.well-known/agent.json)`,
-    `- [WebMCP manifest](${SITE_URL}/.well-known/webmcp.json)`,
-    `- [Companion project](${APP_URL}/)`,
     "",
-  ];
-  return lines.join("\n");
+  ].join("\n");
 }
 
 export function llmsFullTxt(): string {
   const parts: string[] = [llmsTxt(), "# Full content", ""];
   for (const l of LOCALES) {
-    parts.push(
-      `## ${l === "fr" ? "Français" : "English"}`,
-      "",
-      `${HOME[l].h1}: ${HOME[l].intro}`,
-      "",
-    );
-    for (const v of VERTICALS) {
-      const h = v[l];
-      parts.push(
-        `### ${h.h1}`,
-        `URL: ${SITE_URL}${localizedPath(verticalPath(v.slug), l)}`,
-        h.intro,
-        ...h.points.map((p) => `- ${p}`),
-        "",
-      );
-    }
-    parts.push(
-      `### ${l === "fr" ? "Hubs de paquets" : "Package hubs"}`,
-      ...PACKAGE_ECOSYSTEMS.map(
-        (e) =>
-          `- ${ECOSYSTEM_LABELS[e]}: ${SITE_URL}${localizedPath(packageHubPath(e), l)}`,
-      ),
-      "",
-    );
+    parts.push(`## ${l === "fr" ? "Français" : "English"}`, "", `${HOME[l].h1} ${HOME[l].intro}`, "");
+    for (const p of PRODUCTS)
+      parts.push(`### ${p.name}`, ...(p.url ? [`URL: ${p.url}`] : []), `${p.status[l]}. ${p.text[l]}`, "");
   }
   return parts.join("\n");
 }

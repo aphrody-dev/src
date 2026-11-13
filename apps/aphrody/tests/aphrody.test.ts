@@ -69,26 +69,21 @@ describe("Aphrody build output", () => {
     expect(statSync(join(dist, "index.html.gz")).size).toBeLessThan(30 * 1024);
   });
 
-  it("homepage is the holding page generated from docs/ALPHABET.md", () => {
+  it("homepage is the public holding page, without technical content", () => {
     const html = readFileSync(join(dist, "index.html"), "utf-8");
-    expect(html).toContain("<title>Aphrody, holding du monorepo</title>");
+    expect(html).toContain("<title>Aphrody : des produits simples, rapides et accessibles</title>");
     expect(html).toContain('href="/holding.css"');
     expect(html).not.toContain('id="root"');
     expect((html.match(/<h1[ >]/g) || []).length).toBe(1);
-    for (const h of [
-      "<h2>Noyau</h2>",
-      "<h2>Paris</h2>",
-      "<h2>Métriques publiques</h2>",
-      "<h2>Investisseurs et contact</h2>",
-    ])
-      expect(html).toContain(h);
-    for (const href of [
-      'href="/search"',
-      'href="mailto:contact@aphrody.com"',
-      'href="https://aphrody.app/"',
-      'href="https://github.com/aphrody-labs/src/tree/main/apps/nt"',
-    ])
+    for (const h of ["Nos produits", "Notre approche", "Contact"]) expect(html).toContain(h);
+    for (const href of ['href="mailto:contact@aphrody.com"', 'href="https://aphrody.app/"', 'href="https://rosegriffon.fr/"'])
       expect(html).toContain(href);
+    // Public pages never talk about code, repositories or packages.
+    const text = html.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g, " ");
+    for (const banned of [/github/i, /\bnpm\b/i, /monorepo/i, /\bcommit/i, /\bcrates?\b/i, /\bbun\b/i, /\bcargo\b/i])
+      expect(banned.test(text)).toBe(false);
+    expect(html).not.toContain("github.com");
+    expect(html).not.toMatch(/\{(container|glyph|bolt)\}/);
     // Public identity is anonymous: no personal name or mailbox, only contact@aphrody.com.
     for (const banned of ["gmail.com", "Gemini", ...(Bun.env.APHRODY_PII_TERMS ?? "").split(",").filter(Boolean)])
       expect(html).not.toContain(banned);
@@ -98,7 +93,7 @@ describe("Aphrody build output", () => {
   it("english homepage mirrors the french one", () => {
     const html = readFileSync(join(dist, "en", "index.html"), "utf-8");
     expect(html).toContain('<html lang="en">');
-    expect(html).toContain("<h2>Core</h2>");
+    expect(html).toContain("Our products");
     expect(html).toContain('href="https://aphrody.com/en"');
   });
 });

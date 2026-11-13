@@ -294,20 +294,20 @@ export const HOME: Record<
   { title: string; description: string; h1: string; intro: string }
 > = {
   fr: {
-    title: "Aphrody — sites et logiciels web indépendants",
+    title: "Aphrody : des produits simples, rapides et accessibles",
     description:
-      "Aphrody développe des logiciels web hébergés en France : recherche, catalogue de paquets, benchmarks et aphrody.app, un bureau en mosaïque pour le navigateur.",
-    h1: "Aphrody développe des logiciels web et les héberge en France.",
+      "Aphrody conçoit des produits numériques simples, rapides et accessibles : Rose Griffon, aphrody.app et nt. Hébergés en Europe.",
+    h1: "Aphrody conçoit des produits numériques simples, rapides et accessibles.",
     intro:
-      "La recherche, le catalogue de paquets et les benchmarks sont en ligne. aphrody.app, un bureau en mosaïque pour le navigateur, est en cours de développement.",
+      "Chaque produit a sa propre équipe et ses propres objectifs, avec une exigence commune : la qualité.",
   },
   en: {
-    title: "Aphrody — independent websites and web software",
+    title: "Aphrody: simple, fast and accessible products",
     description:
-      "Aphrody builds web software hosted in France: a search with a package catalog, runtime benchmarks, and aphrody.app, a tiling desktop for the browser.",
-    h1: "Aphrody builds web software and hosts it in France.",
+      "Aphrody builds simple, fast and accessible digital products: Rose Griffon, aphrody.app and nt. Hosted in Europe.",
+    h1: "Aphrody builds simple, fast and accessible digital products.",
     intro:
-      "The search, the package catalog and the benchmarks are online. aphrody.app, a tiling desktop for the browser, is in development.",
+      "Each product has its own team and its own goals, with one shared standard: quality.",
   },
 };
 
@@ -379,9 +379,10 @@ export function pathGroups(): Record<
 > {
   return {
     core: ["/"],
-    verticals: VERTICALS.map((v) => verticalPath(v.slug)),
-    packages: PACKAGE_ECOSYSTEMS.map(packageHubPath),
-    news: NEWS.map((n) => newsPath(n.slug)),
+    // Public site = holding page only: no technical hubs, package catalogs or changelogs.
+    verticals: [],
+    packages: [],
+    news: [],
   };
 }
 

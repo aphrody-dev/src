@@ -76,13 +76,13 @@ function ldGraph(html: string): Array<Record<string, any>> {
 describe("Sitemap index and child sitemaps", () => {
   const files = buildSitemaps("2026-11-10");
 
-  it("generates a valid sitemap index referencing the five child sitemaps", () => {
+  it("generates a valid sitemap index referencing the core and image sitemaps", () => {
     const index = files["sitemap.xml"];
     assertWellFormed(index);
     expect(index).toContain("<sitemapindex");
     for (const f of SITEMAP_FILES)
       expect(index).toContain(`<loc>${SITE_URL}/${f}</loc>`);
-    expect(SITEMAP_FILES.length).toBe(5);
+    expect(SITEMAP_FILES.length).toBe(2);
   });
 
   it("generates well-formed child sitemaps with hreflang alternates", () => {
@@ -96,11 +96,7 @@ describe("Sitemap index and child sitemaps", () => {
     expect(core).toContain('hreflang="fr-FR"');
     expect(core).toContain('hreflang="en-US"');
     expect(core).toContain('hreflang="x-default"');
-    expect(files["sitemap-news.xml"]).toContain("<news:publication_date>");
     expect(files["sitemap-images.xml"]).toContain("<image:loc>");
-    expect(files["sitemap-verticals.xml"].match(/<url>/g)!.length).toBe(
-      VERTICALS.length * LOCALES.length,
-    );
   });
 
   it("serves the index and children from the server and from dist", async () => {
@@ -116,7 +112,8 @@ describe("Sitemap index and child sitemaps", () => {
   it("lists every indexable URL for IndexNow", () => {
     const urls = allIndexableUrls();
     expect(urls).toContain(`${SITE_URL}/`);
-    expect(urls).toContain(`${SITE_URL}/en/search/packages`);
+    expect(urls).toContain(`${SITE_URL}/en`);
+    expect(urls.some((u) => u.includes("/search/"))).toBe(false);
     expect(urls.some((u) => u.includes("ai-gemini"))).toBe(false);
     expect(new Set(urls).size).toBe(urls.length);
   });
@@ -217,16 +214,13 @@ describe("Schema.org JSON-LD @graph", () => {
     expect(results).toContain("noindex");
   });
 
-  it("built dist pages exist for all hubs in both languages", () => {
-    for (const v of VERTICALS) {
-      expect(existsSync(join(DIST, "search", v.slug, "index.html"))).toBe(true);
-      expect(existsSync(join(DIST, "en", "search", v.slug, "index.html"))).toBe(
-        true,
-      );
-    }
+  it("built home exists in both languages with its JSON-LD graph", () => {
+    expect(existsSync(join(DIST, "en", "index.html"))).toBe(true);
+    // Technical hubs are no longer published.
+    for (const v of VERTICALS) expect(existsSync(join(DIST, "search", v.slug, "index.html"))).toBe(false);
     const html = readFileSync(join(DIST, "index.html"), "utf-8");
-    // Holding home (src/holding/page.ts): Organization + WebSite with its SearchAction.
-    expect(ldGraph(html).length).toBe(2);
+    // Holding home (src/holding/page.ts): Organization, WebSite with its SearchAction, product ItemList.
+    expect(ldGraph(html).length).toBe(3);
   });
 });
 
@@ -355,7 +349,7 @@ describe("ads.txt, sellers.json, security.txt, humans.txt, robots.txt", () => {
       await server.fetch(new Request("http://localhost:3000/api/seo/indexnow"))
     ).json();
     expect(info.key).toBe(key);
-    expect(info.urlList.length).toBeGreaterThan(10);
+    expect(info.urlList.length).toBeGreaterThanOrEqual(2);
     const denied = await server.fetch(
       new Request("http://localhost:3000/api/seo/indexnow", { method: "POST" }),
     );
@@ -503,7 +497,7 @@ describe("Zero-copy static serving, hashing and progressive enhancement", () => 
 
   it("search works without JavaScript (server-rendered form and results)", async () => {
     const home = readFileSync(join(DIST, "index.html"), "utf-8");
-    expect(home).toContain('href="/search"');
+    expect(home).toContain("/search?q={search_term_string}");
     expect(home).not.toContain('<div id="root"></div>');
     const res = await server.fetch(
       new Request("http://localhost:3000/search?q=bun"),

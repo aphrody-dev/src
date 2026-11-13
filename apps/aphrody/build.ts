@@ -1,5 +1,5 @@
 import {
-  copyFileSync,
+  cpSync,
   existsSync,
   mkdirSync,
   readdirSync,
@@ -27,24 +27,9 @@ import {
   webmcpJson,
 } from "./src/seo/documents";
 import { minifyCss } from "./src/seo/page-css";
-import {
-  render404,
-  renderNews,
-  renderPackageHub,
-  renderVertical,
-} from "./src/seo/html";
-import {
-  LOCALES,
-  NEWS,
-  PACKAGE_ECOSYSTEMS,
-  VERTICALS,
-  localizedPath,
-  newsPath,
-  packageHubPath,
-  verticalPath,
-} from "./src/seo/site";
-import { UniversalStoreManager } from "./src/store/universal-manager";
-import { holdingCss, measure, renderHolding } from "./src/holding/page";
+import { render404 } from "./src/seo/html";
+import { LOCALES, localizedPath } from "./src/seo/site";
+import { holdingCss, renderHolding } from "./src/holding/page";
 
 const ROOT = import.meta.dir;
 const DIST_DIR = join(ROOT, "dist");
@@ -87,31 +72,14 @@ const rawCss = [
 ].join("\n");
 emit("style.css", minifyCss(rawCss));
 
-// 3. Static HTML (SSG): home, topic hubs, package hubs, news - fr and en.
-const store = new UniversalStoreManager(":memory:");
+// 3. Static HTML (SSG): holding page, fr and en.
 const pageFile = (path: string, l: "fr" | "en") => {
   const p = localizedPath(path, l);
   return (p === "/" ? "" : p.slice(1) + "/") + "index.html";
 };
-// Home = holding page generated from docs/ALPHABET.md (abc.xyz model); the former product home stays
-// available as renderHome for the search and package pages it links to.
+// Public site = the holding page only (fr, en): no technical hubs, package catalogs or changelogs.
 const SRC_ROOT = join(ROOT, "..", "..");
-const metrics = measure(SRC_ROOT);
-for (const l of LOCALES) {
-  emit(pageFile("/", l), renderHolding(SRC_ROOT, l, metrics));
-  for (const v of VERTICALS)
-    emit(pageFile(verticalPath(v.slug), l), renderVertical(v, l, cfg));
-  for (const eco of PACKAGE_ECOSYSTEMS) {
-    const pkgs = (await store.search("", eco as never)).map((p) => ({
-      name: p.name,
-      description: p.description,
-      installCmd: p.installCmd,
-    }));
-    emit(pageFile(packageHubPath(eco), l), renderPackageHub(eco, pkgs, l, cfg));
-  }
-  for (const n of NEWS)
-    emit(pageFile(newsPath(n.slug), l), renderNews(n, l, cfg));
-}
+for (const l of LOCALES) emit(pageFile("/", l), renderHolding(SRC_ROOT, l));
 
 // 4. Crawler, agent and compliance documents.
 emit("robots.txt", robotsTxt());
@@ -157,7 +125,7 @@ emit(
 const publicDir = join(ROOT, "public");
 if (existsSync(publicDir)) {
   for (const f of readdirSync(publicDir))
-    copyFileSync(join(publicDir, f), join(DIST_DIR, f));
+    cpSync(join(publicDir, f), join(DIST_DIR, f), { recursive: true });
 }
 // Material Web (packages/design/src/components.ts), loaded as a module by the holding page.
 emit("md.js", await componentsBundle(join(ROOT, "..", "..")));
