@@ -9,7 +9,6 @@
 !package.json
 !bun.lock
 !packages/
-!infra/ffi-bridge/
 !infra/fleet/workers/
 !apps/aphrody/
 !apps/yolo/

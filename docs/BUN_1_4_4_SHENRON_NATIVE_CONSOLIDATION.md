@@ -267,7 +267,7 @@ The following `C:\src` units now enforce `"dependencies": {}, "devDependencies":
 - [`C:\src\packages\brain\package.json`](file:///C:/src/packages/brain/package.json)
 - [`C:\src\packages\chromium-bun\package.json`](file:///C:/src/packages/chromium-bun/package.json)
 - [`C:\src\packages\pi-opencode\package.json`](file:///C:/src/packages/pi-opencode/package.json)
-- [`C:\src\infra\ffi-bridge\package.json`](file:///C:/src/infra/ffi-bridge/package.json)
+- [`C:\src\packages\ffi-bridge\package.json`](file:///C:/src/packages/ffi-bridge/package.json)
 - [`C:\src\packages\wck\package.json`](file:///C:/src/packages/wck/package.json) and [`C:\src\apps\aphrody\package.json`](file:///C:/src/apps/aphrody/package.json) (already zero-dep)
 
 In [`C:\src\apps\rosegriffon`](file:///C:/src/apps/rosegriffon/package.json), all `bunx` invocations, `turbo` / `@changesets/cli` dependencies and scripts, legacy `aphrody-labs/rosegriffon` repository URLs, and `bun-os` remnants have been purged in favor of native `bun run --filter '*' <task>` and `https://github.com/aphrody-dev/rosegriffon.git`.

@@ -49,7 +49,7 @@ pub const RULES: &[RuleSpec] = &[
         id: "ARCH-006",
         category: "infra-domain-purity",
         default_severity: Severity::Error,
-        summary: "infra/ must maintain a valid go.mod and restrict Bun/TypeScript code strictly to ffi-bridge and mesh-vn",
+        summary: "infra/ must maintain a valid go.mod and restrict Bun/TypeScript code strictly to mesh-vn",
     },
     RuleSpec {
         id: "ARCH-007",

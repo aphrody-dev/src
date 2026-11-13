@@ -2,6 +2,9 @@
   "name": "nt",
   "private": true,
   "type": "module",
+  "dependencies": {
+    "@aphrody/ffi-bridge": "file:../../packages/ffi-bridge"
+  },
   "workspaces": [
     "modules/web"
   ],

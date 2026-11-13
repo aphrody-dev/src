@@ -256,15 +256,6 @@ pub fn build_monorepo_graph(root: &Path) -> MonorepoGraph {
             normalize_rel(root, &infra_dir),
             MonorepoLayer::Layer1Systems,
         );
-        let ffi_bridge = infra_dir.join("ffi-bridge");
-        if ffi_bridge.is_dir() {
-            graph.add_node(
-                "infra/ffi-bridge".to_string(),
-                "ffi-bridge".to_string(),
-                normalize_rel(root, &ffi_bridge),
-                MonorepoLayer::Layer1Systems,
-            );
-        }
         let mesh_vn = infra_dir.join("mesh-vn");
         if mesh_vn.is_dir() {
             graph.add_node(

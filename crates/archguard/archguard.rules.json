@@ -79,7 +79,7 @@
     "infra": {
       "path": "infra",
       "required_manifest": "go.mod",
-      "allowed_bun_subpackages": ["ffi-bridge", "mesh-vn"]
+      "allowed_bun_subpackages": ["mesh-vn"]
     },
     "tools": {
       "path": "tools",

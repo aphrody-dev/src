@@ -63,7 +63,7 @@ flowchart TD
     crates_rust_stack["crates/rust-stack"]
     crates_xtask["crates/xtask"]
     infra["infra (Go 1.27)"]
-    infra_ffi["infra/ffi-bridge"]
+    infra_ffi["packages/ffi-bridge"]
     infra_mesh["infra/mesh-vn"]
   end
 

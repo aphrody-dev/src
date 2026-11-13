@@ -14,7 +14,7 @@ Empirical architecture and performance matrix comparing legacy TypeScript / Pyth
 | `shadcn_rs_card_ssr` (Zero-JS HTML + XSS escape) | **5,522,940 ops/sec** | ~181 ns/card SSR render |
 | `jwt_hs256_verify` (HMAC-SHA256 + Base64URL + JSON claims) | **578,331 ops/sec** | ~1.73 us/verify |
 | `simd_embed_256d` (256-dim L2-normalized vector) | **442,740 ops/sec** | ~2.26 us/vector |
-| `bun:ffi` -> `rs_blake3_hex` (`infra/ffi-bridge/rust-stack-ffi.test.ts`, 50,000 calls) | **255.1 ns/call** (`3,920,738 ops/sec`) | Zero-copy `ptr(Uint8Array)` across `Bun 1.4.4 <-> rust_stack_ffi.dll` |
+| `bun:ffi` -> `rs_blake3_hex` (`packages/ffi-bridge/rust-stack-ffi.test.ts`, 50,000 calls) | **255.1 ns/call** (`3,920,738 ops/sec`) | Zero-copy `ptr(Uint8Array)` across `Bun 1.4.4 <-> rust_stack_ffi.dll` |
 
 ---
 

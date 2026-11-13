@@ -6,7 +6,7 @@
 //! - `ARCH-003` Package Domain & Zero-NPM Purity (valid `@aphrody/*` name, zero external npm dependencies, zero lockfiles, isolated native subdirs)
 //! - `ARCH-004` Application Contract Purity (`aphrody-app` pure Rust; `aphrody` zero npm dependencies / zero `bun.lock`)
 //! - `ARCH-005` Root Topology & Junction Integrity (canonical physical directories only, valid junctions)
-//! - `ARCH-006` Infra Domain Purity (`infra/go.mod` required, TypeScript restricted to `ffi-bridge` & `mesh-vn`)
+//! - `ARCH-006` Infra Domain Purity (`infra/go.mod` required, TypeScript restricted to `mesh-vn`)
 //! - `ARCH-007` Sacred Host Userspace Boundary (System32/SysWOW64 mutations strictly forbidden - Torvalds principle)
 //! - `ARCH-008` Secret Vault & Token Hygiene (zero `.env` outside local root vault, zero live tokens)
 //! - `ARCH-009` Anti-AI-Slop & Zero-Emoji Gate (zero pictographic emojis across first-party code and docs)

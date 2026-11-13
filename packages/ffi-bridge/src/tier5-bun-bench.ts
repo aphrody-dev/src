@@ -1,22 +1,13 @@
-import { existsSync, readFileSync } from "fs";
-import { join } from "path";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { srcRoot } from "./dx12-hal";
 
 const isJson = process.argv.includes("--json");
 
-const getNowNs = (): number => {
-  if (typeof Bun !== "undefined" && typeof Bun.nanoseconds === "function") {
-    return Bun.nanoseconds();
-  }
-  return Number(process.hrtime.bigint());
-};
+const getNowNs = (): number => Bun.nanoseconds();
 
-const candidateWasmPaths = [
-  "C:\\src\\crates\\bench\\tier5_bun\\kernel.wasm",
-  join(import.meta.dir, "..", "..", "..", "crates", "bench", "tier5_bun", "kernel.wasm"),
-];
-const wasmPath =
-  candidateWasmPaths.find((p) => existsSync(p)) ?? candidateWasmPaths[0]!;
-const wasmBytes = readFileSync(wasmPath);
+const wasmPath = join(srcRoot(), "crates", "bench", "tier5_bun", "kernel.wasm");
+const wasmBytes = new Uint8Array(readFileSync(wasmPath));
 
 const wasmModule = new WebAssembly.Module(wasmBytes);
 const wasmInstance = new WebAssembly.Instance(wasmModule, {});

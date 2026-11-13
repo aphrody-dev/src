@@ -9,7 +9,7 @@ The repository root (`SRC_ROOT`) separates first-party code from upstream vendor
 - [`apps/`](apps) — products and maintained sites (`aphrody`, `aphrody-app`, `auto`, `l2l`, `nt`, `r2b`, `r2-site`, `rosegriffon`, `shenron`, `yolo`); `auto`, `r2b`, `rosegriffon`, `shenron` are the only git submodules.
 - [`packages/`](packages) — Bun 1.4.4 `@aphrody/*` packages (`ai-os`, `bun-parity`, `bun-plugins`, `chromium-bun`, `core`, `env-kit`, `forge`, `gaming`, `google-design`, `machine`, `net`, `runtime-adapter`, `shell-matrix`, `wck`).
 - [`crates/`](crates) — Rust 2024 crates in one flat workspace (`ay`, `archguard`, `xtask`, `depot-*`, `lore*`, `aphrody-design-*`, `corelib`, `core`, `core-capi`, `ffi`, `rust-stack`, `ring3-agent`, `gamescope-*`, `unix-*`, `tv-*`, `bench`, ...).
-- [`infra/`](infra) — fleet and deploy config assembled from upstream tools (`deploy.toml`, `docker`, `cluster`, `cloudflare`, `fleet`, `mesh-vn`, `gcloud`, `gitlab`, `mail`, `ffi-bridge`, `chromium-factory`; `docs/infra/UPSTREAM-STACK.md`).
+- [`infra/`](infra) — fleet and deploy config assembled from upstream tools (`deploy.toml`, `docker`, `cluster`, `cloudflare`, `fleet`, `mesh-vn`, `gcloud`, `gitlab`, `mail`, `chromium-factory`; `docs/infra/UPSTREAM-STACK.md`).
 - [`third_party/`](third_party) — upstream checkouts and aphrody-labs forks, flat (`third_party/<name>`, list in `third_party/forks.txt`).
 
 ## 2. Single AI Product Ownership & Anti-AI-Slop Design-First Gate

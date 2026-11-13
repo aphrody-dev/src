@@ -68,14 +68,6 @@ graphify-out/
 !/tools.toml
 !/dist-workspace.toml
 
-# .NET build output (infra/winnt-sdk)
-infra/winnt-sdk/**/bin/
-infra/winnt-sdk/**/obj/
-infra/winnt-sdk/native-cpp/*.obj
-infra/winnt-sdk/native-cpp/*.lib
-infra/winnt-sdk/native-cpp/*.exp
-infra/winnt-sdk/native-cpp/*.dll
-infra/winnt-sdk/native-cpp/*.exe
 
 # third_party clones stay untracked (pinned in src.lock.json); only the ecosystem manifest is versioned.
 !/third_party/

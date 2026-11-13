@@ -23,8 +23,8 @@ pub fn check_infra_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
         });
     }
 
-    // Check for unapproved TypeScript code outside ffi-bridge and mesh-vn
-    let allowed_bun_subs = ["ffi-bridge", "mesh-vn"];
+    // Check for unapproved TypeScript code outside mesh-vn (bun packages live in packages/)
+    let allowed_bun_subs = ["mesh-vn"];
     if let Ok(entries) = fs::read_dir(&infra_dir) {
         for e in entries.flatten() {
             let p = e.path();
@@ -44,10 +44,10 @@ pub fn check_infra_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                             path: normalize_rel(root, &f),
                             line: None,
                             message: format!(
-                                "Unapproved TypeScript file `{}` in infra subfolder `{name}` (Bun TS is restricted strictly to `infra/ffi-bridge` and `infra/mesh-vn`)",
+                                "Unapproved TypeScript file `{}` in infra subfolder `{name}` (Bun TS is restricted strictly to `infra/mesh-vn`)",
                                 f.file_name().and_then(|n| n.to_str()).unwrap_or("")
                             ),
-                            remediation: "Move TypeScript service into `infra/ffi-bridge`, `infra/mesh-vn`, or `packages/`.".into(),
+                            remediation: "Move TypeScript service into `packages/` (or `infra/mesh-vn`).".into(),
                         });
                     }
                 }
@@ -61,7 +61,7 @@ pub fn check_infra_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                         path: normalize_rel(root, &p),
                         line: None,
                         message: format!("Loose TypeScript/JavaScript file `{name}` at root of `infra/`"),
-                        remediation: "Keep `infra/` root pure Go; move TypeScript tools to `infra/ffi-bridge`.".into(),
+                        remediation: "Keep `infra/` root pure Go; move TypeScript tools to `packages/`.".into(),
                     });
                 }
             }

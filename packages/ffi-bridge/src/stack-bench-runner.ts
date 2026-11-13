@@ -1,9 +1,10 @@
 #!/usr/bin/env bun
-import { spawnSync } from "child_process";
-import { existsSync } from "fs";
-import { join } from "path";
+import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+import { srcRoot } from "./dx12-hal";
 
-const benchCrateDir = "C:\\src\\crates\\bench";
+const benchCrateDir = join(srcRoot(), "crates", "bench");
 const stackBenchExe = join(benchCrateDir, "target", "release", "stack-bench.exe");
 const tier5Script = join(import.meta.dir, "tier5-bun-bench.ts");
 

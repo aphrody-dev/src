@@ -18,8 +18,7 @@ C:\src\crates\unix\
 │   ├── unix-cachyos\           # chwd CPU/GPU hardware probe, pacman/makepkg, Proton/Wine ntsync
 │   ├── unix-omarchy\           # crate `aphrody-omarchy`: Aether themes, plugins, patches, WSL2 builder
 │   └── unix-distro\            # CLIs: `unix-distro.exe` and `omarchy-wsl.exe`
-├── wsl-distro\                 # Generated native WSL2 bundle (.wslconfig, rootfs, Hyprland/COSMIC, patches)
-└── winnt-sdk\                  # MSVC C++23 `native_nt_gpu.dll` + .NET 11/10 WinUI Host
+└── wsl-distro\                 # Generated native WSL2 bundle (.wslconfig, rootfs, Hyprland/COSMIC, patches)
 ```
 
 ---

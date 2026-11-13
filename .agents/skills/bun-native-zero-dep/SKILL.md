@@ -109,7 +109,7 @@ If an app lives outside `packages/*` and prefers a self-contained header (like `
 | `chalk`, `kleur`, `colorette`, `picocolors`, `pino-pretty` | `Bun.color(c, "ansi")` + structured JSONL stdout + `Bun.JSONL` | `third_party/bun/docs/runtime/color.mdx` |
 | `yaml`, `js-yaml`, `@iarna/toml`, `json5` | `Bun.YAML`, `Bun.TOML`, `Bun.JSON5`, `Bun.JSONL` | Built-in zero-dependency parsers |
 | `esbuild`, `swc`, `tsup`, `pkg` | `new Bun.Transpiler()`, `Bun.build()`, `bun build --compile --bytecode` | `third_party/bun/docs/runtime/transpiler.mdx`, `compiler/bytecode.mdx` |
-| `ffi-napi`, `koffi`, `node-gyp` addons | `bun:ffi` (`dlopen`, `FFIType`, `CString`, `ptr`, `toArrayBuffer`) | `third_party/bun/docs/runtime/ffi.mdx`, `infra/ffi-bridge` |
+| `ffi-napi`, `koffi`, `node-gyp` addons | `bun:ffi` (`dlopen`, `FFIType`, `CString`, `ptr`, `toArrayBuffer`) | `third_party/bun/docs/runtime/ffi.mdx`, `packages/ffi-bridge` (`src/dx12-hal.ts`) |
 
 ---
 

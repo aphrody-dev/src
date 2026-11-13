@@ -8,9 +8,9 @@ Sources :
 
 Code testé qui l'utilise (14, généré par `bun packages/core/src/cli.ts gen`) :
 - `apps/aphrody/src/runtime/hash.ts` — tests : `apps/aphrody/tests/aphrody.test.ts`, `apps/aphrody/tests/seo.test.ts`
-- `infra/ffi-bridge/index.ts` — tests : `infra/ffi-bridge/polyglot.test.ts`, `infra/ffi-bridge/rust-stack-ffi.test.ts`, `infra/ffi-bridge/unix-distro.test.ts`
-- `infra/ffi-bridge/rust-stack-ffi.test.ts` — tests : `infra/ffi-bridge/polyglot.test.ts`, `infra/ffi-bridge/rust-stack-ffi.test.ts`, `infra/ffi-bridge/unix-distro.test.ts`
-- `infra/ffi-bridge/src/unix-distro.ts` — tests : `infra/ffi-bridge/polyglot.test.ts`, `infra/ffi-bridge/rust-stack-ffi.test.ts`, `infra/ffi-bridge/unix-distro.test.ts`
+- `packages/ffi-bridge/src/dx12-hal.ts` — tests : `packages/ffi-bridge/dx12-hal.test.ts`, `packages/ffi-bridge/rust-stack-ffi.test.ts`, `packages/ffi-bridge/unix-distro.test.ts`
+- `packages/ffi-bridge/rust-stack-ffi.test.ts` — tests : `packages/ffi-bridge/dx12-hal.test.ts`, `packages/ffi-bridge/rust-stack-ffi.test.ts`, `packages/ffi-bridge/unix-distro.test.ts`
+- `packages/ffi-bridge/src/unix-distro.ts` — tests : `packages/ffi-bridge/dx12-hal.test.ts`, `packages/ffi-bridge/rust-stack-ffi.test.ts`, `packages/ffi-bridge/unix-distro.test.ts`
 - `packages/ai-os/native/sovereign-polyglot-ffi/src/system1.rs` — tests : `packages/ai-os/tests/ai-os.test.ts`, `packages/ai-os/tests/full-design-mode.test.ts`, `packages/ai-os/tests/rosegriffon.test.ts`
 - `packages/ai-os/src/ffi/desktop.ts` — tests : `packages/ai-os/tests/ai-os.test.ts`, `packages/ai-os/tests/full-design-mode.test.ts`, `packages/ai-os/tests/rosegriffon.test.ts`
 - `packages/ai-os/src/ffi/polyglot.ts` — tests : `packages/ai-os/tests/ai-os.test.ts`, `packages/ai-os/tests/full-design-mode.test.ts`, `packages/ai-os/tests/rosegriffon.test.ts`

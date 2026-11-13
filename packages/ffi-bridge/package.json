@@ -2,8 +2,12 @@
   "name": "@aphrody/ffi-bridge",
   "version": "1.27.0",
   "private": true,
-  "description": "bun:ffi tests of the Rust cdylibs (rust-stack, unix-distro probes)",
+  "description": "bun:ffi bindings and tests of the Rust cdylibs (dx12-hal, rust-stack, unix-distro probes)",
   "type": "module",
+  "exports": {
+    "./dx12-hal": "./src/dx12-hal.ts",
+    "./unix-distro": "./src/unix-distro.ts"
+  },
   "scripts": {
     "test": "bun test",
     "check": "bun check",

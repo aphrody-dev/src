@@ -58,7 +58,7 @@ Tous les `package.json` first-party ont été unifiés sous le scope `@aphrody/*
 - Racine : `@aphrody/monorepo`
 - Applications : `@aphrody/web` (`apps/aphrody`), `@shenron/monorepo` (`apps/shenron`), `@rosegriffon/monorepo` (`apps/rosegriffon`)
 - Packages (`packages/*`) : `@aphrody/ai-os`, `@aphrody/ai-triad`, `@aphrody/brain`, `@aphrody/bun-parity`, `@aphrody/bun-plugins`, `@aphrody/chromium-bun`, `@aphrody/env-kit`, `@aphrody/forge`, `@aphrody/google-design`, `@aphrody/knowledge-engine`, `@aphrody/pi-opencode`, `@aphrody/wck`
-- Infra (`infra/*`) : `@aphrody/mesh-vn`, `@aphrody/infra-ffi-bridge`
+- Infra (`infra/*`) : `@aphrody/mesh-vn` (`@aphrody/ffi-bridge` vit dans `packages/ffi-bridge` depuis le 2026-11-13)
 
 ### 2.2 Crates Rust 2024 dans `C:\src`
 

@@ -9,5 +9,5 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["index.ts", "polyglot.test.ts", "../../packages/bun-plugins/bun-native.d.ts"]
+  "include": ["src", "*.test.ts", "../bun-plugins/bun-native.d.ts"]
 }

@@ -93,7 +93,7 @@ T:	git https://github.com/aphrody-dev/infra.git
 T:	git https://github.com/aphrody-dev/mesh-vn.git
 F:	infra/deploy.toml
 F:	infra/
-F:	infra/ffi-bridge/
+F:	packages/ffi-bridge/
 F:	infra/mesh-vn/
 
 GRAPHICS, WAYLAND COMPOSITOR & GAMESCOPE WEBGPU
@@ -229,7 +229,7 @@ F:	crates/core-capi/
 F:	crates/dx12-hal/
 F:	crates/unix-*/
 F:	crates/remote/
-F:	infra/ffi-bridge/
+F:	packages/ffi-bridge/
 F:	packages/runtime-adapter/
 
 LAYER L4 AGENT

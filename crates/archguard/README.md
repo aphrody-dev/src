@@ -71,7 +71,6 @@ flowchart TD
     crates_wayland["wayland"]
     crates_xtask["xtask"]
     infra["infra"]
-    infra_ffi_bridge["ffi-bridge"]
     infra_mesh_vn["mesh-vn"]
   end
 
@@ -91,7 +90,7 @@ flowchart TD
 | `ARCH-003` | `package-domain-purity` | `ERROR` | Every directory in `C:\src\packages\*` must declare a `@aphrody/<slug>` `package.json`, zero external npm dependencies (`workspace:*` and `@types/bun` only), zero legacy lockfiles (`package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`), zero root `Cargo.toml`/`go.mod`, and isolate any native FFI code inside `native/`, `rust-core/`, `crates/`, or `loaders/`. |
 | `ARCH-004` | `app-contract-purity` | `ERROR` | `apps/aphrody-app` must remain 100% pure Rust (zero TypeScript/npm files); `apps/aphrody` (`aphrody.com`) must maintain `dependencies: {}`, `devDependencies: {}`, zero `node_modules`, and zero `bun.lock`. |
 | `ARCH-005` | `root-topology-junctions` | `ERROR` | `C:\src` root may contain only canonical physical directories (`apps`, `packages`, `crates`, `infra`, `tools`, `docs`, `third_party`, `var`, `graphify-out`, `node_modules`, `.repo`) and valid non-dangling NTFS junctions. |
-| `ARCH-006` | `infra-domain-purity` | `ERROR` | `C:\src\infra` must maintain `go.mod` and restrict TypeScript strictly to `infra/ffi-bridge` and `infra/mesh-vn`. |
+| `ARCH-006` | `infra-domain-purity` | `ERROR` | `C:\src\infra` must maintain `go.mod` and restrict TypeScript strictly to `infra/mesh-vn` (bun packages live in `packages/`). |
 | `ARCH-007` | `host-userspace-boundary` | `ERROR` | First-party code and scripts must never copy, move, write, or delete files inside `C:\Windows\System32` or `C:\Windows\SysWOW64`. |
 | `ARCH-008` | `secret-vault-hygiene` | `ERROR` | Zero `.env` files inside subdirectories (all secrets stay exclusively in untracked `C:\src\.env`), and zero live API/OAuth/PAT tokens in source or docs. |
 | `ARCH-009` | `zero-emoji-anti-slop` | `ERROR` | Zero pictographic emoji characters across first-party source code, configs, and documentation. |

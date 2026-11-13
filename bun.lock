@@ -8,10 +8,6 @@
         "@types/bun": "catalog:",
       },
     },
-    "infra/ffi-bridge": {
-      "name": "@aphrody/ffi-bridge",
-      "version": "1.27.0",
-    },
     "packages/ai-os": {
       "name": "@aphrody/ai-os",
       "version": "0.2.0",
@@ -74,6 +70,10 @@
       "bin": {
         "env-kit": "./src/cli.ts",
       },
+    },
+    "packages/ffi-bridge": {
+      "name": "@aphrody/ffi-bridge",
+      "version": "1.27.0",
     },
     "packages/forge": {
       "name": "@aphrody/forge",
@@ -167,7 +167,7 @@
 
     "@aphrody/env-kit": ["@aphrody/env-kit@workspace:packages/env-kit"],
 
-    "@aphrody/ffi-bridge": ["@aphrody/ffi-bridge@workspace:infra/ffi-bridge"],
+    "@aphrody/ffi-bridge": ["@aphrody/ffi-bridge@workspace:packages/ffi-bridge"],
 
     "@aphrody/forge": ["@aphrody/forge@workspace:packages/forge"],
 

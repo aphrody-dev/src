@@ -4,7 +4,9 @@
 //   /api/icon?path=  icône réelle d'un PE (.ico)                /api/index/{stats,tree,search} : SQLite (winindex.ts)
 //   /desktop.svg     bureau entier (UI Automation)              /stats : mesures d'affichage (?report=1)
 //   /api/msindex/{stats,search,node/:id} : pile Microsoft indexée et prouvée (sdk/tools/msindex)
+//   /api/gpu         adaptateurs DXGI et périphérique D3D12 réels (crates/dx12-hal via @aphrody/ffi-bridge)
 // Usage : bun src/host/server.ts   [PORT=8787] [NT_HZ=15]
+import { dx12Adapters, dx12Device, loadDx12Hal } from "@aphrody/ffi-bridge/dx12-hal";
 import { Database } from "bun:sqlite";
 import app from "../../../modules/web/nt.html";
 import { desktopSvg } from "./desktop-svg.ts";
@@ -56,6 +58,14 @@ const server = Bun.serve({
     "/desktop.svg": async () => {
       if (!svgCache || performance.now() - svgCache.at > 3000) svgCache = { at: performance.now(), svg: (await desktopSvg()).svg };
       return new Response(svgCache.svg, { headers: { "content-type": "image/svg+xml; charset=utf-8", "cache-control": "no-store" } });
+    },
+    "/api/gpu": () => {
+      if (!loadDx12Hal()) return new Response("dx12_hal.dll absent : cargo build -p dx12-hal --release (src)", { status: 404 });
+      try {
+        return json({ adapters: dx12Adapters(), device: dx12Device() });
+      } catch (e) {
+        return new Response(String(e), { status: 500 });
+      }
     },
     "/api/index/stats": () => {
       if (!index) return noIndex();

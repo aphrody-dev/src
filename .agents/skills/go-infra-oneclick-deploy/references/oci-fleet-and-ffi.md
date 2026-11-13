@@ -8,4 +8,4 @@ Writes deterministic `oci-layout`, `index.json`, config blobs, and tar layers di
 - `GoDetectProjectJSON(path)` — Framework & regional topology classification.
 - `GoSignR2S3v4AuthHeader(...)` — Pure-Go Cloudflare R2 S3v4 signature generator.
 - `GoComputeOciDigest(buffer)` — Deterministic SHA-256 OCI layer digest.
-- Tested end-to-end across Rust, Bun, and Go in `infra/ffi-bridge/polyglot.test.ts`.
+- Tested end-to-end across Rust, Bun, and Go in `packages/ffi-bridge/rust-stack-ffi.test.ts`.
