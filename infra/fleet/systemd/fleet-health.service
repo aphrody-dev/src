@@ -1,5 +1,10 @@
 [Unit]
-Description=Fleet cross-node health check
+Description=Fleet cross-node health check and self-heal (fleet-health.sh)
+Wants=network-online.target
+After=network-online.target
 [Service]
 Type=oneshot
+# Exit 1 = peer/edge failure: reported in journald (tag fleet-health) and FLEET_ALERT_URL, not a unit failure.
+SuccessExitStatus=1
+TimeoutStartSec=300
 ExecStart=/usr/local/bin/fleet-health.sh

@@ -1,7 +1,8 @@
 [Unit]
 Description=Fleet health check every 2 min
 [Timer]
-OnBootSec=2min
+OnBootSec=90s
 OnUnitActiveSec=2min
+AccuracySec=10s
 [Install]
 WantedBy=timers.target

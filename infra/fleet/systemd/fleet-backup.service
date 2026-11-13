@@ -1,9 +1,10 @@
 [Unit]
-Description=Fleet config/app-state backup to R2
+Description=Fleet self-backup of this host to R2 (age-encrypted, fleet-backup.sh)
+Wants=network-online.target
 After=network-online.target
 [Service]
 Type=oneshot
-User=ubuntu
 Nice=19
 IOSchedulingClass=idle
+TimeoutStartSec=2h
 ExecStart=/usr/local/bin/fleet-backup.sh

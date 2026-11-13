@@ -1,0 +1,27 @@
+# Reboot proof fr2 (cdn) 2026-11-13T03:11:40Z
+## before
+boot_id: 47f7eb26-152a-4967-9991-435b0520dfb3 uptime: up 3 weeks, 6 days, 15 hours, 44 minutes
+system: running
+resilience check: 26 OK, 1 FAIL
+  FAIL user ubuntu: yolo-worker.service enabled=enabled active=activating
+containers running: 3 / all: 3
+agent tmux: agents: 3 windows (created Fri Nov 13 03:01:19 2026)
+journald: /var/log/journal/ca951c29e6f44fceade99039d4639dac/user-1000.journal
+vhosts on vps: aphrody.com=502 aphrody.app=502 api.aphrody.com=200 cdn.aphrody.com=200 downloads.aphrody.com=502 creator.aphrody.com=200 dragonballfr.com=502 rosegriffon.fr=502 ai.aphrody.com=502 rpbey.fr=200 
+vhosts on cdn: aphrody.com=502 aphrody.app=502 api.aphrody.com=200 cdn.aphrody.com=200 downloads.aphrody.com=404 creator.aphrody.com=200 dragonballfr.com=200 rosegriffon.fr=200 ai.aphrody.com=502 rpbey.fr=200 
+vhosts on prd: aphrody.com=200 aphrody.app=200 api.aphrody.com=404 cdn.aphrody.com=200 downloads.aphrody.com=200 creator.aphrody.com=404 dragonballfr.com=200 rosegriffon.fr=200 ai.aphrody.com=200 rpbey.fr=200 
+public: aphrody.com=200 aphrody.app=200 api.aphrody.com=200 cdn.aphrody.com=200 downloads.aphrody.com=404 creator.aphrody.com=200 dragonballfr.com=200 rosegriffon.fr=000 ai.aphrody.com=200 rpbey.fr=200 
+## reboot 03:12:20
+ssh back after 40s; public availability during the reboot: 3/3 polls with no new failure
+## after (131s after the reboot order)
+boot_id: a4cae646-5886-4107-96c4-860078afecff uptime: up 1 minute
+system: running
+resilience check: 27 OK, 0 FAIL
+containers running: 3 / all: 3
+agent tmux: agents: 3 windows (created Fri Nov 13 03:12:55 2026)
+journald: /var/log/journal/ca951c29e6f44fceade99039d4639dac/user-1000.journal
+vhosts on vps: aphrody.com=502 aphrody.app=502 api.aphrody.com=200 cdn.aphrody.com=200 downloads.aphrody.com=502 creator.aphrody.com=200 dragonballfr.com=502 rosegriffon.fr=502 ai.aphrody.com=502 rpbey.fr=200 
+vhosts on cdn: aphrody.com=502 aphrody.app=502 api.aphrody.com=200 cdn.aphrody.com=200 downloads.aphrody.com=404 creator.aphrody.com=200 dragonballfr.com=200 rosegriffon.fr=200 ai.aphrody.com=502 rpbey.fr=200 
+vhosts on prd: aphrody.com=200 aphrody.app=200 api.aphrody.com=404 cdn.aphrody.com=200 downloads.aphrody.com=200 creator.aphrody.com=404 dragonballfr.com=200 rosegriffon.fr=200 ai.aphrody.com=200 rpbey.fr=200 
+public: aphrody.com=200 aphrody.app=200 api.aphrody.com=200 cdn.aphrody.com=200 downloads.aphrody.com=404 creator.aphrody.com=200 dragonballfr.com=200 rosegriffon.fr=200 ai.aphrody.com=200 rpbey.fr=200 
+result: PASS (archived: docs/infra/resilience/2026-11-13T0311Z-fr2.txt)

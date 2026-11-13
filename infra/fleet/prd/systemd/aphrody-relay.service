@@ -1,5 +1,6 @@
 # Unité systemd utilisateur du relais de @aphrody/ai-os (Linux : prd et postes), sans navigateur.
-# Source : packages/ai-os/src/relay ; copie de src attendue dans ~/src (SRC_ROOT).
+# Source : packages/ai-os/src/relay, lu depuis un checkout git en lecture seule (SRC_ROOT, prd : /srv/src, clone
+# partiel et sparse tenu à jour par src-checkout-update.timer, qui redémarre le relais si packages/ai-os change).
 # Installation : install -Dm644 aphrody-relay.service ~/.config/systemd/user/aphrody-relay.service
 #                systemctl --user daemon-reload && systemctl --user enable --now aphrody-relay
 #                loginctl enable-linger "$USER"   (démarrage sans session ouverte)
@@ -13,15 +14,15 @@ Type=simple
 Environment=RELAY_GEMINI=agy
 Environment=RELAY_PORT=8790
 Environment=RELAY_TCP_PORT=8791
-Environment=SRC_ROOT=%h/src
+Environment=SRC_ROOT=/srv/src
 EnvironmentFile=-%h/.config/aphrody/relay.env
-ExecStart=%h/.bun/bin/bun %h/src/packages/ai-os/src/relay/cli.ts serve
-Restart=on-failure
+ExecStart=%h/.bun/bin/bun ${SRC_ROOT}/packages/ai-os/src/relay/cli.ts serve
+Restart=always
 RestartSec=5
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
-ReadWritePaths=%h/.local/state/aphrody %h/src
+ReadWritePaths=%h/.local/state/aphrody
 ProtectKernelTunables=true
 ProtectControlGroups=true
 RestrictSUIDSGID=true

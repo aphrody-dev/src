@@ -230,10 +230,10 @@ cf-apply section only="":
 
 # Custom AOP for fr2 origins proxied by Cloudflare (dbfr): rotate CA + edge client certificate, then prune after convergence
 cf-aop host="dbfr.aphrody.com":
-    CF_AUTH=oauth bun infra/cloudflare/aop.ts {{host}}
+    bun packages/env-kit/src/cli.ts secret exec CF_AOP_TOKEN -- bun infra/cloudflare/aop.ts {{host}}
 
 cf-aop-prune host="dbfr.aphrody.com":
-    CF_AUTH=oauth bun infra/cloudflare/aop.ts --prune {{host}}
+    bun packages/env-kit/src/cli.ts secret exec CF_AOP_TOKEN -- bun infra/cloudflare/aop.ts --prune {{host}}
 
 # Rotate the per-host least-privilege fleet tokens (fleet-<host>-dns) into /etc/aphrody/secrets.env of fr2/prd
 cf-fleet-token:
@@ -310,10 +310,26 @@ docker-runtime:
 docker-run recipe="verify-all":
     {{docker_compose}} --profile dev run --rm dev just {{recipe}}
 
-# Toolchain bootstrap of a fleet host from packages/machine/toolchains.lock.toml (usage: just fleet-bootstrap prd|fr1|fr2)
+# Toolchain bootstrap of a fleet host from tools.toml (usage: just fleet-bootstrap prd|fr1|fr2)
 fleet-bootstrap role:
-    tar -cf - -C "{{root}}" infra/fleet/bootstrap/common.sh infra/fleet/bootstrap/{{role}}.sh infra/fleet/bin/heavy.sh infra/fleet/sysctl infra/agents/install.sh packages/machine/toolchains.lock.toml | timeout 120 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'rm -rf /tmp/aphrody-bootstrap && mkdir -p /tmp/aphrody-bootstrap && tar -xf - -C /tmp/aphrody-bootstrap'
-    timeout 1800 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'cd /tmp/aphrody-bootstrap && LOCK=$PWD/packages/machine/toolchains.lock.toml sh infra/fleet/bootstrap/{{role}}.sh'
+    tar -cf - -C "{{root}}" infra/fleet/bootstrap/common.sh infra/fleet/bootstrap/{{role}}.sh infra/fleet/bin/heavy.sh infra/fleet/sysctl infra/agents/install.sh tools.toml | timeout 120 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'rm -rf /tmp/aphrody-bootstrap && mkdir -p /tmp/aphrody-bootstrap && tar -xf - -C /tmp/aphrody-bootstrap'
+    timeout 1800 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'cd /tmp/aphrody-bootstrap && LOCK=$PWD/tools.toml sh infra/fleet/bootstrap/{{role}}.sh'
+
+# Real reboot proof of one fleet host, the others keep serving (docs/infra/RESILIENCE.md; usage: just fleet-resilience-proof fr2)
+fleet-resilience-proof host:
+    sh "{{root}}/infra/fleet/bin/fleet-resilience-proof.sh" {{host}}
+
+# Survive reboot/crash/kill on every host (infra/fleet/<host>/resilience.conf; usage: just fleet-resilience apply|check [pc fr2 prd fr1])
+fleet-resilience mode="check" *hosts:
+    bash "{{root}}/infra/fleet/bin/fleet-resilience-remote.sh" {{ if mode =~ '^(apply|check)$' { mode } else { error("mode: apply|check") } }} {{hosts}}
+
+# Decrypt the latest R2 backup of a host on that host and check it (files, SQLite integrity; usage: just fleet-restore-test prd)
+fleet-restore-test host:
+    bash "{{root}}/infra/fleet/bin/fleet-resilience-remote.sh" restore-test {{host}}
+
+# Rebuild a reinstalled host from zero: sshd, bootstrap, R2 state, fleet layer, cluster, runner (usage: just fleet-rebuild fr2 [--dry-run])
+fleet-rebuild host *flags:
+    bash "{{root}}/infra/fleet/bin/fleet-rebuild.sh" {{host}} {{flags}}
 
 # Regenerate the pinned toolchain manifest (versions + upstream checksums)
 toolchains-lock:

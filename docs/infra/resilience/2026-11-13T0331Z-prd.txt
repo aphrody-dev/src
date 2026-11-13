@@ -1,0 +1,30 @@
+# Reboot proof prd (prd) 2026-11-13T03:31:46Z
+## before
+boot_id: f18a7419-e054-4d35-ac8f-c277e220fbcb uptime: up 11 days, 7 hours, 31 minutes
+system: degraded
+resilience check: 37 OK, 2 FAIL
+  FAIL failed units: rg-steam-depot.service
+  FAIL containers without restart policy: rg-steam-verify
+containers running: 29 / all: 29
+agent tmux: agents: 8 windows (created Fri Nov 13 02:04:10 2026)
+journald: /var/log/journal/bcded1bc2b034d5697b2d821571133ae/user-1002.journal
+vhosts on vps: aphrody.com=502 aphrody.app=502 api.aphrody.com=200 cdn.aphrody.com=200 downloads.aphrody.com=502 creator.aphrody.com=200 dragonballfr.com=502 rosegriffon.fr=502 ai.aphrody.com=502 rpbey.fr=200 
+vhosts on cdn: aphrody.com=502 aphrody.app=502 api.aphrody.com=200 cdn.aphrody.com=200 downloads.aphrody.com=404 creator.aphrody.com=200 dragonballfr.com=200 rosegriffon.fr=200 ai.aphrody.com=502 rpbey.fr=200 
+vhosts on prd: aphrody.com=200 aphrody.app=200 api.aphrody.com=404 cdn.aphrody.com=200 downloads.aphrody.com=200 creator.aphrody.com=404 dragonballfr.com=200 rosegriffon.fr=200 ai.aphrody.com=200 rpbey.fr=200 
+public: aphrody.com=200 aphrody.app=200 api.aphrody.com=200 cdn.aphrody.com=200 downloads.aphrody.com=404 creator.aphrody.com=200 dragonballfr.com=200 rosegriffon.fr=200 ai.aphrody.com=200 rpbey.fr=200 
+## reboot 03:32:50
+ssh back after 550s; public availability during the reboot: 0/13 polls with no new failure
+## after (736s after the reboot order)
+boot_id: ee1891b6-23b0-471f-a3b6-e4755c376bb6 uptime: up 3 minutes
+system: degraded
+resilience check: 38 OK, 1 FAIL
+  FAIL failed units: rg-steam-post.service
+containers running: 28 / all: 28
+agent tmux: agents: 8 windows (created Fri Nov 13 03:41:51 2026)
+journald: /var/log/journal/bcded1bc2b034d5697b2d821571133ae/user-1002.journal
+vhosts on vps: aphrody.com=502 aphrody.app=502 api.aphrody.com=200 cdn.aphrody.com=200 downloads.aphrody.com=502 creator.aphrody.com=200 dragonballfr.com=502 rosegriffon.fr=502 ai.aphrody.com=502 rpbey.fr=200 
+vhosts on cdn: aphrody.com=502 aphrody.app=502 api.aphrody.com=200 cdn.aphrody.com=200 downloads.aphrody.com=404 creator.aphrody.com=200 dragonballfr.com=200 rosegriffon.fr=200 ai.aphrody.com=502 rpbey.fr=200 
+vhosts on prd: aphrody.com=200 aphrody.app=200 api.aphrody.com=404 cdn.aphrody.com=200 downloads.aphrody.com=200 creator.aphrody.com=404 dragonballfr.com=200 rosegriffon.fr=200 ai.aphrody.com=200 rpbey.fr=200 
+public: aphrody.com=200 aphrody.app=200 api.aphrody.com=200 cdn.aphrody.com=200 downloads.aphrody.com=404 creator.aphrody.com=200 dragonballfr.com=200 rosegriffon.fr=200 ai.aphrody.com=200 rpbey.fr=200 
+WORSE: running containers 29 -> 28
+result: FAIL (archived: docs/infra/resilience/2026-11-13T0331Z-prd.txt)

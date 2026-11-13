@@ -1,8 +1,8 @@
 [Unit]
-Description=Daily fleet backup to R2
+Description=Fleet self-backup to R2, every 6 h
 [Timer]
-OnCalendar=*-*-* 03:30:00 UTC
-RandomizedDelaySec=10m
+OnCalendar=*-*-* 03,09,15,21:30:00 UTC
+RandomizedDelaySec=15m
 Persistent=true
 [Install]
 WantedBy=timers.target
