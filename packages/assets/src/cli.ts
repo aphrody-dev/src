@@ -31,7 +31,7 @@ import {
   importPack,
   polyhavenItems,
 } from "./sources.ts";
-import { pool, which } from "./util.ts";
+import { pool, run, which } from "./util.ts";
 
 const root = process.env.SRC_ROOT ?? join(import.meta.dir, "..", "..", "..");
 const [cmd = "list", ...args] = Bun.argv.slice(2);
@@ -74,9 +74,12 @@ async function doOptimize() {
   console.log(
     `optimized ${r.records.length} (built ${r.built}, cached ${r.cached}), ${fmtMB(inB)} -> ${fmtMB(outB)} (outputs counted per format)`,
   );
-  const sk = new Map<string, number>();
-  for (const s of r.skipped) sk.set(s.recipe, (sk.get(s.recipe) ?? 0) + 1);
-  for (const [k, n] of sk) console.log(`skipped ${n} x ${k}: tool unavailable`);
+  for (const x of r.failed.slice(0, 20))
+    console.error(`failed ${x.recipe} ${x.id}: ${x.reason}`);
+  if (r.failed.length) {
+    console.error(`${r.failed.length} failed`);
+    process.exitCode = 1;
+  }
   return r;
 }
 
@@ -127,7 +130,10 @@ switch (cmd) {
       console.log(`${a.id}\t${a.kind}\t${a.license}\t${a.storage}\t${a.path}`);
     break;
   case "verify": {
-    const errs = [...(await verify(root, assets)), ...(await verifyGenerated(root))];
+    const errs = [
+      ...(await verify(root, assets)),
+      ...(await verifyGenerated(root)),
+    ];
     errs.push(...checkTargets(loadTargets()), ...checkRepos(loadRepos()));
     for (const e of errs.slice(0, 200)) console.error(e);
     console.log(
@@ -246,23 +252,38 @@ switch (cmd) {
         `${t.name}\t${t.type}\t${t.external ? "external" : "internal"}\t${t.public_url ?? ""}`,
       );
     break;
-  case "tools":
+  case "tools": {
+    let missing = 0;
+    const ver = async (t: string) => {
+      const flag =
+        t === "cwebp" ? "-version" : t === "gltfpack" ? "-h" : "--version";
+      const r = await run([t, flag]);
+      return ((r.out || r.err).split(/\r?\n/).find((l) => /\d/.test(l)) ?? "")
+        .trim()
+        .slice(0, 60);
+    };
     for (const t of [
       "cwebp",
       "avifenc",
       "toktx",
       "gltfpack",
-      "ffmpeg",
       "opusenc",
-      "svgo",
-      "woff2_compress",
+      "ffmpeg",
       "rclone",
       "tar",
       "ssh",
-    ])
-      console.log(`${t}\t${which(t) ?? "missing"}`);
-    console.log(`Bun.Image\t${(Bun as any).Image ? "present" : "missing"}`);
+    ]) {
+      const p = which(t);
+      if (!p) missing++;
+      console.log(`${t}\t${p ? await ver(t) : "MISSING"}`);
+    }
+    for (const m of ["svgo", "wawoff2"])
+      console.log(
+        `${m}\t${(await Bun.file(join(import.meta.dir, "..", "..", "..", "node_modules", m, "package.json")).json()).version} (in-process)`,
+      );
+    process.exitCode = missing ? 1 : 0;
     break;
+  }
   case "run": {
     // fetch -> optimize -> bundle -> publish (targets after --to=a,b; absent = no publish)
     const sel = pick(false);
@@ -280,11 +301,12 @@ switch (cmd) {
     ).testCommand(root, args);
     break;
   case "gen":
-    process.exitCode = (
-      await Bun.spawn(["bun", "run", join(import.meta.dir, "gen", "gen.ts"), ...args], {
+    process.exitCode = await Bun.spawn(
+      ["bun", "run", join(import.meta.dir, "gen", "gen.ts"), ...args],
+      {
         stdio: ["inherit", "inherit", "inherit"],
-      }).exited
-    );
+      },
+    ).exited;
     break;
   case "retest":
     process.exitCode = await (

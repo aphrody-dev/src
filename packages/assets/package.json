@@ -13,7 +13,10 @@
     "gen": "bun run src/gen/gen.ts",
     "test": "bun test"
   },
-  "dependencies": {},
+  "dependencies": {
+    "svgo": "4.1.0",
+    "wawoff2": "2.0.1"
+  },
   "devDependencies": {
     "gltf-validator": "2.0.0-dev.3.10"
   },

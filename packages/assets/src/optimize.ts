@@ -1,10 +1,4 @@
-import {
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  copyFileSync,
-  writeFileSync,
-} from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, basename, extname } from "node:path";
 import { type Asset, fileOf } from "./manifest.ts";
 import {
@@ -18,17 +12,17 @@ import {
 } from "./util.ts";
 
 /**
- * Optimization recipes. Every output is deterministic (no timestamps, metadata stripped,
- * fixed parameters), named `<stem>.<sha256[0:10]>.<ext>` and cached by
- * sha256(input) + recipe id, so a re-run with the same inputs does no work.
+ * One real optimizer per type, no fallback: a missing tool is an error that names it.
+ * Every output is deterministic (metadata stripped, fixed parameters), named
+ * `<stem>.<sha256[0:10]>.<ext>` and cached by sha256(input) + recipe + RECIPE_VERSION.
  *
- * Tool order per type (first available wins, none available = skipped and reported):
- *   png/jpg      webp: Bun.Image | cwebp        avif: Bun.Image | avifenc | ffmpeg(libaom)
- *   textures     ktx2 (UASTC + zstd): toktx (KTX-Software, free)
- *   glb          meshopt: gltfpack (meshoptimizer, MIT)
- *   wav/flac/mp3/ogg  opus: ffmpeg(libopus) | opusenc
- *   svg          svgo | built-in whitespace/comment minifier
- *   ttf/otf      woff2: woff2_compress (Google, MIT)
+ *   png/jpg    webp   cwebp (libwebp)
+ *   png/jpg    avif   avifenc (libavif, aom)
+ *   textures   ktx2   toktx (KTX-Software, UASTC + zstd)
+ *   glb/gltf   glb    gltfpack (meshoptimizer: meshopt + KHR_texture_basisu)
+ *   audio      opus   opusenc (everything but wav is decoded to wav by ffmpeg first)
+ *   svg        svg    svgo (in-process, multipass)
+ *   ttf/otf    woff2  wawoff2 (google/woff2 as wasm, in-process)
  */
 export interface OptOut {
   recipe: string;
@@ -37,148 +31,70 @@ export interface OptOut {
   bytes: Uint8Array;
 }
 
-export const RECIPE_VERSION = 1;
+export const RECIPE_VERSION = 2;
 const WEBP_Q = 80;
 const AVIF_Q = 50;
 const OPUS_KBPS = 96;
 
-type Maker = (
-  src: string,
-  tmp: string,
-  a: Pick<Asset, "kind">,
-) => Promise<OptOut | null>;
+type Maker = (src: string, tmp: string) => Promise<OptOut>;
 
 const rd = (p: string) => new Uint8Array(readFileSync(p));
 
-async function viaBunImage(
-  src: string,
-  fmt: "webp" | "avif",
-): Promise<Uint8Array | null> {
-  const I = (
-    Bun as unknown as { Image?: new (b: Uint8Array) => Record<string, any> }
-  ).Image;
-  if (!I) return null;
-  try {
-    const im = new I(rd(src));
-    const out = await (
-      fmt === "webp"
-        ? im.webp({ quality: WEBP_Q })
-        : im.avif({ quality: AVIF_Q })
-    ).bytes();
-    return out.length ? out : null;
-  } catch {
-    return null;
-  }
+async function tool(cmd: string[], out: string): Promise<Uint8Array> {
+  const r = await run(cmd, { nice: true });
+  if (!r.ok || !existsSync(out))
+    throw new Error(`${cmd[0]} failed: ${r.err.trim().slice(0, 200)}`);
+  return rd(out);
 }
 
-const webp: Maker = async (src, tmp) => {
-  const b = await viaBunImage(src, "webp");
-  if (b)
-    return {
-      recipe: `webp-q${WEBP_Q}`,
-      ext: "webp",
-      tool: "Bun.Image",
-      bytes: b,
-    };
-  if (which("cwebp")) {
-    const o = `${tmp}.webp`;
-    const r = await run(
-      [
-        "cwebp",
-        "-quiet",
-        "-q",
-        String(WEBP_Q),
-        "-m",
-        "6",
-        "-metadata",
-        "none",
-        src,
-        "-o",
-        o,
-      ],
-      { nice: true },
-    );
-    if (r.ok)
-      return {
-        recipe: `webp-q${WEBP_Q}`,
-        ext: "webp",
-        tool: "cwebp",
-        bytes: rd(o),
-      };
-  }
-  return null;
-};
+const webp: Maker = async (src, tmp) => ({
+  recipe: `webp-q${WEBP_Q}`,
+  ext: "webp",
+  tool: "cwebp",
+  bytes: await tool(
+    [
+      "cwebp",
+      "-quiet",
+      "-q",
+      String(WEBP_Q),
+      "-m",
+      "6",
+      "-metadata",
+      "none",
+      src,
+      "-o",
+      `${tmp}.webp`,
+    ],
+    `${tmp}.webp`,
+  ),
+});
 
-const avif: Maker = async (src, tmp) => {
-  const b = await viaBunImage(src, "avif");
-  if (b)
-    return {
-      recipe: `avif-q${AVIF_Q}`,
-      ext: "avif",
-      tool: "Bun.Image",
-      bytes: b,
-    };
-  const o = `${tmp}.avif`;
-  if (which("avifenc")) {
-    const r = await run(
-      [
-        "avifenc",
-        "-q",
-        String(AVIF_Q),
-        "-s",
-        "6",
-        "-j",
-        "2",
-        "--ignore-icc",
-        src,
-        o,
-      ],
-      { nice: true },
-    );
-    if (r.ok)
-      return {
-        recipe: `avif-q${AVIF_Q}`,
-        ext: "avif",
-        tool: "avifenc",
-        bytes: rd(o),
-      };
-  }
-  if (which("ffmpeg")) {
-    const r = await run(
-      [
-        "ffmpeg",
-        "-v",
-        "error",
-        "-y",
-        "-i",
-        src,
-        "-map_metadata",
-        "-1",
-        "-c:v",
-        "libaom-av1",
-        "-crf",
-        "32",
-        "-still-picture",
-        "1",
-        o,
-      ],
-      { nice: true },
-    );
-    if (r.ok)
-      return {
-        recipe: `avif-q${AVIF_Q}`,
-        ext: "avif",
-        tool: "ffmpeg",
-        bytes: rd(o),
-      };
-  }
-  return null;
-};
+const avif: Maker = async (src, tmp) => ({
+  recipe: `avif-q${AVIF_Q}`,
+  ext: "avif",
+  tool: "avifenc",
+  bytes: await tool(
+    [
+      "avifenc",
+      "-q",
+      String(AVIF_Q),
+      "-s",
+      "6",
+      "-j",
+      "2",
+      "--ignore-icc",
+      src,
+      `${tmp}.avif`,
+    ],
+    `${tmp}.avif`,
+  ),
+});
 
-const ktx2: Maker = async (src, tmp) => {
-  if (!which("toktx")) return null;
-  const o = `${tmp}.ktx2`;
-  const r = await run(
+const ktx2: Maker = async (src, tmp) => ({
+  recipe: "ktx2-uastc2-zstd18",
+  ext: "ktx2",
+  tool: "toktx",
+  bytes: await tool(
     [
       "toktx",
       "--t2",
@@ -191,118 +107,82 @@ const ktx2: Maker = async (src, tmp) => {
       "18",
       "--threads",
       "2",
-      o,
+      `${tmp}.ktx2`,
       src,
     ],
-    { nice: true },
-  );
-  return r.ok
-    ? { recipe: "ktx2-uastc2-zstd18", ext: "ktx2", tool: "toktx", bytes: rd(o) }
-    : null;
-};
+    `${tmp}.ktx2`,
+  ),
+});
 
-const glb: Maker = async (src, tmp) => {
-  if (!which("gltfpack")) return null;
-  const o = `${tmp}.glb`;
-  const r = await run(["gltfpack", "-i", src, "-o", o, "-cc", "-tc"], {
-    nice: true,
-  });
-  return r.ok
-    ? { recipe: "gltfpack-cc-tc", ext: "glb", tool: "gltfpack", bytes: rd(o) }
-    : null;
-};
+const glb: Maker = async (src, tmp) => ({
+  recipe: "gltfpack-cc-tc",
+  ext: "glb",
+  tool: "gltfpack",
+  bytes: await tool(
+    ["gltfpack", "-i", src, "-o", `${tmp}.glb`, "-cc", "-tc"],
+    `${tmp}.glb`,
+  ),
+});
 
 const opus: Maker = async (src, tmp) => {
-  const o = `${tmp}.opus`;
-  if (which("ffmpeg")) {
-    const r = await run(
-      [
-        "ffmpeg",
-        "-v",
-        "error",
-        "-y",
-        "-i",
-        src,
-        "-map_metadata",
-        "-1",
-        "-fflags",
-        "+bitexact",
-        "-flags:a",
-        "+bitexact",
-        "-c:a",
-        "libopus",
-        "-b:a",
-        `${OPUS_KBPS}k`,
-        "-vn",
-        o,
-      ],
-      { nice: true },
+  let input = src;
+  if (!/\.wav$/i.test(src)) {
+    input = `${tmp}.wav`;
+    await tool(
+      ["ffmpeg", "-v", "error", "-y", "-i", src, "-map_metadata", "-1", input],
+      input,
     );
-    if (r.ok)
-      return {
-        recipe: `opus-${OPUS_KBPS}k`,
-        ext: "opus",
-        tool: "ffmpeg",
-        bytes: rd(o),
-      };
   }
-  if (which("opusenc") && /\.(wav|flac|ogg)$/i.test(src)) {
-    const r = await run(
-      ["opusenc", "--quiet", "--bitrate", String(OPUS_KBPS), src, o],
-      { nice: true },
-    );
-    if (r.ok)
-      return {
-        recipe: `opus-${OPUS_KBPS}k`,
-        ext: "opus",
-        tool: "opusenc",
-        bytes: rd(o),
-      };
-  }
-  return null;
-};
-
-/** Conservative built-in minifier: drops comments, XML prolog, inter-tag whitespace. */
-export function minifySvg(s: string): string {
-  return s
-    .replace(/<\?xml[^>]*\?>/g, "")
-    .replace(/<!DOCTYPE[^>]*>/gi, "")
-    .replace(/<!--[\s\S]*?-->/g, "")
-    .replace(/>\s+</g, "><")
-    .replace(/\s{2,}/g, " ")
-    .trim();
-}
-
-const svg: Maker = async (src, tmp) => {
-  if (which("svgo")) {
-    const o = `${tmp}.svg`;
-    const r = await run(["svgo", "--multipass", "-q", "-i", src, "-o", o]);
-    if (r.ok)
-      return {
-        recipe: "svgo-multipass",
-        ext: "svg",
-        tool: "svgo",
-        bytes: rd(o),
-      };
-  }
-  const t = minifySvg(readFileSync(src, "utf8"));
   return {
-    recipe: "svg-builtin-min",
-    ext: "svg",
-    tool: "builtin",
-    bytes: new TextEncoder().encode(t),
+    recipe: `opus-${OPUS_KBPS}k`,
+    ext: "opus",
+    tool: "opusenc",
+    bytes: await tool(
+      [
+        "opusenc",
+        "--quiet",
+        "--bitrate",
+        String(OPUS_KBPS),
+        input,
+        `${tmp}.opus`,
+      ],
+      `${tmp}.opus`,
+    ),
   };
 };
 
-const woff2: Maker = async (src, tmp) => {
-  if (!which("woff2_compress")) return null;
-  const copy = `${tmp}${extname(src)}`;
-  copyFileSync(src, copy);
-  const r = await run(["woff2_compress", copy]);
-  const o = copy.replace(/\.(ttf|otf)$/i, ".woff2");
-  return r.ok && existsSync(o)
-    ? { recipe: "woff2", ext: "woff2", tool: "woff2_compress", bytes: rd(o) }
-    : null;
+const svg: Maker = async (src) => {
+  const { optimize } = await import("svgo");
+  const r = optimize(readFileSync(src, "utf8"), { multipass: true });
+  return {
+    recipe: "svgo-multipass",
+    ext: "svg",
+    tool: "svgo",
+    bytes: new TextEncoder().encode(r.data),
+  };
+};
+
+const woff2: Maker = async (src) => {
+  const w = (await import("wawoff2")) as unknown as {
+    compress(b: Uint8Array): Promise<Uint8Array>;
+  };
+  return {
+    recipe: "woff2",
+    ext: "woff2",
+    tool: "wawoff2",
+    bytes: new Uint8Array(await w.compress(rd(src))),
+  };
+};
+
+/** External executables each recipe needs; in-process recipes (svg, woff2) need none. */
+export const NEEDS: Record<string, string[]> = {
+  webp: ["cwebp"],
+  avif: ["avifenc"],
+  ktx2: ["toktx"],
+  glb: ["gltfpack"],
+  opus: ["opusenc"],
+  svg: [],
+  woff2: [],
 };
 
 export function makersFor(
@@ -319,10 +199,19 @@ export function makersFor(
     return m;
   }
   if (e === ".glb" || e === ".gltf") return [{ name: "glb", make: glb }];
-  if (/^\.(wav|flac|mp3|ogg)$/.test(e)) return [{ name: "opus", make: opus }];
+  if (/^\.(wav|flac|ogg|mp3)$/.test(e)) return [{ name: "opus", make: opus }];
   if (e === ".svg") return [{ name: "svg", make: svg }];
   if (/^\.(ttf|otf)$/.test(e)) return [{ name: "woff2", make: woff2 }];
   return [];
+}
+
+/** Names of required executables missing from PATH for these recipes (empty = ready). */
+export function missingTools(recipes: Iterable<string>): string[] {
+  const miss = new Set<string>();
+  for (const r of recipes)
+    for (const t of NEEDS[r] ?? []) if (!which(t)) miss.add(t);
+  if ([...recipes].includes("opus") && !which("ffmpeg")) miss.add("ffmpeg");
+  return [...miss].sort();
 }
 
 export interface OptRecord {
@@ -342,7 +231,7 @@ export interface OptRecord {
 
 export interface OptResult {
   records: OptRecord[];
-  skipped: { id: string; recipe: string; reason: string }[];
+  failed: { id: string; recipe: string; reason: string }[];
   cached: number;
   built: number;
 }
@@ -365,7 +254,12 @@ export async function optimize(
       ? makersFor(extname(f), a.kind).map((m) => ({ a, f, m }))
       : [];
   });
-  const res: OptResult = { records: [], skipped: [], cached: 0, built: 0 };
+  const need = missingTools(new Set(todo.map((t) => t.m.name)));
+  if (need.length)
+    throw new Error(
+      `missing optimizer(s): ${need.join(", ")}. Install them (fr1: apt libwebp/libavif/ktx-software/opus-tools; PC: winget Google.Libwebp Mozilla.opus-tools, release binaries of libavif, KTX-Software, meshoptimizer) and re-run.`,
+    );
+  const res: OptResult = { records: [], failed: [], cached: 0, built: 0 };
   await pool(todo, opts.jobs ?? 4, async ({ a, f, m }) => {
     const srcSha = a.sha256 || (await hashFile(f));
     const key = join(
@@ -373,15 +267,10 @@ export async function optimize(
       `${srcSha.slice(0, 24)}.${m.name}.v${RECIPE_VERSION}.json`,
     );
     if (existsSync(key)) {
-      const rec = JSON.parse(readFileSync(key, "utf8")) as
-        OptRecord | { skipped: string };
-      if ("out" in rec && existsSync(join(dir, rec.out))) {
+      const rec = JSON.parse(readFileSync(key, "utf8")) as OptRecord;
+      if (existsSync(join(dir, rec.out))) {
         res.records.push({ ...rec, id: a.id });
         res.cached++;
-        return;
-      }
-      if ("skipped" in rec && !rec.skipped.startsWith("tool")) {
-        res.skipped.push({ id: a.id, recipe: m.name, reason: rec.skipped });
         return;
       }
     }
@@ -389,13 +278,11 @@ export async function optimize(
       cache,
       `tmp-${process.pid}-${Math.random().toString(36).slice(2)}`,
     );
-    const o = await m.make(f, tmp, a);
-    if (!o) {
-      res.skipped.push({
-        id: a.id,
-        recipe: m.name,
-        reason: "tool unavailable or failed",
-      });
+    let o: OptOut;
+    try {
+      o = await m.make(f, tmp);
+    } catch (e) {
+      res.failed.push({ id: a.id, recipe: m.name, reason: String(e) });
       return;
     }
     const sha = hashBytes(o.bytes);

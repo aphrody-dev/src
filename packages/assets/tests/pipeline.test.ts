@@ -11,7 +11,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { bundle } from "../src/bundle.ts";
 import { fetchAsset, parseManifest, sha256 } from "../src/manifest.ts";
-import { makersFor, minifySvg, optimize } from "../src/optimize.ts";
+import { makersFor, missingTools, optimize } from "../src/optimize.ts";
 import {
   allowed,
   checkTargets,
@@ -107,12 +107,22 @@ describe("fetch", () => {
 });
 
 describe("optimize and bundle", () => {
-  test("svg minify is conservative", () => {
-    expect(
-      minifySvg(
-        '<?xml version="1.0"?>\n<!-- c -->\n<svg>\n  <path d="M0 0"/>\n</svg>\n',
-      ),
-    ).toBe('<svg><path d="M0 0"/></svg>');
+  test("missing external optimizer is named, in-process ones need none", () => {
+    expect(missingTools(["svg", "woff2"])).toEqual([]);
+    expect(missingTools(["webp"]).every((t) => t === "cwebp")).toBe(true);
+  });
+  test("woff2 is built in-process and deterministic", async () => {
+    const root = tmp();
+    const ttf = Bun.file("C:/Windows/Fonts/arial.ttf");
+    if (!(await ttf.exists())) return;
+    const src = join(root, "f.ttf");
+    writeFileSync(src, new Uint8Array(await ttf.arrayBuffer()));
+    const m = makersFor(".ttf", "font")[0]!;
+    const a = await m.make(src, join(root, "t"));
+    const b = await m.make(src, join(root, "t"));
+    expect(a.ext).toBe("woff2");
+    expect(Bun.hash(a.bytes)).toBe(Bun.hash(b.bytes));
+    expect(a.bytes.length).toBeLessThan(ttf.size);
   });
   test("recipes per type", () => {
     expect(makersFor(".png", "texture").map((m) => m.name)).toEqual([
