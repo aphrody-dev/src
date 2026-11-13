@@ -162,16 +162,22 @@ const svg: Maker = async (src) => {
   };
 };
 
-const woff2: Maker = async (src) => {
-  const w = (await import("wawoff2")) as unknown as {
-    compress(b: Uint8Array): Promise<Uint8Array>;
-  };
-  return {
-    recipe: "woff2",
-    ext: "woff2",
-    tool: "wawoff2",
-    bytes: new Uint8Array(await w.compress(rd(src))),
-  };
+// The wasm module shares one heap: calls must not overlap or its buffers get detached.
+let woff2Lock: Promise<unknown> = Promise.resolve();
+const woff2: Maker = (src) => {
+  const run = woff2Lock.then(async () => {
+    const w = (await import("wawoff2")) as unknown as {
+      compress(b: Uint8Array): Promise<Uint8Array>;
+    };
+    return {
+      recipe: "woff2",
+      ext: "woff2",
+      tool: "wawoff2",
+      bytes: new Uint8Array(await w.compress(rd(src))),
+    };
+  });
+  woff2Lock = run.catch(() => undefined);
+  return run;
 };
 
 /** External executables each recipe needs; in-process recipes (svg, woff2) need none. */
