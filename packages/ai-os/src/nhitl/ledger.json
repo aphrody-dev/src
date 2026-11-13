@@ -83,10 +83,10 @@
       "location": "github SUBMODULES_TOKEN",
       "category": "owner_click",
       "severity": "medium",
-      "status": "open",
+      "status": "fixed",
       "excerpt": "PAT des sous-modules aphrody-labs sans source locale ; remplacé par une GitHub App (jetons d'installation de 1 h)",
-      "fix": "ay auth github-app : manifeste (contents: read) posté à aphrody-labs, page ouverte dans Chrome ; clics propriétaire « Create GitHub App » puis « Install » ; le rappel 127.0.0.1:47800 range la clé (coffre + secret org SUBMODULES_APP_KEY) et la variable SUBMODULES_APP_CLIENT_ID ; release.yml et claude.yml utilisent actions/create-github-app-token, le PAT n'est plus qu'un repli",
-      "reason": "2026-11-13 : App aphrody-labs-submodules (id 5738448) créée et installée sur toute l'organisation, jeton d'installation émis et git ls-remote ok ; reste ouvert : steam-depot-mirror.yml pousse vers aphrody-labs/steam-depot avec le PAT (écriture, hors permissions de l'App)"
+      "fix": "aucun PAT : App GitHub aphrody-labs-submodules pour les checkouts, deploy key ssh pour le miroir steam-depot, secret supprimé",
+      "reason": "remplacé par App + deploy key"
     },
     {
       "location": "prd rg-steam-depot",
