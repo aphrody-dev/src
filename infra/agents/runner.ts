@@ -527,7 +527,10 @@ async function runTask(t: Task, claimedPath: string) {
     if (status === "done") {
       if (t.approval === "owner")
         final.publish = stageDraft(t, cwd, before, out);
-      else if (t.commit) final.commit = commit(t, cwd, before, p);
+      else if (t.commit) {
+        final.commit = commit(t, cwd, before, p);
+        if ((final.commit as { error?: string }).error) status = "failed"; // unpushed work is not done
+      }
       final.provider = p;
       break;
     }

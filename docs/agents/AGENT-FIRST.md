@@ -48,7 +48,7 @@ context7, GitHub MCP et Microsoft Learn étaient injoignables (ENOTFOUND) : les 
 | Renovate `renovate` | 44.236.5 | non utilisé (voir 7) | – |
 
 Pièges relevés :
-- Claude Code refuse `bypassPermissions` en root : le runner pose `IS_SANDBOX=1` quand uid = 0 (prd). `install.sh` marque le checkout comme approuvé (`hasTrustDialogAccepted`) dans `~/.claude.json`.
+- Claude Code refuse `bypassPermissions` en root, et ce garde-fou n'est pas contourné : aucun runner ne tourne en root (`runner.ts work` refuse uid 0, `install.sh` aussi). Sur prd, le runner tourne sous l'utilisateur dédié `agent` (sans sudo), créé par `bootstrap-user.sh`. `install.sh` marque le checkout comme approuvé (`hasTrustDialogAccepted`) dans `~/.claude.json`.
 - Bun charge automatiquement le `.env` du répertoire courant : `C:\src\.env` contient une clé `ANTHROPIC_API_KEY` non rattachée à un workspace, qui passait devant la connexion claude.ai (erreur 400). Le runner, ses unités et la tâche planifiée tournent en `bun --no-env-file`, et les variables `ANTHROPIC_*`, `CLAUDECODE`, `CLAUDE_CODE_*` de la session parente sont retirées de l'environnement des enfants (`AGENTS_KEEP_ENV=1` pour les garder).
 - psmux casse les guillemets doubles de la commande de fenêtre : chemins non quotés sous Windows quand ils n'ont pas d'espace.
 - `~/.local/bin/codex` sur fr2 était un lien vers un autre binaire : l'install vérifie `~/.bun/bin/<cli>`, et le runner met `~/.bun/bin` en tête du PATH.
@@ -66,7 +66,7 @@ var/agents/state/{health.json,heartbeat-<role>,cooldown-<provider>,schedule-<nam
 var/agents/log.jsonl                expédié vers prd:/var/lib/aphrody-agents/logs/<hôte>.jsonl
 ```
 
-Checkouts : prd `/root/agents/src`, fr1 et fr2 `/home/ubuntu/agents/src`, PC `C:/src`.
+Checkouts : prd `/home/agent/agents/src` (utilisateur `agent`), fr1 et fr2 `/home/ubuntu/agents/src`, PC `C:/src`.
 
 ```json
 {
@@ -93,7 +93,7 @@ Budgets : `budget_usd` par rôle (`fleet.toml`) passé à `--max-budget-usd` de 
 
 - `infra/agents/runner.ts` (Bun, sans dépendance) : `up`, `work <rôle>`, `health`, `enqueue`, `status`.
 - `infra/agents/fleet.toml` : rôles par hôte, timeouts, budgets, cibles ssh, planification, hôte de collecte.
-- Linux (`just agents-install <hôte>` = `ssh <hôte> 'sh -s' < infra/agents/install.sh`, idempotent, appelé aussi par `infra/fleet/bootstrap/*.sh`) : clone blobless de main, hook `pre-push` qui refuse force-push et suppression, CLI en `bun add -g`, unités user `aphrody-agents.service` (session tmux `agents`, une fenêtre par rôle, boucle de redémarrage), `aphrody-agents-health.timer` (2 min : répare les fenêtres, ressuscite les workers sans battement depuis 120 s, remet les orphelins en file, sonde les CLI, expédie les journaux, `ci-watch`, planification), `aphrody-agents-pull.timer` (10 min, fast-forward). Linger activé.
+- Linux (`just agents-install <hôte>` = `ssh <hôte> 'sh -s' < infra/agents/install.sh` ; pour prd, d'abord `bootstrap-user.sh` en root puis `install.sh` en `agent@prd` ; idempotent, appelé aussi par `infra/fleet/bootstrap/*.sh`) : clone blobless de main, hook `pre-push` qui refuse force-push et suppression, CLI en `bun add -g`, unités user `aphrody-agents.service` (session tmux `agents`, une fenêtre par rôle, boucle de redémarrage), `aphrody-agents-health.timer` (2 min : répare les fenêtres, ressuscite les workers sans battement depuis 120 s, remet les orphelins en file, sonde les CLI, expédie les journaux, `ci-watch`, planification), `aphrody-agents-pull.timer` (10 min, fast-forward). Linger activé.
 - PC (`just agents-install-pc`) : tâches planifiées `\Aphrody\AgentsHealth` (5 min) et `\Aphrody\AgentsLogon`, `conhost.exe --headless bun --no-env-file runner.ts health`, session psmux `agents`. Sans droits admin.
 - Journaux : une seule destination, `prd:/var/lib/aphrody-agents/logs/<hôte>.jsonl` (offset par hôte dans `state/ship-offset`).
 - Planification (`[schedule]`, enqueue par prd) : `deps-update`, `release-notes`, `seo-check` chaque semaine. Les pages produit (`product-page-shenron`, `product-page-rosegriffon`) se lancent à la demande : `just agents enqueue --template product-page-shenron`.
@@ -122,11 +122,12 @@ Chaque hôte déclare ses cibles dans `fleet.toml` (`ssh = [alias, IP WireGuard,
 
 | Hôte | Tâche | Déroulé | Résultat |
 |---|---|---|---|
-| prd | `smoke-prd-lint-epic-fmt` (linter, `bun fmt` de `packages/epic-games`, check `bun fmt --check`) | claude refusé (root, corrigé depuis) -> bascule sur codex -> check vert -> commit | `0c8f6e4` sur main |
+| prd | `smoke-prd-lint-epic-fmt` (linter, `bun fmt` de `packages/epic-games`, check `bun fmt --check`) | claude refusé (root) -> bascule sur codex -> check vert -> commit. Le runner prd a été déplacé ensuite sous l'utilisateur `agent` | `0c8f6e4` sur main |
 | pc | `smoke-pc-lint-gds-fmt` (coder, `bun fmt` de `packages/google-design`) | 1er essai : 400 (clé du `.env`) -> refroidissement + remise en file ; après `--no-env-file` : claude -> check vert -> commit | `82215ad` sur main |
 
 ## 9. Reste à faire (hors de portée des agents)
 
+- Connexions de l'utilisateur `agent` sur prd (OAuth, interactif) : `sudo -iu agent claude login`, `sudo -iu agent codex login`, `sudo -iu agent gh auth login` (push sur main). Tant qu'elles manquent, les CLI de prd répondent « not logged in » (refroidissement, tâche remise en file) et un commit non poussé met la tâche en `failed`.
 - WARP sur le PC (UAC) pour le chemin Cloudflare ; `codex login` sur le PC.
 - Réinstaller un runner GitHub pour `ci.yml` (prd trop chargé d'après FLEET.md) ou porter ses étapes vers `judge.yml`.
 - Les tâches planifiées sans `providers` passent par le relais (texte seulement) : ai-os doit nommer une CLI de code pour `deps-update`, ou prendre la planification à son compte.
