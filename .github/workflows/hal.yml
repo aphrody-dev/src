@@ -41,8 +41,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with: { submodules: false }
-      - name: Toolchain (rust-toolchain.toml)
-        run: rustup show active-toolchain || rustup toolchain install
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version-file: package.json }
+      - name: Toolchain (Chromium 157 rustc, rustup chromium-157 named by rust-toolchain.toml)
+        run: bun scripts/toolchain.ts install
       - name: Check dx12-hal, wslg-cli, smithay-wayland-wire
         run: cargo check --target ${{ matrix.target }} -p dx12-hal -p wslg-cli -p smithay-wayland-wire --all-targets
       - name: dx12-hal C ABI test (no GPU needed; empty crate on Linux)
