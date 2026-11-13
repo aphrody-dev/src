@@ -258,7 +258,7 @@ project_number = "468000409790"
 pool = "github"
 provider = "aphrody-dev"
 issuer = "https://token.actions.githubusercontent.com"
-condition = "assertion.repository_owner=='aphrody-dev'"
+condition = "assertion.repository_owner=='aphrody-labs'"
 service_account = "yolo-automation@aphrody.iam.gserviceaccount.com"
 repos = ["aphrody-labs/src"]
 account = "yohanpierre15@gmail.com"
@@ -297,7 +297,8 @@ llama = { upstream = "ghcr.io/ggml-org/llama.cpp:server-b12316", services = ["ll
 # Cluster layer (origin side): LB + failover + request dedup across fr1/fr2/prd.
 # Single source for infra/cluster/gen.ts -> infra/cluster/generated/<member>/ (docs/infra/CLUSTER.md).
 # Edge (DNS, Workers, Cache Rules, Tunnel ingress, Access) belongs to infra/cloudflare + docs/infra/FR2-CLOUDFLARE.md.
-# Control plane (exec/put/http between hosts, heartbeat) = ay-cluster (crates/cluster, 127.0.0.1:7810).
+# Transport (definitive, 2026-11-13): HAProxy backend mTLS over TCP 7444 between members; also carries sshd
+# (ProxyCommand infra/cluster/ssh-mesh.sh) so runner.ts / orch/fleet.ts get an ssh path independent of WireGuard.
 # Data plane = HAProxy 3.4: 127.0.0.1:<lb> on every member -> weighted, URI-hashed pool -> local nginx
 # cache shard or remote member over backend mTLS (TCP 7444, private CA, verify required); no ssh, no WireGuard.
 # -----------------------------------------------------------------------------
@@ -313,15 +314,18 @@ cache_max_size = "2g"
 [cluster.members.fr1]
 node = "fr1"
 ssh = "fr1"
+pc_identity = "~/.ssh/id_ed25519_vn"
 weight = 20                     # low weight: Chromium/LLVM builds keep priority
 slice = { CPUQuota = "200%", MemoryMax = "6G", CPUWeight = "10", IOWeight = "10" }
 [cluster.members.fr2]
 node = "fr2"
 ssh = "fr2"
+pc_identity = "~/.ssh/id_ed25519_vn"
 weight = 60
 [cluster.members.prd]
 node = "usa"
 ssh = "prd"
+pc_identity = "~/.ssh/hostinger_us_ed25519"
 weight = 100
 
 # Stateless, multi-member. targets = member -> local origin. cache: micro (honour origin headers, else 1 s
@@ -374,7 +378,14 @@ mode = "tcp"
 lb_port = 19061
 targets = { fr1 = "10.200.77.1:50061" }
 
-# Benchmark endpoint (static nginx files on every member; 29990 also on the WireGuard IP for the comparison).
+# sshd of every member over the mesh (pinned: no pool, reached as <member>-mesh through ProxyCommand
+# aphrody-ssh-mesh / openssl s_client). Independent of WireGuard; runner.ts and orch/fleet.ts fall back to direct ssh.
+[cluster.services.ssh]
+mode = "tcp"
+pinned = true
+targets = { fr1 = "127.0.0.1:22", fr2 = "127.0.0.1:22", prd = "127.0.0.1:22" }
+
+# Benchmark endpoint (static nginx files on every member; 29990 also reachable from the WireGuard subnet for the comparison).
 [cluster.services.bench]
 lb_port = 19990
 targets = { fr1 = "127.0.0.1:29990", fr2 = "127.0.0.1:29990", prd = "127.0.0.1:29990" }
@@ -385,7 +396,7 @@ cache = "off"
 [cluster.stateful.postgres]
 primary = "prd"
 target = "127.0.0.1:5432"
-backup = []                     # no standby yet: dumps only; a standby would pull WAL over ay-cluster
+backup = []                     # no standby yet: dumps only; a standby would stream WAL over the mesh (mode tcp service)
 [cluster.stateful.redis]
 primary = "prd"
 target = "127.0.0.1:6379"
