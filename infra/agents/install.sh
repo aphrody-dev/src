@@ -35,6 +35,9 @@ done
 # npm CLIs with a `#!/usr/bin/env node` shebang run on bun's node mode when node is absent.
 need node || ln -sf "$(command -v bun)" "$HOME/.bun/bin/node"
 
+# Trust the runner checkout for Claude Code (headless runs cannot answer the trust dialog).
+bun -e 'const f=process.env.HOME+"/.claude.json";const fs=require("fs");const j=fs.existsSync(f)?JSON.parse(fs.readFileSync(f,"utf8")):{};j.projects??={};j.projects[process.argv[1]]={...(j.projects[process.argv[1]]??{}),hasTrustDialogAccepted:true};fs.writeFileSync(f,JSON.stringify(j,null,2))' "$SRC"
+
 # 3. systemd user units (linger keeps them running without a login session).
 need loginctl && loginctl enable-linger "$(id -un)" 2>/dev/null || true
 export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}

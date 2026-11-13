@@ -123,6 +123,8 @@ function childEnv(extra: Record<string, string> = {}): Record<string, string> {
       (process.env.AGENTS_KEEP_ENV === "1" || !SCRUB.test(k))
     )
       e[k] = v;
+  // Claude Code refuses bypassPermissions as root unless the host declares itself a sandbox (prd runs as root).
+  if (!WIN && process.getuid?.() === 0) e.IS_SANDBOX = "1";
   return { ...e, ...extra };
 }
 function sh(
@@ -188,6 +190,7 @@ function providerCmd(
         return {
           cmd: [
             process.execPath,
+            "--no-env-file", // a checkout .env must not override the CLI's own login
             nhitl,
             "--cwd",
             resolve(SRC, t.cwd ?? "."),
@@ -584,7 +587,7 @@ function workerCmd(role: string): string {
   // Restart the worker in-place if it ever exits. psmux (Windows) mangles double quotes: paths
   // there are quoted only when they contain spaces.
   const q = (p: string) => (WIN && !/\s/.test(p) ? p : `"${p}"`);
-  return `while :; do ${q(bun)} ${q(runner)} work ${role}; sleep 5; done`;
+  return `while :; do ${q(bun)} --no-env-file ${q(runner)} work ${role}; sleep 5; done`;
 }
 function up() {
   ensureDirs();

@@ -9,7 +9,7 @@ BUN=$(command -v bun) || { echo "install-pc: bun missing" >&2; exit 1; }
 command -v tmux >/dev/null || { echo "install-pc: tmux (psmux, winget arndawg.tmux-windows) missing" >&2; exit 1; }
 WBUN=$(cygpath -w "$BUN" 2>/dev/null || echo "$BUN")
 RUNNER="$SRC/infra/agents/runner.ts"
-TR="conhost.exe --headless \"$WBUN\" \"$RUNNER\" health"
+TR="conhost.exe --headless \"$WBUN\" --no-env-file \"$RUNNER\" health"
 
 schtasks.exe /Create /F /TN "Aphrody\\AgentsHealth" /SC MINUTE /MO 5 /TR "$TR" >/dev/null
 schtasks.exe /Create /F /TN "Aphrody\\AgentsLogon" /SC ONLOGON /TR "$TR" >/dev/null
