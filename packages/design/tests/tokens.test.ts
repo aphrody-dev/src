@@ -5,8 +5,9 @@ import { tokens } from "../src/index.ts";
 const tone = (hex: string) => Hct.fromInt(argbFromHex(hex)).tone;
 const ratio = (a: string, b: string) => Contrast.ratioOfTones(tone(a), tone(b));
 
-test("source = brand.toml", async () => {
-  const brand = Bun.TOML.parse(await Bun.file(`${import.meta.dir}/../../../assets/brand/brand.toml`).text()) as any;
+const brandToml = Bun.file(`${import.meta.dir}/../../../assets/brand/brand.toml`);
+test.skipIf(!(await brandToml.exists()))("source = brand.toml", async () => {
+  const brand = Bun.TOML.parse(await brandToml.text()) as any;
   expect(tokens.source.seed).toBe(brand.brand.seed.toUpperCase());
   expect(tokens.source.variant).toBe(brand.brand.variant);
 });

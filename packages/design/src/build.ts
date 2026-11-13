@@ -23,10 +23,14 @@ const root = join(pkg, "..", "..");
 const out = join(pkg, "tokens");
 const check = process.argv.includes("--check");
 
-const brandToml = Bun.TOML.parse(await Bun.file(join(root, "assets/brand/brand.toml")).text()) as {
-  brand: { name: string; seed: string; variant: string; accent: string; font: string; font_fallback: string[] };
-};
-const brand = brandToml.brand;
+type Brand = { name: string; seed: string; variant: string; accent: string; font: string; font_fallback: string[] };
+// Source : assets/brand/brand.toml (agent marque) ; à défaut (checkout CI sans assets/brand), la copie
+// gardée dans tokens/tokens.json (source.brand), pour que --check et les tests restent reproductibles.
+const brandFile = Bun.file(join(root, "assets/brand/brand.toml"));
+const brand: Brand = (await brandFile.exists())
+  ? (Bun.TOML.parse(await brandFile.text()) as { brand: Brand }).brand
+  : (await Bun.file(join(out, "tokens.json")).json()).source.brand;
+if (!brand?.seed) throw new Error("graine de marque introuvable (assets/brand/brand.toml ou tokens/tokens.json source.brand)");
 const mcuVersion = (await Bun.file(join(pkg, "node_modules/@material/material-color-utilities/package.json")).json()).version;
 const mwcVersion = (await Bun.file(join(pkg, "node_modules/@material/web/package.json")).json()).version;
 
@@ -117,7 +121,7 @@ expect("opacités d'état", Object.keys(state).length, 4);
 const tokens = {
   $schema: "aphrody-design/1",
   source: {
-    brand: "assets/brand/brand.toml",
+    brand: { name: brand.name, seed: brand.seed, variant: brand.variant, accent: brand.accent, font: brand.font, font_fallback: brand.font_fallback },
     seed: brand.seed.toUpperCase(),
     variant: brand.variant,
     "material-color-utilities": mcuVersion,
