@@ -313,3 +313,17 @@ bevyengine/dlss_wgpu Rust
 bevyengine/cratesio-dbdump-csvtab Rust
 bevyengine/bevy_asset_files Python
 bevyengine/web-task Rust
+google-labs-code/stitch-skills TypeScript
+addyosmani/web-quality-skills Shell
+microsoft/apm Python
+material-components/material-web TypeScript
+longbridge/gpui-kit Rust
+microsoft/webui Rust
+google-labs-code/stax TypeScript
+google-labs-code/design.md TypeScript
+google-labs-code/stitch-sdk TypeScript
+google-labs-code/jules-sdk TypeScript
+google-labs-code/jules-awesome-list Markdown
+google-labs-code/jules-skills TypeScript
+google-labs-code/jules-action Markdown
+google-labs-code/action-setup Markdown
