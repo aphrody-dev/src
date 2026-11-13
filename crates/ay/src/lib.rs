@@ -33,6 +33,7 @@ Areas:
   measure    bench, time
   design     design (DESIGN.md lint/export/spec, Stitch, push), jules (Google Jules agent: run, sessions, sources)
   gaming     gaming (Steam, Proton, Vulkan, DirectX via packages/gaming), steam (Steam data as JSON)
+  assets     assets (fetch, optimize, bundle, publish via packages/assets)
 
 Every command takes --help; machine output is --json where offered.
 Plan: docs/ay/MIGRATION.md; command table: docs/NAMING.md";
@@ -79,6 +80,9 @@ pub enum Cmd {
     /// Gaming stack (packages/gaming): status, apps, proton, layers, dx, steamcmd, run, skills
     #[command(disable_help_flag = true)]
     Gaming(Rest),
+    /// Assets, download to deploy (packages/assets): list, verify, fetch, optimize, bundle, publish, attribution
+    #[command(disable_help_flag = true)]
+    Assets(Rest),
     /// DESIGN.md (google-labs-code/design.md) lint, export, spec; Stitch client; push to Stitch (packages/google-design)
     #[command(disable_help_flag = true)]
     Design(Rest),
@@ -252,6 +256,7 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Bench(r) => Route::Bench(r.args),
         Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
         Cmd::Gaming(r) => Route::Package("gaming", r.args),
+        Cmd::Assets(r) => Route::Package("assets", r.args),
         Cmd::Design(r) => Route::Package("google-design", r.args),
         Cmd::Jules(r) => Route::Package("ai-os", prefixed(&["jules"], &r.args)),
         Cmd::Upstream(r) => Route::Package("upstream", r.args),
@@ -544,6 +549,11 @@ mod tests {
     fn gaming_runs_the_bun_package() {
         assert_eq!(parse("gaming status --json"), Route::Package("gaming", v(&["status", "--json"])));
         assert!(matches!(parse("steam apps --filter proton"), Route::Low(_)));
+    }
+
+    #[test]
+    fn assets_runs_the_bun_package() {
+        assert_eq!(parse("assets optimize --kind=texture"), Route::Package("assets", v(&["optimize", "--kind=texture"])));
     }
 
     #[test]

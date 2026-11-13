@@ -1,0 +1,460 @@
+# Pinned git dependencies. Every entry: OSI/CC0 license per GitHub's license field, 40-char commit.
+# Fetched into the store (not git) by `ay assets fetch --repos`; refreshed by `ay assets scan`.
+
+[[repo]]
+id = "EpicGames/AjaMedia"
+url = "https://github.com/EpicGames/AjaMedia"
+license = "MIT"
+sha = "d7147e4affc2820d36d942ff28f5a5abae5acbd1"
+archived = true
+
+[[repo]]
+id = "EpicGames/AndroidCamera"
+url = "https://github.com/EpicGames/AndroidCamera"
+license = "MIT"
+sha = "c31767bcdacd086f30bf80176e0a72a156a8a0c5"
+archived = true
+
+[[repo]]
+id = "EpicGames/BlackmagicMedia"
+url = "https://github.com/EpicGames/BlackmagicMedia"
+license = "MIT"
+sha = "534ad630f6d92c955772bfdbede6d9044e9aac8f"
+archived = true
+
+[[repo]]
+id = "EpicGames/BlenderTools"
+url = "https://github.com/EpicGames/BlenderTools"
+license = "MIT"
+sha = "04cae45d71874a37d75522f4a694a5d4aae32147"
+
+[[repo]]
+id = "EpicGames/CommandletPlugin"
+url = "https://github.com/EpicGames/CommandletPlugin"
+license = "BSD-3-Clause"
+sha = "f532bd5a83e4f3a6c9593789500745b5a0827a28"
+archived = true
+
+[[repo]]
+id = "EpicGames/EOS-Getting-Started"
+url = "https://github.com/EpicGames/EOS-Getting-Started"
+license = "MIT"
+sha = "0beaee0378d8427207db1ca77f03c9710f8c2a8d"
+
+[[repo]]
+id = "EpicGames/ExrMedia"
+url = "https://github.com/EpicGames/ExrMedia"
+license = "BSD-3-Clause"
+sha = "93135d87093a3342d07d27ddd5a2aba73b2d4d25"
+archived = true
+
+[[repo]]
+id = "EpicGames/GDC2016"
+url = "https://github.com/EpicGames/GDC2016"
+license = "BSD-3-Clause"
+sha = "c845691758360bc350591b8e8c0d6ca4d7aa79f8"
+archived = true
+
+[[repo]]
+id = "EpicGames/GLTFWebViewer"
+url = "https://github.com/EpicGames/GLTFWebViewer"
+license = "MIT"
+sha = "ccffaffdda0908d26d81041d1a89f018dd59fcf8"
+archived = true
+
+[[repo]]
+id = "EpicGames/HoverPlugin"
+url = "https://github.com/EpicGames/HoverPlugin"
+license = "BSD-3-Clause"
+sha = "fc09504d26bd9d85cb0bab2559d9f9a886fb98a6"
+archived = true
+
+[[repo]]
+id = "EpicGames/JSONLiveLink"
+url = "https://github.com/EpicGames/JSONLiveLink"
+license = "MIT"
+sha = "1781e3f88c9b8f1dd31debe2f8bec1363b9b73c6"
+archived = true
+
+[[repo]]
+id = "EpicGames/Linter"
+url = "https://github.com/EpicGames/Linter"
+license = "MIT"
+sha = "65e0fdd258b0dc354388d1d9abce39e0e27d16db"
+
+[[repo]]
+id = "EpicGames/LinuxUEKernelTools"
+url = "https://github.com/EpicGames/LinuxUEKernelTools"
+license = "GPL-2.0"
+sha = "50afae6c1edd48587b8067829f6d5837cda09c87"
+
+[[repo]]
+id = "EpicGames/LoadingScreen"
+url = "https://github.com/EpicGames/LoadingScreen"
+license = "MIT"
+sha = "deed02422eb662a18eb99bd443d8d06581e61c1f"
+archived = true
+
+[[repo]]
+id = "EpicGames/LogiLed"
+url = "https://github.com/EpicGames/LogiLed"
+license = "BSD-3-Clause"
+sha = "6347c14d2b785b5a4d7636998ab0c99bc8a5b166"
+archived = true
+
+[[repo]]
+id = "EpicGames/MayaMLDeformer"
+url = "https://github.com/EpicGames/MayaMLDeformer"
+license = "MIT"
+sha = "ea4a8a5f2709b93654c2389cb9266eab305ea8fe"
+
+[[repo]]
+id = "EpicGames/MeMedia"
+url = "https://github.com/EpicGames/MeMedia"
+license = "MIT"
+sha = "a10a8f88cd3ba7f3c8f2d3442f3ee00ed5167a71"
+archived = true
+
+[[repo]]
+id = "EpicGames/MobuLiveLink"
+url = "https://github.com/EpicGames/MobuLiveLink"
+license = "MIT"
+sha = "fb04c76bc90cf43e9089a01189ae962c6ea0f9dc"
+
+[[repo]]
+id = "EpicGames/MotionCueingInterface"
+url = "https://github.com/EpicGames/MotionCueingInterface"
+license = "BSD-3-Clause"
+sha = "ba7e30bd00422474745fe961a86dee4d49403cf0"
+archived = true
+
+[[repo]]
+id = "EpicGames/NdiMedia"
+url = "https://github.com/EpicGames/NdiMedia"
+license = "BSD-3-Clause"
+sha = "6cb7f5db0ddbcb3309251b8917c1ceed43478a09"
+archived = true
+
+[[repo]]
+id = "EpicGames/ObjectBrowser"
+url = "https://github.com/EpicGames/ObjectBrowser"
+license = "MIT"
+sha = "a395d3c542de590cbceedd4cbe296ae8e6661d01"
+archived = true
+
+[[repo]]
+id = "EpicGames/OpenRigLogic"
+url = "https://github.com/EpicGames/OpenRigLogic"
+license = "MIT"
+sha = "994deb4aca3bd455729b4719b3e2ec91d0b83401"
+
+[[repo]]
+id = "EpicGames/PhilipsHue"
+url = "https://github.com/EpicGames/PhilipsHue"
+license = "MIT"
+sha = "bb75caeaedfdcdb55a6d773dec06858e4847a4a9"
+archived = true
+
+[[repo]]
+id = "EpicGames/PixelStreamingInfrastructure"
+url = "https://github.com/EpicGames/PixelStreamingInfrastructure"
+license = "MIT"
+sha = "a466d2a73b4b8ad6e6205b99deee1d1f72594e11"
+
+[[repo]]
+id = "EpicGames/PixelStreamingInfrastructure-archived-2024"
+url = "https://github.com/EpicGames/PixelStreamingInfrastructure-archived-2024"
+license = "MIT"
+sha = "cb741add4fd319d9129056305545f92c1e581e30"
+archived = true
+
+[[repo]]
+id = "EpicGames/SPIRV-Cross"
+url = "https://github.com/EpicGames/SPIRV-Cross"
+license = "Apache-2.0"
+sha = "b43c1a1e63ca7ac967c3b0e71ba29dbe08aa3dc0"
+note = "fork of upstream, license is the upstream's"
+fork = true
+
+[[repo]]
+id = "EpicGames/SPIRV-Reflect"
+url = "https://github.com/EpicGames/SPIRV-Reflect"
+license = "Apache-2.0"
+sha = "bd64d605bcfc6d12b5fe652c014d21990963aed2"
+note = "fork of upstream, license is the upstream's"
+fork = true
+
+[[repo]]
+id = "EpicGames/SPIRV-Tools"
+url = "https://github.com/EpicGames/SPIRV-Tools"
+license = "Apache-2.0"
+sha = "f62e121b0df5374d1f043d1fbda98467406af0b1"
+note = "fork of upstream, license is the upstream's"
+fork = true
+
+[[repo]]
+id = "EpicGames/ShaderConductor"
+url = "https://github.com/EpicGames/ShaderConductor"
+license = "MIT"
+sha = "30a77c78d24fa08f4fe5fc4428f10dbfc92717a6"
+note = "fork of upstream, license is the upstream's"
+fork = true
+
+[[repo]]
+id = "EpicGames/TextAsset"
+url = "https://github.com/EpicGames/TextAsset"
+license = "BSD-3-Clause"
+sha = "bb17414c303c801f8eeda7f28b170a1558cfec5f"
+archived = true
+
+[[repo]]
+id = "EpicGames/UEGeoCoordinates"
+url = "https://github.com/EpicGames/UEGeoCoordinates"
+license = "MIT"
+sha = "5760039163ca1ba0bfa7bfd8daa5c7803df43478"
+archived = true
+
+[[repo]]
+id = "EpicGames/UnrealPixelStreamingOnAzure"
+url = "https://github.com/EpicGames/UnrealPixelStreamingOnAzure"
+license = "MIT"
+sha = "3428cda16524e28466d85b17280403de267591e6"
+archived = true
+
+[[repo]]
+id = "EpicGames/VlcMedia"
+url = "https://github.com/EpicGames/VlcMedia"
+license = "BSD-3-Clause"
+sha = "e5d69fedf6a9296d6cb1259ebc7df6706962a4b4"
+archived = true
+
+[[repo]]
+id = "EpicGames/WindowsMessageHandlerExample"
+url = "https://github.com/EpicGames/WindowsMessageHandlerExample"
+license = "BSD-3-Clause"
+sha = "6bd012977659e47174aaacb5612cf40cf7e67d12"
+archived = true
+
+[[repo]]
+id = "EpicGames/WineResources"
+url = "https://github.com/EpicGames/WineResources"
+license = "MIT"
+sha = "692e0d8ada68ff3640d06df34a5a609dfbf3c086"
+
+[[repo]]
+id = "EpicGames/deadline"
+url = "https://github.com/EpicGames/deadline"
+license = "MIT"
+sha = "41a980746131838855811ac7541f1331b50411ac"
+
+[[repo]]
+id = "EpicGames/lore"
+url = "https://github.com/EpicGames/lore"
+license = "MIT"
+sha = "4f5c2b0db694c3e4357191498e70ff61d83311d9"
+
+[[repo]]
+id = "EpicGames/lore-dotnet"
+url = "https://github.com/EpicGames/lore-dotnet"
+license = "MIT"
+sha = "22f99e2b83146b45b76e162b18e993221780b7ed"
+
+[[repo]]
+id = "EpicGames/lore-go"
+url = "https://github.com/EpicGames/lore-go"
+license = "MIT"
+sha = "f1af26ea3cb1f768c5198df07464f7551a1d5462"
+
+[[repo]]
+id = "EpicGames/lore-js"
+url = "https://github.com/EpicGames/lore-js"
+license = "MIT"
+sha = "20b59712710aa23620c7fe94481462490c2b3c32"
+
+[[repo]]
+id = "EpicGames/lore-python"
+url = "https://github.com/EpicGames/lore-python"
+license = "MIT"
+sha = "3f6bdd64aa6fbca8cf5f150627a287cf619805ed"
+
+[[repo]]
+id = "EpicGames/raddebugger"
+url = "https://github.com/EpicGames/raddebugger"
+license = "MIT"
+sha = "5b0d5f67a46af5fffa52322e95a116dabf393103"
+
+[[repo]]
+id = "EpicGames/unreal-engine-skills-for-claude-code-plugin"
+url = "https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin"
+license = "MIT"
+sha = "0e27bde2b55c5d3f6948532f4296aaa3654d8f4b"
+
+[[repo]]
+id = "KenneyNL/KayKit-Hexagons"
+url = "https://github.com/KenneyNL/KayKit-Hexagons"
+license = "MIT"
+sha = "d778a718f7ab3f567301f6ddbbaf42fb573920d7"
+
+[[repo]]
+id = "KenneyNL/Starter-Kit-3D-Platformer"
+url = "https://github.com/KenneyNL/Starter-Kit-3D-Platformer"
+license = "MIT"
+sha = "3fa8a04b1c01ab23db43123d4ce814a34c3fc7f0"
+
+[[repo]]
+id = "KenneyNL/Starter-Kit-Basic-Scene"
+url = "https://github.com/KenneyNL/Starter-Kit-Basic-Scene"
+license = "MIT"
+sha = "a6927e66ff8dd8e173660ce4825abe773c65f683"
+
+[[repo]]
+id = "KenneyNL/Starter-Kit-City-Builder"
+url = "https://github.com/KenneyNL/Starter-Kit-City-Builder"
+license = "MIT"
+sha = "4535092b740b378b700efd9df9e27a631815b84a"
+
+[[repo]]
+id = "KenneyNL/Starter-Kit-FPS"
+url = "https://github.com/KenneyNL/Starter-Kit-FPS"
+license = "MIT"
+sha = "185fd2326d74a5cf858cffc616f87cf9696f9cc0"
+
+[[repo]]
+id = "KenneyNL/Starter-Kit-Match-3"
+url = "https://github.com/KenneyNL/Starter-Kit-Match-3"
+license = "MIT"
+sha = "4ddb3d2a50cbf247c79cafe9e7884d7d8f99c012"
+
+[[repo]]
+id = "KenneyNL/Starter-Kit-Racing"
+url = "https://github.com/KenneyNL/Starter-Kit-Racing"
+license = "MIT"
+sha = "2f2e5f2646dda89cb21d4e8539bab60c6e955dc8"
+
+[[repo]]
+id = "KenneyNL/Unreal-Simulator-for-Unity"
+url = "https://github.com/KenneyNL/Unreal-Simulator-for-Unity"
+license = "GPL-3.0"
+sha = "613a24eb19b4258f6e5853d6d3f17f0303c8fac3"
+
+[[repo]]
+id = "KenneyNL/free-texture-packer"
+url = "https://github.com/KenneyNL/free-texture-packer"
+license = "MIT"
+sha = "46c3560eaf364064381b7a56a3609d94d9b9c6c8"
+note = "fork of upstream, license is the upstream's"
+fork = true
+
+[[repo]]
+id = "bevyengine/atomicow"
+url = "https://github.com/bevyengine/atomicow"
+license = "Apache-2.0"
+sha = "bfc3132d5c92311e768df0d9d1edb8256315f8f7"
+
+[[repo]]
+id = "bevyengine/bevy"
+url = "https://github.com/bevyengine/bevy"
+license = "Apache-2.0"
+sha = "41a1282e376ce0dcd9808e1b3f6c071803363eb4"
+
+[[repo]]
+id = "bevyengine/bevy-crate-reservations"
+url = "https://github.com/bevyengine/bevy-crate-reservations"
+license = "Apache-2.0"
+sha = "f76e9247beb754ad1334e2130bc62a799745d362"
+
+[[repo]]
+id = "bevyengine/bevy-donors"
+url = "https://github.com/bevyengine/bevy-donors"
+license = "Apache-2.0"
+sha = "9f39f2c6828c32dd47a9119b7bb7c0d4d5a5064b"
+
+[[repo]]
+id = "bevyengine/bevy-example-runner"
+url = "https://github.com/bevyengine/bevy-example-runner"
+license = "Apache-2.0"
+sha = "1438f8919488694ca45fff7e3d5eba86ec093bd7"
+
+[[repo]]
+id = "bevyengine/bevy-releasability"
+url = "https://github.com/bevyengine/bevy-releasability"
+license = "Apache-2.0"
+sha = "fc59aad006ca4b6adf039bee108f4df5cc9fc633"
+
+[[repo]]
+id = "bevyengine/bevy-website"
+url = "https://github.com/bevyengine/bevy-website"
+license = "MIT"
+sha = "55d698a34d6f325885f5998667b3402d93acd55f"
+
+[[repo]]
+id = "bevyengine/bevy_editor_prototypes"
+url = "https://github.com/bevyengine/bevy_editor_prototypes"
+license = "Apache-2.0"
+sha = "55723a3e74fc43af0ffbf8b62ca5dcf4b81385fe"
+archived = true
+
+[[repo]]
+id = "bevyengine/bevy_github_ci_template"
+url = "https://github.com/bevyengine/bevy_github_ci_template"
+license = "Apache-2.0"
+sha = "6a82d50bf935ef60f469e98e61b5685d08781348"
+
+[[repo]]
+id = "bevyengine/bevy_mikktspace"
+url = "https://github.com/bevyengine/bevy_mikktspace"
+license = "Apache-2.0"
+sha = "9de78a281bca0505142da521eb5152146da28656"
+
+[[repo]]
+id = "bevyengine/disqualified"
+url = "https://github.com/bevyengine/disqualified"
+license = "Apache-2.0"
+sha = "e45422ba839b202b3c69374d08d492a6f4368d14"
+
+[[repo]]
+id = "bevyengine/dlss_wgpu"
+url = "https://github.com/bevyengine/dlss_wgpu"
+license = "Apache-2.0"
+sha = "4046a407cc8d4b073a8f1fd6e2709b08031c023a"
+
+[[repo]]
+id = "bevyengine/mikktspace"
+url = "https://github.com/bevyengine/mikktspace"
+license = "Apache-2.0"
+sha = "55fa2650056f0c6163cb8b238bab040c2fbac24b"
+note = "fork of upstream, license is the upstream's"
+archived = true
+fork = true
+
+[[repo]]
+id = "bevyengine/naga_oil"
+url = "https://github.com/bevyengine/naga_oil"
+license = "Apache-2.0"
+sha = "07cf1b49f470234c0e36045be8674f366a9754a9"
+archived = true
+
+[[repo]]
+id = "bevyengine/rfcs"
+url = "https://github.com/bevyengine/rfcs"
+license = "MIT"
+sha = "a210713fbc969c71e4ea8b9d64a61d0eaccee1a4"
+archived = true
+
+[[repo]]
+id = "bevyengine/twitcher"
+url = "https://github.com/bevyengine/twitcher"
+license = "Apache-2.0"
+sha = "5a3ce77d62f8c58b6df880fb922980fadcb23424"
+
+[[repo]]
+id = "bevyengine/variadics_please"
+url = "https://github.com/bevyengine/variadics_please"
+license = "Apache-2.0"
+sha = "7778251e04bcafd07b35bea0055a2ba166b6929d"
+
+[[repo]]
+id = "bevyengine/web-task"
+url = "https://github.com/bevyengine/web-task"
+license = "Apache-2.0"
+sha = "2c9633bb36804f66bfb3f2e8d761dad0083078bc"
