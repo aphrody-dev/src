@@ -40,6 +40,8 @@ jobs:
         with:
           token: ${{ steps.app.outputs.token || github.token }}
           submodules: false
+      - name: Toolchain (Chromium 157 clang/lld and rustc on LLVM 24, rustup chromium-157)
+        run: bun scripts/toolchain.ts install
       - name: Rust (ay and its libraries; toolchain from rust-toolchain.toml)
         run: |
           aphrody-heavy cargo build -p aphrody

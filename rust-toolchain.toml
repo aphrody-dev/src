@@ -1,6 +1,8 @@
 [toolchain]
-# Pinned nightly (tools.toml): rustc 3ef0c22cd, LLVM 23.1.5 = clang 23.1.5,
-# required for cross-language LTO (docs/llvm/UNIFIED-TOOLCHAIN.md). Bump both together.
-channel = "nightly-2026-11-12"
-components = ["rustfmt", "clippy", "rust-src", "rustc-codegen-cranelift-preview"]
+# One LLVM for src and Chromium (owner rule, docs/llvm/CHROMIUM-157-TOOLCHAIN.md): the Rust toolchain
+# Chromium 157 builds on its own LLVM, rustc 1.100.0-nightly (1edd55dcf 2026-09-09), LLVM 24.0.0, the
+# LLVM of Chromium's clang/lld (third_party/toolchain-157.toml). Custom rustup toolchain `chromium-157`,
+# linked by `bun scripts/toolchain.ts install` (PC, fr1, CI). Bump with the next Chromium channel.
+channel = "chromium-157"
+components = ["rustfmt", "clippy", "rust-src"]
 profile = "minimal"

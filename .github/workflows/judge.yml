@@ -41,6 +41,8 @@ jobs:
         run: go -C infra test ./...
       - name: JS supply chain (bun workspace deps)
         run: bun scripts/js-deps-check.ts
+      - name: Toolchain (Chromium 157 rustc, rustup chromium-157 named by rust-toolchain.toml)
+        run: bun scripts/toolchain.ts install
       - name: Cargo graph resolves (members and path dependencies present, no compilation)
         run: cargo metadata --locked --no-deps --format-version 1 >/dev/null
       - name: No workflow targets prd or fr2 (owner fleet rule; self-hosted CI = fr1 only)

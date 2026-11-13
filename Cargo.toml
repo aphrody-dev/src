@@ -430,13 +430,12 @@ unused_self = "warn"
 verbose_file_reads = "warn"
 zero_sized_map_values = "warn"
 
-# Edit-compile loop: workspace crates on Cranelift (nightly, rustup component
-# rustc-codegen-cranelift-preview), dependencies on LLVM at opt-level 1.
+# Edit-compile loop: dependencies at opt-level 1. Everything on LLVM: the Chromium 157 Rust toolchain
+# (rust-toolchain.toml) ships no Cranelift backend (docs/llvm/CHROMIUM-157-TOOLCHAIN.md).
 # Measurements and rejected levers: docs/BUILD_SPEED.md.
 [profile.dev]
 opt-level = 0
 debug = "line-tables-only"
-codegen-backend = "cranelift"
 # Only takes effect on Linux/macOS (no objcopy pass, faster links); MSVC always emits a PDB.
 split-debuginfo = "unpacked"
 incremental = true
