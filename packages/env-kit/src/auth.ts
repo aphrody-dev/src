@@ -5,7 +5,7 @@
  * Actions secrets from the OS store; `tunnels` moves cloudflared tokens into systemd credentials.
  *
  * The inventory (hosts, tunnels, WireGuard interfaces, renewal units, GitHub secrets) is the
- * `[nodes.*]` and `[auth.*]` tables of deploy.toml. Secret values come from the OS store
+ * `[nodes.*]` and `[auth.*]` tables of infra/deploy.toml. Secret values come from the OS store
  * (secret-store.ts), then from `.env`; they are never printed. Browser logins (gcloud, npm, vercel,
  * wrangler) only start with `--browser`: they open the default Chrome profile, where the owner
  * clicks the sign-in and consent screens himself.
@@ -92,7 +92,7 @@ function clean(s: string, max = 140): string {
 }
 
 export function loadManifest(root: string): Manifest {
-  const raw = readFileSync(join(root, "deploy.toml"), "utf8");
+  const raw = readFileSync(join(root, "infra", "deploy.toml"), "utf8");
   const m = Bun.TOML.parse(raw) as unknown as Manifest;
   m.auth ??= {};
   return m;
@@ -394,7 +394,7 @@ for i in ${q(h.wireguard ?? [])}; do
   st=ok; [ $fresh = 0 ] && st=invalid; [ $fresh != 0 ] && [ $fresh != $tot ] && st=action
   p wireguard "$i" $st "wg show $i latest-handshakes: $fresh/$tot pairs < 180 s\${stale:+ ; sans handshake:$stale}"
   for r in ${q(revoked)}; do
-    grep -qF "$r" <<< "$hs" && p wireguard-key "$i:\${r:0:8}" invalid "pair encore actif avec une clé révoquée (deploy.toml [auth.wireguard].revoked)"
+    grep -qF "$r" <<< "$hs" && p wireguard-key "$i:\${r:0:8}" invalid "pair encore actif avec une clé révoquée (infra/deploy.toml [auth.wireguard].revoked)"
   done
 done
 for u in ${q(h.units ?? [])}; do
@@ -465,6 +465,8 @@ async function cfApi(path: string, init: RequestInit = {}): Promise<any> {
 export async function checkTunnelsApi(m: Manifest): Promise<Check[]> {
   const acct = m.cloud?.cloudflare_account_id ?? process.env.CLOUDFLARE_ACCOUNT_ID;
   const wanted = new Set(Object.values(m.auth.hosts ?? {}).flatMap((h) => Object.values(h.tunnels ?? {})));
+  if (!resolveSecret("CLOUDFLARE_API_TOKEN"))
+    return [{ kind: "tunnel-api", target: "cfd_tunnel", host: "cloudflare", status: "skip", proof: "CLOUDFLARE_API_TOKEN absent sur cet hôte (contrôle fait depuis le PC)" }];
   try {
     const list = (await cfApi(`/accounts/${acct}/cfd_tunnel?is_deleted=false&per_page=100`)) as { name: string; status: string; connections?: unknown[] }[];
     return list.map((t) => ({
