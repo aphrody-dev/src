@@ -42,3 +42,13 @@ From the root `Cargo.toml` of artcraft (79 top-level entries; only the matched o
 - `POST /v1/omni_api/generate/video`, header `Authorization` with an `artcraft_api_` key, no cookies. Required body fields: `model` (e.g. `seedance_2p0`), `idempotency_token` (UUID). Optional: `prompt`, `duration_seconds`, `aspect_ratio` (`wide_sixteen_by_nine`, `tall_nine_by_sixteen`, `square`), `negative_prompt`, `resolution` (`seven_twenty_p`, `ten_eighty_p`), `generate_audio`, URL inputs (`start_frame_image_url`, `end_frame_image_url`, `reference_image_urls`, `reference_video_urls` mp4, `reference_audio_urls`) or the `*_media_token` equivalents.
 - storyteller-docs.netlify.app is rendered client-side: a text fetch returned only the title, so the other endpoints are not captured. Not called live.
 - Hygiene finding: the file tree of `artcraft-services` lists `.env` and `secrets` at the root of a public repository. Not opened; the owner of that repository should check them.
+
+## Full public API reference (storyteller-docs.netlify.app, read in the browser 2026-11-13)
+
+- Spec: `storyteller-web` 0.0.1, OpenAPI 3.1.0, served as `/api.json` on that site; 258 paths, 268 operations. Not copied into this repository.
+- Largest tag groups (operation counts): Moderation 37, Media Files 20, Omni Gen 15, Tags 13, Users 10, Media Files (Upload) 10, Generate Video (Multi-Function) 10, Generate Videos 9, Folders 8, Media Files (Projects) 8, Omni API 7, Generate Images (Multi-Function) 7, Generate Images 6, Jobs 6. The tag list returned by the page was truncated after "Web Referrals", so later tags are not listed here.
+- Omni API (7): `POST /v1/omni_api/generate/image`, `POST /v1/omni_api/generate/video`, `GET /v1/omni_api/job_status/batch`, `GET /v1/omni_api/job_status/job/{token}`, `POST /v1/omni_api/upload/{audio,image,video}`.
+- MCP sessions (5): `POST /v1/mcp/session/create`, `GET /v1/mcp/session/list`, `POST /v1/mcp/session/refresh`, `POST /v1/mcp/session/revoke`, `POST /v1/mcp/session/{token}/delete`.
+- 3D: `POST /v1/conversion/enqueue_fbx_to_gltf`, `POST /v1/generate/object/hunyuan_2.0_image_to_3d`, `POST /v1/generate/object/hunyuan_2.1_image_to_3d`, `POST /v1/generate/splat/worldlabs_marble_0p1_mini`, `POST /v1/generate/splat/worldlabs_marble_0p1_plus`.
+- API keys: `POST /v1/api_keys/create`, `GET /v1/api_keys/list`, `GET /v1/api_keys/{api_key_token}` (the secret is returned once at creation).
+- Only the documentation site was read; no request was sent to `api.storyteller.ai`.
