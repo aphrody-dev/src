@@ -4,3 +4,6 @@
 linker = "hoisted"
 exact = true
 saveTextLockfile = true
+
+[test]
+pathIgnorePatterns = ["var/**", "third_party/**", "node_modules/**"]

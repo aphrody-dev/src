@@ -11,6 +11,7 @@ import {
   manifestFiles,
   renderAttribution,
   verify,
+  verifyGenerated,
 } from "./manifest.ts";
 import { bundle, bundleDir } from "./bundle.ts";
 import { type OptRecord, optDir, optimize } from "./optimize.ts";
@@ -126,7 +127,7 @@ switch (cmd) {
       console.log(`${a.id}\t${a.kind}\t${a.license}\t${a.storage}\t${a.path}`);
     break;
   case "verify": {
-    const errs = [...(await verify(root, assets))];
+    const errs = [...(await verify(root, assets)), ...(await verifyGenerated(root))];
     errs.push(...checkTargets(loadTargets()), ...checkRepos(loadRepos()));
     for (const e of errs.slice(0, 200)) console.error(e);
     console.log(
@@ -278,6 +279,13 @@ switch (cmd) {
       await import("./test.ts")
     ).testCommand(root, args);
     break;
+  case "gen":
+    process.exitCode = (
+      await Bun.spawn(["bun", "run", join(import.meta.dir, "gen", "gen.ts"), ...args], {
+        stdio: ["inherit", "inherit", "inherit"],
+      }).exited
+    );
+    break;
   case "retest":
     process.exitCode = await (
       await import("./retest.ts")
@@ -285,7 +293,7 @@ switch (cmd) {
     break;
   default:
     console.error(
-      "usage: ay assets test|retest [--recursive] [--type=T] [--strict] [--fr1]; list|check|verify|attribution|fetch [--repos]|import <pack>|scan|optimize|bundle|publish <target>|targets|tools|run\n" +
+      "usage: ay assets gen <stills|svg|brand|textures|video|gif|index|validate|all>; test|retest [--recursive] [--type=T] [--strict] [--fr1]; list|check|verify|attribution|fetch [--repos]|import <pack>|scan|optimize|bundle|publish <target>|targets|tools|run\n" +
         "  filters: --kind=K --id=PREFIX --match=SUBSTR --limit=N --remote|--all --jobs=N --limit=N --dry-run --raw --prefix=P --to=a,b\n" +
         "  env: SRC_ROOT, ASSETS_STORE (remote store dir)",
     );

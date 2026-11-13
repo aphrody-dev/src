@@ -10,6 +10,7 @@
   },
   "scripts": {
     "verify": "bun run src/cli.ts verify",
+    "gen": "bun run src/gen/gen.ts",
     "test": "bun test"
   },
   "dependencies": {},

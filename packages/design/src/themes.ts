@@ -25,7 +25,7 @@ export const THEMES: ThemeDef[] = [
   {
     name: "workshop",
     seed: "#2D81FF",
-    variant: "neutral",
+    variant: "fidelity",
     default: "dark",
     note: "graphite and signal blue, creative tool look",
   },
@@ -38,10 +38,10 @@ export const THEMES: ThemeDef[] = [
   },
   {
     name: "frost",
-    seed: "#81A1C1",
-    variant: "neutral",
+    seed: "#4FA3C7",
+    variant: "fidelity",
     default: "dark",
-    note: "cold slate",
+    note: "cold glacier cyan",
   },
   {
     name: "ember",

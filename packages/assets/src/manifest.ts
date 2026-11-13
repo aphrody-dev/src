@@ -252,3 +252,20 @@ export function renderAttribution(assets: Asset[]): string {
   }
   return out;
 }
+
+/** assets/generated/manifest.toml (procedural output of src/gen): git entries must exist and match their sha256. */
+export async function verifyGenerated(root: string): Promise<string[]> {
+  const dir = join(root, "assets", "generated");
+  const f = join(dir, "manifest.toml");
+  if (!existsSync(f)) return [];
+  const assets = parseManifest(await Bun.file(f).text());
+  const errs = checkEntries(assets).map((e) => `generated: ${e}`);
+  for (const a of assets) {
+    if (a.storage !== "git") continue;
+    const p = join(dir, a.path);
+    if (!existsSync(p)) errs.push(`${a.id}: file missing (${a.path})`);
+    else if ((await hashFile(p)) !== a.sha256)
+      errs.push(`${a.id}: sha256 mismatch`);
+  }
+  return errs;
+}

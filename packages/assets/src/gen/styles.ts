@@ -134,7 +134,7 @@ export function aurora(
   const M = Math.max(w, h);
   const th = phase * Math.PI * 2 * loopN;
   const layers = [0, 1, 2].map((i) => {
-    const c = p.blobs[i % 3]!;
+    const c = p.dark ? p.blobs[i % 3]! : [p.primary, p.tertiary, p.accent][i % 3]!;
     return {
       y0: 0.25 + 0.22 * i + R() * 0.1,
       amp: 0.08 + R() * 0.06,
@@ -167,9 +167,17 @@ export function aurora(
         const streak =
           0.55 + 0.45 * N.fbm(u * 14 + k * 5, v * 0.8 + 0.25 * Math.cos(th), 2);
         const a = Math.exp(-dist * dist) * streak * 0.75 * (v > yc ? 0.8 : 1);
-        ar += L.lin[0] * a * L.s;
-        ag += L.lin[1] * a * L.s;
-        ab += L.lin[2] * a * L.s;
+        if (p.dark) {
+          ar += L.lin[0] * a * L.s;
+          ag += L.lin[1] * a * L.s;
+          ab += L.lin[2] * a * L.s;
+        } else {
+          // light: blend toward the layer colour (additive light saturates to white)
+          const t = Math.min(1, a * 0.9);
+          ar += (L.lin[0] - ar) * t;
+          ag += (L.lin[1] - ag) * t;
+          ab += (L.lin[2] - ab) * t;
+        }
       }
       d[i] = lin2s(ar);
       d[i + 1] = lin2s(ag);
