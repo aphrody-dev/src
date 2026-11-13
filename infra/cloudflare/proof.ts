@@ -12,7 +12,10 @@ const FR2 = ["51.255.162.6", "2001:41d0:305:2100::a461"];
 const md = Bun.argv.includes("--md");
 const record = Bun.argv.includes("--record");
 const expFile = Bun.file(join(import.meta.dir, "expected-status.json"));
-const expected: Record<string, number> = !record && (await expFile.exists()) ? await expFile.json() : {};
+// expected-status.json: host -> status, or { status, why } when the status is a known non-service (502 parity, Worker 404).
+const prior: Record<string, number | { status: number; why: string }> = (await expFile.exists()) ? await expFile.json() : {};
+const expected: Record<string, number> = Object.fromEntries(Object.entries(prior).map(([k, v]) => [k, typeof v === "number" ? v : v.status]));
+const accept = new Set(Bun.argv.flatMap((a, i) => (Bun.argv[i - 1] === "--accept" ? a.split(",") : [])));
 const seen: Record<string, number> = {};
 type Row = { check: string; target: string; ok: boolean; evidence: string };
 const rows: Row[] = [];
@@ -52,7 +55,7 @@ const sh = (host: string, cmd: string) => {
 //    502 is accepted only where the prd backend is known absent (aphrody-app :3010) or a Worker reports it (webos).
 const expect502 = (h: string) => h.endsWith(".aphrody.app") || /^(fig|play|docs|photos|sound|design|art|calendar|sheets|slides|maps|pdf|cad|os)\.aphrody\.com$/.test(h);
 const hosts = Object.values(cfg.dns).flatMap((z) => Object.keys(z));
-const extra = ["www.aphrody.com", "aphrody.app", "www.aphrody.app", "api.aphrody.com", "cdn.aphrody.com", "downloads.aphrody.com", "creator.aphrody.com", "mig-test.aphrody.com"];
+const extra = ["mig-depot.aphrody.com", "mig-commons.aphrody.com", "www.aphrody.com", "aphrody.app", "www.aphrody.app", "api.aphrody.com", "cdn.aphrody.com", "downloads.aphrody.com", "creator.aphrody.com", "mig-test.aphrody.com"];
 await Promise.all([...hosts, ...extra].map(async (h) => {
   const a = await doh(h);
   const onFr2 = a.some((ip) => FR2.includes(ip));
@@ -106,6 +109,15 @@ const rs = sh("fr2", "sudo nft list table inet fr2_edge");
 add("origin-v6", "fr2 nft inet fr2_edge (v4+v6, tcp+udp)", /l4proto \{ tcp, udp \} th dport \{ 80, 443 \} jump web/.test(rs) && /ip6 saddr @cf6 accept/.test(rs) && /counter packets \d+ bytes \d+ drop/.test(rs), (rs.match(/counter packets \d+/)?.[0] ?? "ruleset missing") + " dropped");
 const fleet = sh("prd", "curl -s -o /dev/null -w '%{http_code}' --resolve api.aphrody.com:443:51.255.162.6 https://api.aphrody.com/v1/health");
 add("origin-fleet", "prd -> fr2:443 (fleet-health)", fleet === "200", `HTTP ${fleet}`);
+// Custom AOP on dbfr: Cloudflare edge IPs are not fleet, so a public 200 means the edge presented the zone certificate;
+// the nginx wiring (CA + optional verify + deny) and the fleet-only snippet of the Worker-served vhosts are checked live.
+{
+  const pub = await head("https://dbfr.aphrody.com/");
+  const conf = sh("fr2", "sudo grep -c -e aop_deny -e ssl_client_certificate /etc/nginx/conf.d/fleet-api.conf; sudo grep -l fleet-only.inc /etc/nginx/sites/*.conf | wc -l");
+  const [wired, fleetOnly] = conf.split(/\s+/).map(Number);
+  add("origin-aop", "dbfr.aphrody.com (per-hostname AOP)", pub.status === 200 && wired >= 2, `public ${pub.status} via edge cert, nginx directives ${wired}`);
+  add("origin-aop", "api/cdn/creator/downloads (fleet-only vhosts)", fleetOnly === 4, `${fleetOnly}/4 vhosts include fleet-only.inc`);
+}
 const wg = sh("fr2", "sudo wg show wg1 latest-handshakes | awk '{print $2}' | sort -n | tail -1");
 const age = Math.round(Date.now() / 1000 - Number(wg));
 add("wireguard", "fr2 wg1 (hub forwarding kept)", age < 300, `latest handshake ${age}s ago, ip_forward ${sh("fr2", "sysctl -n net.ipv4.ip_forward")}`);
@@ -129,13 +141,31 @@ for (const [from, to, user] of [["fr2", "ssh-prd.aphrody.com", "root"], ["prd", 
   const out = viaAccess(from, to, user);
   add("access-ssh", `${from} -> ${to} (service token)`, out.length > 0, out ? `hostname=${out}` : "FAILED");
 }
+// A 403 alone could be a dead token: each refusal is paired with the same host's successful access-ssh above.
+const viaOk = new Map(rows.filter((r) => r.check === "access-ssh").map((r) => [r.target.split(" ")[0], r.ok]));
 for (const [from, to] of [["fr2", "ssh-fr2.aphrody.com"], ["prd", "ssh-prd.aphrody.com"]]) {
   const code = sh(from, `sudo bash -c 'set -a; . /etc/aphrody/secrets.env; set +a; printf "CF-Access-Client-Id: %s\nCF-Access-Client-Secret: %s\n" "$CF_ACCESS_CLIENT_ID" "$CF_ACCESS_CLIENT_SECRET" | curl -H @- -s -o /dev/null -w "%{http_code}" https://${to}/'`);
-  add("access-scope", `${from} token -> ${to} (must be refused)`, code === "403", `HTTP ${code} (token presented, refused)`);
+  add("access-scope", `${from} token -> ${to} (must be refused)`, code === "403" && viaOk.get(from) === true, `HTTP ${code} (token presented, refused; same token accepted on its own app: ${viaOk.get(from) ? "yes" : "NO"})`);
 }
 for (const from of ["fr2", "prd"]) {
   const code = sh(from, `sudo bash -c 'set -a; . /etc/aphrody/secrets.env; set +a; printf "CF-Access-Client-Id: %s\nCF-Access-Client-Secret: %s\n" "$CF_ACCESS_CLIENT_ID" "$CF_ACCESS_CLIENT_SECRET" | curl -H @- -s -o /dev/null -w "%{http_code}" https://admin.aphrody.com/'`);
-  add("access-scope", `${from} token -> admin.aphrody.com (owner only)`, code === "403", `HTTP ${code} (token presented, refused)`);
+  add("access-scope", `${from} token -> admin.aphrody.com (owner only)`, code === "403" && viaOk.get(from) === true, `HTTP ${code} (token presented, refused; same token accepted on its own app: ${viaOk.get(from) ? "yes" : "NO"})`);
+}
+
+// 9. credentials: the shared token is gone, every fleet token has more than 30 days left (alert before expiry).
+{
+  const st = await api<any[]>("GET", `/accounts/${cfg.account}/access/service_tokens`);
+  for (const name of cfg.access.retire_tokens ?? []) add("credential", `Access token ${name} retired`, !st.some((t) => t.name === name), st.some((t) => t.name === name) ? "STILL PRESENT" : "absent");
+  const soon = (d?: string) => !!d && Date.parse(d) - Date.now() < 30 * 86400_000;
+  for (const s2 of cfg.access.service_tokens) {
+    const t = st.find((x) => x.name === s2.name);
+    add("credential", `Access token ${s2.name}`, !!t && !soon(t.expires_at), t ? `expires ${t.expires_at}` : "MISSING");
+  }
+  const at = await api<any[]>("GET", `/accounts/${cfg.account}/tokens?per_page=100`);
+  for (const h of ["fr2", "prd"]) {
+    const t = at.find((x) => x.name === `fleet-${h}-dns`);
+    add("credential", `API token fleet-${h}-dns`, !!t && t.status === "active" && !soon(t.expires_on), t ? `${t.status}, expires ${t.expires_on}` : "MISSING");
+  }
 }
 
 if (record) {
@@ -144,7 +174,15 @@ if (record) {
     console.error(`--record refused: ${other.length} non-status check(s) failing (${other.map((r) => r.check + " " + r.target).join("; ")})`);
     process.exit(1);
   }
-  await Bun.write(expFile, JSON.stringify(Object.fromEntries(Object.entries(seen).sort()), null, 2) + "\n");
+  const drift = Object.entries(seen).filter(([h, st]) => expected[h] !== undefined && expected[h] !== st && !accept.has(h));
+  if (drift.length) {
+    console.error(`--record refused: frozen status changed for ${drift.map(([h, st]) => `${h} ${expected[h]} -> ${st}`).join(", ")} (re-run with --accept <host,...> after review)`);
+    process.exit(1);
+  }
+  await Bun.write(expFile, JSON.stringify(Object.fromEntries(Object.entries(seen).sort().map(([h, st]) => {
+    const old = prior[h];
+    return [h, typeof old === "object" && old.status === st ? old : st];
+  })), null, 2) + "\n");
   console.error(`recorded ${Object.keys(seen).length} expected statuses: review \`git diff infra/cloudflare/expected-status.json\` before committing`);
 }
 rows.sort((a, b) => a.check.localeCompare(b.check) || a.target.localeCompare(b.target));

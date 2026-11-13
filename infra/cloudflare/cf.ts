@@ -111,11 +111,18 @@ if (want("rules")) {
 function storeAccess(host: string, t: { client_id: string; client_secret: string }): boolean {
   const env = `CF_ACCESS_CLIENT_ID=${t.client_id}\nCF_ACCESS_CLIENT_SECRET=${t.client_secret}\n`;
   const script = "set -eu; umask 077; f=/etc/aphrody/secrets.env; exec 9>/run/lock/aphrody-secrets.lock; flock -w 30 9; " +
-    "t=$(mktemp /etc/aphrody/.secrets.XXXXXX); { [ -f $f ] && grep -v '^CF_ACCESS_CLIENT_' $f || true; cat; } > $t; " +
+    "t=$(mktemp /etc/aphrody/.secrets.XXXXXX); trap 'rm -f $t' EXIT; { [ -f $f ] && grep -v '^CF_ACCESS_CLIENT_' $f || true; cat; } > $t; " +
     "install -m 600 -o root -g root $t $f; rm -f $t; grep -c '^CF_ACCESS_CLIENT_' $f";
   const p = Bun.spawnSync(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=60", host, `sudo bash -c ${JSON.stringify(script)}`],
     { stdin: Buffer.from(env), timeout: 180_000 });
   return p.exitCode === 0 && p.stdout.toString().trim() === "2";
+}
+
+// client_id stored on the host (ids are not secret): detects a token whose secret never reached the host.
+function storedClientId(host: string): string {
+  const p = Bun.spawnSync(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=60", host,
+    "sudo sed -n 's/^CF_ACCESS_CLIENT_ID=//p' /etc/aphrody/secrets.env"], { timeout: 120_000 });
+  return p.exitCode === 0 ? p.stdout.toString().trim() : "?";
 }
 
 if (want("access")) {
@@ -125,19 +132,27 @@ if (want("access")) {
   const polByToken = new Map<string, string>();
   for (const st of cfg.access.service_tokens) {
     let tok = tokens.find((t) => t.name === st.name);
+    // The secret is shown once. Store it; on failure rotate (new secret) and store again, at most 3 stores, then stop.
+    const deliver = async (first: any) => {
+      let cred = first;
+      for (let n = 1; ; n++) {
+        if (storeAccess(st.host, cred)) return console.log(`  service token stored on ${st.host}: ok`);
+        if (n === 3) throw new Error(`service token ${st.name}: secret could not be stored on ${st.host} (3 attempts)`);
+        console.error(`  store on ${st.host} failed, rotating ${st.name} (attempt ${n})`);
+        cred = await api<any>("POST", `/accounts/${A}/access/service_tokens/${tok.id}/rotate`);
+      }
+    };
     if (!tok) {
       say("create", `service token ${st.name} (secret piped to ${st.host} /etc/aphrody/secrets.env only)`);
       if (apply) {
-        const t = await api<any>("POST", `/accounts/${A}/access/service_tokens`, { name: st.name, duration: "8760h" });
-        tok = t;
-        // The secret is shown once: on a failed store, rotate (new secret) and retry, then stop hard.
-        let cred = t;
-        for (let i = 0; i < 3 && !storeAccess(st.host, cred); i++) {
-          console.error(`  store on ${st.host} failed, rotating ${st.name} (attempt ${i + 1})`);
-          cred = await api<any>("POST", `/accounts/${A}/access/service_tokens/${t.id}/rotate`);
-          if (i === 2) throw new Error(`service token ${st.name}: secret could not be stored on ${st.host}`);
-        }
-        console.log(`  service token stored on ${st.host}: ok`);
+        tok = await api<any>("POST", `/accounts/${A}/access/service_tokens`, { name: st.name, duration: "8760h" });
+        await deliver(tok);
+      }
+    } else {
+      const have = storedClientId(st.host);
+      if (have !== tok.client_id) {
+        say("rotate", `service token ${st.name}: ${st.host} holds ${have === "" ? "no" : "another"} client id, new secret delivered`);
+        if (apply) await deliver(await api<any>("POST", `/accounts/${A}/access/service_tokens/${tok.id}/rotate`));
       }
     }
     let pol = pols.find((p) => p.name === `${st.name}-token`);
@@ -147,13 +162,25 @@ if (want("access")) {
         name: `${st.name}-token`, decision: "non_identity", include: [{ service_token: { token_id: tok.id } }], session_duration: "24h",
       });
     }
+    // The policy must point at the current token (a recreated token would otherwise leave access broken).
+    const bound = pol?.include?.[0]?.service_token?.token_id;
+    if (pol && tok && bound !== tok.id) {
+      say("update", `policy ${st.name}-token bound to ${bound ?? "nothing"} -> ${tok.id}`);
+      if (apply) pol = await api("PUT", `/accounts/${A}/access/policies/${pol.id}`, {
+        name: pol.name, decision: "non_identity", include: [{ service_token: { token_id: tok.id } }], session_duration: pol.session_duration ?? "24h",
+      });
+    }
     if (pol) polByToken.set(st.name, pol.id);
   }
   const apps = await api<any[]>("GET", `/accounts/${A}/access/apps?per_page=100`);
   for (const a of cfg.access.apps) {
     const desired = [cfg.access.owner_policy, ...(a.tokens ?? []).map((t) => polByToken.get(t)).filter((x): x is string => !!x)];
+    // PUT body: the managed fields plus the editable settings already set on the app (read-only fields such as id,
+    // uid, aud, created_at are never sent back).
+    const KEEP = ["allowed_idps", "auto_redirect_to_identity", "cors_headers", "enable_binding_cookie", "http_only_cookie_attribute",
+      "same_site_cookie_attribute", "logo_url", "skip_interstitial", "options_preflight_bypass", "service_auth_401_redirect", "tags"];
     const body = (cur?: any) => ({
-      ...(cur ?? {}), name: a.name, type: a.type, domain: a.domain, session_duration: cur?.session_duration ?? "24h",
+      ...Object.fromEntries(KEEP.filter((k) => cur?.[k] !== undefined).map((k) => [k, cur[k]])), name: a.name, type: a.type, domain: a.domain, session_duration: cur?.session_duration ?? "24h",
       app_launcher_visible: cur?.app_launcher_visible ?? true, policies: desired.map((id, i) => ({ id, precedence: i + 1 })),
     });
     const cur = apps.find((x) => x.name === a.name);
@@ -170,10 +197,11 @@ if (want("access")) {
   // Retired tokens (declared in retire_tokens): deleted only when no app references their policy any more
   // (apps re-read after the reconciliation above); a failed policy delete stops before the token is touched.
   const after = apply ? await api<any[]>("GET", `/accounts/${A}/access/apps?per_page=100`) : apps;
+  const polsNow = apply ? await api<any[]>("GET", `/accounts/${A}/access/policies`) : pols;
   for (const name of cfg.access.retire_tokens ?? []) {
     const t = tokens.find((x) => x.name === name);
     if (!t) continue;
-    const p = pols.find((x) => x.name === `${name}-token`);
+    const p = polsNow.find((x) => x.name === `${name}-token`);
     const users = p ? after.filter((a) => (a.policies ?? []).some((x: any) => x.id === p.id)).map((a) => a.name) : [];
     if (users.length) {
       console.error(`  keep ${name}: policy still used by ${users.join(", ")}`);

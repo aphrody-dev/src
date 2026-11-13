@@ -32,8 +32,10 @@ const resources = Object.fromEntries(zones.map((z) => [`com.cloudflare.api.accou
 const expires = new Date(Date.now() + 365 * 86400_000).toISOString().replace(/\.\d+Z$/, "Z");
 const existing = await cf<{ id: string; name: string }[]>("GET", `/accounts/${A}/tokens?per_page=100`);
 
-// Atomic, locked rewrite (root 600); the value comes on stdin; verification passes the token to curl on stdin (-H @-), never argv.
-const SET = String.raw`sudo bash -c 'set -eu; umask 077; f=/etc/aphrody/secrets.env; exec 9>/run/lock/aphrody-secrets.lock; flock -w 30 9; v=$(cat); t=$(mktemp /etc/aphrody/.secrets.XXXXXX); { [ -f $f ] && grep -v -E "^(CLOUDFLARE_API_TOKEN|CF_API_TOKEN)=" $f || true; printf "CLOUDFLARE_API_TOKEN=%s\nCF_API_TOKEN=%s\n" "$v" "$v"; } > $t; install -m 600 -o root -g root $t $f; rm -f $t; . $f; printf "Authorization: Bearer %s\n" "$CF_API_TOKEN" | curl -H @- -s -o /dev/null -w "zones %{http_code}" https://api.cloudflare.com/client/v4/zones?per_page=1'`;
+// Atomic, locked rewrite (root 600, temp file removed by trap); the value comes on stdin, is checked against the token
+// alphabet and is never sourced or put in argv (curl reads the header on stdin, -H @-). Other writers of secrets.env
+// (cf.ts storeAccess) take the same flock.
+const SET = String.raw`sudo bash -c 'set -eu; umask 077; f=/etc/aphrody/secrets.env; exec 9>/run/lock/aphrody-secrets.lock; flock -w 30 9; v=$(cat); case "$v" in *[!A-Za-z0-9_-]*|"") echo "zones badtoken"; exit 1;; esac; t=$(mktemp /etc/aphrody/.secrets.XXXXXX); trap "rm -f $t" EXIT; { [ -f $f ] && grep -v -E "^(CLOUDFLARE_API_TOKEN|CF_API_TOKEN)=" $f || true; printf "CLOUDFLARE_API_TOKEN=%s\nCF_API_TOKEN=%s\n" "$v" "$v"; } > $t; install -m 600 -o root -g root $t $f; printf "Authorization: Bearer %s\n" "$v" | curl -H @- -s -o /dev/null -w "zones %{http_code}" https://api.cloudflare.com/client/v4/zones?per_page=1'`;
 
 for (const h of hosts) {
   const name = `fleet-${h}-dns`;

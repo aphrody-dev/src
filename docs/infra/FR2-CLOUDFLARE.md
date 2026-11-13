@@ -1,6 +1,6 @@
 # fr2 et Cloudflare : inventaire, cible, migration, preuves (2026-11-13)
 
-Périmètre : fr2 (`ssh fr2`, OVH, 51.255.162.6 / 2001:41d0:305:2100::a461, wg1 10.200.77.3). Inventaire (sections 1 et 4, état « avant ») relevé le 2026-11-13 entre 02:10 et 02:40 UTC ; état « après » et preuves (section 5) : un seul run horodaté, 03:15 UTC, après un vrai redémarrage de fr2 à 03:13 (agent résilience) (ssh, API Cloudflare, `cf` 1.0.0-beta.31). Configuration : `infra/cloudflare/cloudflare.toml`, appliquée par `bun infra/cloudflare/cf.ts`. Preuves : `just cf-proof`. Précédents : `CLOUDFLARE-ONE.md` (pilote `mig-`), `MIGRATION-VERCEL-CF.md` (Workers), `HOSTING-POLICY.md`.
+Périmètre : fr2 (`ssh fr2`, OVH, 51.255.162.6 / 2001:41d0:305:2100::a461, wg1 10.200.77.3). Inventaire (sections 1 et 4, état « avant ») relevé le 2026-11-13 entre 02:10 et 02:40 UTC ; état « après » et preuves (section 5) : un seul run, `just cf-proof --md` du 2026-11-13T03:22:51Z (code de sortie 0), 9 minutes après un vrai redémarrage de fr2 (03:13, agent résilience) ; les compteurs nft repartent de zéro à chaque chargement de la table, donc le compteur de la section 5 ne se compare pas aux 251 paquets de l'activation (ssh, API Cloudflare, `cf` 1.0.0-beta.31). Configuration : `infra/cloudflare/cloudflare.toml`, appliquée par `bun infra/cloudflare/cf.ts`. Preuves : `just cf-proof`. Précédents : `CLOUDFLARE-ONE.md` (pilote `mig-`), `MIGRATION-VERCEL-CF.md` (Workers), `HOSTING-POLICY.md`.
 
 ## 1. Inventaire de fr2 (avant migration, lecture seule)
 
@@ -81,7 +81,7 @@ Ordre : ingress ajoutée → noms de test temporaires `fr2mig-check.aphrody.{com
 
 | Service | Avant | Après | Retour arrière (une ligne) |
 |---|---|---|---|
-| 33 CNAME `*.aphrody.com` (rétablir l'apex d'abord, sinon le CNAME suit le tunnel) | CF → fr2 → prd:3000 mort : 502 | CF → tunnel mig-prd → LB 127.0.0.1:19300 → conteneur aphrody : 200 (ou 404/502 rendu par le Worker `aphrody-webos` sur ses routes) | `cf dns records update <id> -z 963461271f885bc3f3c2bfd586f2b7ba --body '{"type":"CNAME","name":"<h>","content":"aphrody.com","proxied":true}'` |
+| 33 CNAME `*.aphrody.com` (rétablir l'apex d'abord, sinon le CNAME suit le tunnel) | CF → fr2 → prd:3000 mort : 502 | CF → tunnel mig-prd → LB 127.0.0.1:19300 → conteneur aphrody : 200 (ou 404/502 rendu par le Worker `aphrody-webos` sur ses routes) | 1) apex d'abord (ligne suivante), 2) puis chaque CNAME : `cf dns records update <id> -z 963461271f885bc3f3c2bfd586f2b7ba --body '{"type":"CNAME","name":"<h>","content":"aphrody.com","proxied":true}'` |
 | apex `aphrody.com` | A fr2 proxifié (origine des CNAME), Worker devant | CNAME tunnel (aplati), Worker devant (`/api/*` = 503 rendu par le Worker, pas d'appel origine constaté) | `cf dns records update 30ddf6bf26060e3685b6fe9e904a8589 -z 963461271f885bc3f3c2bfd586f2b7ba --body '{"type":"A","name":"aphrody.com","content":"51.255.162.6","proxied":true}'` |
 | `os.aphrody.com`, 21 A `*.aphrody.app` | A fr2 → 502 | CNAME tunnel → prd (os 404 Worker, .app 502 : rien sur :3010) | `cf dns records update <id> -z <zone id> --body '{"type":"A","name":"<h>","content":"51.255.162.6","proxied":true}'` |
 | `dbfr.aphrody.com` | DNS-only, IP de fr2 exposée | proxifié (Full strict, cert `*.aphrody.com`), 200 | `cf dns records update 2c516fd0569eaa8b9c5d226ff3e740bd -z 963461271f885bc3f3c2bfd586f2b7ba --body '{"type":"A","name":"dbfr.aphrody.com","content":"51.255.162.6","proxied":false}'` puis idem AAAA 4237ac589c90e889d7cf6f3a6371dd18 (`2001:41d0:305:2100::a461`) |
@@ -97,7 +97,7 @@ Identifiants : `cf dns records list -z <zone id>` (inchangés par la migration :
 
 dig depuis fr1 (`@1.1.1.1`) : aphrody.com, admin.aphrody.com, dbfr.aphrody.com, ssh-prd.aphrody.com → 172.67.143.120 / 104.21.27.192, 2606:4700:3037::6815:1bc0 / 2606:4700:3033::ac43:8f78 ; api.aphrody.app → 104.21.39.148 / 172.67.170.209 ; aucune IP de fr2. Scan depuis fr1 (flotte, autorisée) : 22/80/443 ouverts ; depuis le PC : 22 ouvert, 80/443 filtrés. Tunnels via API (`cloudflared tunnel info` exige un cert.pem de compte, absent).
 
-Run 2026-11-13T03:14:32.210Z from 81.64.138.x
+Run 2026-11-13T03:22:51.849Z from 81.64.138.x
 
 | Check | Target | OK | Evidence |
 |---|---|---|---|
@@ -108,14 +108,19 @@ Run 2026-11-13T03:14:32.210Z from 81.64.138.x
 | access | mig-depot.aphrody.com | yes | 302 -> https://aphrody-labs.cloudflareaccess.com/cdn-cgi/access/login/mig-depot.aphrody.com |
 | access | ssh-fr2.aphrody.com | yes | 302 -> https://aphrody-labs.cloudflareaccess.com/cdn-cgi/access/login/ssh-fr2.aphrody.com |
 | access | ssh-prd.aphrody.com | yes | 302 -> https://aphrody-labs.cloudflareaccess.com/cdn-cgi/access/login/ssh-prd.aphrody.com |
-| access-scope | fr2 token -> admin.aphrody.com (owner only) | yes | HTTP 403 (token presented, refused) |
-| access-scope | fr2 token -> ssh-fr2.aphrody.com (must be refused) | yes | HTTP 403 (token presented, refused) |
-| access-scope | prd token -> admin.aphrody.com (owner only) | yes | HTTP 403 (token presented, refused) |
-| access-scope | prd token -> ssh-prd.aphrody.com (must be refused) | yes | HTTP 403 (token presented, refused) |
+| access-scope | fr2 token -> admin.aphrody.com (owner only) | yes | HTTP 403 (token presented, refused; same token accepted on its own app: yes) |
+| access-scope | fr2 token -> ssh-fr2.aphrody.com (must be refused) | yes | HTTP 403 (token presented, refused; same token accepted on its own app: yes) |
+| access-scope | prd token -> admin.aphrody.com (owner only) | yes | HTTP 403 (token presented, refused; same token accepted on its own app: yes) |
+| access-scope | prd token -> ssh-prd.aphrody.com (must be refused) | yes | HTTP 403 (token presented, refused; same token accepted on its own app: yes) |
 | access-ssh | fr2 -> ssh-prd.aphrody.com (service token) | yes | hostname=srv2116886 |
 | access-ssh | prd -> ssh-fr2.aphrody.com (service token) | yes | hostname=bunos |
 | api-route | https://aphrody.com/api/health | yes | 503 server cloudflare cf-ray MRS / expected 503 |
 | cache | https://aphrody.com/ (2nd request) | yes | cf-cache-status HIT |
+| credential | Access token fleet-agents retired | yes | absent |
+| credential | Access token fleet-agents-fr2 | yes | expires 2027-11-13T02:58:18Z |
+| credential | Access token fleet-agents-prd | yes | expires 2027-11-13T02:58:22Z |
+| credential | API token fleet-fr2-dns | yes | active, expires 2027-11-13T03:11:14Z |
+| credential | API token fleet-prd-dns | yes | active, expires 2027-11-13T03:11:14Z |
 | edge | admin.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 302 / server cloudflare / cf-ray MRS / cache - / Access 302 / expected 302 |
 | edge | ai.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
 | edge | aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 200 / server cloudflare / cf-ray MRS / cache - / expected 200 |
@@ -124,7 +129,7 @@ Run 2026-11-13T03:14:32.210Z from 81.64.138.x
 | edge | api.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache - / expected 200 |
 | edge | app-audio.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | app-cad.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
-| edge | app-compositing.aphrody.app | yes | A 172.67.170.209,104.21.39.148 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
+| edge | app-compositing.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | app-documents.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | app-generation.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | app-images.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
@@ -136,79 +141,83 @@ Run 2026-11-13T03:14:32.210Z from 81.64.138.x
 | edge | app-tables.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | app-vectors.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | app-video.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
-| edge | art.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
+| edge | art.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | auth.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | auth.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
 | edge | bot.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
-| edge | bxc.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
+| edge | bxc.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
 | edge | cad.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | calendar.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 404 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 404 |
 | edge | cdn.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 200 / server cloudflare / cf-ray MRS / cache - / expected 200 |
 | edge | chat.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
-| edge | console.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 302 / server cloudflare / cf-ray MRS / cache - / Access 302 / expected 302 |
+| edge | console.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 302 / server cloudflare / cf-ray MRS / cache - / Access 302 / expected 302 |
 | edge | control.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 302 / server cloudflare / cf-ray MRS / cache - / Access 302 / expected 302 |
 | edge | craft.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | creator.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache - / expected 200 |
-| edge | dbfr.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
+| edge | dbfr.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
 | edge | deploy.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | design.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | docs.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | downloads.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 404 / server cloudflare / cf-ray MRS / cache - / expected 404 |
-| edge | drive.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
+| edge | drive.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
 | edge | fig.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | git.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | inacord.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
-| edge | mail.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
+| edge | mail.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
 | edge | maps.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 404 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 404 |
 | edge | mcp.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
 | edge | meet.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
+| edge | mig-commons.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 302 / server cloudflare / cf-ray MRS / cache - / Access 302 / expected 302 |
+| edge | mig-depot.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 302 / server cloudflare / cf-ray MRS / cache - / Access 302 / expected 302 |
 | edge | mig-test.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
-| edge | n2b.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
+| edge | n2b.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
 | edge | nie.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
 | edge | os.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 404 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 404 |
 | edge | pdf.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
-| edge | photos.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
+| edge | photos.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | play.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 404 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 404 |
-| edge | play.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 404 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 404 |
-| edge | search.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
-| edge | sheets.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
-| edge | slides.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
+| edge | play.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 404 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 404 |
+| edge | search.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
+| edge | sheets.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
+| edge | slides.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | sound.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | source.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 502 / server cloudflare / cf-ray MRS / cache - / expected 502 |
 | edge | ssh-fr2.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 302 / server cloudflare / cf-ray MRS / cache - / Access 302 / expected 302 |
-| edge | ssh-prd.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 302 / server cloudflare / cf-ray MRS / cache - / Access 302 / expected 302 |
+| edge | ssh-prd.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 302 / server cloudflare / cf-ray MRS / cache - / Access 302 / expected 302 |
 | edge | status.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
 | edge | store.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
 | edge | translate.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
-| edge | www.aphrody.app | yes | A 172.67.170.209,104.21.39.148 / 200 / server cloudflare / cf-ray MRS / cache - / expected 200 |
+| edge | www.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 200 / server cloudflare / cf-ray MRS / cache - / expected 200 |
 | edge | www.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache HIT / expected 200 |
 | edge | yohan.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
+| origin-aop | api/cdn/creator/downloads (fleet-only vhosts) | yes | 4/4 vhosts include fleet-only.inc |
+| origin-aop | dbfr.aphrody.com (per-hostname AOP) | yes | public 200 via edge cert, nginx directives 2 |
 | origin-closed | fr2 51.255.162.6:443 from internet | yes | filtered (timeout) |
 | origin-closed | fr2 51.255.162.6:80 from internet | yes | filtered (timeout) |
 | origin-fleet | prd -> fr2:443 (fleet-health) | yes | HTTP 200 |
 | origin-ssh | fr2 51.255.162.6:22 from internet | yes | open (break-glass, keys only) |
-| origin-v6 | fr2 nft inet fr2_edge (v4+v6, tcp+udp) | yes | counter packets 9 dropped |
+| origin-v6 | fr2 nft inet fr2_edge (v4+v6, tcp+udp) | yes | counter packets 53 dropped |
 | tls | admin.aphrody.com | yes | Let's Encrypt YE2 |
 | tls | aphrody.com | yes | Google Trust Services WE1 |
 | tls | api.aphrody.app | yes | Google Trust Services WE1 |
 | tls | dbfr.aphrody.com | yes | Let's Encrypt YE2 |
 | tls | ssh-prd.aphrody.com | yes | Let's Encrypt YE2 |
-| tunnel | fr2 (fr2) | yes | healthy, 4 conns, lhr13,cdg14,cdg08, cloudflared 2026.10.7 |
-| tunnel | mig-prd (prd) | yes | healthy, 12 conns, cdg01,cdg14,cdg13,fra20,fra10,fra03,fra18,cdg10,lhr13, cloudflared 2026.10.7 |
+| tunnel | fr2 (fr2) | yes | healthy, 4 conns, cdg12,lhr13,cdg08, cloudflared 2026.10.7 |
+| tunnel | mig-prd (prd) | yes | healthy, 12 conns, fra20,fra10,fra03,fra18,cdg10,lhr13,cdg13,cdg01,cdg14, cloudflared 2026.11.0 |
 | waf | https://aphrody.app/wp-login.php | yes | 403 cf-ray MRS |
 | waf | https://aphrody.com/.env | yes | 403 cf-ray MRS |
-| wireguard | fr2 wg1 (hub forwarding kept) | yes | latest handshake 69s ago, ip_forward 1 |
+| wireguard | fr2 wg1 (hub forwarding kept) | yes | latest handshake 18s ago, ip_forward 1 |
 
-97/97 checks ok
+106/106 checks ok
 
 ## 6. Non migré, limites, permissions
 
 - **Jeton API** (corrigé le 2026-11-13 03:00) : fr2 et prd ont chacun leur jeton `fleet-<hôte>-dns` (privilèges minimaux, vérifié) ; le coffre du PC porte un jeton de compte valide ; seules les variables d'environnement Windows héritées par d'anciens processus gardent l'ancienne valeur, d'où l'usage forcé du coffre dans les recettes. Avant : `CLOUDFLARE_API_TOKEN` (env PC et `/etc/aphrody/secrets.env` de fr2/prd) était un jeton d'accès OAuth `cfat_` expiré : `Invalid API Token` (code 1000/9109) sur `/user/tokens/verify`, `/accounts/<id>/tokens/verify` et `/zones`. Tout a été fait avec le login OAuth de `cf` (portées zone, dns, waf, rulesets, argotunnel, access, ssl, cache : rien ne manque). À remplacer par un vrai jeton de compte : sans lui, la bascule DNS de `fleet-health` (`CF_API_TOKEN`) et l'automatisation sur VPS ne marchent pas.
-- **ssh 22 public** gardé sur fr2 (secours, clés uniquement ; fail2ban actif, jail sshd). Fermeture le **2026-11-20** si les trois critères sont tenus : 7 jours de `access-ssh` vert dans `just cf-proof` (les deux sens), accès console KVM OVH testé par le propriétaire (seule action humaine, inscrite dans l'index NHITL), chemin ssh mesh (`<hôte>-mesh`) vert depuis fr1 et prd. Règle à poser : 22 réservé à la flotte et wg1, **jamais** aux plages Cloudflare (Workers `connect()` et WARP sortent de ces IP) ; cloudflared joint sshd en 127.0.0.1. Console KVM OVH à vérifier avant.
+- **ssh 22 public** gardé sur fr2 (secours, clés uniquement ; fail2ban actif, jail sshd). Fermeture le **2026-11-20**, propriétaire de l'action : l'agent infra (pas d'humain sauf la console KVM), si les trois critères sont tenus : 7 jours de `access-ssh` vert dans `just cf-proof` (les deux sens), accès console KVM OVH testé par le propriétaire (seule action humaine, inscrite dans l'index NHITL), chemin ssh mesh (`<hôte>-mesh`) vert depuis fr1 et prd. Règle à poser : 22 réservé à la flotte et wg1, **jamais** aux plages Cloudflare (Workers `connect()` et WARP sortent de ces IP) ; cloudflared joint sshd en 127.0.0.1. Console KVM OVH à vérifier avant.
 - **Rendu SSH navigateur** : sans CA Access (`TrustedUserCAKeys`) dans sshd, le terminal navigateur demande une clé ; le chemin agents (`cloudflared access ssh` + jeton) est prouvé. Jeton par sens fait : `fleet-agents-fr2` n'ouvre que `ssh-prd`, `fleet-agents-prd` que `ssh-fr2` (preuve `access-scope` : usage inverse et admin en 403). Restent : la CA SSH Access (`TrustedUserCAKeys`) pour le rendu navigateur.
 - **Ingress `aphrody.com`, `*.aphrody.com` → 127.0.0.1:19300** (pool cluster aphrody = prd:23000 ; le blue/green ne touche que deploy.toml) et `ssh-prd` → `ssh://127.0.0.1:19022` (sshd de prd quel que soit le réplica). Retour arrière : 127.0.0.1:23000 / 127.0.0.1:22. `*.aphrody.app` reste sur :3010 (502 sur tout réplica). Reste : la cible du pool est figée sur 23000 et aucun script ne bascule blue/green ; demandé à l agent cluster (serveurs blue et green avec health check, dérivés de deploy.toml).
 - **Repli fr2** : vhosts downloads/cdn sur les LB cluster locaux (19797/19796, conteneur local d'abord), `mig-tunnel.conf` supprimé (fait) ; une bascule DNS `proxied:false` vers fr2 serait refusée par `fr2-edge-fw`. Le repli passe donc par la couche cluster (pools fr2 w60), pas par le DNS.
-- **Certificats fr2** : tous en DNS-01 (section 1) ; achillea purgé. Origin CA Cloudflare et Custom AOP par vhost (dbfr, api, cdn, creator, downloads) : non faits, la limite « zone tierce » de `fr2-edge-fw` reste ouverte.
+- **Certificats fr2** : tous en DNS-01 (section 1) ; achillea purgé. Origin CA Cloudflare : non retenu (les certificats Let's Encrypt en DNS-01 se renouvellent seuls et restent valides pour la flotte en direct).
 - **IPv6** : pas de point de vue v6 hors flotte ici (PC sans v6) ; preuve par la règle `inet` (drop commun v4/v6) et son compteur.
 - **rosegriffon-52** (`cdn.rosegriffon.fr`, `nie.aphrody.app`, `rosegriffon*.conf`) : non touché, 404 via CF avant comme après. Session injoignable pour le message (SendMessage : aucun agent `rosegriffon-52`). Proposition : ingress tunnel `https://127.0.0.1:8443` sur prd.
 - **dbfr.aphrody.com** (shenron) : reste sur fr2 (statique) ; cible AY_MIGRATION : servi depuis usa.
@@ -217,12 +226,12 @@ Run 2026-11-13T03:14:32.210Z from 81.64.138.x
 - Vhosts nginx de fr2 gardés comme repli (fleet-health, HOSTING-POLICY), via les LB cluster. Plus aucun trafic public.
 - **console.aphrody.com** : répondait 200 en public (tableau de bord), derrière Access `aphrody-console` (propriétaire seul) depuis le 2026-11-13 02:53.
 - **cloudflared** : jeton en credential (`--token-file %d/...`, vérifié dans `ps`). Binaire `/usr/local/bin/cloudflared` 2026.10.7 hors APT sur fr2 et prd : mise à jour = `cloudflared update` désactivé (`--no-autoupdate`), donc procédure manuelle : télécharger la release GitHub `cloudflare/cloudflared`, vérifier le sha256 publié, `install -m 755`, `systemctl restart cloudflared-*`, puis `just cf-proof` (tunnels). Passage au dépôt APT `pkg.cloudflare.com` : non fait.
-- **Rotation des jetons** : `fleet-<hôte>-dns` expire le 2027-11-13 (`just cf-fleet-token` le renouvelle) ; jetons Access `fleet-agents-<hôte>` : 8760 h depuis le 2026-11-13 (renouvellement : `POST /access/service_tokens/<id>/rotate`, ce que `cf.ts` fait seul si le dépôt échoue). Échéance à surveiller : 2027-10-13.
+- **Rotation des jetons** : `fleet-<hôte>-dns` expire le 2027-11-13 (`just cf-fleet-token` le renouvelle) ; jetons Access `fleet-agents-<hôte>` : 8760 h depuis le 2026-11-13 (renouvellement : `POST /access/service_tokens/<id>/rotate`, ce que `cf.ts` fait seul si le dépôt échoue). Alerte automatique : `just cf-proof` échoue (checks `credential`) quand un jeton de flotte a moins de 30 jours ou que l'ancien `fleet-agents` réapparaît.
 - **21 A `*.aphrody.app` en 502** : gardés tels quels (parité avec l'avant, rien ne tourne sur :3010) ; `expected-status.json` fige le 502 contre toute dérive, sans attester d'un service. Retrait ou 404 de Worker : à décider avec le produit aphrody-app.
-- **Zone tierce** : `fr2-edge-fw` accepte les plages Cloudflare, donc une zone d'un autre compte peut viser 51.255.162.6 ; impossible de fermer à Cloudflare tant que dbfr.aphrody.com, cdn.rosegriffon.fr et nie.aphrody.app ont fr2 pour origine proxifiée. Remède : Custom AOP par vhost (non fait).
+- **Zone tierce** (fait le 2026-11-13 03:20) : `fr2-edge-fw` laisse passer les plages Cloudflare, la vérification se fait au niveau nginx. dbfr.aphrody.com : Custom AOP par nom d'hôte (`infra/cloudflare/aop.ts` : CA privée, certificat client chargé chez Cloudflare seulement, clé jamais écrite hors d'un répertoire temporaire supprimé ; `conf.d/aop.conf` + 3 directives dans `fleet-api.conf` ; flotte exemptée) ; preuve : un 200 public via l'edge (IP non flotte, donc certificat présenté et vérifié). api/cdn/creator/downloads (servis au public par des Workers) : `snippets/fleet-only.inc`, origine réservée à la flotte, au mesh et au loopback, Cloudflare compris refusé. Restent ouverts : cdn.rosegriffon.fr et nie.aphrody.app (rosegriffon-52, non touchés).
 - WARP absent du PC : l'app `mig-prd-ssh` (infrastructure) reste inutilisable ; les apps ssh navigateur + le jeton de service n'en ont pas besoin.
 - Couche cluster : répliques du tunnel et LB d'origine sont confiés à l'agent cluster (inventaire des tunnels envoyé). Pas de cache ni de LB d'origine ajouté sur fr2.
 
 ## 7. Validation Gemini
 
-Gemini 4 Carbon High, passe 1 : **10/20** (verdict intégral : `docs/reviews/gemini-2026-11-13-fr2-cloudflare.md`). Corrigé : décomptes (33 CNAME, 21 A, certificats), état réel de nie.aphrody.app et du port 22, affirmation `/api`, commandes de retour arrière (`update` + ID), filtre UDP 80/443, ordre au démarrage, Access sur admin/control, preuve v6 par ruleset. Restes documentés en section 6 (CA SSH, jeton par sens, green_port, repli fr2, jeton API, Custom AOP).
+Passe 2 : **12/20**, passe 3 : **13/20** (verdicts résumés dans `docs/reviews/gemini-2026-11-13-fr2-cloudflare.md`), corrigés en passe 4 : rotation et dépôt des secrets, liaison politique ↔ jeton, corps PUT limité aux champs gérés, `--record` refusé en cas de dérive sans `--accept`, statuts annotés (`why), contrôle positif des refus, alerte d'expiration, Custom AOP. Gemini 4 Carbon High, passe 1 : **10/20** (verdict intégral : `docs/reviews/gemini-2026-11-13-fr2-cloudflare.md`). Corrigé : décomptes (33 CNAME, 21 A, certificats), état réel de nie.aphrody.app et du port 22, affirmation `/api`, commandes de retour arrière (`update` + ID), filtre UDP 80/443, ordre au démarrage, Access sur admin/control, preuve v6 par ruleset. Restes documentés en section 6 (CA SSH, jeton par sens, green_port, repli fr2, jeton API, Custom AOP).

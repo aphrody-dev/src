@@ -3,62 +3,175 @@
   "ai.aphrody.com": 200,
   "aphrody.app": 200,
   "aphrody.com": 200,
-  "api.aphrody.app": 502,
+  "api.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
   "api.aphrody.com": 200,
-  "app-audio.aphrody.app": 502,
-  "app-cad.aphrody.app": 502,
-  "app-compositing.aphrody.app": 502,
-  "app-documents.aphrody.app": 502,
-  "app-generation.aphrody.app": 502,
-  "app-images.aphrody.app": 502,
-  "app-interface-layouts.aphrody.app": 502,
-  "app-layout.aphrody.app": 502,
-  "app-pdf.aphrody.app": 502,
-  "app-photo-processing.aphrody.app": 502,
-  "app-slides.aphrody.app": 502,
-  "app-tables.aphrody.app": 502,
-  "app-vectors.aphrody.app": 502,
-  "app-video.aphrody.app": 502,
-  "art.aphrody.com": 502,
-  "auth.aphrody.app": 502,
+  "app-audio.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
+  "app-cad.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
+  "app-compositing.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
+  "app-documents.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
+  "app-generation.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
+  "app-images.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
+  "app-interface-layouts.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
+  "app-layout.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
+  "app-pdf.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
+  "app-photo-processing.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
+  "app-slides.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
+  "app-tables.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
+  "app-vectors.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
+  "app-video.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
+  "art.aphrody.com": {
+    "status": 502,
+    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+  },
+  "auth.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
   "auth.aphrody.com": 200,
   "bot.aphrody.com": 200,
   "bxc.aphrody.com": 200,
-  "cad.aphrody.com": 502,
-  "calendar.aphrody.com": 404,
+  "cad.aphrody.com": {
+    "status": 502,
+    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+  },
+  "calendar.aphrody.com": {
+    "status": 404,
+    "why": "404 du Worker ou du conteneur (pas de page racine)"
+  },
   "cdn.aphrody.com": 200,
   "chat.aphrody.com": 200,
   "console.aphrody.com": 302,
   "control.aphrody.com": 302,
-  "craft.aphrody.app": 502,
+  "craft.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
   "creator.aphrody.com": 200,
   "dbfr.aphrody.com": 200,
-  "deploy.aphrody.app": 502,
-  "design.aphrody.com": 502,
-  "docs.aphrody.com": 502,
-  "downloads.aphrody.com": 404,
+  "deploy.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
+  "design.aphrody.com": {
+    "status": 502,
+    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+  },
+  "docs.aphrody.com": {
+    "status": 502,
+    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+  },
+  "downloads.aphrody.com": {
+    "status": 404,
+    "why": "404 du Worker ou du conteneur (pas de page racine)"
+  },
   "drive.aphrody.com": 200,
-  "fig.aphrody.com": 502,
-  "git.aphrody.app": 502,
-  "https://aphrody.com/api/health": 503,
+  "fig.aphrody.com": {
+    "status": 502,
+    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+  },
+  "git.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
+  "https://aphrody.com/api/health": {
+    "status": 503,
+    "why": "/api rendu par le Worker aphrody (pas d appel origine)"
+  },
   "inacord.aphrody.com": 200,
   "mail.aphrody.com": 200,
-  "maps.aphrody.com": 404,
+  "maps.aphrody.com": {
+    "status": 404,
+    "why": "404 du Worker ou du conteneur (pas de page racine)"
+  },
   "mcp.aphrody.com": 200,
   "meet.aphrody.com": 200,
+  "mig-commons.aphrody.com": 302,
+  "mig-depot.aphrody.com": 302,
   "mig-test.aphrody.com": 200,
   "n2b.aphrody.com": 200,
   "nie.aphrody.com": 200,
-  "os.aphrody.com": 404,
-  "pdf.aphrody.com": 502,
-  "photos.aphrody.com": 502,
-  "play.aphrody.app": 404,
-  "play.aphrody.com": 404,
+  "os.aphrody.com": {
+    "status": 404,
+    "why": "404 du Worker ou du conteneur (pas de page racine)"
+  },
+  "pdf.aphrody.com": {
+    "status": 502,
+    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+  },
+  "photos.aphrody.com": {
+    "status": 502,
+    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+  },
+  "play.aphrody.app": {
+    "status": 404,
+    "why": "404 du Worker ou du conteneur (pas de page racine)"
+  },
+  "play.aphrody.com": {
+    "status": 404,
+    "why": "404 du Worker ou du conteneur (pas de page racine)"
+  },
   "search.aphrody.com": 200,
-  "sheets.aphrody.com": 502,
-  "slides.aphrody.com": 502,
-  "sound.aphrody.com": 502,
-  "source.aphrody.app": 502,
+  "sheets.aphrody.com": {
+    "status": 502,
+    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+  },
+  "slides.aphrody.com": {
+    "status": 502,
+    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+  },
+  "sound.aphrody.com": {
+    "status": 502,
+    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+  },
+  "source.aphrody.app": {
+    "status": 502,
+    "why": "parité avant/après : aucun service sur prd:3010 (aphrody-app non déployé)"
+  },
   "ssh-fr2.aphrody.com": 302,
   "ssh-prd.aphrody.com": 302,
   "status.aphrody.com": 200,

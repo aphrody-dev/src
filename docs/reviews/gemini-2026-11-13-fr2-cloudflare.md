@@ -199,3 +199,10 @@ Ajouter une assertion explicite sur [https://aphrody.com/api/](https://aphrody.c
 Figer le code HTTP exact attendu par nom d'hôte dans la table d'assertions (ne jamais tolérer 502 sur un hôte censé répondre 200), et afficher le compte brut de connexions par colo sans déduplication silencieuse.
 
 Corriger docs/infra/FR2-CLOUDFLARE.md : rectifier 31 → 33 CNAME, détailler les 2 certificats Let's Encrypt manquants (16 + 1 + 2 = 19), trancher l'état réel de nie.aphrody.app (21 vs 22 A), passer l'état de fermeture du port 22 en planifié à J+7, préciser les zones couvertes par fr2-rl-edge, et corriger l'ordre ainsi que la syntaxe CLI (update + ID explicites) du tableau de retour arrière.
+## Passe 2 (2026-11-13 ~03:05) : 12/20
+
+Barème : exactitude 4/6, réseau 3/5, sécurité 3/5, complétude 2/4. Défauts : ports d'ingress contradictoires (23000/19300), fail2ban et repli DNS contradictoires, preuves de plusieurs instantanés, zone Cloudflare tierce, pool figé sur green_port, port 22 non daté, 21 *.aphrody.app en 502, secret perdu si le dépôt échoue, écriture de secrets.env non atomique, secret de jeton en argv, access-scope trop faible, --record sans garde, chemin expFile cassé hors Windows, retrait du jeton non vérifié, retours arrière incomplets, cloudflared hors APT, rotation non datée.
+
+## Passe 3 (2026-11-13 ~03:17) : 13/20
+
+Barème : exactitude 4/6, réseau 4/5, sécurité 3/5, complétude 2/4. Défauts : boucle de rotation (3e secret perdu), jeton existant sans secret sur l'hôte, corps PUT renvoyant les champs en lecture seule, politique non reliée au jeton courant, retrait sans relecture des politiques, sourcing de secrets.env et absence de trap, 403 ambigu sans contrôle positif, --record figeant les dérives, 502 figés sans motif, mig-depot/mig-commons non figés, horodatage et compteur nft, ordre du retour arrière CNAME, port 22 sans propriétaire, expiration sans alerte, AOP toujours non fait.
