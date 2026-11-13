@@ -1,0 +1,103 @@
+# Fichiers de config déployés par `bun packages/machine/src/shells.ts` (appelé par apply-user.ts).
+# [[link]]
+#   shell : bash | pwsh | powershell | nu | fish (sert au stub de mode "source")
+#   src   : relatif à packages/machine/shells/
+#   dst   : chaîne, ou table { windows = "...", linux = "..." } ; une plateforme absente = ignorée.
+#           ~ = USERPROFILE/HOME ; {appdata} = %APPDATA% ; {config} = ~/.config (Linux)
+#   mode  : "source" = dst devient un stub d'une ligne qui source src dans le dépôt (pas de symlink :
+#           SeCreateSymbolicLink non garanti) ; "copy" = copie octet pour octet (formats sans include).
+# --check : stub/copie différent ou absent => DIFF.
+
+# nushell (agent C) : config-path / env-path de `$nu` (0.117.0).
+[[link]]
+shell = "nu"
+src = "nu/env.nu"
+dst = { windows = "{appdata}/nushell/env.nu", linux = "{config}/nushell/env.nu" }
+mode = "source"
+
+[[link]]
+shell = "nu"
+src = "nu/config.nu"
+dst = { windows = "{appdata}/nushell/config.nu", linux = "{config}/nushell/config.nu" }
+mode = "source"
+
+# fish (agent C) : Linux seulement, pas de build Windows natif amont (README 4.9.3 : WSL, Cygwin, MSYS2).
+[[link]]
+shell = "fish"
+src = "fish/config.fish"
+dst = { linux = "{config}/fish/config.fish" }
+mode = "source"
+
+# Spécification carapace de `ay` (générée depuis `ay --help`) : complétion partagée bash/pwsh/nu/fish.
+[[link]]
+shell = "carapace"
+src = "completions/ay.yaml"
+dst = { windows = "{appdata}/carapace/specs/ay.yaml", linux = "{config}/carapace/specs/ay.yaml" }
+mode = "copy"
+
+[[link]]
+shell = "fish"
+src = "completions/ay.fish"
+dst = { linux = "{config}/fish/completions/ay.fish" }
+mode = "copy"
+
+# --- bash family (agent A) ---
+# niubash 1.5.0 (bash.exe = niu.exe) : login -> ~/.bash_profile ; interactif -> ~/.niubashrc seul.
+# Git Bash 5.3 et brush 0.4 : login -> ~/.bash_profile ; interactif -> ~/.bashrc (brush : puis ~/.brushrc).
+# Claude Code source aussi ~/.bashrc pour son instantané. Détails : docs/shell/bash-setup.md.
+[[link]]
+shell = "bash"
+src = "bash/bashrc"
+dst = "~/.bashrc"
+mode = "source"
+
+[[link]]
+shell = "bash"
+src = "bash/bash_profile"
+dst = "~/.bash_profile"
+mode = "source"
+
+[[link]]
+shell = "bash"
+src = "bash/niubashrc"
+dst = { windows = "~/.niubashrc" }
+mode = "source"
+
+# readline n'a pas de `source` portable ($include dépend du format de chemin) : copie.
+[[link]]
+shell = "bash"
+src = "bash/inputrc"
+dst = "~/.inputrc"
+mode = "copy"
+
+# --- pwsh (agent B) ---
+# Profil canonique unique pour pwsh 7.7 (Store) et Windows PowerShell 5.1 (code compatible 5.1, sections 7+ gardées).
+# mode "copy" : le bloc Coreutils for Windows (« DO NOT MODIFY … 60b36fc6 ») est inclus dans le profil ; son marqueur
+# présent dans $PROFILE empêche l'installeur Coreutils de le réécrire. Réglages et sources : docs/shell/pwsh-setup.md.
+[[link]]
+shell = "pwsh"
+src = "pwsh/profile.ps1"
+dst = { windows = "~/Documents/PowerShell/Microsoft.PowerShell_profile.ps1" }
+mode = "copy"
+
+[[link]]
+shell = "powershell"
+src = "pwsh/profile.ps1"
+dst = { windows = "~/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1" }
+mode = "copy"
+
+# Windows Terminal (settings.json, JSONC) : état cible contrôlé par shells.ts --check (lecture seule ;
+# apply-user.ts pose le profil par défaut Niubash élevé). Clé = nom du profil.
+[terminal]
+default = "Niubash"
+[terminal.profile.Niubash]
+commandline = '{localappdata}\Programs\Niubash\niu.exe'
+elevate = true
+[terminal.profile."Git Bash"]
+hidden = true
+[terminal.profile.PowerShell]
+commandline = "pwsh.exe -NoLogo"
+[terminal.profile.brush]
+commandline = '%USERPROFILE%\.local\share\brush-main\brush.exe -l'
+[terminal.profile.Nushell]
+source = "nu"

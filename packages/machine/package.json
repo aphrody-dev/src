@@ -7,7 +7,9 @@
   "scripts": {
     "check": "bun src/apply-user.ts --check",
     "apply": "bun src/apply-user.ts",
-    "flatten": "bun src/flatten-third-party.ts"
+    "flatten": "bun src/flatten-third-party.ts",
+    "shells": "bun src/shells.ts",
+    "shells:check": "bun src/shells.ts --check"
   },
   "license": "MIT OR Apache-2.0",
   "repository": {

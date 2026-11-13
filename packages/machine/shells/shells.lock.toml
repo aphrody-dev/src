@@ -1,0 +1,123 @@
+# Lock des shells (style Nix : version + source + empreintes). Contrôlé par
+# `bun packages/machine/src/shells.ts --check` (chemin, `--version`, b3sum du binaire installé).
+# sha256.* = digest de l'asset amont (gh api releases, 2026-11-13) ; b3sum.* = binaire installé tel quel.
+# L'installation reste celle de l'outil indiqué par `install` (tools.toml / winget DSC / pacman) :
+# ce lock fige et vérifie, il ne réimplémente pas d'installeur. Même schéma que toolchains.lock.toml.
+# hosts : pc (Windows 11), prd (Arch), fr2 = cdn (Ubuntu 26.10), fr1 = vps (Ubuntu 26.10).
+
+[shell.niubash]
+version = "1.5.0"
+expect = "5.3.20"
+source = "https://github.com/unixwin/niubash/releases/tag/v1.5.0"
+install = "ay up (tools.toml niubash) ; winget configure shell.dsc.winget"
+hosts = ["pc"]
+verify = ["--version"]
+path.windows-x86_64 = "{localappdata}/Programs/Niubash/winuxcmd/bin/bash.exe"
+url.windows-x86_64 = "https://github.com/unixwin/niubash/releases/download/v1.5.0/niubash-v1.5.0-win-x64.zip"
+sha256.windows-x86_64 = "bb2e142ec617e91cb48bde8c0fa2b9cce2dc95bfc00857c82cef6a7ad4e12bcc"
+b3sum.windows-x86_64 = "58484f3e434e4fa6da5ce159c9461b768bbfcad7889831467e9d0132fb8ab515"
+
+[shell.git-bash]
+# Repli seulement (Claude Code = niubash) ; bash 5.3.15 Cygwin/MSYS.
+version = "2.56.0.windows.4"
+expect = "5.3.15"
+source = "https://github.com/git-for-windows/git/releases/tag/v2.56.0.windows.4"
+install = "winget Git.Git (machine.export.dsc.winget)"
+hosts = ["pc"]
+verify = ["--version"]
+path.windows-x86_64 = "C:/Program Files/Git/bin/bash.exe"
+url.windows-x86_64 = "https://github.com/git-for-windows/git/releases/download/v2.56.0.windows.4/Git-2.56.0.4-64-bit.exe"
+sha256.windows-x86_64 = "4961a4a8cc778d8b6e00a5819e5fe4d078b754555aff7aedc2d77a5d74c2de80"
+b3sum.windows-x86_64 = "f3d9929aa7b558359e1a0de5561025aa1da5fb47142d9f04a939d7a189462494"
+
+[shell.brush]
+# Pas d'asset Windows amont : 0.4.0 via cargo install ; brush main (fork aphrody-labs, cargo-xwin sur prd)
+# dans ~/.local/share/brush-main.
+version = "0.4.0"
+source = "https://github.com/reubeno/brush/releases/tag/brush-shell-v0.4.0"
+install = "windows: cargo install brush-shell@0.4.0 --locked ; prd: pacman"
+hosts = ["pc", "prd"]
+verify = ["--version"]
+path.windows-x86_64 = "~/.cargo/bin/brush.exe"
+b3sum.windows-x86_64 = "66b600ca70e50a89901eae12429fcf63d05c41622ea0075a631c6ee439364400"
+path.linux-x86_64 = "/usr/bin/brush"
+url.linux-x86_64 = "https://github.com/reubeno/brush/releases/download/brush-shell-v0.4.0/brush-x86_64-unknown-linux-musl.tar.gz"
+sha256.linux-x86_64 = "7397aa2cecef43ed38070912b6d865fdbe23dc08fda2d6148d8cee8dc12d15ee"
+b3sum.prd = "ae61cf01bb8f084b00a9ffc9be228bd543e34aa6d993f144a7e8e634225117ab"
+
+[shell.pwsh]
+version = "7.7.0"
+source = "https://github.com/PowerShell/PowerShell/releases/tag/v7.7.0"
+install = "winget Microsoft.PowerShell (MSIX)"
+hosts = ["pc", "fr1"]
+verify = ["--version"]
+path.windows-x86_64 = "C:/Program Files/WindowsApps/Microsoft.PowerShell_7.7.0.0_x64__8wekyb3d8bbwe/pwsh.exe"
+url.windows-x86_64 = "https://github.com/PowerShell/PowerShell/releases/download/v7.7.0/PowerShell-7.7.0-win-x64.zip"
+sha256.windows-x86_64 = "7c74e03b20a75b59715847439d046a6214b1863ee79b187872980f139bb4a05f"
+b3sum.windows-x86_64 = "f48c5299b79099d11d48a97fb1b9ed99a3075e08ea3444411c778f4a47113f0d"
+url.linux-x86_64 = "https://github.com/PowerShell/PowerShell/releases/download/v7.7.0/powershell-7.7.0-linux-x64.tar.gz"
+sha256.linux-x86_64 = "c89d9c682d2c403dfe726f3df948e359675235a5bd6fab535776de69729ca0cb"
+
+[shell.nushell]
+version = "0.117.0"
+source = "https://github.com/nushell/nushell/releases/tag/0.117.0"
+install = "windows: winget Nushell.Nushell (MSI) ; prd: pacman ; fr1: ~/.local/bin (asset musl) ; fr2: apt (0.116.1, à monter)"
+hosts = ["pc", "prd", "fr1", "fr2"]
+verify = ["--version"]
+path.windows-x86_64 = "{localappdata}/Programs/nu/bin/nu.exe"
+url.windows-x86_64 = "https://github.com/nushell/nushell/releases/download/0.117.0/nu-0.117.0-x86_64-pc-windows-msvc.zip"
+sha256.windows-x86_64 = "8a135f25d3f22f1542107eb117e94628af35ce65402cbc098bfb26914227d3b2"
+b3sum.windows-x86_64 = "00443a42c937958d1b5ae99aeafa4488a5722b31ee8285642d6aa8961b817352"
+url.linux-x86_64 = "https://github.com/nushell/nushell/releases/download/0.117.0/nu-0.117.0-x86_64-unknown-linux-musl.tar.gz"
+sha256.linux-x86_64 = "2b808786d44af41170a29f8b9a15b5113bb6ea5dda9221098eca932f8a149924"
+url.linux-aarch64 = "https://github.com/nushell/nushell/releases/download/0.117.0/nu-0.117.0-aarch64-unknown-linux-musl.tar.gz"
+sha256.linux-aarch64 = "19966b94ae19f52e2cf0402cb99844ddfa06e2361cf6c77b1b2e29abd17e9188"
+b3sum.prd = "0011ff27f88641e49cbb7226c36adde617286e74b24b4320379d4b434bf5efcd"
+b3sum.fr1 = "547b123078b0a5b7dec9ce351a6adae232f8a05b4f0479d7955f626ccf5a3672"
+
+[shell.fish]
+# Pas de build Windows natif amont (README 4.9.3 : WSL, Cygwin, MSYS2 ; #4212/#10155 fermées) :
+# fish = flotte Linux uniquement.
+version = "4.9.3"
+source = "https://github.com/fish-shell/fish-shell/releases/tag/4.9.3"
+install = "prd: pacman ; autres hôtes : asset statique amont ou home-manager (infra/fleet/nix)"
+hosts = ["prd"]
+verify = ["--version"]
+path.linux-x86_64 = "/usr/bin/fish"
+url.linux-x86_64 = "https://github.com/fish-shell/fish-shell/releases/download/4.9.3/fish-4.9.3-linux-x86_64.tar.xz"
+sha256.linux-x86_64 = "8f643d10ad1abb0ef7072764c01ceb5cf61b2d373fda400cf60f0bad69b7e095"
+url.linux-aarch64 = "https://github.com/fish-shell/fish-shell/releases/download/4.9.3/fish-4.9.3-linux-aarch64.tar.xz"
+sha256.linux-aarch64 = "57349f0111728c64b703a84e611aa97ff4d1fa8466385d64e67bd5bc3ffa49fc"
+b3sum.prd = "a7f62f606704b055039e229d5a46e589b2b9c4a8699c95eedbcd656ccb876adc"
+
+[shell.bash]
+version = "5.3.20"
+source = "https://ftp.gnu.org/gnu/bash/"
+install = "paquet distro"
+hosts = ["prd", "fr1", "fr2"]
+verify = ["--version"]
+path.linux-x86_64 = "/usr/bin/bash"
+b3sum.prd = "c14c8f498f3be96f076ceb07d65dba584a86dca3c86b5dce65ed0f6cae73358d"
+
+# Moteur de complétion partagé (spec ay.yaml + git/cargo/bun/just) pour bash, pwsh, nu.
+[shell.carapace]
+version = "1.8.2"
+source = "https://github.com/carapace-sh/carapace-bin/releases/tag/v1.8.2"
+install = "winget rsteube.Carapace"
+hosts = ["pc"]
+verify = ["--version"]
+path.windows-x86_64 = "{localappdata}/Microsoft/WinGet/Links/carapace.exe"
+url.windows-x86_64 = "https://github.com/carapace-sh/carapace-bin/releases/download/v1.8.2/carapace-bin_1.8.2_windows_amd64.zip"
+sha256.windows-x86_64 = "44ac5d1f16bf38df559259783680925fe9625e467e020b180ea1e8d7c721d4e5"
+b3sum.windows-x86_64 = "ee371ded547f4d6105507a8e1e88cd7d68ed05850662c80fdafcdca3edd0b307"
+url.linux-x86_64 = "https://github.com/carapace-sh/carapace-bin/releases/download/v1.8.2/carapace-bin_1.8.2_linux_amd64.tar.gz"
+sha256.linux-x86_64 = "1b3dc4cab51361d3443400aefa4314ad8d44d8414bf4b1d18f41a6fe71b1b0e4"
+
+# Doublons à retirer (shells.ts sans --check exécute `run` si `path` existe ; --check => DIFF).
+[[duplicate]]
+path = "~/.cargo/bin/nu.exe"
+why = "copie (b3sum identique) du MSI nushell 0.117.0 de %LOCALAPPDATA%\\Programs\\nu ; le MSI reste (fragment Windows Terminal)"
+run = ["cargo", "uninstall", "nu"]
+
+# bun winget (Oven-sh.Bun, 1.4.4) : désinstallation refusée par winget le 2026-11-13 ; retiré de
+# machine.export.dsc.winget et masqué par la tête du PATH utilisateur (~/.bun/bin avant WinGet\Links).

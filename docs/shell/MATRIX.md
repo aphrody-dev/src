@@ -1,4 +1,4 @@
-# Matrice des shells (2026-11-12)
+# Matrice des shells (2026-11-12, configuration partagée 2026-11-13)
 
 Scores 0-1 (détail : `vectors.json`). Démarrage : moyennes `-c exit` mesurées sous Linux (prd, 2026-11-12, table ci-dessous, `startup-linux.json`) et Windows (`startup.json`) ; les autres valeurs restent [NV], ordre de grandeur. Sources : `gh api` du 2026-11-12, fichiers de recherche listés dans INDEX.md.
 
@@ -15,8 +15,8 @@ Scores 0-1 (détail : `vectors.json`). Démarrage : moyennes `-c exit` mesurées
 | oksh | 0 | 0.3 | 0.8 | 0 | 0.5 | 0.5 | 3,9 (L) | 0.85 | ISC-like | C | 7.9, 2026-06-10 |
 | mksh | 0 | 0.4 | 0.85 | 0 | 0.6 | 0.5 | 2,7 (L) | 0.85 | MirOS | C | mksh-R59c, tag du miroir [V gh] |
 | toybox sh | 0 | 0.3 | 0.6 | 0 | 0.4 | 0.3 | ~1 | 0.4 | 0BSD | C | 0.8.15 |
-| nushell | 1.0 | 0 | 0 | 1.0 | 0.85 | 0.9 | 26,3 (L) / 28,5 (W) | 0.75 | MIT | Rust | 0.117.0, 2026-11-10 |
-| fish 4 | 0.1 | 0.1 | 0.1 | 0.1 | 0.6 | 1.0 | 52,9 (L) | 0.95 | GPL-2 | Rust | 4.9.3, 2026-09-08 |
+| nushell | 1.0 | 0 | 0 | 1.0 | 0.85 | 0.9 | 26,3 (L) / 28,5 (W) ; config du dépôt 38,7 (W, SETUP.md) | 0.75 | MIT | Rust | 0.117.0, 2026-11-10 |
+| fish 4 | 0 | 0.1 | 0.1 | 0.1 | 0.6 | 1.0 | 52,9 (L) ; 12,8 nu / 17,8 avec config.fish (L, 2026-11-13) | 0.95 | GPL-2 | Rust | 4.9.3, 2026-09-08 |
 | xonsh | 0.8 | 0.2 | 0.1 | 0.7 | 0.8 | 0.7 | ~200+ (Python) | 0.7 | BSD-2 | Python | 0.25.0, 2026-10-22 |
 | elvish | 0.9 | 0 | 0 | 0.9 | 0.8 | 0.8 | 30,2 (L) | 0.6 | BSD-2 | Go | v0.21.0, 2024-08-14 |
 | murex | 0.8 | 0.1 | 0 | 0.85 | 0.7 | 0.8 | ~20 | 0.6 | GPL-2 | Go | v7.4.2002, 2026-11-10 |
@@ -73,7 +73,7 @@ Critère éliminatoire : un exécutable nommé `bash.exe`/`sh.exe` qui source le
 | 3 | elvish | natif, structuré, mais release 2024 |
 | 4 | murex | natif, typé, petite équipe (~22 contributeurs) |
 | 5 | xonsh | natif via Python, démarrage lent |
-| — | fish 4 | meilleure UX mais pas de Windows natif : le README indique WSL, Cygwin ou MSYS2 [V gh README.rst] |
+| — | fish 4 | meilleure UX mais pas de Windows natif : README 4.9.3 = WSL, Cygwin ou MSYS2 ; #4212 et #10155 fermées [V gh 2026-11-13] ; flotte Linux seulement (SETUP.md) |
 
 ## Décision bash.exe de Claude (2026-11-12, mesures nt-03)
 
@@ -98,3 +98,17 @@ Doublons de forks à trancher par le propriétaire : coreutils-2/uutils-coreutil
 - **Cas d'usage pwsh sans pwsh** : sous niubash, `reg.exe query … /v CurrentBuild` renvoie bien 28120. `sudo.exe` en mode Inline répond. Le registre et l'élévation n'ont donc pas besoin de pwsh. La syntaxe `sudo reg query HKU\…` a échoué (clé invalide, mauvais échappement), donc la vérification de l'élévation reste à refaire.
 - **Remplacement de pwsh testé de bout en bout** (session neuve `claude -p`, uniquement l'outil Bash, 2026-11-12) : l'outil PowerShell est absent ; Bash 5.3.20 ; registre lu (CurrentBuild 28120, i7-13700F) ; tasklist (346 processus) ; écriture puis suppression élevées dans HKLM via `sudo.exe reg.exe add/delete` réussies, la clé de test a disparu ensuite. Note : l'agent a posé `MSYS_NO_PATHCONV=1` pour les options `/v` `/f`, alors que niubash appelé directement passe `/v` sans conversion. Comportement à figer dans shell-matrix.
 - **brush main (aphrody-labs/brush e9d45efe, sync upstream 2026-11-12, contient le fix #1398 d220c79d)** : cross-compilé sur prd avec cargo-xwin 0.23.1 (clang-cl/lld, sans MinGW), installé dans `C:\Users\aphro\.local\share\brush-main\brush.exe`. `brush.exe -c -l 'echo ok'` → `ok` : l'invocation de Claude passe. shell-matrix : **31/34** (claude 9/9, posix 9/9, bash 11/12, windows 2/4), contre niubash 1.5.0 34/34. Échecs : `bash-procsub`, `win-cd-drive`, `win-cd-native`. Médiane 12,7 ms par cas, niubash 25,6 ms.
+
+## Configuration partagée (2026-11-13)
+
+Source unique `packages/machine/shells/env.toml` -> env.sh (bash, niubash, Git Bash, brush), env.ps1 (pwsh 7.7 / 5.1), env.nu, env.fish ; configs, manifeste, lock (`shells.lock.toml` : version, URL, sha256 amont, b3sum installé) ; `bun packages/machine/src/shells.ts --check` (inclus dans apply-user.ts). Flake home-manager `infra/fleet/nix` construit dans nixos/nix sur prd. Détails, valeurs bas niveau et démarrages : [SETUP.md](SETUP.md), [bash-setup.md](bash-setup.md), [pwsh-setup.md](pwsh-setup.md).
+
+| Shell | Version (lock) | Source | Hôtes | Coût de l'env partagé |
+|---|---|---|---|---|
+| niubash | 1.5.0 (bash 5.3.20) | github unixwin/niubash | pc | +11 ms (22,0 -> 33,2) |
+| Git Bash | 2.56.0.windows.4 (bash 5.3.15) | git-for-windows | pc (repli) | voir bash-setup.md |
+| brush | 0.4.0 (+ main fork) | reubeno/brush, cargo | pc, prd | voir bash-setup.md |
+| pwsh | 7.7.0 | PowerShell/PowerShell, MSIX | pc, fr1 (7.6.6) | voir pwsh-setup.md |
+| nushell | 0.117.0 | nushell/nushell, MSI | pc, prd, fr1 ; fr2 0.116.1 | ~0 ms (env.nu + config.nu) |
+| fish | 4.9.3 | fish-shell/fish-shell | prd | +5 ms (non interactif) |
+| carapace | 1.8.2 | carapace-sh/carapace-bin, winget | pc | complétion ay/git/cargo/bun/just |

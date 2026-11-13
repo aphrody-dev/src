@@ -1,9 +1,11 @@
 // Applique (idempotent) la configuration utilisateur décidée le 2026-11-12 : shell niubash, Coreutils Microsoft,
 // Claude Code sans Git Bash ni PowerShell, MCP de pilotage du bureau et du navigateur, Windows Terminal.
 // Usage (racine du dépôt) : bun packages/machine/src/apply-user.ts [--check]
+// Shells (env partagé, configs, lock) : voir shells.ts et packages/machine/shells/.
 // Preuves : https://github.com/aphrody-labs/nt/tree/main/docs/research (shell-replacement.md, claude-to-nt-stack.md)
 // Ne touche à aucun réglage de sécurité (UAC, Defender, connecteurs d'agent) : voir README.md.
 import { existsSync } from "node:fs";
+import { shells } from "./shells.ts";
 
 const check = process.argv.includes("--check");
 const LOCAL = process.env.LOCALAPPDATA!;
@@ -124,10 +126,16 @@ if (existsSync(wt)) {
   const cur = await Bun.file(wt).text();
   // Bloc du profil délimité par ses lignes "{" / "}" (le GUID contient lui-même des accolades).
   const nameAt = cur.search(/"name"\s*:\s*"Niubash"/);
-  const start = nameAt < 0 ? -1 : cur.lastIndexOf("\n      {", nameAt);
-  const end = nameAt < 0 ? -1 : cur.indexOf("\n      }", nameAt);
+  // Indentation libre (WT réécrit le fichier en 4 ou 6 espaces) : début = dernière ligne "{" avant le nom.
+  const open = nameAt < 0 ? null : [...cur.slice(0, nameAt).matchAll(/\n([ \t]*)\{[ \t]*\r?\n/g)].at(-1);
+  const start = open?.index ?? -1;
+  const end = open ? cur.indexOf(`\n${open[1]}}`, nameAt) : -1;
   const block = start >= 0 && end > start ? cur.slice(start, end) : "";
-  const elevated = /"elevate"\s*:\s*true/.test(block);
+  // État lu sur le JSONC parsé (indépendant du formatage).
+  const niu = (Bun.JSONC.parse(cur) as { profiles?: { list?: { name?: string; elevate?: boolean }[] } }).profiles?.list?.find(
+    (p) => p.name === "Niubash",
+  );
+  const elevated = niu?.elevate === true;
   note(elevated, "Windows Terminal profil Niubash elevate=true");
   if (!elevated && block && !check) {
     await Bun.write(`${wt}.bak-${Date.now()}`, cur);
@@ -144,7 +152,10 @@ if (existsSync(wt)) {
   }
 }
 
-// 5. Contrôles en lecture seule : élévation (ce script ne modifie ni l'UAC ni sudo).
+// 5. Shells : env.toml -> env.{sh,ps1,nu,fish}, complétions ay, configs du manifeste, lock, HKCU (shells.ts).
+results.push(...shells({ check }));
+
+// 6. Contrôles en lecture seule : élévation (ce script ne modifie ni l'UAC ni sudo).
 const sudoOn = /Enabled\s+REG_DWORD\s+0x3/.test(
   run([
     "reg",

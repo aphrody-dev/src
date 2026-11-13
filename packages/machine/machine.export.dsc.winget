@@ -1069,16 +1069,6 @@ resources:
     version: "26.13.1"
     id: "OpenJS.NodeJS.LTS"
     source: "winget"
-- name: winget_Oven-sh.Bun
-  type: Microsoft.WinGet/Package
-  metadata:
-    description: "Installer Oven-sh.Bun"
-  dependsOn:
-  - winget_Microsoft.PreIndexed.Package
-  properties:
-    version: "1.4.4"
-    id: "Oven-sh.Bun"
-    source: "winget"
 - name: winget_Python.Launcher
   type: Microsoft.WinGet/Package
   metadata:

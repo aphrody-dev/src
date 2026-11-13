@@ -1,0 +1,1092 @@
+{
+  "name": "ay",
+  "description": "Aphrody monorepo CLI",
+  "flags": {
+    "-h, --help": "Print help",
+    "-V, --version": "Print version"
+  },
+  "commands": [
+    {
+      "name": "arch",
+      "description": "Architecture gate ARCH-001..017: check, rules, graph",
+      "flags": {
+        "--root=": "target monorepo root directory (default: $SRC_ROOT, else",
+        "--json": "emit structured deterministic JSON report",
+        "--quiet": "print compact one-line summary",
+        "--strict": "treat warnings as hard errors",
+        "--rule=": "filter to a specific rule ID (e.g. ARCH-001) or category",
+        "-v, --version": "print version and exit",
+        "--help": "display usage information"
+      },
+      "commands": [
+        {
+          "name": "check",
+          "description": "run full architectural & domain-purity verification across",
+          "flags": {
+            "--root=": "target monorepo root directory (default: $SRC_ROOT, else",
+            "--json": "emit structured deterministic JSON report",
+            "--quiet": "print compact one-line summary",
+            "--strict": "treat warnings as hard errors",
+            "--rule=": "filter to a specific rule ID (e.g. ARCH-001) or category",
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "rules",
+          "description": "list all enforced architectural rules and severity levels",
+          "flags": {
+            "--json": "emit rules list as JSON",
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "graph",
+          "description": "generate monorepo architecture dependency graph (Mermaid,",
+          "flags": {
+            "--root=": "target monorepo root directory (default: $SRC_ROOT, else",
+            "--format=": "output format: mermaid (default), dot, or json",
+            "-o, --output": "optional file path to write output to",
+            "--help": "display usage information"
+          }
+        }
+      ]
+    },
+    {
+      "name": "doctor",
+      "description": "Toolchain doctor",
+      "flags": {
+        "--help": "display usage information"
+      }
+    },
+    {
+      "name": "lock",
+      "description": "Regenerate src.lock.json, DEPS, .repo manifest and MAINTAINERS",
+      "flags": {
+        "--root=": "target root directory (defaults to C:\\src)",
+        "--out=": "output lockfile path (defaults to C:\\src\\src.lock.json)",
+        "--lock-only": "skip emitting DEPS, .repo/manifests/default.xml, and",
+        "--help": "display usage information"
+      }
+    },
+    {
+      "name": "manifests",
+      "description": "Generate governance manifests; `ay manifests verify` checks them",
+      "flags": {
+        "--root=": "target root directory (defaults to C:\\src)",
+        "--help": "display usage information"
+      }
+    },
+    {
+      "name": "git",
+      "description": "VCS tooling: worktree, fork, slim [--all], clone, gix, forge, audit, depot_tools shims, ...",
+      "flags": {
+        "--help": "display usage information"
+      },
+      "commands": [
+        {
+          "name": "ingest",
+          "description": "Ingest a codebase or remote repo into an LLM-ready prompt",
+          "flags": {
+            "-f, --format": "format: markdown, xml, json (default: markdown)",
+            "-m, --max-tokens": "max token budget (clamps and prioritizes important files)",
+            "-o, --output": "output file path (defaults to stdout)",
+            "-i, --include": "include glob patterns",
+            "-e, --exclude": "exclude glob patterns",
+            "--outline": "produce high-density symbol outline only",
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "graph",
+          "description": "AST / dependency graph generator and query tool for LLMs",
+          "flags": {
+            "--help": "display usage information"
+          },
+          "commands": [
+            {
+              "name": "build",
+              "description": "Build graph.json, graph.html, GRAPH_REPORT.md, and",
+              "flags": {
+                "-o, --out-dir": "output directory (default: graphify-out)",
+                "--help": "display usage information"
+              }
+            },
+            {
+              "name": "query",
+              "description": "Query a symbol or connection in the graph with LLM token",
+              "flags": {
+                "--dfs": "use DFS traversal instead of default BFS",
+                "-b, --budget": "max token budget for LLM context output (default: 2000)",
+                "--help": "display usage information"
+              }
+            },
+            {
+              "name": "path",
+              "description": "Find shortest Dijkstra/BFS connection path between two",
+              "flags": {
+                "--help": "display usage information"
+              }
+            },
+            {
+              "name": "explain",
+              "description": "Explain a symbol in rich dossier format (degree, community,",
+              "flags": {
+                "--help": "display usage information"
+              }
+            },
+            {
+              "name": "mcp",
+              "description": "Run Graphify Model Context Protocol (MCP) JSON-RPC 2.0 stdio",
+              "flags": {
+                "--help": "display usage information"
+              }
+            }
+          ]
+        },
+        {
+          "name": "ast",
+          "description": "Inspect multi-language Tree-Sitter AST symbols or run",
+          "flags": {
+            "-q, --query": "tree-sitter S-expression query (e.g. \"(function_item) @fn\")",
+            "--json": "output as JSON",
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "lua",
+          "description": "Lua 5.2 AST inspector, REA bytecode disassembler,",
+          "flags": {
+            "--help": "display usage information"
+          },
+          "commands": [
+            {
+              "name": "ast",
+              "description": "Parse Lua 5.2 source AST (functions, methods, ::labels::,",
+              "flags": {
+                "-j, --json": "emit structured JSON output",
+                "--help": "display usage information"
+              }
+            },
+            {
+              "name": "disasm",
+              "description": "Disassemble PUC-Rio Lua 5.2 bytecode (.luac / .lua.bin) and",
+              "flags": {
+                "-j, --json": "emit structured JSON output",
+                "--help": "display usage information"
+              }
+            },
+            {
+              "name": "transcode",
+              "description": "Transcode Lua 5.2 bytecode header & size_t strings between",
+              "flags": {
+                "-o, --output": "output .luac path",
+                "-a, --arch": "target architecture: wasm32 or x64 (default: wasm32)",
+                "--help": "display usage information"
+              }
+            },
+            {
+              "name": "migrate",
+              "description": "Migrate Lua 5.1 idioms (unpack, bit.*, loadstring) to Lua",
+              "flags": {
+                "-w, --write": "apply edits in-place",
+                "--help": "display usage information"
+              }
+            },
+            {
+              "name": "init",
+              "description": "Scaffold a Lua 5.2 project (.luarc.json, stylua.toml,",
+              "flags": {
+                "--help": "display usage information"
+              }
+            }
+          ]
+        },
+        {
+          "name": "re",
+          "description": "Reverse-engineering & runtime execution analysis",
+          "flags": {
+            "--json": "output as JSON",
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "migrate",
+          "description": "Universal AST codemods & migrations targeting Bun v1.4.4 and",
+          "flags": {
+            "--dry-run": "dry run without modifying files on disk",
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "rope",
+          "description": "Helix-style transactional Rope text replacement",
+          "flags": {
+            "-r, --replace": "replacement specification: START_BYTE:END_BYTE:REPLACEMENT",
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "just",
+          "description": "Inspect or run recipes from justfile",
+          "flags": {
+            "-d, --dir": "working directory or justfile path (default: \".\")",
+            "--json": "output recipes as JSON",
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "gix",
+          "description": "Pure-Rust Gitoxide zero-subprocess repository status &",
+          "flags": {
+            "-c, --commits": "commit history limit (default: 5)",
+            "--json": "output as JSON",
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "forge",
+          "description": "Strongly typed GitHub & GitLab API client and org inspector",
+          "flags": {
+            "--help": "display usage information"
+          },
+          "commands": [
+            {
+              "name": "repo",
+              "description": "Inspect a repository on GitHub or GitLab",
+              "flags": {
+                "--json": "output as JSON",
+                "--help": "display usage information"
+              }
+            },
+            {
+              "name": "org",
+              "description": "List repositories for a GitHub org or GitLab group",
+              "flags": {
+                "-l, --limit": "limit results (default: 30)",
+                "--json": "output as JSON",
+                "--help": "display usage information"
+              }
+            }
+          ]
+        },
+        {
+          "name": "analyze",
+          "description": "Comprehensive end-to-end analysis: Tree-Sitter AST +",
+          "flags": {
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "worktree",
+          "description": "Windows-safe worktree management without duplicating repo",
+          "flags": {
+            "--help": "display usage information"
+          },
+          "commands": [
+            {
+              "name": "list",
+              "description": "List all active worktrees",
+              "flags": {
+                "--help": "display usage information"
+              }
+            },
+            {
+              "name": "add",
+              "description": "Add a new worktree",
+              "flags": {
+                "-n, --new": "create a new branch (-n / --new)",
+                "-r, --repo": "base repository path (default: \".\")",
+                "--help": "display usage information"
+              }
+            },
+            {
+              "name": "remove",
+              "description": "Remove an existing worktree",
+              "flags": {
+                "-f, --force": "force removal even if untracked changes exist",
+                "-r, --repo": "base repository path (default: \".\")",
+                "--help": "display usage information"
+              }
+            },
+            {
+              "name": "prune",
+              "description": "Prune stale worktree links",
+              "flags": {
+                "-r, --repo": "base repository path (default: \".\")",
+                "--help": "display usage information"
+              }
+            }
+          ]
+        },
+        {
+          "name": "fork",
+          "description": "Fork and upstream tracking, divergence check, and",
+          "flags": {
+            "--help": "display usage information"
+          },
+          "commands": [
+            {
+              "name": "status",
+              "description": "Inspect fork divergence from upstream",
+              "flags": {
+                "--help": "display usage information"
+              }
+            },
+            {
+              "name": "set-upstream",
+              "description": "Set upstream repository URL",
+              "flags": {
+                "--help": "display usage information"
+              }
+            },
+            {
+              "name": "sync",
+              "description": "Sync current branch with upstream",
+              "flags": {
+                "-b, --branch": "specific branch to sync",
+                "-s, --strategy": "strategy: ff, rebase, merge (default: ff)",
+                "--help": "display usage information"
+              }
+            }
+          ]
+        },
+        {
+          "name": "slim",
+          "description": "Apply Git Scalar, commit-graph, multi-pack-index, and",
+          "flags": {
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "clone",
+          "description": "Minimal blobless clone with automated Git Scalar",
+          "flags": {
+            "-b, --branch": "specific branch",
+            "-d, --depth": "shallow clone depth",
+            "--sparse=": "sparse paths to include",
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "artifacts",
+          "description": "Unreal Engine GitDependencies + CIPD Blake3",
+          "flags": {
+            "--help": "display usage information"
+          },
+          "commands": [
+            {
+              "name": "verify",
+              "description": "Verify all artifacts against Blake3 hashes in manifest",
+              "flags": {
+                "--help": "display usage information"
+              }
+            },
+            {
+              "name": "hash",
+              "description": "Compute Blake3 hash and size for a file",
+              "flags": {
+                "--help": "display usage information"
+              }
+            },
+            {
+              "name": "init",
+              "description": "Initialize a new depot-artifacts.toml manifest",
+              "flags": {
+                "-n, --name": "project name (default: project)",
+                "--help": "display usage information"
+              }
+            }
+          ]
+        },
+        {
+          "name": "manifests",
+          "description": "Verify Chromium DEPS, AOSP .repo/manifests/default.xml,",
+          "flags": {
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "maintainer",
+          "description": "Lookup Linux Kernel style MAINTAINERS ownership for any",
+          "flags": {
+            "-r, --root": "monorepo root path (default: C:\\src)",
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "ignore",
+          "description": "Standard .gitignore and .llmignore templates",
+          "flags": {
+            "-t, --template": "template: rust, bun, chromium, python, llm (default: llm)",
+            "-o, --output": "output path (default: .gitignore)",
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "info",
+          "description": "Display environment, native Windows NT kernel32 status, and",
+          "flags": {
+            "--help": "display usage information"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ingest",
+      "description": "Repository digest for LLM context",
+      "flags": {
+        "-f, --format": "format: markdown, xml, json (default: markdown)",
+        "-m, --max-tokens": "max token budget (clamps and prioritizes important files)",
+        "-o, --output": "output file path (defaults to stdout)",
+        "-i, --include": "include glob patterns",
+        "-e, --exclude": "exclude glob patterns",
+        "--outline": "produce high-density symbol outline only",
+        "--help": "display usage information"
+      }
+    },
+    {
+      "name": "graph",
+      "description": "Tree-sitter code graph: `ay graph <path>` builds; build, query, path, explain, mcp",
+      "flags": {
+        "--help": "display usage information"
+      },
+      "commands": [
+        {
+          "name": "build",
+          "description": "Build graph.json, graph.html, GRAPH_REPORT.md, and",
+          "flags": {
+            "-o, --out-dir": "output directory (default: graphify-out)",
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "query",
+          "description": "Query a symbol or connection in the graph with LLM token",
+          "flags": {
+            "--dfs": "use DFS traversal instead of default BFS",
+            "-b, --budget": "max token budget for LLM context output (default: 2000)",
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "path",
+          "description": "Find shortest Dijkstra/BFS connection path between two",
+          "flags": {
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "explain",
+          "description": "Explain a symbol in rich dossier format (degree, community,",
+          "flags": {
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "mcp",
+          "description": "Run Graphify Model Context Protocol (MCP) JSON-RPC 2.0 stdio",
+          "flags": {
+            "--help": "display usage information"
+          }
+        }
+      ]
+    },
+    {
+      "name": "deploy",
+      "description": "Deploy engine (runs the Go `src-deploy` binary)"
+    },
+    {
+      "name": "bench",
+      "description": "Hardware and compiler benchmarks (Windows)",
+      "flags": {
+        "--help": "display usage information"
+      },
+      "commands": [
+        {
+          "name": "run",
+          "description": "run empirical benchmarks for one or all tiers",
+          "flags": {
+            "--tier=": "tier to benchmark: all, cuda, rust, msvc, dotnet, bun",
+            "--output=": "output path for JSON profile",
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "pick",
+          "description": "deterministic stack picker decision engine",
+          "flags": {
+            "--workload=": "target workload: gpu-compute, compositor, systems-cli,",
+            "--profile=": "path to measured hardware profile",
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "zero-copy",
+          "description": "benchmark Win32 MapViewOfFile + Google zerocopy vs Heap",
+          "flags": {
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "cold-start",
+          "description": "measure binary sizes and cold-start process latencies",
+          "flags": {
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "lmbench",
+          "description": "run LMbench-style OS syscall, mmap, and timer benchmarks",
+          "flags": {
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "octane",
+          "description": "run AreWeFastYet / Octane numerical compute kernel",
+          "flags": {
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "shell-bench",
+          "description": "benchmark shell startup latencies (cmd vs pwsh vs native vs",
+          "flags": {
+            "--help": "display usage information"
+          }
+        },
+        {
+          "name": "report",
+          "description": "run full benchmark suite and generate BENCHMARK_REPORT.md",
+          "flags": {
+            "--help": "display usage information"
+          }
+        }
+      ]
+    },
+    {
+      "name": "scope",
+      "description": "Gamescope mode (runs the `gamescope-rs` binary)"
+    },
+    {
+      "name": "ssh",
+      "description": "Pure-Rust SSH (russh): exec <host|all|a,b> -- cmd, cp, hosts, check",
+      "flags": {
+        "-h, --help": "Print help"
+      },
+      "commands": [
+        {
+          "name": "exec",
+          "description": "Run a command on one or more hosts: `exec <host|all|a,b> -- <cmd...>`",
+          "flags": {
+            "--accept-new": "Trust and record host keys missing from known_hosts (a mismatch is still refused)",
+            "--timeout=": "Connect timeout in seconds when ~/.ssh/config sets no ConnectTimeout [default: 10]",
+            "-l, --user=": "Remote user (overrides ~/.ssh/config)",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "cp",
+          "description": "Copy over SFTP: `cp <local> <host>:<path>` or `cp <host>:<path> <local>`",
+          "flags": {
+            "--accept-new": "Trust and record host keys missing from known_hosts (a mismatch is still refused)",
+            "--timeout=": "Connect timeout in seconds when ~/.ssh/config sets no ConnectTimeout [default: 10]",
+            "-l, --user=": "Remote user (overrides ~/.ssh/config)",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "hosts",
+          "description": "List fleet nodes (deploy.toml) and their resolved ssh settings",
+          "flags": {
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "check",
+          "description": "Connect, authenticate and run `uname -srm` on every node (or the given targets)",
+          "flags": {
+            "--accept-new": "Trust and record host keys missing from known_hosts (a mismatch is still refused)",
+            "--timeout=": "Connect timeout in seconds when ~/.ssh/config sets no ConnectTimeout [default: 10]",
+            "-l, --user=": "Remote user (overrides ~/.ssh/config)",
+            "-h, --help": "Print help"
+          }
+        }
+      ]
+    },
+    {
+      "name": "rt",
+      "description": "Runtimes: Python engines (uv, RustPython), Bun versions, package managers, PyTorch",
+      "flags": {
+        "-h, --help": "Print help"
+      },
+      "commands": [
+        {
+          "name": "ls",
+          "description": "Installed runtimes and the active ones",
+          "flags": {
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "install",
+          "description": "Install `python[@version]` or `bun[@version|canary]`",
+          "flags": {
+            "--engine=": "Python engine: cpython, freethreaded, pypy, graalpy, pyodide, rustpython [default: cpython]",
+            "--from=": "Build from this git URL or local path (forks); RustPython and Bun",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "use",
+          "description": "Select a version for this project (`.python-version`, `.bun-version`) or globally",
+          "flags": {
+            "--engine=": "",
+            "--global": "",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "run",
+          "description": "Run a runtime: `ay rt run python@3.15 -- script.py`, `ay rt run bun@canary -- x.ts`",
+          "flags": {
+            "--engine=": "",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "pm",
+          "description": "Install another package manager: `python poetry|pdm|pip|hatch`, `js npm|pnpm|yarn`",
+          "flags": {
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "torch",
+          "description": "Install PyTorch with the wheel backend for this machine (`uv --torch-backend`)",
+          "flags": {
+            "--backend=": "auto (detect the CUDA driver), cpu, cu130, cu129, ... [default: auto]",
+            "--with=": "Extra packages (torchvision, torchaudio)",
+            "-h, --help": "Print help"
+          }
+        }
+      ]
+    },
+    {
+      "name": "gclient",
+      "description": "gclient in Rust: revinfo, getdep, setdep, sync (gitoxide), hooks, root",
+      "flags": {
+        "-h, --help": "Print help"
+      },
+      "commands": [
+        {
+          "name": "revinfo",
+          "description": "Print `name: url@revision` for every dependency, as `gclient revinfo`",
+          "flags": {
+            "--deps=": "",
+            "--root=": "",
+            "--filter=": "",
+            "--ignore-dep-type=": "",
+            "--output-json=": "",
+            "-h, --help": ""
+          }
+        },
+        {
+          "name": "getdep",
+          "description": "Print variables (`--var`) or revisions (`-r path` or `-r path:package`) from a DEPS file",
+          "flags": {
+            "--var=": "",
+            "-r, --revision=": "",
+            "--deps-file=": "[default: DEPS]",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "setdep",
+          "description": "Set variables (`--var name=value`) or revisions (`-r path@rev`, `-r path:package@version`)",
+          "flags": {
+            "--var=": "",
+            "-r, --revision=": "",
+            "--deps-file=": "[default: DEPS]",
+            "--no-gitlinks": "Do not update gitlinks for `git_dependencies = 'SYNC'` / `'SUBMODULES'`",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "sync",
+          "description": "Plan (default) or apply a sync of git dependencies on gitoxide",
+          "flags": {
+            "--deps=": "Override the deps OS list (comma-separated, `all` for every OS), like `gclient --deps`",
+            "--root=": "gclient root (default: the nearest ancestor holding .gclient)",
+            "--apply": "Execute the plan (default is a dry run)",
+            "-j, --jobs=": "Parallel checkouts [default: 8]",
+            "--only=": "Restrict to these dependency paths or path prefixes (repeatable)",
+            "--with-solutions": "Also clone missing solutions",
+            "--cipd": "Run `cipd ensure` for CIPD packages with the official client",
+            "--populate-cache": "Fetch pins into the shared git cache first (`git cache populate`); checkouts then borrow the objects through alternates",
+            "-v, --verbose": "Show up-to-date entries too",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "hooks",
+          "description": "List DEPS hooks with their resolved action, cwd and whether their condition holds",
+          "flags": {
+            "--deps=": "Override the deps OS list (comma-separated, `all` for every OS), like `gclient --deps`",
+            "--root=": "gclient root (default: the nearest ancestor holding .gclient)",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "runhooks",
+          "description": "Run the DEPS hooks whose condition holds, in gclient order (`gclient runhooks`)",
+          "flags": {
+            "--deps=": "Override the deps OS list (comma-separated, `all` for every OS), like `gclient --deps`",
+            "--root=": "gclient root (default: the nearest ancestor holding .gclient)",
+            "--hook=": "Only hooks with these names (repeatable)",
+            "-n, --dry-run": "Print the commands without running them",
+            "--upstream-vpython": "Run `vpython3` hooks with upstream vpython3 instead of `ay vpy`",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "root",
+          "description": "Print the gclient root directory",
+          "flags": {
+            "-h, --help": "Print help"
+          }
+        }
+      ]
+    },
+    {
+      "name": "fetch",
+      "description": "Write .gclient for a depot_tools fetch config (chromium, v8, webrtc, ...) and sync it",
+      "flags": {
+        "--list": "List known configs",
+        "--apply": "Write .gclient and sync",
+        "-j, --jobs=": "[default: 8]",
+        "-h, --help": "Print help"
+      }
+    },
+    {
+      "name": "vpy",
+      "description": "vpython on uv: run Python in a vpython.toml / PEP 723 environment"
+    },
+    {
+      "name": "cl",
+      "description": "git cl on jj and Gerrit REST: upload, status, issue",
+      "flags": {
+        "-h, --help": "Print help"
+      },
+      "commands": [
+        {
+          "name": "upload",
+          "description": "Upload commits for review (`git cl upload`)",
+          "flags": {
+            "-r, --reviewers=": "Reviewers, comma separated or repeated",
+            "--cc=": "CC, comma separated or repeated",
+            "-t, --title=": "Patchset title (`-t`)",
+            "-d, --cq-dry-run": "Commit-Queue+1 (`--cq-dry-run`, `-d`)",
+            "-c, --use-commit-queue": "Commit-Queue+2 (`--use-commit-queue`, `-c`)",
+            "--wip": "Upload as work in progress",
+            "--topic=": "",
+            "--hashtag=": "",
+            "-b, --target-branch=": "Target branch (`-b`, `--target_branch`), default main",
+            "--revision=": "jj revset to upload (default: jj's default for `gerrit upload`)",
+            "--dry-run": "Show what would be pushed",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "status",
+          "description": "Review state of local changes (`git cl status`)",
+          "flags": {
+            "--revision=": "jj revset of local commits [default: trunk()..@]",
+            "--gerrit-url=": "Gerrit base URL (default: derived from the origin remote)",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "issue",
+          "description": "Print the Gerrit URL of the current change (`git cl issue`)",
+          "flags": {
+            "--revision=": "[default: @-]",
+            "--gerrit-url=": "",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "land",
+          "description": "Submit through the commit queue (`git cl land` on Gerrit = upload with Commit-Queue+2)",
+          "flags": {
+            "--revision=": "",
+            "-b, --target-branch=": "",
+            "--dry-run": "",
+            "-h, --help": "Print help"
+          }
+        }
+      ]
+    },
+    {
+      "name": "cipd",
+      "description": "Official CIPD client from depot_tools",
+      "commands": [
+        {
+          "name": "version",
+          "description": "prints the executable version"
+        },
+        {
+          "name": "auth-login",
+          "description": "performs interactive login flow"
+        },
+        {
+          "name": "auth-logout",
+          "description": "removes cached credentials"
+        },
+        {
+          "name": "ls",
+          "description": "lists matching packages on the server"
+        },
+        {
+          "name": "search",
+          "description": "searches for package instances by tag"
+        },
+        {
+          "name": "resolve",
+          "description": "returns concrete package instance ID given a version"
+        },
+        {
+          "name": "describe",
+          "description": "returns information about a package instance given its version"
+        },
+        {
+          "name": "instances",
+          "description": "lists instances of a package"
+        },
+        {
+          "name": "create",
+          "description": "builds and uploads a package instance file"
+        },
+        {
+          "name": "attach",
+          "description": "attaches tags, metadata and points refs to an instance"
+        },
+        {
+          "name": "set-ref",
+          "description": "moves a ref to point to a given version"
+        },
+        {
+          "name": "set-tag",
+          "description": "tags package of a specific version"
+        },
+        {
+          "name": "set-metadata",
+          "description": "attaches metadata to an instance"
+        },
+        {
+          "name": "ensure",
+          "description": "installs, removes and updates packages in one go"
+        },
+        {
+          "name": "export",
+          "description": "writes packages to disk as a 'one-off'"
+        },
+        {
+          "name": "selfupdate",
+          "description": "updates the current CIPD client binary"
+        }
+      ]
+    },
+    {
+      "name": "ninja",
+      "description": "autoninja logic: n2 or ninja locally, upstream autoninja for Siso output directories"
+    },
+    {
+      "name": "gn",
+      "description": "The checkout's gn binary (buildtools/<platform>/gn)"
+    },
+    {
+      "name": "build",
+      "description": "Build the workspace for a cross-compilation preset (--list shows toolchain status)",
+      "flags": {
+        "-t, --target=": "Preset name or target triple; repeat for several targets (see --list)",
+        "--list": "Print presets with Rust target and native toolchain status, then exit",
+        "-r, --release": "Build with the release profile (fat LTO)",
+        "--dry-run": "Print the cargo commands without running them",
+        "--dylib": "Link the musl C runtime dynamically (`-C target-feature=-crt-static`); without it cargo silently drops `cdylib` crate types on musl targets (for example a `bun:ffi` library)",
+        "-h, --help": "Print help"
+      }
+    },
+    {
+      "name": "sys",
+      "description": "Machine profile: OS, firmware/SMBIOS, CPUID, PCI, GPUs, disks, virtualization, toolchains",
+      "flags": {
+        "--json": "Full profile as JSON (schema `sys::SCHEMA_VERSION`)",
+        "--ids": "Keep serials, UUIDs and public addresses (local use only, never agent context)",
+        "--no-tools": "Skip probing toolchain versions",
+        "-h, --help": "Print help"
+      }
+    },
+    {
+      "name": "up",
+      "description": "Install and update the toolchain from tools.toml: --check, --list, --setup",
+      "flags": {
+        "--check": "Report only; exit 1 when a tool is missing or outdated",
+        "--list": "List the tools in the manifest with their sources",
+        "--setup": "Wire provider CLIs from the repository .env (never prints values)",
+        "--bootstrap": "Also apply config files, links, local builds and clones, then run `ay doctor`",
+        "--dry-run": "Show what would be installed without downloading",
+        "--assets=": "Print the content-hashed publish manifest (JSON) for a wasm/CDN build directory",
+        "--release=": "Release label recorded in the --assets manifest",
+        "--manifest=": "Manifest path (default: $AY_TOOLS_MANIFEST, <repo>/tools.toml, then the embedded copy)",
+        "-h, --help": "Print help"
+      }
+    },
+    {
+      "name": "self-update",
+      "description": "Update `ay` itself from the dist GitHub Releases (axoupdater)",
+      "flags": {
+        "--check": "Only report whether a newer release exists (exit 1 when one does)",
+        "--version=": "Install this version instead of the latest (`0.3.0`)",
+        "-h, --help": "Print help"
+      }
+    },
+    {
+      "name": "ai",
+      "description": "Inference providers behind LiteLLM (infra/ai/ai.toml): ls, install, service, pull, config, check, auth, up",
+      "flags": {
+        "--manifest=": "Manifest (default: $AY_AI_MANIFEST, <repo>/infra/ai/ai.toml, then the embedded copy)",
+        "--env-file=": "Secrets in dotenv format, repeatable (default: $AY_ENV_FILE, then <repo>/.env)",
+        "--json": "JSON output (ls, check)",
+        "-h, --help": "Print help"
+      },
+      "commands": [
+        {
+          "name": "ls",
+          "description": "Providers and runtimes with their state (default)",
+          "flags": {
+            "--manifest=": "Manifest (default: $AY_AI_MANIFEST, <repo>/infra/ai/ai.toml, then the embedded copy)",
+            "--env-file=": "Secrets in dotenv format, repeatable (default: $AY_ENV_FILE, then <repo>/.env)",
+            "--json": "JSON output (ls, check)",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "install",
+          "description": "Install the runtimes of this OS (skipped when their binary is on PATH, unless --force)",
+          "flags": {
+            "--force": "",
+            "--manifest=": "Manifest (default: $AY_AI_MANIFEST, <repo>/infra/ai/ai.toml, then the embedded copy)",
+            "--env-file=": "Secrets in dotenv format, repeatable (default: $AY_ENV_FILE, then <repo>/.env)",
+            "--json": "JSON output (ls, check)",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "config",
+          "description": "Write the LiteLLM config from the keys and servers present",
+          "flags": {
+            "--manifest=": "Manifest (default: $AY_AI_MANIFEST, <repo>/infra/ai/ai.toml, then the embedded copy)",
+            "--env-file=": "Secrets in dotenv format, repeatable (default: $AY_ENV_FILE, then <repo>/.env)",
+            "--json": "JSON output (ls, check)",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "serve",
+          "description": "Run one runtime in the foreground (what the services start)",
+          "flags": {
+            "--manifest=": "Manifest (default: $AY_AI_MANIFEST, <repo>/infra/ai/ai.toml, then the embedded copy)",
+            "--env-file=": "Secrets in dotenv format, repeatable (default: $AY_ENV_FILE, then <repo>/.env)",
+            "--json": "JSON output (ls, check)",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "service",
+          "description": "Register and start runtimes as services (Task Scheduler at boot, systemd)",
+          "flags": {
+            "--remove": "",
+            "--manifest=": "Manifest (default: $AY_AI_MANIFEST, <repo>/infra/ai/ai.toml, then the embedded copy)",
+            "--env-file=": "Secrets in dotenv format, repeatable (default: $AY_ENV_FILE, then <repo>/.env)",
+            "--json": "JSON output (ls, check)",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "restart",
+          "description": "Stop then start a runtime service",
+          "flags": {
+            "--manifest=": "Manifest (default: $AY_AI_MANIFEST, <repo>/infra/ai/ai.toml, then the embedded copy)",
+            "--env-file=": "Secrets in dotenv format, repeatable (default: $AY_ENV_FILE, then <repo>/.env)",
+            "--json": "JSON output (ls, check)",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "pull",
+          "description": "Fetch the models a runtime lists",
+          "flags": {
+            "--manifest=": "Manifest (default: $AY_AI_MANIFEST, <repo>/infra/ai/ai.toml, then the embedded copy)",
+            "--env-file=": "Secrets in dotenv format, repeatable (default: $AY_ENV_FILE, then <repo>/.env)",
+            "--json": "JSON output (ls, check)",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "check",
+          "description": "LiteLLM health, model list and one real call per provider",
+          "flags": {
+            "--manifest=": "Manifest (default: $AY_AI_MANIFEST, <repo>/infra/ai/ai.toml, then the embedded copy)",
+            "--env-file=": "Secrets in dotenv format, repeatable (default: $AY_ENV_FILE, then <repo>/.env)",
+            "--json": "JSON output (ls, check)",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "auth",
+          "description": "Missing API keys: open the key page, read the copied key from the clipboard, store it",
+          "flags": {
+            "--timeout=": "Seconds to wait for each key [default: 600]",
+            "--force": "Ask again even when a valid key is stored",
+            "--manifest=": "Manifest (default: $AY_AI_MANIFEST, <repo>/infra/ai/ai.toml, then the embedded copy)",
+            "--env-file=": "Secrets in dotenv format, repeatable (default: $AY_ENV_FILE, then <repo>/.env)",
+            "--json": "JSON output (ls, check)",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "up",
+          "description": "install, service, pull, config, restart LiteLLM, check",
+          "flags": {
+            "--manifest=": "Manifest (default: $AY_AI_MANIFEST, <repo>/infra/ai/ai.toml, then the embedded copy)",
+            "--env-file=": "Secrets in dotenv format, repeatable (default: $AY_ENV_FILE, then <repo>/.env)",
+            "--json": "JSON output (ls, check)",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "push",
+          "description": "Copy the provider secrets this host has to another host's store (`ssh <host> ay ai import`)",
+          "flags": {
+            "--remote-env-file=": "Dotenv file on the remote host (default: the remote `ay ai` default)",
+            "--manifest=": "Manifest (default: $AY_AI_MANIFEST, <repo>/infra/ai/ai.toml, then the embedded copy)",
+            "--env-file=": "Secrets in dotenv format, repeatable (default: $AY_ENV_FILE, then <repo>/.env)",
+            "--json": "JSON output (ls, check)",
+            "-h, --help": "Print help"
+          }
+        },
+        {
+          "name": "import",
+          "description": "Merge dotenv text from stdin into the first env file (key names printed, never values)",
+          "flags": {
+            "--manifest=": "Manifest (default: $AY_AI_MANIFEST, <repo>/infra/ai/ai.toml, then the embedded copy)",
+            "--env-file=": "Secrets in dotenv format, repeatable (default: $AY_ENV_FILE, then <repo>/.env)",
+            "--json": "JSON output (ls, check)",
+            "-h, --help": "Print help"
+          }
+        }
+      ]
+    }
+  ]
+}
