@@ -260,13 +260,17 @@ export async function rotateHost(name: string) {
  *  timer; then the PC purges its outbox and state and removes the host from the versioned config.
  *  `force` goes on with the local part when the host is unreachable (revocation left to do there). */
 export async function removeHost(name: string, force = false) {
+  if (name === "pc") throw new Error("the PC cannot be removed");
   const h = await hostByName(name);
-  const r = await ssh(h, `${REMOTE} decommission`);
-  if (r.code !== 0 && !force) throw new Error(`${name}: decommission failed (${r.err || r.code}); --force to remove locally only`);
-  await rm(outbox(name), { recursive: true, force: true });
-  for (const f of [`${name}.index.json`, `${name}.pushed.json`]) await rm(join(stateDir(), f), { force: true });
-  const cfg = await forgetHost(name);
-  return { host: name, remote: r.code === 0 ? r.out : `unreachable: ${r.err}`, ...cfg };
+  // Under the sync lock: a scheduled seal/push cannot recreate the outbox between purge and config.
+  return withLock(async () => {
+    const r = await ssh(h, `${REMOTE} decommission`);
+    if (r.code !== 0 && !force) throw new Error(`${name}: decommission failed (${r.err || r.code}); --force to remove locally only`);
+    const cfg = await forgetHost(name);
+    await rm(outbox(name), { recursive: true, force: true });
+    for (const f of [`${name}.index.json`, `${name}.pushed.json`]) await rm(join(stateDir(), f), { force: true });
+    return { host: name, remote: r.code === 0 ? r.out : `unreachable: ${r.err}`, ...cfg };
+  });
 }
 
 /** BLAKE3 of the credential on a host (decrypted there, piped into b3sum: never displayed). */
@@ -357,14 +361,20 @@ export async function installTask(minutes = 5) {
   if (!domain || !name) throw new Error("installTask: USERDOMAIN/USERNAME absent");
   const user = `${domain}\\${name}`;
   const cli = join(import.meta.dir, "cli.ts");
-  return [await registerTask(TASK, taskXml(user, minutes, cli, "sync")), await registerTask(PUSH_TASK, taskXml(user, minutes, cli, "push"))];
+  const sync = await registerTask(TASK, taskXml(user, minutes, cli, "sync"));
+  if (sync.code !== 0) throw new Error(`schtasks ${TASK}: ${sync.out}`);
+  // The S4U pusher refills hosts while the session is closed: every 15 min is enough.
+  const push = await registerTask(PUSH_TASK, taskXml(user, Math.max(minutes, 15), cli, "push"));
+  if (push.code !== 0) throw new Error(`schtasks ${PUSH_TASK}: ${push.out}`);
+  return [sync, push];
 }
 
 /** Pushes what outbox/ already holds: no seal, no DPAPI, no secret in clear (S4U task). */
 export async function pushOnly(opts: { force?: boolean; only?: string[] } = {}) {
   return withLock(async () => {
     const hosts = (await loadHosts()).filter((h) => h.name !== "pc" && h.recipient && (!opts.only || opts.only.includes(h.name)));
-    const present = await Promise.all(hosts.map((h) => stat(join(outbox(h.name), "MANIFEST")).then(() => true, () => readdir(outbox(h.name)).then(() => true, () => false))));
+    // Only an outbox a seal has completed (MANIFEST written) is pushed.
+    const present = await Promise.all(hosts.map((h) => stat(join(outbox(h.name), "MANIFEST")).then(() => true, () => false)));
     const pushed = await Promise.all(
       hosts.filter((_, i) => present[i]).map((h) => push(h, opts.force).catch((e) => ({ host: h.name, pushed: false, envelopes: 0, manifest: "", error: (e as Error).message }))),
     );

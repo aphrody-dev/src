@@ -30,6 +30,34 @@ export async function dpapiEncode(name: string, data: Uint8Array): Promise<Uint8
   return out;
 }
 
+/** Marker written by `vault migrate-dpapi` once no v1 blob remains: v1 is then refused (vault + env-kit). */
+export const v2OnlyMarker = (): string => join(localStore().dir, ".dpapi-v2-only");
+const v2Only = (): Promise<boolean> => stat(v2OnlyMarker()).then(() => true, () => false);
+
+/** Rewrites every v1 blob as v2, then sets the v2-only marker. Values never leave the process. */
+export async function migrateDpapiV2(): Promise<{ migrated: number; v2: number; marker: boolean }> {
+  const info = localStore();
+  if (info.backend !== "dpapi") return { migrated: 0, v2: 0, marker: false };
+  let migrated = 0;
+  let v2 = 0;
+  for (const name of await listSecrets()) {
+    const file = await locate(info, name);
+    if (!file) continue;
+    const raw = new Uint8Array(await readFile(file));
+    if (isDpapiV2(raw) && file.startsWith(info.dir)) {
+      v2++;
+      continue;
+    }
+    const v = await dpapiDecode(name, raw);
+    await setSecret(name, v);
+    v.fill(0);
+    if (!file.startsWith(info.dir)) await rm(file, { force: true });
+    migrated++;
+  }
+  await writeFile(v2OnlyMarker(), new Date().toISOString(), { mode: 0o600 });
+  return { migrated, v2, marker: true };
+}
+
 export async function dpapiDecode(name: string, file: Uint8Array): Promise<Uint8Array> {
   return isDpapiV2(file) ? dpapiUnprotect(file.subarray(4), entropyV2(name)) : dpapiUnprotect(file);
 }
@@ -117,7 +145,14 @@ export async function getSecretBytes(name: string): Promise<Uint8Array | undefin
   const info = localStore();
   const file = await locate(info, name);
   if (!file) return undefined;
-  if (info.backend === "dpapi") return dpapiDecode(name, new Uint8Array(await readFile(file)));
+  if (info.backend === "dpapi") {
+    const raw = new Uint8Array(await readFile(file));
+    if (!isDpapiV2(raw) && (await v2Only())) throw new Error(`secret ${name}: DPAPI v1 refused (vault is v2-only)`);
+    const v = await dpapiDecode(name, raw);
+    // Lazy migration on read: a v1 blob is rewritten as v2 in the vault directory.
+    if (!isDpapiV2(raw)) await setSecret(name, v).catch(() => undefined);
+    return v;
+  }
   return creds(info.backend === "systemd-creds-user", ["decrypt", `--name=${name}`, file, "-"]);
 }
 

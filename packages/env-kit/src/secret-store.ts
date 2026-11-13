@@ -194,6 +194,9 @@ export function secretGetBytes(name: string): Uint8Array | undefined {
   if (!file) return undefined;
   if (info.backend === "dpapi") {
     const raw = new Uint8Array(readFileSync(file));
+    // `vault migrate-dpapi` leaves this marker once every blob is v2: v1 is refused from then on.
+    if (!isV2(raw) && existsSync(join(info.dir, ".dpapi-v2-only")))
+      throw new Error(`secret ${name}: DPAPI v1 refused (vault is v2-only)`);
     return isV2(raw) ? loadDpapi().unprotect(raw.subarray(4), entropyV2(name)) : loadDpapi().unprotect(raw);
   }
   return creds(info, ["decrypt", `--name=${name}`, file, "-"]);

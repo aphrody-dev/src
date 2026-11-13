@@ -34,6 +34,7 @@ const USAGE = `env-kit vault <command>
   fp NAME [--host H]           BLAKE3 of a secret, local or on a host (proof without the value)
   backup [NAME..] | restore NAME [DEST]   agent Chromium profiles and user data (profiles.toml)
   hello status | hello enroll  Windows Hello key (Passport KSP) for documents (--hello)
+  migrate-dpapi                rewrite every DPAPI v1 blob as v2 (name-bound), then refuse v1
   shred FILE                   overwrite, flush, rename, unlink`;
 
 const flag = (a: string[], f: string) => a.includes(f);
@@ -193,7 +194,7 @@ export async function main(argv: string[]): Promise<number> {
     }
     case "host":
     case "hosts": {
-      const [sub, h] = a;
+      const [sub, h] = a.filter((x) => !x.startsWith("--"));
       if (!sub || sub === "list") {
         say((await loadHosts()).map((x) => ({ host: x.name, os: x.os, recipient: x.recipient ? `${x.recipient.slice(0, 12)}…` : "-" })), json);
         return 0;
@@ -227,6 +228,11 @@ export async function main(argv: string[]): Promise<number> {
         return 0;
       }
       break;
+    }
+    case "migrate-dpapi": {
+      const { migrateDpapiV2 } = await import("./store.ts");
+      say(await migrateDpapiV2(), json);
+      return 0;
     }
     case "shred":
       if (!a[0]) break;

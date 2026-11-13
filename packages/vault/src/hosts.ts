@@ -51,36 +51,50 @@ export async function loadHosts(): Promise<Host[]> {
 
 const q = (s: string) => JSON.stringify(s);
 
-/** Rewrites one host's recipient in place (keeps comments and layout of hosts.toml). */
-/** Drops a TOML table (and the comment lines just above it) from a file, keeping the rest verbatim. */
+/** Drops TOML table `[table]`: its header, its body, and the comment block directly above it.
+ *  Comments above the next table stay (body ends at the first blank/comment run before a header). */
 function dropTable(text: string, table: string): string {
   const lines = text.split("\n");
-  const out: string[] = [];
-  let skip = false;
-  for (const l of lines) {
-    const sec = /^\[([^\]]+)\]\s*$/.exec(l);
-    if (sec) {
-      skip = sec[1] === table;
-      if (skip) while (out.length && /^#/.test(out.at(-1)!)) out.pop();
-    }
-    if (!skip) out.push(l);
-  }
-  return out.join("\n").replace(/\n{3,}/g, "\n\n");
+  const start = lines.findIndex((l) => l.trim() === `[${table}]`);
+  if (start < 0) throw new Error(`hosts.toml: [${table}] absent`);
+  let from = start;
+  while (from > 0 && /^#/.test(lines[from - 1]!)) from--;
+  let to = start + 1;
+  while (to < lines.length && !/^\[[^\]]+\]\s*$/.test(lines[to]!)) to++;
+  // Hand back the trailing comment/blank run: it belongs to the next table.
+  while (to > start + 1 && (/^#/.test(lines[to - 1]!) || lines[to - 1]!.trim() === "")) to--;
+  return [...lines.slice(0, from), ...lines.slice(to)].join("\n").replace(/\n{3,}/g, "\n\n");
 }
 
-/** Removes a host from hosts.toml, from every scope of policy.toml and of the local registry. */
+/** Removes `"host"` from every single-line array of policy.toml (arrays stay on one line there). */
+function dropFromArrays(text: string, host: string): { text: string; n: number } {
+  let n = 0;
+  const out = text.split("\n").map((l) => {
+    const m = /^(\s*[A-Za-z_][A-Za-z0-9_.-]*\s*=\s*)\[([^\]]*)\](\s*(#.*)?)$/.exec(l);
+    if (!m) return l;
+    const items = m[2]!.split(",").map((x) => x.trim()).filter(Boolean);
+    if (!items.includes(JSON.stringify(host))) return l;
+    n++;
+    return `${m[1]}[${items.filter((x) => x !== JSON.stringify(host)).join(", ")}]${m[3]}`;
+  });
+  return { text: out.join("\n"), n };
+}
+
+async function writeAtomic(file: string, text: string): Promise<void> {
+  const tmp = `${file}.${process.pid}.tmp`;
+  await writeFile(tmp, text);
+  await rename(tmp, file);
+}
+
+/** Removes a host from hosts.toml, from every scope of policy.toml and of the local registry.
+ *  All three are computed and validated (re-parsed, host gone) before any file is written. */
 export async function forgetHost(host: string): Promise<{ policyScopes: number; registryScopes: number }> {
   if (host === "pc") throw new Error("the PC cannot be removed");
-  await writeFile(hostsFile(), dropTable(await readFile(hostsFile(), "utf8"), host));
-  let policyScopes = 0;
-  const pol = (await readFile(policyFile(), "utf8")).split("\n").map((l) => {
-    const m = /^(\s*[A-Za-z_][A-Za-z0-9_.-]*\s*=\s*)\[(.*)\](.*)$/.exec(l);
-    if (!m || !new RegExp(`"${host}"`).test(m[2]!)) return l;
-    policyScopes++;
-    const kept = m[2]!.split(",").map((x) => x.trim()).filter((x) => x && x !== `"${host}"`);
-    return `${m[1]}[${kept.join(", ")}]${m[3]}`;
-  });
-  await writeFile(policyFile(), pol.join("\n"));
+  const hostsText = dropTable(await readFile(hostsFile(), "utf8"), host);
+  const pol = dropFromArrays(await readFile(policyFile(), "utf8"), host);
+  if (host in (Bun.TOML.parse(hostsText) as object)) throw new Error(`hosts.toml: [${host}] still present`);
+  if (JSON.stringify(Bun.TOML.parse(pol.text)).includes(JSON.stringify(host)))
+    throw new Error(`policy.toml: ${host} still referenced (multi-line array?), nothing written`);
   const reg = await loadRegistry();
   let registryScopes = 0;
   for (const e of Object.values(reg))
@@ -88,10 +102,13 @@ export async function forgetHost(host: string): Promise<{ policyScopes: number; 
       e.scope = e.scope.filter((h) => h !== host);
       registryScopes++;
     }
+  await writeAtomic(hostsFile(), hostsText);
+  await writeAtomic(policyFile(), pol.text);
   await saveRegistry(reg);
-  return { policyScopes, registryScopes };
+  return { policyScopes: pol.n, registryScopes };
 }
 
+/** Rewrites one host's recipient in place (keeps comments and layout of hosts.toml). */
 export async function setRecipient(host: string, recipient: string): Promise<void> {
   const f = hostsFile();
   const lines = (await readFile(f, "utf8")).split("\n");

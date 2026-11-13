@@ -151,6 +151,10 @@ pub async fn get_secret(name: &str) -> Result<Zeroizing<Vec<u8>>> {
         #[cfg(windows)]
         Backend::Dpapi => {
             let raw = tokio::fs::read(&file).await?;
+            // `vault migrate-dpapi` marker: once every blob is v2, v1 is refused (same rule as TS).
+            if !raw.starts_with(DPAPI_V2) && tokio::fs::metadata(info.dir.join(".dpapi-v2-only")).await.is_ok() {
+                return Err(Error::Crypto("DPAPI v1 refused (vault is v2-only)"));
+            }
             let e = entropy_v2(name);
             tokio::task::spawn_blocking(move || match raw.strip_prefix(DPAPI_V2.as_slice()) {
                 Some(b) => crate::win::dpapi_unprotect(b, &e),

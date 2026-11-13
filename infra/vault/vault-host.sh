@@ -94,15 +94,19 @@ case "${1:-status}" in
     ;;
   decommission)
     # Host leaves the vault: revoke what the vault applied, drop identity, state, timer and this script.
+    # Timer and any queued apply stopped first; the lock (fd 9) is held until exit.
+    if [ "$(id -u)" = 0 ]; then S=(); U=/etc/systemd/system; else S=(--user); U="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user"; fi
+    if [ -z "${VAULT_HOST_NO_SYSTEMD:-}" ]; then
+      systemctl "${S[@]}" disable --now aphrody-vault-apply.timer >/dev/null 2>&1 || true
+      systemctl "${S[@]}" stop aphrody-vault-apply.service >/dev/null 2>&1 || true
+    fi
     revoked=0
     shopt -s nullglob
     for p in "$VAULT"/applied/*; do n=$(basename "$p"); rm -f "$STORE/$n" "$p"; revoked=$((revoked+1)); done
     rm -f "$STORE/$ID" "$STORE/$ID.new"
-    if [ "$(id -u)" = 0 ]; then S=(); U=/etc/systemd/system; else S=(--user); U="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user"; fi
-    [ -n "${VAULT_HOST_NO_SYSTEMD:-}" ] || systemctl "${S[@]}" disable --now aphrody-vault-apply.timer >/dev/null 2>&1 || true
     rm -f "$U/aphrody-vault-apply.timer" "$U/aphrody-vault-apply.service"
     [ -n "${VAULT_HOST_NO_SYSTEMD:-}" ] || systemctl "${S[@]}" daemon-reload >/dev/null 2>&1 || true
-    flock -u 9; rm -rf "$VAULT"; rm -f "$0"
+    rm -rf "$VAULT"; rm -f "$0"
     echo "decommissioned revoked=$revoked"
     ;;
   fp)

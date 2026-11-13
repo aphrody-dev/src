@@ -166,11 +166,11 @@ export interface OAuthOptions {
 }
 
 export function createOAuth(o: OAuthOptions) {
-  const sealed = o.file === undefined;
   const file = o.file ?? join(relayHome(), "oauth.json");
   let st: State;
   let saving: Promise<void> = Promise.resolve();
   /** Mode scellé : état lu (et migré) avant de servir ; les écritures sont sérialisées et asynchrones. */
+  let sealed = o.file === undefined;
   const ready: Promise<void> = sealed
     ? (async () => {
         const doc = await readDocument<State>(SEALED_DOC, "json");
@@ -183,7 +183,12 @@ export function createOAuth(o: OAuthOptions) {
           st = { key: rand(32), clients: {}, refresh: {} };
           await writeDocument(SEALED_DOC, "json", st);
         }
-      })()
+      })().catch((e: Error) => {
+        // Vault unusable here (sandbox, no store): the relay keeps serving on its 0600 state file.
+        console.error(`[oauth] coffre indisponible (${e.message.split("\n")[0]}), état en fichier ${file}`);
+        sealed = false;
+        st = undefined as unknown as State;
+      })
     : Promise.resolve();
   const load = (): State => {
     if (st) return st;

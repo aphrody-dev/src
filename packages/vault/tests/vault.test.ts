@@ -71,7 +71,7 @@ describe.skipIf(process.platform !== "win32")("DPAPI format v2", () => {
     expect(await V.getSecret("VAULT_V1_B")).toBe(FACTICE);
     // Renaming a v2 blob to another secret: DPAPI refuses (entropy carries the name).
     copyFileSync(join(dir, "VAULT_V2_A.dpapi"), join(dir, "VAULT_V2_C.dpapi"));
-    expect(await V.getSecret("VAULT_V2_C").then(() => "opened", () => "refused")).toBe("refused");
+    expect(await V.getSecret("VAULT_V2_C").then(() => "opened", (e: Error) => e.message)).toBe("CryptUnprotectData failed");
     // env-kit (sync API) reads both and writes v2.
     const ek = await import("../../env-kit/src/secret-store.ts");
     expect(ek.secretGet("VAULT_V2_A")).toBe(FACTICE);
@@ -79,6 +79,19 @@ describe.skipIf(process.platform !== "win32")("DPAPI format v2", () => {
     ek.secretSet("VAULT_V1_B", FACTICE);
     expect(readFileSync(join(dir, "VAULT_V1_B.dpapi")).subarray(0, 4).toString()).toBe("AYD2");
     expect(await V.getSecret("VAULT_V1_B")).toBe(FACTICE);
+    // v1 read migrates lazily; migrate-dpapi then sets the marker and v1 is refused by vault and env-kit.
+    writeFileSync(join(dir, "VAULT_V1_D.dpapi"), await dpapiProtect(new TextEncoder().encode(FACTICE)));
+    expect(await V.getSecret("VAULT_V1_D")).toBe(FACTICE);
+    expect(readFileSync(join(dir, "VAULT_V1_D.dpapi")).subarray(0, 4).toString()).toBe("AYD2");
+    writeFileSync(join(dir, "VAULT_V1_E.dpapi"), await dpapiProtect(new TextEncoder().encode(FACTICE)));
+    rmSync(join(dir, "VAULT_V2_C.dpapi"));
+    const m = await V.migrateDpapiV2();
+    expect(m).toMatchObject({ migrated: 1, marker: true });
+    writeFileSync(join(dir, "VAULT_V1_F.dpapi"), await dpapiProtect(new TextEncoder().encode(FACTICE)));
+    expect(await V.getSecret("VAULT_V1_F").then(() => "opened", (e: Error) => e.message)).toContain("v1 refused");
+    expect(() => ek.secretGet("VAULT_V1_F")).toThrow("v1 refused");
+    rmSync(join(dir, "VAULT_V1_F.dpapi"));
+    rmSync(V.v2OnlyMarker());
   });
 });
 
@@ -170,7 +183,14 @@ describe.skipIf(!Bun.which("age") || linuxNoCreds)("age per host", () => {
     await expect(V.ageDecryptFile(env, fr1.identity)).rejects.toThrow();
     expect(existsSync(join(root, "outbox", "prd", "PC_ONLY_TOKEN.age"))).toBe(false);
     expect(V.taskXml("PC\\u", 5, "C:/src/packages/vault/src/cli.ts")).toContain("<StateChange>SessionUnlock</StateChange>");
-    expect(V.taskXml("PC\\u", 5, "C:/src/packages/vault/src/cli.ts", "push")).toContain("<LogonType>S4U</LogonType>");
+    const syncXml = V.taskXml("PC\\u", 5, "C:/src/packages/vault/src/cli.ts");
+    expect(syncXml).toContain("<LogonType>InteractiveToken</LogonType>");
+    expect(syncXml).toContain("<LogonTrigger>");
+    const pushXml = V.taskXml("PC\\u", 15, "C:/src/packages/vault/src/cli.ts", "push");
+    expect(pushXml).toContain("<LogonType>S4U</LogonType>");
+    expect(pushXml).toContain("sync --push-only");
+    expect(pushXml).not.toContain("SessionStateChangeTrigger");
+    expect(pushXml).not.toContain("conhost");
   });
 });
 
@@ -183,8 +203,15 @@ describe("host removal", () => {
     expect((await V.loadHosts()).map((h) => h.name)).not.toContain("fr2");
     expect((await V.loadRegistry()).SCOPED_X!.scope).toEqual(["pc", "fr1"]);
     expect(V.scopeOf("VAULT_PROOF_TOKEN", "token", await V.loadPolicy(), {})).toEqual(["pc", "prd"]);
-    expect(readFileSync(process.env.VAULT_HOSTS_FILE!, "utf8")).toContain("[fr1]");
-    await expect(V.forgetHost("pc")).rejects.toThrow();
+    const hostsText = readFileSync(process.env.VAULT_HOSTS_FILE!, "utf8");
+    expect(hostsText).toContain("[fr1]");
+    // The comment block above [fr1] belongs to fr1 and survives the removal of [fr2].
+    expect(hostsText).toContain("# fr1 (Chromium/LLVM builds only)");
+    expect(hostsText).not.toContain("# fr2 (proxy");
+    expect(process.env.VAULT_POLICY_FILE!.startsWith(root)).toBe(true);
+    expect(await V.forgetHost("pc").then(() => "ok", (e: Error) => e.message)).toBe("the PC cannot be removed");
+    expect(await V.removeHost("pc").then(() => "ok", (e: Error) => e.message)).toBe("the PC cannot be removed");
+    expect(await V.forgetHost("nope").then(() => "ok", (e: Error) => e.message)).toContain("absent");
   });
 });
 

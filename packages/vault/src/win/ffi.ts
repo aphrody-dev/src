@@ -86,7 +86,7 @@ function dpapiCall(protect: boolean, input: Uint8Array, extra: Uint8Array = ENTR
   }
 }
 
-/** `entropy`: v1 = fixed ENTROPY; v2 = ENTROPY_V2 || name (store.ts), so a renamed blob no longer opens. */
+/** `entropy`: v1 = fixed ENTROPY; v2 = "aphrody/vault/dpapi/v2|<NAME>" (store.ts entropyV2): a renamed blob no longer opens. */
 export const dpapiProtect = (d: Uint8Array, entropy?: Uint8Array): Uint8Array => dpapiCall(true, d, entropy);
 export const dpapiUnprotect = (b: Uint8Array, entropy?: Uint8Array): Uint8Array => dpapiCall(false, b, entropy);
 
