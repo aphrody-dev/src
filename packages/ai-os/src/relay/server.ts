@@ -12,6 +12,7 @@ import { relayHome } from "./cdp.ts";
 import { webmcpPage } from "./webmcp.ts";
 import { a2aHttp, agentCard } from "./a2a.ts";
 import { createOAuth, relayCookie } from "./oauth.ts";
+import { warmHub } from "./mcp-hub.ts";
 import { outbound } from "./outbound.ts";
 import { dispatch, mcpRpc, nativeRpc, VERSION } from "./protocols.ts";
 
@@ -183,6 +184,7 @@ export async function serve() {
       socket: socketHandlers,
     });
   }
+  if (Bun.env.RELAY_HUB !== "0") warmHub();
   console.error(
     `relay ${VERSION} http://${host}:${http.port} (rpc, mcp, a2a, ws) tcp ${tcp.port}${tls ? ` tls ${tls.port}` : ""}`,
   );

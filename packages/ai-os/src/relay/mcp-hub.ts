@@ -21,17 +21,26 @@ type Conf = {
 // Serveurs MCP distants de Google intégrés au relais, authentifiés par le jeton OAuth du compte gcloud actif
 // (aucune clé d'API) : Stitch (https://stitch.googleapis.com/mcp, extension officielle gemini-cli-extensions/stitch).
 // Projet de facturation : RELAY_GCP_QUOTA_PROJECT, sinon le projet gcloud courant.
+// gcloud est lancé sans bloquer la boucle d'événements (un spawnSync gelait tout le relais plusieurs secondes),
+// et le jeton est gardé 45 min (durée de vie 1 h).
+let gcloudCache: { at: number; h: Record<string, string> } | null = null;
 const gcloudToken = async () => {
-  const run = (a: string[]) =>
-    Bun.spawnSync(["gcloud", ...a])
-      .stdout.toString()
-      .trim();
-  return {
-    authorization: `Bearer ${run(["auth", "print-access-token"])}`,
-    "x-goog-user-project":
-      Bun.env.RELAY_GCP_QUOTA_PROJECT ??
-      run(["config", "get-value", "project"]),
+  if (gcloudCache && Date.now() - gcloudCache.at < 45 * 60_000)
+    return gcloudCache.h;
+  const run = async (a: string[]) => {
+    const p = Bun.spawn(["gcloud", ...a], { stdout: "pipe", stderr: "ignore" });
+    return (await new Response(p.stdout).text()).trim();
   };
+  const [token, project] = await Promise.all([
+    run(["auth", "print-access-token"]),
+    Bun.env.RELAY_GCP_QUOTA_PROJECT ?? run(["config", "get-value", "project"]),
+  ]);
+  const h = {
+    authorization: `Bearer ${token}`,
+    "x-goog-user-project": project,
+  };
+  gcloudCache = { at: Date.now(), h };
+  return h;
 };
 const BUILTIN: Record<string, Conf> = {
   stitch: {
@@ -185,24 +194,48 @@ async function server(name: string) {
   return s;
 }
 
-/** Outils de tous les serveurs utilisateur (préfixés), en ignorant les serveurs injoignables. */
+/** Délai de listage par serveur agrégé : `tools/list` du relais doit tenir sous le délai des clients MCP. */
+const LIST_TIMEOUT = Number(Bun.env.RELAY_HUB_LIST_TIMEOUT ?? 3000);
+/** Serveur lent ou injoignable : pas de nouvel essai synchrone avant cette date (le listage tardif remplit le cache). */
+const retryAt = new Map<string, number>();
+
+/**
+ * Outils de tous les serveurs utilisateur (préfixés), listés en parallèle avec un délai par serveur. Un serveur qui
+ * dépasse le délai est omis cette fois-ci ; son listage continue en arrière-plan et alimente le cache ; en cas
+ * d'échec il n'est retenté qu'après 10 min. Avant ce correctif, un serveur lent était retenté en série à chaque
+ * appel et `tools/list` prenait 22 s (« tools fetch failed — Request timed out » dans `claude mcp list`).
+ */
 export async function hubTools(): Promise<(Remote & { server: string })[]> {
-  const out: (Remote & { server: string })[] = [];
-  for (const name of Object.keys(await userServers()).sort()) {
-    try {
-      let tools = toolCache.get(name);
-      if (!tools)
-        toolCache.set(
-          name,
-          (tools = ((await (await server(name)).call("tools/list", {})).tools ??
-            []) as Remote[]),
-        );
-      for (const t of tools)
-        out.push({ ...t, server: name, name: `${name}__${t.name}` });
-    } catch {}
-  }
-  return out;
+  const names = Object.keys(await userServers()).sort();
+  const lists = await Promise.all(
+    names.map(async (name): Promise<Remote[]> => {
+      const cached = toolCache.get(name);
+      if (cached) return cached;
+      if ((retryAt.get(name) ?? 0) > Date.now()) return [];
+      retryAt.set(name, Date.now() + 600_000);
+      const p = (async () =>
+        ((await (await server(name)).call("tools/list", {})).tools ??
+          []) as Remote[])();
+      p.then(
+        (t) => {
+          toolCache.set(name, t);
+          retryAt.delete(name);
+        },
+        () => {},
+      );
+      return Promise.race([
+        p.catch(() => [] as Remote[]),
+        Bun.sleep(LIST_TIMEOUT).then(() => [] as Remote[]),
+      ]);
+    }),
+  );
+  return names.flatMap((name, i) =>
+    lists[i]!.map((t) => ({ ...t, server: name, name: `${name}__${t.name}` })),
+  );
 }
+
+/** Préchargement au démarrage du relais : le premier `tools/list` d'un client trouve le cache chaud. */
+export const warmHub = () => void hubTools().catch(() => {});
 
 /** Erreur JSON-RPC d'un serveur agrégé : code et données conservés (erreur de protocole relayée telle quelle). */
 const rpcError = (e: { code?: number; message: string; data?: unknown }) =>
