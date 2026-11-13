@@ -19,11 +19,27 @@ const TARGETS: Record<string, string[]> = {
 };
 const ssh = (h: string, cmd: string, stdin?: string) =>
   Bun.spawnSync(
-    ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=30", ...(TARGETS[h] ?? [h]), cmd],
-    { stdin: stdin === undefined ? "ignore" : Buffer.from(stdin), timeout: 240_000 },
+    [
+      "ssh",
+      "-o",
+      "BatchMode=yes",
+      "-o",
+      "ConnectTimeout=30",
+      ...(TARGETS[h] ?? [h]),
+      cmd,
+    ],
+    {
+      stdin: stdin === undefined ? "ignore" : Buffer.from(stdin),
+      timeout: 240_000,
+    },
   );
 const clip = () =>
-  Bun.spawnSync(["pwsh", "-NoProfile", "-c", "Get-Clipboard -Raw"]).stdout.toString();
+  Bun.spawnSync([
+    "pwsh",
+    "-NoProfile",
+    "-c",
+    "Get-Clipboard -Raw",
+  ]).stdout.toString();
 
 const PUSH =
   "umask 077; mkdir -p ~/.config/credstore.encrypted && systemd-creds --user --name=CLAUDE_CODE_OAUTH_TOKEN encrypt - ~/.config/credstore.encrypted/CLAUDE_CODE_OAUTH_TOKEN 2>/dev/null && " +
@@ -42,12 +58,17 @@ async function captureSetupToken(waitMin: number): Promise<string> {
     cols: 400,
     rows: 50,
     data(_t, d) {
-      const t = new TextDecoder().decode(d).replace(/\x1b\[\d*C/g, " ").replace(/\x1b\][^\x07\x1b]*(\x07|\x1b\\)/g, "").replace(/\x1b\[[0-9;?]*[A-Za-z]/g, "");
+      const t = new TextDecoder()
+        .decode(d)
+        .replace(/\x1b\[\d*C/g, " ")
+        .replace(/\x1b\][^\x07\x1b]*(\x07|\x1b\\)/g, "")
+        .replace(/\x1b\[[0-9;?]*[A-Za-z]/g, "");
       buf += t;
       if (/press enter/i.test(t)) term.write("\r");
       for (const l of t.split(/\r?\n/)) {
         const x = l.replace(/sk-ant-[A-Za-z0-9_-]+/g, "[secret]").trim();
-        if (x && /http|error|success|token|expire/i.test(x)) console.error(x.slice(0, 200));
+        if (x && /http|error|success|token|expire/i.test(x))
+          console.error(x.slice(0, 200));
       }
     },
   });
@@ -61,7 +82,12 @@ async function captureSetupToken(waitMin: number): Promise<string> {
   return TOKEN.exec(buf)?.[0] ?? TOKEN.exec(buf.replace(/\s+/g, ""))?.[0] ?? "";
 }
 
-export async function login(cli: string, hosts = ["prd", "fr2"], waitMin = 30, fromClipboard = false) {
+export async function login(
+  cli: string,
+  hosts = ["prd", "fr2"],
+  waitMin = 30,
+  fromClipboard = false,
+) {
   if (cli === "claude") {
     const deadline = Date.now() + waitMin * 60_000;
     let tok = fromClipboard ? "" : await captureSetupToken(waitMin);
@@ -69,36 +95,72 @@ export async function login(cli: string, hosts = ["prd", "fr2"], waitMin = 30, f
       tok = TOKEN.exec(clip())?.[0] ?? "";
       if (!tok) await Bun.sleep(3000);
     }
-    if (!tok) return { cli, ok: false, error: "aucun jeton sk-ant-oat01 au presse-papiers" };
+    if (!tok)
+      return {
+        cli,
+        ok: false,
+        error: "aucun jeton sk-ant-oat01 au presse-papiers",
+      };
     Bun.spawnSync(["pwsh", "-NoProfile", "-c", "Set-Clipboard -Value $null"]);
     const set = Bun.spawnSync(
-      ["bun", "run", "--cwd", join(srcRoot(), "packages/env-kit"), "src/cli.ts", "secret", "set", "CLAUDE_CODE_OAUTH_TOKEN"],
+      [
+        "bun",
+        "run",
+        "--cwd",
+        join(srcRoot(), "packages/env-kit"),
+        "src/cli.ts",
+        "secret",
+        "set",
+        "CLAUDE_CODE_OAUTH_TOKEN",
+      ],
       { stdin: Buffer.from(tok) },
     );
     const out: Record<string, unknown> = { cli, vault: set.exitCode === 0 };
     for (const h of hosts) {
       const r = ssh(h, PUSH, tok);
-      out[h] = { exit: r.exitCode, reply: r.stdout.toString().replace(TOKEN, "[secret]").trim().slice(0, 80) };
+      out[h] = {
+        exit: r.exitCode,
+        reply: r.stdout
+          .toString()
+          .replace(TOKEN, "[secret]")
+          .trim()
+          .slice(0, 80),
+      };
     }
     return out;
   }
   if (cli === "codex") {
     const out: Record<string, unknown> = { cli };
     for (const h of hosts) {
-      const st = ssh(h, "PATH=$HOME/.local/bin:$HOME/.bun/bin:$PATH codex login status 2>&1 | head -1").stdout.toString().trim();
+      const st = ssh(
+        h,
+        "PATH=$HOME/.local/bin:$HOME/.bun/bin:$PATH codex login status 2>&1 | head -1",
+      )
+        .stdout.toString()
+        .trim();
       if (/logged in/i.test(st) && !/not logged/i.test(st)) {
         out[h] = { ok: true, status: st };
         continue;
       }
-      ssh(h, 'tmux kill-window -t agents:login-codex 2>/dev/null; tmux new-window -d -t agents -n login-codex "PATH=$HOME/.local/bin:$HOME/.bun/bin:$PATH codex login --device-auth; sleep 900"');
+      ssh(
+        h,
+        'tmux kill-window -t agents:login-codex 2>/dev/null; tmux new-window -d -t agents -n login-codex "PATH=$HOME/.local/bin:$HOME/.bun/bin:$PATH codex login --device-auth; sleep 900"',
+      );
       await Bun.sleep(12_000);
-      const pane = ssh(h, "tmux capture-pane -p -t agents:login-codex").stdout.toString();
+      const pane = ssh(
+        h,
+        "tmux capture-pane -p -t agents:login-codex",
+      ).stdout.toString();
       const code = DEVICE.exec(pane)?.[0];
       if (code) {
         mkdirSync(relayHome(), { recursive: true });
         writeFileSync(join(relayHome(), "device-code.txt"), `${code}\n`);
       }
-      out[h] = { ok: false, device_code_file: code ? join(relayHome(), "device-code.txt") : null, page: "https://auth.openai.com/codex/device" };
+      out[h] = {
+        ok: false,
+        device_code_file: code ? join(relayHome(), "device-code.txt") : null,
+        page: "https://auth.openai.com/codex/device",
+      };
     }
     return out;
   }

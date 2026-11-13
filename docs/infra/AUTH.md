@@ -52,9 +52,19 @@ Ordre de résolution : stockage, puis `.env` (ACL NTFS, `env-kit doctor`). `env-
 | R2 S3 temporaire | `shenron-cloudflare-s3-renew` (prd, 10 min) | `/srv/shenron/config/cloudflare/api-token` (`LoadCredential=`) | timer | réparé : verrou et fichier `.next` d'une exécution interrompue (2026-11-12 17:31) bloquaient tout ; drop-in `10-stale-lock.conf` les purge |
 | Steam | `rg-steam-depot` (prd) | aucun jeton : connexion anonyme | `bun-steam-depot login-qr` | **en échec** : les dépôts de l'app 2799860 refusent l'anonyme ; approbation QR une fois dans l'app Steam du propriétaire (hors navigateur) |
 
+## Incidents et rotations du 2026-11-13 (UTC)
+
+- `GCP_ADMIN_SA_KEY` (compte `admin-sa@rgfr-8927d`) : clé `31555a22…` affichée dans la sortie d'outil d'une session d'agent, considérée compromise. Nouvelle clé `5de55ed8…` créée (configuration gcloud `owner-yohan`) et propagée : coffre DPAPI, `.env` (JSON brut entre apostrophes, lisible par bun et dotenv), `apps/rosegriffon/apps/rg-website/.env.local`, configuration gcloud `rosegriffon`. Aucun secret GitHub Actions ni copie sur prd ou fr2. Ancienne clé supprimée ; un échange JWT signé avec elle renvoie `invalid_grant` (« Invalid JWT Signature »).
+- `CLOUDFLARE_API_TOKEN` : la variable utilisateur Windows est égale au coffre (vérifié) ; seuls les processus lancés avant la rotation gardent l'ancienne valeur (401) jusqu'à leur redémarrage. Sur prd, la valeur est en `systemd-creds` (`/etc/credstore.encrypted/CLOUDFLARE_API_TOKEN`) et les copies de `/etc/aphrody/secrets.env` et `~/.config/yolo/secrets.env` (root, aphrody) sont à jour.
+- LiteLLM de prd (`ay-ai-litellm`) : démarré par `infra/ai/litellm-serve.ts` (drop-in `infra/ai/systemd/ay-ai-litellm.service.d/10-creds.conf`, installation `sh infra/ai/systemd/install-prd.sh`). Identifiants `LoadCredentialEncrypted=` : `CLOUDFLARE_API_TOKEN`, `LITELLM_MASTER_KEY`, `ANTHROPIC_API_KEY`, `ANTHROPIC_WORKSPACE_ID`, `VERTEX_APHRODY_SA_KEY` (compte `litellm-prd@aphrody`, rôle `roles/aiplatform.user` seul ; fédération sans clé impossible, prd n'a pas d'émetteur OIDC). `infra/ai/litellm-overlay.toml` retire `vllm/*` et `mistralrs/*`, ajoute `anthropic-workspace-id` et plafonne la dépense (Anthropic 2 USD/j, proxy 5 USD/j). Appels réels : `anthropic/claude-haiku-4-5` et `google-vertex-aphrody/gemini-2.5-flash` OK ; Workers AI 429 (quota gratuit quotidien épuisé, code 4006).
+- Proxy `anthropic-proxy` (tmux, 127.0.0.1:8793) supprimé ; le relais de prd passe par LiteLLM (`RELAY_OPENAI_ENDPOINTS=litellm=http://127.0.0.1:4000/v1`, clé maîtresse en `systemd-creds --user`, drop-in `infra/fleet/prd/systemd/aphrody-relay.service.d/10-litellm.conf`).
+- Runners : `CLAUDE_CODE_OAUTH_TOKEN` (jeton `claude setup-token`, coffre DPAPI) chiffré par `systemd-creds --user` chez `agent` (prd) et `ubuntu` (fr2), `claude -p` vérifié ; Codex connecté pour `agent` sur prd (code d'appareil).
+
+Points encore ouverts : index NHITL, `just nhitl list --status open` (`var/agents/nhitl.sqlite`, registre versionné `packages/ai-os/src/nhitl/ledger.json`).
+
 ## Ce qui reste au propriétaire
 
 1. Rotation WireGuard du PC : `bash infra/fleet/wg/rotate-wg-win.sh` (une invite UAC), puis `ay auth status --only fleet` doit ne plus signaler `wireguard-key`.
 2. `ay auth repair --browser` : cliquer les consentements gcloud (2 comptes) et npm.
-3. Recréer le PAT `SUBMODULES_TOKEN` (lecture des sous-modules), puis `… | ay secret set SUBMODULES_TOKEN` et `ay auth gh-secrets`.
-4. Steam : `docker compose --profile tools run --rm steam-depot login-qr` sur prd et approuver le QR dans l'app Steam ; l'image doit être reconstruite avec `STEAM_DEPOT_REV` ≥ d098b41 (la révision déployée a79da1a n'a pas `login-qr`).
+3. `SUBMODULES_TOKEN` : page du PAT fin ouverte dans Chrome (Contents: read sur aphrody-labs, 90 jours) ; après la passkey et « Generate », copier le jeton : il est lu au presse-papiers, rangé dans le coffre et poussé dans les secrets Actions de `aphrody-dev/src` et `aphrody-labs/src`.
+4. Steam : image `rosegriffon/steam-depot` reconstruite sur prd avec steam-depot d098b41 (`login-qr` présent) ; `bun scripts/steam-login.ts --qr` (apps/rosegriffon) affiche le QR dans Chrome, à approuver dans l'app Steam (le QR du 2026-11-13 a expiré sans approbation).

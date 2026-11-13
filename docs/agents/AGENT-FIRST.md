@@ -133,14 +133,14 @@ Règle : aucune valeur dans le dépôt, les journaux, l'argv ou les unités. Sur
 | Identifiant | État prd (`agent`) | Comment |
 |---|---|---|
 | `GH_TOKEN` (push sur main) | fait, vérifié : `gh auth status` OK (GH_TOKEN), `git push --dry-run` OK | `gh auth token` (root, prd) passé en stdin à `systemd-creds --user encrypt` ; le helper git est `gh auth git-credential` |
-| Claude Code | en attente du propriétaire | fenêtre tmux `login-claude` lancée (`claude auth login --claudeai`), page d'autorisation ouverte dans Chrome. Le propriétaire clique « Authorize », puis colle le code affiché dans la fenêtre : `ssh -t agent@prd tmux attach -t agents` puis `select-window -t login-claude`. Variante longue durée : `claude setup-token` sur le PC, puis le jeton en stdin de `ssh agent@prd 'systemd-creds --user --name=CLAUDE_CODE_OAUTH_TOKEN encrypt - ~/.config/credstore.encrypted/CLAUDE_CODE_OAUTH_TOKEN'` |
-| Codex | en attente du propriétaire | fenêtre tmux `login-codex` (`codex login --device-auth`, code valable 15 min), page https://auth.openai.com/codex/device ouverte dans Chrome. Le propriétaire saisit le code affiché dans la fenêtre puis valide. Après expiration : `ssh agent@prd 'tmux respawn-window -k -t agents:login-codex'` pour un nouveau code |
-| fr2 (`ubuntu`) | OAuth Claude expiré | même procédure que prd (`ssh -t fr2 tmux attach -t agents`, `claude auth login`) |
+| Claude Code | fait (2026-11-13) : `claude -p` OK | jeton `claude setup-token` du PC (coffre DPAPI `CLAUDE_CODE_OAUTH_TOKEN`) en stdin de `systemd-creds --user encrypt` ; flux : `ai-os nhitl login claude` |
+| Codex | fait (2026-11-13) : `codex login status` = ChatGPT | `ai-os nhitl login codex --hosts prd` : `codex login --device-auth` en tmux, code d’appareil écrit dans `<RELAY_HOME>/device-code.txt`, validé par le propriétaire |
+| fr2 (`ubuntu`) | Claude fait (même jeton, `claude -p` OK) ; le `codex` installé n’est pas la CLI OpenAI | installer `@openai/codex`, puis `ai-os nhitl login codex --hosts fr2` |
 | PC | `codex.cmd` pointe vers un `codex.exe` introuvable, Codex répond 401 | `codex login` sur le PC (et réinstaller Codex si le binaire manque) |
 
 ## 10. Reste à faire (hors de portée des agents)
 
-- Les deux clics de connexion de la section 9 (Claude, Codex) sur prd et fr2.
+- Points encore ouverts : `just nhitl list --status open` (index NHITL, `var/agents/nhitl.sqlite`).
 - WARP sur le PC (UAC) pour le chemin Cloudflare ; `codex login` sur le PC.
 - Réinstaller un runner GitHub pour `ci.yml` (prd trop chargé d'après FLEET.md) ou porter ses étapes vers `judge.yml`.
 - Les modèles planifiés sans `providers` : `deps-update` finit en `no_cli_provider` tant qu’ai-os ne nomme pas de CLI de code (ou ne reprend pas la planification) ; `release-notes` et `seo-check` passent par le relais.

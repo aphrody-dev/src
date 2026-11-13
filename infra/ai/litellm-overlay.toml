@@ -1,0 +1,26 @@
+# Retouches de la config LiteLLM écrite par `ay ai config`, appliquées par infra/ai/litellm-serve.ts avant le
+# démarrage du proxy (unité ay-ai-litellm, drop-in infra/ai/systemd/ay-ai-litellm.service.d/10-creds.conf).
+# Sert ce que ai.toml ne sait pas encore exprimer : en-têtes, plafonds de dépense, routes à retirer par hôte.
+# Valeurs "env:X" : lues dans l'environnement du proxy (identifiants systemd-creds), jamais écrites ici.
+
+# Routes retirées (model_name), par hôte (`hostname` ou AY_AI_HOST).
+[drop]
+prd = ["vllm/*", "mistralrs/*"]
+
+# En-têtes ajoutés à litellm_params.extra_headers d'une route.
+[headers."anthropic/*"]
+anthropic-workspace-id = "env:ANTHROPIC_WORKSPACE_ID"
+
+# Plafond par route payante (USD par période) : la route est écartée par le routeur une fois le plafond atteint.
+[budget."anthropic/*"]
+max_budget = 2.0
+budget_duration = "1d"
+
+# Plafond global du proxy (toutes routes).
+[litellm_settings]
+max_budget = 5.0
+budget_duration = "1d"
+
+# Ordre de préférence publié à côté de la config (lu par le relais) : gratuits ou locaux d'abord.
+[prefer]
+order = ["ollama/*", "llamacpp/*", "cloudflare-workers-ai/*", "google-vertex-aphrody/*", "anthropic/*"]

@@ -11,13 +11,7 @@ import { srcRoot } from "../orch/fleet";
 export type Severity = "high" | "medium" | "low" | "info";
 export type Status = "open" | "fixed" | "inevitable";
 export type Source =
-  | "transcript"
-  | "settings"
-  | "code"
-  | "queue"
-  | "docs"
-  | "hook"
-  | "ledger";
+  "transcript" | "settings" | "code" | "queue" | "docs" | "hook" | "ledger";
 
 export type Violation = {
   id: string;
@@ -37,7 +31,10 @@ export const dbPath = () =>
   Bun.env.NHITL_DB ?? join(srcRoot(), "var", "agents", "nhitl.sqlite");
 
 export const fingerprint = (...parts: string[]) =>
-  new Bun.CryptoHasher("sha256").update(parts.join("\0")).digest("hex").slice(0, 16);
+  new Bun.CryptoHasher("sha256")
+    .update(parts.join("\0"))
+    .digest("hex")
+    .slice(0, 16);
 
 const SECRET_RES = [
   /sk-[A-Za-z0-9_-]{16,}/g,
@@ -118,7 +115,8 @@ export class Index {
     stamps: Record<string, string> = {},
   ) {
     const now = new Date().toISOString();
-    const up = this.db.prepare(`INSERT INTO violation VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+    const up = this.db
+      .prepare(`INSERT INTO violation VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
       ON CONFLICT(id) DO UPDATE SET location=excluded.location, category=excluded.category, severity=excluded.severity,
       excerpt=excluded.excerpt, fix=excluded.fix, status=excluded.status, reason=excluded.reason, unit=excluded.unit,
       last_seen=excluded.last_seen`);
@@ -152,9 +150,7 @@ export class Index {
         this.db
           .query("INSERT OR REPLACE INTO unit_cache VALUES (?, ?)")
           .run(u, s);
-      this.db
-        .query("DELETE FROM violation_fts WHERE source = ?")
-        .run(source);
+      this.db.query("DELETE FROM violation_fts WHERE source = ?").run(source);
       this.db
         .query(
           "INSERT INTO violation_fts SELECT id, source, location, category, excerpt, fix FROM violation WHERE source = ?",
@@ -188,16 +184,16 @@ export class Index {
   ) {
     const where: string[] = [];
     const args: (string | number)[] = [];
-    if (o.source) where.push("v.source = ?"), args.push(o.source);
-    if (o.category) where.push("v.category = ?"), args.push(o.category);
-    if (o.severity) where.push("v.severity = ?"), args.push(o.severity);
+    if (o.source) (where.push("v.source = ?"), args.push(o.source));
+    if (o.category) (where.push("v.category = ?"), args.push(o.category));
+    if (o.severity) (where.push("v.severity = ?"), args.push(o.severity));
     if (o.status)
-      where.push("coalesce(t.status, v.status) = ?"), args.push(o.status);
+      (where.push("coalesce(t.status, v.status) = ?"), args.push(o.status));
     if (o.q)
-      where.push(
+      (where.push(
         "v.id IN (SELECT id FROM violation_fts WHERE violation_fts MATCH ?)",
       ),
-        args.push(o.q);
+        args.push(o.q));
     args.push(o.limit ?? 200);
     return this.db
       .query(

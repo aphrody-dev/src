@@ -1,4 +1,5 @@
 // Scanners NHITL : chacun rend des Violation[] reproductibles (id = empreinte de source + emplacement + règle).
+import { Database } from "bun:sqlite";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import { basename, join, relative } from "node:path";
@@ -99,38 +100,82 @@ export function scanTranscripts(ix: Index) {
       } catch {
         continue;
       }
-      for (const line of text.split("\n")) {
-        if (
-          !line.includes('"end_turn"') ||
-          !line.includes('"role":"assistant"')
-        )
-          continue;
-        let j: any;
-        try {
-          j = JSON.parse(line);
-        } catch {
+      tailsOf(unit, text, items);
+    }
+  }
+  // Transcripts froids compressés par `ai-os brain` dans <AGENT_HOME>/brain.sqlite (table blobs, zstd).
+  const brain = join(
+    Bun.env.AGENT_HOME ?? join(HOME, ".agent"),
+    "brain.sqlite",
+  );
+  if (existsSync(brain)) {
+    let db: Database | undefined;
+    try {
+      db = new Database(brain, { readonly: true });
+      const rows = db
+        .query("SELECT path, mtime, size FROM blobs WHERE path LIKE ?")
+        .all("%projects%.jsonl") as {
+        path: string;
+        mtime: number;
+        size: number;
+      }[];
+      for (const r of rows) {
+        const parts = r.path.replaceAll("\\", "/").split("/");
+        if (parts.length < 4 || parts.at(-3) !== "projects") continue; // <projet>/<session>.jsonl seulement
+        const unit = `${parts.at(-2)}/${parts.at(-1)}`;
+        const stamp = `brain:${r.size}:${r.mtime}`;
+        if (ix.stamp(unit) === stamp) {
+          keep.push(...ix.idsOf("transcript", unit));
           continue;
         }
-        if (j.isSidechain || j.message?.stop_reason !== "end_turn") continue;
-        const body = textOf(j.message?.content);
-        if (!body) continue;
-        const r = classifyTail(body);
-        if (!r) continue;
-        items.push({
-          id: fingerprint("transcript", unit, j.uuid ?? ""),
-          source: "transcript",
-          location: `${unit}#${j.timestamp ?? j.uuid}`,
-          category: r.category,
-          severity: r.severity,
-          excerpt: redact(body.slice(-140), 140),
-          fix: r.fix,
-          status: "open",
-          unit,
-        });
+        stamps[unit] = stamp;
+        const blob = db
+          .query("SELECT data FROM blobs WHERE path = ?")
+          .get(r.path) as { data: Uint8Array } | null;
+        if (blob)
+          tailsOf(
+            unit,
+            new TextDecoder().decode(Bun.zstdDecompressSync(blob.data)),
+            items,
+          );
       }
+    } catch (e) {
+      console.error(`brain.sqlite illisible : ${(e as Error).message}`);
+    } finally {
+      db?.close();
     }
   }
   return { items, keep, stamps };
+}
+
+/** Tours de l'agent principal d'un transcript qui rendent la main. */
+function tailsOf(unit: string, text: string, items: Violation[]) {
+  for (const line of text.split("\n")) {
+    if (!line.includes('"end_turn"') || !line.includes('"role":"assistant"'))
+      continue;
+    let j: any;
+    try {
+      j = JSON.parse(line);
+    } catch {
+      continue;
+    }
+    if (j.isSidechain || j.message?.stop_reason !== "end_turn") continue;
+    const body = textOf(j.message?.content);
+    if (!body) continue;
+    const r = classifyTail(body);
+    if (!r) continue;
+    items.push({
+      id: fingerprint("transcript", unit, j.uuid ?? ""),
+      source: "transcript",
+      location: `${unit}#${j.timestamp ?? j.uuid}`,
+      category: r.category,
+      severity: r.severity,
+      excerpt: redact(body.slice(-140), 140),
+      fix: r.fix,
+      status: "open",
+      unit,
+    });
+  }
 }
 
 // ---------------------------------------------------------------- settings
@@ -138,7 +183,10 @@ const jsonc = (p: string): any => {
   try {
     const t = readFileSync(p, "utf8")
       .replace(/^\uFEFF/, "")
-      .replace(/("(?:\\.|[^"\\])*")|\/\/[^\n]*|\/\*[\s\S]*?\*\//g, (_m, s) => s ?? "")
+      .replace(
+        /("(?:\\.|[^"\\])*")|\/\/[^\n]*|\/\*[\s\S]*?\*\//g,
+        (_m, s) => s ?? "",
+      )
       .replace(/,(\s*[}\]])/g, "$1");
     return JSON.parse(t);
   } catch {
@@ -147,7 +195,8 @@ const jsonc = (p: string): any => {
 };
 
 /** Garde-fous voulus : protection de secrets et du système, jamais levés (statut inévitable). */
-const GUARD = /\.env|System32|credstore|secrets?|\.ssh|id_ed25519|rm -rf \/|force|--no-verify|IS_SANDBOX/i;
+const GUARD =
+  /\.env|System32|credstore|secrets?|\.ssh|id_ed25519|rm -rf \/|force|--no-verify|IS_SANDBOX/i;
 
 function claudeSettingsFiles(): string[] {
   const out = new Set<string>();
@@ -202,7 +251,9 @@ export function scanSettings(): Violation[] {
           ? "Garder : garde-fou de secret ou du système."
           : "Retirer la règle ou fournir une voie non interactive équivalente.",
         guard ? "inevitable" : "open",
-        guard ? "garde-fou de sécurité (secret, système, historique git)" : undefined,
+        guard
+          ? "garde-fou de sécurité (secret, système, historique git)"
+          : undefined,
       );
     }
     for (const rule of p.ask ?? [])
@@ -242,9 +293,26 @@ export function scanSettings(): Violation[] {
   const a = jsonc(agyCli);
   if (a) {
     if (a.toolPermission && a.toolPermission !== "always-proceed")
-      v(agyCli, "toolPermission", "settings_confirm", "high", `toolPermission ${a.toolPermission}`, 'toolPermission "always-proceed".');
-    if (a.artifactReviewPolicy && !/agent-decides|always-proceed/.test(a.artifactReviewPolicy))
-      v(agyCli, "artifactReviewPolicy", "settings_confirm", "medium", `artifactReviewPolicy ${a.artifactReviewPolicy}`, 'artifactReviewPolicy "agent-decides".');
+      v(
+        agyCli,
+        "toolPermission",
+        "settings_confirm",
+        "high",
+        `toolPermission ${a.toolPermission}`,
+        'toolPermission "always-proceed".',
+      );
+    if (
+      a.artifactReviewPolicy &&
+      !/agent-decides|always-proceed/.test(a.artifactReviewPolicy)
+    )
+      v(
+        agyCli,
+        "artifactReviewPolicy",
+        "settings_confirm",
+        "medium",
+        `artifactReviewPolicy ${a.artifactReviewPolicy}`,
+        'artifactReviewPolicy "agent-decides".',
+      );
   }
   const agyCfg = join(HOME, ".gemini", "config", "config.json");
   const c = jsonc(agyCfg);
@@ -260,7 +328,14 @@ export function scanSettings(): Violation[] {
       if (!o || typeof o !== "object") return;
       for (const [k, val] of Object.entries(o)) {
         if (typeof val === "string" && want[k] && !want[k]!.test(val))
-          v(agyCfg, `${path}${k}`, "settings_confirm", "high", `${k} ${val}`, `${k} en mode sans confirmation (${want[k]!.source}).`);
+          v(
+            agyCfg,
+            `${path}${k}`,
+            "settings_confirm",
+            "high",
+            `${k} ${val}`,
+            `${k} en mode sans confirmation (${want[k]!.source}).`,
+          );
         else if (typeof val === "object") walk(val, `${path}${k}.`);
       }
     };
@@ -274,9 +349,25 @@ export function scanSettings(): Violation[] {
     const walk = (x: any, path: string) => {
       if (typeof x === "string") {
         if (x === "ask")
-          v(f, path, "settings_confirm", "high", `${path} ask`, `${path} = "allow" (ou "deny").`);
+          v(
+            f,
+            path,
+            "settings_confirm",
+            "high",
+            `${path} ask`,
+            `${path} = "allow" (ou "deny").`,
+          );
         else if (x === "deny")
-          v(f, path, "settings_deny", GUARD.test(path) ? "info" : "low", `${path} deny`, "Vérifier que le refus est un garde-fou voulu.", GUARD.test(path) ? "inevitable" : "open", GUARD.test(path) ? "garde-fou de sécurité" : undefined);
+          v(
+            f,
+            path,
+            "settings_deny",
+            GUARD.test(path) ? "info" : "low",
+            `${path} deny`,
+            "Vérifier que le refus est un garde-fou voulu.",
+            GUARD.test(path) ? "inevitable" : "open",
+            GUARD.test(path) ? "garde-fou de sécurité" : undefined,
+          );
       } else if (x && typeof x === "object")
         for (const [k, val] of Object.entries(x)) walk(val, `${path}.${k}`);
     };
@@ -357,7 +448,8 @@ export const CODE_RULES: CodeRule[] = [
     pattern: String.raw`\b(gh auth login|npm login|gcloud auth login|wrangler login|vercel login|codex login|claude auth login|az login|docker login)\b`,
     glob: ["*.{ts,js,sh,bash,ps1,toml,yml,yaml}", "justfile"],
     fix: "Jeton longue durée tiré du stockage de secrets : gh --with-token, npm token, gcloud compte de service, codex --with-api-key, claude setup-token, docker --password-stdin.",
-    unless: /--with-token|--with-api-key|--password-stdin|--cred-file|--no-launch-browser/,
+    unless:
+      /--with-token|--with-api-key|--password-stdin|--cred-file|--no-launch-browser/,
   },
   {
     category: "missing_noninteractive",
@@ -406,7 +498,11 @@ export async function scanCode(root = srcRoot()): Promise<Violation[]> {
         r.pattern,
         ".",
       ];
-      const p = Bun.spawn(args, { cwd: root, stdout: "pipe", stderr: "ignore" });
+      const p = Bun.spawn(args, {
+        cwd: root,
+        stdout: "pipe",
+        stderr: "ignore",
+      });
       const text = await new Response(p.stdout).text();
       await p.exited;
       for (const line of text.split("\n")) {
@@ -416,7 +512,8 @@ export async function scanCode(root = srcRoot()): Promise<Violation[]> {
         if (r.unless?.test(code!)) continue;
         const rel = file!.replace(/^\.[\\/]/, "").replaceAll("\\", "/");
         // Boîte de confirmation d'une page web : destinée à l'utilisateur final du site, pas à un agent.
-        const ui = r.category === "interactive_prompt" && /\.(tsx|jsx)$/.test(rel);
+        const ui =
+          r.category === "interactive_prompt" && /\.(tsx|jsx)$/.test(rel);
         out.push({
           id: fingerprint("code", rel, String(i), code!.trim()),
           source: "code",
@@ -426,7 +523,9 @@ export async function scanCode(root = srcRoot()): Promise<Violation[]> {
           excerpt: redact(code!, 140),
           fix: r.fix,
           status: ui ? "inevitable" : (r.status ?? "open"),
-          reason: ui ? "confirmation d'interface web pour l'utilisateur final, hors boucle d'agent" : r.reason,
+          reason: ui
+            ? "confirmation d'interface web pour l'utilisateur final, hors boucle d'agent"
+            : r.reason,
         });
       }
     }),
@@ -480,7 +579,9 @@ export async function scanDocs(root = srcRoot()): Promise<Violation[]> {
       excerpt: redact(m[3]!, 160),
       fix: "Automatiser l'étape (recette just, CLI non interactive, secret du stockage) puis réécrire la doc ; sinon une entrée de registre avec la cause.",
       status: review ? "inevitable" : "open",
-      reason: review ? "rapport archivé : constat daté, non modifiable" : undefined,
+      reason: review
+        ? "rapport archivé : constat daté, non modifiable"
+        : undefined,
     });
   }
   return out;
@@ -518,22 +619,39 @@ type Target = { host: string; ssh?: string[]; local?: string; dir?: string };
 /** Hôtes de la file : fleet.toml (pc local, prd, fr2 ; jamais fr1). ssh = cibles essayées dans l'ordre, puis rebond. */
 export function queueTargets(root = srcRoot()): Target[] {
   const fleet: any = existsSync(join(root, "infra/agents/fleet.toml"))
-    ? Bun.TOML.parse(readFileSync(join(root, "infra/agents/fleet.toml"), "utf8"))
+    ? Bun.TOML.parse(
+        readFileSync(join(root, "infra/agents/fleet.toml"), "utf8"),
+      )
     : {};
   const out: Target[] = [];
   for (const h of fleetHosts(root)) {
     if (h.local) {
-      out.push({ host: h.id, local: Bun.env.AGENTS_HOME ?? join(h.src, "var", "agents") });
+      out.push({
+        host: h.id,
+        local: Bun.env.AGENTS_HOME ?? join(h.src, "var", "agents"),
+      });
       continue;
     }
     const raw: string[] = fleet.hosts?.[h.id]?.ssh ?? [h.ssh!];
-    const pub = raw.map((t) => t.split("@").pop()!).find((x) => /^\d+\.\d+\.\d+\.\d+$/.test(x) && !x.startsWith("10."));
+    const pub = raw
+      .map((t) => t.split("@").pop()!)
+      .find((x) => /^\d+\.\d+\.\d+\.\d+$/.test(x) && !x.startsWith("10."));
     const jump = Bun.env.NHITL_JUMP ?? "fr2";
     const cmds = raw.map((t) => [t]);
     // Mesh WireGuard fermé depuis le PC : rebond par fr2, clé d'hôte vérifiée sous l'IP publique connue.
     for (const t of raw.filter((t) => /@10\./.test(t)))
-      if (h.id !== jump) cmds.push(["-J", jump, ...(pub ? ["-o", `HostKeyAlias=${pub}`] : []), t]);
-    out.push({ host: h.id, dir: `${h.src}/var/agents`, ssh: cmds.map((c) => c.join("\u0001")) });
+      if (h.id !== jump)
+        cmds.push([
+          "-J",
+          jump,
+          ...(pub ? ["-o", `HostKeyAlias=${pub}`] : []),
+          t,
+        ]);
+    out.push({
+      host: h.id,
+      dir: `${h.src}/var/agents`,
+      ssh: cmds.map((c) => c.join("\u0001")),
+    });
   }
   return out;
 }
@@ -541,27 +659,48 @@ export function queueTargets(root = srcRoot()): Target[] {
 const QUEUE_DUMP = (dir: string) =>
   `d=${shq(dir)}; for s in failed new outbox; do if [ "$s" = outbox ]; then for f in "$d"/outbox/*/*.json "$d"/outbox/*.md; do [ -f "$f" ] && printf '@@%s %s\\n' outbox "$f"; done; else for f in "$d"/queue/$s/*.json; do [ -f "$f" ] || continue; printf '@@%s %s\\n' $s "$f"; head -c 60000 "$f"; printf '\\n'; id=$(basename "$f" .json); [ -f "$d/results/$id/result.json" ] && { printf '@@result %s\\n' "$id"; head -c 20000 "$d/results/$id/result.json"; printf '\\n'; }; done; fi; done; true`;
 
-async function dumpQueue(t: Target): Promise<{ text: string; via?: string; error?: string }> {
+async function dumpQueue(
+  t: Target,
+): Promise<{ text: string; via?: string; error?: string }> {
   if (t.local) {
-    const sh = process.platform === "win32" ? Bun.which("niu") ?? Bun.which("bash") ?? "sh" : "sh";
-    const p = Bun.spawn([sh, "-c", QUEUE_DUMP(t.local.replaceAll("\\", "/"))], { stdout: "pipe", stderr: "pipe" });
+    const sh =
+      process.platform === "win32"
+        ? (Bun.which("niu") ?? Bun.which("bash") ?? "sh")
+        : "sh";
+    const p = Bun.spawn([sh, "-c", QUEUE_DUMP(t.local.replaceAll("\\", "/"))], {
+      stdout: "pipe",
+      stderr: "pipe",
+    });
     return { text: await new Response(p.stdout).text(), via: "local" };
   }
   let last = "";
   for (const c of t.ssh ?? []) {
     const args = c.split("\u0001");
     const p = Bun.spawn(
-      ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=15", ...args, QUEUE_DUMP(t.dir!)],
+      [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ConnectTimeout=15",
+        ...args,
+        QUEUE_DUMP(t.dir!),
+      ],
       { stdout: "pipe", stderr: "pipe", timeout: 90_000 },
     );
-    const [out, err, code] = await Promise.all([new Response(p.stdout).text(), new Response(p.stderr).text(), p.exited]);
+    const [out, err, code] = await Promise.all([
+      new Response(p.stdout).text(),
+      new Response(p.stderr).text(),
+      p.exited,
+    ]);
     if (code === 0) return { text: out, via: args.join(" ") };
     last = err.trim().split("\n").pop() ?? `exit ${code}`;
   }
   return { text: "", error: last || "aucune cible ssh" };
 }
 
-const AUTH_RE = /auth|login|oauth|401|403|credential|token|unauthori[sz]ed|not logged|expired/i;
+const AUTH_RE =
+  /auth|login|oauth|401|403|credential|token|unauthori[sz]ed|not logged|expired/i;
 
 export function parseQueueDump(host: string, text: string): Violation[] {
   const out: Violation[] = [];
@@ -588,7 +727,8 @@ export function parseQueueDump(host: string, text: string): Violation[] {
         excerpt: `effet externe retenu : ${basename(path!)}`,
         fix: "Autoriser l'effet dans .agents/owner-rules.json s'il est réversible ; sinon reste retenu.",
         status: "inevitable",
-        reason: "publication, envoi ou dépense : décision du propriétaire par contrat (owner-rules)",
+        reason:
+          "publication, envoi ou dépense : décision du propriétaire par contrat (owner-rules)",
         unit: host,
       });
       continue;
@@ -603,7 +743,9 @@ export function parseQueueDump(host: string, text: string): Violation[] {
     const r = results.get(t.id);
     const attempts: any[] = r?.attempts ?? t.attempts ?? [];
     const reasons = attempts.map((a) => a.reason).filter(Boolean);
-    const unavailable = reasons.filter((x) => x === "provider_unavailable").length;
+    const unavailable = reasons.filter(
+      (x) => x === "provider_unavailable",
+    ).length;
     const errText = JSON.stringify(r ?? {}).slice(0, 4000);
     const authish = AUTH_RE.test(errText);
     if (kind === "new" && t.approval === "owner")
@@ -693,4 +835,5 @@ export function scanLedger(root = srcRoot()): Violation[] {
   }));
 }
 
-export const relPath = (p: string) => relative(srcRoot(), p).replaceAll("\\", "/");
+export const relPath = (p: string) =>
+  relative(srcRoot(), p).replaceAll("\\", "/");

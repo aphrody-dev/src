@@ -28,60 +28,63 @@ const { positionals, values } = parseArgs({
 const [cmd, ...rest] = positionals;
 const print = (x: unknown) => console.log(JSON.stringify(x, null, 2));
 
-  switch (cmd) {
-    case "scan": {
-      const ix = new Index();
-      const only = values.only
-        ? (values.only.split(",") as Source[])
-        : undefined;
-      const report = await scan(ix, only, values.local);
-      print({ report, ...ix.stats() });
-      ix.close();
-      break;
-    }
-    case "list": {
-      const ix = new Index();
-      print(
-        ix.list({
-          source: values.source,
-          category: values.category,
-          status: values.status,
-          severity: values.severity,
-          q: values.q,
-          limit: values.limit ? Number(values.limit) : undefined,
-        }),
-      );
-      ix.close();
-      break;
-    }
-    case "stats": {
-      const ix = new Index();
-      print(ix.stats());
-      ix.close();
-      break;
-    }
-    case "set": {
-      const [id, status] = rest;
-      if (!id || !["open", "fixed", "inevitable"].includes(status ?? ""))
-        throw new Error(
-          "usage : ai-os nhitl set <id> <open|fixed|inevitable> [--reason …]",
-        );
-      const ix = new Index();
-      ix.triage(id, status as Status, values.reason);
-      print({ id, status, reason: values.reason ?? null });
-      ix.close();
-      break;
-    }
-    case "login": {
-      const { login } = await import("./login");
-      print(
-        await login(rest[0] ?? "", values.hosts?.split(",").filter(Boolean) ?? undefined, 30, values.clipboard ?? false),
-      );
-      break;
-    }
-    default:
-      console.error(
-        "usage : ai-os nhitl scan [--only sources] [--local] | list [--source|--category|--status|--severity|--q|--limit] | stats | set <id> <status> [--reason] | login claude|codex [--hosts prd,fr2]",
-      );
-      process.exit(2);
+switch (cmd) {
+  case "scan": {
+    const ix = new Index();
+    const only = values.only ? (values.only.split(",") as Source[]) : undefined;
+    const report = await scan(ix, only, values.local);
+    print({ report, ...ix.stats() });
+    ix.close();
+    break;
   }
+  case "list": {
+    const ix = new Index();
+    print(
+      ix.list({
+        source: values.source,
+        category: values.category,
+        status: values.status,
+        severity: values.severity,
+        q: values.q,
+        limit: values.limit ? Number(values.limit) : undefined,
+      }),
+    );
+    ix.close();
+    break;
+  }
+  case "stats": {
+    const ix = new Index();
+    print(ix.stats());
+    ix.close();
+    break;
+  }
+  case "set": {
+    const [id, status] = rest;
+    if (!id || !["open", "fixed", "inevitable"].includes(status ?? ""))
+      throw new Error(
+        "usage : ai-os nhitl set <id> <open|fixed|inevitable> [--reason …]",
+      );
+    const ix = new Index();
+    ix.triage(id, status as Status, values.reason);
+    print({ id, status, reason: values.reason ?? null });
+    ix.close();
+    break;
+  }
+  case "login": {
+    const { login } = await import("./login");
+    print(
+      await login(
+        rest[0] ?? "",
+        values.hosts?.split(",").filter(Boolean) ?? undefined,
+        30,
+        values.clipboard ?? false,
+      ),
+    );
+    break;
+  }
+  default:
+    console.error(
+      "usage : ai-os nhitl scan [--only sources] [--local] | list [--source|--category|--status|--severity|--q|--limit] | stats | set <id> <status> [--reason] | login claude|codex [--hosts prd,fr2]",
+    );
+    process.exit(2);
+}
