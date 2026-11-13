@@ -31,7 +31,7 @@ Areas:
   chromium   chromium (fr1 build chain), gclient, fetch, gn, ninja, cipd, cl, vpy, engines (V8, JSC, Dawn, wgpu)
   fleet      ssh, deploy, auth, secret, vault, ai, agents
   measure    bench, time
-  gaming     gaming (Steam, Proton, Vulkan, DirectX via packages/gaming), steam (Steam data as JSON)
+  design     design (DESIGN.md lint/export/spec, Stitch, push), jules (Google Jules agent: run, sessions, sources)
   gaming     gaming (Steam, Proton, Vulkan, DirectX via packages/gaming), steam (Steam data as JSON)
 
 Every command takes --help; machine output is --json where offered.
@@ -79,6 +79,12 @@ pub enum Cmd {
     /// Gaming stack (packages/gaming): status, apps, proton, layers, dx, steamcmd, run, skills
     #[command(disable_help_flag = true)]
     Gaming(Rest),
+    /// DESIGN.md (google-labs-code/design.md) lint, export, spec; Stitch client; push to Stitch (packages/google-design)
+    #[command(disable_help_flag = true)]
+    Design(Rest),
+    /// Google Jules coding agent: run [--wait], sessions, show, activities, approve, send, sources (ai-os jules)
+    #[command(disable_help_flag = true)]
+    Jules(Rest),
     /// Patch stacks of the bun and Chromium forks: status, sync, check, pr, mark, gc, export (packages/upstream)
     #[command(disable_help_flag = true)]
     Upstream(Rest),
@@ -88,6 +94,9 @@ pub enum Cmd {
     /// Package recipes for every distro: list, matrix, gen, build, check (packages/linux, infra/pkg)
     #[command(disable_help_flag = true)]
     Pkg(Rest),
+    /// Release from fr1: tags, GitHub release, crates.io, npm, PyPI, vcpkg/CMake; dry-run unless `publish` (packages/release)
+    #[command(disable_help_flag = true)]
+    Release(Rest),
     /// bun-LFS (third_party/lfs/bun, GitHub CI): build, logs, wsl (runs `just lfs-<sub>`)
     #[command(disable_help_flag = true)]
     Lfs(Rest),
@@ -243,9 +252,12 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Bench(r) => Route::Bench(r.args),
         Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
         Cmd::Gaming(r) => Route::Package("gaming", r.args),
+        Cmd::Design(r) => Route::Package("google-design", r.args),
+        Cmd::Jules(r) => Route::Package("ai-os", prefixed(&["jules"], &r.args)),
         Cmd::Upstream(r) => Route::Package("upstream", r.args),
         Cmd::Linux(r) => Route::Package("linux", r.args),
         Cmd::Pkg(r) => Route::Package("linux", prefixed(&["pkg"], &r.args)),
+        Cmd::Release(r) => Route::Package("release", r.args),
         Cmd::Lfs(r) => {
             let (sub, rest) = r.args.split_first().map_or(("build", &[][..]), |(s, rest)| (s.as_str(), rest));
             Route::External("just", prefixed(&[format!("lfs-{sub}").as_str()], rest))
@@ -540,6 +552,13 @@ mod tests {
     }
 
     #[test]
+    fn design_and_jules_run_their_packages() {
+        assert_eq!(parse("design lint --format text"), Route::Package("google-design", v(&["lint", "--format", "text"])));
+        assert_eq!(parse("design stitch projects"), Route::Package("google-design", v(&["stitch", "projects"])));
+        assert_eq!(parse("jules run --wait -"), Route::Package("ai-os", v(&["jules", "run", "--wait", "-"])));
+    }
+
+    #[test]
     fn upstream_runs_the_bun_package() {
         assert_eq!(parse("upstream status bun --json"), Route::Package("upstream", v(&["status", "bun", "--json"])));
         assert_eq!(parse("upstream --help"), Route::Package("upstream", v(&["--help"])));
@@ -549,6 +568,11 @@ mod tests {
     fn linux_and_pkg_run_the_linux_package() {
         assert_eq!(parse("linux status --json"), Route::Package("linux", v(&["status", "--json"])));
         assert_eq!(parse("pkg gen all --target arch"), Route::Package("linux", v(&["pkg", "gen", "all", "--target", "arch"])));
+    }
+
+    #[test]
+    fn release_runs_the_release_package() {
+        assert_eq!(parse("release dry-run --only crates"), Route::Package("release", v(&["dry-run", "--only", "crates"])));
     }
 
     #[test]

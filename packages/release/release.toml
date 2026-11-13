@@ -1,0 +1,32 @@
+# `ay release` (packages/release): what one release ships, per registry. Run on fr1 (`ay release`, header of src/cli.ts).
+# Registries that authenticate by OIDC (crates.io, npm, PyPI) are published by their GitHub-hosted workflow,
+# dispatched from fr1: an OIDC token only exists inside an Actions job, and npm refuses self-hosted runners.
+# fr1 itself does the plan, the dry-runs, the tag, the GitHub release and the vcpkg registry push.
+
+repo = "aphrody-labs/src"
+# Tag of a workspace release: v<workspace.package.version> (release.yml/dist matches **[0-9]+.[0-9]+.[0-9]+*).
+tag_prefix = "v"
+
+[crates]
+# Workspace crates, in dependency order. Empty = every crate whose `publish` is not false.
+select = []
+workflow = "crates-publish.yml"
+
+[npm]
+# Package directories; empty = every non-private packages/*/package.json.
+select = []
+workflow = "npm-publish.yml"
+
+[pypi]
+# PyO3 crates built with maturin (pyproject.toml generated in the build tree when absent).
+crates = ["crates/agent-py"]
+dist_name = { "crates/agent-py" = "aphrody-agent-core" }
+workflow = "pypi-publish.yml"
+
+[vcpkg]
+# Git registry (learn.microsoft.com/vcpkg/maintainers/registries): ports/, versions/baseline.json, versions/<l>-/<port>.json.
+registry = "aphrody-labs/vcpkg-registry"
+# C ABI crates shipped as a vcpkg port with a CMake package config (find_package(<port> CONFIG)).
+ports = [
+  { crate = "crates/core-capi", port = "aphrody-core-capi", lib = "aphrody_core_capi", header = "include/aphrody_core.h", target = "aphrody::core" },
+]

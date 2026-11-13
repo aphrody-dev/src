@@ -114,6 +114,13 @@
       "name": "@aphrody/net",
       "version": "0.2.0",
     },
+    "packages/release": {
+      "name": "@aphrody/release",
+      "version": "1.0.0",
+      "bin": {
+        "release": "./src/cli.ts",
+      },
+    },
     "packages/runtime-adapter": {
       "name": "@aphrody/runtime-adapter",
       "version": "0.1.0",
@@ -180,6 +187,8 @@
     "@aphrody/machine": ["@aphrody/machine@workspace:packages/machine"],
 
     "@aphrody/net": ["@aphrody/net@workspace:packages/net"],
+
+    "@aphrody/release": ["@aphrody/release@workspace:packages/release"],
 
     "@aphrody/runtime-adapter": ["@aphrody/runtime-adapter@workspace:packages/runtime-adapter"],
 

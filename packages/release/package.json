@@ -1,0 +1,19 @@
+{
+  "name": "@aphrody/release",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ay release: tags, GitHub releases, crates.io, npm, PyPI and vcpkg/CMake from fr1, dry-run first",
+  "type": "module",
+  "bin": {
+    "release": "./src/cli.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aphrody-labs/src.git",
+    "directory": "packages/release"
+  }
+}
