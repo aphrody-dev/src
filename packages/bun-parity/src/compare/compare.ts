@@ -1,8 +1,8 @@
 // `bpt compare name=/path/to/bun ...` : bun stable, canary and the aphrody-labs/bun fork side by side.
 // Writes a Markdown report (`--out <file>`, docs/bun/COMPARISON.md by default from the repo root).
 //
-// Benchmarks follow the method of the fork's CI (third_party/bun/.github/native/bench.sh): the same
-// fixtures (third_party/bun/.github/native/fixtures), hyperfine with 3 warmups and RUNS runs per
+// Benchmarks follow the method of the fork's CI (third_party/bun/scripts/native-bench.sh): the same
+// fixtures (third_party/bun/scripts/native-bench/fixtures), hyperfine with 3 warmups and RUNS runs per
 // binary in turn on one machine, `bun install` warm with node_modules removed before each run, and
 // Bun.serve under `oha -z 10s -c 64`. On Windows the shell fixture runs a Windows-safe variant
 // (fixtures/shell-windows.ts here): /usr/bin and /dev/null do not exist there.
@@ -27,7 +27,7 @@ type Bin = { name: string; path: string };
 
 const REPO = resolve(import.meta.dir, "..", "..", "..", "..");
 const BUN_SRC = join(REPO, "third_party", "bun");
-const FIXTURES = join(BUN_SRC, ".github", "native", "fixtures");
+const FIXTURES = join(BUN_SRC, "scripts", "native-bench", "fixtures");
 
 function sh(cmd: string[], cwd?: string): string {
   const r = Bun.spawnSync({ cmd, cwd, stdout: "pipe", stderr: "pipe" });
@@ -355,7 +355,7 @@ export async function main(args: string[]): Promise<number> {
       : [
           "## Performances",
           "",
-          `Méthode de \`third_party/bun/.github/native/bench.sh\` (CI du fork) : mêmes fixtures, hyperfine ${process.env.RUNS ?? "30"} exécutions après 3 de chauffe, binaires l'un après l'autre sur la même machine. Moyenne ± écart type. Outils : ${sh(["hyperfine", "--version"])}, ${sh([process.env.OHA || "oha", "--version"]) || "oha absent"}. \`bun install\` sans \`--frozen-lockfile=false\` (bench.sh) : bun 1.4.4 refuse une valeur à cette option.`,
+          `Méthode de \`third_party/bun/scripts/native-bench.sh\` (CI du fork) : mêmes fixtures, hyperfine ${process.env.RUNS ?? "30"} exécutions après 3 de chauffe, binaires l'un après l'autre sur la même machine. Moyenne ± écart type. Outils : ${sh(["hyperfine", "--version"])}, ${sh([process.env.OHA || "oha", "--version"]) || "oha absent"}. \`bun install\` sans \`--frozen-lockfile=false\` (bench.sh) : bun 1.4.4 refuse une valeur à cette option.`,
           "",
           await bench(bins),
           "",
