@@ -37,4 +37,4 @@ their own SemVer only for tooling; generated files read the two sources above.
 |---|---|
 | Health of the fleet and public endpoints | `just ping` |
 | Canary now | `gh workflow run canary.yml` (or wait for the next green `ci`) |
-| rc / stable | bump `Cargo.toml` + `tools.toml` `ay` pin, commit on main, tag `vX.Y.Z[-rc.N]`; `release.yml` (dist) builds |
+| rc / stable | bump `Cargo.toml` + `tools.toml` `ay` pin, commit on main, `ay release` from fr1 (packages/release, dry-run by default) tags `vX.Y.Z[-rc.N]`; `release.yml` (dist) builds |
