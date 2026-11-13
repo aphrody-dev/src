@@ -25,7 +25,7 @@ Le pilote `scripts/unixwin/unixwin.ts` (bun) enchaîne les étapes. Les recettes
 | `just unixwin-fetch-ci [triple]` | artefact du run `aphrody build` réussi au commit épinglé, dans `var/unixwin/ci/<triple>`, contrôle sha256 |
 | `just unixwin-install [ci\|prd] [triple]` | remplace `niu.exe` et ses copies identiques (`winuxcmd/bin/bash.exe`, `sh.exe`) dans `%LOCALAPPDATA%\Programs\Niubash` ; copie revérifiée (`*.new`), échange par renommage avec restauration ; l'ancien binaire devient `*.old-<horodatage>`, purgé à l'installation suivante s'il était encore exécuté |
 | `just unixwin-test` | suite bun de bout en bout (`apps/unixwin/tests`) |
-| `just unixwin-test-prd [filtre]` | `cargo test` de rubash sur prd au commit épinglé (`infra/unixwin/prd-test.sh`, nice -n 19, 4 tâches) |
+| `just unixwin-test-fr1 [filtre]` | `cargo test` de rubash sur fr1 (usine) au commit épinglé (`infra/unixwin/fr1-test.sh`, `aphrody-heavy`, 4 tâches) |
 
 Mise à jour d'un fork : commit sur sa branche par défaut dans `third_party/<nom>`, push, puis
 `bun scripts/unixwin/unixwin.ts lock` et commit de `src.lock.json`. `ay lock --lock-only` réécrit tout le lock

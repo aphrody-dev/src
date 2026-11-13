@@ -22,9 +22,9 @@ unixwin-fetch-ci triple="x86_64-pc-windows-msvc":
 unixwin-install from="ci" triple="x86_64-pc-windows-msvc":
     bun "{{root}}/scripts/unixwin/unixwin.ts" install {{from}} {{triple}}
 
-# Test Rust ciblé de rubash sur prd (flock, nice 19, ionice idle, -j 2) ; la suite complète tourne dans la CI du fork
-unixwin-test-prd filter:
-    bun "{{root}}/scripts/unixwin/unixwin.ts" test-prd {{filter}}
+# Test Rust ciblé de rubash sur fr1, l'usine (aphrody-heavy, -j 4) ; la suite complète tourne dans la CI du fork
+unixwin-test-fr1 filter:
+    bun "{{root}}/scripts/unixwin/unixwin.ts" test-fr1 {{filter}}
 
 # Suite bun de bout en bout (niubash, rubash, WinuxCmd) contre GNU bash et uutils
 unixwin-test:
