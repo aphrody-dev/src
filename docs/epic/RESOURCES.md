@@ -49,7 +49,7 @@ Source: unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show (2026-
 
 ## AI tooling (Claude Code, MCP)
 
-- `EpicGames/unreal-engine-skills-for-claude-code-plugin` (MIT; version:3.1.2 in `.claude-plugin/plugin.json` per `gh api` on 2026-11-13): skills `unreal-mcp`, `create-toolset`, `unreal-skill`, SessionStart hook (needs bash); listed in `claude-plugins-official`.
+- `EpicGames/unreal-engine-skills-for-claude-code-plugin` (MIT; v3.1.2 in `.claude-plugin/plugin.json` per `gh api` on 2026-11-13): skills `unreal-mcp`, `create-toolset`, `unreal-skill`, SessionStart hook (needs bash); listed in `claude-plugins-official`.
 - Unreal MCP server (UE 5.8, Experimental): enable `ModelContextProtocol` and `AllToolsets` in the `.uproject`; start with `ModelContextProtocol.StartServer`, or `bAutoStartServer=True` under `[/Script/ModelContextProtocolEngine.ModelContextProtocolSettings]` in `Saved/Config/<Platform>Editor/EditorPerProjectUserSettings.ini`; write client config with `ModelContextProtocol.GenerateClientConfig ClaudeCode`. Default endpoint `http://127.0.0.1:8000/mcp`. Only three meta-tools are listed: `list_toolsets`, `describe_toolset`, `call_tool`. Source: the plugin file `skills/unreal-mcp/references/setup.md`. Optional stdio proxy `Engine/Plugins/Experimental/ModelContextProtocol/Extras/Proxy`.
 
 ## Epic Online Services (EOS)
