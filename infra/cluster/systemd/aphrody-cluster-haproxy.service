@@ -1,0 +1,23 @@
+# Cluster data plane (infra/cluster). Config: /etc/aphrody-cluster/haproxy.cfg (generated, infra/cluster/gen.ts).
+# Rollback: systemctl disable --now aphrody-cluster-haproxy
+[Unit]
+Description=aphrody cluster LB (HAProxy: LB pools, failover, backend mTLS between members)
+After=network-online.target nginx.service
+Wants=network-online.target
+
+[Service]
+Type=notify
+Slice=aphrody-cluster.slice
+RuntimeDirectory=aphrody-cluster
+Environment=CONFIG=/etc/aphrody-cluster/haproxy.cfg PIDFILE=/run/aphrody-cluster/haproxy.pid
+ExecStartPre=/usr/bin/env haproxy -f ${CONFIG} -c -q
+ExecStart=/usr/bin/env haproxy -Ws -f ${CONFIG} -p ${PIDFILE}
+ExecReload=/usr/bin/env haproxy -f ${CONFIG} -c -q
+ExecReload=/bin/kill -USR2 $MAINPID
+KillMode=mixed
+Restart=always
+RestartSec=1s
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

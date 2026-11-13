@@ -1,0 +1,7 @@
+# Override for low-priority members (fr1): edge replicas inside aphrody-cluster.slice (CPUQuota/MemoryMax from
+# deploy.toml [cluster.members.fr1].slice), so Chromium/LLVM builds keep priority.
+# docker compose -f compose.yaml -f compose.capped.yaml --profile edge up -d   (rollback: ... --profile edge down)
+services:
+  downloads: { cgroup_parent: aphrody-cluster.slice, cpu_shares: 128, deploy: { resources: { limits: { cpus: "1.0", memory: 1g } } } }
+  cdn: { cgroup_parent: aphrody-cluster.slice, cpu_shares: 128, deploy: { resources: { limits: { cpus: "1.0", memory: 1g } } } }
+  api-gateway: { cgroup_parent: aphrody-cluster.slice, cpu_shares: 128, deploy: { resources: { limits: { cpus: "1.0", memory: 1g } } } }

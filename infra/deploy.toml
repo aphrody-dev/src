@@ -314,18 +314,15 @@ cache_max_size = "2g"
 [cluster.members.fr1]
 node = "fr1"
 ssh = "fr1"
-pc_identity = "~/.ssh/id_ed25519_vn"
 weight = 20                     # low weight: Chromium/LLVM builds keep priority
 slice = { CPUQuota = "200%", MemoryMax = "6G", CPUWeight = "10", IOWeight = "10" }
 [cluster.members.fr2]
 node = "fr2"
 ssh = "fr2"
-pc_identity = "~/.ssh/id_ed25519_vn"
 weight = 60
 [cluster.members.prd]
 node = "usa"
 ssh = "prd"
-pc_identity = "~/.ssh/hostinger_us_ed25519"
 weight = 100
 
 # Stateless, multi-member. targets = member -> local origin. cache: micro (honour origin headers, else 1 s

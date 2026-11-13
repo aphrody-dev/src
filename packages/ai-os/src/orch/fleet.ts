@@ -10,6 +10,9 @@ export type Host = {
   id: string; // nom de fleet.toml : pc, prd, fr2
   local: boolean;
   ssh?: string; // alias ssh (deploy.toml ssh_alias)
+  // Cibles ssh essayées dans l'ordre (fleet.toml `ssh` : <hôte>-mesh = sshd via le mesh mTLS TCP 7444,
+  // infra/cluster, indépendant de WireGuard ; puis ssh direct). Repli seulement si ssh échoue à se connecter (255).
+  sshTargets?: string[];
   src: string; // checkout du runner sur l'hôte
   roles: string[];
   maxAgents: number; // tâches simultanées confiées par l'orchestrateur
@@ -68,6 +71,14 @@ export function hosts(root = srcRoot()): Host[] {
       id,
       local,
       ssh: local ? undefined : (node?.[1].ssh_alias ?? id),
+      sshTargets: local
+        ? undefined
+        : [
+            ...new Set<string>([
+              ...(Array.isArray(h.ssh) ? h.ssh : []),
+              node?.[1].ssh_alias ?? id,
+            ]),
+          ],
       src: local ? root : h.src,
       roles: h.roles ?? [],
       maxAgents: cap,
@@ -103,62 +114,72 @@ export async function exec(
 ): Promise<ExecResult> {
   const t0 = performance.now();
   const timeoutMs = o.timeoutMs ?? 600_000;
-  let cmd: string[];
+  let cmds: string[][];
   let cwd: string | undefined;
   if (h.local) {
-    cmd = argv;
+    cmds = [argv];
     cwd = o.home ? undefined : resolve(h.src, o.cwd ?? ".");
   } else {
     const dir = o.cwd ? `${h.src}/${o.cwd}` : h.src;
     const body = o.raw
       ? argv.join(" ")
       : `exec nice -n 19 timeout -k 10 ${Math.ceil(timeoutMs / 1000)} ${argv.map(shq).join(" ")}`;
-    cmd = [
+    const remote = o.home
+      ? `cd; ${body}`
+      : o.raw
+        ? `cd ${shq(dir)} 2>/dev/null; ${body}`
+        : `cd ${shq(dir)} || { printf 'checkout absent : %s\\n' ${shq(dir)} >&2; exit 127; }; ${body}`;
+    cmds = (h.sshTargets ?? [h.ssh!]).map((t) => [
       "ssh",
       "-o",
       "BatchMode=yes",
       "-o",
       "ConnectTimeout=10",
-      h.ssh!,
-      o.home
-        ? `cd; ${body}`
-        : o.raw
-          ? `cd ${shq(dir)} 2>/dev/null; ${body}`
-          : `cd ${shq(dir)} || { printf 'checkout absent : %s\\n' ${shq(dir)} >&2; exit 127; }; ${body}`,
-    ];
-  }
-  try {
-    const p = Bun.spawn(cmd, {
-      cwd,
-      stdin: o.stdin !== undefined ? Buffer.from(o.stdin) : "ignore",
-      stdout: "pipe",
-      stderr: "pipe",
-      timeout: timeoutMs + 15_000,
-    });
-    if (h.local && p.pid)
-      try {
-        setPriority(p.pid, constants.priority.PRIORITY_BELOW_NORMAL);
-      } catch {}
-    const [out, err, code] = await Promise.all([
-      new Response(p.stdout).text(),
-      new Response(p.stderr).text(),
-      p.exited,
+      t,
+      remote,
     ]);
-    // 124 seulement si le délai est atteint ; un autre signal (OOM, crash) reste un échec ordinaire.
-    const late = performance.now() - t0 >= timeoutMs;
-    return {
-      code: p.signalCode ? (late ? 124 : 128 + 9) : code,
-      out,
-      err,
-      ms: Math.round(performance.now() - t0),
-    };
-  } catch (e) {
-    return {
-      code: 127,
-      out: "",
-      err: e instanceof Error ? e.message : String(e),
-      ms: Math.round(performance.now() - t0),
-    };
+  }
+  let r: ExecResult = { code: 255, out: "", err: "aucune cible ssh", ms: 0 };
+  for (const cmd of cmds) {
+    r = await run(cmd);
+    if (h.local || r.code !== 255) return r; // 255 = connexion ssh impossible : cible suivante
+  }
+  return r;
+
+  async function run(cmd: string[]): Promise<ExecResult> {
+    try {
+      const p = Bun.spawn(cmd, {
+        cwd,
+        stdin: o.stdin !== undefined ? Buffer.from(o.stdin) : "ignore",
+        stdout: "pipe",
+        stderr: "pipe",
+        timeout: timeoutMs + 15_000,
+      });
+      if (h.local && p.pid)
+        try {
+          setPriority(p.pid, constants.priority.PRIORITY_BELOW_NORMAL);
+        } catch {}
+      const [out, err, code] = await Promise.all([
+        new Response(p.stdout).text(),
+        new Response(p.stderr).text(),
+        p.exited,
+      ]);
+      // 124 seulement si le délai est atteint ; un autre signal (OOM, crash) reste un échec ordinaire.
+      const late = performance.now() - t0 >= timeoutMs;
+      return {
+        code: p.signalCode ? (late ? 124 : 128 + 9) : code,
+        out,
+        err,
+        ms: Math.round(performance.now() - t0),
+      };
+    } catch (e) {
+      return {
+        code: 127,
+        out: "",
+        err: e instanceof Error ? e.message : String(e),
+        ms: Math.round(performance.now() - t0),
+      };
+    }
   }
 }
 
