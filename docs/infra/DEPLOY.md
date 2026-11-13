@@ -57,3 +57,18 @@ aucune production n'y est placée.
   builder natif ; runtime Alpine. Bun : `bun install --frozen-lockfile`, serveur empaqueté (`bun build`) + `dist/`.
 - Pas de Debian dans les images de src (Alpine / Arch) ; seules les images amont épinglées (llama.cpp) et les
   produits (shenron, rosegriffon) gardent leur base.
+
+## État vérifié (2026-11-13)
+
+- Outils : `toolchains.lock.toml` résolu sans erreur (30 entrées, sommes amont). PC : nightly-2026-11-12
+  (rustc 3ef0c22cd, LLVM 23.1.5 = clang 23.1.5), .NET SDK 11.0.100, git-lfs 3.8.0, cbindgen 0.29.4, CMake 4.4.5,
+  FFmpeg 9.0.2 shared (`FFMPEG_DIR`), contexte Docker `prd` par défaut. prd : go 1.27.4, zig 0.17.1, dotnet 11.0.100,
+  cargo-zigbuild 0.24.1, builder buildx `aphrody` (amd64 + arm64). fr1 : sccache 0.19.0, just 1.59.0, nightly épinglée.
+  fr2 : Docker activé (`ip-forward-no-drop`, FORWARD reste ACCEPT).
+- Images Bun (`ai-os` relais et gateway, `aphrody`, `r2-site`, `api-gateway`) : healthy en smoke (non-root, rootfs en
+  lecture seule). Compose `core` sur prd (ports verts) et `edge` sur fr2 : healthy ; `api-gateway` et `downloads`
+  auto-hébergés servent les mêmes objets R2 que les Workers (`SHA256SUMS.txt` 90 o des deux côtés).
+- Images Rust : construites par `images.yml` (GitHub, amd64 + arm64) ; ne pas les construire sur prd quand sa charge
+  dépasse 8 (builds `cargo` d'autres agents : charge 190-240 observée le 2026-11-13).
+- Push GHCR depuis le PC/prd : le jeton `gh` actuel n'a pas `write:packages` ; `images.yml` pousse avec `GITHUB_TOKEN`.
+  Pour pousser hors CI : `gh auth refresh -s write:packages` puis `gh auth token | docker login ghcr.io -u aphrody-dev --password-stdin`.
