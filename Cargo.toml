@@ -154,7 +154,8 @@ wasm-bindgen = "0.2.130"
 wasm-bindgen-futures = "0.4.80"
 web-sys = "0.3.107"
 wgpu = "30.0.1"
-winit = "0.31.0-beta.4"
+# One winit for the workspace: bevy_winit 0.20.1 and egui-winit 0.37.0 require ^0.30 (crates.io, 2026-11-13); 0.31 is still beta.
+winit = "0.30.13"
 
 # Labs-only crates.io dependencies
 anstyle = "1.0.14"

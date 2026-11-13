@@ -216,7 +216,7 @@ fn cmd_benchmark_upscale(args: &[String]) {
 }
 
 struct GamescopeApp {
-    window: Option<Arc<dyn Window>>,
+    window: Option<Arc<Window>>,
     device: Option<wgpu::Device>,
     queue: Option<wgpu::Queue>,
     surface: Option<wgpu::Surface<'static>>,
@@ -248,16 +248,16 @@ impl Default for GamescopeApp {
 }
 
 impl ApplicationHandler for GamescopeApp {
-    fn can_create_surfaces(&mut self, event_loop: &dyn ActiveEventLoop) {
+    fn resumed(&mut self, event_loop: &ActiveEventLoop) {
         if self.window.is_some() {
             return;
         }
 
         let window_attrs = WindowAttributes::default()
             .with_title("Gamescope-rs (Rust + WebGPU / RTX 4070)")
-            .with_surface_size(winit::dpi::LogicalSize::new(1920.0, 1080.0));
+            .with_inner_size(winit::dpi::LogicalSize::new(1920.0, 1080.0));
 
-        let window: Arc<dyn Window> = Arc::from(
+        let window: Arc<Window> = Arc::new(
             event_loop
                 .create_window(window_attrs)
                 .expect("Failed to create winit window"),
@@ -287,7 +287,7 @@ impl ApplicationHandler for GamescopeApp {
         }))
         .expect("Failed to create device");
 
-        let size = window.surface_size();
+        let size = window.inner_size();
         let width = size.width.max(1);
         let height = size.height.max(1);
 
@@ -338,7 +338,7 @@ impl ApplicationHandler for GamescopeApp {
 
     fn window_event(
         &mut self,
-        event_loop: &dyn ActiveEventLoop,
+        event_loop: &ActiveEventLoop,
         _window_id: WindowId,
         event: WindowEvent,
     ) {
@@ -346,7 +346,7 @@ impl ApplicationHandler for GamescopeApp {
             WindowEvent::CloseRequested => {
                 event_loop.exit();
             }
-            WindowEvent::SurfaceResized(new_size) => {
+            WindowEvent::Resized(new_size) => {
                 if let (Some(surface), Some(device), Some(config)) = (
                     self.surface.as_mut(),
                     self.device.as_ref(),
@@ -459,7 +459,7 @@ fn cmd_window() {
     let event_loop = EventLoop::new().expect("Failed to create winit event loop");
     event_loop.set_control_flow(ControlFlow::Poll);
     event_loop
-        .run_app(GamescopeApp::default())
+        .run_app(&mut GamescopeApp::default())
         .expect("Error running winit application");
 }
 

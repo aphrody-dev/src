@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "craft-formats"
+publish = false
+description = "Format layer: detect and read the header of SVG, WebP, EXR, PSD, TIFF and HEIF through storytold/craft-libs (Apache-2.0), pinned by rev."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[lints.rust]
+unsafe_code = "forbid"
+
+# One rev for every craft-* crate (docs/games/PLAN.md step 3).
+[dependencies]
+craft-svg = { git = "https://github.com/storytold/craft-libs", rev = "a9949872bd91ecf6bcec4e86339e3f50ad007fb9" }
+craft-webp = { git = "https://github.com/storytold/craft-libs", rev = "a9949872bd91ecf6bcec4e86339e3f50ad007fb9" }
+craft-exr = { git = "https://github.com/storytold/craft-libs", rev = "a9949872bd91ecf6bcec4e86339e3f50ad007fb9", features = ["decode"] }
+craft-psd = { git = "https://github.com/storytold/craft-libs", rev = "a9949872bd91ecf6bcec4e86339e3f50ad007fb9" }
+craft-tiff = { git = "https://github.com/storytold/craft-libs", rev = "a9949872bd91ecf6bcec4e86339e3f50ad007fb9" }
+craft-heif = { git = "https://github.com/storytold/craft-libs", rev = "a9949872bd91ecf6bcec4e86339e3f50ad007fb9" }
