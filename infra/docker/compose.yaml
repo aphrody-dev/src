@@ -49,6 +49,7 @@ services:
     profiles: [core]
     image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/aphrody:${SRC_TAG:-latest}
     ports: ["127.0.0.1:${APHRODY_HOST_PORT:-23000}:3000"]
+    volumes: [aphrody-var:/app/var]
 
   yolo: # image built from a full workstation checkout only (packages/google-design/upstream is not in git)
     <<: *svc
@@ -143,6 +144,7 @@ services:
     tty: true
 
 volumes:
+  aphrody-var:
   ai-os-home:
   rust-stack-data:
   lore-data:

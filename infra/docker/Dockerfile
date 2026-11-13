@@ -145,7 +145,7 @@ RUN set -eu; mkdir -p /out; \
     for app in aphrody; do \
       (cd "apps/$app" && bun run build.ts) && mkdir -p "/out/$app" && \
       bun build "apps/$app/server.ts" --target=bun --minify --outfile "/out/$app/server.js" && \
-      cp -r "apps/$app/dist" "/out/$app/dist" && { [ ! -d "apps/$app/public" ] || cp -r "apps/$app/public" "/out/$app/public"; }; \
+      cp -r "apps/$app/dist" "/out/$app/dist" && mkdir -p "/out/$app/var" && { [ ! -d "apps/$app/public" ] || cp -r "apps/$app/public" "/out/$app/public"; }; \
     done; \
     bun build apps/r2-site/src/entry.vps.ts --target=bun --minify --outfile /out/r2-site/server.js; \
     mkdir -p /out/api-gateway && bun build infra/fleet/workers/selfhost.ts --target=bun --outfile /out/api-gateway/selfhost.js && \
@@ -170,6 +170,8 @@ CMD ["bun", "src/relay/cli.ts", "serve"]
 
 FROM bun-runtime AS aphrody
 COPY --from=bun-build --chown=bun:bun /out/aphrody/ /app/
+# var/ = SQLite search history (writable volume; the rest of the image stays read-only).
+VOLUME /app/var
 ENV PORT=3000 HEALTH_PATH=/ok APHRODY_DIST=/app/dist
 EXPOSE 3000
 CMD ["bun", "server.js"]

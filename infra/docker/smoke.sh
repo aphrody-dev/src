@@ -16,7 +16,7 @@ for img in "$@"; do
     *) cmd="" ;;
   esac
   # shellcheck disable=SC2086
-  $D run -d --name "$name" --read-only --tmpfs /tmp --tmpfs /home/bun --cap-drop ALL --security-opt no-new-privileges:true \
+  $D run -d --name "$name" --read-only --tmpfs /tmp --tmpfs /home/bun:uid=1000,gid=1000 --tmpfs /app/var:uid=1000,gid=1000 --cap-drop ALL --security-opt no-new-privileges:true \
     --health-interval 2s --health-start-period 5s $extra "$ref" $cmd >/dev/null
   st=starting; i=0
   while [ "$st" = starting ] && [ $i -lt 60 ]; do sleep 2; i=$((i + 1)); st=$($D inspect -f '{{.State.Health.Status}}' "$name" 2>/dev/null || echo gone); done
