@@ -82,6 +82,11 @@ export function validateAiSeoSpec(ctx: WebFilesContext): SpecResult {
       }
     }
 
+    // SearchAction only describes a working site search, and Google stopped showing the sitelinks search box
+    // on 2024-11-21 (developers.google.com/search/blog/2024/10/sitelinks-search-box): required only when the
+    // page offers a search (role="search" or <search>).
+    const hasSiteSearch = /role=["']search["']|<search[\s>]/i.test(html);
+    if (!hasSiteSearch) hasSearchAction = true;
     if (hasValidSchema && hasValidType && hasSearchAction) {
       checks.push({
         id: "aiseo-jsonld",

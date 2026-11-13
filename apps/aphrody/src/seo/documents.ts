@@ -224,8 +224,7 @@ export function humansTxt(buildDate: string): string {
     "Name: Aphrody",
     `URL: ${SITE_URL}/`,
     `Last update: ${buildDate}`,
-    "Standards: HTML5, CSS3, ES2022, WebAssembly, Schema.org, Material Design 3",
-    "Runtime: Bun",
+    "Contact: contact@aphrody.com",
     "",
   ].join("\n");
 }

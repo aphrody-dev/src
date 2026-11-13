@@ -28,13 +28,14 @@ export function readBrand(root: string): Brand {
   const role: Record<string, string> = {
     container: "var(--md-sys-color-primary)",
     glyph: "var(--md-sys-color-on-primary)",
-    bolt: b.accent ?? "#FFB300",
+    bolt: `var(--aphrody-bolt,${b.accent ?? "#FFB300"})`,
   };
   mark = mark.replace(
     /(fill|stroke)="\{(\w+)\}"/g,
     (_, attr: string, slot: string) =>
       `style="${attr}:${role[slot] ?? "currentColor"}"`,
   );
+  mark = mark.replace('<path style="fill:var(--aphrody-bolt', '<path class="bolt" style="fill:var(--aphrody-bolt');
   if (mark && !/aria-hidden/.test(mark))
     mark = mark.replace("<svg", '<svg aria-hidden="true"');
   return { name: b.name ?? "Aphrody", mark };

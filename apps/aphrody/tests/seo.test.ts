@@ -217,10 +217,15 @@ describe("Schema.org JSON-LD @graph", () => {
   it("built home exists in both languages with its JSON-LD graph", () => {
     expect(existsSync(join(DIST, "en", "index.html"))).toBe(true);
     // Technical hubs are no longer published.
-    for (const v of VERTICALS) expect(existsSync(join(DIST, "search", v.slug, "index.html"))).toBe(false);
+    for (const v of VERTICALS)
+      expect(existsSync(join(DIST, "search", v.slug, "index.html"))).toBe(
+        false,
+      );
     const html = readFileSync(join(DIST, "index.html"), "utf-8");
-    // Holding home (src/holding/page.ts): Organization, WebSite with its SearchAction, product ItemList.
-    expect(ldGraph(html).length).toBe(3);
+    // Holding home (src/holding/page.ts): Organization, WebSite, product ItemList, BreadcrumbList. No SearchAction:
+    // the site has no search, and Google retired the sitelinks search box on 2024-11-21.
+    expect(ldGraph(html).length).toBe(4);
+    expect(html).not.toContain("SearchAction");
   });
 });
 
@@ -306,7 +311,6 @@ describe("ads.txt, sellers.json, security.txt, humans.txt, robots.txt", () => {
       "/robots.txt",
       "/llms.txt",
       "/llms-full.txt",
-      "/.well-known/agent.json",
     ]) {
       const res = await server.fetch(new Request(`http://localhost:3000${p}`));
       expect(res.status).toBe(200);
@@ -425,11 +429,8 @@ describe("WebMCP", () => {
       WEBMCP_TOOLS.map((t) => t.name),
     );
     for (const t of manifest.tools) expect(t.inputSchema.type).toBe("object");
-    const res = await server.fetch(
-      new Request("http://localhost:3000/.well-known/webmcp.json"),
-    );
-    expect(res.status).toBe(200);
-    expect((await res.json()).tools.length).toBe(WEBMCP_TOOLS.length);
+    // The manifest describes technical tools (catalog, benchmarks): no longer published on the public site.
+    expect(existsSync(join(DIST, ".well-known", "webmcp.json"))).toBe(false);
   });
 
   it("boot.js feature-detects navigator.modelContext", () => {
@@ -495,16 +496,12 @@ describe("Zero-copy static serving, hashing and progressive enhancement", () => 
     expect(traversal.status).toBe(404);
   });
 
-  it("search works without JavaScript (server-rendered form and results)", async () => {
+  it("home is complete without JavaScript and shows a real product capture", () => {
     const home = readFileSync(join(DIST, "index.html"), "utf-8");
-    expect(home).toContain("/search?q={search_term_string}");
     expect(home).not.toContain('<div id="root"></div>');
-    const res = await server.fetch(
-      new Request("http://localhost:3000/search?q=bun"),
-    );
-    expect(res.status).toBe(200);
-    const html = await res.text();
-    expect(html).toContain('action="/search"');
-    expect(html).toContain("noindex");
+    expect(home).toContain('width="1280" height="800"');
+    expect(existsSync(join(DIST, "shots", "aphrody-app.webp"))).toBe(true);
+    for (const id of ["nt", "aphrody-app", "rosegriffon"])
+      expect(existsSync(join(DIST, "icons", `${id}.svg`))).toBe(true);
   });
 });

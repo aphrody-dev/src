@@ -29,7 +29,12 @@ import {
 import { minifyCss } from "./src/seo/page-css";
 import { render404 } from "./src/seo/html";
 import { LOCALES, localizedPath } from "./src/seo/site";
-import { holdingCss, renderHolding } from "./src/holding/page";
+import {
+  holding404,
+  holdingCss,
+  productIcons,
+  renderHolding,
+} from "./src/holding/page";
 
 const ROOT = import.meta.dir;
 const DIST_DIR = join(ROOT, "dist");
@@ -91,13 +96,16 @@ const contact = (process.env.PUBLIC_CONTACT_EMAIL || "").trim() || undefined;
 emit("ads.txt", adsTxt(cfg));
 emit("sellers.json", JSON.stringify(sellersJson(contact), null, 2));
 emit(".well-known/security.txt", securityTxt(BUILD_DATE, contact));
-emit(".well-known/agent.json", JSON.stringify(agentJson(), null, 2));
-emit(".well-known/webmcp.json", JSON.stringify(webmcpJson(), null, 2));
 emit("humans.txt", humansTxt(BUILD_DATE));
 const nowKey = indexNowKey(process.env);
 emit(`${nowKey}.txt`, nowKey);
 emit("g-cfg.json", JSON.stringify(cfg));
-emit("404.html", render404("fr", cfg));
+emit("404.html", holding404(SRC_ROOT));
+// Product icons from `ay brand build` (assets/brand/gen/icons/<id>/), shown on the home page and in JSON-LD.
+for (const i of productIcons(SRC_ROOT)) {
+  emit(`icons/${i.id}.svg`, readFileSync(i.svg));
+  emit(`icons/${i.id}.png`, readFileSync(i.png));
+}
 // Edge headers (Cloudflare Workers assets / Pages). Same policy as server.ts.
 emit(
   "_headers",
@@ -112,6 +120,10 @@ emit(
     `  Content-Security-Policy: ${buildCsp(cfg)}`,
     "/atkinson-next.woff2",
     "  Cache-Control: public, max-age=31536000, immutable",
+    "/icons/*",
+    "  Cache-Control: public, max-age=86400",
+    "/shots/*",
+    "  Cache-Control: public, max-age=86400",
     "/*.xml",
     "  Cache-Control: public, max-age=0, s-maxage=3600, stale-while-revalidate=86400",
     "/ads.txt",

@@ -43,6 +43,17 @@ export default {
         `https://aphrody.com${url.pathname}${url.search}`,
         301,
       );
+    // Former technical pages (package search, catalog and benchmark APIs): gone from the public site.
+    if (url.pathname === "/search" || url.pathname.startsWith("/search/"))
+      return Response.redirect("https://aphrody.com/", 301);
+    if (/^\/api\/(pm|bnc)(\/|$)/.test(url.pathname))
+      return new Response("gone\n", {
+        status: 410,
+        headers: {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "public, max-age=3600",
+        },
+      });
     if (dynamic(url.pathname)) {
       // Same-zone subrequest from a route Worker goes to the origin (cloudflared tunnel -> prd), not back here.
       const target = env.ORIGIN_URL
