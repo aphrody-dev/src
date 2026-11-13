@@ -50,6 +50,7 @@ type Task = {
   budget_usd?: number;
   max_attempts?: number;
   attempts?: Attempt[];
+  not_before?: string; // set on requeue: not claimable before this time
   created_by?: string;
   created_at?: string;
 };
@@ -419,6 +420,7 @@ function claim(role: string): { t: Task; path: string } | null {
     if (t.role !== role || (t.host && t.host !== "any" && t.host !== HOST))
       continue;
     if ((role === "chromium") !== (t.host === "fr1")) continue; // fr1 = Chromium/LLVM builds only
+    if (t.not_before && Date.parse(t.not_before) > Date.now()) continue;
     const dst = join(Q.claimed, `${t.id}@${HOST}.${process.pid}.json`);
     try {
       renameSync(join(Q.new, f), dst);
@@ -430,13 +432,79 @@ function claim(role: string): { t: Task; path: string } | null {
   return null;
 }
 
+// Runner-owned checkout (<home>/agents/src): the runner may undo task leftovers. The PC works in
+// C:/src, shared with other agents: there nothing is undone, only in-scope files are committed.
+const OWNED = /[\\/]agents[\\/]src$/.test(SRC);
+
+// Roles whose output is text only may use relay models; every other role edits the checkout.
+const TEXT_ROLES = new Set(["reviewer", "growth"]);
+
+// One editing task at a time per checkout (no worktrees by policy): directory lock with owner pid.
+async function lockCheckout(): Promise<() => void> {
+  const lock = join(STATE, "checkout.lock");
+  for (;;) {
+    try {
+      mkdirSync(lock);
+      writeFileSync(join(lock, "pid"), String(process.pid));
+      return () => rmSync(lock, { recursive: true, force: true });
+    } catch {
+      let owner = 0;
+      try {
+        owner = Number(readFileSync(join(lock, "pid"), "utf8"));
+        process.kill(owner, 0);
+      } catch {
+        if (owner || Date.now() - statSync(lock).mtimeMs > 60_000)
+          rmSync(lock, { recursive: true, force: true });
+      }
+      await Bun.sleep(5_000);
+    }
+  }
+}
+
+// Undo what a task changed in the checkout (files that were clean before it started).
+function restore(cwd: string, files: string[]) {
+  if (!files.length) return;
+  const tracked = files.filter(
+    (f) =>
+      sh(["git", "ls-files", "--error-unmatch", "--", f], { cwd }).exit === 0,
+  );
+  if (tracked.length) sh(["git", "checkout", "--", ...tracked], { cwd });
+  for (const f of files)
+    if (!tracked.includes(f))
+      rmSync(join(cwd, f), { force: true, recursive: true });
+}
+function inScope(t: Task, f: string): boolean {
+  const pre = (t.commit?.paths ?? []).map((p) =>
+    p.replace(/\\/g, "/").replace(/\/$/, ""),
+  );
+  return pre.some(
+    (p) => p === "" || p === "." || f === p || f.startsWith(p + "/"),
+  );
+}
+
 async function runTask(t: Task, claimedPath: string) {
+  if (t.role === "growth") t.approval = "owner"; // enforced in code, whatever the JSON says
+  const named = t.providers?.length
+    ? t.providers
+    : TEXT_ROLES.has(t.role)
+      ? await relayChain()
+      : [];
+  const editing = named.some((p) => CLIS.has(p.split(":")[0]));
+  const unlock = editing ? await lockCheckout() : () => {};
+  try {
+    await runTaskLocked(t, claimedPath, named);
+  } finally {
+    unlock();
+  }
+}
+async function runTaskLocked(t: Task, claimedPath: string, named: string[]) {
   const role = FLEET.roles[t.role];
   const cwd = resolve(SRC, t.cwd ?? ".");
   const out = join(RESULTS, t.id);
   mkdirSync(out, { recursive: true });
-  const chain = (t.providers?.length ? t.providers : await relayChain()).filter(
-    (p) => !cooling(p),
+  // Editing roles never fall back to text-only relay models (they would "succeed" without a diff).
+  const chain = named.filter(
+    (p) => !cooling(p) && (TEXT_ROLES.has(t.role) || CLIS.has(p.split(":")[0])),
   );
   const timeoutMs = (t.timeout_s ?? role.timeout_s) * 1000;
   const budget = t.budget_usd ?? role.budget_usd;
@@ -490,6 +558,11 @@ async function runTask(t: Task, claimedPath: string) {
         ended: now(),
       };
       attempts.push(a);
+      if (exit === 137 || exit === 143) {
+        a.reason = "killed"; // OOM killer or timeout: no self-fix, no next provider
+        log("attempt", { id: t.id, provider: p, exit, reason: a.reason });
+        break;
+      }
       if (exit !== 0) {
         a.reason = RETRYABLE.test(text)
           ? "provider_unavailable"
@@ -497,6 +570,19 @@ async function runTask(t: Task, claimedPath: string) {
         if (a.reason === "provider_unavailable") coolDown(p);
         log("attempt", { id: t.id, provider: p, exit, reason: a.reason });
         break; // next provider
+      }
+      if (t.commit && t.approval !== "owner") {
+        const outside = [...dirty(cwd)].filter(
+          (f) => !before.has(f) && !inScope(t, f),
+        );
+        if (outside.length && OWNED) {
+          restore(cwd, outside); // out-of-scope edits are dropped before judging
+          log("out_of_scope", {
+            id: t.id,
+            provider: p,
+            files: outside.slice(0, 20),
+          });
+        }
       }
       if (!t.check) {
         a.reason = "ok";
@@ -524,6 +610,7 @@ async function runTask(t: Task, claimedPath: string) {
       });
       prompt = `${t.prompt}\n\nThe acceptance check \`${t.check}\` failed (exit ${c.exit}). Output tail:\n${(c.out + c.err).slice(-6000)}\nFix the cause, then stop.`;
     }
+    if (attempts.at(-1)?.reason === "killed") break;
     if (status === "done") {
       if (t.approval === "owner")
         final.publish = stageDraft(t, cwd, before, out);
@@ -544,13 +631,27 @@ async function runTask(t: Task, claimedPath: string) {
     ...final,
     results: out,
   };
+  if (
+    chain.length === 0 &&
+    !TEXT_ROLES.has(t.role) &&
+    !named.some((p) => CLIS.has(p.split(":")[0]))
+  )
+    (result as Record<string, unknown>).reason = "no_cli_provider"; // ai-os must name a coding CLI
   writeFileSync(join(out, "result.json"), JSON.stringify(result, null, 2));
   t.attempts = attempts;
   const maxA = t.max_attempts ?? 3;
+  if (status === "failed" && OWNED)
+    restore(
+      cwd,
+      [...dirty(cwd)].filter((f) => !before.has(f)),
+    );
   const retryLater =
     status === "failed" &&
+    named.length > 0 &&
     attempts.every((a) => a.reason === "provider_unavailable") &&
     attempts.length < maxA * 5;
+  if (retryLater)
+    t.not_before = new Date(Date.now() + COOLDOWN_MS).toISOString();
   writeTask(status === "done" ? Q.done : retryLater ? Q.new : Q.failed, t);
   try {
     unlinkSync(claimedPath);
@@ -561,7 +662,6 @@ async function runTask(t: Task, claimedPath: string) {
     commit: (final.commit as any)?.sha,
     publish: (final.publish as any)?.dir,
   });
-  if (retryLater) await Bun.sleep(60_000);
 }
 
 async function work(role: string) {
@@ -645,7 +745,7 @@ function upLocked() {
   for (const role of roles) {
     const hb = join(STATE, `heartbeat-${role}`);
     const stale =
-      !existsSync(hb) || Date.now() - statSync(hb).mtimeMs > 120_000;
+      !existsSync(hb) || Date.now() - statSync(hb).mtimeMs > 300_000;
     if (!have.has(role)) {
       tmux([
         "new-window",

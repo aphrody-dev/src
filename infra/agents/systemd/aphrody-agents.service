@@ -9,6 +9,11 @@ Type=oneshot
 RemainAfterExit=yes
 # tmux server must outlive ExecStart.
 KillMode=process
+# Workers (tmux server children) stay in this cgroup: bounded so builds cannot OOM the host.
+MemoryHigh=45%
+MemoryMax=60%
+CPUWeight=50
+Nice=10
 Environment=PATH=%h/.bun/bin:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
 Environment=SRC_ROOT=@SRC@
 ExecStart=@BUN@ --no-env-file @SRC@/infra/agents/runner.ts up
