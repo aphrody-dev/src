@@ -51,6 +51,6 @@ endpoint = "ASSETS_S3_ENDPOINT"
 # Vercel Blob (CDN). Not live-tested: the Vercel team is soft-blocked.
 [target.vercel-blob]
 type = "vercel-blob"
-public_url = "https://blob.vercel-storage.com"
+# public_url: the store base URL (https://<store>.public.blob.vercel-storage.com)
 [target.vercel-blob.env]
 token = "BLOB_READ_WRITE_TOKEN"

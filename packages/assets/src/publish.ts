@@ -302,31 +302,39 @@ export async function publish(
         break;
       }
       case "vercel-blob": {
-        // Not live-tested: the Vercel team is soft-blocked (memory vercel-blocked).
+        // Wire format from vercel/storage (src/api.ts, put-helpers.ts, read via context7 2026-11-13).
+        // Not live-tested: the Vercel team is soft-blocked (memory vercel-blob).
         const token = secretOf(t, "token");
         const api =
-          process.env.ASSETS_BLOB_API ?? "https://blob.vercel-storage.com";
-        const up = async (name: string, data: Uint8Array) => {
-          const r = await fetch(`${api}/${name}`, {
-            method: "PUT",
-            body: data as unknown as BodyInit,
-            headers: {
-              authorization: `Bearer ${token}`,
-              "x-add-random-suffix": "0",
-              "x-allow-overwrite": "1",
-              "x-cache-control-max-age": "31536000",
+          process.env.VERCEL_BLOB_API_URL ?? "https://vercel.com/api/blob";
+        const up = async (name: string, data: Uint8Array, maxAge: number) => {
+          const r = await fetch(
+            `${api}/?pathname=${encodeURIComponent(name)}`,
+            {
+              method: "PUT",
+              body: data as unknown as BodyInit,
+              headers: {
+                authorization: `Bearer ${token}`,
+                "x-api-version": "13",
+                "x-vercel-blob-access": "public",
+                "x-add-random-suffix": "0",
+                "x-allow-overwrite": "1",
+                "x-cache-control-max-age": String(maxAge),
+              },
             },
-          });
+          );
           if (!r.ok) throw new Error(`vercel-blob ${name}: HTTP ${r.status}`);
         };
         await pool(
           files.filter((f) => !f.endsWith(".br")),
           6,
-          (f) => up(f, new Uint8Array(readFileSync(join(bundleDir, f)))),
+          (f) =>
+            up(f, new Uint8Array(readFileSync(join(bundleDir, f))), 31536000),
         );
         await up(
           "assets-manifest.json",
           new TextEncoder().encode(manifestJson),
+          60,
         );
         break;
       }
