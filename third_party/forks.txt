@@ -327,3 +327,17 @@ google-labs-code/jules-awesome-list Markdown
 google-labs-code/jules-skills TypeScript
 google-labs-code/jules-action Markdown
 google-labs-code/action-setup Markdown
+material-foundation/material-color-utilities TypeScript
+google/material-design-icons Python
+googlefonts/roboto-flex Python
+googlefonts/googlesans-code Python
+vercel/geist-font Python
+rsms/inter Python
+linebender/resvg Rust
+noahbald/oxvg Rust
+lucide-icons/lucide TypeScript
+mrdoob/three.js JavaScript
+nextlevelbuilder/ui-ux-pro-max-skill Python
+blader/humanizer Python
+CloudAI-X/threejs-skills Markdown
+trailofbits/skills Python
