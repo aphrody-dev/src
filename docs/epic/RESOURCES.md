@@ -82,7 +82,7 @@ Launcher protocol references (unofficial, derrod/legendary @170964e7: `legendary
 ## Continuous tracking
 
 - Forks: `infra/fleet/bin/fork-sync.sh` runs on fr1 every 6 h (`infra/fleet/fr1/systemd/fork-sync.timer`, user unit, existing gh login) and fast-forwards each aphrody-labs fork of EpicGames, bevyengine and the community repos above; first run 2026-11-13: 33 ok, 0 failed.
-- Snapshot: `.github/workflows/upstream-sync.yml` (every 6 h) runs `bun scripts/upstream-recon.ts` to regenerate `docs/epic/snapshot.json` (license, branch count, default-branch head, latest release per repo) and commits it on main.
+- CI: `.github/workflows/upstream-sync.yml` (every 6 h) also syncs the forks with the aphrody-labs GitHub App token (docs/infra/GITHUB-APP.md), then runs `bun scripts/upstream-recon.ts` to regenerate `docs/epic/snapshot.json` (license, branch count, default-branch head, latest release per repo) and commits it on main.
 - Bevy: the 18 non-archived `bevyengine` repos are forked into aphrody-labs and listed in `third_party/forks.txt`; all synced on 2026-11-13.
 
 ## In this repository
