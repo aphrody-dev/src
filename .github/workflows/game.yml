@@ -44,6 +44,9 @@ jobs:
       - name: Native build of the game binary
         run: aphrody-heavy cargo build -p game --bin game
       - name: wasm32-unknown-unknown release build
+        env:
+          # Keep the target_features section wasm-bindgen reads (root profile strips symbols).
+          CARGO_PROFILE_RELEASE_STRIP: none
         run: aphrody-heavy cargo build -p game --bin game --target wasm32-unknown-unknown --release
       - name: wasm-bindgen (CLI version must equal the wasm-bindgen crate in the lockfile)
         run: |

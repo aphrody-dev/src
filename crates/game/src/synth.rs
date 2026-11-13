@@ -60,7 +60,7 @@ pub fn wind_loop(seconds: f32) -> Vec<f32> {
         let gust = 0.65
             + 0.35 * (std::f32::consts::TAU * t * 3.0).sin()
             + 0.15 * (std::f32::consts::TAU * t * 7.0).sin();
-        *s *= gust * 4.5;
+        *s *= gust * 1.6;
     }
     out
 }
