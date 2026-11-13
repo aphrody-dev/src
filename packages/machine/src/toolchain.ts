@@ -238,7 +238,8 @@ export async function toolchain({ check }: { check: boolean }): Promise<string[]
 
   // --- agy : installe depuis le dossier du plugin (source locale de src ou cache Claude) ; recopie si HEAD a bougé.
   if (m.agy && Bun.which("agy")) {
-    const have = new Set((json<{ name: string }[]>(["agy", "plugin", "list", "--json"]) ?? []).map((x) => x.name));
+    const al = json<{ name: string }[]>(["agy", "plugin", "list", "--json"]);
+    const have = new Set((Array.isArray(al) ? al : []).map((x) => x.name)); // agy < 1.5 : pas de tableau
     for (const id of m.agy.plugins) {
       const name = id.split("@")[0];
       const { dir, local } = pluginDir(id, installed);
