@@ -1,8 +1,9 @@
 [Unit]
-Description=src checkout update every 10 min
+Description=src checkout update every 5 min
 [Timer]
-OnBootSec=3min
-OnUnitActiveSec=10min
-RandomizedDelaySec=60
+OnBootSec=2min
+OnUnitActiveSec=5min
+RandomizedDelaySec=45
+Persistent=true
 [Install]
 WantedBy=timers.target

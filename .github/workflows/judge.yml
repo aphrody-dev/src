@@ -2,7 +2,9 @@
 # runner, so a verdict exists for every push even when the self-hosted fr1 runner is stopped
 # (docs/infra/FLEET.md). Red -> ci-revert.yml reverts an attributable commit; the agent runner's
 # ci-watch enqueues a coder fix task otherwise (runs on fr1). Rust builds and tests stay in ci.yml (tribunal 2026-11-13: no gate is duplicated between the two).
-# Action versions: actions/checkout v7.0.1, actions/setup-go v7.0.0 (gh api releases/latest, 2026-11-13).
+# Parallel jobs (2026-11-13): `gates` (repo-wide checks, one step each), `suites` (matrix, one Bun suite per
+# job, fail-fast off so a red package never hides the next), `review` (indicative). Bun install cache keyed on bun.lock.
+# Action versions: actions/checkout v7.0.1, actions/setup-go v7.0.0, actions/cache v6.1.0 (gh api releases/latest, 2026-11-13).
 name: judge
 on:
   push:
@@ -21,6 +23,11 @@ jobs:
         with: { fetch-depth: 1, submodules: false }
       - uses: oven-sh/setup-bun@v2
         with: { bun-version-file: package.json }
+      - uses: actions/cache@v6.1.0
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
       - name: Bun revision (packageManager of package.json, the single source of the CI's bun)
         run: bun --revision | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Bun workspace dependencies (bun check reads @types/bun from node_modules)
@@ -47,24 +54,36 @@ jobs:
         run: |
           bad=$(grep -lE '^[[:space:]]*runs-on:.*\b(prd|fr2|cdn|usa)\b' .github/workflows/*.yml || true)
           [ -z "$bad" ] || { echo "prd/fr2 never run CI jobs, use [self-hosted, fr1]: $bad"; exit 1; }
-      # One step per Bun suite: a red package never hides the next one. `bun check` needs the workspace
-      # installed above: without node_modules/@types/bun every bun version reports the same TS2868/TS2591.
-      - name: Bun env-kit
-        if: ${{ !cancelled() }}
-        run: bun --no-env-file test packages/env-kit
-      - name: Bun upstream
-        if: ${{ !cancelled() }}
-        run: bun --no-env-file test packages/upstream
-      - name: Bun ai-os
-        if: ${{ !cancelled() }}
-        run: cd packages/ai-os && bun --no-env-file test test
-      - name: Bun chromium-bun
-        if: ${{ !cancelled() }}
-        run: cd packages/chromium-bun && bun check && bun --no-env-file test test/ssrf.test.ts test/engines.test.ts test/layers.test.ts test/purge-matrix.test.ts test/winner-picker.test.ts test/chromium-inspector.test.ts
-      - name: Bun apps/aphrody
-        if: ${{ !cancelled() }}
-        # The suites read the built site (dist/ is git-ignored): build it first, as deploy.yml does.
-        run: cd apps/aphrody && bun check && bun run build && bun --no-env-file test
+  # One job per Bun suite: a red package never hides the next one. `bun check` needs the workspace
+  # installed: without node_modules/@types/bun every bun version reports the same TS2868/TS2591.
+  suites:
+    name: bun ${{ matrix.suite }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { suite: env-kit, run: "bun --no-env-file test packages/env-kit" }
+          - { suite: upstream, run: "bun --no-env-file test packages/upstream" }
+          - { suite: ai-os, run: "cd packages/ai-os && bun --no-env-file test test" }
+          - { suite: chromium-bun, run: "cd packages/chromium-bun && bun check && bun --no-env-file test test/ssrf.test.ts test/engines.test.ts test/layers.test.ts test/purge-matrix.test.ts test/winner-picker.test.ts test/chromium-inspector.test.ts" }
+          # The suites read the built site (dist/ is git-ignored): build it first, as deploy.yml does.
+          - { suite: apps-aphrody, run: "cd apps/aphrody && bun check && bun run build && bun --no-env-file test" }
+    steps:
+      - uses: actions/checkout@v7
+        with: { fetch-depth: 1, submodules: false }
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version-file: package.json }
+      - uses: actions/cache@v6.1.0
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
+      - run: bun install --frozen-lockfile
+      - name: Suite
+        run: ${{ matrix.run }}
+
   # Tribunal ai-os review (docs/reviews/README.md) sur les commits du push : job séparé et indicatif (continue-on-error),
   # il ne ralentit pas les portes ci-dessus et ne déclenche jamais ci-revert. Verdict du juge dans le résumé du run ; la
   # CI ne commite rien (les verdicts archivés viennent de `just review` et de `ai-os orch lifecycle`). Moteurs : registre

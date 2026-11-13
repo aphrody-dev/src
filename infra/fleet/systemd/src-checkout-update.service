@@ -1,9 +1,11 @@
 [Unit]
-Description=Fast-forward the read-only src checkout and restart the services whose code changed
+Description=Fast-forward the src checkout (/srv/src, main only) and restart the services whose code changed
 Wants=network-online.target
 After=network-online.target
 [Service]
 Type=oneshot
 Nice=19
 IOSchedulingClass=idle
+StateDirectory=src-sync
+TimeoutStartSec=15min
 ExecStart=/usr/local/bin/src-checkout-update.sh

@@ -1,0 +1,3 @@
+# actionlint config: custom labels of the self-hosted runners (fr1 factory, four instances: `just fleet-setup fr1`).
+self-hosted-runner:
+  labels: [fr1, build]

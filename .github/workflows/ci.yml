@@ -1,31 +1,35 @@
 # Rust tier of the PR-less flow on main (tribunal 2026-11-13, docs/reviews/judge-2026-11-13-ci.md).
 # Fast gates (checkdeps, identity, Go, every Bun suite, cargo metadata) live in judge.yml only.
-# Self-hosted runner fr1 (labels self-hosted, fr1, build): the factory takes every build, test and CI job
-# (owner decision 2026-11-13); prd serves production only, fr2 is edge (docs/infra/FLEET.md).
-# Every cargo step goes through aphrody-heavy (one heavy job at a time, nice/ionice, load gate) so
-# Chromium/LLVM builds keep priority. Cache: CARGO_TARGET_DIR and ~/.cargo persist on fr1 outside the
-# checkout (actions/checkout cleans the workspace), warmer and faster than a network cache restore.
+# Self-hosted runners of fr1 (labels self-hosted, fr1, build; four instances, one systemd unit each, `just fleet-setup fr1`):
+# the factory takes every build, test and CI job (owner decision 2026-11-13); prd serves production only, fr2 is edge
+# (docs/infra/FLEET.md). Jobs run in parallel on the instances; every cargo step goes through aphrody-heavy (two heavy
+# slots, nice/ionice, load gate) so Chromium/LLVM builds keep priority. Cache: one CARGO_TARGET_DIR shared by the runners
+# (/home/ubuntu/build/ci-target, outside the workspace that actions/checkout cleans); cargo's own lock orders the
+# jobs that touch it, the light jobs (deny, tokens) never wait for it. Docs-only pushes skip the run.
 # On main a run is never cancelled: at most one runs and one waits (the waiting one is replaced by
-# the newest push), so commits are verified in batches instead of being starved.
+# the newest push), so commits are verified in batches instead of being starved. Pull requests cancel stale runs.
 name: ci
 on:
   push:
     branches: [main]
+    paths-ignore: ["docs/**", "**/*.md", "LICENSE*"]
   pull_request:
+    paths-ignore: ["docs/**", "**/*.md", "LICENSE*"]
   workflow_dispatch:
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 permissions: { contents: read }
+env:
+  RUSTC_WRAPPER: ""
+  CARGO_TERM_COLOR: never
+  CARGO_TARGET_DIR: /home/ubuntu/build/ci-target
+  HEAVY_WAIT_MAX: "2700"
 jobs:
-  rust:
+  build-test:
+    name: build and test (ay and libraries)
     runs-on: [self-hosted, fr1]
     timeout-minutes: 120
-    env:
-      RUSTC_WRAPPER: ""
-      CARGO_TERM_COLOR: never
-      CARGO_TARGET_DIR: ${{ github.workspace }}/../ci-target
-      HEAVY_WAIT_MAX: "2700"
     steps:
       - id: app
         # GitHub App aphrody-labs (docs/infra/GITHUB-APP.md) : jeton d'installation de 1 h, borné aux permissions listées.
@@ -46,14 +50,35 @@ jobs:
         run: |
           aphrody-heavy cargo build -p aphrody
           aphrody-heavy cargo test -p aphrody -p depot-gclient -p depot-cas -p depot-cipd -p aphrody-up -p aphrody-rt -p archguard -p agent-context -p aphrody-ui
+  deny:
+    name: supply chain (cargo-deny)
+    runs-on: [self-hosted, fr1]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with: { submodules: false }
+      - name: Toolchain
+        run: bun scripts/toolchain.ts install
       - name: Supply-chain gate (cargo-deny)
         run: |
           command -v cargo-deny >/dev/null || aphrody-heavy cargo install --locked cargo-deny
           cargo deny --locked check
+  arch:
+    name: architecture ratchet
+    needs: build-test
+    runs-on: [self-hosted, fr1]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with: { submodules: false }
+      - name: Toolchain
+        run: bun scripts/toolchain.ts install
       - name: Architecture gate (ratchet vs crates/archguard/baseline.json)
         # Fails when any rule has more --strict errors than its baseline count (new rule = 0); lower the
         # baseline in the commit that clears debt. Back to plain `arch check --strict` once it is all zeros.
+        # ay comes from the build-test job (same shared target dir); built here only when that dir was wiped.
         run: |
+          [ -x "$CARGO_TARGET_DIR/debug/ay" ] || aphrody-heavy cargo build -p aphrody
           "$CARGO_TARGET_DIR/debug/ay" arch check --strict --json > "$RUNNER_TEMP/arch.json" || true
           jaq -r --slurpfile b crates/archguard/baseline.json '
             [.findings[] | select(.severity == "error") | .rule_id] | group_by(.) | map({k: .[0], n: length})
@@ -61,10 +86,19 @@ jobs:
           ' "$RUNNER_TEMP/arch.json" > "$RUNNER_TEMP/arch-over.txt"
           jaq -r '[.findings[] | select(.severity == "error")] | "arch: \(length) errors (ratchet)"' "$RUNNER_TEMP/arch.json"
           if [ -s "$RUNNER_TEMP/arch-over.txt" ]; then cat "$RUNNER_TEMP/arch-over.txt"; exit 1; fi
+  tokens:
+    name: design tokens
+    runs-on: [self-hosted, fr1]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with: { submodules: false }
+      - name: Toolchain
+        run: bun scripts/toolchain.ts install
       - name: Design tokens (packages/design/tokens/tokens.rs via nt-brand, tokens.zig)
         # tokens.rs et tokens.zig sont générés par bun (packages/design/src/build.ts) ; on les compile ici.
         run: |
           CARGO_MANIFEST_DIR="$PWD/apps/nt/sdk/rust/brand" aphrody-heavy rustc --edition 2024 --test -D warnings \
-            -o "$CARGO_TARGET_DIR/nt-brand-test" apps/nt/sdk/rust/brand/src/lib.rs
-          "$CARGO_TARGET_DIR/nt-brand-test"
+            -o "$RUNNER_TEMP/nt-brand-test" apps/nt/sdk/rust/brand/src/lib.rs
+          "$RUNNER_TEMP/nt-brand-test"
           aphrody-heavy zig test packages/design/tokens/tokens_test.zig

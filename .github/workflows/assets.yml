@@ -29,7 +29,7 @@ jobs:
     env:
       RUSTC_WRAPPER: ""
       CARGO_TERM_COLOR: never
-      CARGO_TARGET_DIR: ${{ github.workspace }}/../assets-target
+      CARGO_TARGET_DIR: /home/ubuntu/build/assets-target
       HEAVY_WAIT_MAX: "2700"
       SRC_ROOT: ${{ github.workspace }}
       ASSETS_STORE: /srv/artifacts/assets
