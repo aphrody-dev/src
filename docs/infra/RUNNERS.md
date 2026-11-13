@@ -26,6 +26,10 @@ Workflows with no successful run in their last 15: ai-os, ci, claude, crates-pub
 - Runtimes: `alpine:${ALPINE_VERSION}`, `oven/bun:*-alpine`, `golang:*-alpine*`; heavy toolchain: `archlinux:${ARCH_TAG}` (`dev`). This matches the policy (Alpine light, Arch heavy, never Debian/Ubuntu for our images).
 - `linux-images.yml` builds `base-debian` and `linux-pkg.yml` tests `ubuntu`/`debian` targets: these are distribution targets of the packages being tested, not runtime images, so they do not break the policy.
 
+## Trial
+
+- `upstream-sync.yml` moved to `ubuntu-slim` on 2026-11-13: run succeeded in 60 s (48 s on `ubuntu-latest`). Works for API-only jobs; whether it is cheaper was not verified on a billing page.
+
 ## Not proven
 
 "Best fit" is only shown here for the measured light jobs (under 1 min on a full runner). Compile-heavy jobs have no successful run to measure; no CPU/RAM limit of `ubuntu-slim` was read, so moving jobs there needs one measured run each.
