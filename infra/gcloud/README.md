@@ -6,8 +6,8 @@ Canonical multi-account Google Cloud identity and IAM sharing reference for GCP 
 
 | Alias | Principal Email | `gcloud` Config | Regions (`compute` / `ai`) | Scope & IAM Roles |
 | :--- | :--- | :--- | :--- | :--- |
-| `ai` | `yoyo.aphrody@gmail.com` | `ai-yoyo` | `europe-west1` / `us-central1` | Dedicated autonomous AI account for `ai-os`, `triad`, `pi-opencode`, Gemini, Spark, Hermes, OpenClaw, Google Drive (`rclone` remote `gdrive-yoyo`), NotebookLM, Vertex AI, and Cloud Build sandboxes. Bound to `roles/aiplatform.user`, `roles/serviceusage.serviceUsageConsumer`, `roles/artifactregistry.writer`, `roles/cloudbuild.builds.editor`, `roles/developerconnect.user`, `roles/storage.objectAdmin`, `roles/logging.logWriter`. |
-| `owner` | `yohanpierre15@gmail.com` | `owner-yohan` | `europe-west1` | Personal developer and root owner of GCP project `aphrody` (`#468000409790`). Bound to `roles/owner`. |
+| `ai` | `<ai-google>` | `ai-agent` | `europe-west1` / `us-central1` | Dedicated autonomous AI account for `ai-os`, `triad`, `pi-opencode`, Gemini, Spark, Hermes, OpenClaw, Google Drive (`rclone` remote `gdrive-ai`), NotebookLM, Vertex AI, and Cloud Build sandboxes. Bound to `roles/aiplatform.user`, `roles/serviceusage.serviceUsageConsumer`, `roles/artifactregistry.writer`, `roles/cloudbuild.builds.editor`, `roles/developerconnect.user`, `roles/storage.objectAdmin`, `roles/logging.logWriter`. |
+| `owner` | `<owner-google>` | `owner` | `europe-west1` | Personal developer and root owner of GCP project `aphrody` (`#468000409790`). Bound to `roles/owner`. |
 | `org` | `contact@aphrody.com` | `org-contact` | `europe-west1` | Organization and production infrastructure master identity across Google Workspace, Cloudflare, GitHub (`aphrody-dev`), GitLab (`aphrody-dev` / `git.aphrody.com`), OVH (`fr1`, `fr2`), Hostinger (`usa`), Vercel, Supabase, and `mail.aphrody.com`. Bound to `roles/editor`, `roles/run.admin`, `roles/dns.admin`, `roles/secretmanager.admin`. |
 | `sa` | `yolo-automation@aphrody.iam.gserviceaccount.com` | `sa-automation` | `europe-west1` | Headless NHITL CI/CD service account in GCP project `aphrody`. Bound to `roles/editor`, `roles/developerconnect.admin`, `roles/artifactregistry.admin`. |
 
@@ -21,19 +21,19 @@ Use `getIsolatedGcloudEnv('ai')` from `@aphrody/env-kit`:
 import { getIsolatedGcloudEnv } from "@aphrody/env-kit";
 
 const childEnv = getIsolatedGcloudEnv("ai");
-// Sets CLOUDSDK_ACTIVE_CONFIG_NAME="ai-yoyo", CLOUDSDK_CORE_PROJECT="aphrody",
-// CLOUDSDK_CORE_ACCOUNT="yoyo.aphrody@gmail.com", CLOUDSDK_AI_REGION="us-central1",
-// APHRODY_RCLONE_REMOTE="gdrive-yoyo", without touching global active_config.
+// Sets CLOUDSDK_ACTIVE_CONFIG_NAME="ai-agent", CLOUDSDK_CORE_PROJECT="aphrody",
+// CLOUDSDK_CORE_ACCOUNT="<ai-google>", CLOUDSDK_AI_REGION="us-central1",
+// APHRODY_RCLONE_REMOTE="gdrive-ai", without touching global active_config.
 ```
 
 ## 3. CLI Operations via `env-kit accounts`
 
 ```powershell
-# Inspect all 4 gcloud configurations, OAuth token status, rclone gdrive-yoyo, and 10 org surfaces:
+# Inspect all 4 gcloud configurations, OAuth token status, rclone gdrive-ai, and 10 org surfaces:
 env-kit accounts status
 env-kit accounts status --json
 
-# Idempotently create/update ai-yoyo, owner-yohan, org-contact, and sa-automation:
+# Idempotently create/update ai-agent, owner, org-contact, and sa-automation:
 env-kit accounts init-gcloud
 
 # Switch interactive shell configuration:
@@ -48,7 +48,7 @@ env-kit accounts iam-bindings
 
 ## 4. Onboarding & IAM Policy Provisioning
 
-Run as root owner (`yohanpierre15@gmail.com` via `--configuration=owner-yohan`):
+Run as root owner (`<owner-google>` via `--configuration=owner`):
 
 ### Windows PowerShell
 
@@ -74,8 +74,8 @@ bash /mnt/c/src/infra/gcloud/share-aphrody-project-iam.sh
 
 ```powershell
 # Autonomous AI principal (Gemini, Spark, Hermes, OpenClaw):
-gcloud auth login yoyo.aphrody@gmail.com --configuration=ai-yoyo
-$env:CLOUDSDK_ACTIVE_CONFIG_NAME = "ai-yoyo"
+gcloud auth login <ai-google> --configuration=ai-agent
+$env:CLOUDSDK_ACTIVE_CONFIG_NAME = "ai-agent"
 gcloud auth application-default login --project=aphrody
 
 # Organization principal (Google Workspace / Production Infra):

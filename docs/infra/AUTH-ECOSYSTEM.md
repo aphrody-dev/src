@@ -135,7 +135,7 @@ Critère « AI first » : un agent obtient seul un jeton à portée minimale et 
 | Jeton | Vérifié | Choix | Source |
 |---|---|---|---|
 | GitHub fine-grained PAT | de 1 à 366 jours, ou sans expiration si la politique le permet | à remplacer par un jeton d'App | docs.github.com, managing-your-personal-access-tokens |
-| GitHub App installation token | 1 h ; jeton utilisateur 8 h, refresh 6 mois | cible pour `SUBMODULES_TOKEN` | docs.github.com, generating-an-installation-access-token |
+| GitHub App installation token | 1 h ; jeton utilisateur 8 h, refresh 6 mois | fait : App `aphrody-labs` (docs/infra/GITHUB-APP.md) | docs.github.com, generating-an-installation-access-token |
 | Cloudflare API token | `expires_on`, `not_before`, `condition.request.ip` ; création par `POST /accounts/{id}/tokens` ; aucune expiration par défaut | jetons éphémères mintés à la demande (fait) | developers.cloudflare.com/fundamentals/api/how-to/create-via-api |
 | GCP sans clé | impersonation 1 h ; création de clés désactivée par défaut dans les organisations créées après le 2024-05-03 | WIF + impersonation (fait) | docs.cloud.google.com/iam/docs/create-short-lived-credentials-direct |
 | npm granular token | écriture : 90 j au plus, 7 j par défaut ; jetons classiques révoqués le 2025-12-09 | trusted publishing | github.blog/changelog/2025-09-29, 2025-12-09 |
@@ -147,7 +147,7 @@ Critère « AI first » : un agent obtient seul un jeton à portée minimale et 
 3. **CI** : fédération OIDC GitHub Actions vers GCP (WIF), sans clé JSON. Pour crates.io et npm, trusted publishing en remplacement des secrets longue durée. Cloudflare n'ayant pas de fédération native, les agents passent par des jetons mintés.
 4. **Agents vers les clouds** : jetons à durée courte et à permissions nommées, créés pour une commande puis révoqués. Cloudflare : `expires_on` et suppression en sortie. GCP : impersonation sans clé.
 5. **Stockage** : inchangé, DPAPI sur Windows et systemd-creds (TPM2 si présent) sur Linux. Aucune valeur en argv ni sur stdout.
-6. **À venir, non fait ici** : `SUBMODULES_TOKEN` vers une GitHub App (jetons de 1 h, création de l'App par manifeste : deux clics) ; DPoP sur le relais ; ID-JAG / Enterprise-Managed quand un IdP d'entreprise sera en place. ACP reste sur stdio (`authMethods: []`), ce qui est conforme : MCP et ACP n'exigent pas d'OAuth sur stdio.
+6. **À venir, non fait ici** : DPoP sur le relais ; ID-JAG / Enterprise-Managed quand un IdP d'entreprise sera en place. ACP reste sur stdio (`authMethods: []`), ce qui est conforme : MCP et ACP n'exigent pas d'OAuth sur stdio.
 
 ## 9. Migration effectuée (2026-11-13)
 
@@ -181,4 +181,4 @@ Utilisation en CI (étape à ajouter dans un workflow, avec `permissions: id-tok
 | Agent vers GCP sans compte humain connecté | `gcloud auth login` : clic du propriétaire par compte | 0 clic (impersonation de `yolo-automation`) |
 | Agent vers Cloudflare | jeton de compte complet et permanent | 0 clic : jeton aux permissions nommées, expirant, révoqué en sortie |
 | CLI sur un hôte sans navigateur (prd, fr2) | copier-coller de code ou de jeton | 1 clic d'approbation du code d'appareil (gh, wrangler, codex) |
-| Reste propre à l'humain | gcloud `ai-yoyo` et `org-contact`, npm, PAT `SUBMODULES_TOKEN` | npm et crates.io ne demandent plus rien une fois en trusted publishing ; `SUBMODULES_TOKEN` passe en GitHub App (2 clics, une fois) |
+| Reste propre à l'humain | gcloud `ai-agent` et `org-contact`, npm | npm et crates.io ne demandent plus rien une fois en trusted publishing ; `SUBMODULES_TOKEN` remplacé par l App `aphrody-labs` le 2026-11-13 |

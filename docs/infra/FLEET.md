@@ -27,7 +27,7 @@
 
 Valeurs remplacées : `51.77.147.152` → `51.255.162.6` et `2001:41d0:404:200::4d8e` → `2001:41d0:305:2100::a461`. Le proxy Cloudflare reste dans le même état qu'avant.
 
-- zone aphrody.com `963461271f885bc3f3c2bfd586f2b7ba` : `aphrody.com` A (`30ddf6bf…`), `api` A (`1900939c…`), `api` AAAA (`cbaa3d9d…`), `os` A (`a274bd16…`). Tous les CNAME vers `aphrody.com` suivent (cdn, creator, downloads, omar, yohan, www…). `vps.aphrody.com` reste sur fr1.
+- zone aphrody.com `963461271f885bc3f3c2bfd586f2b7ba` : `aphrody.com` A (`30ddf6bf…`), `api` A (`1900939c…`), `api` AAAA (`cbaa3d9d…`), `os` A (`a274bd16…`). Tous les CNAME vers `aphrody.com` suivent (cdn, creator, downloads, omar, www…). `vps.aphrody.com` reste sur fr1.
 - zone aphrody.app `f4dab237b9811435da6fee0b5b3438d4` : 21 enregistrements A (api, app-*, auth, craft, deploy, git, play, source).
 - **rollback** : remettre `content` à l'ancienne valeur (PATCH `/zones/<zone>/dns_records/<id>`). Les vhosts de fr1 sont intacts, le retour est immédiat.
 - à faire : rpbey.fr (DNS chez OVH, pas chez Cloudflare) reste servi par fr1 tant qu'on n'a pas d'accès à l'API OVH ou au Manager. Ensuite, passer son certificat en webroot sur fr2.

@@ -226,7 +226,7 @@ export const TOOLS: Tool[] = [
   {
     name: "accounts_sync",
     description:
-      "Owner sync of the owner's accounts (contact@aphrody.com, yohanpierre15@gmail.com, yoyo.aphrody@gmail.com) on GitHub orgs, gcloud projects and Cloudflare accounts. apply=false (default) only reports the gap.",
+      "Owner sync of the owner's accounts (contact@aphrody.com plus APHRODY_OWNER_GOOGLE_ACCOUNT / APHRODY_AI_GOOGLE_ACCOUNT from the env) on GitHub orgs, gcloud projects and Cloudflare accounts. apply=false (default) only reports the gap.",
     inputSchema: obj({ apply: { type: "boolean" } }),
     readOnly: false,
     run: (a) => accountsSync(Boolean(a.apply)),

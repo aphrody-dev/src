@@ -4,11 +4,12 @@
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { personalAccount } from "./accounts";
 
 export const BILLING_AGENT_SA = "billing-agent@aphrody.iam.gserviceaccount.com";
 export const BILLING_TOPIC = "projects/aphrody/topics/billing-alerts";
 const QUOTA_PROJECT = "aphrody";
-const OWNER = "yohanpierre15@gmail.com";
+const OWNER = personalAccount("APHRODY_OWNER_GOOGLE_ACCOUNT");
 const THRESHOLDS = [
   { thresholdPercent: 0.5 },
   { thresholdPercent: 0.9 },

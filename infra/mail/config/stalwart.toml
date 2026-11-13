@@ -172,7 +172,7 @@ url-redirection-check = true
 #   - contact@aphrody.com   (Org Master Identity; supports dual-delivery / split-delivery with Google Workspace)
 #   - noreply@aphrody.com   (Transactional outbound sender for Supabase, GitLab, Apps; inbound auto-rejected/aliased)
 #   - security@aphrody.com  (Vulnerability disclosure, ACME notices, TLS-RPT / DMARC security reports -> contact@aphrody.com)
-#   - ai@aphrody.com        (Autonomous NHITL notifications -> contact@aphrody.com & yoyo.aphrody@gmail.com)
+#   - ai@aphrody.com        (Autonomous NHITL notifications -> contact@aphrody.com & the AI Google account from the vault)
 #   - dmarc@aphrody.com     (DMARC rua/ruf + SMTP TLS-RPT aggregate sink)
 
 [queue.route."local-stalwart"]

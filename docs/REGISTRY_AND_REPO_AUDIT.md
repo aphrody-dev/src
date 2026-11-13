@@ -69,7 +69,7 @@ Tous les `package.json` first-party ont été unifiés sous le scope `@aphrody/*
 
 ### 2.3 Inventaire Public `npm` & `crates.io` et Script d'Assainissement
 
-Les inventaires exhaustifs sont archivés dans `C:\src\var\reports\npm-inventory.json` (`696` paquets : `645` `@aphrody/*`, `30` `@rosegriffon/*`, `12` `@yohan971/*`, `1` `@yolo-rs/*`, `8` non-scopés) et `C:\src\var\reports\crates-inventory.json` (`370` crates dont `178` `aphrody-*` et `3` `yolo-*`).
+Les inventaires exhaustifs sont archivés dans `C:\src\var\reports\npm-inventory.json` (`696` paquets : `645` `@aphrody/*`, `30` `@rosegriffon/*`, `12` `@<npm-owner>/*`, `1` `@yolo-rs/*`, `8` non-scopés) et `C:\src\var\reports\crates-inventory.json` (`370` crates dont `178` `aphrody-*` et `3` `yolo-*`).
 
 - **Constat d'authentification live** : `NPM_TOKEN` renvoie actuellement `401 Unauthorized` sur `registry.npmjs.org/-/whoami` et `CARGO_REGISTRY_TOKEN` renvoie `403 Forbidden` sur `crates.io/api/v1/me`.
 - **Script prêt à l'emploi** : `packages/env-kit/scripts/registry-cleanup.ts` identifie déterministiquement les `75` stubs Windows API-set (`@aphrody/bun-windows-api-ms-win-*`, `@yolo-rs/*`) à déprécier sur `npm` et les crates obsolètes (`yolo-core`, `yolo-runtime`, `yolo-zig-ffi`) à yanker sur `crates.io` dès rafraîchissement des tokens (`env-kit set NPM_TOKEN ...` puis `bun run packages/env-kit/scripts/registry-cleanup.ts --execute`).

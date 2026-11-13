@@ -222,7 +222,6 @@ vps_exec = "bun run server.ts"
 
 [auth.github.org_secrets]
 aphrody-labs = ["HOSTINGER_API_TOKEN", "CARGO_REGISTRY_TOKEN", "NPM_TOKEN", "APHRODY_APP_KEY"]
-yolo-rs = ["APHRODY_APP_KEY"]
 
 # Per node: cloudflared units (unit = tunnel name), WireGuard interfaces (handshake < 180 s),
 # units that renew a credential (must not be failed). repair = false: checked, never changed.
@@ -253,7 +252,7 @@ issuer = "https://token.actions.githubusercontent.com"
 condition = "assertion.repository_owner=='aphrody-labs'"
 service_account = "yolo-automation@aphrody.iam.gserviceaccount.com"
 repos = ["aphrody-labs/src"]
-account = "yohanpierre15@gmail.com"
+# caller account: APHRODY_OWNER_GOOGLE_ACCOUNT (vault), never written here
 
 [auth.oidc.replaces]
 CARGO_REGISTRY_TOKEN = "crates.io trusted publishing (RFC 3691, rust-lang/crates-io-auth-action) : lier aphrody-labs sur crates.io, puis gh secret delete CARGO_REGISTRY_TOKEN --org aphrody-labs"

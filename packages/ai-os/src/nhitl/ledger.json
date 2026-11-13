@@ -60,8 +60,8 @@
       "category": "owner_click",
       "severity": "medium",
       "status": "fixed",
-      "excerpt": "gcloud auth login contact@aphrody.com : trois consentements reçus pour yohanpierre15@gmail.com (profil Chrome par défaut), BROWSER de gcloud non honoré sous Windows",
-      "fix": "login utilisateur abandonné : configuration org-contact = yohanpierre15@gmail.com + impersonation de yolo-automation@aphrody",
+      "excerpt": "gcloud auth login contact@aphrody.com : trois consentements reçus pour <owner-google> (profil Chrome par défaut), BROWSER de gcloud non honoré sous Windows",
+      "fix": "login utilisateur abandonné : configuration org-contact = <owner-google> + impersonation de yolo-automation@aphrody",
       "reason": "2026-11-13 : gcloud projects describe aphrody --configuration org-contact = ACTIVE ; contact@aphrody.com n a aucun rôle sur le projet"
     },
     {
@@ -87,8 +87,8 @@
       "severity": "medium",
       "status": "fixed",
       "excerpt": "PAT des sous-modules aphrody-labs sans source locale ; remplacé par une GitHub App (jetons d'installation de 1 h)",
-      "fix": "aucun PAT : App GitHub aphrody-labs-submodules pour les checkouts, deploy key ssh pour le miroir steam-depot, secret supprimé",
-      "reason": "remplacé par App + deploy key"
+      "fix": "aucun PAT : App GitHub aphrody-labs (id 5738700, docs/infra/GITHUB-APP.md) pour checkouts, releases, agents et webhooks ; miroir steam-depot tiré par steam-depot lui-même ; aphrody-labs-submodules supprimée le 2026-11-13",
+      "reason": "remplacé par l App aphrody-labs"
     },
     {
       "location": "prd rg-steam-depot",
@@ -237,12 +237,12 @@
       "reason": "2026-11-13 : signature d un contrat au nom du propriétaire"
     },
     {
-      "location": "npmjs.com yohan971 (2FA)",
+      "location": "npmjs.com <npm-owner> (2FA)",
       "category": "npm_2fa",
       "severity": "info",
       "status": "fixed",
       "excerpt": "2FA du compte npm (security key ou authenticator) et défi 2FA de npm trust / npm access set / création de jeton / approbation npm stage",
-      "fix": "page https://www.npmjs.com/settings/yohan971/tfa ouverte chez le propriétaire ; ensuite just npm login (un clic) puis just npm trust (skip 2FA 5 min) ; publication en CI par trusted publishing OIDC (docs/infra/NPM.md)",
+      "fix": "page https://www.npmjs.com/settings/<npm-owner>/tfa ouverte chez le propriétaire ; ensuite just npm login (un clic) puis just npm trust (skip 2FA 5 min) ; publication en CI par trusted publishing OIDC (docs/infra/NPM.md)",
       "reason": "2026-11-13 : security key aphrody-pc-win11-2026-11-13 enregistrée (page tfa), npm trust github configuré pour les 33 paquets publiés (npm-publish.yml) ; les 12 nouveaux attendent leur premier publish"
     },
     {

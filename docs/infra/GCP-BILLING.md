@@ -23,8 +23,8 @@ fonction `billing-cap` (`infra/gcp/billing-agent/cap-function`), compte de servi
 
 | Compte gcloud | Comptes de facturation visibles | Projets |
 |---|---|---|
-| `yohanpierre15@gmail.com` | **ouvert : `017AB5-0FC923-9CCFE5` « Aphrody » (EUR, org `rose-griffonfr` 270161163915, seul admin : yohanpierre15)** ; fermés : 013952-…, 0185BA-…, 01FE8F-… (Paiement de Firebase), 01C99E-… (rgfr), 01E22C-… (My Maps), 01EBC5-… (Mon compte de facturation) | 13 projets ; facturation active : `aphrody`, `inagle` (sur 017AB5) ; `propane-tranquility-hmhkk` sur `019873-C7F8B9-B9F0C6` (dossier géré par Google, compte non visible) ; les 10 autres sans facturation |
-| `yoyo.aphrody@gmail.com` | aucun | aucun |
+| `<owner-google>` | **ouvert : `017AB5-0FC923-9CCFE5` « Aphrody » (EUR, org `rose-griffonfr` 270161163915, seul admin : <owner-google>)** ; fermés : 013952-…, 0185BA-…, 01FE8F-… (Paiement de Firebase), 01C99E-… (rgfr), 01E22C-… (My Maps), 01EBC5-… (Mon compte de facturation) | 13 projets ; facturation active : `aphrody`, `inagle` (sur 017AB5) ; `propane-tranquility-hmhkk` sur `019873-C7F8B9-B9F0C6` (dossier géré par Google, compte non visible) ; les 10 autres sans facturation |
+| `<ai-google>` | aucun | aucun |
 | `yolo-automation@aphrody` (SA) | aucun | `aphrody` |
 | `admin-sa@rgfr-8927d` (SA) | requête bloquée (délai) | - |
 | `contact@aphrody.com` | configuration `org-contact` sans identifiant ; connexion ouverte le 2026-11-13 | - |
@@ -36,7 +36,7 @@ de 017AB5 : page console bloquée tant que la validation en deux étapes n'est p
 
 ## 3. Partage et liaisons
 
-- Compte principal : `yohanpierre15@gmail.com` (seul `billing.admin` du compte ouvert, propriétaire de l'org qui le porte).
+- Compte principal : `<owner-google>` (seul `billing.admin` du compte ouvert, propriétaire de l'org qui le porte).
   `contact@aphrody.com` n'administre aucun compte de facturation visible.
 - `aphrody` et `inagle` sont déjà sur 017AB5, le seul compte ouvert : aucune liaison à changer.
 - Répartition multi-comptes : sans objet tant qu'il n'existe qu'un compte ouvert. Dès qu'un crédit est échangé
@@ -46,7 +46,7 @@ de 017AB5 : page console bloquée tant que la validation en deux étapes n'est p
 ## 4. Facturation gérée par agents (en place)
 
 - **Compte de service** `billing-agent@aphrody.iam.gserviceaccount.com`, sans clé.
-  - Accès : impersonation par `yohanpierre15` (`iam.serviceAccountTokenCreator`), OIDC GitHub
+  - Accès : impersonation par `<owner-google>` (`iam.serviceAccountTokenCreator`), OIDC GitHub
     (`iam.workloadIdentityUser` pour `principalSet://…/workloadIdentityPools/github/attribute.repository_owner/aphrody-labs`).
   - Compte de facturation : `billing.costsManager`, `billing.viewer`.
   - Projets `aphrody`, `inagle` : `billing.projectManager`, `browser`, `compute.viewer`, `recommender.viewer`,
@@ -90,7 +90,7 @@ de 017AB5 : page console bloquée tant que la validation en deux étapes n'est p
 
 ## 6. Reste au propriétaire (clics)
 
-1. Activer la validation en deux étapes sur `yohanpierre15@gmail.com` (la console Cloud est bloquée sans 2SV), puis
+1. Activer la validation en deux étapes sur `<owner-google>` (la console Cloud est bloquée sans 2SV), puis
    ouvrir https://console.cloud.google.com/billing/017AB5-0FC923-9CCFE5/credits/all pour voir solde et expiration.
 2. Échanger les crédits du codelab avec le compte voulu (lien de la page codelab) ; ensuite `env-kit billing plan`.
 3. Billing > Billing export > BigQuery : activer « Standard », « Detailed » et « Pricing » vers `aphrody:billing_export`.

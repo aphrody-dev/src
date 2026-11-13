@@ -7,7 +7,7 @@
 // Microsoft 365 / Outlook (aucune session CLI) ; signalés dans le relevé.
 export const ACCOUNTS = (
   Bun.env.RELAY_OWNER_EMAILS ??
-  "contact@aphrody.com,yohanpierre15@gmail.com,yoyo.aphrody@gmail.com"
+  ["contact@aphrody.com", Bun.env.APHRODY_OWNER_GOOGLE_ACCOUNT, Bun.env.APHRODY_AI_GOOGLE_ACCOUNT].filter(Boolean).join(",")
 )
   .split(",")
   .map((s) => s.trim().toLowerCase());

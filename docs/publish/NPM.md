@@ -5,8 +5,8 @@ Vérifié sur fr2 avec `bun pm pack --dry-run` (bun 1.4.4) sur l'arbre `C:\src-m
 ## Propriété du scope @aphrody
 
 - `npm whoami` en local renvoie **401** : le token de `~/.npmrc` est expiré ou révoqué. La propriété n'a donc pas pu être confirmée directement.
-- Indices : `@aphrody/web` (1.4.7) et `@aphrody/yolo` (3.2.0) ont pour seul mainteneur `yohan971` (adresse @live.fr). `@aphrody/yolo` déclare `repository: aphrody-code/YOLO` et `author: aphrody-code`. Il s'agit très probablement du compte du propriétaire.
-- À faire : `npm login`, puis `npm whoami` (doit répondre `yohan971`) et `npm org ls aphrody`.
+- Indices : `@aphrody/web` (1.4.7) et `@aphrody/yolo` (3.2.0) ont pour seul mainteneur `<npm-owner>`. `@aphrody/yolo` déclare `repository: aphrody-code/YOLO` et `author: aphrody-code`. Il s'agit très probablement du compte du propriétaire.
+- À faire : `npm login`, puis `npm whoami` (doit répondre `<npm-owner>`) et `npm org ls aphrody`.
 
 ## Paquets (packages/*)
 

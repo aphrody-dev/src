@@ -77,7 +77,7 @@ Ces quatre secrets restent compromis du fait de leur exposition dans la session.
 Vérification faite le 2026-11-12 via l'API crates.io et le registre npm, avec le User-Agent `aphrody-audit`.
 
 - crates.io : 72 noms libres sur 75. Noms pris : `lore` (0.1.0, maj 2025-12-05), `ffi` (0.1.1), `sys` (0.0.1). Ces trois crates sont en `publish = false` chez nous, mais `lore` est à renommer avant toute publication, par exemple en `aphrody-lore`. Les noms génériques `cosmic-compat`, `unix-distro` et `smithay-wayland-wire` sont libres aujourd'hui.
-- npm : 16 noms libres sur 18. `@aphrody/web` (1.4.7) et `@aphrody/yolo` (3.2.0) existent déjà, publiés par le mainteneur `yohan971`. La page de l'organisation `@aphrody` répond 200, donc le scope est pris. **À confirmer** : `yohan971` est-il le propriétaire ? Si non, le scope `@aphrody` est indisponible et il faut en choisir un autre.
+- npm : 16 noms libres sur 18. `@aphrody/web` (1.4.7) et `@aphrody/yolo` (3.2.0) existent déjà, publiés par le mainteneur `<npm-owner>`. La page de l'organisation `@aphrody` répond 200, donc le scope est pris. **À confirmer** : `<npm-owner>` est-il le propriétaire ? Si non, le scope `@aphrody` est indisponible et il faut en choisir un autre.
 
 ## Verdicts
 
@@ -101,7 +101,7 @@ Vérification faite le 2026-11-12 via l'API crates.io et le registre npm, avec l
 4. Retirer le client secret Epic de `packages/epic-games` ou le charger depuis l'environnement.
 5. shenron : `git filter-repo` sur `apps/site/.next-ui-preview`, et ajouter ce chemin à `.gitignore`.
 6. Ajouter LICENSE-MIT et LICENSE-APACHE à la racine de src et de labs, plus `license` dans `[workspace.package]` de labs et dans les packages npm.
-7. Confirmer la propriété du scope npm `@aphrody` (mainteneur `yohan971`).
+7. Confirmer la propriété du scope npm `@aphrody` (mainteneur `<npm-owner>`).
 8. Renommer `lore`, `ffi` et `sys` avant toute publication. Les autres noms de crates sont libres.
 9. Ne jamais commiter `third_party/` ni UnrealEngine dans un dépôt public. Relire `native_nt_gpu.lib`.
 10. Avant de rendre un dépôt public, relancer `gitleaks git --redact` dessus (la règle `extra.toml` peut être recréée à partir de la section 1).

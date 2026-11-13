@@ -722,7 +722,7 @@ export async function mint(m: Manifest, o: AuthOptions): Promise<number> {
     const sa = opt("--sa") ?? m.auth.oidc?.gcp?.service_account;
     if (!sa) throw new Error("--sa requis");
     // The caller account needs roles/iam.serviceAccountTokenCreator on the service account.
-    const caller = opt("--account") ?? m.auth.oidc?.gcp?.account;
+    const caller = opt("--account") ?? m.auth.oidc?.gcp?.account ?? (Bun.env.APHRODY_OWNER_GOOGLE_ACCOUNT || undefined);
     const r = sh("gcloud", ["auth", "print-access-token", `--impersonate-service-account=${sa}`, ...(caller ? [`--account=${caller}`] : []), `--lifetime=${Math.min(ttl, 43200)}`, "--quiet"], { timeout: 60_000 });
     if (!r.ok || !r.out) {
       console.error(`ay auth mint gcp : ${clean(r.err.split("\n").filter((l) => !l.startsWith("WARNING")).join("\n"))} (roles/iam.serviceAccountTokenCreator requis sur ${sa})`);

@@ -3,13 +3,14 @@
 param(
     [string]$ProjectId = "aphrody",
     [string]$ProjectNumber = "468000409790",
-    [string]$OwnerConfig = "owner-yohan",
-    [string]$OwnerEmail = "yohanpierre15@gmail.com",
-    [string]$AiEmail = "yoyo.aphrody@gmail.com",
+    [string]$OwnerConfig = "owner",
+    [string]$OwnerEmail = $env:APHRODY_OWNER_GOOGLE_ACCOUNT,
+    [string]$AiEmail = $env:APHRODY_AI_GOOGLE_ACCOUNT,
     [string]$OrgEmail = "contact@aphrody.com",
     [string]$AutomationSaName = "yolo-automation",
     [switch]$DryRun
 )
+if (-not $OwnerEmail -or -not $AiEmail) { throw "set APHRODY_OWNER_GOOGLE_ACCOUNT and APHRODY_AI_GOOGLE_ACCOUNT (vault: env-kit secret exec)" }
 
 $ErrorActionPreference = "Stop"
 $AutomationSaEmail = "$AutomationSaName@$ProjectId.iam.gserviceaccount.com"
@@ -40,8 +41,8 @@ if ($LASTEXITCODE -eq 0 -and $existingConfigsJson) {
 }
 
 $configMatrix = @(
-    @{ Name = "owner-yohan"; Account = $OwnerEmail; Region = "europe-west1"; AiRegion = $null },
-    @{ Name = "ai-yoyo"; Account = $AiEmail; Region = "europe-west1"; AiRegion = "us-central1" },
+    @{ Name = "owner"; Account = $OwnerEmail; Region = "europe-west1"; AiRegion = $null },
+    @{ Name = "ai-agent"; Account = $AiEmail; Region = "europe-west1"; AiRegion = "us-central1" },
     @{ Name = "org-contact"; Account = $OrgEmail; Region = "europe-west1"; AiRegion = $null },
     @{ Name = "sa-automation"; Account = $AutomationSaEmail; Region = "europe-west1"; AiRegion = $null }
 )
@@ -59,7 +60,7 @@ foreach ($cfg in $configMatrix) {
     Invoke-GcloudStep -Arguments @("config", "set", "core/account", $cfg.Account, "--configuration=$($cfg.Name)", "--quiet")
 }
 
-# 2. Enable shared GCP APIs under owner-yohan
+# 2. Enable shared GCP APIs under owner
 $sharedApis = @(
     "iam.googleapis.com",
     "cloudresourcemanager.googleapis.com",
@@ -138,11 +139,11 @@ foreach ($entry in $bindings) {
 
 Write-Output ""
 Write-Output "=== Interactive One-Liners to Cache OAuth & ADC Tokens ==="
-Write-Output "# 1. Cache OAuth + ADC for autonomous AI principal (ai-yoyo -> $AiEmail : Gemini, Spark, Hermes, OpenClaw):"
-Write-Output "gcloud auth login $AiEmail --configuration=ai-yoyo; `$env:CLOUDSDK_ACTIVE_CONFIG_NAME='ai-yoyo'; gcloud auth application-default login --project=$ProjectId"
+Write-Output "# 1. Cache OAuth + ADC for autonomous AI principal (ai-agent -> $AiEmail : Gemini, Spark, Hermes, OpenClaw):"
+Write-Output "gcloud auth login $AiEmail --configuration=ai-agent; `$env:CLOUDSDK_ACTIVE_CONFIG_NAME='ai-agent'; gcloud auth application-default login --project=$ProjectId"
 Write-Output ""
 Write-Output "# 2. Cache OAuth + ADC for organization infrastructure principal (org-contact -> $OrgEmail):"
 Write-Output "gcloud auth login $OrgEmail --configuration=org-contact; `$env:CLOUDSDK_ACTIVE_CONFIG_NAME='org-contact'; gcloud auth application-default login --project=$ProjectId"
 Write-Output ""
-Write-Output "# 3. Cache OAuth + ADC for personal root owner principal (owner-yohan -> $OwnerEmail):"
-Write-Output "gcloud auth login $OwnerEmail --configuration=owner-yohan; `$env:CLOUDSDK_ACTIVE_CONFIG_NAME='owner-yohan'; gcloud auth application-default login --project=$ProjectId"
+Write-Output "# 3. Cache OAuth + ADC for personal root owner principal (owner -> $OwnerEmail):"
+Write-Output "gcloud auth login $OwnerEmail --configuration=owner; `$env:CLOUDSDK_ACTIVE_CONFIG_NAME='owner'; gcloud auth application-default login --project=$ProjectId"

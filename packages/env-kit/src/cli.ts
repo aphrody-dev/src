@@ -474,7 +474,7 @@ Usage:
   env-kit gmail <status|list|send>      Gmail automation (send needs --yes)
   env-kit doctor                       Audit masked status of all credentials, ACLs, and editors
   env-kit accounts status [--json]     Inspect 3-principal gcloud configs, rclone, and org provider surfaces
-  env-kit accounts init-gcloud         Idempotently initialize ai-yoyo, owner-yohan, org-contact, sa-automation
+  env-kit accounts init-gcloud         Idempotently initialize ai-agent, owner, org-contact, sa-automation
   env-kit accounts switch <principal>  Activate gcloud configuration for <ai|owner|org|sa>
   env-kit billing <status|plan|apply|lift|relink>  GCP billing via billing-agent (keyless): budgets, spend, idle resources
   env-kit accounts iam-bindings        Print idempotent GCP IAM policy bindings for project aphrody (#468000409790)

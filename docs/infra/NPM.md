@@ -1,6 +1,6 @@
 # npm sans humain
 
-État au 2026-11-13. Compte npm : `yohan971`, owner des orgs `@aphrody` et `@rosegriffon`. Commande unique :
+État au 2026-11-13. Compte npm : `<npm-owner>`, owner des orgs `@aphrody` et `@rosegriffon`. Commande unique :
 `just npm <status|sync|inventory|align|login|trust|harden>` (`scripts/npm.ts`).
 
 ## État de npm (sources lues le 2026-11-13)
@@ -34,14 +34,14 @@
 
 ## Jeton unique (fusion du 2026-11-13)
 
-Recensement (empreintes sha256, aucune valeur lue à l'écran) : un seul jeton valide (`whoami` = `yohan971`, granular
+Recensement (empreintes sha256, aucune valeur lue à l'écran) : un seul jeton valide (`whoami` = `<npm-owner>`, granular
 lecture-écriture créé le 2026-11-04, sans expiration), présent dans `/root/.npmrc` de prd et `.env` `NPM_TOKEN__USA`.
 Morts (401) : `.env` `NPM_TOKEN`/coffre/env utilisateur (même jeton), `.env` `NPM_TOKEN__FR1`, `~/.npmrc` de fr2 et fr1.
 
 Après `just npm sync` : coffre env-kit `NPM_TOKEN` (DPAPI) -> env utilisateur Windows (lu par `~/.npmrc` via
 `${NPM_TOKEN}`), secret d'org GitHub `NPM_TOKEN` (aussi dans `infra/deploy.toml [auth.github.org_secrets]`, repris par
 `env-kit auth gh-secrets`), `~/.npmrc` (0600) de prd root, prd agent, fr2, fr1. Clés `NPM_TOKEN__USA`/`__FR1` supprimées
-de `.env`. npm n'est installé sur aucun VPS : bun y lit `~/.npmrc` (`bun pm whoami` = `yohan971` partout).
+de `.env`. npm n'est installé sur aucun VPS : bun y lit `~/.npmrc` (`bun pm whoami` = `<npm-owner>` partout).
 `.npmrc` des projets : aucun jeton en clair hors `third_party` (fixtures de tests deno sur localhost, fontawesome).
 
 ## Inventaire (`just npm inventory`)
@@ -68,7 +68,7 @@ La 2FA est par construction le facteur du propriétaire : `npm trust`, `npm acce
 l'approbation d'un `npm stage` exigent un défi 2FA interactif que ni un agent ni un jeton bypass ne peuvent fournir
 (changelog du 2026-07-31). Point inscrit au registre NHITL (`packages/ai-os/src/nhitl/ledger.json`, catégorie `npm_2fa`).
 
-1. https://www.npmjs.com/settings/yohan971/tfa : activer la 2FA par security key (Windows Hello), conserver les codes.
+1. https://www.npmjs.com/settings/<npm-owner>/tfa : activer la 2FA par security key (Windows Hello), conserver les codes.
 2. `just npm login` : page npm ouverte, un clic (session dans `%LOCALAPPDATA%\aphrody\npm-session.npmrc`, distincte du jeton).
 3. `just npm trust` : premier défi 2FA validé sur la page ouverte, cocher « skip 2FA 5 min », les 33 paquets existants
    reçoivent leur trusted publisher (`--allow-publish --allow-stage-publish`). Les 12 nouveaux : premier publish par le

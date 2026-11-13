@@ -822,7 +822,7 @@ export function initializeGoogleGitForge(options?: {
 
   const notes: string[] = [];
   let credentialHelperConfigured = false;
-  const gcloudConfigsChecked = ["org-contact", "owner-yohan", "ai-yoyo"];
+  const gcloudConfigsChecked = ["org-contact", "owner", "ai-agent"];
 
   if (!dryRun) {
     const credRes = runGit(
@@ -858,7 +858,7 @@ export function initializeGoogleGitForge(options?: {
       notes.push(`Detected gcloud named configurations: ${found.join(", ")}`);
     } else {
       notes.push(
-        "gcloud CLI configurations not active in current shell; run setup-triforge script with org-contact or owner-yohan",
+        "gcloud CLI configurations not active in current shell; run setup-triforge script with org-contact or owner",
       );
     }
   } else {

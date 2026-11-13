@@ -3,6 +3,23 @@ import { existsSync, mkdirSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { DEFAULT_MONOREPO_ENV_PATH, loadMonorepoEnv } from "./index";
+import { secretGet } from "./secret-store";
+
+/** Personal Google accounts never live in the public repo: environment first, then the vault (env-kit secret set). */
+const vaultCache = new Map<string, string | undefined>();
+export function personalAccount(key: "APHRODY_AI_GOOGLE_ACCOUNT" | "APHRODY_OWNER_GOOGLE_ACCOUNT"): string {
+  let v = process.env[key];
+  if (!v && vaultCache.has(key)) v = vaultCache.get(key);
+  else if (!v) {
+    try {
+      v = secretGet(key);
+    } catch {
+      v = undefined;
+    }
+    vaultCache.set(key, v);
+  }
+  return (v ?? "").trim().toLowerCase();
+}
 
 export const APHRODY_GCP_PROJECT_ID = "aphrody";
 export const APHRODY_GCP_PROJECT_NUMBER = "468000409790";
@@ -31,16 +48,18 @@ export const APHRODY_PRINCIPALS: Readonly<
 > = {
   ai: {
     alias: "ai",
-    email: "yoyo.aphrody@gmail.com",
+    get email() {
+      return personalAccount("APHRODY_AI_GOOGLE_ACCOUNT");
+    },
     memberPrefix: "user",
-    gcloudConfig: "ai-yoyo",
+    gcloudConfig: "ai-agent",
     project: APHRODY_GCP_PROJECT_ID,
     projectNumber: APHRODY_GCP_PROJECT_NUMBER,
     region: APHRODY_PRIMARY_REGION,
     aiRegion: APHRODY_AI_REGION,
-    rcloneRemote: "gdrive-yoyo",
+    rcloneRemote: "gdrive-ai",
     roleSummary:
-      "Dedicated autonomous AI Google account (Gemini, Spark, Hermes, OpenClaw, Google Drive gdrive-yoyo, NotebookLM, Vertex AI, Cloud Build agent sandboxes)",
+      "Dedicated autonomous AI Google account (Gemini, Spark, Hermes, OpenClaw, Google Drive gdrive-ai, NotebookLM, Vertex AI, Cloud Build agent sandboxes)",
     agentHarnesses: [
       "ai-os",
       "triad",
@@ -62,14 +81,16 @@ export const APHRODY_PRINCIPALS: Readonly<
   },
   owner: {
     alias: "owner",
-    email: "yohanpierre15@gmail.com",
+    get email() {
+      return personalAccount("APHRODY_OWNER_GOOGLE_ACCOUNT");
+    },
     memberPrefix: "user",
-    gcloudConfig: "owner-yohan",
+    gcloudConfig: "owner",
     project: APHRODY_GCP_PROJECT_ID,
     projectNumber: APHRODY_GCP_PROJECT_NUMBER,
     region: APHRODY_PRIMARY_REGION,
     roleSummary:
-      "Personal developer & root owner account of Yoyo (GCP project aphrody #468000409790 and personal dev workstation)",
+      "Personal developer & root owner account of the owner (GCP project aphrody #468000409790 and personal dev workstation)",
     iamRoles: ["roles/owner"],
   },
   org: {
@@ -256,7 +277,7 @@ export function resolvePrincipal(input: string): GooglePrincipalSpec {
   for (const spec of Object.values(APHRODY_PRINCIPALS)) {
     if (
       spec.gcloudConfig.toLowerCase() === normalized ||
-      spec.email.toLowerCase() === normalized
+      (spec.email !== "" && spec.email.toLowerCase() === normalized)
     ) {
       return spec;
     }
@@ -379,7 +400,7 @@ export function buildAphrodyIamBindingsPlan(): IamBindingsPlan {
         role,
         project: APHRODY_GCP_PROJECT_ID,
         projectNumber: APHRODY_GCP_PROJECT_NUMBER,
-        command: `gcloud projects add-iam-policy-binding ${APHRODY_GCP_PROJECT_ID} --member="${member}" --role="${role}" --condition=None --configuration=owner-yohan --quiet`,
+        command: `gcloud projects add-iam-policy-binding ${APHRODY_GCP_PROJECT_ID} --member="${member}" --role="${role}" --condition=None --configuration=owner --quiet`,
       });
     }
   }
@@ -390,7 +411,7 @@ export function buildAphrodyIamBindingsPlan(): IamBindingsPlan {
     executorConfig: APHRODY_PRINCIPALS.owner.gcloudConfig,
     executorAccount: APHRODY_PRINCIPALS.owner.email,
     enabledApis: APHRODY_SHARED_APIS,
-    enableApisCommand: `gcloud services enable ${APHRODY_SHARED_APIS.join(" ")} --project=${APHRODY_GCP_PROJECT_ID} --configuration=owner-yohan --quiet`,
+    enableApisCommand: `gcloud services enable ${APHRODY_SHARED_APIS.join(" ")} --project=${APHRODY_GCP_PROJECT_ID} --configuration=owner --quiet`,
     bindings,
   };
 }
@@ -675,7 +696,7 @@ export interface InitGcloudConfigsResult {
 }
 
 /**
- * Idempotently creates and configures `ai-yoyo`, `owner-yohan`, `org-contact`, and `sa-automation`
+ * Idempotently creates and configures `ai-agent`, `owner`, `org-contact`, and `sa-automation`
  * without clobbering the currently active `gcloud` configuration.
  */
 export function initGcloudConfigurations(

@@ -36,7 +36,7 @@ Périmètre : fr2 (`ssh fr2`, OVH, 51.255.162.6 / 2001:41d0:305:2100::a461, wg1 
 
 | Zone | Enregistrements | Proxifié |
 |---|---|---|
-| aphrody.com | A `aphrody.com`, A `os` ; 33 CNAME → `aphrody.com` (admin, ai, art, auth, bot, bxc, cad, calendar, chat, console, control, design, docs, drive, fig, inacord, mail, maps, mcp, meet, n2b, nie, pdf, photos, play, search, sheets, slides, sound, status, store, translate, yohan) | oui |
+| aphrody.com | A `aphrody.com`, A `os` ; 33 CNAME → `aphrody.com` (admin, ai, art, auth, bot, bxc, cad, calendar, chat, console, control, design, docs, drive, fig, inacord, mail, maps, mcp, meet, n2b, nie, pdf, photos, play, search, sheets, slides, sound, status, store, translate) | oui |
 | aphrody.com | A + AAAA `dbfr` | **non** (IP de fr2 publique) |
 | aphrody.app | A api, auth, craft, deploy, git, nie (rosegriffon-52, non migré), play, source, app-{audio, cad, compositing, documents, generation, images, interface-layouts, layout, pdf, photo-processing, slides, tables, vectors, video} | oui |
 | rosegriffon.fr | A `cdn` | oui (rosegriffon-52) |
@@ -190,7 +190,6 @@ Run 2026-11-13T03:48:42.836Z from 81.64.138.x
 | edge | translate.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
 | edge | www.aphrody.app | yes | A 104.21.39.148,172.67.170.209 / 200 / server cloudflare / cf-ray MRS / cache - / expected 200 |
 | edge | www.aphrody.com | yes | A 104.21.27.192,172.67.143.120 / 200 / server cloudflare / cf-ray MRS / cache HIT / expected 200 |
-| edge | yohan.aphrody.com | yes | A 172.67.143.120,104.21.27.192 / 200 / server cloudflare / cf-ray MRS / cache DYNAMIC / expected 200 |
 | origin-aop | api/cdn/creator/downloads (fleet-only vhosts) | yes | 4/4 vhosts include fleet-only.inc |
 | origin-aop | dbfr.aphrody.com (per-hostname AOP) | yes | public 200 via edge cert, nginx directives 2 |
 | origin-closed | fr2 51.255.162.6:443 from internet | yes | filtered (timeout) |

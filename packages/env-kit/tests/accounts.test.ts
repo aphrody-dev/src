@@ -1,4 +1,8 @@
 import { describe, expect, test } from "bun:test";
+
+// Fixture accounts: the real personal accounts live only in the vault.
+process.env.APHRODY_AI_GOOGLE_ACCOUNT = "ai@aphrody.test";
+process.env.APHRODY_OWNER_GOOGLE_ACCOUNT = "owner@aphrody.test";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -38,14 +42,14 @@ function withTempDir(fn: (dir: string) => void | Promise<void>) {
 
 describe("Aphrody 3-Principal Multi-Google & Org Identity Architecture", () => {
   test("resolves all 4 canonical principals by alias, config name, or email", () => {
-    expect(resolvePrincipal("ai").email).toBe("yoyo.aphrody@gmail.com");
-    expect(resolvePrincipal("ai-yoyo").alias).toBe("ai");
-    expect(resolvePrincipal("yoyo.aphrody@gmail.com").rcloneRemote).toBe(
-      "gdrive-yoyo",
+    expect(resolvePrincipal("ai").email).toBe("ai@aphrody.test");
+    expect(resolvePrincipal("ai-agent").alias).toBe("ai");
+    expect(resolvePrincipal("ai@aphrody.test").rcloneRemote).toBe(
+      "gdrive-ai",
     );
 
-    expect(resolvePrincipal("owner").email).toBe("yohanpierre15@gmail.com");
-    expect(resolvePrincipal("owner-yohan").gcloudConfig).toBe("owner-yohan");
+    expect(resolvePrincipal("owner").email).toBe("owner@aphrody.test");
+    expect(resolvePrincipal("owner").gcloudConfig).toBe("owner");
 
     expect(resolvePrincipal("org").email).toBe("contact@aphrody.com");
     expect(resolvePrincipal("org-contact").alias).toBe("org");
@@ -70,13 +74,13 @@ describe("Aphrody 3-Principal Multi-Google & Org Identity Architecture", () => {
         ensureAdcDir: true,
       });
 
-      expect(env.CLOUDSDK_ACTIVE_CONFIG_NAME).toBe("ai-yoyo");
+      expect(env.CLOUDSDK_ACTIVE_CONFIG_NAME).toBe("ai-agent");
       expect(env.CLOUDSDK_CORE_PROJECT).toBe("aphrody");
-      expect(env.CLOUDSDK_CORE_ACCOUNT).toBe("yoyo.aphrody@gmail.com");
+      expect(env.CLOUDSDK_CORE_ACCOUNT).toBe("ai@aphrody.test");
       expect(env.CLOUDSDK_COMPUTE_REGION).toBe("europe-west1");
       expect(env.CLOUDSDK_AI_REGION).toBe("us-central1");
       expect(env.GOOGLE_CLOUD_REGION).toBe("us-central1");
-      expect(env.APHRODY_RCLONE_REMOTE).toBe("gdrive-yoyo");
+      expect(env.APHRODY_RCLONE_REMOTE).toBe("gdrive-ai");
       expect(env.APHRODY_GCP_PROJECT_NUMBER).toBe("468000409790");
       expect(env.CUSTOM_FLAG).toBe("1");
 
@@ -94,21 +98,21 @@ describe("Aphrody 3-Principal Multi-Google & Org Identity Architecture", () => {
     const plan = buildAphrodyIamBindingsPlan();
     expect(plan.project).toBe(APHRODY_GCP_PROJECT_ID);
     expect(plan.projectNumber).toBe(APHRODY_GCP_PROJECT_NUMBER);
-    expect(plan.executorConfig).toBe("owner-yohan");
-    expect(plan.executorAccount).toBe("yohanpierre15@gmail.com");
+    expect(plan.executorConfig).toBe("owner");
+    expect(plan.executorAccount).toBe("owner@aphrody.test");
     expect(plan.enabledApis).toContain("aiplatform.googleapis.com");
     expect(plan.enabledApis).toContain("developerconnect.googleapis.com");
     expect(plan.enabledApis).toContain("drive.googleapis.com");
 
     const membersAndRoles = plan.bindings.map((b) => `${b.member}=>${b.role}`);
     expect(membersAndRoles).toContain(
-      "user:yohanpierre15@gmail.com=>roles/owner",
+      "user:owner@aphrody.test=>roles/owner",
     );
     expect(membersAndRoles).toContain(
-      "user:yoyo.aphrody@gmail.com=>roles/aiplatform.user",
+      "user:ai@aphrody.test=>roles/aiplatform.user",
     );
     expect(membersAndRoles).toContain(
-      "user:yoyo.aphrody@gmail.com=>roles/cloudbuild.builds.editor",
+      "user:ai@aphrody.test=>roles/cloudbuild.builds.editor",
     );
     expect(membersAndRoles).toContain(
       "user:contact@aphrody.com=>roles/secretmanager.admin",
@@ -148,11 +152,11 @@ describe("Aphrody 3-Principal Multi-Google & Org Identity Architecture", () => {
                 stderr: "",
                 stdout: JSON.stringify([
                   {
-                    name: "ai-yoyo",
+                    name: "ai-agent",
                     is_active: false,
                     properties: {
                       core: {
-                        account: "yoyo.aphrody@gmail.com",
+                        account: "ai@aphrody.test",
                         project: "aphrody",
                       },
                       compute: { region: "europe-west1" },
@@ -160,11 +164,11 @@ describe("Aphrody 3-Principal Multi-Google & Org Identity Architecture", () => {
                     },
                   },
                   {
-                    name: "owner-yohan",
+                    name: "owner",
                     is_active: true,
                     properties: {
                       core: {
-                        account: "yohanpierre15@gmail.com",
+                        account: "owner@aphrody.test",
                         project: "aphrody",
                       },
                       compute: { region: "europe-west1" },
@@ -179,7 +183,7 @@ describe("Aphrody 3-Principal Multi-Google & Org Identity Architecture", () => {
                 status: 0,
                 stderr: "",
                 stdout: JSON.stringify([
-                  { account: "yohanpierre15@gmail.com", status: "ACTIVE" },
+                  { account: "owner@aphrody.test", status: "ACTIVE" },
                 ]),
               };
             }
@@ -187,7 +191,7 @@ describe("Aphrody 3-Principal Multi-Google & Org Identity Architecture", () => {
               return {
                 status: 0,
                 stderr: "",
-                stdout: "gdrive-yoyo:\nvps:\n",
+                stdout: "gdrive-ai:\nvps:\n",
               };
             }
             return { status: 0, stdout: "", stderr: "" };
@@ -195,8 +199,8 @@ describe("Aphrody 3-Principal Multi-Google & Org Identity Architecture", () => {
         });
 
         expect(status.orgSurfaces.length).toBe(ORG_PROVIDER_SURFACES.length);
-        expect(status.activeGcloudConfig).toBe("owner-yohan");
-        expect(status.rcloneRemotes).toContain("gdrive-yoyo");
+        expect(status.activeGcloudConfig).toBe("owner");
+        expect(status.rcloneRemotes).toContain("gdrive-ai");
 
         const aiStatus = status.principals.find((p) => p.alias === "ai")!;
         expect(aiStatus.configExists).toBe(true);
@@ -255,8 +259,8 @@ describe("Aphrody 3-Principal Multi-Google & Org Identity Architecture", () => {
     });
 
     expect(res.createdConfigs).toEqual([
-      "ai-yoyo",
-      "owner-yohan",
+      "ai-agent",
+      "owner",
       "org-contact",
       "sa-automation",
     ]);
@@ -264,14 +268,14 @@ describe("Aphrody 3-Principal Multi-Google & Org Identity Architecture", () => {
     expect(
       calls.some((c) =>
         c.includes(
-          "gcloud config configurations create ai-yoyo --no-activate --quiet",
+          "gcloud config configurations create ai-agent --no-activate --quiet",
         ),
       ),
     ).toBe(true);
     expect(
       calls.some((c) =>
         c.includes(
-          "gcloud config set ai/region us-central1 --configuration=ai-yoyo --quiet",
+          "gcloud config set ai/region us-central1 --configuration=ai-agent --quiet",
         ),
       ),
     ).toBe(true);

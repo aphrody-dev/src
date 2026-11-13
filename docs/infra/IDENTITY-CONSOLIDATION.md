@@ -1,6 +1,6 @@
 # Consolidation des identités sur aphrody-labs
 
-Relevé et opérations du 2026-11-13 (UTC), par `gh api` (compte `aphrody-dev`, admin de `yolo-rs` et `aphrody-labs`), API crates.io, registre npm, XML-RPC PyPI, API Cloudflare, `gcloud` (configuration `owner-yohan`), API Vercel et Hostinger. Ordre du propriétaire : migrer yolo-rs sur aphrody-labs, dédupliquer yolo-rs, labs et aphrody-dev, tout fusionner, puis faire de même sur les registres et les clouds.
+Relevé et opérations du 2026-11-13 (UTC), par `gh api` (compte `aphrody-dev`, admin de `yolo-rs` et `aphrody-labs`), API crates.io, registre npm, XML-RPC PyPI, API Cloudflare, `gcloud` (configuration `owner`), API Vercel et Hostinger. Ordre du propriétaire : migrer yolo-rs sur aphrody-labs, dédupliquer yolo-rs, labs et aphrody-dev, tout fusionner, puis faire de même sur les registres et les clouds.
 
 Règles appliquées : aucun dépôt supprimé (archivage seulement), aucun yank, aucune dépublication ; un doublon n'est archivé qu'après une preuve que la copie gardée contient toute sa branche par défaut (`compare` GitHub ou `rev-list` local).
 
@@ -48,7 +48,7 @@ Différé : `aphrody-dev` garde 29 dépôts archivés (doublons prouvés) : rien
 
 ## npm
 
-- `@yolo-rs` contient un seul paquet, `@yolo-rs/posix-bun` 0.1.2 (mainteneur `yohan971`, dépôt `yolo-rs/yolo-zig`). `@aphrody/posix-bun` n'existe pas (E404).
+- `@yolo-rs` contient un seul paquet, `@yolo-rs/posix-bun` 0.1.2 (mainteneur `<npm-owner>`, dépôt `yolo-rs/yolo-zig`). `@aphrody/posix-bun` n'existe pas (E404).
 - Préparé : `var/identity/aphrody-posix-bun-0.1.2.tgz`, archive publiée réempaquetée avec `name` `@aphrody/posix-bun` et `repository` `aphrody-labs/yolo-zig`.
 - Confié à l'agent npm (trusted publishing) : chemin et commandes dans `var/identity/npm-handoff.md`. Historique : `npm login --auth-type=web` a ouvert la page de connexion npm puis a échoué sans terminal (jeton E401). Après connexion : `npm publish var/identity/aphrody-posix-bun-0.1.2.tgz --access public`, puis `npm deprecate @yolo-rs/posix-bun "Renamed to @aphrody/posix-bun"`.
 

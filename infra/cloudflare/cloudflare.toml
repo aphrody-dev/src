@@ -78,7 +78,6 @@ ingress = [
 "status.aphrody.com" = { type = "CNAME", content = "tunnel:mig-prd", rollback = "CNAME aphrody.com" }
 "store.aphrody.com" = { type = "CNAME", content = "tunnel:mig-prd", rollback = "CNAME aphrody.com" }
 "translate.aphrody.com" = { type = "CNAME", content = "tunnel:mig-prd", rollback = "CNAME aphrody.com" }
-"yohan.aphrody.com" = { type = "CNAME", content = "tunnel:mig-prd", rollback = "CNAME aphrody.com" }
 # shenron community gateway, still served by fr2 (static JSON) until shenron moves it to usa: proxied so fr2 can
 # refuse non-Cloudflare clients on 80/443 (cert *.aphrody.com, SSL Full strict).
 "dbfr.aphrody.com" = { type = "A", content = "51.255.162.6", rollback = "A 51.255.162.6 proxied=false" }

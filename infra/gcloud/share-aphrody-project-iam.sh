@@ -3,9 +3,9 @@ set -euo pipefail
 
 PROJECT_ID="${PROJECT_ID:-aphrody}"
 PROJECT_NUMBER="${PROJECT_NUMBER:-468000409790}"
-OWNER_CONFIG="${OWNER_CONFIG:-owner-yohan}"
-OWNER_EMAIL="${OWNER_EMAIL:-yohanpierre15@gmail.com}"
-AI_EMAIL="${AI_EMAIL:-yoyo.aphrody@gmail.com}"
+OWNER_CONFIG="${OWNER_CONFIG:-owner}"
+OWNER_EMAIL="${OWNER_EMAIL:-${APHRODY_OWNER_GOOGLE_ACCOUNT:?set APHRODY_OWNER_GOOGLE_ACCOUNT (vault)}}"
+AI_EMAIL="${AI_EMAIL:-${APHRODY_AI_GOOGLE_ACCOUNT:?set APHRODY_AI_GOOGLE_ACCOUNT (vault)}}"
 ORG_EMAIL="${ORG_EMAIL:-contact@aphrody.com}"
 AUTOMATION_SA_NAME="${AUTOMATION_SA_NAME:-yolo-automation}"
 AUTOMATION_SA_EMAIL="${AUTOMATION_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
@@ -47,8 +47,8 @@ ensure_config() {
   run_gcloud config set core/account "${cfg_email}" --configuration="${cfg_name}" --quiet
 }
 
-ensure_config "owner-yohan" "${OWNER_EMAIL}" "europe-west1" ""
-ensure_config "ai-yoyo" "${AI_EMAIL}" "europe-west1" "us-central1"
+ensure_config "owner" "${OWNER_EMAIL}" "europe-west1" ""
+ensure_config "ai-agent" "${AI_EMAIL}" "europe-west1" "us-central1"
 ensure_config "org-contact" "${ORG_EMAIL}" "europe-west1" ""
 ensure_config "sa-automation" "${AUTOMATION_SA_EMAIL}" "europe-west1" ""
 
@@ -97,10 +97,10 @@ bind_role() {
     --quiet
 }
 
-# 1. Owner Principal (yohanpierre15@gmail.com)
+# 1. Owner Principal (${OWNER_EMAIL})
 bind_role "user:${OWNER_EMAIL}" "roles/owner"
 
-# 2. Autonomous AI Principal (yoyo.aphrody@gmail.com)
+# 2. Autonomous AI Principal (${AI_EMAIL})
 AI_ROLES=(
   "roles/aiplatform.user"
   "roles/serviceusage.serviceUsageConsumer"
@@ -138,12 +138,12 @@ done
 cat <<EOF
 
 === Interactive One-Liners to Cache OAuth & ADC Tokens ===
-# 1. Cache OAuth + ADC for autonomous AI principal (ai-yoyo -> ${AI_EMAIL} : Gemini, Spark, Hermes, OpenClaw):
-gcloud auth login "${AI_EMAIL}" --configuration=ai-yoyo && CLOUDSDK_ACTIVE_CONFIG_NAME=ai-yoyo gcloud auth application-default login --project="${PROJECT_ID}"
+# 1. Cache OAuth + ADC for autonomous AI principal (ai-agent -> ${AI_EMAIL} : Gemini, Spark, Hermes, OpenClaw):
+gcloud auth login "${AI_EMAIL}" --configuration=ai-agent && CLOUDSDK_ACTIVE_CONFIG_NAME=ai-agent gcloud auth application-default login --project="${PROJECT_ID}"
 
 # 2. Cache OAuth + ADC for organization infrastructure principal (org-contact -> ${ORG_EMAIL}):
 gcloud auth login "${ORG_EMAIL}" --configuration=org-contact && CLOUDSDK_ACTIVE_CONFIG_NAME=org-contact gcloud auth application-default login --project="${PROJECT_ID}"
 
-# 3. Cache OAuth + ADC for personal root owner principal (owner-yohan -> ${OWNER_EMAIL}):
-gcloud auth login "${OWNER_EMAIL}" --configuration=owner-yohan && CLOUDSDK_ACTIVE_CONFIG_NAME=owner-yohan gcloud auth application-default login --project="${PROJECT_ID}"
+# 3. Cache OAuth + ADC for personal root owner principal (owner -> ${OWNER_EMAIL}):
+gcloud auth login "${OWNER_EMAIL}" --configuration=owner && CLOUDSDK_ACTIVE_CONFIG_NAME=owner gcloud auth application-default login --project="${PROJECT_ID}"
 EOF

@@ -15,7 +15,7 @@ Single source: [`identity.toml`](../identity.toml) at the repository root (`just
 |---|---|
 | crates.io `aphrody` (exact) | not published; search `q=aphrody` returns 191 crates, none named exactly `aphrody` |
 | npm `aphrody` (unscoped, exact) | not published |
-| npm scope `@aphrody` | owned by the project owner: 652 packages, all published by `yohan971` |
+| npm scope `@aphrody` | owned by the project owner: 652 packages, all published by `<npm-owner>` |
 | crates.io `aphrody-*` | about 190 older crates already published by the owner |
 
 Names already taken by the owner's older crates and therefore not reused: `aphrody-render`,

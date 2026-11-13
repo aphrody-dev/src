@@ -13,7 +13,7 @@ Sécurité et hygiène	2,0 / 5	Origine IPv4 filtrée, mais IPv6 jamais testée, 
 Complétude et sûreté opérationnelle	2,5 / 4	Jeton CLOUDFLARE_API_TOKEN expiré laissé cassé en production, persistance au reboot de fr2-edge-fw incertaine, binaire cloudflared hors APT, cert Let's Encrypt webroot cassé par le pare-feu et assertions proof.ts lacunaires.
 1. Erreurs factuelles et contradictions protocolaires
 
-Décompte erroné des CNAME aphrody.com (sections 1 et 4) : le document annonce « 31 CNAME » à deux reprises, alors que l'énumération explicite entre parenthèses (admin jusqu'à yohan) contient exactement 33 sous-domaines.
+Décompte erroné des CNAME aphrody.com (sections 1 et 4) : le document annonce « 31 CNAME » à deux reprises, alors que l'énumération explicite entre parenthèses (admin jusqu'à translate) contient exactement 33 sous-domaines.
 
 Décompte incohérent des certificats Let's Encrypt (section 1) : l'inventaire indique « 19 certificats Let's Encrypt (16 en dns-cloudflare, 1 en webroot) ». La somme des méthodes d'authentification fait 17 (
 16

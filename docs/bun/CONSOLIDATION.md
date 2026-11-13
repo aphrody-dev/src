@@ -70,7 +70,7 @@ Copies hors git dans `var/legacy` (git-ignoré, 7,4 Go) laissées en place : `yo
 
 ## Paquets publiés (registres, lus en direct)
 
-- npm (mainteneur `yohan971`) : 23 paquets `@aphrody/*bun*` (1.4.6-aphrody.x à 1.4.11, publiés du 2026-10-18 au 2026-10-23), plus `@aphrody/bun-steam` 1.4.7 et `@yolo-rs/posix-bun` 0.1.2. Leur `repository` cite `aphrody-labs/bun`, `oven-sh/bun` ou `aphrody-labs/bun-distribution` (404) ; les sources sont dans `var/legacy/bunos/packages`. Aucun paquet de `packages/*` (bun-parity, bun-plugins, chromium-bun, runtime-adapter) n'est publié (404). Pas de dépréciation : le token npm local est expiré (`docs/publish/NPM.md`).
+- npm (mainteneur `<npm-owner>`) : 23 paquets `@aphrody/*bun*` (1.4.6-aphrody.x à 1.4.11, publiés du 2026-10-18 au 2026-10-23), plus `@aphrody/bun-steam` 1.4.7 et `@yolo-rs/posix-bun` 0.1.2. Leur `repository` cite `aphrody-labs/bun`, `oven-sh/bun` ou `aphrody-labs/bun-distribution` (404) ; les sources sont dans `var/legacy/bunos/packages`. Aucun paquet de `packages/*` (bun-parity, bun-plugins, chromium-bun, runtime-adapter) n'est publié (404). Pas de dépréciation : le token npm local est expiré (`docs/publish/NPM.md`).
 - crates.io (`aphrody-dev`, 370 crates) : 16 citent `aphrody-labs/bun` comme dépôt (`aphrody-n2b*`, `bun_git`, `bun_vt`, `bun_x`, `bun-dotnet-host`, `bun-windows-winclean`, ...), 63 `aphrody-labs/bun-distribution`, 17 `aphrody-labs/bun-os` ; aucune de ces sources n'est dans le fork actuel. Rien n'a été retiré.
 - Plugins Claude Code : marketplaces locales `aphrody` (`C:\src\plugins`) et `rosegriffon-plugins` ; aucune n'embarque de binaire bun.
 

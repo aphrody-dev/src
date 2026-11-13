@@ -15,7 +15,7 @@ import { dirname, join, relative } from "node:path";
 const ROOT = join(import.meta.dir, "..").replaceAll("\\", "/");
 const ENV_KIT = join(ROOT, "packages/env-kit/src/cli.ts");
 const REGISTRY = "https://registry.npmjs.org";
-const OWNED = ["@aphrody", "@rosegriffon"]; // orgs npm dont yohan971 est owner (GET /-/org/<scope>/user)
+const OWNED = ["@aphrody", "@rosegriffon"]; // orgs npm dont <npm-owner> est owner (GET /-/org/<scope>/user)
 const ORG = "aphrody-labs";
 const WORKFLOW = "npm-publish.yml"; // nom du workflow appelant, vérifié par npm à chaque publish OIDC
 const SUBMODULES = ["apps/rosegriffon", "apps/shenron", "apps/auto", "apps/r2b"];
