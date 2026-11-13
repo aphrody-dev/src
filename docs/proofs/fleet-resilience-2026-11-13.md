@@ -63,4 +63,11 @@ Chaque archive est déchiffrée sur l'hôte avec l'identité age du PC (fichier 
 
 ## Revue
 
-Gemini : 12/20 (`docs/reviews/gemini-2026-11-13-fleet-resilience.md`). Défauts 1, 3, 4 et 7 corrigés ; 5 et 6 dépendent du canal d'alerte.
+Gemini : 12/20 (`docs/reviews/gemini-2026-11-13-fleet-resilience.md`). Défauts 1, 3, 4 et 7 corrigés ; 5 et 6 sont couverts par le canal d'alerte ci-dessous.
+
+## Suite (04:00 à 04:30 UTC)
+
+- **Alertes** : `infra/fleet/bin/fleet-notify.sh` sert de notifier unique. `fleet-notify.timer` (5 min, sur les trois hôtes) prend les erreurs journald des tags flotte et les unités en échec. Chaque cause est normalisée (nombres et SHA retirés), puis envoyée par mail via Resend : clé d'envoi seule, limitée à aphrody.com, `FLEET_RESEND_KEY` poussée par le coffre vers prd, fr2 et fr1. Destinataire : contact@aphrody.com. Une alerte par cause et par 24 h, comme `ay auth daemon`. Test d'envoi réussi depuis prd ; le second envoi de la même cause a été supprimé.
+- **Bascule DNS de l'edge** : `fleet-dns-failover.sh` est appelé par fleet-health sur prd (`FLEET_DNS_FAILOVER=1`, jeton `fleet-prd-dns`). Il se déclenche quand l'edge est hors service 3 passages de suite et que fr2 ne répond plus en ssh ; le retour sur fr2 se fait après 3 passages sains. Avant de basculer un enregistrement, il vérifie que l'origine de repli sert ce nom avec un certificat valide. `plan` du 2026-11-13 : seuls dbfr.aphrody.com (A et AAAA) et nie.aphrody.app pointent encore sur fr2. Ni prd (443 = conteneur `shenron-gateway`, réseau hôte) ni fr1 ne servent ces noms avec un certificat valide : en cas de panne de fr2, ils resteraient sur fr2 et une alerte « no valid standby » partirait. Le reste du trafic passe par les tunnels Cloudflare répliqués et les Workers, sans dépendre de fr2.
+- **Reboot de fr1** : `fleet-reboot-precheck.sh fr1` a refusé à 04:18 (verrou heavy pris, cargo et rustc en cours). Le reboot est armé pour le prochain créneau libre : `fleet-reboot-when-idle.timer` (contrôle toutes les 10 min par `fleet-host-idle.sh`, puis reboot et désarmement), fenêtre annoncée dans l'index NHITL.
+- **Checkout `/srv/src`** : fr1 et fr2 sont à jour (`SRC_RESTART` absent toléré). Sur prd, le relais ai-os de `main` ne démarre pas : `packages/vault` lève une erreur sur `systemd-creds encrypt` dans l'unité du relais. Le garde-fou est revenu au commit précédent (b1a7f43) et le relais reste actif. L'unité `src-checkout-update` reste en échec, ce qui déclenche une alerte par 24 h, jusqu'à la correction de `packages/vault`.

@@ -1,0 +1,7 @@
+[Unit]
+Description=Check every 10 min for an idle slot to run a planned reboot (armed by /var/lib/fleet-resilience/reboot-when-idle)
+[Timer]
+OnBootSec=15min
+OnUnitActiveSec=10min
+[Install]
+WantedBy=timers.target

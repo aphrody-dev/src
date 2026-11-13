@@ -5,5 +5,5 @@ Description=yolo build tmp cleanup
 [Service]
 Type=oneshot
 ExecStart=%h/.local/bin/yolo-clean.sh 1
-StandardOutput=append:%h/build/tmp/yolo-clean.log
+StandardOutput=journal
 StandardError=inherit

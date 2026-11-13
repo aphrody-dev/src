@@ -23,7 +23,7 @@ update() {
   new=$(g rev-parse origin/main); [ "$old" = "$new" ] && exit 0
   g sparse-checkout set --cone $SRC_SPARSE; g merge -q --ff-only origin/main || { logger -t src-checkout -p daemon.err "ff-only merge refused"; exit 1; }
   logger -t src-checkout "$D ${old:0:12} -> ${new:0:12}"
-  for p in $SRC_RESTART; do
+  for p in ${SRC_RESTART:-}; do
     unit=${p#*=}; p=${p%%=*}
     g diff --quiet "$old" "$new" -- "$p" && continue
     ctl=(systemctl); u=$unit; case $unit in *:*) ctl=(systemctl --user -M "${unit%%:*}@"); u=${unit#*:};; esac

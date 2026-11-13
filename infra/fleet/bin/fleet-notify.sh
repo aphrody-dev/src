@@ -50,7 +50,7 @@ scan() {
   while read -r line; do
     t=$(jq -r '.SYSLOG_IDENTIFIER // "?"' <<<"$line"); m=$(jq -r '.MESSAGE // ""' <<<"$line")
     # Cause = tag + message with numbers, counters and pids removed (same failure, same cause).
-    cause="$t: $(sed -E 's/\(x[0-9]+\)//g; s/[0-9]+/N/g' <<<"$m" | cut -c1-160)"
+    cause="$t: $(sed -E 's/\(x[0-9]+\)//g; s/\b[0-9a-f]{7,40}\b/H/g; s/[0-9]+/N/g' <<<"$m" | cut -c1-160)"
     send "$cause" "$m"
   done < <(grep '^{' "$ST/scan.json")
   cur=$(sed -n 's/^-- cursor: //p' "$ST/scan.json" | tail -1); [ -n "$cur" ] && echo "$cur" > "$ST/cursor"

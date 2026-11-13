@@ -1,6 +1,7 @@
 #!/bin/bash
 # Gate before any planned reboot of a fleet host, run from the PC (fleet-resilience-proof.sh calls it).
-#   fleet-reboot-precheck.sh <fr1|fr2|prd> [--announce <minutes>] [--done]
+#   fleet-reboot-precheck.sh <fr1|fr2|prd> [--announce <minutes>] [--done] [--when-idle]
+# --when-idle: busy now -> arm fleet-reboot-when-idle.timer on the host (reboot at the next idle slot, 10 min checks).
 # Refuses (exit 75) when the host is busy:
 #   - /var/lock/aphrody-heavy.lock held (heavy jobs, prd/fr1 load rule);
 #   - an rg-steam-* service active, or rg-steam-initial running (Steam depot chain);
@@ -27,24 +28,16 @@ nhitl() { # $1 status, $2 excerpt
 
 if [ "$act" = --done ]; then nhitl fixed "reboot window on $h closed $(date -u +%FT%TZ)"; echo "window closed"; exit 0; fi
 
-out=$(timeout 60 ssh -o ConnectTimeout=15 -o BatchMode=yes "$a" 'S=; [ "$(id -u)" = 0 ] || S="sudo -n"; $S bash -s' <<'EOS'
-busy=0
-say() { echo "BUSY $*"; busy=1; }
-if [ -e /var/lock/aphrody-heavy.lock ] && ! flock -n /var/lock/aphrody-heavy.lock true; then
-  say "heavy lock held by: $(fuser /var/lock/aphrody-heavy.lock 2>/dev/null | xargs -r ps -o comm= -p | sort -u | paste -sd,)"
-fi
-s=$(systemctl list-units --type=service --state=active,activating,reloading --no-legend --plain 'rg-steam-*' | awk '{print $1}' | paste -sd,)
-[ -n "$s" ] && say "steam units: $s"
-pgrep -f rg-steam-initial >/dev/null && say "rg-steam-initial running"
-b=$(pgrep -x 'cargo|rustc|ninja|siso|autoninja|cc1plus|clang|clang\+\+|ld.lld|bazel|reproxy' | xargs -r ps -o comm= -p | sort -u | paste -sd,)
-[ -n "$b" ] && say "build running: $b"
-d=$(ps -eo stat=,pid=,comm= | awk '$1 ~ /^D/ {print $2"/"$3}' | paste -sd,)
-[ -n "$d" ] && say "D-state processes: $d"
-[ $busy = 0 ] && echo "IDLE load=$(cut -d' ' -f1 /proc/loadavg) nproc=$(nproc)"
-EOS
-)
+# Host-side check (fleet-host-idle.sh), same one the on-host timer fleet-reboot-when-idle uses.
+out=$(timeout 60 ssh -o ConnectTimeout=15 -o BatchMode=yes "$a" 'S=; [ "$(id -u)" = 0 ] || S="sudo -n"; $S /usr/local/bin/fleet-host-idle.sh')
 echo "$out"
-echo "$out" | grep -q '^BUSY' && { echo "precheck $h: refused, no reboot"; exit 75; }
+if echo "$out" | grep -q '^BUSY'; then
+  if [ "$act" = --when-idle ]; then
+    timeout 30 ssh "$a" 'S=; [ "$(id -u)" = 0 ] || S="sudo -n"; $S install -d /var/lib/fleet-resilience && $S touch /var/lib/fleet-resilience/reboot-when-idle && $S systemctl enable --now fleet-reboot-when-idle.timer >/dev/null' \
+      && nhitl open "reboot of $h armed for the next idle slot ($(date -u +%FT%TZ))" && echo "precheck $h: busy, reboot armed for the next idle slot"
+  else echo "precheck $h: refused, no reboot"; fi
+  exit 75
+fi
 echo "$out" | grep -q '^IDLE' || { echo "precheck $h: host did not answer"; exit 75; }
 [ "$act" = --announce ] && nhitl open "reboot window on $h $(date -u +%FT%TZ) for ${mins} min" && echo "window announced (${mins} min)"
 exit 0

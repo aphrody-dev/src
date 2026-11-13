@@ -1,0 +1,6 @@
+[Unit]
+Description=Planned reboot at the next idle slot (fleet-host-idle.sh), then disarm
+ConditionPathExists=/var/lib/fleet-resilience/reboot-when-idle
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'out=$(/usr/local/bin/fleet-host-idle.sh) || { echo "$out"; exit 0; }; echo "$out"; rm -f /var/lib/fleet-resilience/reboot-when-idle; logger -t fleet-resilience -p daemon.warning "planned reboot at idle slot: $out"; systemctl --no-block reboot'
