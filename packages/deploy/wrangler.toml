@@ -1,0 +1,25 @@
+# aphrody.app platform Worker (src/worker.ts). Deploy: `ay auth mint cloudflare --perm "Workers Scripts Write,Workers R2 Storage Write" -- bunx wrangler@4.161.0 deploy --dry-run`, then without --dry-run.
+# Secret DEPLOY_TOKEN (= vault APHRODY_DEPLOY_TOKEN, also the CI secret): `wrangler secret put DEPLOY_TOKEN` (stdin).
+name = "aphrody-deploy"
+main = "src/worker.ts"
+compatibility_date = "2026-11-01"
+workers_dev = false
+
+routes = [
+  { pattern = "aphrody.app", custom_domain = true },
+  { pattern = "www.aphrody.app", custom_domain = true },
+  { pattern = "*.aphrody.app/*", zone_name = "aphrody.app" },
+]
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "aphrody-dist"
+
+[vars]
+ZONE = "aphrody.app"
+ACCESS_TEAM = "aphrody-labs.cloudflareaccess.com"
+# AUD tag of the Access application "aphrody-app-dashboard" (infra/cloudflare/cloudflare.toml).
+ACCESS_AUD = "bf80ec94abb4a869ceac0c0ff77ffa99de7ed36b1f4ed022afd863035a4cc67b"
+
+[observability]
+enabled = true

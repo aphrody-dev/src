@@ -1,0 +1,39 @@
+# Projects deployed by aphrody.app (packages/deploy). Every push on main builds the affected ones in CI
+# (.github/workflows/deploy.yml), uploads them to R2 as an immutable deployment, serves the preview at
+# https://<project>-<sha7>.aphrody.app and, with production = "auto", moves the production pointer.
+#   path        directory of the project (cwd of the build)
+#   build       build command (bun only)
+#   out         output directory, relative to path
+#   domains     production hostnames; the first is the canonical one
+#   worker      Worker that serves the production domains from the pointer (else the platform Worker does)
+#   watch       globs of the paths that trigger a deployment
+#   env         names of the vault variables the build reads (values never leave env-kit / CI secrets)
+#   exclude     globs of output files not uploaded
+
+[project.aphrody]
+path = "apps/aphrody"
+build = "bun run build"
+out = "dist"
+domains = ["aphrody.com", "www.aphrody.com"]
+worker = "aphrody"
+watch = [
+  "apps/aphrody/**",
+  "docs/ALPHABET.md",
+  "packages/deploy/src/alphabet.ts",
+  "packages/deploy/src/m3.ts",
+  "packages/design/tokens/**",
+  "packages/wck/**",
+  "assets/brand/**",
+]
+env = ["PUBLIC_CONTACT_EMAIL", "INDEXNOW_KEY"]
+exclude = ["**/*.gz", "**/*.br", "**/*.exe"]
+production = "auto"
+
+[project.yolo]
+path = "apps/yolo"
+build = "bun run build"
+out = "dist"
+domains = ["yolo.aphrody.app"]
+watch = ["apps/yolo/**", "packages/bun-plugins/**", "packages/google-design/**"]
+exclude = ["**/*.gz", "**/*.br", "**/*.exe"]
+production = "auto"
