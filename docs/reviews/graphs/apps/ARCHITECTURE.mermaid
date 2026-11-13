@@ -1,0 +1,99 @@
+flowchart TD
+    file_DEPS_rules["DEPS.rules"]
+    file_r2_site_wrangler_creator_aphrody_com_toml["creator.aphrody.com.toml"]
+    file_r2_site_wrangler_downloads_aphrody_com_toml["downloads.aphrody.com.toml"]
+    file_r2_site_wrangler_cdn_aphrody_com_toml["cdn.aphrody.com.toml"]
+    file_r2_site_wrangler_shell_aphrody_app_toml["shell.aphrody.app.toml"]
+    file_r2_site_package_json["package.json"]
+    constant_r2_site_package_json_name["name"]
+    constant_r2_site_package_json_version["version"]
+    constant_r2_site_package_json_private["private"]
+    constant_r2_site_package_json_type["type"]
+    constant_r2_site_package_json_description["description"]
+    constant_r2_site_package_json_scripts["scripts"]
+    constant_r2_site_package_json_start["start"]
+    constant_r2_site_package_json_test["test"]
+    constant_r2_site_package_json_check["check"]
+    file_r2_site_src_entry_cf_ts["entry.cf.ts"]
+    type_r2_site_src_entry_cf_ts_Env["Env"]
+    method_r2_site_src_entry_cf_ts_fetch["fetch"]
+    mod__aphrody_deploy_src_serve_ts["@aphrody/deploy/src/serve.ts"]
+    mod___app["./app"]
+    fn_handle["handle"]
+    file_r2_site_src_app_ts["app.ts"]
+    interface_r2_site_src_app_ts_Vars["Vars"]
+    function_r2_site_src_app_ts_parseRange["parseRange"]
+    function_r2_site_src_app_ts_storageBucket["storageBucket"]
+    method_r2_site_src_app_ts_get["get"]
+    function_r2_site_src_app_ts_handle["handle"]
+    mod__aphrody_runtime_adapter["@aphrody/runtime-adapter"]
+    fn_h__match["h?.match"]
+    fn_Number["Number"]
+    fn_hs__get["hs?.get"]
+    fn_s_get["s.get"]
+    fn_h_set["h.set"]
+    fn_new_Response_o_body__text["new Responseo.body.text"]
+    fn_s_put["s.put"]
+    fn_Response_json["Response.json"]
+    fn_vars_get["vars.get"]
+    fn_serveStatic["serveStatic"]
+    fn_defineApp["defineApp"]
+    file_r2_site_src_entry_vps_ts["entry.vps.ts"]
+    fn_vps["vps"]
+    file_r2_site_src_entry_vercel_ts["entry.vercel.ts"]
+    fn_vercel["vercel"]
+    file_r2_site_src_app_test_ts["app.test.ts"]
+    mod_bun_test["bun:test"]
+    fn_test["test"]
+    fn_expect_BRAND_test___brand_v1_fonts_inter_woff2____toBe["expectBRAND.test/brand/v1/fonts/inter.woff2.toBe"]
+    fn_expect["expect"]
+    fn_BRAND_test["BRAND.test"]
+    fn_expect_BRAND_test___brand_v12_manifest_json____toBe["expectBRAND.test/brand/v12/manifest.json.toBe"]
+    file_r2_site_package_json -->|defines| constant_r2_site_package_json_name
+    file_r2_site_package_json -->|defines| constant_r2_site_package_json_version
+    file_r2_site_package_json -->|defines| constant_r2_site_package_json_private
+    file_r2_site_package_json -->|defines| constant_r2_site_package_json_type
+    file_r2_site_package_json -->|defines| constant_r2_site_package_json_description
+    file_r2_site_package_json -->|defines| constant_r2_site_package_json_scripts
+    file_r2_site_package_json -->|defines| constant_r2_site_package_json_start
+    file_r2_site_package_json -->|defines| constant_r2_site_package_json_test
+    file_r2_site_package_json -->|defines| constant_r2_site_package_json_check
+    file_r2_site_src_entry_cf_ts -->|defines| type_r2_site_src_entry_cf_ts_Env
+    file_r2_site_src_entry_cf_ts -->|defines| method_r2_site_src_entry_cf_ts_fetch
+    file_r2_site_src_entry_cf_ts -->|imports| mod__aphrody_deploy_src_serve_ts
+    file_r2_site_src_entry_cf_ts -->|imports| mod___app
+    method_r2_site_src_entry_cf_ts_fetch -->|calls| fn_handle
+    file_r2_site_src_app_ts -->|defines| interface_r2_site_src_app_ts_Vars
+    file_r2_site_src_app_ts -->|defines| function_r2_site_src_app_ts_parseRange
+    file_r2_site_src_app_ts -->|defines| function_r2_site_src_app_ts_storageBucket
+    file_r2_site_src_app_ts -->|defines| method_r2_site_src_app_ts_get
+    file_r2_site_src_app_ts -->|defines| function_r2_site_src_app_ts_handle
+    file_r2_site_src_app_ts -->|imports| mod__aphrody_deploy_src_serve_ts
+    file_r2_site_src_app_ts -->|imports| mod__aphrody_runtime_adapter
+    function_r2_site_src_app_ts_parseRange -->|calls| fn_h__match
+    function_r2_site_src_app_ts_parseRange -->|calls| fn_Number
+    method_r2_site_src_app_ts_get -->|calls| function_r2_site_src_app_ts_parseRange
+    method_r2_site_src_app_ts_get -->|calls| fn_hs__get
+    method_r2_site_src_app_ts_get -->|calls| fn_s_get
+    method_r2_site_src_app_ts_get -->|calls| fn_h_set
+    method_r2_site_src_app_ts_get -->|calls| fn_new_Response_o_body__text
+    function_r2_site_src_app_ts_storageBucket -->|calls| fn_s_put
+    function_r2_site_src_app_ts_handle -->|calls| fn_Response_json
+    function_r2_site_src_app_ts_handle -->|calls| fn_vars_get
+    function_r2_site_src_app_ts_handle -->|calls| fn_serveStatic
+    file_r2_site_src_app_ts -->|calls| fn_defineApp
+    file_r2_site_src_app_ts -->|calls| function_r2_site_src_app_ts_handle
+    file_r2_site_src_app_ts -->|calls| function_r2_site_src_app_ts_storageBucket
+    file_r2_site_src_entry_vps_ts -->|imports| mod__aphrody_runtime_adapter
+    file_r2_site_src_entry_vps_ts -->|imports| mod___app
+    file_r2_site_src_entry_vps_ts -->|calls| fn_vps
+    file_r2_site_src_entry_vercel_ts -->|imports| mod__aphrody_runtime_adapter
+    file_r2_site_src_entry_vercel_ts -->|imports| mod___app
+    file_r2_site_src_entry_vercel_ts -->|calls| fn_vercel
+    file_r2_site_src_app_test_ts -->|imports| mod_bun_test
+    file_r2_site_src_app_test_ts -->|imports| mod___app
+    file_r2_site_src_app_test_ts -->|calls| fn_test
+    file_r2_site_src_app_test_ts -->|calls| fn_expect_BRAND_test___brand_v1_fonts_inter_woff2____toBe
+    file_r2_site_src_app_test_ts -->|calls| fn_expect
+    file_r2_site_src_app_test_ts -->|calls| fn_BRAND_test
+    file_r2_site_src_app_test_ts -->|calls| fn_expect_BRAND_test___brand_v12_manifest_json____toBe

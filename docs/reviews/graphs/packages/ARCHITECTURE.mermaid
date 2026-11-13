@@ -1,0 +1,100 @@
+flowchart TD
+    file_site_package_json["package.json"]
+    constant_site_package_json_name["name"]
+    constant_site_package_json_version["version"]
+    constant_site_package_json_description["description"]
+    constant_site_package_json_private["private"]
+    constant_site_package_json_type["type"]
+    constant_site_package_json_bin["bin"]
+    constant_site_package_json_aphrody_site["aphrody-site"]
+    constant_site_package_json_exports["exports"]
+    constant_site_package_json__["."]
+    constant_site_package_json___build["./build"]
+    constant_site_package_json___serve["./serve"]
+    constant_site_package_json_scripts["scripts"]
+    constant_site_package_json_test["test"]
+    constant_site_package_json_dependencies["dependencies"]
+    constant_site_package_json__aphrody_design["@aphrody/design"]
+    constant_site_package_json__aphrody_wck["@aphrody/wck"]
+    constant_site_package_json_license["license"]
+    file_site_src_image_ts["image.ts"]
+    interface_site_src_image_ts_ImgProps["ImgProps"]
+    function_site_src_image_ts_img["img"]
+    mod_______deploy_src_runtime_ts["../../deploy/src/runtime.ts"]
+    mod___html_ts["./html.ts"]
+    fn_encodeURIComponent["encodeURIComponent"]
+    fn_p_src_endsWith["p.src.endsWith"]
+    fn_html["html"]
+    fn_WIDTHS_filter["WIDTHS.filter"]
+    fn_list_find["list.find"]
+    fn_list_at["list.at"]
+    fn_url["url"]
+    fn_list_map__w________url_p_src__w__q_____w_w___join["list.mapw => `${urlp.src, w, q} ${w}w`.join"]
+    fn_list_map["list.map"]
+    file_site_src_config_ts["config.ts"]
+    interface_site_src_config_ts_Budgets["Budgets"]
+    interface_site_src_config_ts_Redirect["Redirect"]
+    interface_site_src_config_ts_SiteConfig["SiteConfig"]
+    function_site_src_config_ts_defineSite["defineSite"]
+    type_site_src_config_ts_ResolvedSite["ResolvedSite"]
+    function_site_src_config_ts_localizedPath["localizedPath"]
+    fn_locales_includes["locales.includes"]
+    fn_path_startsWith["path.startsWith"]
+    file_site_src_cli_ts["cli.ts"]
+    mod_node_path["node:path"]
+    mod___build_ts["./build.ts"]
+    mod___config_ts["./config.ts"]
+    mod___serve_ts["./serve.ts"]
+    fn_Bun_argv____slice_2_____filter["Bun.argv
+  .slice2
+  .filter"]
+    fn_Bun_argv____slice["Bun.argv
+  .slice"]
+    fn_a_startsWith["a.startsWith"]
+    fn_resolve["resolve"]
+    file_site_package_json -->|defines| constant_site_package_json_name
+    file_site_package_json -->|defines| constant_site_package_json_version
+    file_site_package_json -->|defines| constant_site_package_json_description
+    file_site_package_json -->|defines| constant_site_package_json_private
+    file_site_package_json -->|defines| constant_site_package_json_type
+    file_site_package_json -->|defines| constant_site_package_json_bin
+    file_site_package_json -->|defines| constant_site_package_json_aphrody_site
+    file_site_package_json -->|defines| constant_site_package_json_exports
+    file_site_package_json -->|defines| constant_site_package_json__
+    file_site_package_json -->|defines| constant_site_package_json___build
+    file_site_package_json -->|defines| constant_site_package_json___serve
+    file_site_package_json -->|defines| constant_site_package_json_scripts
+    file_site_package_json -->|defines| constant_site_package_json_test
+    file_site_package_json -->|defines| constant_site_package_json_dependencies
+    file_site_package_json -->|defines| constant_site_package_json__aphrody_design
+    file_site_package_json -->|defines| constant_site_package_json__aphrody_wck
+    file_site_package_json -->|defines| constant_site_package_json_license
+    file_site_src_image_ts -->|defines| interface_site_src_image_ts_ImgProps
+    file_site_src_image_ts -->|defines| function_site_src_image_ts_img
+    file_site_src_image_ts -->|imports| mod_______deploy_src_runtime_ts
+    file_site_src_image_ts -->|imports| mod___html_ts
+    file_site_src_image_ts -->|calls| fn_encodeURIComponent
+    function_site_src_image_ts_img -->|calls| fn_p_src_endsWith
+    function_site_src_image_ts_img -->|calls| fn_html
+    function_site_src_image_ts_img -->|calls| fn_WIDTHS_filter
+    function_site_src_image_ts_img -->|calls| fn_list_find
+    function_site_src_image_ts_img -->|calls| fn_list_at
+    function_site_src_image_ts_img -->|calls| fn_url
+    function_site_src_image_ts_img -->|calls| fn_list_map__w________url_p_src__w__q_____w_w___join
+    function_site_src_image_ts_img -->|calls| fn_list_map
+    file_site_src_config_ts -->|defines| interface_site_src_config_ts_Budgets
+    file_site_src_config_ts -->|defines| interface_site_src_config_ts_Redirect
+    file_site_src_config_ts -->|defines| interface_site_src_config_ts_SiteConfig
+    file_site_src_config_ts -->|defines| function_site_src_config_ts_defineSite
+    file_site_src_config_ts -->|defines| type_site_src_config_ts_ResolvedSite
+    file_site_src_config_ts -->|defines| function_site_src_config_ts_localizedPath
+    function_site_src_config_ts_defineSite -->|calls| fn_locales_includes
+    function_site_src_config_ts_localizedPath -->|calls| fn_path_startsWith
+    file_site_src_cli_ts -->|imports| mod_node_path
+    file_site_src_cli_ts -->|imports| mod___build_ts
+    file_site_src_cli_ts -->|imports| mod___config_ts
+    file_site_src_cli_ts -->|imports| mod___serve_ts
+    file_site_src_cli_ts -->|calls| fn_Bun_argv____slice_2_____filter
+    file_site_src_cli_ts -->|calls| fn_Bun_argv____slice
+    file_site_src_cli_ts -->|calls| fn_a_startsWith
+    file_site_src_cli_ts -->|calls| fn_resolve

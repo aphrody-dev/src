@@ -1,0 +1,162 @@
+# Audit graph and gap review, 2026-11-13
+
+Scope: what the monorepo really contains versus `docs/games/PLAN.md` and the owner's directives of this session. Nothing is fixed in this pass. Read-only on `apps/aphrody`, `apps/rosegriffon`, `crates/game` and CI (other agents are active there).
+
+## 1. Graphs built on fr1 (`ssh vps aphrody-heavy`, `ay graph build`, `ay ingest --outline`)
+
+Checkout used: `/srv/src` at `272c544f` (first-party and `src-all`); forks from the local pins copied to `/srv/graph-in`; submodule apps cloned shallow on fr1 (commit in the table). Reports, Mermaid and outline digests are committed under `docs/reviews/graphs/<name>/` (`GRAPH_REPORT.md`, `ARCHITECTURE.mermaid`, `OUTLINE.md`); `graph.json`, `graph.html`, `graph.graphml`, `cypher.txt` (up to 127 MB) stay on fr1 in `/srv/graph-out/<name>/`.
+
+| Graph | Source commit | Nodes | Edges | Communities | Note |
+| :-- | :-- | --: | --: | --: | :-- |
+| `apps` | `272c544f` | 6472 | 8691 | 323 | submodule apps are empty in this tree, see the `app-*` rows |
+| `crates` | `272c544f` | 136809 | 316724 | 6036 | Lore crates are 70 percent of it |
+| `packages` | `272c544f` | 22692 | 33849 | 1081 | replaces the stale `graphify-out/GRAPH_REPORT.md` (commit `f39b8ae6`, 2026-11-11, 2305 nodes) |
+| `infra` | `272c544f` | 2009 | 3812 | 311 | |
+| `docs` | `272c544f` | 7689 | 7009 | 735 | markdown is not parsed into symbols: 7009 edges for 734 files |
+| `src-all` (root, `.graphifyignore`) | `272c544f` | 188787 | 410576 | see report | whole monorepo minus `third_party/` |
+| `artcraft` (`storytold/artcraft`) | `83aad5e` | 63598 | 116529 | see report | pin of `src.lock.json`; replaces `graphify-out/artcraft-crates` (34314 nodes, crates only) |
+| `gamescope` (`ValveSoftware/gamescope`, C++) | `865a71c` | 12091 | 21959 | see report | upstream, not the Rust crates (those are in `crates`) |
+| `storyteller-bevy` | `4ce8b72` | 4847 | 6596 | 472 | no license file; reference reading only (PLAN section 3.2) |
+| `app-rosegriffon` | `730eb5a` | 192490 | 306502 | see report | shallow clone on fr1 |
+| `app-shenron` | `dbb9107` | 152022 | 245302 | see report | shallow clone on fr1 |
+| `app-auto` | `2261394` | 15215 | 24824 | see report | shallow clone on fr1 |
+| `app-r2b` | `5d3f99e` | 175107 | 382909 | see report | shallow clone on fr1 |
+
+Not graphed, with reason: Bevy itself and the Craft Apps repositories (`storytold/photocraft`, `filmcraft`, `soundcraft`, `craft-launcher`, `craft-libs`) have no checkout in `third_party/` (only `third_party/forks.txt` lines 298 to 315 and 345); `wgpu` (upstream fork, 2663 files) was copied to fr1 but not graphed, it is not Aphrody code; `tree-sitter-wgsl-bevy` (44 files) likewise.
+
+### 1.1 Submodule apps
+
+Graphs are in the table above (`docs/reviews/graphs/app-*`). Counts of tracked files by directory (from `git -C apps/<app> ls-files`): rosegriffon 8247 files (apps 3424, packages 1824, crates 1190, tools 970, docs 555), shenron (apps 3941, packages 1393, crates 544, data 424, scripts 379). Their crate and package names do not overlap with `crates/*` and `packages/*` of src (0 common names), so the flattening of PLAN section 6 has not started for them.
+
+### 1.2 Tool defects found while building the graphs
+
+| # | Defect | Evidence | Area |
+| :-- | :-- | :-- | :-- |
+| T1 | `ay graph query|explain|path <term> <dir>` reads `<dir>/graphify-out/graph.json`, else rebuilds the graph of `<dir>` in memory. `ay graph build -o <elsewhere>` therefore produces graphs that `query` never finds ("No nodes matching"), and on `crates` (127 MB) a query takes over 120 s | `crates/depot-cli/src/commands/graph.rs:36-37`; reproduced on fr1 | infra-ci |
+| T2 | `docs` graph has 7009 edges for 734 files: markdown links and path references are not extracted, so doc-to-code gaps cannot be queried | `docs/reviews/graphs/docs/GRAPH_REPORT.md` | infra-ci |
+| T3 | Call edges are name-resolved (`INFERRED`), so "callers" of `getStorytoldWasm` only shows the definition; dead-code claims below combine graph and `git grep` | `ay graph explain getStorytoldWasm apps/aphrody` | infra-ci |
+| T4 | `just graph` default writes under `graphify-out/` (gitignored), nothing records the commit in the report of `ay graph build` (the old report had a "Built from commit" line, the new ones have none) | `docs/reviews/graphs/*/GRAPH_REPORT.md` | infra-ci |
+
+## 2. Content audit per unit (what it does, from code)
+
+State column: REAL (works and used), PARTIAL, STUB (declared, little code), UNWIRED (code exists, no consumer found), FAKE (returns invented data). Queries cited: `ay graph explain <symbol> <path>` on fr1 (G), `git grep` (R), live `curl` of 2026-11-13 (L).
+
+### 2.1 apps
+
+| Unit | Real content | State | Gaps | Query |
+| :-- | :-- | :-- | :-- | :-- |
+| `apps/aphrody` (aphrody.com) | Bun server (`server.ts`), SSG home in 5 locales (`src/seo/home.ts`), `/play` (`src/play/page.ts`, `src/client/play.ts`, wasm from `cdn.aphrody.com/game`), `/os` browser OS (`src/os/*`, 1465 lines client, gamescope WGSL port), `/craft` host pages (`src/craft/*`), edge worker, 1 SQLite store, 4 test files | REAL, PARTIAL | `/craft` is 404 live; home does not link `/os` or `/craft`; see section 3 | L, R |
+| `apps/aphrody/src/store/*` | `UniversalStoreManager` and 6 drivers (aur, flatpak, nix, playstore, winget, bun), behind `/api/pm` and `pm.ts` | FAKE | each driver is a hard-coded `*_CURATED_PACKAGES` array with invented versions and star counts (for example flatpak OBS `31.0.0`, 56000 stars, `src/store/drivers/flatpak.ts:7-21`); no call to Flathub, AUR, winget or Play | R `CURATED` 20 hits; G `FLATPAK_CURATED_PACKAGES` leaf |
+| `apps/aphrody/src/benchmark/stack-picker.ts` | benchmark suite behind `/api/bnc` | FAKE (partly) | `catch` branch returns constants (`insertDurationNs = 1_500_000`, line 299) as if measured | R |
+| `apps/aphrody/src/suite/wasm-kernel.ts` | hand-assembled wasm with `add`, `vec4_dot`, `fast_lerp`, `compute_orbit` | FAKE label | named "Storytold suite" kernel; has nothing to do with storytold or the Craft Apps; used only by the benchmark | G `getStorytoldWasm` |
+| `apps/aphrody/src/google/*`, `data/suggestions.ts` | Google relay config; 46 hard-coded French search suggestions | PARTIAL | static suggestion list, not data | R |
+| `apps/aphrody-app` (aphrody.app) | Pure-Rust workspace: Wayland wire framing, tiling layouts, CRDT sequencer, WebGPU `mica.wgsl` client, OPFS, WebMCP, host with TUI and `/mcp`, Android cdylib, packaging (APKBUILD, PKGBUILD, nix) | REAL, not merged | not merged with `apps/aphrody` (PARITY.md); aphrody.app live is a French deploy landing page ("Mettre en ligne les sites d'Aphrody"), not the app; one wasm client, a second one in `crates/gamescope-web-wasm` | L, R |
+| `apps/r2-site` | one Worker entry for 4 R2 static sites (cdn, downloads, creator, shell.aphrody.app), Cloudflare, Vercel and VPS entries | REAL | `cdn.aphrody.com/craft/` empty (404), so the Craft host pages have nothing to frame | L |
+| `apps/yolo` | Bun fullstack framework demo (`src/framework/*`, `server.ts`), PRD in French with "Aphrody Sovereign Engineering" | PARTIAL | removed from default `build-all` (commit `739b72fa`), wording of the withdrawn "sovereign" era; overlaps `packages/site` and `apps/aphrody` | R |
+| `apps/unixwin` | only tests (`tests/*.test.ts`) and an `upstream` folder; no source | STUB | | R |
+| `apps/nt` | .NET solution `Nt.slnx` with one project (`base/shell/explorer`), docs and benchmarks under `docs/` | PARTIAL | 93 files, 34 code files; PLAN says the home page sells it as a Windows NT mock-up drawn by the GPU | R |
+| `apps/auto`, `apps/r2b`, `apps/l2l` | submodules (`l2l` has no gitlink content in this checkout) | not read here | graphs `app-auto`, `app-r2b` | G |
+| `apps/rosegriffon`, `apps/shenron` | community products, large (see 1.1); rosegriffon holds `aphrody-nie-*` Bevy crates (`aphrody-nie-bevy`, `aphrody-nie-lua-web` wasm), `rg-website`, `rg-bot`; shenron holds `koharu-*` crates, `site`, `bot`, `activity` | REAL | nested copies of platform-like code (1190 and 544 crate files) must move to shared code per PLAN section 6; owned by other agents, not edited here | R |
+
+### 2.2 crates (non-Lore, from `Cargo.toml` descriptions and line counts)
+
+| Group | Crates | State | Notes |
+| :-- | :-- | :-- | :-- |
+| Game and engine | `game` (1272 lines, Bevy slice, built to wasm by `game.yml`), `aphrody-ui` (50652 lines, M3 tokens and bevy/egui adapters), `aphrody-brand-gpu`, `gamescope-core` (918), `gamescope-wgsl` (708), `gamescope-cli` (575), `gamescope-web-wasm` (194), `craft-formats` (142), `asset-test` (268), `dx12-hal`, `corelib` | REAL, PARTIAL | `gamescope-web-wasm`: zero consumers and no build job (R `gamescope-web-wasm` in `.github justfile scripts infra`: 0 hits; G `compute_scaling_transform`: defined, no callers); `craft-formats` and `corelib`, `gamescope-cli` have 0 external references; `/os` re-implements gamescope in TypeScript (`apps/aphrody/src/os/client/gamescope.ts`) instead of loading the wasm crate |
+| Media | `tv-core`, `tv-ffmpeg`, `tv-cli`, `tv-i18n` (16 locales, Fluent) | REAL | `tv-cli` unreferenced; `tv-i18n` is a third i18n system, separate from `packages/i18n` and `crates/aphrody-i18n` |
+| Tooling | `ay`, `archguard`, `xtask`, `depot-*` (10), `up`, `remote`, `bench`, `sys`, `rt`, `docs`, `apm`, `conformance`, `factory`, `net` | REAL | `ay arch check --strict` still fails (PLAN section 5) |
+| Platform products | `lore*` (30 crates, 600+ kLOC), `steam-depot`, `rust-stack`, `ring3-agent`, `unix-*`, `hypr-tiler`, `smithay-wayland-wire`, `wslg-cli`, `cosmic-compat`, `agent-context`, `agent-py`, `adblock-capi`, `ffi`, `core`, `core-capi`, `bun-flat`, `diffutils-flat` | REAL, some UNWIRED | no external reference found for `ring3-agent`, `steam-depot` (used through `ay steam` only), `unix-distro`, `unix-uutils`, `agent-py`, `adblock-capi`, `ffi`, `apm`, `net`, `remote`, `sys`; "Sovereign" wording remains in 5 crate descriptions (`ring3-agent`, `rust-stack`, `unix-distro`, `unix-omarchy`, plus `packages/bun-plugins`, `packages/forge`) although SOUL withdrew it |
+
+Placeholders in crates: no `todo!()` or `unimplemented!()` in non-Lore, non-aphrody-ui code (R); `rust-stack` ships HTML widgets with English placeholder strings (`crates/rust-stack/src/shadcn_rs.rs:316,355`, `webui.rs:433`).
+
+### 2.3 packages
+
+| Package | Real content | State | Gaps |
+| :-- | :-- | :-- | :-- |
+| `ai-os` (237 files) | agent core, orchestrator, MCP, skills, memory | REAL | owner of AI features |
+| `design` | M3 tokens, Figma sync (`src/figma.ts`, `tokens/figma-sync.js`) | REAL | Zero-NPM rule failing (PLAN section 5); no Stitch integration in `apps/aphrody` (R `stitch`: 0 hits in `apps/aphrody`) |
+| `assets` | manifest, fetch, verify, `games.sqlite` | PARTIAL | library textures and HDRIs are not in git, so Docker and CI builds cannot find them (section 3, P0-2); `packages/assets/data/games.sqlite` is a modified binary in the tree |
+| `i18n` (5 locales, 193 keys each, parity) | JSON catalogs, ICU subset | REAL | consumed by `apps/aphrody/src/play/page.ts` and the home build only; `/craft` and `/os` bypass it (`src/os/client/i18n.ts` is a 12-line subset, `src/craft/page.ts` English strings); not used by rosegriffon or shenron |
+| `site`, `release`, `upstream`, `linux`, `gaming`, `machine`, `shell-matrix` | static site framework, release, patch stacks, kernel and package recipes, Steam stack, workstation, shell matrix | UNWIRED by imports (0 external references), reachable only through `ay <cmd>` | `site` duplicates `apps/yolo/src/framework` and `apps/aphrody` SSG |
+| `deploy` (aphrody.app platform), `runtime-adapter`, `core`, `ffi-bridge`, `forge`, `wck`, `vault`, `env-kit`, `chromium-bun`, `bun-parity`, `bun-plugins`, `google-design`, `net` | deployment, runtime adapter, FFI, git forge CLI, web validator, secrets, env, crawler, parity, plugins, design assets | REAL | `net` has an empty description and 1 reference; `google-design` 212 files mostly Material symbol data |
+
+### 2.4 infra, docs, third_party
+
+| Unit | State | Gaps |
+| :-- | :-- | :-- |
+| `infra/` | `deploy.toml`, `docker/` (bake, compose), `fleet/`, `cloudflare/` workers | `infra/deploy.toml` has no entry for the game wasm, the Craft Apps or gamescope wasm (R `craft|game|wasm`: 0 hits); no compose service serves them |
+| `docs/` | 734 files; `docs/games/*` carries the plan, ARTCRAFT, BROWSER-OS, PARITY, FEATURE-MATRIX, MULTIPLAYER, MERGE-APHRODY | `docs/games/WASM-DEPLOY.md` is cited by `apps/aphrody/src/craft/apps.ts` lines 3 and 11 and does not exist; `scripts/craft-web.sh` cited on line 2 does not exist; `docs/ui/*` and neighbours cite 10 files that do not exist (`crates/gpui/Cargo.toml`, `crates/ui-egui/src/theme.rs`, `packages/tokens/src/types.ts`, ...) |
+| `third_party/artcraft` | pinned `83aad5e`; Tauri studio plus 5738 files; graph 63598 nodes | not built or deployed; PLAN row "ArtCraft Studio: not read" for wgpu and winit |
+| `third_party/storyteller-bevy` | Bevy `studio` (animation timeline, gizmos, BVH, wasm inspector `studio/src/inspector/wasm.rs`) | no license: reference only; candidate removal from the lock (PLAN 3.2) |
+| `third_party/gamescope` | Valve C++ upstream | not used by any crate |
+| Bevy upstream, Craft Apps repos, `storytold/*` | tracked in `forks.txt`, absent from `third_party/` | cannot be graphed or built from the monorepo: `scripts/craft-web.sh` would have to clone them |
+| `assets/` | `brand`, `generated`, `library`, `targets.toml`; untracked `Gamescope.fig`, `consolde.fig`, `mobile.fig`, `mobile.zip`, `Nintendo Switch 2 UI Design.png` | Figma sources of `docs/design/replica/console/recon.md` sit untracked; `mobile.zip` is an archive (purge rule) |
+
+## 3. Prioritized fix list
+
+Priority: P0 = visible to a user of the live sites or blocks deployment of what users see; P1 = directive of the session not met; P2 = debt. Area tags: home/aphrody, rosegriffon, wasm-craft-bevy-gamescope, assets, infra-ci.
+
+### P0
+
+| ID | Defect | Evidence | Fix direction | Area |
+| :-- | :-- | :-- | :-- | :-- |
+| P0-1 | `/craft` and `/craft/<id>` return 404 on aphrody.com; `cdn.aphrody.com/craft/` and `.../craft/photocraft/` return 404. 13 Craft Apps are listed in `apps/aphrody/src/craft/apps.ts`, none is built or published; `scripts/craft-web.sh` and `docs/games/WASM-DEPLOY.md` do not exist; no workflow builds them | L; R `craft-web`: one comment in `apps.ts`, no file | write the fr1 build (clone each `storytold/*craft` at a pin, `packaging/web/package.sh`), publish to R2, add the workflow, then deploy `apps/aphrody` | wasm-craft-bevy-gamescope |
+| P0-2 | `images.yml` fails building the `aphrody` target: `stage texture missing in the asset library: /src/assets/library/textures/polyhaven/aerial_grass_rock/aerial_grass_rock_diff_1k.jpg`; the library textures are gitignored (`assets/library/.gitignore`) and the Dockerfile stage does not fetch them. Also `ghcr.io/aphrody-labs/cache:rust: not found` | `gh run view --log-failed` on the last failing `images` run | run `ay assets fetch` in the `bun-build` stage or commit the needed 1k textures | infra-ci, assets |
+| P0-3 | `ci` (10 of the last 12 runs), `images` (9) and `game` (6) are `cancelled` (concurrency with `cancel-in-progress` against a push storm from parallel agents); no green `ci` for the current HEAD | `gh run list -w ci|images|game` | queue instead of cancel on `main`, or run per-SHA groups; require one green run per release | infra-ci |
+| P0-4 | `assets.yml` failed 8 of the last 12 runs: `Path not found: /home/ubuntu/build/assets-target/iteration/./assets/library/models/kenney-arena/*.glb`; the files are tracked (`assets/library/models/kenney-arena/*.glb`), the validator resolves them against the wrong root | `gh run view --log-failed` | fix the root argument of `asset-test` or the workflow `working-directory` | assets, infra-ci |
+| P0-5 | Home (`/`) tells users "Craft Apps ... Pas encore intégrés" and links only `/play` (plus rosegriffon and DBFR); `/os` (200 live) and `/craft` have no entry point; the OS shell is invisible | L `curl https://aphrody.com/`; `apps/aphrody/src/seo/home.ts` | add real entries and use the real app icons and names; do it after P0-1 so no link leads to 404 | home/aphrody |
+| P0-6 | Locale handling differs per surface: home defaults to French and lives at `/<loc>`; `/play` and `/os` default to English and live at `/play/<loc>`, `/os/<loc>`; `/play/en` is 404; `/fr/play`, `/ja/play` are 404; `/craft` pages are hard-coded English (`Launch ${name}`, English `about` lines, `src/craft/page.ts:89`, `src/craft/apps.ts`); `/os` uses a 12-line catalog subset; rosegriffon and shenron use neither `packages/i18n` nor `aphrody-i18n` | L; R | one locale scheme, one catalog (`packages/i18n` for TS, `crates/aphrody-i18n` for Rust, `tv-i18n` folded or bridged), all surfaces covered by `scripts/proof-matrix.ts` | home/aphrody |
+| P0-7 | Invented data presented as real: store drivers (`/api/pm`) return curated entries with made-up versions and stars; `/api/bnc` falls back to constants labelled as measurements; `getStorytoldWasm` is a toy kernel named after storytold | R `apps/aphrody/src/store/drivers/*.ts`, `src/benchmark/stack-picker.ts:299`, `src/suite/wasm-kernel.ts` | call the real catalogs (Flathub, winget, AUR, nixpkgs APIs) or remove the endpoints; no mock fallback; rename or delete the kernel | home/aphrody |
+| P0-8 | The WebAssembly build of gamescope is not deployed: `crates/gamescope-web-wasm` has no workflow, no consumer, and `/os` ships a TypeScript port (`apps/aphrody/src/os/client/gamescope.ts`) of `gamescope-core` scaling and the two WGSL shaders | R `gamescope-web-wasm` in `.github justfile scripts infra`: 0; G `compute_scaling_transform` no callers | build it in `game.yml` (or a sibling job), publish next to `game`, load it from `/os` instead of the port, delete the duplicate math | wasm-craft-bevy-gamescope |
+| P0-9 | `game_bg.wasm` served from `cdn.aphrody.com/game` is 55,535,941 bytes with no `Content-Encoding` and `Cache-Control: max-age=3600`; no `wasm-opt` step in `game.yml`, release profile has `opt-level 3` and `strip` only; first paint of `/play` waits on 55 MB | L `curl -I`; R `wasm-opt` in `game.yml`: 0 | `wasm-opt -Oz`, `opt-level = "s"` for the wasm profile, Brotli at the edge, hashed immutable file names | wasm-craft-bevy-gamescope |
+| P0-10 | Figma and Stitch fidelity is recorded but not delivered: console designs (`assets/Gamescope.fig`, `consolde.fig`, `mobile.fig`, `Nintendo Switch 2 UI Design.png`) are untracked and described only in `docs/design/replica/console/recon.md`; `/os` has no replica diff against them; no Stitch artifact exists in `apps/aphrody`; one source is an archive (`mobile.zip`) | R `git grep -i stitch -- apps/aphrody`: 0; `git status` | track the `.fig` sources (no zip), run `replica-diff` against `/os` home at 1920x1080, store the diff in `docs/reviews/proof/` | home/aphrody |
+
+### P1
+
+| ID | Defect | Evidence | Area |
+| :-- | :-- | :-- | :-- |
+| P1-1 | "All Bevy": only `crates/game` and the `aphrody-ui` adapters exist; `third_party/storyteller-bevy` studio, Bevy examples and rosegriffon's `aphrody-nie-bevy` / `aphrody-nie-lua-web` are not built to wasm or deployed; the Bevy feature matrix against Unreal is `partial` | `docs/games/PARITY.md`; G `on_rotate` in `storyteller-bevy` | wasm-craft-bevy-gamescope |
+| P1-2 | PLAN section 6 target not started: no merged Aphrody app (aphrody.app live is a deploy landing page), no multiplayer, no video, no 120 fps measurement (`scripts/game-fps.ts` exits 2 when not measured), no parity list green | `docs/games/PARITY.md` | wasm-craft-bevy-gamescope, home/aphrody |
+| P1-3 | Gates the PLAN marks failing: `ay arch check --strict`, `ay manifests verify`, `ay doctor` | PLAN section 5 | infra-ci |
+| P1-4 | `infra/deploy.toml` and compose have no service or R2 prefix for game wasm, Craft Apps or gamescope wasm; `/os` production headers are tracked in docs only | R `craft|game|wasm` in `infra/deploy.toml`: 0 | infra-ci |
+| P1-5 | Three i18n systems (`packages/i18n` JSON, `crates/aphrody-i18n` catalogs, `crates/tv-i18n` Fluent with 16 locales) and a 12-line copy in `/os`; the game (`crates/game`) takes texts through `play.*` keys only for the host page, not in-game | R | home/aphrody |
+| P1-6 | "Real names, icons, assets everywhere": rosegriffon and DBFR icon work is in the submodule (other agents); in src, `apps/aphrody/src/craft/apps.ts` assumes `icon.png` for each of 13 apps without a check; `assets/library` lacks the Polyhaven textures in git | R | assets, rosegriffon |
+| P1-7 | Home CSP allows `script-src 'unsafe-inline' https://fonts.googleapis.com` and loads Google Fonts at runtime while `/play` CSP allows only the first-party CDN (`14a43379`) | L `curl -I https://aphrody.com/` | home/aphrody |
+
+### P2
+
+| ID | Item | Area |
+| :-- | :-- | :-- |
+| P2-1 | Dead or duplicated: `packages/site` (0 refs) versus `apps/yolo/src/framework`; `apps/unixwin` tests only; `apps/aphrody/src/google/*`; `packages/net` empty description | infra-ci |
+| P2-2 | "Sovereign" and French PRD wording in `apps/yolo/PRD.md`, `crates/{ring3-agent,rust-stack,unix-distro,unix-omarchy}`, `packages/{bun-plugins,forge}` descriptions | infra-ci |
+| P2-3 | Broken doc references: `docs/games/WASM-DEPLOY.md`, `scripts/craft-web.sh`, 10 paths in `docs/ui/*` and neighbouring docs | infra-ci |
+| P2-4 | `ay graph` defects T1 to T4 above | infra-ci |
+| P2-5 | Nested copies inside rosegriffon (crates 1190 files) and shenron (crates 544 files) to flatten into shared crates | rosegriffon |
+| P2-6 | `storyteller-bevy` is pinned without a license: remove from the lock or keep strictly reference | wasm-craft-bevy-gamescope |
+
+## 4. What this session changed wrongly (commits read in `git log`)
+
+| Commit | Problem |
+| :-- | :-- |
+| `04395ba8` | fixed a relative `/play` asset root that 404ed: the player model never loaded between `5a456a1c` and this fix |
+| `739b72fa` | `build-all` default set drops `yolo`: the app silently stopped being built |
+| `376321b6` | duplicate `[toolchain.ffmpeg]` in `tools.toml` broke the `aphrody-up` tests until renamed |
+| `769f7de1` | `checkdeps` loosened (asset-test may depend on tv-ffmpeg) instead of recording the dependency in a rule file |
+| `e4f681a9` | `/craft` host pages committed before any app build exists: live 404, English-only text, `noindex` |
+| `e807aaf7`, `62a80d2c` | `/os` shipped without a link from the home page and without a `proof-matrix` row for its locales |
+| `c3c16e4a` | one bulk "consolidate all pending work" commit mixes repo, plans, `/os`, i18n: not bisectable |
+| PLAN section 4 rows 3 to 7 | marked "Done" while the gates of section 5 fail and while CI for the pushed commits is cancelled (P0-3) |
+
+## 5. Never done (from PLAN and the session directives)
+
+Merged Aphrody app; open-world multiplayer; video playback; 120 fps at 1080p measurement; Craft Apps hosted in the browser; ArtCraft deployed; gamescope wasm deployed; Bevy beyond `crates/game` as wasm; Stitch and Figma diff proof; one i18n stack across apps; flattening of nested third-party code in rosegriffon and shenron; green `ay arch check --strict`.
+
+## 6. Owner queues
+
+| Area | Items |
+| :-- | :-- |
+| home/aphrody | P0-5, P0-6, P0-7, P0-10, P1-5, P1-7, P1-2 (app merge) |
+| wasm-craft-bevy-gamescope | P0-1, P0-8, P0-9, P1-1, P1-2, P2-6 |
+| assets | P0-2 (textures), P0-4, P1-6 |
+| infra-ci | P0-2, P0-3, P0-4, P1-3, P1-4, P2-1 to P2-4 |
+| rosegriffon | P1-6 (icons), P2-5 |

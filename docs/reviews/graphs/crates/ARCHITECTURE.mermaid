@@ -1,0 +1,107 @@
+flowchart TD
+    file_DEPS_rules["DEPS.rules"]
+    file_depot_forge_Cargo_toml["Cargo.toml"]
+    file_depot_forge_src_error_rs["error.rs"]
+    enum_depot_forge_src_error_rs_ForgeError["ForgeError"]
+    method_depot_forge_src_error_rs_fmt["fmt"]
+    mod_std["std"]
+    file_depot_forge_src_http_rs["http.rs"]
+    function_depot_forge_src_http_rs_get["get"]
+    function_depot_forge_src_http_rs_post["post"]
+    trait_depot_forge_src_http_rs_CheckStatus["CheckStatus"]
+    method_depot_forge_src_http_rs_check["check"]
+    trait_depot_forge_src_http_rs_ReadBody["ReadBody"]
+    method_depot_forge_src_http_rs_into_json["into_json"]
+    method_depot_forge_src_http_rs_into_string["into_string"]
+    mod_serde["serde"]
+    mod_ureq["ureq"]
+    mod_crate["crate"]
+    fn_LazyLock__new["LazyLock::new"]
+    fn_ureq__Agent__config_builder____________http_status_as_error_false___________build____________into["ureq::Agent::config_builder
+        .http_status_as_errorfalse
+        .build
+        .into"]
+    fn_ureq__Agent__config_builder____________http_status_as_error_false___________build["ureq::Agent::config_builder
+        .http_status_as_errorfalse
+        .build"]
+    fn_ureq__Agent__config_builder____________http_status_as_error["ureq::Agent::config_builder
+        .http_status_as_error"]
+    fn_ureq__Agent__config_builder["ureq::Agent::config_builder"]
+    fn_AGENT_get["AGENT.get"]
+    fn_AGENT_post["AGENT.post"]
+    fn_self_map_err["self.map_err"]
+    fn_ForgeError__Network["ForgeError::Network"]
+    fn_resp_status___as_u16["resp.status.as_u16"]
+    fn_resp_status["resp.status"]
+    fn_resp__________________into_string____________________unwrap_or_else["resp
+                .into_string
+                .unwrap_or_else"]
+    fn_resp__________________into_string["resp
+                .into_string"]
+    fn__Unknown_HTTP_error__to_string["Unknown HTTP error.to_string"]
+    fn_Err["Err"]
+    fn_ForgeError__Http["ForgeError::Http"]
+    fn_Ok["Ok"]
+    fn_self_into_body___read_json["self.into_body.read_json"]
+    fn_self_into_body["self.into_body"]
+    fn_self_into_body___read_to_string["self.into_body.read_to_string"]
+    file_depot_forge_src_lib_rs["lib.rs"]
+    module_depot_forge_src_lib_rs_auth["auth"]
+    module_depot_forge_src_lib_rs_error["error"]
+    module_depot_forge_src_lib_rs_github["github"]
+    module_depot_forge_src_lib_rs_gitlab["gitlab"]
+    module_depot_forge_src_lib_rs_http["http"]
+    module_depot_forge_src_lib_rs_models["models"]
+    module_depot_forge_src_lib_rs_tests["tests"]
+    method_depot_forge_src_lib_rs_test_auth_debug_masking["test_auth_debug_masking"]
+    method_depot_forge_src_lib_rs_test_models_deserialization["test_models_deserialization"]
+    method_depot_forge_src_lib_rs_test_gitlab_project_deserialization["test_gitlab_project_deserialization"]
+    mod_auth["auth"]
+    mod_error["error"]
+    file_depot_forge_src_error_rs -->|defines| enum_depot_forge_src_error_rs_ForgeError
+    file_depot_forge_src_error_rs -->|defines| method_depot_forge_src_error_rs_fmt
+    file_depot_forge_src_error_rs -->|imports| mod_std
+    file_depot_forge_src_http_rs -->|defines| function_depot_forge_src_http_rs_get
+    file_depot_forge_src_http_rs -->|defines| function_depot_forge_src_http_rs_post
+    file_depot_forge_src_http_rs -->|defines| trait_depot_forge_src_http_rs_CheckStatus
+    file_depot_forge_src_http_rs -->|defines| method_depot_forge_src_http_rs_check
+    file_depot_forge_src_http_rs -->|defines| trait_depot_forge_src_http_rs_ReadBody
+    file_depot_forge_src_http_rs -->|defines| method_depot_forge_src_http_rs_into_json
+    file_depot_forge_src_http_rs -->|defines| method_depot_forge_src_http_rs_into_string
+    file_depot_forge_src_http_rs -->|imports| mod_std
+    file_depot_forge_src_http_rs -->|imports| mod_serde
+    file_depot_forge_src_http_rs -->|imports| mod_ureq
+    file_depot_forge_src_http_rs -->|imports| mod_crate
+    file_depot_forge_src_http_rs -->|calls| fn_LazyLock__new
+    file_depot_forge_src_http_rs -->|calls| fn_ureq__Agent__config_builder____________http_status_as_error_false___________build____________into
+    file_depot_forge_src_http_rs -->|calls| fn_ureq__Agent__config_builder____________http_status_as_error_false___________build
+    file_depot_forge_src_http_rs -->|calls| fn_ureq__Agent__config_builder____________http_status_as_error
+    file_depot_forge_src_http_rs -->|calls| fn_ureq__Agent__config_builder
+    function_depot_forge_src_http_rs_get -->|calls| fn_AGENT_get
+    function_depot_forge_src_http_rs_post -->|calls| fn_AGENT_post
+    method_depot_forge_src_http_rs_check -->|calls| fn_self_map_err
+    method_depot_forge_src_http_rs_check -->|calls| fn_ForgeError__Network
+    method_depot_forge_src_http_rs_check -->|calls| fn_resp_status___as_u16
+    method_depot_forge_src_http_rs_check -->|calls| fn_resp_status
+    method_depot_forge_src_http_rs_check -->|calls| fn_resp__________________into_string____________________unwrap_or_else
+    method_depot_forge_src_http_rs_check -->|calls| fn_resp__________________into_string
+    method_depot_forge_src_http_rs_check -->|calls| fn__Unknown_HTTP_error__to_string
+    method_depot_forge_src_http_rs_check -->|calls| fn_Err
+    method_depot_forge_src_http_rs_check -->|calls| fn_ForgeError__Http
+    method_depot_forge_src_http_rs_check -->|calls| fn_Ok
+    method_depot_forge_src_http_rs_into_json -->|calls| fn_self_into_body___read_json
+    method_depot_forge_src_http_rs_into_json -->|calls| fn_self_into_body
+    method_depot_forge_src_http_rs_into_string -->|calls| fn_self_into_body___read_to_string
+    method_depot_forge_src_http_rs_into_string -->|calls| fn_self_into_body
+    file_depot_forge_src_lib_rs -->|defines| module_depot_forge_src_lib_rs_auth
+    file_depot_forge_src_lib_rs -->|defines| module_depot_forge_src_lib_rs_error
+    file_depot_forge_src_lib_rs -->|defines| module_depot_forge_src_lib_rs_github
+    file_depot_forge_src_lib_rs -->|defines| module_depot_forge_src_lib_rs_gitlab
+    file_depot_forge_src_lib_rs -->|defines| module_depot_forge_src_lib_rs_http
+    file_depot_forge_src_lib_rs -->|defines| module_depot_forge_src_lib_rs_models
+    file_depot_forge_src_lib_rs -->|defines| module_depot_forge_src_lib_rs_tests
+    file_depot_forge_src_lib_rs -->|defines| method_depot_forge_src_lib_rs_test_auth_debug_masking
+    file_depot_forge_src_lib_rs -->|defines| method_depot_forge_src_lib_rs_test_models_deserialization
+    file_depot_forge_src_lib_rs -->|defines| method_depot_forge_src_lib_rs_test_gitlab_project_deserialization
+    file_depot_forge_src_lib_rs -->|imports| mod_auth
+    file_depot_forge_src_lib_rs -->|imports| mod_error

@@ -1,0 +1,95 @@
+flowchart TD
+    file__database_sql_artcraft_migrations_20250708000000_create_tasks_table_sql["20250708000000_create_tasks_table.sql"]
+    file_sonar_project_properties["sonar-project.properties"]
+    file_crates_desktop_artcraft_tauri_mac_conf_json["tauri-mac.conf.json"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json__schema["$schema"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_productName["productName"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_version["version"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_identifier["identifier"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_build["build"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_frontendDist["frontendDist"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_devUrl["devUrl"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_beforeDevCommand["beforeDevCommand"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_beforeBuildCommand["beforeBuildCommand"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_app["app"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_withGlobalTauri["withGlobalTauri"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_windows["windows"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_security["security"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_assetProtocol["assetProtocol"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_enable["enable"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_scope["scope"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_csp["csp"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_default_src["default-src"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_connect_src["connect-src"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_font_src["font-src"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_img_src["img-src"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_script_src["script-src"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_style_src["style-src"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_bundle["bundle"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_active["active"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_targets["targets"]
+    constant_crates_desktop_artcraft_tauri_mac_conf_json_icon["icon"]
+    file_crates_desktop_artcraft_tauri_dev_static_conf_json["tauri-dev-static.conf.json"]
+    constant_crates_desktop_artcraft_tauri_dev_static_conf_json_build["build"]
+    constant_crates_desktop_artcraft_tauri_dev_static_conf_json_frontendDist["frontendDist"]
+    constant_crates_desktop_artcraft_tauri_dev_static_conf_json_beforeDevCommand["beforeDevCommand"]
+    constant_crates_desktop_artcraft_tauri_dev_static_conf_json_beforeBuildCommand["beforeBuildCommand"]
+    constant_crates_desktop_artcraft_tauri_dev_static_conf_json_devUrl["devUrl"]
+    constant_crates_desktop_artcraft_tauri_dev_static_conf_json_app["app"]
+    constant_crates_desktop_artcraft_tauri_dev_static_conf_json_withGlobalTauri["withGlobalTauri"]
+    constant_crates_desktop_artcraft_tauri_dev_static_conf_json_windows["windows"]
+    file_crates_desktop_artcraft_Cargo_toml["Cargo.toml"]
+    file_crates_desktop_artcraft_src_lib_rs["lib.rs"]
+    module_crates_desktop_artcraft_src_lib_rs_core["core"]
+    module_crates_desktop_artcraft_src_lib_rs_services["services"]
+    module_crates_desktop_artcraft_src_lib_rs_version["version"]
+    function_crates_desktop_artcraft_src_lib_rs_run["run"]
+    mod_crate["crate"]
+    mod_tauri["tauri"]
+    mod_log["log"]
+    mod_tauri_plugin_dialog["tauri_plugin_dialog"]
+    mod_tauri_plugin_http["tauri_plugin_http"]
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json__schema
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_productName
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_version
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_identifier
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_build
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_frontendDist
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_devUrl
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_beforeDevCommand
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_beforeBuildCommand
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_app
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_withGlobalTauri
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_windows
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_security
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_assetProtocol
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_enable
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_scope
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_csp
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_default_src
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_connect_src
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_font_src
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_img_src
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_script_src
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_style_src
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_bundle
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_active
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_targets
+    file_crates_desktop_artcraft_tauri_mac_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_mac_conf_json_icon
+    file_crates_desktop_artcraft_tauri_dev_static_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_dev_static_conf_json_build
+    file_crates_desktop_artcraft_tauri_dev_static_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_dev_static_conf_json_frontendDist
+    file_crates_desktop_artcraft_tauri_dev_static_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_dev_static_conf_json_beforeDevCommand
+    file_crates_desktop_artcraft_tauri_dev_static_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_dev_static_conf_json_beforeBuildCommand
+    file_crates_desktop_artcraft_tauri_dev_static_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_dev_static_conf_json_devUrl
+    file_crates_desktop_artcraft_tauri_dev_static_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_dev_static_conf_json_app
+    file_crates_desktop_artcraft_tauri_dev_static_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_dev_static_conf_json_withGlobalTauri
+    file_crates_desktop_artcraft_tauri_dev_static_conf_json -->|defines| constant_crates_desktop_artcraft_tauri_dev_static_conf_json_windows
+    file_crates_desktop_artcraft_src_lib_rs -->|defines| module_crates_desktop_artcraft_src_lib_rs_core
+    file_crates_desktop_artcraft_src_lib_rs -->|defines| module_crates_desktop_artcraft_src_lib_rs_services
+    file_crates_desktop_artcraft_src_lib_rs -->|defines| module_crates_desktop_artcraft_src_lib_rs_version
+    file_crates_desktop_artcraft_src_lib_rs -->|defines| function_crates_desktop_artcraft_src_lib_rs_run
+    file_crates_desktop_artcraft_src_lib_rs -->|imports| mod_crate
+    file_crates_desktop_artcraft_src_lib_rs -->|imports| mod_tauri
+    file_crates_desktop_artcraft_src_lib_rs -->|imports| mod_log
+    file_crates_desktop_artcraft_src_lib_rs -->|imports| mod_tauri_plugin_dialog
+    file_crates_desktop_artcraft_src_lib_rs -->|imports| mod_tauri_plugin_http

@@ -1,0 +1,98 @@
+flowchart TD
+    file_bun_lock["bun.lock"]
+    file_TODO_md["TODO.md"]
+    file_package_json["package.json"]
+    constant_package_json_name["name"]
+    constant_package_json_version["version"]
+    constant_package_json_private["private"]
+    constant_package_json_description["description"]
+    constant_package_json_workspaces["workspaces"]
+    constant_package_json_packages["packages"]
+    constant_package_json_catalog["catalog"]
+    constant_package_json__ai_sdk_openai_compatible["@ai-sdk/openai-compatible"]
+    constant_package_json__ai_sdk_provider["@ai-sdk/provider"]
+    constant_package_json__aphrody_api["@aphrody/api"]
+    constant_package_json__aphrody_bun_steam["@aphrody/bun-steam"]
+    constant_package_json__aphrody_bun_test_dom["@aphrody/bun-test-dom"]
+    constant_package_json__aphrody_discord_kit["@aphrody/discord-kit"]
+    constant_package_json__aphrody_http["@aphrody/http"]
+    constant_package_json__aphrody_inference["@aphrody/inference"]
+    constant_package_json__aphrody_m3_ai["@aphrody/m3-ai"]
+    constant_package_json__aphrody_m3_primitives["@aphrody/m3-primitives"]
+    constant_package_json__aphrody_m3_reader["@aphrody/m3-reader"]
+    constant_package_json__aphrody_m3_theme["@aphrody/m3-theme"]
+    constant_package_json__aphrody_m3_tokens["@aphrody/m3-tokens"]
+    constant_package_json__aphrody_messaging["@aphrody/messaging"]
+    constant_package_json__aphrody_paths["@aphrody/paths"]
+    constant_package_json__aphrody_plugin_opener["@aphrody/plugin-opener"]
+    constant_package_json__aphrody_runtime_sdk["@aphrody/runtime-sdk"]
+    constant_package_json__aphrody_sql["@aphrody/sql"]
+    constant_package_json__base_ui_react["@base-ui/react"]
+    constant_package_json__better_auth_cimd["@better-auth/cimd"]
+    constant_package_json__better_auth_mcp["@better-auth/mcp"]
+    constant_package_json__better_auth_oauth_provider["@better-auth/oauth-provider"]
+    constant_package_json__better_auth_passkey["@better-auth/passkey"]
+    constant_package_json__codemirror_lang_markdown["@codemirror/lang-markdown"]
+    constant_package_json__codemirror_language_data["@codemirror/language-data"]
+    constant_package_json__codemirror_state["@codemirror/state"]
+    constant_package_json__codemirror_view["@codemirror/view"]
+    constant_package_json__discord_embedded_app_sdk["@discord/embedded-app-sdk"]
+    constant_package_json__discordx_di["@discordx/di"]
+    constant_package_json__discordx_pagination["@discordx/pagination"]
+    constant_package_json__huggingface_transformers["@huggingface/transformers"]
+    constant_package_json__modelcontextprotocol_sdk["@modelcontextprotocol/sdk"]
+    constant_package_json__napi_rs_canvas["@napi-rs/canvas"]
+    constant_package_json__next_env["@next/env"]
+    constant_package_json__next_third_parties["@next/third-parties"]
+    constant_package_json__pothos_core["@pothos/core"]
+    constant_package_json__sglkc_kuromoji["@sglkc/kuromoji"]
+    constant_package_json__t3_oss_env_nextjs["@t3-oss/env-nextjs"]
+    constant_package_json__tailwindcss_postcss["@tailwindcss/postcss"]
+    constant_package_json__tanstack_react_query["@tanstack/react-query"]
+    file_package_json -->|defines| constant_package_json_name
+    file_package_json -->|defines| constant_package_json_version
+    file_package_json -->|defines| constant_package_json_private
+    file_package_json -->|defines| constant_package_json_description
+    file_package_json -->|defines| constant_package_json_workspaces
+    file_package_json -->|defines| constant_package_json_packages
+    file_package_json -->|defines| constant_package_json_catalog
+    file_package_json -->|defines| constant_package_json__ai_sdk_openai_compatible
+    file_package_json -->|defines| constant_package_json__ai_sdk_provider
+    file_package_json -->|defines| constant_package_json__aphrody_api
+    file_package_json -->|defines| constant_package_json__aphrody_bun_steam
+    file_package_json -->|defines| constant_package_json__aphrody_bun_test_dom
+    file_package_json -->|defines| constant_package_json__aphrody_discord_kit
+    file_package_json -->|defines| constant_package_json__aphrody_http
+    file_package_json -->|defines| constant_package_json__aphrody_inference
+    file_package_json -->|defines| constant_package_json__aphrody_m3_ai
+    file_package_json -->|defines| constant_package_json__aphrody_m3_primitives
+    file_package_json -->|defines| constant_package_json__aphrody_m3_reader
+    file_package_json -->|defines| constant_package_json__aphrody_m3_theme
+    file_package_json -->|defines| constant_package_json__aphrody_m3_tokens
+    file_package_json -->|defines| constant_package_json__aphrody_messaging
+    file_package_json -->|defines| constant_package_json__aphrody_paths
+    file_package_json -->|defines| constant_package_json__aphrody_plugin_opener
+    file_package_json -->|defines| constant_package_json__aphrody_runtime_sdk
+    file_package_json -->|defines| constant_package_json__aphrody_sql
+    file_package_json -->|defines| constant_package_json__base_ui_react
+    file_package_json -->|defines| constant_package_json__better_auth_cimd
+    file_package_json -->|defines| constant_package_json__better_auth_mcp
+    file_package_json -->|defines| constant_package_json__better_auth_oauth_provider
+    file_package_json -->|defines| constant_package_json__better_auth_passkey
+    file_package_json -->|defines| constant_package_json__codemirror_lang_markdown
+    file_package_json -->|defines| constant_package_json__codemirror_language_data
+    file_package_json -->|defines| constant_package_json__codemirror_state
+    file_package_json -->|defines| constant_package_json__codemirror_view
+    file_package_json -->|defines| constant_package_json__discord_embedded_app_sdk
+    file_package_json -->|defines| constant_package_json__discordx_di
+    file_package_json -->|defines| constant_package_json__discordx_pagination
+    file_package_json -->|defines| constant_package_json__huggingface_transformers
+    file_package_json -->|defines| constant_package_json__modelcontextprotocol_sdk
+    file_package_json -->|defines| constant_package_json__napi_rs_canvas
+    file_package_json -->|defines| constant_package_json__next_env
+    file_package_json -->|defines| constant_package_json__next_third_parties
+    file_package_json -->|defines| constant_package_json__pothos_core
+    file_package_json -->|defines| constant_package_json__sglkc_kuromoji
+    file_package_json -->|defines| constant_package_json__t3_oss_env_nextjs
+    file_package_json -->|defines| constant_package_json__tailwindcss_postcss
+    file_package_json -->|defines| constant_package_json__tanstack_react_query
