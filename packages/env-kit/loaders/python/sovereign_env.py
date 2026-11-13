@@ -12,7 +12,8 @@ import sys
 from collections.abc import Iterable, Mapping
 from pathlib import Path
 
-DEFAULT_MONOREPO_ENV_PATH = Path(r"C:\src\.env" if os.name == "nt" else "/src/.env")
+# Monorepo root = four levels above this file (packages/env-kit/loaders/python), ENV_KIT_ROOT overrides.
+DEFAULT_MONOREPO_ENV_PATH = Path(os.environ.get("ENV_KIT_ROOT") or Path(__file__).resolve().parents[4]) / ".env"
 
 _SECRET_KEY_RE = re.compile(
     r"(TOKEN|SECRET|PASSWORD|API_KEY|PRIVATE_KEY|AUTH|CREDENTIAL|DATABASE_URL|NUGET_API_KEY)",

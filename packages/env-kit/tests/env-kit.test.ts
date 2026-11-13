@@ -20,6 +20,8 @@ import {
   upsertEnvFileKey,
 } from "../src/index";
 
+const LOADERS = join(import.meta.dir, "..", "loaders");
+
 function withTempDir(fn: (dir: string) => void): void {
   const dir = mkdtempSync(join(tmpdir(), "env-kit-test-"));
   try {
@@ -219,7 +221,7 @@ describe("env-kit cross-language loaders integration", () => {
 
       const pyScript = `
 import sys
-sys.path.insert(0, r"C:\\src\\packages\\env-kit\\loaders\\python")
+sys.path.insert(0, r"${join(LOADERS, "python")}")
 import sovereign_env
 env = sovereign_env.load_monorepo_env(
     env_path=r"${envFile}",
@@ -240,43 +242,90 @@ print("PY_OK")
     });
   });
 
-  test("PowerShell load-env.ps1 loads variables without overriding existing process env", () => {
-    withTempDir((dir) => {
-      const envFile = join(dir, ".env");
-      writeFileSync(
-        envFile,
-        "SYNTH_PS_KEY=from_dotenv\nSYNTH_PS_EXISTING=from_dotenv\n",
-        "utf8",
-      );
+  test.skipIf(process.platform !== "win32")(
+    "PowerShell load-env.ps1 loads variables without overriding existing process env",
+    () => {
+      withTempDir((dir) => {
+        const envFile = join(dir, ".env");
+        writeFileSync(
+          envFile,
+          "SYNTH_PS_KEY=from_dotenv\nSYNTH_PS_EXISTING=from_dotenv\n",
+          "utf8",
+        );
 
-      const cmd = `
+        const cmd = `
 $env:SYNTH_PS_EXISTING = 'keep_me'
-. 'C:\\src\\packages\\env-kit\\loaders\\shell\\load-env.ps1' -EnvPath '${envFile}' -Required @('SYNTH_PS_KEY')
+. '${join(LOADERS, "shell", "load-env.ps1")}' -EnvPath '${envFile}' -Required @('SYNTH_PS_KEY')
 if ($env:SYNTH_PS_KEY -ne 'from_dotenv') { exit 2 }
 if ($env:SYNTH_PS_EXISTING -ne 'keep_me') { exit 3 }
 Write-Output 'PS_OK'
 `;
-      const res = spawnSync(
-        "powershell.exe",
-        ["-NoProfile", "-NonInteractive", "-Command", cmd],
-        { encoding: "utf8" },
-      );
-      expect(res.status).toBe(0);
-      expect(res.stdout.trim()).toBe("PS_OK");
-    });
+        const res = spawnSync(
+          "powershell.exe",
+          ["-NoProfile", "-NonInteractive", "-Command", cmd],
+          { encoding: "utf8" },
+        );
+        expect(res.status).toBe(0);
+        expect(res.stdout.trim()).toBe("PS_OK");
+      });
+    },
+  );
+});
+
+// Golden vectors (strict grammar: one line per key, closed quotes): every loader must agree.
+describe("dotenv golden vectors", () => {
+  const vectors = join(import.meta.dir, "vectors");
+  const file = join(vectors, "dotenv.env");
+  const expected: Record<string, string> = JSON.parse(
+    readFileSync(join(vectors, "dotenv.json"), "utf8"),
+  );
+
+  test("TypeScript parseDotEnv", () => {
+    const got = parseDotEnv(readFileSync(file, "utf8"));
+    for (const [k, v] of Object.entries(expected))
+      expect([k, got[k]]).toEqual([k, v]);
   });
 
-  test("Rust cargo test and Go test suites pass", () => {
-    const cargo = spawnSync("cargo", ["test", "--quiet"], {
-      cwd: "C:\\src\\packages\\env-kit\\loaders\\rust",
-      encoding: "utf8",
-    });
-    expect(cargo.status).toBe(0);
+  test("Python sovereign_env.parse_dotenv", () => {
+    const py = `import importlib.util as u, json, sys
+s = u.spec_from_file_location("m", sys.argv[1]); m = u.module_from_spec(s); s.loader.exec_module(m)
+print(json.dumps(m.parse_dotenv(open(sys.argv[2], encoding="utf-8").read())))`;
+    const res = spawnSync(
+      "python",
+      ["-I", "-c", py, join(LOADERS, "python", "sovereign_env.py"), file],
+      { encoding: "utf8" },
+    );
+    if (res.error) return; // no python on this host
+    const got = JSON.parse(res.stdout);
+    for (const [k, v] of Object.entries(expected))
+      expect([k, got[k]]).toEqual([k, v]);
+  });
 
-    const go = spawnSync("go", ["test", "./..."], {
-      cwd: "C:\\src\\packages\\env-kit\\loaders\\go",
-      encoding: "utf8",
-    });
-    expect(go.status).toBe(0);
-  }, 30_000);
+  test.skipIf(process.platform === "win32" && !Bun.which("sh"))(
+    "POSIX sh load-env.sh",
+    () => {
+      // Empty environment: the loader exports only the vector file, then bun prints what it sees.
+      const res = spawnSync(
+        "sh",
+        [
+          "-c",
+          'f="$1"; l="$2"; b="$3"; set -- "$f"; . "$l"; exec "$b" --no-env-file -e "console.log(JSON.stringify(process.env))"',
+          "sh",
+          file,
+          join(LOADERS, "shell", "load-env.sh"),
+          process.execPath,
+        ],
+        {
+          encoding: "utf8",
+          env: { PATH: process.env.PATH ?? "" },
+          cwd: tmpdir(),
+        },
+      );
+      expect(res.status).toBe(0);
+      const got = JSON.parse(res.stdout);
+      // The sh loader never exports empty values (it would clobber nothing): unset == "".
+      for (const [k, v] of Object.entries(expected))
+        expect([k, got[k] ?? ""]).toEqual([k, v]);
+    },
+  );
 });

@@ -34,15 +34,24 @@ _env_kit_load() {
         case "$_ek_key" in
           ''|*[!A-Za-z0-9_]*|[0-9]*) continue ;;
         esac
-        # Strip surrounding quotes if present
+        _ek_val="$(printf '%s' "$_ek_val" | sed 's/^[[:space:]]*//')"
+        # Quotes (same grammar as parseDotEnv, tests/vectors): "..." decodes \n \t \r \" \\ and stops at the
+        # closing quote (a trailing comment is ignored); '...' is literal up to the closing quote.
         case "$_ek_val" in
-          \"*\")
-            _ek_val="${_ek_val#\"}"
-            _ek_val="${_ek_val%\"}"
+          \"*)
+            _ek_val="$(printf '%s' "$_ek_val" | awk '{
+              s = substr($0, 2); out = ""
+              for (i = 1; i <= length(s); i++) {
+                c = substr(s, i, 1)
+                if (c == "\\") { i++; n = substr(s, i, 1)
+                  if (n == "n") out = out "\n"; else if (n == "t") out = out "\t"; else if (n == "r") out = out "\r"; else out = out n
+                } else if (c == "\"") break; else out = out c
+              }
+              printf "%s", out }')"
             ;;
-          \'*\')
+          \'*)
             _ek_val="${_ek_val#\'}"
-            _ek_val="${_ek_val%\'}"
+            _ek_val="${_ek_val%%\'*}"
             ;;
           *)
             _ek_val="$(printf '%s' "$_ek_val" | sed 's/[[:space:]][[:space:]]*#.*$//;s/^[[:space:]]*//;s/[[:space:]]*$//')"

@@ -7,8 +7,11 @@ import {
 } from "node:fs";
 import { dirname, join, parse, resolve } from "node:path";
 
-export const DEFAULT_MONOREPO_ENV_PATH =
-  process.platform === "win32" ? "C:\\src\\.env" : "/src/.env";
+// Monorepo root = three levels above this file (packages/env-kit/src), ENV_KIT_ROOT overrides.
+export const DEFAULT_MONOREPO_ENV_PATH = join(
+  process.env.ENV_KIT_ROOT ?? resolve(import.meta.dir, "..", "..", ".."),
+  ".env",
+);
 
 const SECRET_KEY_PATTERN =
   /(TOKEN|SECRET|PASSWORD|API_KEY|PRIVATE_KEY|AUTH|CREDENTIAL|DATABASE_URL|ADMIN_KEY|NUGET_API_KEY)/i;
