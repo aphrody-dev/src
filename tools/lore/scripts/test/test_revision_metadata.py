@@ -149,13 +149,13 @@ def test_revision_metadata_set_and_get(new_lore_repo):
     with repo.open_file("file.txt", "w") as f:
         f.write("content\n")
     repo.stage("file.txt")
-    repo.revision_metadata_set(["reviewed-by", "tester@example.com"])
+    repo.revision_metadata_set(["reviewed-by", "tester@google.com"])
     repo.commit("Commit with custom metadata")
     repo.push()
 
     reviewed_by = repo.revision_metadata_get("reviewed-by")
-    assert "tester@example.com" in reviewed_by, (
-        f"Expected 'tester@example.com' in reviewed-by metadata.\nGot: {reviewed_by}"
+    assert "tester@google.com" in reviewed_by, (
+        f"Expected 'tester@google.com' in reviewed-by metadata.\nGot: {reviewed_by}"
     )
 
 
@@ -187,8 +187,8 @@ def test_revision_metadata_is_not_carried_onto_the_next_revision(new_lore_repo, 
         with repo.open_file(name, "w") as f:
             f.write("content\n")
     repo.stage(["source.txt", "dependency.txt"])
-    repo.file_metadata_set("source.txt", ["owner", "owner@example.com"])
-    repo.revision_metadata_set(["reviewed-by", "first.reviewer@example.com"])
+    repo.file_metadata_set("source.txt", ["owner", "owner@google.com"])
+    repo.revision_metadata_set(["reviewed-by", "first.reviewer@google.com"])
     repo.commit("First")
     assert "reviewed-by" in revision_metadata_keys(repo)
 
@@ -267,9 +267,9 @@ def _commit_feature_with_metadata(repo: Lore) -> None:
     repo.revision_metadata_set(
         [
             "reviewed-by",
-            "source.reviewer@example.com",
+            "source.reviewer@google.com",
             "merged-by",
-            "source.merger@example.com",
+            "source.merger@google.com",
             "status-checks",
             "source-checks-payload",
         ]
@@ -292,8 +292,8 @@ def test_revision_metadata_not_inherited_by_merge_into(new_lore_repo):
         f"Expected the merge message on main@LATEST.\nGot:\n{merged}"
     )
     for value in (
-        "source.reviewer@example.com",
-        "source.merger@example.com",
+        "source.reviewer@google.com",
+        "source.merger@google.com",
         "source-checks-payload",
     ):
         assert value not in merged, (
@@ -315,7 +315,7 @@ def test_revision_metadata_inherited_by_merge_when_named(new_lore_repo):
     )
 
     reviewed_by = repo.revision_metadata_get("reviewed-by")
-    assert "source.reviewer@example.com" in reviewed_by, (
+    assert "source.reviewer@google.com" in reviewed_by, (
         f"A named key must reach the merge revision.\nGot: {reviewed_by}"
     )
 
@@ -345,7 +345,7 @@ def test_revision_metadata_inherit_all_excludes_the_merger(new_lore_repo):
 
     merged_by = _metadata_value(repo.revision_metadata_get("merged-by"))
     committed_by = _metadata_value(repo.revision_metadata_get("committed-by"))
-    assert "source.merger@example.com" not in merged_by, (
+    assert "source.merger@google.com" not in merged_by, (
         f"The sentinel must not carry the source revision's merger.\nGot: {merged_by}"
     )
     assert merged_by and merged_by == committed_by, (

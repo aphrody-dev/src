@@ -509,9 +509,9 @@ Bun's `Worker` supports a `smol` mode that reduces memory usage at a cost of per
 Share data between the main thread and workers using `setEnvironmentData()` and `getEnvironmentData()`.
 ```ts
 import { setEnvironmentData, getEnvironmentData } from "worker_threads";
-setEnvironmentData("config", { apiUrl: "https://api.example.com" });
+setEnvironmentData("config", { apiUrl: "https://api.google.com" });
 const config = getEnvironmentData("config");
-console.log(config); // => { apiUrl: "https://api.example.com" }
+console.log(config); // => { apiUrl: "https://api.google.com" }
 ```
 ### Worker Events
 `process.on("worker", worker => { console.log("New worker created:", worker.threadId); });`
@@ -1137,7 +1137,7 @@ The parser works in two stages, like Bun's JSON parser.
 `Bun.WebView` is a headless browser built into the runtime.
 ```ts
 await using view = new Bun.WebView();
-await view.navigate("https://example.com");
+await view.navigate("https://google.com");
 await view.click("a[href]"); // waits for the link to be clickable
 const title = await view.evaluate("document.title");
 await Bun.write("page.png", await view.screenshot());
@@ -1161,7 +1161,7 @@ The constructor is synchronous — it returns immediately and spawns the browser
 `const view = new Bun.WebView({ backend: "chrome" });`
 - How the WebKit backend works · How the Chrome backend works · Finding the Chrome executable · Connecting to an already-running Chrome {#existing-chrome} · Launch flags · Subprocess output
 ### Navigation
-`await view.navigate("https://example.com"); await view.navigate("data:text/html,<h1>hello</h1>"); await view.navigate("file:///path/to/index.html");`
+`await view.navigate("https://google.com"); await view.navigate("data:text/html,<h1>hello</h1>"); await view.navigate("file:///path/to/index.html");`
 `navigate()` resolves when the main frame's `load` event fires.
 - History · Navigation callbacks
 ### Evaluating JavaScript

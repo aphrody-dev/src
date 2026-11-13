@@ -265,7 +265,7 @@ def test_link_merge_abort_ignore_links(new_lore_repo):
     with urc.open_file(f"{link_path}/main-link-file.txt", "w+") as f:
         f.writelines(["main branch link addition\n"])
     urc.stage(scan=True)
-    urc.revision_metadata_set(["reviewed-by", "first.reviewer@example.com"])
+    urc.revision_metadata_set(["reviewed-by", "first.reviewer@google.com"])
     urc.commit("Main branch changes")
     urc.push()
     main_latest = urc.revision_info()

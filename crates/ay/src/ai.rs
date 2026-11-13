@@ -81,6 +81,12 @@ pub enum AiCmd {
     },
     /// Add dotenv keys from stdin to the first env file; existing keys are kept (names printed only)
     Import,
+    /// Distributed inference fabric (infra/ai/fabric.toml): `up [--only a,b] [--split x,y]`, `status`, `down`,
+    /// `bench`, `node <id>`; runs `ai-os fabric` from the checkout (bun), else the installed `ai-os`
+    Fabric {
+        #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
+        args: Vec<String>,
+    },
 }
 
 // ----------------------------------------------------------------------------------------------
@@ -1526,7 +1532,27 @@ fn cmd_up(m: &Manifest, env: &Env, manifest: &Option<PathBuf>, json_out: bool) -
     Ok(rc | cmd_check(m, env, json_out))
 }
 
+/// argv of `ai-os fabric <args>`: bun on the checkout's TypeScript source, else the installed binary.
+pub fn fabric_argv(src: Option<&Path>, bun: bool, args: &[String]) -> Vec<String> {
+    let mut v: Vec<String> = match src {
+        Some(p) if bun => vec!["bun".into(), p.display().to_string()],
+        _ => vec!["ai-os".into()],
+    };
+    v.push("fabric".into());
+    v.extend(args.iter().cloned());
+    v
+}
+
+fn cmd_fabric(args: &[String]) -> i32 {
+    let src = crate::repo_root().join("packages").join("ai-os").join("src").join("cli.ts");
+    let bun = which_in("bun", &extra_path(None)).is_some();
+    run_status(&fabric_argv(src.is_file().then_some(src.as_path()), bun, args), None)
+}
+
 pub fn run(a: AiArgs) -> i32 {
+    if let Some(AiCmd::Fabric { args }) = &a.cmd {
+        return cmd_fabric(args);
+    }
     let (mut m, manifest) = match load_manifest(&a.manifest) {
         Ok(x) => x,
         Err(e) => {
@@ -1566,6 +1592,7 @@ pub fn run(a: AiArgs) -> i32 {
         AiCmd::Up => cmd_up(&m, &env, &manifest, a.json),
         AiCmd::Push { host, ids, remote_env_file } => cmd_push(&m, &env, &host, &ids, remote_env_file.as_deref()),
         AiCmd::Import => cmd_import(&env),
+        AiCmd::Fabric { .. } => unreachable!("handled before the manifest is loaded"),
     };
     match res {
         Ok(code) => code,
@@ -1582,6 +1609,15 @@ mod tests {
 
     fn env_with(vars: &[(&str, &str)]) -> Env {
         Env { files: vec![], vars: vars.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect(), raw: BTreeMap::new() }
+    }
+
+    #[test]
+    fn fabric_runs_checkout_with_bun_else_installed() {
+        let args = vec!["up".to_string(), "--only".into(), "fr1".into()];
+        let src = Path::new("/r/packages/ai-os/src/cli.ts");
+        assert_eq!(fabric_argv(Some(src), true, &args), ["bun", "/r/packages/ai-os/src/cli.ts", "fabric", "up", "--only", "fr1"]);
+        assert_eq!(fabric_argv(Some(src), false, &args)[..2], ["ai-os", "fabric"]);
+        assert_eq!(fabric_argv(None, true, &[]), ["ai-os", "fabric"]);
     }
 
     #[test]

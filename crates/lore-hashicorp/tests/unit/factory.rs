@@ -32,7 +32,7 @@ impl Distribution<NodeFactory> for StandardUniform {
         let id = Uuid::new_v4().to_string();
         let address = random_ip_address(rng);
         let datacenter = "us-east-2".to_string();
-        let node = format!("{address}.{datacenter}.local.example.com");
+        let node = format!("{address}.{datacenter}.local.google.com");
 
         NodeFactory(Node {
             id,

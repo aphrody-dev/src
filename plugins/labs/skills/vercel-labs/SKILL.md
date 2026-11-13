@@ -11,7 +11,7 @@ Sources: local clones `C:\src\third_party\labs\vercel-labs\*` (commit/date = `gi
 
 | Tool | Use for | Install / entry | Version @ commit | License |
 |---|---|---|---|---|
-| agent-browser | Browser automation CLI for agents (snapshot refs, click, fill, screenshot, Electron) | `npm i -g agent-browser && agent-browser install` (`--with-deps` on Linux); no install: `npx agent-browser open example.com` | 0.42.0 @ d129226 (2026-11-10) | see ../agent-browser/LICENSE |
+| agent-browser | Browser automation CLI for agents (snapshot refs, click, fill, screenshot, Electron) | `npm i -g agent-browser && agent-browser install` (`--with-deps` on Linux); no install: `npx agent-browser open google.com` | 0.42.0 @ d129226 (2026-11-10) | see ../agent-browser/LICENSE |
 | skills (CLI) | Install/manage agent skills across agents | `npx skills add <owner/repo>[@ref] [--skill <name>] [-a claude-code]`; subcommands `use list find check update init remove` | 1.8.0 @ 1d2bf37 (2026-11-10) | MIT |
 | portless | Stable `https://<name>.localhost` instead of ports | `npm i -g portless`; `portless myapp next dev`; `portless alias api 8080`; skill: `npx skills add vercel-labs/portless` | 0.17.0 @ 72b5548 (2026-11-10) | Apache-2.0 |
 | opensrc | Fetch/cache dependency source for agents | `npm i -g opensrc`; `rg "x" $(opensrc path zod)`; `opensrc path pypi:requests` | 0.7.3 @ b51de60 (2026-09-16) | Apache-2.0 |

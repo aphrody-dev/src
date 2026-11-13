@@ -37,9 +37,9 @@ fn test_context_optional_user() {
         .correlation_id("test")
         .hook_point(HookPoint::BranchPush)
         .repository(RepositoryId::default())
-        .user("user@example.com")
+        .user("user@google.com")
         .build();
-    assert_eq!(ctx.user(), Some("user@example.com"));
+    assert_eq!(ctx.user(), Some("user@google.com"));
 }
 
 #[test]
@@ -120,7 +120,7 @@ fn test_context_builder_with_all_fields() {
         .correlation_id("full-test")
         .hook_point(HookPoint::BranchPush)
         .repository(RepositoryId::default())
-        .user("test@example.com")
+        .user("test@google.com")
         .branch(Context::default())
         .revision(Hash::default())
         .metadata("key1", "value1")
@@ -129,7 +129,7 @@ fn test_context_builder_with_all_fields() {
 
     assert_eq!(ctx.correlation_id(), "full-test");
     assert_eq!(ctx.hook_point(), HookPoint::BranchPush);
-    assert_eq!(ctx.user(), Some("test@example.com"));
+    assert_eq!(ctx.user(), Some("test@google.com"));
     assert!(ctx.branch().is_some());
     assert!(ctx.revision().is_some());
     assert_eq!(ctx.get_metadata("key1"), Some("value1"));

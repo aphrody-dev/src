@@ -38,7 +38,7 @@ fn refresh_token_serde_default_none() {
     let toml_str = r#"
 user_id = "user-1"
 token = "encrypted-token"
-acceptable_root_domains = ["example.com"]
+acceptable_root_domains = ["google.com"]
 "#;
     let token: IdentityToken = toml::from_str(toml_str).unwrap();
     assert!(token.refresh_token().is_none());
@@ -52,7 +52,7 @@ fn refresh_token_serde_roundtrip() {
     let token = IdentityToken::new(
         "user-1",
         "encrypted-auth",
-        vec!["example.com".into()],
+        vec!["google.com".into()],
         Some("encrypted-refresh".into()),
         None,
     );
@@ -79,7 +79,7 @@ fn an_older_client_reads_an_entry_with_a_scope() {
     let token = IdentityToken::new(
         "user-1",
         "encrypted-auth",
-        vec!["example.com".into()],
+        vec!["google.com".into()],
         Some("encrypted-refresh".into()),
         Some("openid offline_access".into()),
     );
@@ -112,7 +112,7 @@ fn an_older_client_reads_an_entry_with_a_refresh_deadline() {
     let token = IdentityToken::new(
         "user-1",
         "encrypted-auth",
-        vec!["example.com".into()],
+        vec!["google.com".into()],
         Some("encrypted-refresh".into()),
         Some("openid offline_access".into()),
     )
@@ -150,12 +150,12 @@ fn identity_token_without_refresh_backward_compat() {
     // Simulates an old store file structure
     let toml_str = r#"
 [[remotes]]
-remote = "https://auth.example.com"
+remote = "https://auth.google.com"
 
 [[remotes.token]]
 user_id = "alice"
 token = "tok-a"
-acceptable_root_domains = ["example.com"]
+acceptable_root_domains = ["google.com"]
 
 [[remotes.token]]
 user_id = "bob"
@@ -171,11 +171,11 @@ token = "tok-b"
 #[test]
 fn token_map_with_refresh_token_roundtrip() {
     let map = TokenMap::new(vec![RemoteIdentity::new(
-        "https://auth.example.com",
+        "https://auth.google.com",
         vec![IdentityToken::new(
             "alice",
             "auth-tok",
-            vec!["example.com".into()],
+            vec!["google.com".into()],
             Some("refresh-tok".into()),
             None,
         )],
@@ -250,71 +250,71 @@ fn single_nonce_sequence_refuses_second_advance() {
 #[test]
 fn split_remote_resource_new_format() {
     let (auth, resource) =
-        split_remote_resource("https://auth.example.com/00112233445566778899aabbccddeeff");
-    assert_eq!(auth, "https://auth.example.com");
+        split_remote_resource("https://auth.google.com/00112233445566778899aabbccddeeff");
+    assert_eq!(auth, "https://auth.google.com");
     assert_eq!(resource, "00112233445566778899aabbccddeeff");
 }
 
 #[test]
 fn split_remote_resource_legacy_format() {
     let (auth, resource) =
-        split_remote_resource("https://auth.example.com/urc-00112233445566778899aabbccddeeff");
-    assert_eq!(auth, "https://auth.example.com");
+        split_remote_resource("https://auth.google.com/urc-00112233445566778899aabbccddeeff");
+    assert_eq!(auth, "https://auth.google.com");
     assert_eq!(resource, "urc-00112233445566778899aabbccddeeff");
 }
 
 #[test]
 fn split_remote_resource_no_resource() {
-    let (auth, resource) = split_remote_resource("https://auth.example.com");
-    assert_eq!(auth, "https://auth.example.com");
+    let (auth, resource) = split_remote_resource("https://auth.google.com");
+    assert_eq!(auth, "https://auth.google.com");
     assert!(resource.is_empty());
 }
 
 #[test]
 fn split_remote_resource_scheme_with_hostname() {
     let (auth, resource) =
-        split_remote_resource("ucs-auth://auth.example.com/aabbccdd00112233aabbccdd00112233");
-    assert_eq!(auth, "ucs-auth://auth.example.com");
+        split_remote_resource("ucs-auth://auth.google.com/aabbccdd00112233aabbccdd00112233");
+    assert_eq!(auth, "ucs-auth://auth.google.com");
     assert_eq!(resource, "aabbccdd00112233aabbccdd00112233");
 }
 
 #[test]
 fn is_entry_for_auth_url_base() {
     assert!(is_entry_for_auth_url(
-        "https://auth.example.com",
-        "https://auth.example.com"
+        "https://auth.google.com",
+        "https://auth.google.com"
     ));
 }
 
 #[test]
 fn is_entry_for_auth_url_new_format() {
     assert!(is_entry_for_auth_url(
-        "https://auth.example.com/00112233445566778899aabbccddeeff",
-        "https://auth.example.com"
+        "https://auth.google.com/00112233445566778899aabbccddeeff",
+        "https://auth.google.com"
     ));
 }
 
 #[test]
 fn is_entry_for_auth_url_legacy_format() {
     assert!(is_entry_for_auth_url(
-        "https://auth.example.com/urc-00112233445566778899aabbccddeeff",
-        "https://auth.example.com"
+        "https://auth.google.com/urc-00112233445566778899aabbccddeeff",
+        "https://auth.google.com"
     ));
 }
 
 #[test]
 fn is_entry_for_auth_url_different_host() {
     assert!(!is_entry_for_auth_url(
-        "https://other.example.com/00112233445566778899aabbccddeeff",
-        "https://auth.example.com"
+        "https://other.google.com/00112233445566778899aabbccddeeff",
+        "https://auth.google.com"
     ));
 }
 
 #[test]
 fn is_entry_for_auth_url_non_hex_suffix() {
     assert!(!is_entry_for_auth_url(
-        "https://auth.example.com/not-a-resource",
-        "https://auth.example.com"
+        "https://auth.google.com/not-a-resource",
+        "https://auth.google.com"
     ));
 }
 

@@ -6,6 +6,7 @@
 //   ai-os orch lifecycle [--task T] [--paths a,b] [--apply] [--dry-run]
 //   ai-os orch design <produit> [--url U] | market <produit> "<brief>"
 //   ai-os orch health                             refroidissements et issues observées par hôte/fournisseur
+//   ai-os orch queue [--host H]                   tâches en file (new, claimed) et jetons estimés de leurs invites
 import { parseArgs } from "node:util";
 import { hosts as fleetHosts } from "./fleet";
 import { Health } from "./health";
@@ -100,6 +101,62 @@ switch (cmd) {
     h.close();
     break;
   }
+  case "queue": {
+    // Tâches en file (new, claimed) par hôte et jetons estimés de leurs invites (~4 caractères par jeton ; le
+    // contexte que la CLI charge ensuite n'est pas compté).
+    const { exec, shq } = await import("./fleet");
+    const hs = fleetHosts().filter((h) => !values.host || h.id === values.host);
+    const dump = (d: string) =>
+      `for s in new claimed; do for f in ${shq(d)}/queue/$s/*.json; do [ -f "$f" ] && { printf '@@%s\\n' "$s"; head -c 400000 "$f"; printf '\\n'; }; done; done`;
+    print(
+      await Promise.all(
+        hs.map(async (h) => {
+          const dir =
+            h.local && Bun.env.AGENTS_HOME
+              ? Bun.env.AGENTS_HOME
+              : `${h.src}/var/agents`;
+          const r = h.local
+            ? await exec(
+                h,
+                [
+                  Bun.which("niu") ?? Bun.which("bash") ?? "sh",
+                  "-c",
+                  dump(dir.replaceAll("\\", "/")),
+                ],
+                { timeoutMs: 30_000 },
+              )
+            : await exec(h, [dump(dir)], { raw: true, timeoutMs: 60_000 });
+          const tasks = r.out
+            .split(/^@@/m)
+            .filter(Boolean)
+            .flatMap((b) => {
+              const nl = b.indexOf("\n");
+              try {
+                const t = JSON.parse(b.slice(nl + 1));
+                return [
+                  {
+                    id: t.id,
+                    state: b.slice(0, nl),
+                    role: t.role,
+                    tokens: Math.ceil(String(t.prompt ?? "").length / 4),
+                    budget_usd: t.budget_usd ?? null,
+                  },
+                ];
+              } catch {
+                return [];
+              }
+            });
+          return {
+            host: h.id,
+            error: r.code ? r.err.trim().slice(-200) : undefined,
+            tasks,
+            tokens: tasks.reduce((n, t) => n + t.tokens, 0),
+          };
+        }),
+      ),
+    );
+    break;
+  }
   case "run": {
     const src = rest[0] ?? "-";
     const text =
@@ -147,7 +204,7 @@ switch (cmd) {
     break;
   default:
     console.error(
-      "usage : ai-os orch hosts | engines [--host H] [--edit] [--prefer cost|latency|reliability] [--model cli:m] | health | run <workflow.json|-> [--dry-run] | plan <objectif> | lifecycle [--task T] [--paths a,b] [--apply] | design <produit> [--url U] | market <produit> <brief>",
+      "usage : ai-os orch hosts | engines [--host H] [--edit] [--prefer cost|latency|reliability] [--model cli:m] | health | queue [--host H] | run <workflow.json|-> [--dry-run] | plan <objectif> | lifecycle [--task T] [--paths a,b] [--apply] | design <produit> [--url U] | market <produit> <brief>",
     );
     process.exit(2);
 }

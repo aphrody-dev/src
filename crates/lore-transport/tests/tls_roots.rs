@@ -39,7 +39,7 @@ fn remove_trust_store() {
 
 #[test]
 fn an_empty_trust_store_falls_back_to_the_bundled_roots() {
-    Endpoint::from_static("https://lore.example.com")
+    Endpoint::from_static("https://lore.google.com")
         .tls_config(grpc_client_tls_config())
         .expect("gRPC TLS configures without OS certificates");
 

@@ -137,7 +137,7 @@ When a term has an external authoritative reference — a vendor's docs, a stand
 A merge algorithm that uses a common ancestor revision plus the two heads being merged. The result preserves changes from both sides where they don't conflict.
 
 For more information, see:
-Three-way merge <https://example.com/three-way-merge>
+Three-way merge <https://google.com/three-way-merge>
 ```
 
 ## Linking from doc pages back to the glossary

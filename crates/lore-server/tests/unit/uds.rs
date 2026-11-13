@@ -255,17 +255,17 @@ async fn a_waiting_reader_stops_when_its_connection_closes() {
 #[test]
 fn a_forwarded_host_matches_whatever_its_case() {
     let routes = HashMap::from([(
-        "lore.example.com".to_string(),
-        "https://lore.example.com:443".to_string(),
+        "lore.google.com".to_string(),
+        "https://lore.google.com:443".to_string(),
     )]);
-    for host in ["lore.example.com", "LORE.Example.COM"] {
+    for host in ["lore.google.com", "LORE.Example.COM"] {
         assert_eq!(
             route(&routes, host).map(|(_, target)| target.as_str()),
-            Some("https://lore.example.com:443"),
+            Some("https://lore.google.com:443"),
             "{host}"
         );
     }
-    assert_eq!(route(&routes, "other.example.com"), None);
+    assert_eq!(route(&routes, "other.google.com"), None);
 }
 
 /// `[server.uds]` with one socket, forwarding one host, and a handler timeout of
@@ -273,7 +273,7 @@ fn a_forwarded_host_matches_whatever_its_case() {
 fn uds_settings(handler_timeout_seconds: u64) -> UdsSettings {
     let mut settings: UdsSettings = toml::from_str(
         "enabled = true\nsockets = [\"/run/lore/c1/lore.sock\"]\n\
-         forward = { \"lore.example.com\" = \"https://lore.example.com\" }",
+         forward = { \"lore.google.com\" = \"https://lore.google.com\" }",
     )
     .unwrap();
     settings.handler_timeout_seconds = handler_timeout_seconds;
@@ -312,16 +312,16 @@ fn the_sockets_need_a_socket_and_forward_keys_that_are_hosts() {
     assert!(check_settings(&none, Some(&resources), None).is_err());
 
     for (key, accepted) in [
-        ("lore.example.com", true),
+        ("lore.google.com", true),
         ("localhost", true),
         ("[::1]", true),
-        ("lore.example.com:443", false),
-        ("https://lore.example.com", false),
-        ("user@lore.example.com", false),
+        ("lore.google.com:443", false),
+        ("https://lore.google.com", false),
+        ("user@lore.google.com", false),
     ] {
         let mut settings = uds_settings(50);
         settings.forward =
-            HashMap::from([(key.to_string(), "https://lore.example.com".to_string())]);
+            HashMap::from([(key.to_string(), "https://lore.google.com".to_string())]);
         assert_eq!(
             check_settings(&settings, Some(&resources), None).is_ok(),
             accepted,

@@ -904,13 +904,13 @@ fn not_supported_try_match() {
 fn auth_session_fields() {
     let session = AuthSession {
         session_code: "sess-123".into(),
-        login_url: "https://auth.example.com/login?code=abc".into(),
+        login_url: "https://auth.google.com/login?code=abc".into(),
         user_code: "ABCD-EFGH".into(),
         interval: Duration::from_secs(5),
         expires_in: Duration::from_secs(600),
     };
     assert_eq!(session.session_code, "sess-123");
-    assert_eq!(session.login_url, "https://auth.example.com/login?code=abc");
+    assert_eq!(session.login_url, "https://auth.google.com/login?code=abc");
     assert_eq!(session.user_code, "ABCD-EFGH");
     assert_eq!(session.interval, Duration::from_secs(5));
     assert_eq!(session.expires_in, Duration::from_secs(600));
@@ -923,7 +923,7 @@ fn authentication_token_with_refresh() {
         user_id: "user-1".into(),
         user_name: "Alice".into(),
         expires_ms: 1700000000000,
-        acceptable_root_domains: vec!["example.com".into()],
+        acceptable_root_domains: vec!["google.com".into()],
         refresh_token: Some("refresh-abc".into()),
         refresh_expires_ms: 0,
         scope: Some("openid offline_access".into()),
@@ -932,7 +932,7 @@ fn authentication_token_with_refresh() {
     assert_eq!(token.user_id, "user-1");
     assert_eq!(token.user_name, "Alice");
     assert_eq!(token.expires_ms, 1700000000000);
-    assert_eq!(token.acceptable_root_domains, vec!["example.com"]);
+    assert_eq!(token.acceptable_root_domains, vec!["google.com"]);
     assert_eq!(token.refresh_token.as_deref(), Some("refresh-abc"));
     assert_eq!(token.scope.as_deref(), Some("openid offline_access"));
 }
@@ -957,7 +957,7 @@ fn authorization_token_fields() {
     let token = AuthorizationToken {
         token: "authz-jwt".into(),
         expires_ms: 1700000060000,
-        acceptable_root_domains: vec!["repo.example.com".into(), "cdn.example.com".into()],
+        acceptable_root_domains: vec!["repo.google.com".into(), "cdn.google.com".into()],
     };
     assert_eq!(token.token, "authz-jwt");
     assert_eq!(token.expires_ms, 1700000060000);

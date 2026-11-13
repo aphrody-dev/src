@@ -628,7 +628,7 @@ console.log(addrs);
 - `"c-ares"`: the c-ares asynchronous resolver. It reads `/etc/resolv.conf` directly, so it does not consult NSS modules
 - `"system"`: the platform's own resolver (the non-blocking system API on macOS, `getaddrinfo` on a thread pool everywhe
 - `"getaddrinfo"` (alias `"libc"`): the POSIX `getaddrinfo(3)` function on a thread pool.
-`import { dns } from "bun"; const [{ address }] = await dns.lookup("example.com", { backend: "system" });`
+`import { dns } from "bun"; const [{ address }] = await dns.lookup("google.com", { backend: "system" });`
 `node:dns.lookup()` always uses the `"system"` backend to match Node.js, whose `dns.lookup()` is documented as calling …
 ### DNS caching in Bun
 Bun caches DNS lookups, which makes repeated connections to the same hosts faster.
@@ -663,30 +663,30 @@ Bun caches DNS entries for 30 seconds by default.
 > Send HTTP requests with Bun's fetch API
 Bun implements the WHATWG `fetch` standard, with some extensions to meet the needs of server-side JavaScript.
 ### Sending an HTTP request
-`const response = await fetch("http://example.com"); console.log(response.status); // => 200 const text = await response.text(); // or response.json(), response.formData(), etc.`
+`const response = await fetch("http://google.com"); console.log(response.status); // => 200 const text = await response.text(); // or response.json(), response.formData(), etc.`
 `fetch` also works with HTTPS URLs.
 - **Sending a POST request**
 To send a POST request, pass an object with the `method` property set to `"POST"`.
 ```ts
-const response = await fetch("http://example.com", {
+const response = await fetch("http://google.com", {
  method: "POST",
  body: "Hello, world!",
 });
 ```
 - **Proxying requests**
 To proxy a request, pass an object with the `proxy` property set to a URL string, a `URL` instance, or to an object who…
-`const response = await fetch("http://example.com", { proxy: "http://proxy.com", });`
+`const response = await fetch("http://google.com", { proxy: "http://proxy.com", });`
 | Entry | Matches |
 | - | - |
 | `*` | every host |
-| `example.com`, `.example.com`, `*.example.com` | `example.com` and its subdomains |
+| `google.com`, `.google.com`, `*.google.com` | `google.com` and its subdomains |
 | `127.0.0.1`, `::1`, `[::1]` | that IP address |
 | `10.0.0.0/8`, `fd00::/8` | every IP address in the block |
-| `example.com:8080` | the host, on that port only |
+| `google.com:8080` | the host, on that port only |
 - **Custom headers**
 To set custom headers, pass an object with the `headers` property set to an object.
 ```ts
-const response = await fetch("http://example.com", {
+const response = await fetch("http://google.com", {
  headers: {
   "X-Custom-Header": "value",
  },
@@ -714,7 +714,7 @@ const stream = new ReadableStream({
 - For PUT/POST requests, Bun automatically uses multipart upload
 - Bun consumes the stream in chunks and uploads the chunks in parallel
 - You can monitor progress through the S3 options
-- **Fetching a URL with a timeout**: `const response = await fetch("http://example.com", { signal: AbortSignal.timeout(1000), });`
+- **Fetching a URL with a timeout**: `const response = await fetch("http://google.com", { signal: AbortSignal.timeout(1000), });`
 - Canceling a request · Unix domain sockets
 ```ts
 const response = await fetch("https://hostname/a/path", {
@@ -726,7 +726,7 @@ const response = await fetch("https://hostname/a/path", {
 ```
 - **TLS**
 ```ts
-await fetch("https://example.com", {
+await fetch("https://google.com", {
  tls: {
   key: Bun.file("/path/to/key.pem"),
   cert: Bun.file("/path/to/cert.pem"),
@@ -735,7 +735,7 @@ await fetch("https://example.com", {
 ```
 - Custom TLS Validation · Disable TLS validation · Request options
 ```ts
-const response = await fetch("http://example.com", {
+const response = await fetch("http://google.com", {
  decompress: true,
  keepalive: false,
  verbose: true, // or "curl" for more detailed output
@@ -751,7 +751,7 @@ const response = await fetch("http://example.com", {
 - For `Blob` objects, uses the blob's `type`
 - For `FormData`, sets appropriate multipart boundary
 ### Debugging
-`const response = await fetch("http://example.com", { verbose: true, });`
+`const response = await fetch("http://google.com", { verbose: true, });`
 `verbose: boolean` is a Bun-specific extension, not part of the Web standard `fetch` API.
 ### Performance
 Before an HTTP request can be sent, Bun has to resolve DNS, connect the TCP socket, and sometimes complete a TLS handsh…
@@ -912,7 +912,7 @@ for (const [name, value] of cookies.entries()) {
 import { Cookie } from "bun";
 const cookie = new Bun.Cookie("name", "value");
 const secureSessionCookie = new Bun.Cookie("session", "abc123", {
- domain: "example.com",
+ domain: "google.com",
  path: "/admin",
 …
 ```

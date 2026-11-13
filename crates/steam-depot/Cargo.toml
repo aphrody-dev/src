@@ -47,7 +47,7 @@ dirs-next = { version = "2", optional = true }
 hex = { version = "0.4", optional = true }
 tokio = { version = "1.53.2", optional = true, features = ["rt-multi-thread", "macros", "fs", "sync", "time"] }
 tracing = { version = "0.1.44", default-features = false, optional = true, features = ["std"] }
-zip = { version = "8.6.0", optional = true, default-features = false, features = ["deflate"] }
+zip = { version = "9", optional = true, default-features = false, features = ["deflate"] }
 steamroom = { git = "https://github.com/aphrody-dev/steamroom", rev = "2bc5b67f2c703dff675711de7f565117bdfa6671", optional = true }
 steamroom-client = { git = "https://github.com/aphrody-dev/steamroom", rev = "2bc5b67f2c703dff675711de7f565117bdfa6671", optional = true }
 tracing-subscriber = { version = "0.3.20", default-features = false, features = ["fmt", "env-filter", "ansi", "tracing-log"], optional = true }

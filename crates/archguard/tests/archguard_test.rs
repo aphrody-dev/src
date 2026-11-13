@@ -361,7 +361,7 @@ fn detects_linux_maintainers_nonexistent_pattern_and_broken_patch_series_arch_01
     let ws = TempWorkspace::new("linux_maintainers");
     ws.write(
         "MAINTAINERS",
-        "FOO SUBSYSTEM\nM: John Doe <john@example.com>\nS: Supported\nF: crates/non_existent_folder/\n",
+        "FOO SUBSYSTEM\nM: John Doe <john@google.com>\nS: Supported\nF: crates/non_existent_folder/\n",
     );
     ws.write("docs/patches/series", "missing-patch.patch -p1\n");
 

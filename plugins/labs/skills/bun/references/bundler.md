@@ -421,7 +421,7 @@ Macros can accept inputs, but only in limited cases.
 import { getText } from "./getText.ts" with { type: "macro" };
 export function howLong() {
  const foo = Math.random() ? "foo" : "bar";
- const text = getText(`https://example.com/${foo}`);
+ const text = getText(`https://google.com/${foo}`);
  console.log("The page is ", text.length, " characters long");
 …
 ```
@@ -555,7 +555,7 @@ const result = await Bun.build({
 You can pass multiple HTML files as entrypoints.
 `bun build --compile --target=browser ./index.html ./about.html --outdir=dist`
 ### Environment variables
-`API_URL=https://api.example.com bun build --compile --target=browser --env=inline ./index.html --outdir=dist`
+`API_URL=https://api.google.com bun build --compile --target=browser --env=inline ./index.html --outdir=dist`
 Bun replaces references to `process.env.API_URL` in your JavaScript with the literal value at build time.
 ### Limitations
 - **Code splitting** is not supported — `--splitting` cannot be used with `--compile --target=browser`

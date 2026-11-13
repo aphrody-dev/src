@@ -994,7 +994,7 @@ mod tests {
 
     fn root() -> Metadata {
         metadata_from_value(&json!({
-            "metadataBase": "https://fixture.example.com",
+            "metadataBase": "https://fixture.google.com",
             "title": { "default": "Yolo Fixture", "template": "%s | Yolo Fixture" },
             "description": "Root description",
             "applicationName": "Yolo Fixture",
@@ -1003,7 +1003,7 @@ mod tests {
             "openGraph": {
                 "title": "Yolo Fixture",
                 "description": "Migration fixture",
-                "url": "https://fixture.example.com",
+                "url": "https://fixture.google.com",
                 "siteName": "Yolo Fixture",
                 "images": [{ "url": "/opengraph-image", "width": 1200, "height": 630, "alt": "Cover" }],
                 "locale": "en_US",
@@ -1028,7 +1028,7 @@ mod tests {
         let m = root();
         assert_eq!(
             m.metadata_base.as_deref(),
-            Some("https://fixture.example.com")
+            Some("https://fixture.google.com")
         );
         assert_eq!(
             m.title.as_ref().and_then(|t| t.default.as_deref()),
@@ -1148,9 +1148,9 @@ mod tests {
             "<meta name=\"theme-color\" media=\"(prefers-color-scheme: dark)\" content=\"#09090b\">",
         );
         expect("<meta name=\"color-scheme\" content=\"dark light\">");
-        expect("<link rel=\"canonical\" href=\"https://fixture.example.com/\">");
+        expect("<link rel=\"canonical\" href=\"https://fixture.google.com/\">");
         expect(
-            "<link rel=\"alternate\" hreflang=\"fr-FR\" href=\"https://fixture.example.com/fr\">",
+            "<link rel=\"alternate\" hreflang=\"fr-FR\" href=\"https://fixture.google.com/fr\">",
         );
         expect("<link rel=\"manifest\" href=\"/manifest.webmanifest\">");
         expect("<link rel=\"icon\" href=\"/icon.svg\">");
@@ -1161,7 +1161,7 @@ mod tests {
         expect("<meta property=\"og:locale\" content=\"en_US\">");
         expect("<meta property=\"og:type\" content=\"website\">");
         expect(
-            "<meta property=\"og:image\" content=\"https://fixture.example.com/opengraph-image\">",
+            "<meta property=\"og:image\" content=\"https://fixture.google.com/opengraph-image\">",
         );
         expect("<meta property=\"og:image:width\" content=\"1200\">");
         expect("<meta property=\"og:image:height\" content=\"630\">");
@@ -1169,7 +1169,7 @@ mod tests {
         expect("<meta name=\"twitter:card\" content=\"summary_large_image\">");
         expect("<meta name=\"twitter:site\" content=\"@aphrody\">");
         expect(
-            "<meta name=\"twitter:image\" content=\"https://fixture.example.com/twitter-image\">",
+            "<meta name=\"twitter:image\" content=\"https://fixture.google.com/twitter-image\">",
         );
         expect("<meta name=\"google-site-verification\" content=\"g-token\">");
         expect("<meta name=\"me\" content=\"https://me.example\">");

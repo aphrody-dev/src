@@ -101,7 +101,7 @@
     {
       "username": "alice",
       "enabled": true,
-      "email": "alice@example.com",
+      "email": "alice@google.com",
       "emailVerified": true,
       "firstName": "Alice",
       "lastName": "Example",
@@ -120,7 +120,7 @@
     {
       "username": "bob",
       "enabled": true,
-      "email": "bob@example.com",
+      "email": "bob@google.com",
       "emailVerified": true,
       "firstName": "Bob",
       "lastName": "Example",
@@ -139,7 +139,7 @@
     {
       "username": "service-account-lore-ci",
       "enabled": true,
-      "email": "lore-ci@example.com",
+      "email": "lore-ci@google.com",
       "emailVerified": true,
       "serviceAccountClientId": "lore-ci",
       "realmRoles": [

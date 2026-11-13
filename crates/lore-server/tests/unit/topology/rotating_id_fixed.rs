@@ -21,7 +21,7 @@ fn empty_peers_succeeds() {
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn topology_refresh_changes_id() {
-    let peer_address = "example.com";
+    let peer_address = "google.com";
     let peer_port = 9090;
     let peer_locality = Locality::SameRegion;
 

@@ -161,7 +161,7 @@ Hooks allow custom logic to be executed at specific points in the server's lifec
 [hooks.compliance]
 enabled = true
 deny_patterns = ["^release/.*$"]
-webhook_url = "https://api.example.com/notify"
+webhook_url = "https://api.google.com/notify"
 ```
 
 ### Creating a New Hook

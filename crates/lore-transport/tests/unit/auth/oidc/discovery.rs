@@ -64,8 +64,8 @@ async fn optional_endpoints_may_be_absent() {
 async fn a_document_naming_another_issuer_is_refused() {
     let provider = spawn_provider(|_, _| {
         json(&document(
-            "https://idp.example.com",
-            "https://idp.example.com",
+            "https://idp.google.com",
+            "https://idp.google.com",
         ))
     })
     .await;
@@ -154,7 +154,7 @@ async fn a_redirect_within_the_origin_is_followed() {
 /// Refused before any request is made, so the host need not exist.
 #[tokio::test]
 async fn a_plain_http_issuer_is_refused() {
-    let result = discover("http://idp.example.com").await;
+    let result = discover("http://idp.google.com").await;
 
     assert!(
         matches!(result, Err(DiscoveryError::InsecureIssuer { .. })),
@@ -162,12 +162,12 @@ async fn a_plain_http_issuer_is_refused() {
     );
 }
 
-/// `http://localhost:pass@idp.example.com` names `idp.example.com`, not a loopback host.
+/// `http://localhost:pass@idp.google.com` names `idp.google.com`, not a loopback host.
 #[tokio::test]
 async fn an_issuer_with_credentials_is_refused() {
     for issuer in [
-        "http://localhost:pass@idp.example.com",
-        "https://user:secret@idp.example.com",
+        "http://localhost:pass@idp.google.com",
+        "https://user:secret@idp.google.com",
     ] {
         let result = discover(issuer).await;
         assert!(
@@ -179,7 +179,7 @@ async fn an_issuer_with_credentials_is_refused() {
 
 #[tokio::test]
 async fn an_issuer_with_a_query_is_refused() {
-    let result = discover("https://idp.example.com?tenant=a").await;
+    let result = discover("https://idp.google.com?tenant=a").await;
 
     assert!(
         matches!(result, Err(DiscoveryError::InvalidIssuer)),
@@ -204,7 +204,7 @@ async fn a_loopback_issuer_with_an_uppercase_scheme_permits_loopback_endpoints()
 #[tokio::test]
 async fn an_endpoint_without_https_is_refused() {
     let provider =
-        spawn_provider(|issuer, _| json(&document(issuer, "http://idp.example.com"))).await;
+        spawn_provider(|issuer, _| json(&document(issuer, "http://idp.google.com"))).await;
 
     let result = discover(&provider.issuer).await;
 
@@ -218,7 +218,7 @@ async fn an_endpoint_without_https_is_refused() {
 async fn an_endpoint_with_credentials_is_refused() {
     let provider = spawn_provider(|issuer, _| {
         let mut document = document(issuer, issuer);
-        document["token_endpoint"] = "https://user:secret@idp.example.com/token".into();
+        document["token_endpoint"] = "https://user:secret@idp.google.com/token".into();
         json(&document)
     })
     .await;

@@ -1079,7 +1079,7 @@ async fn an_explicit_endpoint_skips_discovery() {
 #[tokio::test]
 async fn a_discovery_document_naming_another_issuer_is_refused() {
     let provider =
-        spawn_discovery_provider(Some("https://impostor.example.com".to_string()), false).await;
+        spawn_discovery_provider(Some("https://impostor.google.com".to_string()), false).await;
     let service = discovering_service(&provider);
 
     let error = service
@@ -1091,9 +1091,9 @@ async fn a_discovery_document_naming_another_issuer_is_refused() {
         panic!("expected DiscoveryIssuerMismatch, got {error:?}");
     };
     assert_eq!(*expected, provider.base);
-    assert_eq!(actual, "https://impostor.example.com");
+    assert_eq!(actual, "https://impostor.google.com");
     let message = error.to_string();
-    assert!(message.contains(&provider.base) && message.contains("impostor.example.com"));
+    assert!(message.contains(&provider.base) && message.contains("impostor.google.com"));
 }
 
 /// The downgrade matrix. An `https` issuer's keys are only ever fetched over
@@ -1101,15 +1101,15 @@ async fn a_discovery_document_naming_another_issuer_is_refused() {
 /// security. The other schemes are not allowed, `file://` included.
 #[test]
 fn discovered_jwks_uri_scheme_rules() {
-    let https_issuer = "https://auth.example.com";
+    let https_issuer = "https://auth.google.com";
     let http_issuer = "http://127.0.0.1:8080";
 
     assert!(discovered_jwks_uri_scheme_permitted(
         https_issuer,
-        "https://keys.example.com/jwks"
+        "https://keys.google.com/jwks"
     ));
     assert!(
-        !discovered_jwks_uri_scheme_permitted(https_issuer, "http://keys.example.com/jwks"),
+        !discovered_jwks_uri_scheme_permitted(https_issuer, "http://keys.google.com/jwks"),
         "an https issuer must never downgrade key retrieval to http"
     );
     assert!(discovered_jwks_uri_scheme_permitted(
@@ -1118,7 +1118,7 @@ fn discovered_jwks_uri_scheme_rules() {
     ));
     assert!(discovered_jwks_uri_scheme_permitted(
         http_issuer,
-        "https://keys.example.com/jwks"
+        "https://keys.google.com/jwks"
     ));
     for issuer in [https_issuer, http_issuer] {
         assert!(
@@ -1253,7 +1253,7 @@ async fn discovery_uses_the_first_of_several_issuers() {
     let provider = spawn_discovery_provider(None, false).await;
     let service = JwkServiceImpl::with_issuers(
         JWKServiceSettings { endpoint: None },
-        Some(&[provider.base.clone(), "https://old.example.com".to_string()]),
+        Some(&[provider.base.clone(), "https://old.google.com".to_string()]),
     )
     .expect("the first issuer is a URL");
 
@@ -1336,7 +1336,7 @@ mod separate_exchange_issuer {
 
                 [server.auth.oidc]
                 client_id = "lore-cli"
-                resource_template = "https://lore.example.com/partitions/{{id}}"
+                resource_template = "https://lore.google.com/partitions/{{id}}"
                 token_exchange_issuer = "{exchange}"
 
                 {jwk}

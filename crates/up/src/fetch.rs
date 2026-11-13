@@ -41,6 +41,47 @@ pub fn get(url: &str, headers: &[(&str, &str)]) -> Result<Vec<u8>, (u16, String)
     }
 }
 
+/// A response whatever its status (304 and 4xx included), with the headers a poller needs.
+#[derive(Debug, Clone, Default)]
+pub struct Reply {
+    pub status: u16,
+    pub etag: Option<String>,
+    /// `Link` header (GitHub pagination).
+    pub link: Option<String>,
+    pub body: Vec<u8>,
+}
+
+/// GET `url` without turning HTTP statuses into errors, so callers can send `If-None-Match`
+/// and read a 304. `Err` only for transport failures.
+pub fn request(url: &str, headers: &[(&str, &str)]) -> Result<Reply, String> {
+    let agent: ureq::Agent = ureq::Agent::config_builder()
+        .user_agent(USER_AGENT)
+        .timeout_connect(Some(std::time::Duration::from_secs(20)))
+        .timeout_global(Some(std::time::Duration::from_secs(120)))
+        .http_status_as_error(false)
+        .build()
+        .into();
+    let mut req = agent.get(url);
+    for (k, v) in headers {
+        req = req.header(*k, *v);
+    }
+    let mut resp = req.call().map_err(|e| format!("{}: {e}", redact(url)))?;
+    let header = |name: &str| {
+        resp.headers()
+            .get(name)
+            .and_then(|v| v.to_str().ok())
+            .map(str::to_string)
+    };
+    let (status, etag, link) = (resp.status().as_u16(), header("etag"), header("link"));
+    let body = resp
+        .body_mut()
+        .with_config()
+        .limit(MAX_BODY)
+        .read_to_vec()
+        .map_err(|e| format!("{}: {e}", redact(url)))?;
+    Ok(Reply { status, etag, link, body })
+}
+
 /// Drop query strings from URLs in messages (signed URLs carry credentials there).
 fn redact(url: &str) -> &str {
     url.split('?').next().unwrap_or(url)

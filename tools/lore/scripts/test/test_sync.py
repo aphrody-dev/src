@@ -1400,7 +1400,7 @@ def _move_then_stage(repo: Lore) -> None:
 
 
 def _set_revision_metadata(repo: Lore) -> None:
-    repo.revision_metadata_set(["co-author", "Co Author <co.author@example.com>"])
+    repo.revision_metadata_set(["co-author", "Co Author <co.author@google.com>"])
 
 
 def _add_file_dependency(repo: Lore) -> None:

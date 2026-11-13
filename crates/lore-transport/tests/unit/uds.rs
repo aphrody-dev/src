@@ -338,7 +338,7 @@ fn a_lore_unix_remote_without_the_socket_variable_is_refused() {
     );
 
     let refused = lore_transport::uds::socket();
-    let parsed = lore_transport::connection::parse("lore-unix://example.com/r").err();
+    let parsed = lore_transport::connection::parse("lore-unix://google.com/r").err();
 
     assert!(lore_transport::uds::route().is_none());
     assert!(
@@ -698,7 +698,7 @@ fn an_abandoned_slot_completed_twice_at_once_is_freed_once() {
 async fn storage_client(server: &ScriptedServer) -> Arc<UdsStorageClient> {
     UdsStorageClient::connect(
         server.path.clone(),
-        "example.com".to_string(),
+        "google.com".to_string(),
         &AuthEndpoint::none(),
         "",
         &Arc::new(SuppliedCredentials::default()),
@@ -716,7 +716,7 @@ async fn exchanging_client(
     let stub = StubAuthentication::new(|_, served| if served == 0 { AUTHZ_ONE } else { AUTHZ_TWO });
     let client = UdsStorageClient::connect(
         server.path.clone(),
-        "example.com".to_string(),
+        "google.com".to_string(),
         &AuthEndpoint::new(auth_url.to_string(), stub.clone()),
         "alice",
         &Arc::new(SuppliedCredentials::new(AUTHN_ONE, "")),
@@ -882,7 +882,7 @@ async fn queued_reissues_give_up_together_when_the_server_stays_away() {
     let mut server = ScriptedServer::start(16);
     let client = UdsStorageClient::connect_with_backoff(
         server.path.clone(),
-        "example.com".to_string(),
+        "google.com".to_string(),
         &AuthEndpoint::none(),
         "",
         &Arc::new(SuppliedCredentials::default()),

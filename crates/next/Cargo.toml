@@ -16,7 +16,7 @@ oxc_parser = "0.155"
 oxc_span = "0.155"
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
-sha2 = "0.10.9"
+sha2 = { workspace = true }
 toml = "1.1.2"
 walkdir = { workspace = true }
 react = { path = "../react" }

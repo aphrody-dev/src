@@ -24,10 +24,10 @@ fn repository_with_config(label: &str, config: Option<&str>) -> lore_base::test_
 #[tokio::test]
 async fn returns_explicit_endpoint_verbatim() {
     let (endpoint, remote) =
-        resolve_auth_endpoint("ucs-auth://auth.example.com", "/does/not/exist")
+        resolve_auth_endpoint("ucs-auth://auth.google.com", "/does/not/exist")
             .await
             .expect("an explicit endpoint should resolve");
-    assert_eq!(endpoint, "ucs-auth://auth.example.com");
+    assert_eq!(endpoint, "ucs-auth://auth.google.com");
     assert!(remote.is_none());
 }
 

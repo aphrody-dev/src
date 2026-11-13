@@ -104,11 +104,11 @@ async fn a_lore_unix_remote_reaches_the_named_socket() {
     let _listening = LISTENING.lock().await;
     let path = lore_transport::uds::socket().expect("the process names a socket");
     assert_eq!(lore_transport::uds::route(), Some(path));
-    assert!(lore_transport::connection::parse("lore-unix://example.com/repository").is_ok());
+    assert!(lore_transport::connection::parse("lore-unix://google.com/repository").is_ok());
     let serving = answer_one_session_start(path.to_path_buf());
 
     let storage = lore_transport::uds::storage(
-        "lore-unix://example.com/repository",
+        "lore-unix://google.com/repository",
         &AuthEndpoint::none(),
         "",
         &Arc::new(SuppliedCredentials::default()),
@@ -145,7 +145,7 @@ async fn a_grpc_channel_to_a_tls_remote_speaks_plaintext_on_the_socket() {
     let path = lore_transport::uds::socket().expect("the process names a socket");
     let listener = listen(path);
 
-    let connecting = connect_grpc("lores://example.com");
+    let connecting = connect_grpc("lores://google.com");
     let mut accepted = timeout(PATIENCE, listener.accept())
         .await
         .expect("the channel dials the socket")

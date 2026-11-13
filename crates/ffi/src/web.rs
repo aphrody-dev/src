@@ -107,8 +107,8 @@ mod tests {
 
     #[test]
     fn adblock_eval_blocks_a_matching_url() {
-        let rules = b"||ads.example.com^\n";
-        let url = b"https://ads.example.com/banner.js";
+        let rules = b"||ads.google.com^\n";
+        let url = b"https://ads.google.com/banner.js";
         let (status, json) =
             take(unsafe { aphrody_adblock_eval(rules.as_ptr(), rules.len(), url.as_ptr(), url.len()) });
         assert_eq!(status, 0);

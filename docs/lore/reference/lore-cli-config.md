@@ -236,7 +236,7 @@ A repository config with just a remote URL and an identity:
 
 ```toml
 remote_url = "lore://127.0.0.1:41337/my-project"
-identity = "alex@example.com"
+identity = "alex@google.com"
 ```
 
 ### Cap the local store size
@@ -245,7 +245,7 @@ Override the `[store]` defaults to give this repository a larger local immutable
 
 ```toml
 remote_url = "lore://127.0.0.1:41337/my-project"
-identity = "alex@example.com"
+identity = "alex@google.com"
 
 [store]
 max_size = 53687091200    # 50 GiB
@@ -261,7 +261,7 @@ Point this working tree at a shared store at a specific path:
 
 ```toml
 remote_url = "lore://127.0.0.1:41337/my-project"
-identity = "alex@example.com"
+identity = "alex@google.com"
 
 [shared_store_to_use]
 use_shared_store = true

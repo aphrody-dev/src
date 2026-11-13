@@ -1230,7 +1230,7 @@ fn cache_life_profiles(value: &Value) -> BTreeMap<String, CacheLifeProfile> {
     })
 }
 
-/// `https://cdn.example.com:8443/media/**?v=1` -> remote pattern.
+/// `https://cdn.google.com:8443/media/**?v=1` -> remote pattern.
 fn remote_pattern_from_url(url: &str) -> Option<RemotePattern> {
     let (protocol, rest) = url.split_once("://")?;
     let (rest, search) = rest
@@ -2513,7 +2513,7 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@acme/ui"],
   serverExternalPackages: ["sharp", "pino"],
   pageExtensions: ["tsx", "ts", "mdx"],
-  env: { APP_NAME: "Yolo Fixture", API_BASE: "https://api.example.com" },
+  env: { APP_NAME: "Yolo Fixture", API_BASE: "https://api.google.com" },
   turbopack: {
     root: process.cwd(),
     rules: {
@@ -2540,7 +2540,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
       { protocol: "https", hostname: "**.cloudfront.net" },
-      { protocol: "https", hostname: "cdn.example.com", port: "", pathname: "/media/**", search: "" },
+      { protocol: "https", hostname: "cdn.google.com", port: "", pathname: "/media/**", search: "" },
     ],
     localPatterns: [{ pathname: "/assets/images/**", search: "" }],
   },
@@ -2550,7 +2550,7 @@ const nextConfig: NextConfig = {
       { source: "/docs", destination: "/docs/getting-started", permanent: false },
       {
         source: "/legacy/:path*",
-        destination: "https://legacy.example.com/:path*",
+        destination: "https://legacy.google.com/:path*",
         permanent: false,
         has: [{ type: "header", key: "x-legacy", value: "1" }],
       },
@@ -2558,9 +2558,9 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return {
-      beforeFiles: [{ source: "/api/proxy/:path*", destination: "https://api.example.com/:path*" }],
+      beforeFiles: [{ source: "/api/proxy/:path*", destination: "https://api.google.com/:path*" }],
       afterFiles: [{ source: "/u/:username", destination: "/users/:username" }],
-      fallback: [{ source: "/:path*", destination: "https://fallback.example.com/:path*" }],
+      fallback: [{ source: "/:path*", destination: "https://fallback.google.com/:path*" }],
     };
   },
   async headers() {
@@ -2584,7 +2584,7 @@ const nextConfig: NextConfig = {
   },
   cacheLife: { blog: { stale: 3600, revalidate: 900, expire: 86400 } },
   experimental: {
-    serverActions: { bodySizeLimit: "2mb", allowedOrigins: ["app.example.com"] },
+    serverActions: { bodySizeLimit: "2mb", allowedOrigins: ["app.google.com"] },
     staleTimes: { dynamic: 30, static: 180 },
     optimizePackageImports: ["lucide-react"],
     authInterrupts: true,
@@ -2703,7 +2703,7 @@ export default nextConfig;
         assert_eq!(yolo.server.action_body_size_limit, 2_097_152);
         assert_eq!(
             yolo.server.action_allowed_origins,
-            vec![String::from("app.example.com")]
+            vec![String::from("app.google.com")]
         );
         assert!(!yolo.server.powered_by_header);
         assert!(yolo.server.compress);
@@ -2864,7 +2864,7 @@ export default async (phase, { defaultConfig }) => {
     distDir: "build",
     basePath: "/app",
     async redirects() {
-      const res = await fetch("https://example.com/redirects.json");
+      const res = await fetch("https://google.com/redirects.json");
       return res.json();
     },
     rewrites: async () => [{ source: "/a", destination: "/b" }],

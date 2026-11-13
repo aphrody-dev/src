@@ -244,16 +244,22 @@ fn rel(root: &Path, p: &Path) -> String {
         .replace('\\', "/")
 }
 
-/// Allowed git sources from `deny.toml` `[sources] allow-git`.
+/// Allowed git sources from `deny.toml`: `[sources] allow-git` URLs, plus one
+/// `https://<host>/<org>/` prefix per `[sources.allow-org]` entry (github, gitlab, bitbucket).
 fn deny_allow_git(root: &Path) -> Option<Vec<String>> {
     let doc = parse(&root.join("deny.toml"))?;
-    Some(
-        doc.get("sources")
-            .and_then(|s| s.get("allow-git"))
-            .and_then(Item::as_array)
+    let sources = doc.get("sources");
+    let strings = |item: Option<&Item>| -> Vec<String> {
+        item.and_then(Item::as_array)
             .map(|a| a.iter().filter_map(|v| v.as_str().map(str::to_string)).collect())
-            .unwrap_or_default(),
-    )
+            .unwrap_or_default()
+    };
+    let mut out = strings(sources.and_then(|s| s.get("allow-git")));
+    for (key, host) in [("github", "github.com"), ("gitlab", "gitlab.com"), ("bitbucket", "bitbucket.org")] {
+        let orgs = strings(sources.and_then(|s| s.get("allow-org")).and_then(|o| o.get(key)));
+        out.extend(orgs.into_iter().map(|o| format!("https://{host}/{o}/")));
+    }
+    Some(out)
 }
 
 fn check_cargo(root: &Path, out: &mut Vec<Finding>) {
@@ -307,8 +313,9 @@ fn check_cargo(root: &Path, out: &mut Vec<Finding>) {
     for (name, _, source) in cargo_lock_packages(root) {
         if let Some(git) = source.strip_prefix("git+") {
             let url = git.split(['?', '#']).next().unwrap_or(git).trim_end_matches(".git").to_string();
-            if !allow.iter().any(|a| a.trim_end_matches(".git") == url) && seen.insert(url.clone()) {
-                push(out, Level::Error, "CARGO-GIT", "Cargo.lock", format!("{name}: {url} not in deny.toml allow-git"));
+            let allowed = allow.iter().any(|a| if a.ends_with('/') { url.starts_with(a.as_str()) } else { a.trim_end_matches(".git") == url });
+            if !allowed && seen.insert(url.clone()) {
+                push(out, Level::Error, "CARGO-GIT", "Cargo.lock", format!("{name}: {url} not allowed by deny.toml [sources]"));
             }
         } else if source.starts_with("registry+") && !source.contains("github.com/rust-lang/crates.io-index") {
             push(out, Level::Error, "CARGO-REGISTRY", "Cargo.lock", format!("{name}: {source}"));
@@ -1068,6 +1075,44 @@ pub fn breaking(root: &Path, write: bool) -> Vec<(String, String, String)> {
 }
 
 // ---------------------------------------------------------------------------------------------
+// Dedupe (like `bun dedupe`): collapse a duplicate onto a lower resolved version when every
+// dependent accepts it.
+// ---------------------------------------------------------------------------------------------
+
+fn extra_copies(d: &BTreeMap<String, Vec<String>>) -> usize {
+    d.values().map(|v| v.len() - 1).sum()
+}
+
+/// For each crate resolved at several versions, try `cargo update -p name@hi --precise lo` from
+/// the highest pair down; keep the result only when that crate loses a copy and the total number
+/// of extra copies does not grow. Returns `name hi -> lo` for each collapse.
+pub fn dedupe(root: &Path) -> Vec<String> {
+    let lock = root.join("Cargo.lock");
+    let mut done = Vec::new();
+    for (name, mut versions) in cargo_dups(root) {
+        versions.sort_by_key(|v| parse_ver(v));
+        for i in (1..versions.len()).rev() {
+            let (hi, lo) = (&versions[i], &versions[i - 1]);
+            let Ok(backup) = fs::read(&lock) else { return done };
+            let before = cargo_dups(root);
+            let ok = Command::new("cargo")
+                .args(["update", "-q", "-p", &format!("{name}@{hi}"), "--precise", lo])
+                .current_dir(root)
+                .output()
+                .is_ok_and(|o| o.status.success());
+            let after = cargo_dups(root);
+            let fewer = after.get(&name).map_or(1, Vec::len) < before.get(&name).map_or(1, Vec::len);
+            if ok && fewer && extra_copies(&after) < extra_copies(&before) {
+                done.push(format!("{name} {hi} -> {lo}"));
+            } else {
+                let _ = fs::write(&lock, &backup);
+            }
+        }
+    }
+    done
+}
+
+// ---------------------------------------------------------------------------------------------
 // Language locks
 // ---------------------------------------------------------------------------------------------
 
@@ -1092,6 +1137,7 @@ pub struct LockOpts {
     pub bump: bool,
     pub breaking: bool,
     pub hoist: bool,
+    pub dedupe: bool,
 }
 
 /// `ay lock --deps`: hoist (optional), then Cargo.lock, bun.lock and uv.lock. Exit 1 on failure.
@@ -1132,6 +1178,13 @@ pub fn run_lock(root: &Path, o: LockOpts) -> i32 {
         } else {
             run_step(root, "cargo", &["update", "--workspace"])
         };
+    }
+    if o.dedupe && root.join("Cargo.lock").is_file() {
+        let collapsed = dedupe(root);
+        for c in &collapsed {
+            println!("  dedupe {c}");
+        }
+        println!("dedupe: {} duplicate versions collapsed", collapsed.len());
     }
     if root.join("package.json").is_file() {
         ok &= if o.bump {

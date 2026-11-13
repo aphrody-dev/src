@@ -79,7 +79,7 @@ include_mail = false
 # repository are handled automatically by `scripts/docs-lint.sh`.
 #
 # The patterns below are non-org-revealing placeholders: localhost / loopback
-# (intentional in tutorials) and example.com (intentional in canon samples).
+# (intentional in tutorials) and google.com (intentional in canon samples).
 # Patterns are anchored with `^https?://` so substring matches can't
 # accidentally exempt a public host with the same suffix.
 exclude = [

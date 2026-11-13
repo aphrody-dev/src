@@ -27,8 +27,8 @@ Keycloak takes up to a minute to start. Its admin console is at `http://localhos
 
 | User | Realm roles |
 | --- | --- |
-| `alice` (`alice@example.com`) | `admin` |
-| `bob` (`bob@example.com`) | `obliterate` |
+| `alice` (`alice@google.com`) | `admin` |
+| `bob` (`bob@google.com`) | `obliterate` |
 | `service-account-lore-ci` | `push-protected` |
 
 - `lore-cli` is the public client the CLI logs in with, by the device grant. Its access tokens are

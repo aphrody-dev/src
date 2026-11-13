@@ -1119,13 +1119,13 @@ def test_file_audit_summary_reads_each_revision_s_author(new_lore_repo):
     repo: Lore = new_lore_repo("FileAuditSummaryAuthor")
 
     audited = "audited.txt"
-    first_merger = "ada@example.com,grace@example.com"
-    second_merger = "carol@example.com"
+    first_merger = "ada@google.com,grace@google.com"
+    second_merger = "carol@google.com"
 
     repo.write_files({audited: ["alpha\n", "bravo\n", "charlie\n", "delta\n"]})
     repo.stage(audited, offline=True)
     repo.revision_metadata_set(
-        ["created-by", "creator@example.com", "merged-by", first_merger],
+        ["created-by", "creator@google.com", "merged-by", first_merger],
         offline=True,
     )
     repo.commit("First commit", offline=True)
@@ -1140,7 +1140,7 @@ def test_file_audit_summary_reads_each_revision_s_author(new_lore_repo):
     # A revision no merge created records no merger.
     repo.write_files({audited: ["alpha\n", "BRAVO\n", "charlie\n", "DELTA\n"]})
     repo.stage(audited, offline=True)
-    repo.revision_metadata_set(["created-by", "creator@example.com"], offline=True)
+    repo.revision_metadata_set(["created-by", "creator@google.com"], offline=True)
     repo.commit("Third commit", offline=True)
     third = repo.revision_info().signature
     third_metadata = _revision_metadata(repo, third)
@@ -1160,7 +1160,7 @@ def test_file_audit_summary_reads_each_revision_s_author(new_lore_repo):
         second_merger,
         first_merger,
     ], f"a revision's merger is its author: {rows}"
-    assert rows[3][2] != "creator@example.com", f"the creator is not the author: {rows}"
+    assert rows[3][2] != "creator@google.com", f"the creator is not the author: {rows}"
     assert rows[3][2] != "-", f"the committer is the author: {rows}"
 
     ranges = parse_file_audit_json(repo.file_audit(audited, json=True))
@@ -1522,7 +1522,7 @@ def test_file_audit_names_a_client_merge_as_the_author_of_what_it_merged(
     repo.write_files({audited: ["ALPHA\n", "bravo\n", "charlie\n"]})
     repo.stage(audited, offline=True)
     repo.revision_metadata_set(
-        ["created-by", "feature.author@example.com"], offline=True
+        ["created-by", "feature.author@google.com"], offline=True
     )
     repo.commit("Change the first line on the branch", offline=True)
 
@@ -1558,7 +1558,7 @@ def test_file_audit_names_a_client_merge_as_the_author_of_what_it_merged(
     assert merged.get("created-by") == merged["committed-by"], (
         f"an uninherited merge names the actor that committed it: {merged}"
     )
-    assert merged["created-by"] != "feature.author@example.com", (
+    assert merged["created-by"] != "feature.author@google.com", (
         f"the author of the merged work was not asked for: {merged}"
     )
 
@@ -1572,7 +1572,7 @@ def test_file_audit_names_a_client_merge_as_the_author_of_what_it_merged(
     inheriting.write_files({audited: ["ALPHA\n", "bravo\n", "charlie\n"]})
     inheriting.stage(audited, offline=True)
     inheriting.revision_metadata_set(
-        ["created-by", "feature.author@example.com"], offline=True
+        ["created-by", "feature.author@google.com"], offline=True
     )
     inheriting.commit("Change the first line on the branch", offline=True)
     inheriting.branch_switch("main", offline=True)
@@ -1590,7 +1590,7 @@ def test_file_audit_names_a_client_merge_as_the_author_of_what_it_merged(
 
     inherited = parse_file_audit_json(inheriting.file_audit(audited, json=True))
     inherited_metadata = _revision_metadata(inheriting, inherited[0]["revision"])
-    assert inherited_metadata["created-by"] == "feature.author@example.com", (
+    assert inherited_metadata["created-by"] == "feature.author@google.com", (
         f"the named key carries the author of the merged work across: "
         f"{inherited_metadata}"
     )
@@ -1620,7 +1620,7 @@ def test_file_audit_keeps_the_author_a_server_merge_preserved(new_lore_repo):
 
     repo.branch_switch("main")
     repo.branch_merge_start("feature", no_commit=True)
-    repo.revision_metadata_set(["created-by", "feature.author@example.com"])
+    repo.revision_metadata_set(["created-by", "feature.author@google.com"])
     repo.commit("Merge feature into main")
 
     # Advance main from another instance, so the merge no longer descends from
@@ -1641,7 +1641,7 @@ def test_file_audit_keeps_the_author_a_server_merge_preserved(new_lore_repo):
     )
     merged = _revision_metadata(repo, server_merge)
     assert merged.get("fast-forward-merge"), merged
-    assert merged.get("created-by") == "feature.author@example.com", (
+    assert merged.get("created-by") == "feature.author@google.com", (
         f"the author survives the server's merge: {merged}"
     )
     assert merged.get("merged-by"), f"a merge records who made it: {merged}"

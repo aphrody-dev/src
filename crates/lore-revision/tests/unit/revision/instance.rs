@@ -65,7 +65,7 @@ where
         LoreGlobalArgs::default().set_offline(),
         EventDispatcher::no_dispatch(),
     ));
-    execution.set_user_id("operator@example.com").await;
+    execution.set_user_id("operator@google.com").await;
     let prefix = format!("{name}-");
     lore_base::lore_spawn!(LORE_CONTEXT.scope(execution, async move {
         let tempdir = TempDir::new(&prefix);

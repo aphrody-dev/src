@@ -93,7 +93,7 @@ fn a_long_array_renders_as_its_count() {
     );
 }
 
-/// `{"iss":"lore","sub":"alice","name":"Alice","exp":2000000000,"aud":["example.com"]}`
+/// `{"iss":"lore","sub":"alice","name":"Alice","exp":2000000000,"aud":["google.com"]}`
 const ALICE_TOKEN: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb3JlIiwic3ViIjoiYWxpY2UiLCJuYW1lIjoiQWxpY2UiLCJleHAiOjIwMDAwMDAwMDAsImF1ZCI6WyJleGFtcGxlLmNvbSJdfQ.signature";
 
 /// The tokens cross the C boundary as raw bytes and `validate` reads them as

@@ -243,7 +243,7 @@ export function scanSettings(): Violation[] {
   if (a) {
     if (a.toolPermission && a.toolPermission !== "always-proceed")
       v(agyCli, "toolPermission", "settings_confirm", "high", `toolPermission ${a.toolPermission}`, 'toolPermission "always-proceed".');
-    if (a.artifactReviewPolicy && a.artifactReviewPolicy !== "agent-decides")
+    if (a.artifactReviewPolicy && !/agent-decides|always-proceed/.test(a.artifactReviewPolicy))
       v(agyCli, "artifactReviewPolicy", "settings_confirm", "medium", `artifactReviewPolicy ${a.artifactReviewPolicy}`, 'artifactReviewPolicy "agent-decides".');
   }
   const agyCfg = join(HOME, ".gemini", "config", "config.json");
@@ -415,16 +415,18 @@ export async function scanCode(root = srcRoot()): Promise<Violation[]> {
         const [, file, ln, code] = m;
         if (r.unless?.test(code!)) continue;
         const rel = file!.replace(/^\.[\\/]/, "").replaceAll("\\", "/");
+        // Boîte de confirmation d'une page web : destinée à l'utilisateur final du site, pas à un agent.
+        const ui = r.category === "interactive_prompt" && /\.(tsx|jsx)$/.test(rel);
         out.push({
           id: fingerprint("code", rel, String(i), code!.trim()),
           source: "code",
           location: `${rel}:${ln}`,
           category: r.category,
-          severity: r.severity,
+          severity: ui ? "info" : r.severity,
           excerpt: redact(code!, 140),
           fix: r.fix,
-          status: r.status ?? "open",
-          reason: r.reason,
+          status: ui ? "inevitable" : (r.status ?? "open"),
+          reason: ui ? "confirmation d'interface web pour l'utilisateur final, hors boucle d'agent" : r.reason,
         });
       }
     }),
@@ -537,7 +539,7 @@ export function queueTargets(root = srcRoot()): Target[] {
 }
 
 const QUEUE_DUMP = (dir: string) =>
-  `d=${shq(dir)}; for s in failed new outbox; do if [ "$s" = outbox ]; then for f in "$d"/outbox/*/*.json "$d"/outbox/*.md; do [ -f "$f" ] && printf '@@%s %s\\n' outbox "$f"; done; else for f in "$d"/queue/$s/*.json; do [ -f "$f" ] || continue; printf '@@%s %s\\n' $s "$f"; head -c 60000 "$f"; printf '\\n'; id=$(basename "$f" .json); [ -f "$d/results/$id/result.json" ] && { printf '@@result %s\\n' "$id"; head -c 20000 "$d/results/$id/result.json"; printf '\\n'; }; done; fi; done`;
+  `d=${shq(dir)}; for s in failed new outbox; do if [ "$s" = outbox ]; then for f in "$d"/outbox/*/*.json "$d"/outbox/*.md; do [ -f "$f" ] && printf '@@%s %s\\n' outbox "$f"; done; else for f in "$d"/queue/$s/*.json; do [ -f "$f" ] || continue; printf '@@%s %s\\n' $s "$f"; head -c 60000 "$f"; printf '\\n'; id=$(basename "$f" .json); [ -f "$d/results/$id/result.json" ] && { printf '@@result %s\\n' "$id"; head -c 20000 "$d/results/$id/result.json"; printf '\\n'; }; done; fi; done; true`;
 
 async function dumpQueue(t: Target): Promise<{ text: string; via?: string; error?: string }> {
   if (t.local) {

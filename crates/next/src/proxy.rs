@@ -874,7 +874,7 @@ export const config = {
 import { NextResponse } from "next/server";
 export const runtime = "edge";
 export default async function middleware(request, event) {
-  event.waitUntil(fetch("https://log.example.com", { method: "POST", body: request.ip ?? "" }));
+  event.waitUntil(fetch("https://log.google.com", { method: "POST", body: request.ip ?? "" }));
   const country = request.geo?.country ?? "US";
   return NextResponse.next();
 }

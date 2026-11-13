@@ -113,7 +113,7 @@ pub fn emit_leptos_project(analysis: &ProjectAnalysis) -> Vec<EmittedFile> {
         ],
     );
     let origin = root_meta.metadata_base.clone().map_or_else(
-        || String::from("https://example.com"),
+        || String::from("https://google.com"),
         |b| b.trim_end_matches('/').to_owned(),
     );
     let ctx = Ctx {
@@ -904,7 +904,7 @@ mod tests {
         assert!(content.contains("pub async fn static_params_for(route: &str) -> StaticParamsMap"));
         assert!(content.contains("// TODO: enumerate from data: `/blog/[slug]` (Next.js `generateStaticParams` in \"app/blog/[slug]/page.tsx\")"));
         assert!(content.contains("\"/blog/[slug]\" => {"));
-        assert!(content.contains("SITE_ORIGIN: &str = \"https://fixture.example.com\""));
+        assert!(content.contains("SITE_ORIGIN: &str = \"https://fixture.google.com\""));
 
         let redirects = file(&files, "src/server/redirects.rs");
         assert!(redirects.contains("308"));

@@ -227,7 +227,7 @@ pub struct StoredIdentityInfo {
 /// Authentication tokens use just the `auth_url` with no resource suffix.
 ///
 /// Only considers the path portion of the URL to avoid matching hostnames
-/// like `urc-auth.example.com`.
+/// like `urc-auth.google.com`.
 fn split_remote_resource(store_key: &str) -> (String, String) {
     if let Ok(url) = url::Url::parse(store_key) {
         let path = url.path();

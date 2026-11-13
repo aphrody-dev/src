@@ -97,8 +97,7 @@ windows-sys = { version = "=0.61.2", features = [
   "Win32_System_Performance",
   "Win32_Security",
 ] }
-# Unified on labs' 0.8.63 (depot-core + lore*). Submodules bench and ring3-agent declare
-# zerocopy 0.9.0-alpha.0 directly (not via the workspace), so both majors coexist in the graph.
+# One zerocopy for the whole graph (depot-core, lore*, bench, ring3-agent): 0.8, no 0.9 prerelease.
 zerocopy = { version = "=0.8.63", features = ["derive", "alloc", "simd"] }
 # crates.io
 byteorder = "1.5"
@@ -204,7 +203,7 @@ keyring-core = "=1.0.1"
 apple-native-keyring-store = { version = "=1.0.2", features = ["keychain"] }
 linux-keyutils-keyring-store = "=1.0.0"
 windows-native-keyring-store = { version = "=1.1.0", default-features = false }
-libc = "=1.0.0-alpha.5"
+libc = "0.2.191"
 lz4-sys = "=1.11.1+lz4-1.10.0"
 zstd-sys = { version = "=2.1.2+zstd.1.5.7", default-features = false, features = ["experimental"] }
 mockall = "=0.15.0"

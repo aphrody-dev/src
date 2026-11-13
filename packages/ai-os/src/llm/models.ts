@@ -5,6 +5,7 @@
 //
 //   fournisseur   accès                                         liste des modèles                         appel
 //   ollama        OLLAMA_HOST ou 127.0.0.1:11434 qui répond     GET /api/tags                              /v1/chat/completions
+//   fabric        AI_FABRIC_URL ou 127.0.0.1:8090 qui répond    GET /v1/models (coordinateur llama.cpp RPC) /v1/chat/completions
 //   openai-compat RELAY_OPENAI_ENDPOINTS="nom=url,…" (llama.cpp llama-server, vLLM, mistral.rs, LM Studio, LiteLLM proxy…)
 //                                                               GET /v1/models                             /v1/chat/completions
 //   openrouter    OPENROUTER_API_KEY                            GET /api/v1/models                         /api/v1/chat/completions
@@ -99,6 +100,14 @@ export function providers(): Provider[] {
       })),
     chat: { base: () => ollama, headers: () => ({}) },
   });
+  // Tissu d'inférence distribué (src/fabric, infra/ai/fabric.toml) : coordinateur llama-server + rpc-server WireGuard.
+  // Absent de la liste dès que le coordinateur ne répond plus : la sélection bascule sur les autres fournisseurs.
+  out.push(
+    compat(
+      "fabric",
+      (env("AI_FABRIC_URL") ?? "http://127.0.0.1:8090").replace(/\/+$/, "").replace(/\/v1$/, ""),
+    ),
+  );
   for (const pair of (env("RELAY_OPENAI_ENDPOINTS") ?? "")
     .split(",")
     .filter(Boolean)) {

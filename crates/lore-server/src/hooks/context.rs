@@ -67,13 +67,13 @@ pub const METADATA_IS_SERVICE_ACCOUNT: &str = "is_service_account";
 ///     .correlation_id("abc-123")
 ///     .hook_point(HookPoint::BranchPush)
 ///     .repository(RepositoryId::default())
-///     .user("user@example.com")
+///     .user("user@google.com")
 ///     .build();
 ///
 /// // Read fields
 /// assert_eq!(ctx.correlation_id(), "abc-123");
 /// assert_eq!(ctx.hook_point(), HookPoint::BranchPush);
-/// assert_eq!(ctx.user(), Some("user@example.com"));
+/// assert_eq!(ctx.user(), Some("user@google.com"));
 ///
 /// // Get metadata
 /// assert!(ctx.get_metadata("key").is_none());
@@ -194,7 +194,7 @@ impl std::fmt::Debug for HookContext {
 ///     .hook_point(HookPoint::BranchPush)
 ///     .repository(RepositoryId::default())
 ///     .branch(BranchId::default())
-///     .user("user@example.com")
+///     .user("user@google.com")
 ///     .revision(Hash::default())
 ///     .metadata("key", "value")
 ///     .build();

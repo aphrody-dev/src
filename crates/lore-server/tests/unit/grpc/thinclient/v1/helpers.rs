@@ -287,7 +287,7 @@ fn revision_record_reads_the_common_fields() {
         .expect("message");
     stored.set_timestamp(1234).expect("timestamp");
     stored
-        .set_string(metadata::COMMITTED_BY, "committer@example.com")
+        .set_string(metadata::COMMITTED_BY, "committer@google.com")
         .expect("committer");
     stored.set_string("custom", "value").expect("custom entry");
     let mut other = Vec::new();
@@ -305,7 +305,7 @@ fn revision_record_reads_the_common_fields() {
     assert_eq!(revision.number, 3);
     assert_eq!(revision.commit_message, "");
     assert_eq!(revision.timestamp, 1234);
-    assert_eq!(revision.committed_by, "committer@example.com");
+    assert_eq!(revision.committed_by, "committer@google.com");
     assert_eq!(other, ["custom"]);
 
     let mut stored = Metadata::new();

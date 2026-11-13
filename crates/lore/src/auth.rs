@@ -242,7 +242,7 @@ pub struct LoreAuthLoginWithTokenArgs {
     pub token: LoreString,
     /// Token type
     pub token_type: LoreString,
-    /// Auth service URL with scheme (e.g. `ucs-auth://auth.example.com`); used
+    /// Auth service URL with scheme (e.g. `ucs-auth://auth.google.com`); used
     /// directly when non-empty, required when no remote URL is available
     pub auth_url: LoreString,
     /// Client ID of a confidential client registered with the auth service. When

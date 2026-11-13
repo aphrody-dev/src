@@ -311,7 +311,7 @@ mod tests {
         };
         cfg.extra.insert(
             String::from("yoloCdn"),
-            json!({ "provider": "r2", "bucket": "assets", "prefix": "app/", "publicBaseUrl": "https://cdn.example.com", "endpoint": "https://acct.r2.cloudflarestorage.com" }),
+            json!({ "provider": "r2", "bucket": "assets", "prefix": "app/", "publicBaseUrl": "https://cdn.google.com", "endpoint": "https://acct.r2.cloudflarestorage.com" }),
         );
         let plan = cdn_plan(&cfg);
         assert_eq!(plan.output, OutputMode::Standalone);
@@ -330,14 +330,14 @@ mod tests {
 
     #[test]
     fn public_url_with_prefix_and_skew() {
-        let plan = plan_with("https://cdn.example.com/", "", Some("dpl_123"));
+        let plan = plan_with("https://cdn.google.com/", "", Some("dpl_123"));
         assert_eq!(
             public_url(&plan, "static/chunks/app-abc12345.js"),
-            "https://cdn.example.com/_yolo/static/static/chunks/app-abc12345.js?dpl=dpl_123"
+            "https://cdn.google.com/_yolo/static/static/chunks/app-abc12345.js?dpl=dpl_123"
         );
         assert_eq!(
             public_url(&plan, "/static/x.css"),
-            "https://cdn.example.com/_yolo/static/static/x.css?dpl=dpl_123"
+            "https://cdn.google.com/_yolo/static/static/x.css?dpl=dpl_123"
         );
         let no_dpl = plan_with("", "/app", None);
         assert_eq!(
@@ -439,7 +439,7 @@ mod tests {
 
     #[test]
     fn manifest_and_upload_script() {
-        let plan = plan_with("https://cdn.example.com", "", Some("d1"));
+        let plan = plan_with("https://cdn.google.com", "", Some("d1"));
         let entries = asset_manifest(
             &plan,
             &[
@@ -451,7 +451,7 @@ mod tests {
         assert!(entries[0].hashed);
         assert_eq!(
             entries[0].public_url,
-            "https://cdn.example.com/_yolo/static/static/app-abc12345.js?dpl=d1"
+            "https://cdn.google.com/_yolo/static/static/app-abc12345.js?dpl=d1"
         );
         assert_eq!(entries[0].content_type, "text/javascript; charset=utf-8");
         assert_eq!(entries[0].cache_control, plan.immutable_cache_control);

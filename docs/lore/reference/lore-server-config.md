@@ -107,8 +107,8 @@ The `[server]` table and its sub-tables configure the network endpoints, gracefu
 
 ```toml
 [environment.endpoint]
-auth_url = "ucs-auth://auth.example.com"
-user_url = "ucs-auth://directory.example.com"
+auth_url = "ucs-auth://auth.google.com"
+user_url = "ucs-auth://directory.google.com"
 ```
 
 A client connected over `lores://` refuses to connect if the server advertises a `storage_url`, `repository_url`, `revision_url`, `lock_url`, or `notification_url` whose scheme doesn't authenticate the server, such as `lore://`. Give these endpoints a scheme that does, such as `lores://`.
@@ -384,7 +384,7 @@ forwards; tune them to the path the peer is actually reached over:
 
 | Field | Default | Description |
 | --- | --- | --- |
-| `url` | none (required) | The peer's internal gRPC endpoint, for example `https://peer.example.com:41340`. |
+| `url` | none (required) | The peer's internal gRPC endpoint, for example `https://peer.google.com:41340`. |
 | `certs` | none | Optional certificate block for mutual TLS to the peer — same fields as the [Certificate block](#certificate-block). The peer's `[server.grpc_internal]` requires client certificates unless it sets `verify_client_certs = false`. |
 | `connect_timeout_seconds` | `5` | Ceiling on the TCP connect, divided across the addresses the URL resolves to. It covers neither DNS resolution nor the TLS handshake, so it is not a bound on the whole of establishing a connection. |
 | `request_timeout_seconds` | `40` | Deadline for each forwarded request. Keep below the `request_handler_timeout_seconds` of the endpoint doing the forwarding, so that handler outlives the call it forwards. |
@@ -394,7 +394,7 @@ forwards; tune them to the path the peer is actually reached over:
 
 ```toml
 [server.grpc_public_services.forwarded_requests.client]
-url = "https://peer.example.com:41340"
+url = "https://peer.google.com:41340"
 
 [server.grpc_public_services.forwarded_requests.client.certs]
 cert_file = "/etc/lore/tls/client.crt"
@@ -441,7 +441,7 @@ The caller's identity, recorded as the creator of what the caller makes and comp
 # JWKS endpoint is resolved through OIDC discovery against jwt_issuer.
 # Add [server.auth.jwk] endpoint = "..." to override discovery.
 [server.auth]
-jwt_issuer = "https://accounts.example.com"
+jwt_issuer = "https://accounts.google.com"
 jwt_audience = ["lore-service"]
 ```
 
@@ -456,21 +456,21 @@ When this table is present, the environment service advertises an OIDC provider 
 | `client_credentials_scopes` | `[]` | Scopes clients request when they log in with the client credentials grant, `lore auth login --client-id`. Set it for a provider that adds the claims Lore reads only for a requested scope. Empty requests no scope, which leaves the client's default scopes to the provider. `scopes` doesn't apply to this grant. Clients from the release that adds this setting on send the scopes; older clients send none. |
 | `preferred` | `false` | Whether a client should use OIDC auth rather than at `auth_url`, if both are configured. Used during migration to route clients to the old auth by default, while allowing testing of the new OIDC auth. |
 | `token_exchange_issuer` | `jwt_issuer` | The issuer of the RFC 8693 token-exchange endpoint that mints partition-scoped tokens. Set it only when a separate token service does the exchange, as an http or https issuer URL. If `jwt_issuer` lists it, the `jwt_issuer` keys verify its tokens. Otherwise, the server verifies a token naming the service as `iss` against the service's own keys, found through `<token_exchange_issuer>/.well-known/openid-configuration`, and every other token against the `jwt_issuer` keys. It fetches the service's keys at startup and doesn't start if it can't. `jwt_audience` and `jwt_typ` apply to the service's tokens too, and `[server.auth.jwk].endpoint` to the `jwt_issuer` keys only. Tier 2. |
-| `resource_template` | none | Template string for mapping a partition to an RFC 8707 resource, for example `https://lore.example.com/partitions/{id}`. `{id}` is replaced by the partition ID. Tier 2. |
+| `resource_template` | none | Template string for mapping a partition to an RFC 8707 resource, for example `https://lore.google.com/partitions/{id}`. `{id}` is replaced by the partition ID. Tier 2. |
 | `scope_template` | none | Template string for mapping a partition to a scope value, for example `partition:{id}`. For OIDC providers that use scope for token exchange, not `resource`. Tier 2. |
 
 `ResourceGrantsAuthorizer` (Tier 2, `resource_claim` set) requires one of `resource_template` and `scope_template`. The templates are mutually exclusive.
 
 ```toml
 [server.auth]
-jwt_issuer = "https://accounts.example.com"
+jwt_issuer = "https://accounts.google.com"
 jwt_audience = ["lore-service"]
 resource_claim = "resources"
 
 [server.auth.oidc]
 client_id = "lore-cli"
 scopes = ["openid", "offline_access"]
-resource_template = "https://lore.example.com/partitions/{id}"
+resource_template = "https://lore.google.com/partitions/{id}"
 ```
 
 #### Unsigned identity
@@ -537,8 +537,8 @@ enabled = true
 sockets = ["/var/run/lore/build-1/lore.sock", "/var/run/lore/build-2/lore.sock"]
 
 [server.uds.forward]
-"lore.example.com" = "https://lore.example.com:41337"
-"auth.example.com" = "https://auth.example.com"
+"lore.google.com" = "https://lore.google.com:41337"
+"auth.google.com" = "https://auth.google.com"
 ```
 
 ## Store settings
@@ -582,7 +582,7 @@ The `remote` mode keeps a store at another Lore server, the upstream, which the 
 
 | Field | Default | Applies to | Description |
 | --- | --- | --- | --- |
-| `remote_url` | required | both | URL of the upstream as a client names it, without a repository, for example `lores://lore.example.com:41337`. |
+| `remote_url` | required | both | URL of the upstream as a client names it, without a repository, for example `lores://lore.google.com:41337`. |
 | `verify` | `false` | immutable | Whether the store checks each payload the upstream serves against its address, decoding and hashing it. When `false`, the store trusts the upstream and checks only a payload's sizes. Either way, a client checks each payload it fetches from the server against its address, except a client that trusts its remote (`--trust-remote`, or `trust_remote` or `skip_verify` through the C API), which checks only the sizes. A client that finds a payload corrupt asks the server to heal it: the server drops its own copy only if that copy is corrupt, and asks the upstream to heal only where its own copy was corrupt or missing. |
 | `auth_url` | none | immutable | Despite its name, the identity the store authenticates at the upstream as, not a URL. The server uses the login stored for that identity in the token store of the user it runs as. When unset, the store uses the first identity stored there that the upstream accepts. The `remote` mutable store ignores the field and always uses that first identity. |
 
@@ -591,7 +591,7 @@ The `remote` mode keeps a store at another Lore server, the upstream, which the 
 mode = "remote"
 
 [mutable_store.remote]
-remote_url = "lores://lore.example.com:41337"
+remote_url = "lores://lore.google.com:41337"
 ```
 
 ## Topology settings
@@ -708,7 +708,7 @@ A hook can veto an operation by returning an error, log or audit it, or trigger 
 enabled = true
 deny_patterns = ["^release/.*$", "^protected/.*$"]
 allowed_users = ["admin", "release-bot"]
-webhook_url = "https://compliance.example.com/notify"
+webhook_url = "https://compliance.google.com/notify"
 ```
 
 | Field | Description |

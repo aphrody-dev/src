@@ -121,7 +121,7 @@ fn jwt_issuer_accepts_a_bare_string_and_a_list() {
 fn jwt_issuer_accepts_two_entries_for_a_cutover() {
     let auth: AuthSettings = toml::from_str(
         r#"
-            jwt_issuer = ["LEGACY_AUTH_KEYWORD", "https://auth.example.com/realms/lore"]
+            jwt_issuer = ["LEGACY_AUTH_KEYWORD", "https://auth.google.com/realms/lore"]
             jwt_audience = ["lore-service"]
         "#,
     )
@@ -131,7 +131,7 @@ fn jwt_issuer_accepts_two_entries_for_a_cutover() {
         auth.jwt_issuer,
         vec![
             "LEGACY_AUTH_KEYWORD".to_string(),
-            "https://auth.example.com/realms/lore".to_string(),
+            "https://auth.google.com/realms/lore".to_string(),
         ]
     );
 }
@@ -142,7 +142,7 @@ fn jwt_issuer_accepts_two_entries_for_a_cutover() {
 fn auth_settings_authorization_fields_round_trip() {
     let auth: AuthSettings = toml::from_str(
         r#"
-            jwt_issuer = "https://auth.example.com"
+            jwt_issuer = "https://auth.google.com"
             jwt_audience = ["lore"]
             permission_claim = "realm_access.roles"
             resource_claim = "resources"
@@ -151,7 +151,7 @@ fn auth_settings_authorization_fields_round_trip() {
             resource_wildcard = "urc-*"
             baseline_access = "reachable"
             repository_catalog = "auth_service"
-            repository_catalog_url = "https://catalog.example.com"
+            repository_catalog_url = "https://catalog.google.com"
         "#,
     )
     .expect("[server.auth] with every authorization field should deserialize");
@@ -168,7 +168,7 @@ fn auth_settings_authorization_fields_round_trip() {
     );
     assert_eq!(
         auth.repository_catalog_url.as_deref(),
-        Some("https://catalog.example.com")
+        Some("https://catalog.google.com")
     );
 }
 
@@ -202,7 +202,7 @@ fn auth_settings_authorization_fields_have_backward_compatible_defaults() {
 fn jwt_typ_accepts_a_bare_string_and_a_list() {
     let bare: AuthSettings = toml::from_str(
         r#"
-            jwt_issuer = "https://auth.example.com"
+            jwt_issuer = "https://auth.google.com"
             jwt_audience = ["lore-service"]
             jwt_typ = "at+jwt"
         "#,
@@ -210,7 +210,7 @@ fn jwt_typ_accepts_a_bare_string_and_a_list() {
     .expect("[server.auth] with a bare-string jwt_typ should deserialize");
     let list: AuthSettings = toml::from_str(
         r#"
-            jwt_issuer = "https://auth.example.com"
+            jwt_issuer = "https://auth.google.com"
             jwt_audience = ["lore-service"]
             jwt_typ = ["at+jwt", "JWT"]
         "#,
@@ -230,7 +230,7 @@ fn jwt_typ_accepts_a_bare_string_and_a_list() {
 fn auth_with_empty_jwt_typ_fails_validation() {
     let settings = settings_with_auth_keys(
         r#"
-            jwt_issuer = "https://auth.example.com"
+            jwt_issuer = "https://auth.google.com"
             jwt_audience = ["lore-service"]
             jwt_typ = []
         "#,
@@ -252,7 +252,7 @@ fn auth_with_a_blank_jwt_typ_entry_fails_validation() {
     for entry in ["\"\"", "\"  \"", "\"at+jwt \"", "\" at+jwt\""] {
         let settings = settings_with_auth_keys(&format!(
             r#"
-                jwt_issuer = "https://auth.example.com"
+                jwt_issuer = "https://auth.google.com"
                 jwt_audience = ["lore-service"]
                 jwt_typ = ["at+jwt", {entry}]
             "#
@@ -271,7 +271,7 @@ fn auth_with_a_blank_jwt_typ_entry_fails_validation() {
 fn auth_with_a_jwt_typ_list_passes_validation() {
     let settings = settings_with_auth_keys(
         r#"
-            jwt_issuer = "https://auth.example.com"
+            jwt_issuer = "https://auth.google.com"
             jwt_audience = ["lore-service"]
             jwt_typ = ["at+jwt", "JWT"]
 
@@ -287,7 +287,7 @@ const TIER_1: &str = "";
 const TIER_2: &str = r#"resource_claim = "resources""#;
 const AUTH_SERVICE: &str = r#"
             [environment.endpoint]
-            auth_url = "ucs-auth://auth.example.com"
+            auth_url = "ucs-auth://auth.google.com"
             "#;
 
 /// `authorizer_keys` selects the authorizer: [`TIER_1`], [`TIER_2`] or
@@ -295,7 +295,7 @@ const AUTH_SERVICE: &str = r#"
 fn settings_with_oidc_keys(authorizer_keys: &str, oidc_keys: &str) -> Settings {
     settings_with_auth_keys(&format!(
         r#"
-            jwt_issuer = "https://auth.example.com"
+            jwt_issuer = "https://auth.google.com"
             jwt_audience = ["lore-service"]
             {authorizer_keys}
 
@@ -318,18 +318,18 @@ fn a_separate_exchange_issuer_is_one_jwt_issuer_does_not_list() {
             .separate_exchange_issuer()
             .map(str::to_string)
     };
-    let template = r#"resource_template = "https://lore.example.com/partitions/{id}""#;
+    let template = r#"resource_template = "https://lore.google.com/partitions/{id}""#;
 
     assert_eq!(
         separate_exchange_issuer(&format!(
-            "{template}\ntoken_exchange_issuer = \"https://sts.example.com\""
+            "{template}\ntoken_exchange_issuer = \"https://sts.google.com\""
         )),
-        Some("https://sts.example.com".to_string())
+        Some("https://sts.google.com".to_string())
     );
     for not_separate in [
         String::new(),
         "token_exchange_issuer = \"\"".to_string(),
-        "token_exchange_issuer = \"https://auth.example.com\"".to_string(),
+        "token_exchange_issuer = \"https://auth.google.com\"".to_string(),
     ] {
         assert_eq!(
             separate_exchange_issuer(&format!("{template}\n{not_separate}")),
@@ -342,14 +342,14 @@ fn a_separate_exchange_issuer_is_one_jwt_issuer_does_not_list() {
     // tokens the jwt_issuer keys verify.
     let cutover = settings_with_auth_keys(&format!(
         r#"
-            jwt_issuer = ["https://auth.example.com", "https://sts.example.com"]
+            jwt_issuer = ["https://auth.google.com", "https://sts.google.com"]
             jwt_audience = ["lore-service"]
             {TIER_2}
 
             [server.auth.oidc]
             client_id = "lore-cli"
             {template}
-            token_exchange_issuer = "https://sts.example.com"
+            token_exchange_issuer = "https://sts.google.com"
         "#
     ))
     .expect("must parse")
@@ -363,11 +363,11 @@ fn a_separate_exchange_issuer_is_one_jwt_issuer_does_not_list() {
 /// issuer URL has.
 #[test]
 fn a_token_exchange_issuer_that_is_not_a_url_fails_validation() {
-    for issuer in ["sts", "ftp://sts.example.com"] {
+    for issuer in ["sts", "ftp://sts.google.com"] {
         let settings = settings_with_oidc_keys(
             TIER_2,
             &format!(
-                "resource_template = \"https://lore.example.com/partitions/{{id}}\"\n\
+                "resource_template = \"https://lore.google.com/partitions/{{id}}\"\n\
                  token_exchange_issuer = \"{issuer}\""
             ),
         );
@@ -375,8 +375,8 @@ fn a_token_exchange_issuer_that_is_not_a_url_fails_validation() {
     }
     let settings = settings_with_oidc_keys(
         TIER_2,
-        "resource_template = \"https://lore.example.com/partitions/{id}\"\n\
-         token_exchange_issuer = \"https://sts.example.com\"",
+        "resource_template = \"https://lore.google.com/partitions/{id}\"\n\
+         token_exchange_issuer = \"https://sts.google.com\"",
     );
     assert!(validate_auth_config(&settings).is_ok());
 }
@@ -400,14 +400,14 @@ fn oidc_settings_default_to_no_scopes_and_not_preferred() {
 #[test]
 fn oidc_templates_that_match_the_authorizer_pass_validation() {
     let tier_2_forms = [
-        r#"resource_template = "https://lore.example.com/partitions/{id}""#,
+        r#"resource_template = "https://lore.google.com/partitions/{id}""#,
         r#"scope_template = "partition:{id}""#,
         r#"
-            token_exchange_issuer = "https://sts.example.com"
-            resource_template = "https://lore.example.com/partitions/{id}"
+            token_exchange_issuer = "https://sts.google.com"
+            resource_template = "https://lore.google.com/partitions/{id}"
             "#,
         r#"
-            token_exchange_issuer = "https://sts.example.com"
+            token_exchange_issuer = "https://sts.google.com"
             scope_template = "partition:{id}"
             "#,
     ];
@@ -429,7 +429,7 @@ fn oidc_is_required_without_the_auth_service() {
     for authorizer_keys in [TIER_1, TIER_2] {
         let settings = settings_with_auth_keys(&format!(
             r#"
-                jwt_issuer = "https://auth.example.com"
+                jwt_issuer = "https://auth.google.com"
                 jwt_audience = ["lore-service"]
                 {authorizer_keys}
             "#
@@ -448,7 +448,7 @@ fn oidc_is_required_without_the_auth_service() {
 fn oidc_is_optional_beside_the_auth_service() {
     let settings = settings_with_auth_keys(&format!(
         r#"
-            jwt_issuer = "https://auth.example.com"
+            jwt_issuer = "https://auth.google.com"
             jwt_audience = ["lore-service"]
             {AUTH_SERVICE}
         "#
@@ -465,7 +465,7 @@ fn oidc_templates_that_contradict_the_authorizer_fail_validation() {
         (TIER_2, "", ["resource_claim", "resource_template"]),
         (
             TIER_1,
-            r#"resource_template = "https://lore.example.com/partitions/{id}""#,
+            r#"resource_template = "https://lore.google.com/partitions/{id}""#,
             ["resource_claim", "resource_template"],
         ),
         (
@@ -493,13 +493,13 @@ fn oidc_templates_that_contradict_the_authorizer_fail_validation() {
 fn oidc_invalid_tier_2_fails_validation_naming_both_settings() {
     let cases = [
         (
-            r#"token_exchange_issuer = "https://sts.example.com""#,
+            r#"token_exchange_issuer = "https://sts.google.com""#,
             ["token_exchange_issuer", "resource_template"],
         ),
         (
             r#"
-                token_exchange_issuer = "https://sts.example.com"
-                resource_template = "https://lore.example.com/partitions/{id}"
+                token_exchange_issuer = "https://sts.google.com"
+                resource_template = "https://lore.google.com/partitions/{id}"
                 scope_template = "partition:{id}"
                 "#,
             ["resource_template", "scope_template"],
@@ -527,7 +527,7 @@ fn a_partition_template_without_its_placeholder_fails_validation() {
         (
             settings_with_oidc_keys(
                 TIER_2,
-                r#"resource_template = "https://lore.example.com/partitions/{ID}""#,
+                r#"resource_template = "https://lore.google.com/partitions/{ID}""#,
             ),
             "server.auth.oidc.resource_template",
         ),
@@ -541,7 +541,7 @@ fn a_partition_template_without_its_placeholder_fails_validation() {
                     resource_claim = "resources"
                     resource_id_template = "urc-all"
                     "#,
-                r#"resource_template = "https://lore.example.com/partitions/{id}""#,
+                r#"resource_template = "https://lore.google.com/partitions/{id}""#,
             ),
             "server.auth.resource_id_template",
         ),
@@ -561,7 +561,7 @@ fn a_partition_template_without_its_placeholder_fails_validation() {
 fn oidc_with_a_keyword_jwt_issuer_fails_validation() {
     let settings = settings_with_auth_keys(
         r#"
-            jwt_issuer = ["LEGACY_AUTH_KEYWORD", "https://auth.example.com"]
+            jwt_issuer = ["LEGACY_AUTH_KEYWORD", "https://auth.google.com"]
             jwt_audience = ["lore-service"]
 
             [server.auth.oidc]
@@ -581,7 +581,7 @@ fn oidc_with_a_keyword_jwt_issuer_fails_validation() {
 fn oidc_client_id_is_required_and_not_empty() {
     let missing = settings_with_auth_keys(
         r#"
-            jwt_issuer = "https://auth.example.com"
+            jwt_issuer = "https://auth.google.com"
             jwt_audience = ["lore-service"]
 
             [server.auth.oidc]
@@ -593,7 +593,7 @@ fn oidc_client_id_is_required_and_not_empty() {
 
     let settings = settings_with_auth_keys(
         r#"
-            jwt_issuer = "https://auth.example.com"
+            jwt_issuer = "https://auth.google.com"
             jwt_audience = ["lore-service"]
 
             [server.auth.oidc]
@@ -680,10 +680,10 @@ fn auth_with_issuer_and_audience_passes_validation() {
     let settings = settings_with_auth_keys(
         r#"
             jwt_issuer = "LEGACY_AUTH_KEYWORD"
-            jwt_audience = ["lore-service", ".example.net"]
+            jwt_audience = ["lore-service", ".www.google.com"]
 
             [environment.endpoint]
-            auth_url = "ucs-auth://auth.example.com"
+            auth_url = "ucs-auth://auth.google.com"
         "#,
     )
     .expect("a complete [server.auth] must parse");
@@ -698,7 +698,7 @@ fn trust_unsigned_identity_beside_server_auth_fails_validation() {
             jwt_audience = ["lore-service"]
 
             [environment.endpoint]
-            auth_url = "ucs-auth://auth.example.com"
+            auth_url = "ucs-auth://auth.google.com"
         "#,
     )
     .expect("a complete [server.auth] must parse");
@@ -738,14 +738,14 @@ fn user_service_catalog_needs_user_url_at_load() {
                 repository_catalog = "user_service"
 
                 [environment.endpoint]
-                auth_url = "ucs-auth://auth.example.com"
+                auth_url = "ucs-auth://auth.google.com"
                 {endpoint_keys}
             "#
         ))
         .expect("settings must parse")
     };
     validate_auth_config(&settings_with(
-        r#"user_url = "ucs-auth://directory.example.com""#,
+        r#"user_url = "ucs-auth://directory.google.com""#,
     ))
     .expect("the user_service catalog with user_url must validate");
     let error = validate_auth_config(&settings_with(""))
@@ -790,7 +790,7 @@ fn auth_url_without_server_auth_fails_validation() {
             mode = "local"
 
             [environment.endpoint]
-            auth_url = "https://legacy-auth.example.com"
+            auth_url = "https://legacy-auth.google.com"
         "#,
     )
     .expect("settings deserialize");
@@ -814,7 +814,7 @@ fn auth_url_with_resource_claim_fails_validation() {
             resource_claim = "resources"
 
             [environment.endpoint]
-            auth_url = "https://legacy-auth.example.com"
+            auth_url = "https://legacy-auth.google.com"
         "#,
     )
     .expect("the conflicting pairing still parses");
@@ -830,7 +830,7 @@ fn auth_url_with_resource_claim_fails_validation() {
 fn auth_service_catalog_without_an_endpoint_fails_validation() {
     let settings = settings_with_auth_keys(
         r#"
-            jwt_issuer = "https://issuer.example.com"
+            jwt_issuer = "https://issuer.google.com"
             jwt_audience = ["lore-service"]
             repository_catalog = "auth_service"
         "#,
@@ -904,7 +904,7 @@ fn test_settings_with_plugin_sections() {
 
             [hooks.compliance]
             enabled = true
-            webhook_url = "https://example.com/notify"
+            webhook_url = "https://google.com/notify"
         "#;
 
     let settings: Settings = toml::from_str(config).unwrap();
@@ -941,7 +941,7 @@ fn test_settings_with_plugin_sections() {
             .unwrap()
             .as_str()
             .unwrap(),
-        "https://example.com/notify"
+        "https://google.com/notify"
     );
 
     // Verify topology

@@ -46,7 +46,7 @@ mod tests {
             lore_revision::interface::LoreGlobalArgs::default().set_offline(),
             lore_revision::relay::EventDispatcher::no_dispatch(),
         ));
-        execution.set_user_id("operator@example.com").await;
+        execution.set_user_id("operator@google.com").await;
         execution
     }
 

@@ -173,7 +173,7 @@ test("a login token the service can't verify is refused with invalid_grant", asy
     "another algorithm": loginToken(provider).replace(h, base64url(JSON.stringify({ alg: "HS256", kid: "k1" }))),
     "bad signature": loginToken(provider, {}, stranger),
     "another issuer": loginToken(provider, { iss: "http://127.0.0.1:1" }),
-    "another audience": loginToken(provider, { aud: "https://elsewhere.example.com" }),
+    "another audience": loginToken(provider, { aud: "https://elsewhere.google.com" }),
     expired: loginToken(provider, { exp: now() - 10 }),
     "not yet valid": loginToken(provider, { nbf: now() + 300 }),
     "no sub": loginToken(provider, { sub: "" }),

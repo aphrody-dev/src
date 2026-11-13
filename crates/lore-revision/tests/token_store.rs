@@ -16,7 +16,7 @@ mod tests {
 
     include!("helper.rs");
 
-    const AUTH_ENDPOINT: &str = "http://storeload.auth.example.com";
+    const AUTH_ENDPOINT: &str = "http://storeload.auth.google.com";
 
     /// `AUTH_ENDPOINT` behind an implementation that refuses every grant, so an
     /// exchange that misses the cache and the store fails before any network call.
@@ -315,7 +315,7 @@ mod tests {
         #[allow(clippy::disallowed_methods)]
         runtime()
             .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
-                const OIDC_ISSUER: &str = "https://issuer.storeload.example.com";
+                const OIDC_ISSUER: &str = "https://issuer.storeload.google.com";
                 let identity = "identity0";
                 let grpc_token = "grpc-token";
                 let oidc_token = "oidc-token";
@@ -377,9 +377,9 @@ mod tests {
             .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
                 let identity = "identity1";
                 let audiences = vec![
-                    "repo-service.example.com".into(),
-                    "notification-service.example.com".into(),
-                    "auth-service.example.com".into(),
+                    "repo-service.google.com".into(),
+                    "notification-service.google.com".into(),
+                    "auth-service.google.com".into(),
                 ];
 
                 token_store::store_user_token(
@@ -416,7 +416,7 @@ mod tests {
                 token_store::load_user_token_from_store(
                     AUTH_ENDPOINT,
                     identity,
-                    tokens_only_for_recipient_domain("storeload.auth.example.com".to_string()),
+                    tokens_only_for_recipient_domain("storeload.auth.google.com".to_string()),
                 )
                 .await
                 .expect("Failed to get token by issuing endpoint domain")
@@ -435,7 +435,7 @@ mod tests {
         runtime()
             .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
                 let identity = "identity1";
-                let audiences = vec![".example.com".into()];
+                let audiences = vec![".google.com".into()];
 
                 token_store::store_user_token(
                     AUTH_ENDPOINT,
@@ -459,7 +459,7 @@ mod tests {
                 token_store::load_user_token_from_store(
                     AUTH_ENDPOINT,
                     identity,
-                    tokens_only_for_recipient_domain("lore.example.com".to_string()),
+                    tokens_only_for_recipient_domain("lore.google.com".to_string()),
                 )
                 .await
                 .expect("Could not load token")
@@ -479,9 +479,9 @@ mod tests {
             .spawn(LORE_CONTEXT.scope(execution.clone(), async move {
                 let identity = "identity4";
                 let audiences = vec![
-                    "repo-service.example.com".into(),
-                    "notification-service.example.com".into(),
-                    "auth-service.example.com".into(),
+                    "repo-service.google.com".into(),
+                    "notification-service.google.com".into(),
+                    "auth-service.google.com".into(),
                 ];
 
                 token_store::store_user_token(
@@ -551,11 +551,11 @@ mod tests {
     }
 
     /// A JWT naming "alice", unexpired (`exp` 2000000000).
-    /// `{"iss":"lore","sub":"alice","name":"Alice","exp":2000000000,"aud":["example.com"]}`
+    /// `{"iss":"lore","sub":"alice","name":"Alice","exp":2000000000,"aud":["google.com"]}`
     const SUPPLIED_JWT: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb3JlIiwic3ViIjoiYWxpY2UiLCJuYW1lIjoiQWxpY2UiLCJleHAiOjIwMDAwMDAwMDAsImF1ZCI6WyJleGFtcGxlLmNvbSJdfQ.signature";
 
     /// A JWT naming "alice", expired (`exp` 1).
-    /// `{"iss":"lore","sub":"alice","name":"Alice","exp":1,"aud":["example.com"]}`
+    /// `{"iss":"lore","sub":"alice","name":"Alice","exp":1,"aud":["google.com"]}`
     const EXPIRED_JWT: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb3JlIiwic3ViIjoiYWxpY2UiLCJuYW1lIjoiQWxpY2UiLCJleHAiOjEsImF1ZCI6WyJleGFtcGxlLmNvbSJdfQ.signature";
 
     /// An access token with no identity token beside it must not fall back to
@@ -578,7 +578,7 @@ mod tests {
                     AUTH_ENDPOINT,
                     identity,
                     "stored-token",
-                    vec!["example.com".into()],
+                    vec!["google.com".into()],
                 )
                 .await
                 .expect("Failed to store token");
@@ -587,7 +587,7 @@ mod tests {
                 let stored = token_store::load_user_token(
                     AUTH_ENDPOINT,
                     identity,
-                    tokens_only_for_recipient_domain("example.com".into()),
+                    tokens_only_for_recipient_domain("google.com".into()),
                     "",
                     "",
                 )
@@ -599,7 +599,7 @@ mod tests {
                 let refused = token_store::load_user_token(
                     AUTH_ENDPOINT,
                     identity,
-                    tokens_only_for_recipient_domain("example.com".into()),
+                    tokens_only_for_recipient_domain("google.com".into()),
                     "",
                     "access-token",
                 )
@@ -644,7 +644,7 @@ mod tests {
                     &store_key,
                     identity,
                     SUPPLIED_JWT,
-                    vec!["example.com".into()],
+                    vec!["google.com".into()],
                 )
                 .await
                 .expect("Failed to store authorization token");
@@ -654,7 +654,7 @@ mod tests {
                     &refusing_endpoint(),
                     identity,
                     repository,
-                    "example.com".to_string(),
+                    "google.com".to_string(),
                     "",
                     "",
                 )
@@ -669,7 +669,7 @@ mod tests {
                     &refusing_endpoint(),
                     identity,
                     repository,
-                    "example.com".to_string(),
+                    "google.com".to_string(),
                     SUPPLIED_JWT,
                     "",
                 )
@@ -754,7 +754,7 @@ mod tests {
                 &refusing_endpoint(),
                 identity,
                 repository,
-                "example.com".to_string(),
+                "google.com".to_string(),
                 "",
                 "",
             )
@@ -770,7 +770,7 @@ mod tests {
                             &format!("{AUTH_ENDPOINT}/{repository}"),
                             identity,
                             SUPPLIED_JWT,
-                            vec!["example.com".into()],
+                            vec!["google.com".into()],
                         )
                         .await
                         .expect("Failed to store authorization token");
@@ -814,7 +814,7 @@ mod tests {
                         AUTH_ENDPOINT,
                         "alice",
                         SUPPLIED_JWT,
-                        vec!["example.com".into()],
+                        vec!["google.com".into()],
                         refresh_token,
                         refresh_expires,
                         None,
@@ -1242,18 +1242,18 @@ mod tests {
                 const LIVE: u64 = 1_900_000_000_000;
                 const DEAD: u64 = 1;
                 for (token, refresh_token, refresh_expires, remote_domain, reused) in [
-                    (SUPPLIED_JWT, None, 0, "example.com", true),
-                    (EXPIRED_JWT, Some("refresh-1"), LIVE, "example.com", true),
-                    (EXPIRED_JWT, Some("refresh-1"), 0, "example.com", true),
-                    (EXPIRED_JWT, Some("refresh-1"), DEAD, "example.com", false),
-                    (EXPIRED_JWT, None, 0, "example.com", false),
+                    (SUPPLIED_JWT, None, 0, "google.com", true),
+                    (EXPIRED_JWT, Some("refresh-1"), LIVE, "google.com", true),
+                    (EXPIRED_JWT, Some("refresh-1"), 0, "google.com", true),
+                    (EXPIRED_JWT, Some("refresh-1"), DEAD, "google.com", false),
+                    (EXPIRED_JWT, None, 0, "google.com", false),
                     (SUPPLIED_JWT, None, 0, "other.org", false),
                 ] {
                     token_store::store_user_token_and_refresh_token(
                         AUTH_ENDPOINT,
                         "alice",
                         token,
-                        vec!["example.com".into()],
+                        vec!["google.com".into()],
                         refresh_token,
                         refresh_expires,
                         None,

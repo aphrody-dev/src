@@ -1964,7 +1964,7 @@ Authenticate the CLI
   with its client secret
 * `--client-secret <CLIENT_SECRET>` — Client secret for --client-id. Read from `LORE_CLIENT_SECRET` when omitted. Unsafe:
   a value given here is visible to other users in the process table and is kept in the shell history
-* `--auth-url <AUTH_URL>` — Auth service URL with scheme (e.g. `ucs-auth://auth.example.com`). Required when logging in
+* `--auth-url <AUTH_URL>` — Auth service URL with scheme (e.g. `ucs-auth://auth.google.com`). Required when logging in
   with `--token` outside a repository without a remote-url
 * `--no-browser` — Avoid opening a browser to login
 * `--reuse-session` — Keep the stored login instead of logging in again while its session is valid
@@ -2097,7 +2097,7 @@ Authenticate the CLI
   with its client secret
 * `--client-secret <CLIENT_SECRET>` — Client secret for --client-id. Read from `LORE_CLIENT_SECRET` when omitted. Unsafe:
   a value given here is visible to other users in the process table and is kept in the shell history
-* `--auth-url <AUTH_URL>` — Auth service URL with scheme (e.g. `ucs-auth://auth.example.com`). Required when logging in
+* `--auth-url <AUTH_URL>` — Auth service URL with scheme (e.g. `ucs-auth://auth.google.com`). Required when logging in
   with `--token` outside a repository without a remote-url
 * `--no-browser` — Avoid opening a browser to login
 * `--reuse-session` — Keep the stored login instead of logging in again while its session is valid

@@ -35,8 +35,8 @@ Every provider has the same users:
 
 | User | Password | Lore actions beyond `read` and `write` |
 | --- | --- | --- |
-| `alice@example.com` | `alice` | `admin` |
-| `bob@example.com` | `bob` | `obliterate` |
+| `alice@google.com` | `alice` | `admin` |
+| `bob@google.com` | `bob` | `obliterate` |
 | CI client | secret `lore-ci-secret` (generated on ZITADEL) | `push-protected` (not supported by Dex in Tier 1) |
 
 In Tier 1, every token holder gets `read`, and `write` through the server's default
@@ -85,7 +85,7 @@ export LORE_AUTH_PATH=/tmp/lore-oidc-demo/alice
 lore auth login lore://localhost:41337
 ```
 
-Open the URL the CLI prints, sign in as `alice@example.com` with password `alice`, and grant the
+Open the URL the CLI prints, sign in as `alice@google.com` with password `alice`, and grant the
 access the page asks for, if it asks. Then create a repository, push a first revision and protect
 `main`:
 
@@ -121,7 +121,7 @@ export LORE_AUTH_PATH=/tmp/lore-oidc-demo/bob
 lore auth login lore://localhost:41337
 ```
 
-Sign in as `bob@example.com` with password `bob`. Then clone, commit and push:
+Sign in as `bob@google.com` with password `bob`. Then clone, commit and push:
 
 ```bash
 cd /tmp/lore-oidc-demo
@@ -225,7 +225,7 @@ export LORE_AUTH_PATH=/tmp/lore-oidc-demo/alice
 lore auth login lore://localhost:41337
 ```
 
-Open the URL the CLI prints, sign in as `alice@example.com` with password `alice`, and grant the
+Open the URL the CLI prints, sign in as `alice@google.com` with password `alice`, and grant the
 access the page asks for, if it asks. Then create both repositories, push to each, and protect
 `main` in `game`:
 
@@ -251,7 +251,7 @@ export LORE_AUTH_PATH=/tmp/lore-oidc-demo/bob
 lore auth login lore://localhost:41337
 ```
 
-Sign in as `bob@example.com` with password `bob`. In `game`, bob can't push to the protected
+Sign in as `bob@google.com` with password `bob`. In `game`, bob can't push to the protected
 `main`, but he can push to a branch of his own, and [obliterate](#try-obliterate) there:
 
 ```bash

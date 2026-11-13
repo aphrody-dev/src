@@ -4,8 +4,8 @@ use lore_transport::auth::user_directory::UserDirectory;
 use lore_transport::types::Endpoint;
 use lore_transport::types::EnvironmentConfig;
 
-const AUTH_URL: &str = "ucs-auth://auth.example.com";
-const USER_URL: &str = "ucs-auth://directory.example.com";
+const AUTH_URL: &str = "ucs-auth://auth.google.com";
+const USER_URL: &str = "ucs-auth://directory.google.com";
 
 fn environment(auth_url: Option<&str>, user_url: Option<&str>) -> EnvironmentConfig {
     EnvironmentConfig {

@@ -15,11 +15,11 @@ use lore_transport::types::AuthSessionPoll;
 use lore_transport::types::AuthenticationToken;
 use lore_transport::types::AuthorizationToken;
 
-/// `sub` alice, `aud` example.com, expiring in 2033.
+/// `sub` alice, `aud` google.com, expiring in 2033.
 pub(crate) const AUTHN_ONE: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb3JlIiwic3ViIjoiYWxpY2UiLCJleHAiOjIwMDAwMDAwMDAsImF1ZCI6WyJleGFtcGxlLmNvbSJdLCJuYW1lIjoiQWxpY2UifQ.signature";
 /// The same user, a different credential -- note the `scope` claim.
 pub(crate) const AUTHN_TWO: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb3JlIiwic3ViIjoiYWxpY2UiLCJleHAiOjIwMDAwMDAwMDAsImF1ZCI6WyJleGFtcGxlLmNvbSJdLCJuYW1lIjoiQWxpY2UiLCJzY29wZSI6InJlYWQifQ.signature";
-/// Authorizations for alice on example.com, expiring in 2033, told apart by an `authz` claim.
+/// Authorizations for alice on google.com, expiring in 2033, told apart by an `authz` claim.
 pub(crate) const AUTHZ_ONE: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb3JlIiwic3ViIjoiYWxpY2UiLCJleHAiOjIwMDAwMDAwMDAsImF1ZCI6WyJleGFtcGxlLmNvbSJdLCJuYW1lIjoiQWxpY2UiLCJhdXRoeiI6Im9uZSJ9.signature";
 pub(crate) const AUTHZ_TWO: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb3JlIiwic3ViIjoiYWxpY2UiLCJleHAiOjIwMDAwMDAwMDAsImF1ZCI6WyJleGFtcGxlLmNvbSJdLCJuYW1lIjoiQWxpY2UiLCJhdXRoeiI6InR3byJ9.signature";
 
@@ -125,7 +125,7 @@ impl Authentication for StubAuthentication {
         Ok(AuthorizationToken {
             token: (self.authorize)(authn_token, served).to_string(),
             expires_ms: 0,
-            acceptable_root_domains: vec!["example.com".to_string()],
+            acceptable_root_domains: vec!["google.com".to_string()],
         })
     }
 

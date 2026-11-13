@@ -4,8 +4,8 @@ use cosmic_compat::{
     OmarchyPaletteBridge, WslgHiDpiScalingDescriptor, WslgProtocolDescriptor,
 };
 use dx12_winui_core::{
-    select_high_performance_adapter, CommandQueues, DirectCompositionEngine, Dx12Context, GpuFence,
-    SharedGpuTexture, WinUiDispatcherQueue,
+    CommandQueues, DirectCompositionEngine, Dx12Context, GpuFence, SharedGpuTexture,
+    WinUiDispatcherQueue, select_high_performance_adapter,
 };
 use hypr_tiler::{
     DwindleTree, DxgDamageRegion, DxgDmaBufDamageTracker, GapsConfig, HyprWindow,
@@ -13,7 +13,7 @@ use hypr_tiler::{
 };
 use serde::Serialize;
 use smithay_wayland_wire::{
-    proto, LoopbackTransport, WaylandArgument, WaylandCompositor, WaylandMessage,
+    LoopbackTransport, WaylandArgument, WaylandCompositor, WaylandMessage, proto,
 };
 use std::time::Instant;
 use windows::Win32::Graphics::Dxgi::Common::DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -215,7 +215,10 @@ fn run_omarchy_patch(theme_name: &str, json: bool) -> Result<(), Box<dyn std::er
         for p in &report.protocols {
             println!("  * {} (v{}): {}", p.interface, p.version, p.role);
         }
-        println!("\n-- Synced COSMIC RON Theme --\n{}", report.cosmic_theme_ron.trim_end());
+        println!(
+            "\n-- Synced COSMIC RON Theme --\n{}",
+            report.cosmic_theme_ron.trim_end()
+        );
         println!("============================================================");
     }
     Ok(())

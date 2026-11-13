@@ -4,11 +4,11 @@ use lore_base::types::RepositoryId;
 use lore_transport::UserService;
 use lore_transport::auth::token_only::*;
 
-/// `{"iss":"lore","sub":"alice","name":"Alice Example","preferred_username":"alice.e","exp":2000000000,"aud":["example.com"]}`
+/// `{"iss":"lore","sub":"alice","name":"Alice Example","preferred_username":"alice.e","exp":2000000000,"aud":["google.com"]}`
 const FULL: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb3JlIiwic3ViIjoiYWxpY2UiLCJuYW1lIjoiQWxpY2UgRXhhbXBsZSIsInByZWZlcnJlZF91c2VybmFtZSI6ImFsaWNlLmUiLCJleHAiOjIwMDAwMDAwMDAsImF1ZCI6WyJleGFtcGxlLmNvbSJdfQ.signature";
-/// `{"iss":"lore","sub":"alice","name":"Alice Example","exp":2000000000,"aud":["example.com"]}`
+/// `{"iss":"lore","sub":"alice","name":"Alice Example","exp":2000000000,"aud":["google.com"]}`
 const NAME_ONLY: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb3JlIiwic3ViIjoiYWxpY2UiLCJuYW1lIjoiQWxpY2UgRXhhbXBsZSIsImV4cCI6MjAwMDAwMDAwMCwiYXVkIjpbImV4YW1wbGUuY29tIl19.signature";
-/// `{"iss":"lore","sub":"alice","exp":2000000000,"aud":["example.com"]}`
+/// `{"iss":"lore","sub":"alice","exp":2000000000,"aud":["google.com"]}`
 const NAMELESS: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb3JlIiwic3ViIjoiYWxpY2UiLCJleHAiOjIwMDAwMDAwMDAsImF1ZCI6WyJleGFtcGxlLmNvbSJdfQ.signature";
 
 async fn info(token: &str, ids: &[&str]) -> Vec<(String, String)> {

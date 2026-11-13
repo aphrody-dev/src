@@ -25,18 +25,18 @@ Status: done / partial / todo / skip (out of scope: macOS/Apple-only, org ops, f
 
 ## Skills, plugins, registry
 
-| Repo                                                                                              | Target                                 | Status |
-| ------------------------------------------------------------------------------------------------- | -------------------------------------- | ------ |
+| Repo                                                                                              | Target                                                                                                                    | Status |
+| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------ |
 | openclaw/clawhub (skill + plugin registry)                                                        | packages/hub (client); the server runs on Bun.serve (prd), not Workers (bun:sqlite, Bun.$ and bun:ffi do not exist there) | todo   |
-| openclaw/agent-skills                                                                             | skills/ (bundled)                      | todo   |
-| openclaw/clawscan (skill security scan, Go)                                                       | packages/hub scan (TS port)            | todo   |
-| openclaw/babelfish (plugins from other agent apps)                                                | packages/plugins compat                | todo   |
-| openclaw/catalog (model catalog)                                                                  | packages/core model catalog            | todo   |
-| openclaw/kitchen-sink, plugin-inspector, crabpot, tidepool                                        | packages/plugins test fixtures         | todo   |
-| NousResearch/hermes-official-plugins, hermes-labs-plugins, hermes-example-plugins                 | python/plugins + plugin bridge         | todo   |
-| NousResearch/hermes-plugin-{honcho,mem0,openviking,supermemory,retaindb,byterover}                | memory provider interface in core      | todo   |
-| NousResearch/hermes-plugin-{backsearch,sprites,solstice}, hermes-nvidia, hermes-collective-wisdom | plugins                                | todo   |
-| NousResearch/hermes-agent-self-evolution                                                          | core learning loop                     | todo   |
+| openclaw/agent-skills                                                                             | skills/ (bundled)                                                                                                         | todo   |
+| openclaw/clawscan (skill security scan, Go)                                                       | packages/hub scan (TS port)                                                                                               | todo   |
+| openclaw/babelfish (plugins from other agent apps)                                                | packages/plugins compat                                                                                                   | todo   |
+| openclaw/catalog (model catalog)                                                                  | packages/core model catalog                                                                                               | todo   |
+| openclaw/kitchen-sink, plugin-inspector, crabpot, tidepool                                        | packages/plugins test fixtures                                                                                            | todo   |
+| NousResearch/hermes-official-plugins, hermes-labs-plugins, hermes-example-plugins                 | python/plugins + plugin bridge                                                                                            | todo   |
+| NousResearch/hermes-plugin-{honcho,mem0,openviking,supermemory,retaindb,byterover}                | memory provider interface in core                                                                                         | todo   |
+| NousResearch/hermes-plugin-{backsearch,sprites,solstice}, hermes-nvidia, hermes-collective-wisdom | plugins                                                                                                                   | todo   |
+| NousResearch/hermes-agent-self-evolution                                                          | core learning loop                                                                                                        | todo   |
 
 ## Protocols, tools, runtime libs
 

@@ -36,10 +36,10 @@ pub const SESSION_LIFETIME: Duration = Duration::from_secs(150);
 /// Strips the custom scheme from an auth URL and returns a URL suitable for
 /// gRPC connection.
 ///
-/// `ucs-auth://auth.example.com` -> `https://auth.example.com`
-/// `https://auth.example.com` -> `https://auth.example.com` (unchanged)
+/// `ucs-auth://auth.google.com` -> `https://auth.google.com`
+/// `https://auth.google.com` -> `https://auth.google.com` (unchanged)
 /// `http://127.0.0.1:41339` -> `http://127.0.0.1:41339` (unchanged)
-/// `http://auth.example.com` -> `https://auth.example.com` (upgraded)
+/// `http://auth.google.com` -> `https://auth.google.com` (upgraded)
 ///
 /// Plaintext `http` is honoured only for loopback hosts, where the traffic
 /// never leaves the machine — this lets a local test auth service run

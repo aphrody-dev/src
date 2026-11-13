@@ -103,7 +103,7 @@ pub struct Row {
     pub detail: String,
 }
 
-/// `alice@example.com` -> `a***@example.com`; other strings keep their first two chars.
+/// `alice@google.com` -> `a***@google.com`; other strings keep their first two chars.
 pub fn mask_identity(s: &str) -> String {
     let s = s.trim();
     match s.split_once('@') {
@@ -466,7 +466,7 @@ mod tests {
 
     #[test]
     fn masking() {
-        assert_eq!(mask_identity("alice@example.com"), "a***@example.com");
+        assert_eq!(mask_identity("alice@google.com"), "a***@google.com");
         assert_eq!(mask_identity("ab12345-ovh"), "ab***");
         assert_eq!(mask_identity("abc"), "***");
     }

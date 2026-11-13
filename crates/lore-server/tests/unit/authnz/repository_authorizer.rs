@@ -629,12 +629,12 @@ fn the_resource_is_found_past_the_first_entry() {
 /// TOML appended, mirroring how a config file builds them.
 fn auth_settings(extra: &str) -> AuthSettings {
     toml::from_str(&format!(
-        "jwt_issuer = \"https://auth.example.com\"\njwt_audience = [\"lore\"]\n{extra}"
+        "jwt_issuer = \"https://auth.google.com\"\njwt_audience = [\"lore\"]\n{extra}"
     ))
     .unwrap()
 }
 
-const AUTH_URL: Option<&str> = Some("https://legacy-auth.example.com");
+const AUTH_URL: Option<&str> = Some("https://legacy-auth.google.com");
 
 #[test]
 fn selection_follows_the_flowchart() {
@@ -717,7 +717,7 @@ fn implicit_actions_reach_the_tier_1_authorizer() {
 fn implicit_actions_refuses_unknown_action_names() {
     for wrong in ["Read", "read-write", "push"] {
         let parsed: Result<AuthSettings, _> = toml::from_str(&format!(
-            "jwt_issuer = \"https://auth.example.com\"\njwt_audience = [\"lore\"]\nimplicit_actions = [\"{wrong}\"]"
+            "jwt_issuer = \"https://auth.google.com\"\njwt_audience = [\"lore\"]\nimplicit_actions = [\"{wrong}\"]"
         ));
         let message = parsed.expect_err(wrong).to_string();
         assert!(message.contains(wrong), "{message}");

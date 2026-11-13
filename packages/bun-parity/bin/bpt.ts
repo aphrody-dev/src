@@ -97,6 +97,11 @@ async function main() {
       break;
     }
 
+    case "compare": {
+      const { main: compare } = await import("../src/compare/compare.ts");
+      process.exit(await compare(args.slice(1)));
+    }
+
     case "llms": {
       const { main: llms } = await import("../src/llms/cli.ts");
       process.exit(await llms(args.slice(1)));
@@ -131,6 +136,7 @@ COMMANDS:
   patch        Synthesize runtime preload patch and Rust patch queue for C:\\src\\third_party\\bun
   report       Generate full PARITY_REPORT.md and parity-matrix.json
   test         Execute test suite for all polyfilled and patched web APIs
+  compare      bun stable, canary and fork side by side (docs/bun/COMPARISON.md): name=/path/to/bun ...
   llms extract Refresh test/llms/cases.json from https://bun.com/llms-full.txt (documented results)
   llms run     Check the documented results with one or more Bun binaries: name=/path/to/bun ...
   help         Display this help message

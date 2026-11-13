@@ -175,7 +175,7 @@ You can `await` any expression directly at the prompt.
 ```txt
 > await fetch("https://api.github.com/repos/oven-sh/bun").then(r => r.json()).then(r => r.stargazers_count)
 81234
-> const response = await fetch("https://example.com")
+> const response = await fetch("https://google.com")
 undefined
 > response.status
 …
@@ -232,7 +232,7 @@ Use `-e` / `--eval` to evaluate a script with REPL semantics and exit.
 ```sh
 bun repl -e "const x: number = 42; console.log(x)"
 # 42
-bun repl -p "await fetch('https://example.com').then(r => r.status)"
+bun repl -p "await fetch('https://google.com').then(r => r.status)"
 # 200
 bun repl -p "{ a: 1, b: 2 }"
 …

@@ -1067,7 +1067,7 @@
         },
         {
           "name": "push",
-          "description": "Copy the provider secrets this host has to another host's store (`ssh <host> ay ai import`)",
+          "description": "Copy these providers' secrets to another host's store (`ssh <host> ay ai import`, add-only)",
           "flags": {
             "--remote-env-file=": "Dotenv file on the remote host (default: the remote `ay ai` default)",
             "--manifest=": "Manifest (default: $AY_AI_MANIFEST, <repo>/infra/ai/ai.toml, then the embedded copy)",
@@ -1078,7 +1078,7 @@
         },
         {
           "name": "import",
-          "description": "Merge dotenv text from stdin into the first env file (key names printed, never values)",
+          "description": "Add dotenv keys from stdin to the first env file; existing keys are kept (names printed only)",
           "flags": {
             "--manifest=": "Manifest (default: $AY_AI_MANIFEST, <repo>/infra/ai/ai.toml, then the embedded copy)",
             "--env-file=": "Secrets in dotenv format, repeatable (default: $AY_ENV_FILE, then <repo>/.env)",

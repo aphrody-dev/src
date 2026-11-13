@@ -1436,7 +1436,7 @@ def test_status_scan_with_only_a_layer_staged_stages_the_parent_on_the_current_r
     with repo.open_file(MAIN_FILE, mode="wb") as out:
         out.write(b"main content v2")
     repo.stage(MAIN_FILE)
-    repo.revision_metadata_set(["reviewed-by", "first.reviewer@example.com"])
+    repo.revision_metadata_set(["reviewed-by", "first.reviewer@google.com"])
     repo.commit("First")
     first = repo.revision_info()
 

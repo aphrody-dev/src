@@ -18,7 +18,7 @@ use super::provider::*;
 
 const CLIENT_ID: &str = "lore-cli";
 const PARTITION: &str = "00112233445566778899aabbccddeeff";
-const RESOURCE_TEMPLATE: &str = "https://lore.example.com/partitions/{id}";
+const RESOURCE_TEMPLATE: &str = "https://lore.google.com/partitions/{id}";
 const SCOPE_TEMPLATE: &str = "partition:{id}";
 const EXPIRES: u64 = 2_000_000_000;
 
@@ -66,7 +66,7 @@ fn exchanged_token(issuer: &str) -> String {
     jwt(&serde_json::json!({
         "iss": issuer,
         "sub": "user-1",
-        "aud": ["https://lore.example.com"],
+        "aud": ["https://lore.google.com"],
         "resources": [{"resource_id": format!("urc-{PARTITION}"), "permission": ["read"]}],
         "exp": EXPIRES + 60,
         "iat": 1_900_000_000,
@@ -144,7 +144,7 @@ async fn an_exchange_names_the_partition_as_one_resource() {
     let fields = fields(&requests[0]);
     assert_eq!(
         values(&fields, "resource"),
-        [format!("https://lore.example.com/partitions/{PARTITION}")]
+        [format!("https://lore.google.com/partitions/{PARTITION}")]
     );
     assert!(values(&fields, "scope").is_empty(), "{fields:?}");
     assert_eq!(values(&fields, "grant_type"), [GRANT_TYPE]);
@@ -281,7 +281,7 @@ async fn a_template_without_the_partition_placeholder_is_refused() {
     let authn = login_token(&provider.issuer, &[]);
     let cases = [
         Oidc {
-            resource_template: Some("https://lore.example.com/partitions".to_owned()),
+            resource_template: Some("https://lore.google.com/partitions".to_owned()),
             ..with_resource_template(&provider.issuer)
         },
         Oidc {

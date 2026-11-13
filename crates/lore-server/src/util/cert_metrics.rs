@@ -23,7 +23,7 @@ use x509_parser::prelude::*;
 pub struct CertificateInfo {
     /// Path to the certificate file.
     pub cert_path: PathBuf,
-    /// Certificate subject (e.g., CN=example.com).
+    /// Certificate subject (e.g., CN=google.com).
     pub subject: String,
     /// Certificate serial number in hex format.
     pub serial: String,

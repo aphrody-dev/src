@@ -134,7 +134,7 @@ git commit -s -m "Your commit message"
 This appends:
 
 ```text
-Signed-off-by: Your Name <you@example.com>
+Signed-off-by: Your Name <you@google.com>
 ```
 
 Commits without a sign-off will not be merged.

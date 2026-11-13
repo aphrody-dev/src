@@ -50,13 +50,13 @@ service:
 tls:
   mode: certManager   # requires cert-manager installed in the cluster
   issuerName: <your-ca-clusterissuer>    # a real CA issuer, for verified lores://
-  extraSANs: ["lore.example.com"]
+  extraSANs: ["lore.google.com"]
   grpcTls: true                          # lores:// needs this; clients must use lores://
 
 auth:
   enabled: true
-  jwksEndpoint: "https://auth.example.com/.well-known/jwks.json"
-  issuer: "https://auth.example.com/"
+  jwksEndpoint: "https://auth.google.com/.well-known/jwks.json"
+  issuer: "https://auth.google.com/"
   audience: ["lore"]
 
 # Point every store at the AWS plugin. Adjust bucket/table names and region to your

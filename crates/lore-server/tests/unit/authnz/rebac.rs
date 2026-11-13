@@ -5,11 +5,11 @@ use lore_server::authnz::rebac::rebac_endpoint;
 /// Dialling `ucs-auth://` unrewritten gets no TLS.
 #[test]
 fn ucs_auth_scheme_dials_https() {
-    let endpoint = rebac_endpoint("ucs-auth://auth.example.com:8444").expect("endpoint");
+    let endpoint = rebac_endpoint("ucs-auth://auth.google.com:8444").expect("endpoint");
     assert_eq!(endpoint.uri().scheme_str(), Some("https"));
     assert_eq!(
         endpoint.uri().authority().map(|a| a.as_str()),
-        Some("auth.example.com:8444")
+        Some("auth.google.com:8444")
     );
 }
 

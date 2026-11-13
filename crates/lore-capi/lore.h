@@ -4468,7 +4468,7 @@ typedef struct lore_auth_login_with_token_args_t {
   struct lore_string_t token;
   // Token type
   struct lore_string_t token_type;
-  // Auth service URL with scheme (e.g. `ucs-auth://auth.example.com`); used
+  // Auth service URL with scheme (e.g. `ucs-auth://auth.google.com`); used
   // directly when non-empty, required when no remote URL is available
   struct lore_string_t auth_url;
   // Client ID of a confidential client registered with the auth service. When

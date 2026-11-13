@@ -1339,15 +1339,15 @@ def test_cherry_pick_metadata(new_lore_repo):
     with repo.open_file("feature_file.txt", "w") as f:
         f.write("Feature content\n")
     repo.stage("feature_file.txt")
-    repo.revision_metadata_set(["merged-by", "source-merger@example.com"])
-    repo.revision_metadata_set(["reviewed-by", "source-reviewer@example.com"])
+    repo.revision_metadata_set(["merged-by", "source-merger@google.com"])
+    repo.revision_metadata_set(["reviewed-by", "source-reviewer@google.com"])
     repo.revision_metadata_set(["change-request", "SOURCE-CR-111"])
     repo.commit("Add feature file")
     repo.push()
 
     # Verify the source metadata is set on the feature branch
-    assert "source-merger@example.com" in repo.revision_metadata_get("merged-by")
-    assert "source-reviewer@example.com" in repo.revision_metadata_get("reviewed-by")
+    assert "source-merger@google.com" in repo.revision_metadata_get("merged-by")
+    assert "source-reviewer@google.com" in repo.revision_metadata_get("reviewed-by")
     assert "SOURCE-CR-111" in repo.revision_metadata_get("change-request")
 
     # Switch back to main and make a second change with different metadata
@@ -1355,15 +1355,15 @@ def test_cherry_pick_metadata(new_lore_repo):
     with repo.open_file("initial.txt", "a") as f:
         f.write("Second line\n")
     repo.stage("initial.txt")
-    repo.revision_metadata_set(["reviewed-by", "target-reviewer@example.com"])
-    repo.revision_metadata_set(["merged-by", "target-merger@example.com"])
+    repo.revision_metadata_set(["reviewed-by", "target-reviewer@google.com"])
+    repo.revision_metadata_set(["merged-by", "target-merger@google.com"])
     repo.revision_metadata_set(["change-request", "TARGET-CR-999"])
     repo.commit("Second commit with metadata")
     repo.push()
 
     # Verify the target metadata is present on main's latest revision
-    assert "target-reviewer@example.com" in repo.revision_metadata_get("reviewed-by")
-    assert "target-merger@example.com" in repo.revision_metadata_get("merged-by")
+    assert "target-reviewer@google.com" in repo.revision_metadata_get("reviewed-by")
+    assert "target-merger@google.com" in repo.revision_metadata_get("merged-by")
     assert "TARGET-CR-999" in repo.revision_metadata_get("change-request")
 
     # Cherry-pick the feature commit (should auto-commit since no conflicts).
@@ -1391,10 +1391,10 @@ def test_cherry_pick_metadata(new_lore_repo):
     )
 
     reviewed_by_after = repo.revision_metadata_get("reviewed-by")
-    assert "source-reviewer@example.com" in reviewed_by_after, (
+    assert "source-reviewer@google.com" in reviewed_by_after, (
         f"reviewed-by should come from the source revision. Got:\n{reviewed_by_after}"
     )
-    assert "target-reviewer@example.com" not in reviewed_by_after, (
+    assert "target-reviewer@google.com" not in reviewed_by_after, (
         f"reviewed-by should NOT come from the target branch. Got:\n{reviewed_by_after}"
     )
 

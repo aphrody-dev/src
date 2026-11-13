@@ -248,7 +248,7 @@ impl TestServer {
     async fn client(&self, token: &str) -> Arc<UdsStorageClient> {
         UdsStorageClient::connect(
             self.socket.clone(),
-            "example.com".to_string(),
+            "google.com".to_string(),
             &AuthEndpoint {
                 url: "https://auth.invalid".to_string(),
                 ..AuthEndpoint::none()

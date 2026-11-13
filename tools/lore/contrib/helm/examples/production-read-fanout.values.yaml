@@ -67,9 +67,9 @@ service:
 tls:
   mode: certManager   # requires cert-manager installed in the cluster
   issuerName: <your-ca-clusterissuer>
-  extraSANs: ["lore.example.com"]
+  extraSANs: ["lore.google.com"]
 
 auth:
   enabled: true
-  jwksEndpoint: "https://auth.example.com/.well-known/jwks.json"
+  jwksEndpoint: "https://auth.google.com/.well-known/jwks.json"
   audience: ["lore"]

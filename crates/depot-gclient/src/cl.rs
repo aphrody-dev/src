@@ -458,19 +458,19 @@ mod tests {
             ))
         );
         assert_eq!(
-            gerrit_for_remote("https://gerrit.example.org/proj").map(|g| g.0),
-            Some("https://gerrit.example.org".into())
+            gerrit_for_remote("https://gerrit.gemini.google.com/proj").map(|g| g.0),
+            Some("https://gerrit.gemini.google.com".into())
         );
     }
 
     #[test]
     fn gitcookies() {
-        let t = "# comment\n.googlesource.com\tTRUE\t/\tTRUE\t2147483647\to\tgit-me.example.com=1//abc\n";
+        let t = "# comment\n.googlesource.com\tTRUE\t/\tTRUE\t2147483647\to\tgit-me.google.com=1//abc\n";
         assert_eq!(
             cookie_for(t, "chromium-review.googlesource.com").as_deref(),
-            Some("o=git-me.example.com=1//abc")
+            Some("o=git-me.google.com=1//abc")
         );
-        assert_eq!(cookie_for(t, "example.org"), None);
+        assert_eq!(cookie_for(t, "gemini.google.com"), None);
     }
 
     #[test]

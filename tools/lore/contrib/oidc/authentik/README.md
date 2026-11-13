@@ -31,8 +31,8 @@ The login page accepts the user name or the email address, and asks for no conse
 
 | User | Groups |
 | --- | --- |
-| `alice` (`alice@example.com`) | `admin` |
-| `bob` (`bob@example.com`) | `obliterate` |
+| `alice` (`alice@google.com`) | `admin` |
+| `bob` (`bob@google.com`) | `obliterate` |
 | `ak-lore-ci-client_credentials` | `push-protected` |
 
 - Groups are named after the Lore actions: `admin`, `obliterate` and `push-protected`.

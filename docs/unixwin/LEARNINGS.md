@@ -16,7 +16,7 @@ pas de repli.
 | prd | `cargo test` de rubash (Linux, rubash@ae43f3e5) : `just unixwin-test-prd` | lib : 1247/1251 au premier passage ; les 4 échecs (EMFILE « Too many open files » et pdeathsig sous charge) passent isolément avec `ulimit -n 65536`, désormais posé par `prd-test.sh` (`--no-fail-fast`) |
 | CI du fork | `cargo test --lib` de rubash sous Windows (`builtins::pwd`, `executor::path::`, `executor::glob::`), build croisé `cross-xwin` | run 43348343134 (niubash@1acf7953, rubash@ae43f3e5) : 3 jobs verts |
 
-Total : 123/123 avec `niu.exe` installé par `just unixwin-install ci` (sha256 f482617e…, rubash ae43f3e56a76) ; le binaire construit sur prd par cargo xwin passe aussi la suite (121/121 au premier tour).
+Total : 124/124 avec `niu.exe` installé par `just unixwin-install ci` (sha256 39650627…, rubash 19b784a41b50) ; le binaire construit sur prd par cargo xwin passe aussi la suite (121/121 au premier tour).
 
 ## Défauts trouvés et corrigés dans les forks
 
@@ -25,20 +25,12 @@ Total : 123/123 avec `niu.exe` installé par `just unixwin-install ci` (sha256 f
 | 1 | `pwd -W` (forme Windows de l'MSYS de Git for Windows) refusé : « pwd: -W: invalid option » | parité `msys-pwd-W` | `aphrody-labs/rubash@4e4782ef` : `-W` accepté sous Windows, sortie `C:/dir` (préfixe `\\?\` retiré) ; la ligne d'usage GNU `[-LP]` est gardée pour la parité du corpus d'aide | unitaire `msys_w_option_prints_windows_form_of_physical_cwd` (Windows) et `w_option_is_invalid_outside_windows` (Unix) ; e2e `msys-pwd-W` |
 | 2 | glob littéral quand le préfixe vient d'une variable Windows : `echo "$LOCALAPPDATA"/Programs/Niubash/*.exe` ou `"$SYSTEMROOT"/win*.ini` ne se développaient pas (Git Bash les développe) | parité `glob-backslash-prefix`, `glob-env-prefix` | `aphrody-labs/rubash@ae43f3e5` : sous Windows, dans la partie répertoire du motif, une barre oblique inverse brute (le lexer a déjà résolu les échappements non cités) est un séparateur ; seule une barre devant `*?[]` échappe encore ; les paires UNC restent intactes | unitaire `windows_backslash_directory_prefix_globs` ; e2e des deux cas |
 | 3 | build croisé Linux -> Windows impossible : `build.rs` cherchait seulement `rc.exe`/`llvm-rc.exe` (panique dans `embed_windows_icon`) | `just unixwin-build` sur prd | `aphrody-labs/niubash@4e562259` : `$RC`, puis `llvm-rc` sans extension (accepte `/nologo /fo`) | job CI `cross-xwin` (ubuntu -> x86_64-pc-windows-msvc, vert au premier passage) ; build prd |
+| 5 | noms Windows : `$SYSTEMROOT`, `$WINDIR`, `$COMSPEC` vides (niubash gardait `SystemRoot`, `windir`, `ComSpec` ; Git for Windows les expose en majuscules, pas `ProgramData` ni `OneDrive`) | parité `win-env-upper` | `aphrody-labs/rubash@19b784a4` : à l'import, alias majuscule pour COMMONPROGRAMFILES, COMSPEC, PROGRAMFILES, SYSTEMDRIVE, SYSTEMROOT, WINDIR (le nom d'origine reste lié ; une entrée majuscule explicite gagne) | unitaire `upper_case_aliases_follow_git_for_windows` (CI Windows, run 43351709401 vert) ; e2e `win-env-upper` |
 | 4 | YAML du workflow invalide : `run: cargo test -- a::b c::` contient « `: ` » | run sans job, « workflow file issue » | `aphrody-labs/niubash@1acf7953` : ligne entre guillemets | `Bun.YAML.parse` du fichier avant chaque push |
 
 ## Divergence assumée
 
 - Après le correctif 2, `d='C:\Windows'; echo $d/win*.ini` (expansion **non citée**) donne `C:\Windows/win.ini` sous niubash. GNU et Git Bash retirent la barre (`C:Windows`), ne trouvent rien et laissent le mot littéral. Sous Windows, un séparateur `\\` issu d'une variable est plus utile qu'un échappement. Relevé par la revue Gemini du 2026-11-13 (`docs/reviews/gemini-2026-11-13-unixwin.md`).
-
-## Écart ouvert (non corrigé)
-
-- **Noms des variables d'environnement Windows** : Git for Windows (Cygwin) passe en majuscules une liste fixe
-  (`SYSTEMROOT`, `WINDIR`, `COMSPEC`, `PROGRAMFILES`, `COMMONPROGRAMFILES`, `ALLUSERSPROFILE`...), mais ni
-  `ProgramData` ni `OneDrive`. niubash garde la casse Windows : `$SystemRoot` et `$windir` sont définis,
-  `$SYSTEMROOT` et `$WINDIR` sont vides. Un script écrit pour Git Bash qui lit `$SYSTEMROOT` casse.
-  Contournement : `${SYSTEMROOT:-$SystemRoot}`. Correctif à concevoir dans rubash (import de l'environnement,
-  `env_helpers::process_env_pairs`) sans doubler les noms dans le bloc d'environnement des enfants.
 
 ## Écarts constatés hors unixwin (contournements)
 

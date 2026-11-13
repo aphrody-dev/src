@@ -9,8 +9,10 @@ use std::process::Command;
 
 pub mod ai;
 pub mod build;
+pub mod bun;
 pub mod chromium;
 mod exec;
+pub mod low;
 pub mod self_update;
 
 /// Arguments forwarded verbatim to the command's own parser (including `--help`).
@@ -20,8 +22,21 @@ pub struct Rest {
     pub args: Vec<String>,
 }
 
+/// Commands by area, after the alphabetical table (`ay --help`).
+const OVERVIEW: &str = "\
+Areas:
+  repo       arch, lock, manifests, git, ingest, graph, conformance
+  toolchain  up, doctor, sys, build, self-update, rt
+  bun        bun (upstream watch), docs (Bun docs index), flat (fork crates in crates/bun-flat), hash, time
+  chromium   chromium (fr1 build chain), gclient, fetch, gn, ninja, cipd, cl, vpy, engines (V8, JSC, Dawn, wgpu)
+  fleet      ssh, deploy, auth, secret, ai
+  measure    bench, time
+
+Every command takes --help; machine output is --json where offered.
+Plan: docs/ay/MIGRATION.md; command table: docs/NAMING.md";
+
 #[derive(Parser, Debug)]
-#[command(name = "ay", version, about = "Aphrody monorepo CLI", disable_help_subcommand = true)]
+#[command(name = "ay", version, about = "Aphrody monorepo CLI", disable_help_subcommand = true, after_help = OVERVIEW)]
 struct Cli {
     #[command(subcommand)]
     command: Cmd,
@@ -62,6 +77,9 @@ pub enum Cmd {
     /// Patch stacks of the bun and Chromium forks: status, sync, check, pr, mark, gc, export (packages/upstream)
     #[command(disable_help_flag = true)]
     Upstream(Rest),
+    /// bun-LFS (third_party/lfs/bun, GitHub CI): build, logs, wsl (runs `just lfs-<sub>`)
+    #[command(disable_help_flag = true)]
+    Lfs(Rest),
     /// Pure-Rust SSH (russh): exec <host|all|a,b> -- cmd, cp, hosts, check
     #[command(disable_help_flag = true)]
     Ssh(Rest),
@@ -106,8 +124,12 @@ pub enum Cmd {
     Up(up::UpArgs),
     /// Update `ay` itself from the dist GitHub Releases (axoupdater)
     SelfUpdate(self_update::SelfUpdateArgs),
+    /// Upstream watch of oven-sh/bun for the fork: watch [--json] [--apply] [--install-schedule], bump [--write]
+    Bun(bun::BunArgs),
     /// Inference providers behind LiteLLM (infra/ai/ai.toml): ls, install, service, pull, config, check, auth, push, up
     Ai(ai::AiArgs),
+    #[command(flatten)]
+    Low(low::LowCmd),
 }
 
 #[derive(clap::Args, Debug, PartialEq, Default)]
@@ -146,7 +168,9 @@ pub enum Route {
     Sys(SysArgs),
     Up(up::UpArgs),
     SelfUpdate(self_update::SelfUpdateArgs),
+    Bun(bun::BunArgs),
     Ai(ai::AiArgs),
+    Low(low::LowCmd),
 }
 
 fn prefixed(head: &[&str], rest: &[String]) -> Vec<String> {
@@ -194,6 +218,10 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Bench(r) => Route::Bench(r.args),
         Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
         Cmd::Upstream(r) => Route::Package("upstream", r.args),
+        Cmd::Lfs(r) => {
+            let (sub, rest) = r.args.split_first().map_or(("build", &[][..]), |(s, rest)| (s.as_str(), rest));
+            Route::External("just", prefixed(&[format!("lfs-{sub}").as_str()], rest))
+        }
         Cmd::Ssh(r) => Route::Ssh(r.args),
         Cmd::Conformance(r) => Route::Conformance(r.args),
         Cmd::Rt(r) => Route::Rt(r.args),
@@ -210,7 +238,9 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Sys(s) => Route::Sys(s),
         Cmd::Up(u) => Route::Up(u),
         Cmd::SelfUpdate(a) => Route::SelfUpdate(a),
+        Cmd::Bun(a) => Route::Bun(a),
         Cmd::Ai(a) => Route::Ai(a),
+        Cmd::Low(c) => Route::Low(c),
     }
 }
 
@@ -247,7 +277,9 @@ fn run_route(route: Route) -> i32 {
         Route::Sys(args) => run_sys(args),
         Route::Up(args) => up::run(args),
         Route::SelfUpdate(args) => self_update::run(args),
+        Route::Bun(args) => bun::run(args),
         Route::Ai(args) => ai::run(args),
+        Route::Low(c) => low::run(c),
     }
 }
 
@@ -359,6 +391,8 @@ mod tests {
     fn external_engines() {
         assert_eq!(parse("deploy up --all"), Route::External("src-deploy", v(&["up", "--all"])));
         assert_eq!(parse("scope serve-web"), Route::External("gamescope-rs", v(&["serve-web"])));
+        assert_eq!(parse("lfs logs"), Route::External("just", v(&["lfs-logs"])));
+        assert_eq!(parse("lfs"), Route::External("just", v(&["lfs-build"])));
     }
 
     #[test]
@@ -422,12 +456,6 @@ mod tests {
     }
 
     #[test]
-    fn conformance_and_manifests_verify() {
-        assert_eq!(parse("conformance --fetch wpt"), Route::Conformance(v(&["--fetch", "wpt"])));
-        assert_eq!(parse("manifests verify"), Route::Xtk(v(&["manifests", "--check"])));
-    }
-
-    #[test]
     fn ai_subcommands() {
         let Route::Ai(a) = parse("ai check --json --env-file x.env") else { panic!("not ai") };
         assert_eq!(a.cmd, Some(ai::AiCmd::Check));
@@ -439,6 +467,24 @@ mod tests {
     }
 
     #[test]
+    fn conformance_and_manifests_verify() {
+        assert_eq!(parse("conformance --fetch wpt"), Route::Conformance(v(&["--fetch", "wpt"])));
+        assert_eq!(parse("manifests verify"), Route::Xtk(v(&["manifests", "--check"])));
+    }
+
+    #[test]
+    fn low_level_commands() {
+        use low::LowCmd;
+        assert!(matches!(parse("docs bun serve --json"), Route::Low(LowCmd::Docs(_))));
+        assert!(matches!(parse("flat check"), Route::Low(LowCmd::Flat(_))));
+        assert!(matches!(parse("hash Cargo.lock"), Route::Low(LowCmd::Hash(_))));
+        assert!(matches!(parse("time -n 3 -- ay --version"), Route::Low(LowCmd::Time(_))));
+        assert!(matches!(parse("chromium --dry-run build d8"), Route::Low(LowCmd::Chromium(_))));
+        assert_eq!(parse("engines matrix --json"), Route::Low(LowCmd::Engines(Rest { args: v(&["matrix", "--json"]) })));
+        assert_eq!(run(&v(&["chromium", "--dry-run", "status"])), 0);
+    }
+
+    #[test]
     fn upstream_runs_the_bun_package() {
         assert_eq!(parse("upstream status bun --json"), Route::Package("upstream", v(&["status", "bun", "--json"])));
         assert_eq!(parse("upstream --help"), Route::Package("upstream", v(&["--help"])));
@@ -447,5 +493,23 @@ mod tests {
     #[test]
     fn unknown_command_is_a_usage_error() {
         assert_eq!(run(&v(&["nope"])), 2);
+    }
+
+    #[test]
+    fn bun_watch_and_bump() {
+        let Route::Bun(b) = parse("bun watch --json --apply") else { panic!("not bun") };
+        let Some(bun::BunCmd::Watch(w)) = b.cmd else { panic!("not watch") };
+        assert!(w.json && w.apply && !w.dry_run && !w.install_schedule);
+        assert_eq!(w.every, 6);
+        let Route::Bun(b) = parse("bun watch --install-schedule --every 2 --checkout x") else { panic!("not bun") };
+        let Some(bun::BunCmd::Watch(w)) = b.cmd else { panic!("not watch") };
+        assert!(w.install_schedule && w.every == 2);
+        assert_eq!(w.checkout, Some(PathBuf::from("x")));
+        let Route::Bun(b) = parse("bun bump --to 1.4.5 --write") else { panic!("not bun") };
+        assert_eq!(b.cmd, Some(bun::BunCmd::Bump(bun::BumpArgs { to: Some("1.4.5".into()), write: true, json: false })));
+        assert_eq!(parse("bun"), Route::Bun(bun::BunArgs::default()));
+        assert_eq!(run(&v(&["bun", "watch", "--install-schedule", "--json"])), 2, "conflicting flags");
+        assert_eq!(run(&v(&["bun", "watch", "--every", "0"])), 2);
+        assert_eq!(run(&v(&["bun", "wach"])), 2);
     }
 }

@@ -36,7 +36,7 @@ async fn spawn_provider(issuer: Option<&str>) -> String {
     base
 }
 
-const AUTH_URL: &str = "ucs-auth://auth.example.com";
+const AUTH_URL: &str = "ucs-auth://auth.google.com";
 
 fn auth_settings(issuer: &str, oidc_keys: Option<&str>) -> AuthSettings {
     let oidc = oidc_keys.map_or_else(String::new, |keys| format!("[oidc]\n{keys}"));
@@ -69,7 +69,7 @@ async fn the_discovered_issuer_is_advertised_with_the_configured_fields() {
                 client_id = "lore-cli"
                 scopes = ["openid", "offline_access"]
                 preferred = true
-                token_exchange_issuer = "https://sts.example.com"
+                token_exchange_issuer = "https://sts.google.com"
                 scope_template = "partition:{id}"
                 client_credentials_scopes = ["lore"]
                 "#,
@@ -90,7 +90,7 @@ async fn the_discovered_issuer_is_advertised_with_the_configured_fields() {
             preferred: true,
             resource_template: None,
             scope_template: Some("partition:{id}".to_string()),
-            token_exchange_issuer: Some("https://sts.example.com".to_string()),
+            token_exchange_issuer: Some("https://sts.google.com".to_string()),
             client_credentials_scopes: vec!["lore".to_string()],
         }
     );
@@ -104,7 +104,7 @@ async fn tier_2_exchanges_at_the_provider_unless_told_otherwise() {
         Some(
             r#"
                 client_id = "lore-cli"
-                resource_template = "https://lore.example.com/partitions/{id}"
+                resource_template = "https://lore.google.com/partitions/{id}"
                 "#,
         ),
     );
@@ -201,7 +201,7 @@ async fn the_provider_is_preferred_when_it_is_the_only_path() {
 /// A document vouching for another issuer is never passed on to clients.
 #[tokio::test]
 async fn an_issuer_the_document_does_not_vouch_for_is_not_advertised() {
-    let base = spawn_provider(Some("https://impostor.example.com")).await;
+    let base = spawn_provider(Some("https://impostor.google.com")).await;
     let auth = auth_settings(&base, Some(r#"client_id = "lore-cli""#));
 
     let error = advertised_oidc(&auth, Some(AUTH_URL))

@@ -125,7 +125,7 @@ async function createAll(org) {
       userId: user.id,
       username: user.id,
       profile: { givenName: user.name, familyName: "Example" },
-      email: { email: `${user.id}@example.com`, isVerified: true },
+      email: { email: `${user.id}@google.com`, isVerified: true },
       password: { password: user.id, changeRequired: false },
     });
   }

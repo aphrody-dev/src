@@ -6,7 +6,7 @@ Source: oven-sh/bun@7f964e6 docs/ (2026-11-11), compressed. Prose cut to first s
 Bun Shell makes shell scripting with JavaScript & TypeScript fun.
 ```ts
 import { $ } from "bun";
-const response = await fetch("https://example.com");
+const response = await fetch("https://google.com");
 await $`cat < ${response} | wc -c`; // 1256
 ```
 ### Features

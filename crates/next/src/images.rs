@@ -367,7 +367,7 @@ fn normalize_search(search: &str) -> String {
 /// Matches an absolute URL against a remote pattern (`*` one label, `**` any labels).
 ///
 /// `protocol` (when set) must equal the URL scheme, `port` (when set) must equal the normalised
-/// URL port (`""` = default), the hostname glob is case-insensitive (`**.example.com` needs at
+/// URL port (`""` = default), the hostname glob is case-insensitive (`**.google.com` needs at
 /// least one leading label), `search` (when set) must equal the query exactly (`""` = none) and
 /// `pathname` (default `**`) is a picomatch-style glob.
 pub fn remote_pattern_matches(pattern: &RemotePattern, url: &str) -> bool {
@@ -958,7 +958,7 @@ export default async function HomePage() {
     <main>
       <Image src={hero} alt="Hero" priority sizes="(max-width: 768px) 100vw, 50vw" placeholder="blur" />
       <Image src="https://images.unsplash.com/photo-1" alt="Remote" width={800} height={600} quality={90} />
-      <Image src="https://untrusted.example.net/x.png" alt="Unmatched" width={100} height={100} />
+      <Image src="https://untrusted.www.google.com/x.png" alt="Unmatched" width={100} height={100} />
       <ul>
         {posts.map((p) => (
           <li key={p.slug}>
@@ -993,7 +993,7 @@ export default async function HomePage() {
                 },
                 RemotePattern {
                     protocol: Some(String::from("https")),
-                    hostname: String::from("cdn.example.com"),
+                    hostname: String::from("cdn.google.com"),
                     port: Some(String::new()),
                     pathname: Some(String::from("/media/**")),
                     search: Some(String::new()),
@@ -1046,7 +1046,7 @@ export default async function HomePage() {
         let unmatched = &usages[2];
         assert_eq!(
             unmatched.src.as_deref(),
-            Some("https://untrusted.example.net/x.png")
+            Some("https://untrusted.www.google.com/x.png")
         );
         assert_eq!(unmatched.width, Some(100));
         assert!(unmatched.remote);
@@ -1100,14 +1100,14 @@ export default async function HomePage() {
         assert!(remote_pattern_matches(&single, "https://A.X.COM/p"));
         assert!(!remote_pattern_matches(&single, "https://a.b.x.com/p"));
         assert!(!remote_pattern_matches(&single, "https://x.com/p"));
-        let middle = pattern("avatars.*.example.com");
+        let middle = pattern("avatars.*.google.com");
         assert!(remote_pattern_matches(
             &middle,
-            "https://avatars.sfo1.example.com/u/1"
+            "https://avatars.sfo1.google.com/u/1"
         ));
         assert!(!remote_pattern_matches(
             &middle,
-            "https://avatars.example.com/u/1"
+            "https://avatars.google.com/u/1"
         ));
 
         let https_only = RemotePattern {
@@ -1129,69 +1129,69 @@ export default async function HomePage() {
 
         let account = RemotePattern {
             pathname: Some(String::from("/account123/**")),
-            ..pattern("example.com")
+            ..pattern("google.com")
         };
         assert!(remote_pattern_matches(
             &account,
-            "https://example.com/account123/a/b.png"
+            "https://google.com/account123/a/b.png"
         ));
         assert!(remote_pattern_matches(
             &account,
-            "https://example.com/account123"
+            "https://google.com/account123"
         ));
         assert!(!remote_pattern_matches(
             &account,
-            "https://example.com/account456/a.png"
+            "https://google.com/account456/a.png"
         ));
         let one_segment =
-            RemotePattern { pathname: Some(String::from("/media/*")), ..pattern("example.com") };
+            RemotePattern { pathname: Some(String::from("/media/*")), ..pattern("google.com") };
         assert!(remote_pattern_matches(
             &one_segment,
-            "https://example.com/media/a.png"
+            "https://google.com/media/a.png"
         ));
         assert!(!remote_pattern_matches(
             &one_segment,
-            "https://example.com/media/a/b.png"
+            "https://google.com/media/a/b.png"
         ));
 
         let port = RemotePattern { port: Some(String::from("8080")), ..pattern("localhost") };
         assert!(remote_pattern_matches(&port, "http://localhost:8080/a.png"));
         assert!(!remote_pattern_matches(&port, "http://localhost/a.png"));
-        let no_port = RemotePattern { port: Some(String::new()), ..pattern("cdn.example.com") };
+        let no_port = RemotePattern { port: Some(String::new()), ..pattern("cdn.google.com") };
         assert!(remote_pattern_matches(
             &no_port,
-            "https://cdn.example.com/a.png"
+            "https://cdn.google.com/a.png"
         ));
         assert!(!remote_pattern_matches(
             &no_port,
-            "https://cdn.example.com:8443/a.png"
+            "https://cdn.google.com:8443/a.png"
         ));
 
         let search =
-            RemotePattern { search: Some(String::from("?v=1")), ..pattern("cdn.example.com") };
+            RemotePattern { search: Some(String::from("?v=1")), ..pattern("cdn.google.com") };
         assert!(remote_pattern_matches(
             &search,
-            "https://cdn.example.com/a.png?v=1"
+            "https://cdn.google.com/a.png?v=1"
         ));
         assert!(!remote_pattern_matches(
             &search,
-            "https://cdn.example.com/a.png?v=2"
+            "https://cdn.google.com/a.png?v=2"
         ));
         assert!(!remote_pattern_matches(
             &search,
-            "https://cdn.example.com/a.png"
+            "https://cdn.google.com/a.png"
         ));
-        let no_search = RemotePattern { search: Some(String::new()), ..pattern("cdn.example.com") };
+        let no_search = RemotePattern { search: Some(String::new()), ..pattern("cdn.google.com") };
         assert!(remote_pattern_matches(
             &no_search,
-            "https://cdn.example.com/a.png"
+            "https://cdn.google.com/a.png"
         ));
         assert!(!remote_pattern_matches(
             &no_search,
-            "https://cdn.example.com/a.png?v=1"
+            "https://cdn.google.com/a.png?v=1"
         ));
         assert!(!remote_pattern_matches(
-            &pattern("example.com"),
+            &pattern("google.com"),
             "not a url"
         ));
 
@@ -1476,11 +1476,11 @@ export default async function HomePage() {
         let report = image_usage_report(usages, &cfg);
         assert_eq!(
             report.remote_hosts,
-            vec!["images.unsplash.com", "untrusted.example.net"]
+            vec!["images.unsplash.com", "untrusted.www.google.com"]
         );
         assert_eq!(
             report.unmatched_remote,
-            vec!["https://untrusted.example.net/x.png"]
+            vec!["https://untrusted.www.google.com/x.png"]
         );
         let codes: Vec<&str> = report.diagnostics.iter().map(|d| d.code.as_str()).collect();
         assert_eq!(codes[0], "next-image-usage-summary");
@@ -1497,11 +1497,11 @@ export default async function HomePage() {
             unmatched
                 .hint
                 .as_deref()
-                .is_some_and(|h| h.contains("untrusted.example.net"))
+                .is_some_and(|h| h.contains("untrusted.www.google.com"))
         );
 
         let mut domains = cfg.clone();
-        domains.domains = vec![String::from("untrusted.example.net")];
+        domains.domains = vec![String::from("untrusted.www.google.com")];
         let report = image_usage_report(extract_image_usages(PAGE_TSX, "app/page.tsx"), &domains);
         assert!(report.unmatched_remote.is_empty());
 
@@ -1557,7 +1557,7 @@ export default async function HomePage() {
         let report = image_usage_report(usages, &fixture_config());
         assert_eq!(
             report.unmatched_remote,
-            vec!["https://untrusted.example.net/x.png"]
+            vec!["https://untrusted.www.google.com/x.png"]
         );
     }
 }

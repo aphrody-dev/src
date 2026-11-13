@@ -1133,7 +1133,7 @@ mod tests {
             &headers,
             &cookies,
             &query,
-            "example.com"
+            "google.com"
         ));
         let header_regex = RouteCondition { value: Some(String::from("(1|2)")), ..header.clone() };
         assert!(condition_matches(
@@ -1141,7 +1141,7 @@ mod tests {
             &headers,
             &cookies,
             &query,
-            "example.com"
+            "google.com"
         ));
         let cookie_present = RouteCondition {
             kind: String::from("cookie"),
@@ -1170,14 +1170,14 @@ mod tests {
         let host = RouteCondition {
             kind: String::from("host"),
             key: String::new(),
-            value: Some(String::from("example.com")),
+            value: Some(String::from("google.com")),
         };
         assert!(condition_matches(
             &host,
             &headers,
             &cookies,
             &query,
-            "example.com"
+            "google.com"
         ));
         assert!(!condition_matches(
             &host,

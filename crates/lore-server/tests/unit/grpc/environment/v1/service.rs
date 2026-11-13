@@ -17,7 +17,7 @@ fn the_provider_is_advertised_only_when_resolved() {
     assert_eq!(environment_to_proto(&environment).oidc, None);
 
     environment.oidc = Some(lore_transport::Oidc {
-        issuer: "https://auth.example.com".to_string(),
+        issuer: "https://auth.google.com".to_string(),
         client_id: "lore-cli".to_string(),
         scopes: vec!["openid".to_string()],
         client_credentials_scopes: vec!["lore".to_string()],
@@ -26,7 +26,7 @@ fn the_provider_is_advertised_only_when_resolved() {
     assert_eq!(
         environment_to_proto(&environment).oidc,
         Some(Oidc {
-            issuer: "https://auth.example.com".to_string(),
+            issuer: "https://auth.google.com".to_string(),
             client_id: "lore-cli".to_string(),
             scopes: vec!["openid".to_string()],
             client_credentials_scopes: vec!["lore".to_string()],

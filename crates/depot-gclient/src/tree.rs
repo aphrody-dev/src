@@ -977,7 +977,7 @@ mod tests {
         std::fs::write(
             root.join("src/DEPS"),
             r#"
-vars = { 'git': 'https://example.com', 'want_mac': False, 'rev': 'aaa' }
+vars = { 'git': 'https://google.com', 'want_mac': False, 'rev': 'aaa' }
 deps = {
   'src/third_party/sub': Var('git') + '/sub.git@' + Var('rev'),
   'src/win_only': { 'url': Var('git') + '/w.git@1', 'condition': 'checkout_win' },
@@ -995,10 +995,10 @@ hooks = [ { 'name': 'h', 'action': ['python3', 'x.py', '{rev}'], 'condition': 'c
         .unwrap();
         std::fs::write(
             root.join("src/third_party/sub/DEPS"),
-            "use_relative_paths = True\nvars = {'rev': 'zzz'}\ndeps = {'nested': 'https://example.com/n.git@' + Var('rev')}\n",
+            "use_relative_paths = True\nvars = {'rev': 'zzz'}\ndeps = {'nested': 'https://google.com/n.git@' + Var('rev')}\n",
         )
         .unwrap();
-        let gclient = "solutions = [{'name': 'src', 'url': 'https://example.com/src.git', 'custom_vars': {'want_mac': True}}]";
+        let gclient = "solutions = [{'name': 'src', 'url': 'https://google.com/src.git', 'custom_vars': {'want_mac': True}}]";
         let opts = Options {
             host_os: Some("win".into()),
             host_cpu: Some("x64".into()),
@@ -1008,14 +1008,14 @@ hooks = [ { 'name': 'h', 'action': ['python3', 'x.py', '{rev}'], 'condition': 'c
         let info = render_revinfo(&c.revinfo(&[]));
         assert_eq!(
             info,
-            "src: https://example.com/src.git\n\
+            "src: https://google.com/src.git\n\
              src/data:o1: gs://b/o1\n\
-             src/mac_only: https://example.com/m.git@2\n\
-             src/relative: https://example.com/rel.git@3\n\
-             src/third_party/sub: https://example.com/sub.git@aaa\n\
-             src/third_party/sub/nested: https://example.com/n.git@aaa\n\
+             src/mac_only: https://google.com/m.git@2\n\
+             src/relative: https://google.com/rel.git@3\n\
+             src/third_party/sub: https://google.com/sub.git@aaa\n\
+             src/third_party/sub/nested: https://google.com/n.git@aaa\n\
              src/tool:infra/tool/${platform}: https://chrome-infra-packages.appspot.com/infra/tool/${platform}@v1\n\
-             src/win_only: https://example.com/w.git@1\n"
+             src/win_only: https://google.com/w.git@1\n"
         );
         let hooks = c.hooks();
         assert_eq!(hooks.len(), 1);

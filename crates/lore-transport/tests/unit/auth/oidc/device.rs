@@ -177,8 +177,8 @@ async fn a_verification_url_that_is_not_a_web_page_is_refused() {
             let mut response = device_authorization(issuer, false);
             response["verification_uri"] = match nth {
                 0 => "file:///etc/hosts",
-                1 => "mailto:alice@example.com",
-                _ => "http://idp.example.com/activate",
+                1 => "mailto:alice@google.com",
+                _ => "http://idp.google.com/activate",
             }
             .into();
             json(&response)

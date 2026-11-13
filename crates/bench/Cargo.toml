@@ -8,7 +8,7 @@ description = "Hardware and compiler benchmark suite behind `ay bench` (Windows)
 
 [dependencies]
 argh = "0.1.19"
-zerocopy = { version = "0.9.0-alpha.0", features = ["derive"] }
+zerocopy = { workspace = true }
 windows-sys = { version = "0.61.2", features = [
     "Win32_Foundation",
     "Win32_System_Memory",

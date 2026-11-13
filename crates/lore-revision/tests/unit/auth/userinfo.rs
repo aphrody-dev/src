@@ -48,7 +48,7 @@ async fn supplied_token_describes_only_the_identity_the_call_acts_as() {
     use lore_revision::interface::LoreGlobalArgs;
     use lore_revision::relay::EventDispatcher;
 
-    /// `{"iss":"lore","sub":"alice","name":"Alice","exp":2000000000,"aud":["example.com"]}`
+    /// `{"iss":"lore","sub":"alice","name":"Alice","exp":2000000000,"aud":["google.com"]}`
     const ALICE_TOKEN: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb3JlIiwic3ViIjoiYWxpY2UiLCJuYW1lIjoiQWxpY2UiLCJleHAiOjIwMDAwMDAwMDAsImF1ZCI6WyJleGFtcGxlLmNvbSJdfQ.signature";
 
     // `identity` is what `LoreGlobalArgs::validate` derives from the token.

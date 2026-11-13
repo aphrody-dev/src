@@ -199,7 +199,7 @@ impl Topology for StubTopology {
         let mut stub_peers = HashSet::new();
         stub_peers.insert(PeerInfo {
             id: "stub_consul_peer".to_string(),
-            address: "stub_consul_peer.example.com".to_string(),
+            address: "stub_consul_peer.google.com".to_string(),
             port: 1234,
             locality: Locality::SameRegion,
             metric_id: "stub_consul_peer".into(),
@@ -247,7 +247,7 @@ async fn test_configure_composite_with_rotating_id_fixed_and_consul() {
                             fixed: None,
                             rotating_id_fixed: Some(RotatingIdFixedTopologySettings {
                                 peers: vec![PeerSettings {
-                                    address: "fixed.example.com".to_string(),
+                                    address: "fixed.google.com".to_string(),
                                     port: 41340,
                                     locality: Locality::OtherRegion,
                                 }],
@@ -267,7 +267,7 @@ async fn test_configure_composite_with_rotating_id_fixed_and_consul() {
 
             let consul_config: toml::Value = toml::from_str(
                 r#"
-                        address = "http://consul.example.com:8500"
+                        address = "http://consul.google.com:8500"
                         service_name = "urc-server"
                     "#,
             )
@@ -304,7 +304,7 @@ async fn test_configure_composite_with_rotating_id_fixed_and_consul() {
 
             last_peers
                 .iter()
-                .find(|p| p.address == "fixed.example.com")
+                .find(|p| p.address == "fixed.google.com")
                 .expect("missing stub_consul_peer");
         })
         .await;

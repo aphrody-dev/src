@@ -13,6 +13,7 @@ image := env("SRC_IMAGE", "aphrody/monorepo-dev:local")
 
 # Chaîne unixwin (niubash, rubash, WinuxCmd) : recettes unixwin-*
 import "scripts/unixwin/unixwin.just"
+import "infra/cluster/cluster.just"
 
 # Default recipe: list available commands
 default:
@@ -21,6 +22,14 @@ default:
 # Verify all sovereign compiler, VCS, cloud, architecture, and AI CLI toolchains
 doctor:
     ay doctor
+
+# bun stable, canary and fork side by side into docs/bun/COMPARISON.md (binaries of `ay rt install`, or name=<path>)
+bun-compare *args:
+    bun run "{{root}}/packages/bun-parity/bin/bpt.ts" compare {{args}}
+
+# Check the documented results of bun.com/llms-full.txt with bun binaries (name=<path> ...)
+bun-docs *args:
+    bun run "{{root}}/packages/bun-parity/bin/bpt.ts" llms run {{args}}
 
 # Run deterministic monorepo architecture, domain-purity, boundary & hygiene gate
 archguard:
@@ -140,6 +149,19 @@ ai-os-test:
 # ai-os orchestrator (packages/ai-os/docs/ORCHESTRATOR.md): hosts, engines, health, run <workflow.json>, plan "<goal>", design, market
 orch *args:
     bun run --cwd "{{root}}/packages/ai-os" src/cli.ts orch {{args}}
+
+# NHITL index (packages/ai-os/src/nhitl, var/agents/nhitl.sqlite): scan [--only s] [--local] | list [--status open] | stats | set <id> <status> | login claude|codex
+nhitl *args:
+    bun run --cwd "{{root}}/packages/ai-os" src/cli.ts nhitl {{args}}
+
+# Hourly NHITL rescan as a user scheduled task (no elevation); `schtasks /Delete /TN aphrody-nhitl-scan /F` removes it
+[windows]
+nhitl-schedule:
+    schtasks /Create /F /SC HOURLY /TN aphrody-nhitl-scan /TR "\"$(bun -e 'process.stdout.write(process.execPath)')\" run --cwd \"{{root}}/packages/ai-os\" src/cli.ts nhitl scan"
+
+[unix]
+nhitl-schedule:
+    (crontab -l 2>/dev/null | grep -v 'nhitl scan'; echo "17 * * * * cd {{root}}/packages/ai-os && bun src/cli.ts nhitl scan --local >/dev/null 2>&1") | crontab -
 
 # Unattended lifecycle: code, fmt, check, tests, judges, fix, docker on prd, deploy (dry-run unless --apply), monitor, optimize
 lifecycle *args:

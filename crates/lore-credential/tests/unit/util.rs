@@ -36,7 +36,7 @@ fn an_ip_literal_host_is_the_domain_under_every_scheme() {
     assert_eq!(get_domain_or_empty("lore://127.0.0.1:54303/"), "127.0.0.1");
     assert_eq!(get_domain_or_empty("http://[::1]:1"), "[::1]");
     assert_eq!(
-        get_domain_or_empty("https://auth.example.com/path"),
-        "auth.example.com"
+        get_domain_or_empty("https://auth.google.com/path"),
+        "auth.google.com"
     );
 }

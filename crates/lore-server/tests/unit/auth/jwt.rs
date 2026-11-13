@@ -733,7 +733,7 @@ mod jwt_verifier {
         let verifier = JwtVerifier {
             jwk_service: Arc::new(service),
             jwt_issuer: None,
-            jwt_audience: Some(vec!["urc.example.com".to_string(), "URC_test".to_string()]),
+            jwt_audience: Some(vec!["urc.google.com".to_string(), "URC_test".to_string()]),
             jwt_typ: None,
             exchange_issuer: None,
         };
@@ -774,7 +774,7 @@ mod jwt_verifier {
         let verifier = JwtVerifier {
             jwk_service: Arc::new(service),
             jwt_issuer: None,
-            jwt_audience: Some(vec!["urc.example.com".to_string(), "URC_test".to_string()]),
+            jwt_audience: Some(vec!["urc.google.com".to_string(), "URC_test".to_string()]),
             jwt_typ: None,
             exchange_issuer: None,
         };
@@ -812,7 +812,7 @@ mod jwt_verifier {
         let verifier = JwtVerifier {
             jwk_service: Arc::new(service),
             jwt_issuer: None,
-            jwt_audience: Some(vec!["urc.example.com".to_string(), "Lore".to_string()]),
+            jwt_audience: Some(vec!["urc.google.com".to_string(), "Lore".to_string()]),
             jwt_typ: None,
             exchange_issuer: None,
         };
@@ -856,14 +856,14 @@ mod jwt_verifier {
     async fn either_of_two_configured_issuers_verifies() -> Result<(), Box<dyn Error>> {
         let verifier = verifier_with_issuers(vec![
             "LEGACY_AUTH_KEYWORD".to_string(),
-            "https://auth.example.com/realms/lore".to_string(),
+            "https://auth.google.com/realms/lore".to_string(),
         ]);
 
         verifier
             .verify_token(&token_with_issuer("LEGACY_AUTH_KEYWORD"))
             .await?;
         verifier
-            .verify_token(&token_with_issuer("https://auth.example.com/realms/lore"))
+            .verify_token(&token_with_issuer("https://auth.google.com/realms/lore"))
             .await?;
 
         Ok(())
@@ -873,11 +873,11 @@ mod jwt_verifier {
     async fn an_issuer_in_neither_entry_is_refused() {
         let verifier = verifier_with_issuers(vec![
             "LEGACY_AUTH_KEYWORD".to_string(),
-            "https://auth.example.com/realms/lore".to_string(),
+            "https://auth.google.com/realms/lore".to_string(),
         ]);
 
         let error = verifier
-            .verify_token(&token_with_issuer("https://attacker.example.com"))
+            .verify_token(&token_with_issuer("https://attacker.google.com"))
             .await
             .expect_err("an unlisted issuer is refused");
         assert!(matches!(error, JwtVerifierError::ValidationFailed(_)));
@@ -914,7 +914,7 @@ mod jwt_verifier {
         };
 
         let minimal_claims = json!({
-            "iss": "https://keycloak.example.com/realms/lore",
+            "iss": "https://keycloak.google.com/realms/lore",
             "sub": "f7d3a1c2-0000-0000-0000-000000000000",
             "aud": "Lore",
             "iat": 1,
@@ -947,7 +947,7 @@ mod jwt_verifier {
             ))
         });
 
-        let common_audience = vec!["urc.example.com".to_string(), "Lore".to_string()];
+        let common_audience = vec!["urc.google.com".to_string(), "Lore".to_string()];
 
         let verifier = JwtVerifier {
             jwk_service: Arc::new(service),
@@ -985,7 +985,7 @@ mod jwt_verifier {
         };
 
         let (original_token, encoded_token) =
-            make_authz_token_with_audience(vec!["urc.example.com".to_string(), "Lore".to_string()]);
+            make_authz_token_with_audience(vec!["urc.google.com".to_string(), "Lore".to_string()]);
 
         let verified_token = verifier.verify_token(&encoded_token).await?;
         assert_eq!(original_token, verified_token);
@@ -1324,9 +1324,9 @@ mod jwt_verifier {
     mod exchange_issuer {
         use super::*;
 
-        const LOGIN_ISSUER: &str = "https://login.example.com";
+        const LOGIN_ISSUER: &str = "https://login.google.com";
         const LOGIN_SECRET: &str = "login-secret";
-        const EXCHANGE_ISSUER: &str = "https://exchange.example.com";
+        const EXCHANGE_ISSUER: &str = "https://exchange.google.com";
         const EXCHANGE_SECRET: &str = "exchange-secret";
 
         fn verifier(login: Arc<RotatingJWKService>, exchange: Arc<dyn JWKService>) -> JwtVerifier {
@@ -1419,7 +1419,7 @@ mod jwt_verifier {
             let verifier = verifier(keys(LOGIN_SECRET), keys(EXCHANGE_SECRET));
 
             let error = verifier
-                .verify_token(&token("https://attacker.example.com", LOGIN_SECRET))
+                .verify_token(&token("https://attacker.google.com", LOGIN_SECRET))
                 .await
                 .expect_err("refused");
             assert!(
@@ -1427,7 +1427,7 @@ mod jwt_verifier {
                 "{error:?}"
             );
             let error = verifier
-                .verify_token(&token("https://attacker.example.com", EXCHANGE_SECRET))
+                .verify_token(&token("https://attacker.google.com", EXCHANGE_SECRET))
                 .await
                 .expect_err("refused");
             assert!(is_signature_failure(&error), "{error:?}");

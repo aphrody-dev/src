@@ -19,7 +19,7 @@ The examples use Linux paths and Docker. The machine server and its clients work
 
     ```bash
     export LORE_AUTH_STORE=fallback LORE_AUTH_PATH=/var/lib/lore-machine/auth
-    lore auth login lores://lore.example.com:41337 --token-type api-key --token "$MACHINE_API_KEY"
+    lore auth login lores://lore.google.com:41337 --token-type api-key --token "$MACHINE_API_KEY"
     ```
 
     With client credentials, log in with `--client-id` instead. Keep this login the only one in the token store: the `remote` mutable store authenticates as the first identity stored there that the upstream accepts, and the `remote` immutable store does too unless its `auth_url` names one (see [Remote store mode](../reference/lore-server-config.md#remote-store-mode)).
@@ -42,12 +42,12 @@ The examples use Linux paths and Docker. The machine server and its clients work
     # The upstream's authorization service: the server checks each container's
     # session grants there, per partition.
     [environment.endpoint]
-    auth_url = "ucs-auth://auth.example.com"
+    auth_url = "ucs-auth://auth.google.com"
 
     # The upstream's token issuer and audience, so the server accepts the
     # tokens the containers already hold.
     [server.auth]
-    jwt_issuer = "https://accounts.example.com"
+    jwt_issuer = "https://accounts.google.com"
     jwt_audience = ["lore-service"]
 
     [server]
@@ -73,8 +73,8 @@ The examples use Linux paths and Docker. The machine server and its clients work
     # Every host the containers' requests name: the upstream, its
     # authentication service, and each service host the upstream advertises.
     [server.uds.forward]
-    "lore.example.com" = "https://lore.example.com:41337"
-    "auth.example.com" = "https://auth.example.com"
+    "lore.google.com" = "https://lore.google.com:41337"
+    "auth.google.com" = "https://auth.google.com"
 
     [immutable_store]
     mode = "composite"
@@ -94,13 +94,13 @@ The examples use Linux paths and Docker. The machine server and its clients work
     mode = "remote"
 
     [immutable_store.composite.durable.remote]
-    remote_url = "lores://lore.example.com:41337"
+    remote_url = "lores://lore.google.com:41337"
 
     [mutable_store]
     mode = "remote"
 
     [mutable_store.remote]
-    remote_url = "lores://lore.example.com:41337"
+    remote_url = "lores://lore.google.com:41337"
     ```
 
     What to adjust:
@@ -147,7 +147,7 @@ The examples use Linux paths and Docker. The machine server and its clients work
     Mount a token store the container may use and point `LORE_AUTH_PATH` at it, or log in through the socket:
 
     ```bash
-    docker exec build-1 lore auth login lore-unix://lore.example.com:41337 \
+    docker exec build-1 lore auth login lore-unix://lore.google.com:41337 \
       --token-type api-key --token "$USER_API_KEY"
     ```
 
@@ -158,7 +158,7 @@ The examples use Linux paths and Docker. The machine server and its clients work
     In the container, name the upstream's host and port in a `lore-unix` URL:
 
     ```bash
-    docker exec build-1 lore clone lore-unix://lore.example.com:41337/my-project /work/my-project
+    docker exec build-1 lore clone lore-unix://lore.google.com:41337/my-project /work/my-project
     ```
 
 ## Result

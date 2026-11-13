@@ -63,7 +63,7 @@ entries:
       username: alice
     attrs:
       name: Alice Example
-      email: alice@example.com
+      email: alice@google.com
       password: alice
       groups:
         - !KeyOf group-admin
@@ -72,7 +72,7 @@ entries:
       username: bob
     attrs:
       name: Bob Example
-      email: bob@example.com
+      email: bob@google.com
       password: bob
       groups:
         - !KeyOf group-obliterate
@@ -83,7 +83,7 @@ entries:
       username: ak-lore-ci-client_credentials
     attrs:
       name: Lore CI
-      email: lore-ci@example.com
+      email: lore-ci@google.com
       type: service_account
       groups:
         - !KeyOf group-push-protected

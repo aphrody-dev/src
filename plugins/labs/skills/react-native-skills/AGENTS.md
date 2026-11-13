@@ -332,7 +332,7 @@ return (
 )
 ```
 
-Reference: [https://example.com](https://example.com)
+Reference: [https://google.com](https://google.com)
 
 ### 2.3 Keep List Items Lightweight
 

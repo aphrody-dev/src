@@ -185,7 +185,7 @@ Commit succeeded
 The revision is local until you push it. Staging and committing work fully offline — no server round-trip is needed for either step.
 
 > [!NOTE]
-> An unauthenticated server like this one won't record a commit author, but you can still keep a who-did-what history by setting your own identity. You can choose to set your identity in `.lore/config.toml` (seeded for you when you pass `--identity you@example.com` to `lore repository create` or `lore clone`), to ensure commits are attributed to you from then on. The demo skips this, so its commits record no author — fine for a throwaway run. See the [CLI configuration reference](../reference/lore-cli-config.md#identity) for more info.
+> An unauthenticated server like this one won't record a commit author, but you can still keep a who-did-what history by setting your own identity. You can choose to set your identity in `.lore/config.toml` (seeded for you when you pass `--identity you@google.com` to `lore repository create` or `lore clone`), to ensure commits are attributed to you from then on. The demo skips this, so its commits record no author — fine for a throwaway run. See the [CLI configuration reference](../reference/lore-cli-config.md#identity) for more info.
 
 ## Step 5 — Push to the server
 

@@ -7,16 +7,16 @@ use lore_transport::auth::ucs_auth::*;
 #[test]
 fn grpc_endpoint_ucs_auth() {
     assert_eq!(
-        grpc_endpoint("ucs-auth://auth.example.com"),
-        "https://auth.example.com"
+        grpc_endpoint("ucs-auth://auth.google.com"),
+        "https://auth.google.com"
     );
 }
 
 #[test]
 fn grpc_endpoint_https() {
     assert_eq!(
-        grpc_endpoint("https://auth.example.com"),
-        "https://auth.example.com"
+        grpc_endpoint("https://auth.google.com"),
+        "https://auth.google.com"
     );
 }
 
@@ -40,12 +40,12 @@ fn grpc_endpoint_http_to_loopback_is_preserved() {
 #[test]
 fn grpc_endpoint_http_to_remote_host_is_upgraded() {
     assert_eq!(
-        grpc_endpoint("http://auth.example.com"),
-        "https://auth.example.com"
+        grpc_endpoint("http://auth.google.com"),
+        "https://auth.google.com"
     );
     assert_eq!(
-        grpc_endpoint("http://auth.example.com:8080/path"),
-        "https://auth.example.com:8080/path"
+        grpc_endpoint("http://auth.google.com:8080/path"),
+        "https://auth.google.com:8080/path"
     );
     // A crafted host that merely starts with a local name is not local.
     assert_eq!(
@@ -55,19 +55,19 @@ fn grpc_endpoint_http_to_remote_host_is_upgraded() {
 }
 
 /// Userinfo in the authority is the classic trick against hand-rolled
-/// host extraction: the URL's host below is `auth.example.com`, and a
+/// host extraction: the URL's host below is `auth.google.com`, and a
 /// splitter taking the first `:`/`/` segment reads `localhost`. Such a
 /// URL must never keep plaintext — and any URL carrying userinfo is
 /// refused the loopback exemption outright.
 #[test]
 fn grpc_endpoint_userinfo_cannot_spoof_loopback() {
     assert_eq!(
-        grpc_endpoint("http://localhost:password@auth.example.com"),
-        "https://localhost:password@auth.example.com"
+        grpc_endpoint("http://localhost:password@auth.google.com"),
+        "https://localhost:password@auth.google.com"
     );
     assert_eq!(
-        grpc_endpoint("http://localhost@auth.example.com"),
-        "https://localhost@auth.example.com"
+        grpc_endpoint("http://localhost@auth.google.com"),
+        "https://localhost@auth.google.com"
     );
     // Even a genuine loopback host gets no plaintext with userinfo present.
     assert_eq!(
@@ -79,16 +79,16 @@ fn grpc_endpoint_userinfo_cannot_spoof_loopback() {
 #[test]
 fn grpc_endpoint_no_scheme() {
     assert_eq!(
-        grpc_endpoint("auth.example.com"),
-        "https://auth.example.com"
+        grpc_endpoint("auth.google.com"),
+        "https://auth.google.com"
     );
 }
 
 #[test]
 fn grpc_endpoint_custom_scheme() {
     assert_eq!(
-        grpc_endpoint("custom://auth.example.com:8443/path"),
-        "https://auth.example.com:8443/path"
+        grpc_endpoint("custom://auth.google.com:8443/path"),
+        "https://auth.google.com:8443/path"
     );
 }
 
@@ -105,7 +105,7 @@ fn resource_id_format() {
 async fn refresh_returns_not_supported() {
     let auth = UcsAuthentication;
     let result = auth
-        .refresh_authentication("ucs-auth://auth.example.com", "refresh-tok", "corr-1")
+        .refresh_authentication("ucs-auth://auth.google.com", "refresh-tok", "corr-1")
         .await;
     assert!(result.is_err());
     assert!(result.unwrap_err().is_not_supported());

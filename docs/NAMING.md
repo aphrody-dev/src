@@ -29,15 +29,21 @@ aliases.
 | `ay deploy` | `src-deploy` (Go engine, invoked by `ay`) | deploy |
 | `ay bench` | `stack-bench` | benchmarks |
 | `ay ai ls/install/service/pull/config/check/auth/push/up` | ad hoc Ollama, llama.cpp, LM Studio, vLLM, mistral.rs and LiteLLM setup | inference providers discovered from the models.dev registry plus `infra/ai/ai.toml`, behind one LiteLLM proxy (fork aphrody-labs/litellm), Task Scheduler or systemd services |
+| `ay bun watch [--json] [--apply] [--dry-run] [--install-schedule [--every <h>]] [--remove-schedule]`, `ay bun bump [--to <v>] [--write]` | ad hoc `gh api`, npm and crates.io polling of oven-sh/bun | upstream watch for the aphrody-labs/bun fork (a group of its own: `ay rt` manages installed runtimes, `ay bun` follows the upstream): main commits, pull requests, `windows` issues, CONTRIBUTING and Windows build docs by blob hash, stable and canary releases with per-asset digests and stale SHASUMS256.txt, bun.com blog, npm `bun` and `@oven/*`, crates.io; fork commits (`upstream/main..origin/main`) crossed with upstream commits, PRs and issues on the same files; state and last report in `~/.local/share/ay/bun-watch/`; Task Scheduler (schtasks /XML) or systemd user timer; Bun pin bumps (src.lock.json, tools.toml, toolchains.lock.toml, package.json, workflows, Docker) |
 | `ay upstream status/sync/check/pr/mark/gc/export` | hand rebases of the forks, Electron `git-export-patches`, ad hoc PR branches | patch stacks of aphrody-labs/bun, bunx-sh/bun and the Chromium series (`infra/upstream/stacks.toml`, statuses in `infra/upstream/status/`), replay on upstream with drop of merged patches, ephemeral `up/*` PR heads, upstream contribution rules; run by bun from `packages/upstream` (docs/upstream/STRATEGY.md). `ay bun watch` reports what upstream did; `ay upstream` keeps our patches on top of it |
 | `ay sys` | (new) | OS, firmware, hardware and software profile |
 | `ay auth status/repair/gh-secrets/tunnels/rotate`, `ay secret` | ad hoc `gh auth`, `gcloud auth`, `gh secret set`, token files | every authentication of the fleet and the OS secret store (DPAPI, systemd-creds), run by bun from `packages/env-kit` (docs/infra/AUTH.md) |
 | `ay ssh exec/cp/hosts/check` | `ssh`, `scp` (OpenSSH client) | pure-Rust SSH (crate `aphrody-remote`, russh): exec on `usa`/`fr1`/`fr2` or `all`, SFTP copy, fleet health |
+| `ay docs sync/bun/show/stats/schedule` | grepping `third_party/bun/docs`, fetching bun.com/llms.txt by hand | Bun's docs in ay: fork md/mdx, bun.com `llms-full.txt` and the `bun*` skills in one SQLite FTS5 index (`var/index/docs.db`), `--json` for agents, refreshed by schedule and by `ay bun watch` (docs/ay/MIGRATION.md) |
+| `ay flat list/sync/check`, `ay hash`, `ay time` | `b3sum` for change detection, `hyperfine` for quick timings | Rust crates of the bun fork flattened into `crates/bun-flat` (wyhash, HdrHistogram, sort by number) with their resync, and the commands they back |
+| `ay chromium status/sync/gn/build/autoninja/toolchain` | `ssh vps` + depot_tools by hand, `chromium-factory.sh` steps | Chromium build chain of the fr1 checkout (factory.toml), run locally on fr1 and delegated over `ay ssh` elsewhere; `--dry-run`, `--detach` |
+| `ay engines list/matrix/js/path/install/launch/build` | `bun packages/chromium-bun/src/cli.ts engines` | engines facade (V8, JavaScriptCore, Dawn, wgpu, browsers); `js` = JS engines and WebGPU rows, `build v8\|dawn` = `ay chromium build d8\|dawn_end2end_tests` |
 | `ay web check` | `wck` | web quality gate |
 | `ay design` | `gds` | design system |
 | `ay forge` | `frg` | forge |
 | `ay wl` | `wslg-rs`, `wslg-cosmic-hypr` | Wayland compositor (Linux, Windows, web) |
 | `ay scope` | `gamescope-rs` | gamescope mode |
+| `ay lfs` | `just lfs-<sub>` (third_party/lfs/bun, GitHub CI) | bun-LFS build, logs, WSL import |
 | `ay wsl`, `ay userland` | `unix-distro`, `omarchy-wsl` | WSL distribution, Rust userland |
 
 Bun-based tools (`wck`, `gds`, `frg`) keep their TypeScript implementation; `ay` dispatches to their

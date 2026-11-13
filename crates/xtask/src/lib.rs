@@ -86,6 +86,9 @@ struct LockCmd {
     /// with --deps: move inline member requirements into [workspace.dependencies] first
     #[argh(switch)]
     hoist: bool,
+    /// with --deps: collapse duplicate crate versions where a lower resolved version satisfies every dependent
+    #[argh(switch)]
+    dedupe: bool,
 }
 
 #[derive(FromArgs, PartialEq, Debug)]
@@ -844,6 +847,7 @@ pub fn run(cmd: &str, args: &[String]) -> i32 {
                 bump: cmd.bump || cmd.breaking,
                 breaking: cmd.breaking,
                 hoist: cmd.hoist,
+                dedupe: cmd.dedupe,
             };
             return deps::run_lock(&resolve_root(&cmd.root), opts);
         }

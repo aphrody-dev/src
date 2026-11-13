@@ -10,7 +10,7 @@
 //!
 //! | Variable | Meaning |
 //! |---|---|
-//! | `LORE_TP_REMOTE` | Remote URL, for example `lores://lore.example.com` |
+//! | `LORE_TP_REMOTE` | Remote URL, for example `lores://lore.google.com` |
 //! | `LORE_TP_REPOSITORY` | Repository id, hex |
 //! | `LORE_TP_ADDRESSES` | File with one `<hash>-<context>` address per line, optional size after |
 //! | `LORE_TP_RUNS` | Comma-separated `<connections>x<requests in flight>`, default `1x64` |
@@ -23,7 +23,7 @@
 //! | `LORE_TP_EXPAND_TO` | Instead of measuring, write the address list with every uncompressed fragment list replaced by its leaves, down to fragments that are not lists, to this file |
 //!
 //! ```sh
-//! LORE_TP_REMOTE=lores://lore.example.com LORE_TP_REPOSITORY=<id> \
+//! LORE_TP_REMOTE=lores://lore.google.com LORE_TP_REPOSITORY=<id> \
 //!   LORE_TP_ADDRESSES=/tmp/addresses.txt LORE_TP_RUNS=1x16,1x256,4x256 \
 //!   cargo run --release -p lore-transport --example remote_throughput
 //! ```

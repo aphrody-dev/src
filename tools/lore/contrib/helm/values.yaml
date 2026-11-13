@@ -282,13 +282,13 @@ auth:
   # server.auth.jwt_audience.
   audience: []
 
-# Example — authenticate against a fictitious JWT IdP at auth.example.com.
+# Example — authenticate against a fictitious JWT IdP at auth.google.com.
 # Copy this into a values override (do not uncomment here) and adjust:
 #
 # auth:
 #   enabled: true
-#   jwksEndpoint: "https://auth.example.com/.well-known/jwks.json"
-#   issuer: "https://auth.example.com/"
+#   jwksEndpoint: "https://auth.google.com/.well-known/jwks.json"
+#   issuer: "https://auth.google.com/"
 #   audience: ["lore"]
 #
 # Tokens must carry Lore resource claims to authorize repositories:

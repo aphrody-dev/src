@@ -58,7 +58,7 @@ mod tests {
 
     /// Identity every operation below runs as. Without one the commit path
     /// never writes `created-by` or `committed-by`.
-    const OPERATOR: &str = "operator@example.com";
+    const OPERATOR: &str = "operator@google.com";
 
     /// `merge_start` and `cherry_pick` read the remote unless `globals.offline`
     /// is set.

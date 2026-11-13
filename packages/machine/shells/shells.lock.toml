@@ -16,7 +16,7 @@ verify = ["--version"]
 path.windows-x86_64 = "{localappdata}/Programs/Niubash/winuxcmd/bin/bash.exe"
 url.windows-x86_64 = "https://github.com/unixwin/niubash/releases/download/v1.5.0/niubash-v1.5.0-win-x64.zip"
 sha256.windows-x86_64 = "bb2e142ec617e91cb48bde8c0fa2b9cce2dc95bfc00857c82cef6a7ad4e12bcc"
-b3sum.windows-x86_64 = "6d05e8c921839d257ed8b21dce8539bd8869f1f48ec8f46d6112e4f9bbc72017"
+b3sum.windows-x86_64 = "56b49cd89b649843f85287bccc7b697a9f213ee51b47d2a5a70da79317c3acdb"
 
 [shell.git-bash]
 # Repli seulement (Claude Code = niubash) ; bash 5.3.15 Cygwin/MSYS.

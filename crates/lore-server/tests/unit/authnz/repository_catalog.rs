@@ -414,12 +414,12 @@ fn response_yields_partitions_and_skips_other_resources() {
 
 fn auth_settings(extra: &str) -> AuthSettings {
     toml::from_str(&format!(
-        "jwt_issuer = \"https://auth.example.com\"\njwt_audience = [\"lore\"]\n{extra}"
+        "jwt_issuer = \"https://auth.google.com\"\njwt_audience = [\"lore\"]\n{extra}"
     ))
     .unwrap()
 }
 
-const AUTH_URL: Option<&str> = Some("https://legacy-auth.example.com");
+const AUTH_URL: Option<&str> = Some("https://legacy-auth.google.com");
 
 /// The catalog follows the authorizer's flowchart: a no-auth server
 /// lists everything it holds, a `UrcAuthApi` deployment asks the auth
@@ -445,25 +445,25 @@ fn selection_follows_the_authorizer_flowchart() {
         ),
         (
             Some(auth_settings(
-                "repository_catalog = \"auth_service\"\nrepository_catalog_url = \"https://catalog.example.com\"",
+                "repository_catalog = \"auth_service\"\nrepository_catalog_url = \"https://catalog.google.com\"",
             )),
             None,
-            CatalogSelection::AuthClient("https://catalog.example.com".to_string()),
+            CatalogSelection::AuthClient("https://catalog.google.com".to_string()),
         ),
         (
             Some(auth_settings(
-                "resource_claim = \"resources\"\nrepository_catalog = \"auth_service\"\nrepository_catalog_url = \"https://catalog.example.com\"",
+                "resource_claim = \"resources\"\nrepository_catalog = \"auth_service\"\nrepository_catalog_url = \"https://catalog.google.com\"",
             )),
             None,
-            CatalogSelection::AuthClient("https://catalog.example.com".to_string()),
+            CatalogSelection::AuthClient("https://catalog.google.com".to_string()),
         ),
         // The catalog endpoint wins over `auth_url` when both are set.
         (
             Some(auth_settings(
-                "repository_catalog_url = \"https://catalog.example.com\"",
+                "repository_catalog_url = \"https://catalog.google.com\"",
             )),
             AUTH_URL,
-            CatalogSelection::AuthClient("https://catalog.example.com".to_string()),
+            CatalogSelection::AuthClient("https://catalog.google.com".to_string()),
         ),
         (
             Some(auth_settings("")),
@@ -521,7 +521,7 @@ fn refused_pairings_are_refused() {
     assert!(message.contains("auth_url"), "{message}");
 }
 
-const USER_URL: Option<&str> = Some("https://directory.example.com");
+const USER_URL: Option<&str> = Some("https://directory.google.com");
 
 /// `user_url` picks the `user_service` catalog ahead of `auth_url`, and an
 /// explicit mode wins over either.
@@ -546,7 +546,7 @@ fn user_url_selects_the_user_service_catalog() {
         // `repository_catalog_url` belongs to `auth_service` alone.
         (
             auth_settings(
-                "repository_catalog = \"user_service\"\nrepository_catalog_url = \"https://catalog.example.com\"",
+                "repository_catalog = \"user_service\"\nrepository_catalog_url = \"https://catalog.google.com\"",
             ),
             AUTH_URL,
             USER_URL,
@@ -637,12 +637,12 @@ fn selection_display_names_the_implementation() {
         "BaselineRepositoryCatalog(reachable)"
     );
     assert_eq!(
-        CatalogSelection::AuthClient("https://auth.example.com".to_string()).to_string(),
-        "AuthClientRepositoryCatalog(https://auth.example.com)"
+        CatalogSelection::AuthClient("https://auth.google.com".to_string()).to_string(),
+        "AuthClientRepositoryCatalog(https://auth.google.com)"
     );
     assert_eq!(
-        CatalogSelection::UserService("https://directory.example.com".to_string()).to_string(),
-        "RepositoryRegistryCatalog(https://directory.example.com)"
+        CatalogSelection::UserService("https://directory.google.com".to_string()).to_string(),
+        "RepositoryRegistryCatalog(https://directory.google.com)"
     );
 }
 

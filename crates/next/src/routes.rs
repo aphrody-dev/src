@@ -1177,7 +1177,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://fixture.example.com"),
+  metadataBase: new URL("https://fixture.google.com"),
   title: { default: "Yolo Fixture", template: "%s | Yolo Fixture" },
   description: "Next.js 16 migration fixture",
   applicationName: "Yolo Fixture",
@@ -1186,7 +1186,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Yolo Fixture",
     description: "Migration fixture",
-    url: "https://fixture.example.com",
+    url: "https://fixture.google.com",
     siteName: "Yolo Fixture",
     images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     locale: "en_US",
@@ -1291,7 +1291,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         ),
         (
             "app/sitemap.ts",
-            "export default function sitemap() { return [{ url: \"https://fixture.example.com\" }]; }\n",
+            "export default function sitemap() { return [{ url: \"https://fixture.google.com\" }]; }\n",
         ),
         (
             "app/robots.ts",

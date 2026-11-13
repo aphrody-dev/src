@@ -35,7 +35,7 @@
 # # Allow these users to bypass restrictions
 # allowed_users = ["admin", "release-bot"]
 # # Webhook to call on validation failure
-# webhook_url = "https://compliance.example.com/notify"
+# webhook_url = "https://compliance.google.com/notify"
 
 # Example: Audit Hook (logs all operations)
 # [hooks.audit]
@@ -51,8 +51,8 @@
 # [hooks.notification]
 # enabled = true
 # # Webhook endpoints for different event types
-# branch_push_url = "https://api.example.com/webhooks/branch-push"
-# branch_create_url = "https://api.example.com/webhooks/branch-create"
+# branch_push_url = "https://api.google.com/webhooks/branch-push"
+# branch_create_url = "https://api.google.com/webhooks/branch-create"
 # # HTTP headers to include
 # headers = { "Authorization" = "Bearer ${WEBHOOK_TOKEN}" }
 # # Timeout for webhook calls (seconds)

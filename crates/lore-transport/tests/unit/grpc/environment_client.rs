@@ -7,7 +7,7 @@ use lore_transport::types::Oidc;
 fn environment_with(oidc: Option<proto::Oidc>) -> EnvironmentConfig {
     proto::Environment {
         endpoint: Some(proto::Endpoint {
-            auth_url: "ucs-auth://auth.example.com".to_string(),
+            auth_url: "ucs-auth://auth.google.com".to_string(),
             ..Default::default()
         }),
         config: None,
@@ -26,7 +26,7 @@ fn a_server_advertising_no_provider_maps_to_none() {
             .endpoint
             .and_then(|endpoint| endpoint.auth_url)
             .as_deref(),
-        Some("ucs-auth://auth.example.com")
+        Some("ucs-auth://auth.google.com")
     );
 }
 
@@ -42,26 +42,26 @@ fn a_provider_without_an_issuer_maps_to_none() {
 #[test]
 fn an_advertised_provider_maps_empty_strings_to_none() {
     let environment = environment_with(Some(proto::Oidc {
-        issuer: "https://auth.example.com".to_string(),
+        issuer: "https://auth.google.com".to_string(),
         client_id: "lore-cli".to_string(),
         scopes: vec!["openid".to_string()],
         preferred: true,
-        resource_template: "https://lore.example.com/partitions/{id}".to_string(),
+        resource_template: "https://lore.google.com/partitions/{id}".to_string(),
         scope_template: String::new(),
-        token_exchange_issuer: "https://auth.example.com".to_string(),
+        token_exchange_issuer: "https://auth.google.com".to_string(),
         client_credentials_scopes: vec!["lore".to_string()],
         ..Default::default()
     }));
     assert_eq!(
         environment.oidc,
         Some(Oidc {
-            issuer: "https://auth.example.com".to_string(),
+            issuer: "https://auth.google.com".to_string(),
             client_id: "lore-cli".to_string(),
             scopes: vec!["openid".to_string()],
             preferred: true,
-            resource_template: Some("https://lore.example.com/partitions/{id}".to_string()),
+            resource_template: Some("https://lore.google.com/partitions/{id}".to_string()),
             scope_template: None,
-            token_exchange_issuer: Some("https://auth.example.com".to_string()),
+            token_exchange_issuer: Some("https://auth.google.com".to_string()),
             client_credentials_scopes: vec!["lore".to_string()],
         })
     );
@@ -73,7 +73,7 @@ fn an_advertised_provider_maps_empty_strings_to_none() {
 #[allow(deprecated)]
 fn an_advertised_identity_claim_is_ignored() {
     let environment = environment_with(Some(proto::Oidc {
-        issuer: "https://auth.example.com".to_string(),
+        issuer: "https://auth.google.com".to_string(),
         client_id: "lore-cli".to_string(),
         identity_claim: "oid".to_string(),
         ..Default::default()
@@ -81,7 +81,7 @@ fn an_advertised_identity_claim_is_ignored() {
     assert_eq!(
         environment.oidc,
         Some(Oidc {
-            issuer: "https://auth.example.com".to_string(),
+            issuer: "https://auth.google.com".to_string(),
             client_id: "lore-cli".to_string(),
             ..Default::default()
         })

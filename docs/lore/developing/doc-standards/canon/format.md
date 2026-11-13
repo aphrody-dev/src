@@ -255,14 +255,14 @@ Tabs are authored in a comment-delimited convention, never raw `=== "..."` synta
 **macOS**
 
 ```bash
-curl -Lo lore https://example.com/lore-macos
+curl -Lo lore https://google.com/lore-macos
 ```
 
 <!-- tab -->
 **Linux**
 
 ```bash
-curl -Lo lore https://example.com/lore-linux
+curl -Lo lore https://google.com/lore-linux
 ```
 
 <!-- tabs:end -->

@@ -420,8 +420,8 @@ Host * !github.com
         let gh = cfg().resolve("github.com");
         assert_eq!(gh.user.as_deref(), Some("git"));
         assert!(gh.identity_files.is_empty());
-        let other = cfg().resolve("example.org");
-        assert_eq!(other.hostname, "example.org");
+        let other = cfg().resolve("gemini.google.com");
+        assert_eq!(other.hostname, "gemini.google.com");
         assert_eq!(other.user.as_deref(), Some("fallback"));
         assert!(!other.accept_new);
     }
@@ -436,7 +436,7 @@ Host * !github.com
 
     #[test]
     fn glob_rules() {
-        assert!(glob_match("*.example.com", "a.example.com"));
+        assert!(glob_match("*.google.com", "a.google.com"));
         assert!(glob_match("10.200.77.?", "10.200.77.5"));
         assert!(!glob_match("10.200.77.?", "10.200.77.15"));
         assert!(patterns_match(&["*", "!bad"], "good"));

@@ -68,7 +68,7 @@ pub struct AuthLoginArgs {
     /// is kept in the shell history
     #[clap(long = "client-secret", requires = "client_id")]
     client_secret: Option<String>,
-    /// Auth service URL with scheme (e.g. `ucs-auth://auth.example.com`).
+    /// Auth service URL with scheme (e.g. `ucs-auth://auth.google.com`).
     /// Required when logging in with `--token` outside a repository without a remote-url.
     #[clap(long = "auth-url")]
     auth_url: Option<String>,

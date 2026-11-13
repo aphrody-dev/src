@@ -24,8 +24,8 @@ use tonic::Code;
 use tonic::Request;
 use tonic::Status;
 
-const AUTH_URL: &str = "https://auth.example.com";
-const USER_URL: &str = "https://directory.example.com";
+const AUTH_URL: &str = "https://auth.google.com";
+const USER_URL: &str = "https://directory.google.com";
 
 fn repository() -> RepositoryId {
     Context::from_str("2fc8bf934117e250152eba9a1fc78e71")

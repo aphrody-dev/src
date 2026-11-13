@@ -78,9 +78,10 @@ les tranche. Seul écart : les images `distroless/*-debian13` citées dans `RECO
 | `ay lock --deps` | rafraîchit `Cargo.lock` (`cargo update --workspace`), `bun.lock` (`bun install --lockfile-only`) et `uv.lock` (`uv lock`) sans rien monter |
 | `ay lock --deps --hoist` | remonte d'abord les exigences inline des membres dans `[workspace.dependencies]` et relâche les `=` |
 | `ay lock --deps --bump` | montée dans les bornes : `cargo update`, `bun update --recursive`, `uv lock --upgrade` ; affiche les doublons avant et après |
+| `ay lock --deps --dedupe` | comme `bun dedupe` : chaque crate en double est ramenée sur une version inférieure déjà résolue (`cargo update -p nom@haute --precise basse`) si tous ses dépendants l’acceptent et que le total de copies baisse |
 | `ay lock --deps --breaking` | relève les exigences `[workspace.dependencies]` dont la dernière version stable (index sparse crates.io) sort de la plage caret, puis `cargo update` ; cargo 1.102-nightly n’a plus `update --breaking` ; à valider par `cargo check` sur prd |
 | `ay lock` | `src.lock.json` (chemins relatifs) puis DEPS, `.repo`, MAINTAINERS |
-| `just deps`, `just deps-lock`, `just deps-bump` | les mêmes, via just |
+| `just deps`, `just deps-lock`, `just deps-bump` | les mêmes, via just (`deps-bump` enchaîne `--bump --dedupe`) |
 
 Règles vérifiées :
 - Rust : `CARGO-INLINE`, `CARGO-PATH`, `CARGO-GIT`, `CARGO-REGISTRY`, `CARGO-WILDCARD`, `CARGO-PRERELEASE` (avertissement), `CARGO-DUP` (avertissement), `CARGO-DENY`, `RUST-PIN` ;
@@ -91,13 +92,18 @@ Règles vérifiées :
 
 ## 4. Mise à jour automatique
 
-La CI, sur fr1 ou prd, exécute chaque semaine `ay lock --deps --bump`, puis `cargo check --workspace --locked`, `cargo test`, `bun test` par paquet et `ay doctor --deps`. Elle commite les locks sur main quand tout est vert.
+La CI, sur fr1 ou prd, exécute chaque semaine `ay lock --deps --bump --dedupe`, puis `cargo check --workspace --locked`, `cargo test`, `bun test` par paquet et `ay doctor --deps`. Elle commite les locks sur main quand tout est vert. Sur prd, un seul travail lourd à la fois : `flock /var/lock/aphrody-heavy.lock`, `nice -n 19`, `ionice -c 3`, `-j 2`, et seulement quand la charge est sous la moitié des cœurs. Sinon, la CI GitHub prend le relais.
 
 Les montées majeures (`--breaking`) et la date de la nightly se changent à la main, dans un commit dédié. Le doublon restant de chaque montée est relevé dans `docs/deps/DEDUP.md`.
 
 ## 5. Deux manifestes d’outils
 
 `tools.toml` déclare les CLI installées par `ay up` dans `~/.local/bin`. `packages/machine/toolchains.lock.toml`, généré par `scripts/toolchains-lock.ts`, épingle les toolchains par hôte et sert aux images et aux bootstraps. Les deux se recouvrent (rustup, bun, LLVM) : la cible est une seule source. `tools.toml` reste la déclaration, et `toolchains.lock.toml` en devient la résolution, avec sha256 par plateforme.
+
+Compléments :
+- `docs/DEPS-MINIMIZE.md` : aucun code tiers versionné, sources git Cargo épinglées par `rev` ;
+- `deny.toml` `[sources.allow-org]`, reconnu par `CARGO-GIT` ;
+- `scripts/js-deps-check.ts`, lancé dans `just check` et en CI : doublons de `bun.lock`, built-ins bun.
 
 ## 6. Ajouts des autres chantiers
 

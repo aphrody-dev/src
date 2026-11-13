@@ -92,7 +92,7 @@ tls:
   grpcTls: true
   issuerName: my-real-ca-issuer   # an Issuer backed by a CA your clients trust
   extraSANs:
-    - lore.example.com            # the address clients actually dial
+    - lore.google.com            # the address clients actually dial
 ```
 
 The gRPC listener is **either** plaintext **or** TLS, so this is a hard switch:

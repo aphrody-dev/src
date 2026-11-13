@@ -21,7 +21,7 @@ async fn supplied_access_token_replaces_the_repository_exchange() {
         &AuthEndpoint::none(),
         "",
         RepositoryId::default(),
-        "example.com".to_string(),
+        "google.com".to_string(),
         "",
         "supplied-authz",
     )
@@ -36,7 +36,7 @@ async fn supplied_access_token_replaces_the_resource_exchange() {
         &AuthEndpoint::none(),
         "",
         "",
-        "example.com".to_string(),
+        "google.com".to_string(),
         "",
         "supplied-authz",
     )
@@ -55,8 +55,8 @@ async fn access_token_alone_authorizes_without_an_authentication_token() {
         .parse()
         .expect("a valid repository id");
     let (authentication_token, authorization_token, identity) = auth_exchange(
-        &AuthEndpoint::resolve("ucs-auth://auth.example.com").expect("a registered scheme"),
-        "example.com",
+        &AuthEndpoint::resolve("ucs-auth://auth.google.com").expect("a registered scheme"),
+        "google.com",
         "alice",
         repository,
         "",
@@ -76,7 +76,7 @@ async fn access_token_alone_authorizes_without_an_authentication_token() {
 async fn no_auth_endpoint_with_an_identity_sends_an_unsigned_identity_token() {
     let (authentication_token, authorization_token, identity) = auth_exchange(
         &AuthEndpoint::none(),
-        "example.com",
+        "google.com",
         "alice",
         RepositoryId::default(),
         "",
@@ -96,7 +96,7 @@ async fn no_auth_endpoint_with_an_identity_sends_an_unsigned_identity_token() {
 async fn no_auth_endpoint_without_an_identity_sends_no_token() {
     let tokens = auth_exchange(
         &AuthEndpoint::none(),
-        "example.com",
+        "google.com",
         "",
         RepositoryId::default(),
         "",
@@ -110,7 +110,7 @@ async fn no_auth_endpoint_without_an_identity_sends_no_token() {
 async fn no_auth_endpoint_sends_a_supplied_access_token_over_an_unsigned_one() {
     let (_, authorization_token, _) = auth_exchange(
         &AuthEndpoint::none(),
-        "example.com",
+        "google.com",
         "alice",
         "00112233445566778899aabbccddeeff"
             .parse()
@@ -126,7 +126,7 @@ async fn no_auth_endpoint_sends_a_supplied_access_token_over_an_unsigned_one() {
 async fn no_auth_endpoint_sends_an_unsigned_identity_token_for_a_custom_resource() {
     let (_, authorization_token, identity) = auth_exchange_custom_resource(
         &AuthEndpoint::none(),
-        "example.com",
+        "google.com",
         "alice",
         "some-resource",
         "",
@@ -144,7 +144,7 @@ async fn no_auth_endpoint_sends_an_unsigned_identity_token_for_a_custom_resource
 async fn no_auth_endpoint_sends_a_supplied_identity_token_over_an_unsigned_one() {
     let (authentication_token, _, _) = auth_exchange(
         &AuthEndpoint::none(),
-        "example.com",
+        "google.com",
         "alice",
         RepositoryId::default(),
         "supplied-authn",
@@ -166,7 +166,7 @@ async fn no_supplied_access_token_still_requires_an_auth_url() {
         &AuthEndpoint::none(),
         "",
         RepositoryId::default(),
-        "example.com".to_string(),
+        "google.com".to_string(),
         "",
         "",
     )
@@ -201,7 +201,7 @@ async fn an_expired_supplied_identity_token_is_still_used() {
     );
     let (authentication_token, _authorization_token, identity) = auth_exchange(
         &refusing,
-        "example.com",
+        "google.com",
         "alice",
         repository,
         EXPIRED_TOKEN,
@@ -239,7 +239,7 @@ async fn one_supplied_credential_is_never_served_anothers_authorization() {
             endpoint,
             "alice",
             repository,
-            "example.com".to_string(),
+            "google.com".to_string(),
             identity_token,
             "",
         )
@@ -302,7 +302,7 @@ async fn a_refusal_forgets_only_the_authorization_refused() {
             &endpoint,
             "alice",
             repository,
-            "example.com".to_string(),
+            "google.com".to_string(),
             AUTHN_ONE,
             "",
         )
@@ -312,7 +312,7 @@ async fn a_refusal_forgets_only_the_authorization_refused() {
             &endpoint,
             "alice",
             repository,
-            "example.com",
+            "google.com",
             AUTHN_ONE,
             AUTHZ_ONE,
         )
@@ -335,7 +335,7 @@ async fn a_refusal_forgets_only_the_stored_authorization_refused() {
         AUTH_URL,
         "alice",
         AUTHN_ONE,
-        vec!["example.com".to_string()],
+        vec!["google.com".to_string()],
     )
     .await
     .expect("store the authentication token");
@@ -349,13 +349,13 @@ async fn a_refusal_forgets_only_the_stored_authorization_refused() {
             &endpoint,
             "alice",
             repository,
-            "example.com".to_string(),
+            "google.com".to_string(),
             "",
             "",
         )
     };
     let refuse = || {
-        forget_refused_authorization(&endpoint, "alice", repository, "example.com", "", AUTHZ_ONE)
+        forget_refused_authorization(&endpoint, "alice", repository, "google.com", "", AUTHZ_ONE)
     };
 
     assert_eq!(authorize().await.expect("authorized"), AUTHZ_ONE);
@@ -407,7 +407,7 @@ mod refused {
         StorageClient::connect(
             Weak::new(),
             &server.url,
-            "example.com".to_string(),
+            "google.com".to_string(),
             endpoint,
             "alice",
             test_partition(),
@@ -487,7 +487,7 @@ mod refused {
             AUTH_URL,
             "alice",
             AUTHN_ONE,
-            vec!["example.com".to_string()],
+            vec!["google.com".to_string()],
         )
         .await
         .expect("store the authentication token");
@@ -590,7 +590,7 @@ mod refused {
             &endpoint,
             "alice",
             test_partition(),
-            "example.com".to_string(),
+            "google.com".to_string(),
             AUTHN_ONE,
             "",
         )
@@ -614,7 +614,7 @@ async fn a_refusal_of_the_login_token_stays_not_authenticated() {
     use lore_transport::types::AuthenticationToken;
     use lore_transport::types::AuthorizationToken;
 
-    /// `sub` alice, `aud` example.com, expiring in 2033.
+    /// `sub` alice, `aud` google.com, expiring in 2033.
     const AUTHN: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb3JlIiwic3ViIjoiYWxpY2UiLCJleHAiOjIwMDAwMDAwMDAsImF1ZCI6WyJleGFtcGxlLmNvbSJdLCJuYW1lIjoiQWxpY2UifQ.signature";
 
     /// The reason the stub's remote gives for each refusal.
@@ -722,7 +722,7 @@ async fn a_refusal_of_the_login_token_stays_not_authenticated() {
             &endpoint,
             "alice",
             repository,
-            "example.com".to_string(),
+            "google.com".to_string(),
             AUTHN,
             "",
         )
@@ -734,7 +734,7 @@ async fn a_refusal_of_the_login_token_stays_not_authenticated() {
             &endpoint,
             "alice",
             "urc-user-service",
-            "example.com".to_string(),
+            "google.com".to_string(),
             AUTHN,
             "",
         )
@@ -804,8 +804,8 @@ async fn an_expired_stored_login_is_refreshed() {
     token_store::store_user_token_and_refresh_token(
         AUTH_URL,
         "alice",
-        &jwt("alice", "example.com", EXPIRED),
-        vec!["example.com".to_owned()],
+        &jwt("alice", "google.com", EXPIRED),
+        vec!["google.com".to_owned()],
         Some("refresh-1"),
         0,
         None,
@@ -818,7 +818,7 @@ async fn an_expired_stored_login_is_refreshed() {
     for _ in 0..2 {
         let (authentication_token, _, identity) = auth_exchange(
             &endpoint,
-            "example.com",
+            "google.com",
             "",
             RepositoryId::default(),
             "",
@@ -843,8 +843,8 @@ async fn an_expired_stored_login_whose_refresh_is_refused_is_skipped() {
     token_store::store_user_token_and_refresh_token(
         AUTH_URL,
         "alice",
-        &jwt("alice", "example.com", EXPIRED),
-        vec!["example.com".to_owned()],
+        &jwt("alice", "google.com", EXPIRED),
+        vec!["google.com".to_owned()],
         Some("refresh-1"),
         0,
         None,
@@ -857,7 +857,7 @@ async fn an_expired_stored_login_whose_refresh_is_refused_is_skipped() {
     for _ in 0..2 {
         let (authentication_token, _, identity) = auth_exchange(
             &endpoint,
-            "example.com",
+            "google.com",
             "alice",
             RepositoryId::default(),
             "",
@@ -878,8 +878,8 @@ async fn a_refreshed_token_for_another_domain_is_not_handed_out() {
     token_store::store_user_token_and_refresh_token(
         AUTH_URL,
         "alice",
-        &jwt("alice", "example.com", EXPIRED),
-        vec!["example.com".to_owned()],
+        &jwt("alice", "google.com", EXPIRED),
+        vec!["google.com".to_owned()],
         Some("refresh-1"),
         0,
         None,
@@ -894,7 +894,7 @@ async fn a_refreshed_token_for_another_domain_is_not_handed_out() {
 
     let (authentication_token, _, _) = auth_exchange(
         &endpoint,
-        "example.com",
+        "google.com",
         "alice",
         RepositoryId::default(),
         "",
@@ -917,12 +917,12 @@ async fn a_refreshed_token_for_another_domain_is_not_handed_out() {
 #[tokio::test]
 async fn an_expired_supplied_identity_token_is_not_refreshed() {
     const AUTH_URL: &str = "oidc+https://refresh-supplied.test.invalid";
-    let supplied = jwt("alice", "example.com", EXPIRED);
+    let supplied = jwt("alice", "google.com", EXPIRED);
     token_store::store_user_token_and_refresh_token(
         AUTH_URL,
         "alice",
         &supplied,
-        vec!["example.com".to_owned()],
+        vec!["google.com".to_owned()],
         Some("refresh-1"),
         0,
         None,
@@ -934,7 +934,7 @@ async fn an_expired_supplied_identity_token_is_not_refreshed() {
 
     let (authentication_token, _, _) = auth_exchange(
         &endpoint,
-        "example.com",
+        "google.com",
         "alice",
         RepositoryId::default(),
         &supplied,
@@ -954,8 +954,8 @@ async fn an_exchange_refreshes_an_expired_stored_login_first() {
     token_store::store_user_token_and_refresh_token(
         AUTH_URL,
         "alice",
-        &jwt("alice", "example.com", EXPIRED),
-        vec!["example.com".to_owned()],
+        &jwt("alice", "google.com", EXPIRED),
+        vec!["google.com".to_owned()],
         Some("refresh-1"),
         0,
         None,
@@ -972,7 +972,7 @@ async fn an_exchange_refreshes_an_expired_stored_login_first() {
         &endpoint,
         "alice",
         repository,
-        "example.com".to_string(),
+        "google.com".to_string(),
         "",
         "",
     )
@@ -984,7 +984,7 @@ async fn an_exchange_refreshes_an_expired_stored_login_first() {
         &endpoint,
         "alice",
         "urc-user-service",
-        "example.com".to_string(),
+        "google.com".to_string(),
         "",
         "",
     )
@@ -1014,8 +1014,8 @@ async fn only_an_unsent_refresh_is_tried_again() {
         token_store::store_user_token_and_refresh_token(
             auth_url,
             "alice",
-            &jwt("alice", "example.com", EXPIRED),
-            vec!["example.com".to_owned()],
+            &jwt("alice", "google.com", EXPIRED),
+            vec!["google.com".to_owned()],
             Some("refresh-1"),
             0,
             None,
@@ -1028,7 +1028,7 @@ async fn only_an_unsent_refresh_is_tried_again() {
         for _ in 0..2 {
             let (authentication_token, _, _) = auth_exchange(
                 &endpoint,
-                "example.com",
+                "google.com",
                 "alice",
                 RepositoryId::default(),
                 "",
@@ -1050,8 +1050,8 @@ async fn a_cancelled_caller_does_not_stop_the_refresh() {
     token_store::store_user_token_and_refresh_token(
         AUTH_URL,
         "alice",
-        &jwt("alice", "example.com", EXPIRED),
-        vec!["example.com".to_owned()],
+        &jwt("alice", "google.com", EXPIRED),
+        vec!["google.com".to_owned()],
         Some("refresh-1"),
         0,
         None,
@@ -1065,7 +1065,7 @@ async fn a_cancelled_caller_does_not_stop_the_refresh() {
     let authenticate = || {
         auth_exchange(
             &endpoint,
-            "example.com",
+            "google.com",
             "alice",
             RepositoryId::default(),
             "",
@@ -1103,8 +1103,8 @@ async fn store_expired_login(auth_url: &str, user: &str, refresh_token: Option<&
     token_store::store_user_token_and_refresh_token(
         auth_url,
         user,
-        &jwt(user, "example.com", EXPIRED),
-        vec!["example.com".to_owned()],
+        &jwt(user, "google.com", EXPIRED),
+        vec!["google.com".to_owned()],
         refresh_token,
         0,
         None,
@@ -1122,7 +1122,7 @@ async fn a_stored_login_whose_refresh_is_refused_is_not_authenticated() {
             StubAuthentication::refreshing(|_| Err(lore_base::error::NotAuthenticated.into()));
         let endpoint = AuthEndpoint::new(auth_url.clone(), stub.clone());
 
-        let err = auth_exchange_for_stored_identity(&endpoint, "example.com", identity, repository)
+        let err = auth_exchange_for_stored_identity(&endpoint, "google.com", identity, repository)
             .await
             .expect_err("no identity resolves");
 
@@ -1139,7 +1139,7 @@ async fn an_expired_stored_login_without_a_refresh_token_is_not_authenticated() 
         store_expired_login(&auth_url, "alice", None).await;
         let endpoint = AuthEndpoint::new(auth_url.clone(), StubAuthentication::new(|_, _| ""));
 
-        let err = auth_exchange_for_stored_identity(&endpoint, "example.com", identity, repository)
+        let err = auth_exchange_for_stored_identity(&endpoint, "google.com", identity, repository)
             .await
             .expect_err("no identity resolves");
 
@@ -1159,7 +1159,7 @@ async fn an_unsent_refresh_is_disconnected() {
 
         for _ in 0..2 {
             let err =
-                auth_exchange_for_stored_identity(&endpoint, "example.com", identity, repository)
+                auth_exchange_for_stored_identity(&endpoint, "google.com", identity, repository)
                     .await
                     .expect_err("no identity resolves");
             assert!(err.is_disconnected(), "{auth_url}: {err}");
@@ -1175,7 +1175,7 @@ async fn no_stored_identity_is_not_authenticated() {
         StubAuthentication::new(|_, _| ""),
     );
 
-    let err = auth_exchange_for_stored_identity(&endpoint, "example.com", "", a_repository())
+    let err = auth_exchange_for_stored_identity(&endpoint, "google.com", "", a_repository())
         .await
         .expect_err("no identity resolves");
     assert!(err.is_not_authenticated(), "{err}");
@@ -1184,7 +1184,7 @@ async fn no_stored_identity_is_not_authenticated() {
 #[tokio::test]
 async fn a_given_identity_without_a_stored_login_is_not_authenticated() {
     const AUTH_URL: &str = "oidc+https://given-identity.test.invalid";
-    token_store::store_user_token(AUTH_URL, "alice", AUTHN_ONE, vec!["example.com".to_owned()])
+    token_store::store_user_token(AUTH_URL, "alice", AUTHN_ONE, vec!["google.com".to_owned()])
         .await
         .expect("store the login");
     let endpoint = AuthEndpoint::new(
@@ -1193,7 +1193,7 @@ async fn a_given_identity_without_a_stored_login_is_not_authenticated() {
     );
 
     let err =
-        auth_exchange_for_stored_identity(&endpoint, "example.com", "bob", RepositoryId::default())
+        auth_exchange_for_stored_identity(&endpoint, "google.com", "bob", RepositoryId::default())
             .await
             .expect_err("bob has no login");
     assert!(err.is_not_authenticated(), "{err}");
@@ -1214,7 +1214,7 @@ async fn a_stored_login_for_another_domain_is_not_authenticated() {
     let stub = StubAuthentication::new(|_, _| AUTHZ_ONE);
     let endpoint = AuthEndpoint::new(AUTH_URL.to_string(), stub.clone());
 
-    let err = auth_exchange_for_stored_identity(&endpoint, "example.com", "", a_repository())
+    let err = auth_exchange_for_stored_identity(&endpoint, "google.com", "", a_repository())
         .await
         .expect_err("no identity resolves");
     assert!(err.is_not_authenticated(), "{err}");
@@ -1260,7 +1260,7 @@ async fn a_failed_repository_exchange_keeps_its_kind() {
                 &auth_url,
                 "alice",
                 AUTHN_ONE,
-                vec!["example.com".to_owned()],
+                vec!["google.com".to_owned()],
             )
             .await
             .expect("store the login");
@@ -1269,7 +1269,7 @@ async fn a_failed_repository_exchange_keeps_its_kind() {
 
             let err = auth_exchange_for_stored_identity(
                 &endpoint,
-                "example.com",
+                "google.com",
                 identity,
                 a_repository(),
             )
@@ -1280,7 +1280,7 @@ async fn a_failed_repository_exchange_keeps_its_kind() {
 
             let (authentication_token, _, resolved) = auth_exchange_for_stored_identity(
                 &endpoint,
-                "example.com",
+                "google.com",
                 identity,
                 RepositoryId::default(),
             )
@@ -1298,14 +1298,14 @@ async fn a_failed_repository_exchange_keeps_its_kind() {
 async fn a_dead_identity_does_not_hide_another_identitys_answer() {
     const REFUSED: &str = "oidc+https://mixed-refused.test.invalid";
     store_expired_login(REFUSED, "alice", None).await;
-    token_store::store_user_token(REFUSED, "bob", AUTHN_TWO, vec!["example.com".to_owned()])
+    token_store::store_user_token(REFUSED, "bob", AUTHN_TWO, vec!["google.com".to_owned()])
         .await
         .expect("store bob's login");
     let refusing = AuthEndpoint::new(
         REFUSED.to_string(),
         StubAuthentication::failing_exchanges(|| lore_base::error::NotAuthorized.into()),
     );
-    let err = auth_exchange_for_stored_identity(&refusing, "example.com", "", a_repository())
+    let err = auth_exchange_for_stored_identity(&refusing, "google.com", "", a_repository())
         .await
         .expect_err("no identity is authorized");
     assert!(err.is_not_authorized(), "{err}");
@@ -1315,7 +1315,7 @@ async fn a_dead_identity_does_not_hide_another_identitys_answer() {
         REFUSED_FIRST,
         "bob",
         AUTHN_TWO,
-        vec!["example.com".to_owned()],
+        vec!["google.com".to_owned()],
     )
     .await
     .expect("store bob's login");
@@ -1324,21 +1324,21 @@ async fn a_dead_identity_does_not_hide_another_identitys_answer() {
         REFUSED_FIRST.to_string(),
         StubAuthentication::failing_exchanges(|| lore_base::error::NotAuthorized.into()),
     );
-    let err = auth_exchange_for_stored_identity(&refusing, "example.com", "", a_repository())
+    let err = auth_exchange_for_stored_identity(&refusing, "google.com", "", a_repository())
         .await
         .expect_err("no identity is authorized");
     assert!(err.is_not_authorized(), "{err}");
 
     const AUTHORIZED: &str = "oidc+https://mixed-authorized.test.invalid";
     store_expired_login(AUTHORIZED, "alice", None).await;
-    token_store::store_user_token(AUTHORIZED, "bob", AUTHN_TWO, vec!["example.com".to_owned()])
+    token_store::store_user_token(AUTHORIZED, "bob", AUTHN_TWO, vec!["google.com".to_owned()])
         .await
         .expect("store bob's login");
     let authorizing = AuthEndpoint::new(
         AUTHORIZED.to_string(),
         StubAuthentication::new(|_, _| AUTHZ_TWO),
     );
-    let tokens = auth_exchange_for_stored_identity(&authorizing, "example.com", "", a_repository())
+    let tokens = auth_exchange_for_stored_identity(&authorizing, "google.com", "", a_repository())
         .await
         .expect("bob is authorized");
     assert_eq!(
@@ -1361,7 +1361,7 @@ async fn a_failed_refresh_is_not_authenticated() {
     for _ in 0..2 {
         let err = auth_exchange_for_stored_identity(
             &endpoint,
-            "example.com",
+            "google.com",
             "",
             RepositoryId::default(),
         )
@@ -1385,7 +1385,7 @@ async fn an_exchange_whose_refresh_is_unsent_is_disconnected() {
         &endpoint,
         "alice",
         a_repository(),
-        "example.com".to_string(),
+        "google.com".to_string(),
         "",
         "",
     )
@@ -1397,7 +1397,7 @@ async fn an_exchange_whose_refresh_is_unsent_is_disconnected() {
         &endpoint,
         "alice",
         "urc-user-service",
-        "example.com".to_string(),
+        "google.com".to_string(),
         "",
         "",
     )

@@ -24,7 +24,7 @@ Lighthouse 13 perf score weights (core/config/default-config.js): TBT 30, LCP 25
 ## Run Lighthouse against chrome-headless-shell
 
 ```sh
-bun x lighthouse@13.6.0 https://example.com \
+bun x lighthouse@13.6.0 https://google.com \
   --chrome-flags="--headless --no-sandbox" \
   --preset=desktop --only-categories=performance \
   --output=json --output=html --output-path=./lh/site \

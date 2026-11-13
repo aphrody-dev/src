@@ -468,7 +468,7 @@ The rest of this proposal calls the first four fields
 | `scopes` | `[server.auth.oidc]` | Default scopes to request at a user login. |
 | `client_credentials_scopes` | `[server.auth.oidc]` | Scopes to request with the client credentials grant. |
 | `preferred` | `[server.auth.oidc]` | Whether a client that expresses no preference should take the OIDC path. Absent or false keeps it on `auth_url` while both are advertised. |
-| `resource_template` | `[server.auth.oidc]` | How to name a partition as an [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707) resource, for example `https://lore.example.com/partitions/{id}`. The standard form and the default. |
+| `resource_template` | `[server.auth.oidc]` | How to name a partition as an [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707) resource, for example `https://lore.google.com/partitions/{id}`. The standard form and the default. |
 | `scope_template` | `[server.auth.oidc]` | How to name a partition as a scope value instead, for example `partition:{id}`. For providers that reject `resource` or never see it on the exchange grant. |
 | `token_exchange_issuer` | `[server.auth.oidc]` | The [RFC 8693](https://www.rfc-editor.org/rfc/rfc8693) endpoint to exchange against, whether that is the provider itself or a separate token service. |
 | `identity_claim` | none | Reserved: a deprecated field the server leaves empty and the client ignores. The identity is read from the token itself, its `identity` claim or else `sub` (D7). |
