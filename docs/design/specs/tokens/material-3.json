@@ -1,0 +1,2359 @@
+{
+  "spec": "material-3.tokens",
+  "domain": "tokens",
+  "verified": "2026-11-13",
+  "sources": [
+    {
+      "url": "https://github.com/material-components/material-web/tree/37aa14b843dcaeb3a46f898679fa6fcd109b1905/tokens/versions/latest/sass",
+      "license": "Apache-2.0"
+    },
+    {
+      "url": "https://github.com/aphrody-labs/src/tree/main/packages/google-design/upstream/material-color-utilities/typescript/dynamiccolor/color_spec_2021.ts",
+      "license": "Apache-2.0"
+    },
+    {
+      "url": "https://m3.material.io/styles/color/roles",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/styles/color/system/how-the-system-works",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/styles/color/choosing-a-scheme",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/styles/color/static/baseline",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/styles/typography/type-scale-tokens",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/styles/shape/corner-radius-scale",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/styles/elevation/tokens",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/styles/elevation/applying-elevation",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/foundations/interaction/states/state-layers",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/foundations/interaction/states/applying-states",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/styles/spacing/tokens",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/foundations/layout/breakpoints/overview",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/foundations/design-tokens/overview",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://github.com/material-components/material-web/blob/37aa14b843dcaeb3a46f898679fa6fcd109b1905/tokens/versions/latest/sass/_md-sys-color.scss",
+      "license": "Apache-2.0"
+    },
+    {
+      "url": "https://github.com/material-components/material-web/blob/37aa14b843dcaeb3a46f898679fa6fcd109b1905/tokens/versions/latest/sass/_md-sys-typescale-emphasized.scss",
+      "license": "Apache-2.0"
+    },
+    {
+      "url": "https://m3.material.io/foundations/writing/text-resizing",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    }
+  ],
+  "rules": [
+    {
+      "id": "m3.tokens.consume-not-copy",
+      "level": "MUST",
+      "rule": "Toute couleur, typo, forme, élévation ou durée vient d'un token système (md.sys.*) ou composant (md.comp.*) généré par packages/design ; aucune valeur littérale recopiée dans le code produit.",
+      "source": "https://m3.material.io/foundations/design-tokens/overview"
+    },
+    {
+      "id": "m3.tokens.naming",
+      "level": "MUST",
+      "rule": "Nommer les tokens selon la hiérarchie md.ref (palette brute) > md.sys (rôle sémantique) > md.comp (attribut de composant) ; le code applicatif ne référence que sys ou comp, jamais ref.",
+      "value": {
+        "css": "--md-sys-color-primary",
+        "path": "md.sys.color.primary"
+      },
+      "source": "https://m3.material.io/foundations/design-tokens/overview"
+    },
+    {
+      "id": "m3.color.on-pairs",
+      "level": "MUST",
+      "rule": "Le texte et les icônes posés sur un rôle de conteneur utilisent le rôle « on-* » correspondant (on-primary sur primary, on-secondary-container sur secondary-container, etc.) ; ne jamais croiser deux rôles non appariés.",
+      "value": {
+        "on-background": "background",
+        "on-error": "error",
+        "on-error-container": "error-container",
+        "on-primary": "primary",
+        "on-primary-container": "primary-container",
+        "on-primary-fixed": "primary-fixed / primary-fixed-dim",
+        "on-primary-fixed-variant": "primary-fixed / primary-fixed-dim",
+        "on-secondary": "secondary",
+        "on-secondary-container": "secondary-container",
+        "on-secondary-fixed": "secondary-fixed / secondary-fixed-dim",
+        "on-secondary-fixed-variant": "secondary-fixed / secondary-fixed-dim",
+        "on-surface": "surface, surface-dim, surface-bright, surface-container-*",
+        "on-surface-variant": "surface-container-highest (ou tout surface-*)",
+        "on-tertiary": "tertiary",
+        "on-tertiary-container": "tertiary-container",
+        "on-tertiary-fixed": "tertiary-fixed / tertiary-fixed-dim",
+        "on-tertiary-fixed-variant": "tertiary-fixed / tertiary-fixed-dim",
+        "inverse-on-surface": "inverse-surface",
+        "inverse-primary": "inverse-surface"
+      },
+      "source": "https://m3.material.io/styles/color/roles"
+    },
+    {
+      "id": "m3.color.container-not-for-text",
+      "level": "MUST-NOT",
+      "rule": "Les rôles *-container servent de remplissage d'éléments ; ne pas les utiliser comme couleur de texte ou d'icône.",
+      "source": "https://m3.material.io/styles/color/roles"
+    },
+    {
+      "id": "m3.color.accent-emphasis",
+      "level": "SHOULD",
+      "rule": "Réserver primary aux actions et éléments les plus importants, secondary aux éléments moins appuyés (sélection de navigation, action de rejet), tertiary aux petits accents contrastants (badge, mise en valeur).",
+      "source": "https://m3.material.io/styles/color/roles"
+    },
+    {
+      "id": "m3.color.surface-containers",
+      "level": "SHOULD",
+      "rule": "Exprimer la hiérarchie de surfaces par les cinq rôles surface-container (lowest, low, default, high, highest) plutôt que par une teinte d'élévation ; surface-tint est obsolète.",
+      "source": "https://m3.material.io/styles/elevation/tokens"
+    },
+    {
+      "id": "m3.color.outline-vs-variant",
+      "level": "MUST",
+      "rule": "outline délimite les cibles interactives et les champs (3:1 requis) ; outline-variant sert aux séparateurs et aux bordures décoratives de conteneurs à plusieurs éléments ; ne pas inverser ces usages.",
+      "source": "https://m3.material.io/styles/color/roles"
+    },
+    {
+      "id": "m3.color.fixed-roles",
+      "level": "SHOULD-NOT",
+      "rule": "Éviter les rôles *-fixed là où le contraste est critique : ils restent identiques en clair et en sombre.",
+      "source": "https://m3.material.io/styles/color/roles"
+    },
+    {
+      "id": "m3.color.background-legacy",
+      "level": "SHOULD-NOT",
+      "rule": "background/on-background et surface-variant sont des rôles hérités ; préférer surface, on-surface et surface-container-highest.",
+      "source": "https://github.com/material-components/material-web/blob/37aa14b843dcaeb3a46f898679fa6fcd109b1905/tokens/versions/latest/sass/_md-sys-color.scss"
+    },
+    {
+      "id": "m3.color.three-contrast-levels",
+      "level": "MUST",
+      "rule": "Tout thème fournit les schémas clair et sombre aux trois niveaux de contraste standard (0), moyen (0.5) et élevé (1.0), générés par Material Color Utilities depuis la couleur source ; les seuils par rôle suivent les courbes de contraste MCU.",
+      "value": {
+        "levels": {
+          "standard": 0,
+          "medium": 0.5,
+          "high": 1
+        }
+      },
+      "source": "https://m3.material.io/styles/color/system/how-the-system-works"
+    },
+    {
+      "id": "m3.color.dynamic-source",
+      "level": "MAY",
+      "rule": "La couleur source peut venir de la marque (statique) ou du contenu/fond d'écran (dynamique) ; dans les deux cas le schéma est recalculé par MCU, jamais ajusté à la main rôle par rôle.",
+      "source": "https://m3.material.io/styles/color/choosing-a-scheme"
+    },
+    {
+      "id": "m3.type.scale",
+      "level": "MUST",
+      "rule": "Utiliser uniquement les 15 styles de l'échelle typographique (display, headline, title, body, label × large, medium, small) ; pas de taille ad hoc.",
+      "value": {
+        "display-large": {
+          "font": "Roboto",
+          "weight": 400,
+          "size": "3.5625rem",
+          "size-px": 57,
+          "line-height": "4rem",
+          "line-height-px": 64,
+          "tracking": "-0.015625rem",
+          "tracking-px": -0.25,
+          "opsz": 57,
+          "emphasized-weight": 500,
+          "emphasized-wght-axis": 500
+        },
+        "display-medium": {
+          "font": "Roboto",
+          "weight": 400,
+          "size": "2.8125rem",
+          "size-px": 45,
+          "line-height": "3.25rem",
+          "line-height-px": 52,
+          "tracking": "0rem",
+          "tracking-px": 0,
+          "opsz": 45,
+          "emphasized-weight": 500,
+          "emphasized-wght-axis": 500
+        },
+        "display-small": {
+          "font": "Roboto",
+          "weight": 400,
+          "size": "2.25rem",
+          "size-px": 36,
+          "line-height": "2.75rem",
+          "line-height-px": 44,
+          "tracking": "0rem",
+          "tracking-px": 0,
+          "opsz": 36,
+          "emphasized-weight": 500,
+          "emphasized-wght-axis": 500
+        },
+        "headline-large": {
+          "font": "Roboto",
+          "weight": 400,
+          "size": "2rem",
+          "size-px": 32,
+          "line-height": "2.5rem",
+          "line-height-px": 40,
+          "tracking": "0rem",
+          "tracking-px": 0,
+          "opsz": 32,
+          "emphasized-weight": 500,
+          "emphasized-wght-axis": 500
+        },
+        "headline-medium": {
+          "font": "Roboto",
+          "weight": 400,
+          "size": "1.75rem",
+          "size-px": 28,
+          "line-height": "2.25rem",
+          "line-height-px": 36,
+          "tracking": "0rem",
+          "tracking-px": 0,
+          "opsz": 28,
+          "emphasized-weight": 500,
+          "emphasized-wght-axis": 500
+        },
+        "headline-small": {
+          "font": "Roboto",
+          "weight": 400,
+          "size": "1.5rem",
+          "size-px": 24,
+          "line-height": "2rem",
+          "line-height-px": 32,
+          "tracking": "0rem",
+          "tracking-px": 0,
+          "opsz": 24,
+          "emphasized-weight": 500,
+          "emphasized-wght-axis": 500
+        },
+        "title-large": {
+          "font": "Roboto",
+          "weight": 400,
+          "size": "1.375rem",
+          "size-px": 22,
+          "line-height": "1.75rem",
+          "line-height-px": 28,
+          "tracking": "0rem",
+          "tracking-px": 0,
+          "opsz": 22,
+          "emphasized-weight": 500,
+          "emphasized-wght-axis": 500
+        },
+        "title-medium": {
+          "font": "Roboto",
+          "weight": 500,
+          "size": "1rem",
+          "size-px": 16,
+          "line-height": "1.5rem",
+          "line-height-px": 24,
+          "tracking": "0.009375rem",
+          "tracking-px": 0.15,
+          "opsz": 16,
+          "emphasized-weight": 700,
+          "emphasized-wght-axis": 600
+        },
+        "title-small": {
+          "font": "Roboto",
+          "weight": 500,
+          "size": "0.875rem",
+          "size-px": 14,
+          "line-height": "1.25rem",
+          "line-height-px": 20,
+          "tracking": "0.00625rem",
+          "tracking-px": 0.1,
+          "opsz": 14,
+          "emphasized-weight": 700,
+          "emphasized-wght-axis": 600
+        },
+        "body-large": {
+          "font": "Roboto",
+          "weight": 400,
+          "size": "1rem",
+          "size-px": 16,
+          "line-height": "1.5rem",
+          "line-height-px": 24,
+          "tracking": "0.03125rem",
+          "tracking-px": 0.5,
+          "opsz": 16,
+          "emphasized-weight": 500,
+          "emphasized-wght-axis": 500
+        },
+        "body-medium": {
+          "font": "Roboto",
+          "weight": 400,
+          "size": "0.875rem",
+          "size-px": 14,
+          "line-height": "1.25rem",
+          "line-height-px": 20,
+          "tracking": "0.015625rem",
+          "tracking-px": 0.25,
+          "opsz": 14,
+          "emphasized-weight": 500,
+          "emphasized-wght-axis": 500
+        },
+        "body-small": {
+          "font": "Roboto",
+          "weight": 400,
+          "size": "0.75rem",
+          "size-px": 12,
+          "line-height": "1rem",
+          "line-height-px": 16,
+          "tracking": "0.025rem",
+          "tracking-px": 0.4,
+          "opsz": 12,
+          "emphasized-weight": 500,
+          "emphasized-wght-axis": 500
+        },
+        "label-large": {
+          "font": "Roboto",
+          "weight": 500,
+          "size": "0.875rem",
+          "size-px": 14,
+          "line-height": "1.25rem",
+          "line-height-px": 20,
+          "tracking": "0.00625rem",
+          "tracking-px": 0.1,
+          "opsz": 14,
+          "emphasized-weight": 700,
+          "emphasized-wght-axis": 600
+        },
+        "label-medium": {
+          "font": "Roboto",
+          "weight": 500,
+          "size": "0.75rem",
+          "size-px": 12,
+          "line-height": "1rem",
+          "line-height-px": 16,
+          "tracking": "0.03125rem",
+          "tracking-px": 0.5,
+          "opsz": 12,
+          "emphasized-weight": 700,
+          "emphasized-wght-axis": 600
+        },
+        "label-small": {
+          "font": "Roboto",
+          "weight": 500,
+          "size": "0.6875rem",
+          "size-px": 11,
+          "line-height": "1rem",
+          "line-height-px": 16,
+          "tracking": "0.03125rem",
+          "tracking-px": 0.5,
+          "opsz": 11,
+          "emphasized-weight": 700,
+          "emphasized-wght-axis": 600
+        }
+      },
+      "source": "https://m3.material.io/styles/typography/type-scale-tokens"
+    },
+    {
+      "id": "m3.type.emphasized",
+      "level": "MAY",
+      "rule": "La variante emphasized d'un style (graisse plus forte) sert à mettre en valeur un texte ponctuel sans changer de taille.",
+      "source": "https://github.com/material-components/material-web/blob/37aa14b843dcaeb3a46f898679fa6fcd109b1905/tokens/versions/latest/sass/_md-sys-typescale-emphasized.scss"
+    },
+    {
+      "id": "m3.type.rem",
+      "level": "MUST",
+      "rule": "Exprimer tailles, interlignes et approche en rem (ou sp) pour suivre le réglage de taille de texte de l'utilisateur.",
+      "source": "https://m3.material.io/foundations/writing/text-resizing"
+    },
+    {
+      "id": "m3.shape.scale",
+      "level": "MUST",
+      "rule": "Les rayons d'angle proviennent de l'échelle de formes (none à full) ; pas de rayon libre.",
+      "value": {
+        "corner-extra-extra-large": "48px",
+        "corner-extra-large": "28px",
+        "corner-extra-large-increased": "32px",
+        "corner-extra-large-top": "28px 28px 0px 0px",
+        "corner-extra-small": "4px",
+        "corner-extra-small-top": "4px 4px 0px 0px",
+        "corner-full": "9999px",
+        "corner-large": "16px",
+        "corner-large-increased": "20px",
+        "corner-large-end": "0px 16px 16px 0px",
+        "corner-large-start": "16px 0px 0px 16px",
+        "corner-large-top": "16px 16px 0px 0px",
+        "corner-medium": "12px",
+        "corner-none": "0px",
+        "corner-small": "8px"
+      },
+      "source": "https://m3.material.io/styles/shape/corner-radius-scale"
+    },
+    {
+      "id": "m3.elevation.levels",
+      "level": "MUST",
+      "rule": "N'employer que les six niveaux d'élévation 0 à 5 ; garder peu de niveaux distincts pour que l'ombre conserve son pouvoir d'attirer l'attention.",
+      "value": {
+        "level0": "0dp",
+        "level1": "1dp",
+        "level2": "3dp",
+        "level3": "6dp",
+        "level4": "8dp",
+        "level5": "12dp"
+      },
+      "source": "https://m3.material.io/styles/elevation/applying-elevation"
+    },
+    {
+      "id": "m3.elevation.shadow-or-tone",
+      "level": "SHOULD",
+      "rule": "Rendre l'élévation par l'ombre seulement quand la séparation des surfaces l'exige ; sinon par écart de ton (surface-container-*) ou par voile (scrim).",
+      "source": "https://m3.material.io/styles/elevation/applying-elevation"
+    },
+    {
+      "id": "m3.state.layer-opacity",
+      "level": "MUST",
+      "rule": "Les états hover, focus, pressed et dragged se rendent par une couche d'état de la couleur du contenu (rôle on-*) à opacité fixe, posée entre conteneur et contenu.",
+      "value": {
+        "hover": 0.08,
+        "focus": 0.1,
+        "pressed": 0.1,
+        "dragged": 0.16
+      },
+      "source": "https://m3.material.io/foundations/interaction/states/state-layers"
+    },
+    {
+      "id": "m3.state.disabled",
+      "level": "MUST",
+      "rule": "Un élément désactivé applique l'opacité désactivée au contenu (et un conteneur atténué), ne reçoit ni focus, ni survol, ni appui, et n'a pas à atteindre les seuils de contraste.",
+      "value": {
+        "content-opacity": 0.38
+      },
+      "source": "https://m3.material.io/foundations/interaction/states/applying-states"
+    },
+    {
+      "id": "m3.state.single-instance",
+      "level": "MUST",
+      "rule": "Au plus un élément en état focus, un en pressed et un en dragged à la fois dans une mise en page.",
+      "source": "https://m3.material.io/foundations/interaction/states/applying-states"
+    },
+    {
+      "id": "m3.state.layer-size",
+      "level": "SHOULD",
+      "rule": "Pour une icône ou un contrôle compact, la couche d'état fait 40dp alors que la cible interactive fait 48dp.",
+      "value": {
+        "state-layer": "40dp",
+        "target": "48dp"
+      },
+      "source": "https://m3.material.io/foundations/interaction/states/state-layers"
+    },
+    {
+      "id": "m3.spacing.scale",
+      "level": "SHOULD",
+      "rule": "Espacements pris sur l'échelle de base 8dp (avec sous-unités 2, 4, 6, 10, 12, 14dp) ; nommer les espacements de composant en padding/margin/gap avec positions leading/trailing/top/bottom.",
+      "value": {
+        "space0": "0dp",
+        "space25": "2dp",
+        "space50": "4dp",
+        "space75": "6dp",
+        "space100": "8dp",
+        "space125": "10dp",
+        "space150": "12dp",
+        "space175": "14dp",
+        "space200": "16dp",
+        "space250": "20dp",
+        "space300": "24dp",
+        "space400": "32dp",
+        "space450": "36dp",
+        "space500": "40dp",
+        "space600": "48dp",
+        "space700": "56dp",
+        "space800": "64dp",
+        "space900": "72dp"
+      },
+      "source": "https://m3.material.io/styles/spacing/tokens"
+    },
+    {
+      "id": "m3.layout.breakpoints",
+      "level": "MUST",
+      "rule": "La mise en page s'adapte aux cinq classes de largeur de fenêtre (compact, medium, expanded, large, extra-large) avec leurs marges et nombre de volets.",
+      "value": {
+        "compact": {
+          "width": "< 600dp",
+          "margin": "16dp",
+          "panes": 1
+        },
+        "medium": {
+          "width": "600–839dp",
+          "margin": "24dp",
+          "spacer": "24dp",
+          "panes": 1
+        },
+        "expanded": {
+          "width": "840–1199dp",
+          "margin": "24dp",
+          "spacer": "24dp",
+          "panes": "1–2",
+          "fixed-pane": "360dp"
+        },
+        "large": {
+          "width": "1200–1599dp",
+          "margin": "24dp",
+          "spacer": "24dp",
+          "panes": 2
+        },
+        "extra-large": {
+          "width": ">= 1600dp",
+          "margin": "24dp",
+          "spacer": "24dp",
+          "panes": "2–3"
+        }
+      },
+      "source": "https://m3.material.io/foundations/layout/breakpoints/overview"
+    }
+  ],
+  "tokens": {
+    "material-web-version": "34.0.21",
+    "color": {
+      "roles": {
+        "background": {
+          "light": {
+            "ref": "neutral98",
+            "hex": "#fef7ff"
+          },
+          "dark": {
+            "ref": "neutral6",
+            "hex": "#141218"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral98",
+            "hex": "#fef7ff"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral6",
+            "hex": "#141218"
+          },
+          "light-high-contrast": {
+            "ref": "neutral98",
+            "hex": "#fef7ff"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral6",
+            "hex": "#141218"
+          }
+        },
+        "error": {
+          "light": {
+            "ref": "error40",
+            "hex": "#b3261e"
+          },
+          "dark": {
+            "ref": "error80",
+            "hex": "#f2b8b5"
+          },
+          "light-medium-contrast": {
+            "ref": "error30",
+            "hex": "#8c1d18"
+          },
+          "dark-medium-contrast": {
+            "ref": "error90",
+            "hex": "#f9dedc"
+          },
+          "light-high-contrast": {
+            "ref": "error20",
+            "hex": "#601410"
+          },
+          "dark-high-contrast": {
+            "ref": "error95",
+            "hex": "#fceeee"
+          }
+        },
+        "error-container": {
+          "light": {
+            "ref": "error90",
+            "hex": "#f9dedc"
+          },
+          "dark": {
+            "ref": "error30",
+            "hex": "#8c1d18"
+          },
+          "light-medium-contrast": {
+            "ref": "error40",
+            "hex": "#b3261e"
+          },
+          "dark-medium-contrast": {
+            "ref": "error60",
+            "hex": "#e46962"
+          },
+          "light-high-contrast": {
+            "ref": "error30",
+            "hex": "#8c1d18"
+          },
+          "dark-high-contrast": {
+            "ref": "error80",
+            "hex": "#f2b8b5"
+          }
+        },
+        "inverse-on-surface": {
+          "light": {
+            "ref": "neutral95",
+            "hex": "#f5eff7"
+          },
+          "dark": {
+            "ref": "neutral20",
+            "hex": "#322f35"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral100",
+            "hex": "#fff"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral10",
+            "hex": "#1d1b20"
+          },
+          "light-high-contrast": {
+            "ref": "neutral100",
+            "hex": "#fff"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral0",
+            "hex": "#000"
+          }
+        },
+        "inverse-primary": {
+          "light": {
+            "ref": "primary80",
+            "hex": "#d0bcff"
+          },
+          "dark": {
+            "ref": "primary40",
+            "hex": "#6750a4"
+          },
+          "light-medium-contrast": {
+            "ref": "primary80",
+            "hex": "#d0bcff"
+          },
+          "dark-medium-contrast": {
+            "ref": "primary30",
+            "hex": "#4f378b"
+          },
+          "light-high-contrast": {
+            "ref": "primary80",
+            "hex": "#d0bcff"
+          },
+          "dark-high-contrast": {
+            "ref": "primary20",
+            "hex": "#381e72"
+          }
+        },
+        "inverse-surface": {
+          "light": {
+            "ref": "neutral20",
+            "hex": "#322f35"
+          },
+          "dark": {
+            "ref": "neutral90",
+            "hex": "#e6e0e9"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral20",
+            "hex": "#322f35"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral90",
+            "hex": "#e6e0e9"
+          },
+          "light-high-contrast": {
+            "ref": "neutral20",
+            "hex": "#322f35"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral90",
+            "hex": "#e6e0e9"
+          }
+        },
+        "on-background": {
+          "light": {
+            "ref": "neutral10",
+            "hex": "#1d1b20"
+          },
+          "dark": {
+            "ref": "neutral90",
+            "hex": "#e6e0e9"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral0",
+            "hex": "#000"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral100",
+            "hex": "#fff"
+          },
+          "light-high-contrast": {
+            "ref": "neutral0",
+            "hex": "#000"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral100",
+            "hex": "#fff"
+          }
+        },
+        "on-error": {
+          "light": {
+            "ref": "error100",
+            "hex": "#fff"
+          },
+          "dark": {
+            "ref": "error20",
+            "hex": "#601410"
+          },
+          "light-medium-contrast": {
+            "ref": "error100",
+            "hex": "#fff"
+          },
+          "dark-medium-contrast": {
+            "ref": "error10",
+            "hex": "#410e0b"
+          },
+          "light-high-contrast": {
+            "ref": "error100",
+            "hex": "#fff"
+          },
+          "dark-high-contrast": {
+            "ref": "error0",
+            "hex": "#000"
+          }
+        },
+        "on-error-container": {
+          "light": {
+            "ref": "error30",
+            "hex": "#8c1d18"
+          },
+          "dark": {
+            "ref": "error90",
+            "hex": "#f9dedc"
+          },
+          "light-medium-contrast": {
+            "ref": "error100",
+            "hex": "#fff"
+          },
+          "dark-medium-contrast": {
+            "ref": "error0",
+            "hex": "#000"
+          },
+          "light-high-contrast": {
+            "ref": "error100",
+            "hex": "#fff"
+          },
+          "dark-high-contrast": {
+            "ref": "error0",
+            "hex": "#000"
+          }
+        },
+        "on-primary": {
+          "light": {
+            "ref": "primary100",
+            "hex": "#fff"
+          },
+          "dark": {
+            "ref": "primary20",
+            "hex": "#381e72"
+          },
+          "light-medium-contrast": {
+            "ref": "primary100",
+            "hex": "#fff"
+          },
+          "dark-medium-contrast": {
+            "ref": "primary10",
+            "hex": "#21005d"
+          },
+          "light-high-contrast": {
+            "ref": "primary100",
+            "hex": "#fff"
+          },
+          "dark-high-contrast": {
+            "ref": "primary0",
+            "hex": "#000"
+          }
+        },
+        "on-primary-container": {
+          "light": {
+            "ref": "primary30",
+            "hex": "#4f378b"
+          },
+          "dark": {
+            "ref": "primary90",
+            "hex": "#eaddff"
+          },
+          "light-medium-contrast": {
+            "ref": "primary100",
+            "hex": "#fff"
+          },
+          "dark-medium-contrast": {
+            "ref": "primary0",
+            "hex": "#000"
+          },
+          "light-high-contrast": {
+            "ref": "primary100",
+            "hex": "#fff"
+          },
+          "dark-high-contrast": {
+            "ref": "primary0",
+            "hex": "#000"
+          }
+        },
+        "on-primary-fixed": {
+          "light": {
+            "ref": "primary10",
+            "hex": "#21005d"
+          },
+          "dark": {
+            "ref": "primary10",
+            "hex": "#21005d"
+          },
+          "light-medium-contrast": {
+            "ref": "primary100",
+            "hex": "#fff"
+          },
+          "dark-medium-contrast": {
+            "ref": "primary0",
+            "hex": "#000"
+          },
+          "light-high-contrast": {
+            "ref": "primary100",
+            "hex": "#fff"
+          },
+          "dark-high-contrast": {
+            "ref": "primary0",
+            "hex": "#000"
+          }
+        },
+        "on-primary-fixed-variant": {
+          "light": {
+            "ref": "primary30",
+            "hex": "#4f378b"
+          },
+          "dark": {
+            "ref": "primary30",
+            "hex": "#4f378b"
+          },
+          "light-medium-contrast": {
+            "ref": "primary100",
+            "hex": "#fff"
+          },
+          "dark-medium-contrast": {
+            "ref": "primary20",
+            "hex": "#381e72"
+          },
+          "light-high-contrast": {
+            "ref": "primary100",
+            "hex": "#fff"
+          },
+          "dark-high-contrast": {
+            "ref": "primary0",
+            "hex": "#000"
+          }
+        },
+        "on-secondary": {
+          "light": {
+            "ref": "secondary100",
+            "hex": "#fff"
+          },
+          "dark": {
+            "ref": "secondary20",
+            "hex": "#332d41"
+          },
+          "light-medium-contrast": {
+            "ref": "secondary100",
+            "hex": "#fff"
+          },
+          "dark-medium-contrast": {
+            "ref": "secondary10",
+            "hex": "#1d192b"
+          },
+          "light-high-contrast": {
+            "ref": "secondary100",
+            "hex": "#fff"
+          },
+          "dark-high-contrast": {
+            "ref": "secondary0",
+            "hex": "#000"
+          }
+        },
+        "on-secondary-container": {
+          "light": {
+            "ref": "secondary30",
+            "hex": "#4a4458"
+          },
+          "dark": {
+            "ref": "secondary90",
+            "hex": "#e8def8"
+          },
+          "light-medium-contrast": {
+            "ref": "secondary100",
+            "hex": "#fff"
+          },
+          "dark-medium-contrast": {
+            "ref": "secondary0",
+            "hex": "#000"
+          },
+          "light-high-contrast": {
+            "ref": "secondary100",
+            "hex": "#fff"
+          },
+          "dark-high-contrast": {
+            "ref": "secondary0",
+            "hex": "#000"
+          }
+        },
+        "on-secondary-fixed": {
+          "light": {
+            "ref": "secondary10",
+            "hex": "#1d192b"
+          },
+          "dark": {
+            "ref": "secondary10",
+            "hex": "#1d192b"
+          },
+          "light-medium-contrast": {
+            "ref": "secondary100",
+            "hex": "#fff"
+          },
+          "dark-medium-contrast": {
+            "ref": "secondary0",
+            "hex": "#000"
+          },
+          "light-high-contrast": {
+            "ref": "secondary100",
+            "hex": "#fff"
+          },
+          "dark-high-contrast": {
+            "ref": "secondary0",
+            "hex": "#000"
+          }
+        },
+        "on-secondary-fixed-variant": {
+          "light": {
+            "ref": "secondary30",
+            "hex": "#4a4458"
+          },
+          "dark": {
+            "ref": "secondary30",
+            "hex": "#4a4458"
+          },
+          "light-medium-contrast": {
+            "ref": "secondary100",
+            "hex": "#fff"
+          },
+          "dark-medium-contrast": {
+            "ref": "secondary20",
+            "hex": "#332d41"
+          },
+          "light-high-contrast": {
+            "ref": "secondary100",
+            "hex": "#fff"
+          },
+          "dark-high-contrast": {
+            "ref": "secondary0",
+            "hex": "#000"
+          }
+        },
+        "on-surface": {
+          "light": {
+            "ref": "neutral10",
+            "hex": "#1d1b20"
+          },
+          "dark": {
+            "ref": "neutral90",
+            "hex": "#e6e0e9"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral0",
+            "hex": "#000"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral100",
+            "hex": "#fff"
+          },
+          "light-high-contrast": {
+            "ref": "neutral0",
+            "hex": "#000"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral100",
+            "hex": "#fff"
+          }
+        },
+        "on-surface-variant": {
+          "light": {
+            "ref": "neutral-variant30",
+            "hex": "#49454f"
+          },
+          "dark": {
+            "ref": "neutral-variant80",
+            "hex": "#cac4d0"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral-variant20",
+            "hex": "#322f37"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral-variant90",
+            "hex": "#e7e0ec"
+          },
+          "light-high-contrast": {
+            "ref": "neutral-variant0",
+            "hex": "#000"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral-variant100",
+            "hex": "#fff"
+          }
+        },
+        "on-tertiary": {
+          "light": {
+            "ref": "tertiary100",
+            "hex": "#fff"
+          },
+          "dark": {
+            "ref": "tertiary20",
+            "hex": "#492532"
+          },
+          "light-medium-contrast": {
+            "ref": "tertiary100",
+            "hex": "#fff"
+          },
+          "dark-medium-contrast": {
+            "ref": "tertiary10",
+            "hex": "#31111d"
+          },
+          "light-high-contrast": {
+            "ref": "tertiary100",
+            "hex": "#fff"
+          },
+          "dark-high-contrast": {
+            "ref": "tertiary0",
+            "hex": "#000"
+          }
+        },
+        "on-tertiary-container": {
+          "light": {
+            "ref": "tertiary30",
+            "hex": "#633b48"
+          },
+          "dark": {
+            "ref": "tertiary90",
+            "hex": "#ffd8e4"
+          },
+          "light-medium-contrast": {
+            "ref": "tertiary100",
+            "hex": "#fff"
+          },
+          "dark-medium-contrast": {
+            "ref": "tertiary0",
+            "hex": "#000"
+          },
+          "light-high-contrast": {
+            "ref": "tertiary100",
+            "hex": "#fff"
+          },
+          "dark-high-contrast": {
+            "ref": "tertiary0",
+            "hex": "#000"
+          }
+        },
+        "on-tertiary-fixed": {
+          "light": {
+            "ref": "tertiary10",
+            "hex": "#31111d"
+          },
+          "dark": {
+            "ref": "tertiary10",
+            "hex": "#31111d"
+          },
+          "light-medium-contrast": {
+            "ref": "tertiary100",
+            "hex": "#fff"
+          },
+          "dark-medium-contrast": {
+            "ref": "tertiary0",
+            "hex": "#000"
+          },
+          "light-high-contrast": {
+            "ref": "tertiary100",
+            "hex": "#fff"
+          },
+          "dark-high-contrast": {
+            "ref": "tertiary0",
+            "hex": "#000"
+          }
+        },
+        "on-tertiary-fixed-variant": {
+          "light": {
+            "ref": "tertiary30",
+            "hex": "#633b48"
+          },
+          "dark": {
+            "ref": "tertiary30",
+            "hex": "#633b48"
+          },
+          "light-medium-contrast": {
+            "ref": "tertiary100",
+            "hex": "#fff"
+          },
+          "dark-medium-contrast": {
+            "ref": "tertiary20",
+            "hex": "#492532"
+          },
+          "light-high-contrast": {
+            "ref": "tertiary100",
+            "hex": "#fff"
+          },
+          "dark-high-contrast": {
+            "ref": "tertiary0",
+            "hex": "#000"
+          }
+        },
+        "outline": {
+          "light": {
+            "ref": "neutral-variant50",
+            "hex": "#79747e"
+          },
+          "dark": {
+            "ref": "neutral-variant60",
+            "hex": "#938f99"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral-variant30",
+            "hex": "#49454f"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral-variant70",
+            "hex": "#aea9b4"
+          },
+          "light-high-contrast": {
+            "ref": "neutral-variant20",
+            "hex": "#322f37"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral-variant95",
+            "hex": "#f5eefa"
+          }
+        },
+        "outline-variant": {
+          "light": {
+            "ref": "neutral-variant80",
+            "hex": "#cac4d0"
+          },
+          "dark": {
+            "ref": "neutral-variant30",
+            "hex": "#49454f"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral-variant50",
+            "hex": "#79747e"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral-variant60",
+            "hex": "#938f99"
+          },
+          "light-high-contrast": {
+            "ref": "neutral-variant30",
+            "hex": "#49454f"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral-variant80",
+            "hex": "#cac4d0"
+          }
+        },
+        "primary": {
+          "light": {
+            "ref": "primary40",
+            "hex": "#6750a4"
+          },
+          "dark": {
+            "ref": "primary80",
+            "hex": "#d0bcff"
+          },
+          "light-medium-contrast": {
+            "ref": "primary30",
+            "hex": "#4f378b"
+          },
+          "dark-medium-contrast": {
+            "ref": "primary90",
+            "hex": "#eaddff"
+          },
+          "light-high-contrast": {
+            "ref": "primary20",
+            "hex": "#381e72"
+          },
+          "dark-high-contrast": {
+            "ref": "primary95",
+            "hex": "#f6edff"
+          }
+        },
+        "primary-container": {
+          "light": {
+            "ref": "primary90",
+            "hex": "#eaddff"
+          },
+          "dark": {
+            "ref": "primary30",
+            "hex": "#4f378b"
+          },
+          "light-medium-contrast": {
+            "ref": "primary40",
+            "hex": "#6750a4"
+          },
+          "dark-medium-contrast": {
+            "ref": "primary60",
+            "hex": "#9a82db"
+          },
+          "light-high-contrast": {
+            "ref": "primary30",
+            "hex": "#4f378b"
+          },
+          "dark-high-contrast": {
+            "ref": "primary80",
+            "hex": "#d0bcff"
+          }
+        },
+        "primary-fixed": {
+          "light": {
+            "ref": "primary90",
+            "hex": "#eaddff"
+          },
+          "dark": {
+            "ref": "primary90",
+            "hex": "#eaddff"
+          },
+          "light-medium-contrast": {
+            "ref": "primary40",
+            "hex": "#6750a4"
+          },
+          "dark-medium-contrast": {
+            "ref": "primary90",
+            "hex": "#eaddff"
+          },
+          "light-high-contrast": {
+            "ref": "primary30",
+            "hex": "#4f378b"
+          },
+          "dark-high-contrast": {
+            "ref": "primary90",
+            "hex": "#eaddff"
+          }
+        },
+        "primary-fixed-dim": {
+          "light": {
+            "ref": "primary80",
+            "hex": "#d0bcff"
+          },
+          "dark": {
+            "ref": "primary80",
+            "hex": "#d0bcff"
+          },
+          "light-medium-contrast": {
+            "ref": "primary30",
+            "hex": "#4f378b"
+          },
+          "dark-medium-contrast": {
+            "ref": "primary80",
+            "hex": "#d0bcff"
+          },
+          "light-high-contrast": {
+            "ref": "primary20",
+            "hex": "#381e72"
+          },
+          "dark-high-contrast": {
+            "ref": "primary80",
+            "hex": "#d0bcff"
+          }
+        },
+        "scrim": {
+          "light": {
+            "ref": "neutral0",
+            "hex": "#000"
+          },
+          "dark": {
+            "ref": "neutral0",
+            "hex": "#000"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral0",
+            "hex": "#000"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral0",
+            "hex": "#000"
+          },
+          "light-high-contrast": {
+            "ref": "neutral0",
+            "hex": "#000"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral0",
+            "hex": "#000"
+          }
+        },
+        "secondary": {
+          "light": {
+            "ref": "secondary40",
+            "hex": "#625b71"
+          },
+          "dark": {
+            "ref": "secondary80",
+            "hex": "#ccc2dc"
+          },
+          "light-medium-contrast": {
+            "ref": "secondary30",
+            "hex": "#4a4458"
+          },
+          "dark-medium-contrast": {
+            "ref": "secondary90",
+            "hex": "#e8def8"
+          },
+          "light-high-contrast": {
+            "ref": "secondary20",
+            "hex": "#332d41"
+          },
+          "dark-high-contrast": {
+            "ref": "secondary95",
+            "hex": "#f6edff"
+          }
+        },
+        "secondary-container": {
+          "light": {
+            "ref": "secondary90",
+            "hex": "#e8def8"
+          },
+          "dark": {
+            "ref": "secondary30",
+            "hex": "#4a4458"
+          },
+          "light-medium-contrast": {
+            "ref": "secondary40",
+            "hex": "#625b71"
+          },
+          "dark-medium-contrast": {
+            "ref": "secondary60",
+            "hex": "#958da5"
+          },
+          "light-high-contrast": {
+            "ref": "secondary30",
+            "hex": "#4a4458"
+          },
+          "dark-high-contrast": {
+            "ref": "secondary80",
+            "hex": "#ccc2dc"
+          }
+        },
+        "secondary-fixed": {
+          "light": {
+            "ref": "secondary90",
+            "hex": "#e8def8"
+          },
+          "dark": {
+            "ref": "secondary90",
+            "hex": "#e8def8"
+          },
+          "light-medium-contrast": {
+            "ref": "secondary40",
+            "hex": "#625b71"
+          },
+          "dark-medium-contrast": {
+            "ref": "secondary90",
+            "hex": "#e8def8"
+          },
+          "light-high-contrast": {
+            "ref": "secondary30",
+            "hex": "#4a4458"
+          },
+          "dark-high-contrast": {
+            "ref": "secondary90",
+            "hex": "#e8def8"
+          }
+        },
+        "secondary-fixed-dim": {
+          "light": {
+            "ref": "secondary80",
+            "hex": "#ccc2dc"
+          },
+          "dark": {
+            "ref": "secondary80",
+            "hex": "#ccc2dc"
+          },
+          "light-medium-contrast": {
+            "ref": "secondary30",
+            "hex": "#4a4458"
+          },
+          "dark-medium-contrast": {
+            "ref": "secondary80",
+            "hex": "#ccc2dc"
+          },
+          "light-high-contrast": {
+            "ref": "secondary20",
+            "hex": "#332d41"
+          },
+          "dark-high-contrast": {
+            "ref": "secondary80",
+            "hex": "#ccc2dc"
+          }
+        },
+        "shadow": {
+          "light": {
+            "ref": "neutral0",
+            "hex": "#000"
+          },
+          "dark": {
+            "ref": "neutral0",
+            "hex": "#000"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral0",
+            "hex": "#000"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral0",
+            "hex": "#000"
+          },
+          "light-high-contrast": {
+            "ref": "neutral0",
+            "hex": "#000"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral0",
+            "hex": "#000"
+          }
+        },
+        "surface": {
+          "light": {
+            "ref": "neutral98",
+            "hex": "#fef7ff"
+          },
+          "dark": {
+            "ref": "neutral6",
+            "hex": "#141218"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral98",
+            "hex": "#fef7ff"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral6",
+            "hex": "#141218"
+          },
+          "light-high-contrast": {
+            "ref": "neutral98",
+            "hex": "#fef7ff"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral6",
+            "hex": "#141218"
+          }
+        },
+        "surface-bright": {
+          "light": {
+            "ref": "neutral98",
+            "hex": "#fef7ff"
+          },
+          "dark": {
+            "ref": "neutral24",
+            "hex": "#3b383e"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral98",
+            "hex": "#fef7ff"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral24",
+            "hex": "#3b383e"
+          },
+          "light-high-contrast": {
+            "ref": "neutral98",
+            "hex": "#fef7ff"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral24",
+            "hex": "#3b383e"
+          }
+        },
+        "surface-container": {
+          "light": {
+            "ref": "neutral94",
+            "hex": "#f3edf7"
+          },
+          "dark": {
+            "ref": "neutral12",
+            "hex": "#211f26"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral94",
+            "hex": "#f3edf7"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral12",
+            "hex": "#211f26"
+          },
+          "light-high-contrast": {
+            "ref": "neutral94",
+            "hex": "#f3edf7"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral12",
+            "hex": "#211f26"
+          }
+        },
+        "surface-container-high": {
+          "light": {
+            "ref": "neutral92",
+            "hex": "#ece6f0"
+          },
+          "dark": {
+            "ref": "neutral17",
+            "hex": "#2b2930"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral92",
+            "hex": "#ece6f0"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral17",
+            "hex": "#2b2930"
+          },
+          "light-high-contrast": {
+            "ref": "neutral92",
+            "hex": "#ece6f0"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral17",
+            "hex": "#2b2930"
+          }
+        },
+        "surface-container-highest": {
+          "light": {
+            "ref": "neutral90",
+            "hex": "#e6e0e9"
+          },
+          "dark": {
+            "ref": "neutral22",
+            "hex": "#36343b"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral90",
+            "hex": "#e6e0e9"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral22",
+            "hex": "#36343b"
+          },
+          "light-high-contrast": {
+            "ref": "neutral90",
+            "hex": "#e6e0e9"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral22",
+            "hex": "#36343b"
+          }
+        },
+        "surface-container-low": {
+          "light": {
+            "ref": "neutral96",
+            "hex": "#f7f2fa"
+          },
+          "dark": {
+            "ref": "neutral10",
+            "hex": "#1d1b20"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral96",
+            "hex": "#f7f2fa"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral10",
+            "hex": "#1d1b20"
+          },
+          "light-high-contrast": {
+            "ref": "neutral96",
+            "hex": "#f7f2fa"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral10",
+            "hex": "#1d1b20"
+          }
+        },
+        "surface-container-lowest": {
+          "light": {
+            "ref": "neutral100",
+            "hex": "#fff"
+          },
+          "dark": {
+            "ref": "neutral4",
+            "hex": "#0f0d13"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral100",
+            "hex": "#fff"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral4",
+            "hex": "#0f0d13"
+          },
+          "light-high-contrast": {
+            "ref": "neutral100",
+            "hex": "#fff"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral4",
+            "hex": "#0f0d13"
+          }
+        },
+        "surface-dim": {
+          "light": {
+            "ref": "neutral87",
+            "hex": "#ded8e1"
+          },
+          "dark": {
+            "ref": "neutral6",
+            "hex": "#141218"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral87",
+            "hex": "#ded8e1"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral6",
+            "hex": "#141218"
+          },
+          "light-high-contrast": {
+            "ref": "neutral87",
+            "hex": "#ded8e1"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral6",
+            "hex": "#141218"
+          }
+        },
+        "surface-tint": {
+          "light": {
+            "ref": "primary",
+            "hex": "#6750a4"
+          },
+          "dark": {
+            "ref": "primary",
+            "hex": "#d0bcff"
+          },
+          "light-medium-contrast": {
+            "ref": "primary",
+            "hex": "#4f378b"
+          },
+          "dark-medium-contrast": {
+            "ref": "primary",
+            "hex": "#eaddff"
+          },
+          "light-high-contrast": {
+            "ref": "primary",
+            "hex": "#381e72"
+          },
+          "dark-high-contrast": {
+            "ref": "primary",
+            "hex": "#f6edff"
+          }
+        },
+        "surface-variant": {
+          "light": {
+            "ref": "neutral-variant90",
+            "hex": "#e7e0ec"
+          },
+          "dark": {
+            "ref": "neutral-variant30",
+            "hex": "#49454f"
+          },
+          "light-medium-contrast": {
+            "ref": "neutral-variant90",
+            "hex": "#e7e0ec"
+          },
+          "dark-medium-contrast": {
+            "ref": "neutral-variant30",
+            "hex": "#49454f"
+          },
+          "light-high-contrast": {
+            "ref": "neutral-variant90",
+            "hex": "#e7e0ec"
+          },
+          "dark-high-contrast": {
+            "ref": "neutral-variant30",
+            "hex": "#49454f"
+          }
+        },
+        "tertiary": {
+          "light": {
+            "ref": "tertiary40",
+            "hex": "#7d5260"
+          },
+          "dark": {
+            "ref": "tertiary80",
+            "hex": "#efb8c8"
+          },
+          "light-medium-contrast": {
+            "ref": "tertiary30",
+            "hex": "#633b48"
+          },
+          "dark-medium-contrast": {
+            "ref": "tertiary90",
+            "hex": "#ffd8e4"
+          },
+          "light-high-contrast": {
+            "ref": "tertiary20",
+            "hex": "#492532"
+          },
+          "dark-high-contrast": {
+            "ref": "tertiary95",
+            "hex": "#ffecf1"
+          }
+        },
+        "tertiary-container": {
+          "light": {
+            "ref": "tertiary90",
+            "hex": "#ffd8e4"
+          },
+          "dark": {
+            "ref": "tertiary30",
+            "hex": "#633b48"
+          },
+          "light-medium-contrast": {
+            "ref": "tertiary40",
+            "hex": "#7d5260"
+          },
+          "dark-medium-contrast": {
+            "ref": "tertiary60",
+            "hex": "#b58392"
+          },
+          "light-high-contrast": {
+            "ref": "tertiary30",
+            "hex": "#633b48"
+          },
+          "dark-high-contrast": {
+            "ref": "tertiary80",
+            "hex": "#efb8c8"
+          }
+        },
+        "tertiary-fixed": {
+          "light": {
+            "ref": "tertiary90",
+            "hex": "#ffd8e4"
+          },
+          "dark": {
+            "ref": "tertiary90",
+            "hex": "#ffd8e4"
+          },
+          "light-medium-contrast": {
+            "ref": "tertiary40",
+            "hex": "#7d5260"
+          },
+          "dark-medium-contrast": {
+            "ref": "tertiary90",
+            "hex": "#ffd8e4"
+          },
+          "light-high-contrast": {
+            "ref": "tertiary30",
+            "hex": "#633b48"
+          },
+          "dark-high-contrast": {
+            "ref": "tertiary90",
+            "hex": "#ffd8e4"
+          }
+        },
+        "tertiary-fixed-dim": {
+          "light": {
+            "ref": "tertiary80",
+            "hex": "#efb8c8"
+          },
+          "dark": {
+            "ref": "tertiary80",
+            "hex": "#efb8c8"
+          },
+          "light-medium-contrast": {
+            "ref": "tertiary30",
+            "hex": "#633b48"
+          },
+          "dark-medium-contrast": {
+            "ref": "tertiary80",
+            "hex": "#efb8c8"
+          },
+          "light-high-contrast": {
+            "ref": "tertiary20",
+            "hex": "#492532"
+          },
+          "dark-high-contrast": {
+            "ref": "tertiary80",
+            "hex": "#efb8c8"
+          }
+        }
+      },
+      "contrast-curves-mcu-2021": {
+        "on-background": {
+          "background": "background",
+          "low": 3,
+          "standard": 3,
+          "medium": 4.5,
+          "high": 7
+        },
+        "on-surface": {
+          "background": "highest-surface",
+          "low": 4.5,
+          "standard": 7,
+          "medium": 11,
+          "high": 21
+        },
+        "on-surface-variant": {
+          "background": "highest-surface",
+          "low": 3,
+          "standard": 4.5,
+          "medium": 7,
+          "high": 11
+        },
+        "inverse-on-surface": {
+          "background": "inverse-surface",
+          "low": 4.5,
+          "standard": 7,
+          "medium": 11,
+          "high": 21
+        },
+        "outline": {
+          "background": "highest-surface",
+          "low": 1.5,
+          "standard": 3,
+          "medium": 4.5,
+          "high": 7
+        },
+        "outline-variant": {
+          "background": "highest-surface",
+          "low": 1,
+          "standard": 1,
+          "medium": 3,
+          "high": 4.5
+        },
+        "primary": {
+          "background": "highest-surface",
+          "low": 3,
+          "standard": 4.5,
+          "medium": 7,
+          "high": 7
+        },
+        "on-primary": {
+          "background": "primary",
+          "low": 4.5,
+          "standard": 7,
+          "medium": 11,
+          "high": 21
+        },
+        "primary-container": {
+          "background": "highest-surface",
+          "low": 1,
+          "standard": 1,
+          "medium": 3,
+          "high": 4.5
+        },
+        "on-primary-container": {
+          "background": "primary-container",
+          "low": 3,
+          "standard": 4.5,
+          "medium": 7,
+          "high": 11
+        },
+        "inverse-primary": {
+          "background": "inverse-surface",
+          "low": 3,
+          "standard": 4.5,
+          "medium": 7,
+          "high": 7
+        },
+        "secondary": {
+          "background": "highest-surface",
+          "low": 3,
+          "standard": 4.5,
+          "medium": 7,
+          "high": 7
+        },
+        "on-secondary": {
+          "background": "secondary",
+          "low": 4.5,
+          "standard": 7,
+          "medium": 11,
+          "high": 21
+        },
+        "secondary-container": {
+          "background": "highest-surface",
+          "low": 1,
+          "standard": 1,
+          "medium": 3,
+          "high": 4.5
+        },
+        "on-secondary-container": {
+          "background": "secondary-container",
+          "low": 3,
+          "standard": 4.5,
+          "medium": 7,
+          "high": 11
+        },
+        "tertiary": {
+          "background": "highest-surface",
+          "low": 3,
+          "standard": 4.5,
+          "medium": 7,
+          "high": 7
+        },
+        "on-tertiary": {
+          "background": "tertiary",
+          "low": 4.5,
+          "standard": 7,
+          "medium": 11,
+          "high": 21
+        },
+        "tertiary-container": {
+          "background": "highest-surface",
+          "low": 1,
+          "standard": 1,
+          "medium": 3,
+          "high": 4.5
+        },
+        "on-tertiary-container": {
+          "background": "tertiary-container",
+          "low": 3,
+          "standard": 4.5,
+          "medium": 7,
+          "high": 11
+        },
+        "error": {
+          "background": "highest-surface",
+          "low": 3,
+          "standard": 4.5,
+          "medium": 7,
+          "high": 7
+        },
+        "on-error": {
+          "background": "error",
+          "low": 4.5,
+          "standard": 7,
+          "medium": 11,
+          "high": 21
+        },
+        "error-container": {
+          "background": "highest-surface",
+          "low": 1,
+          "standard": 1,
+          "medium": 3,
+          "high": 4.5
+        },
+        "on-error-container": {
+          "background": "error-container",
+          "low": 3,
+          "standard": 4.5,
+          "medium": 7,
+          "high": 11
+        },
+        "primary-fixed": {
+          "background": "highest-surface",
+          "low": 1,
+          "standard": 1,
+          "medium": 3,
+          "high": 4.5
+        },
+        "primary-fixed-dim": {
+          "background": "highest-surface",
+          "low": 1,
+          "standard": 1,
+          "medium": 3,
+          "high": 4.5
+        },
+        "on-primary-fixed": {
+          "background": "primary-fixed-dim",
+          "low": 4.5,
+          "standard": 7,
+          "medium": 11,
+          "high": 21
+        },
+        "on-primary-fixed-variant": {
+          "background": "primary-fixed-dim",
+          "low": 3,
+          "standard": 4.5,
+          "medium": 7,
+          "high": 11
+        },
+        "secondary-fixed": {
+          "background": "highest-surface",
+          "low": 1,
+          "standard": 1,
+          "medium": 3,
+          "high": 4.5
+        },
+        "secondary-fixed-dim": {
+          "background": "highest-surface",
+          "low": 1,
+          "standard": 1,
+          "medium": 3,
+          "high": 4.5
+        },
+        "on-secondary-fixed": {
+          "background": "secondary-fixed-dim",
+          "low": 4.5,
+          "standard": 7,
+          "medium": 11,
+          "high": 21
+        },
+        "on-secondary-fixed-variant": {
+          "background": "secondary-fixed-dim",
+          "low": 3,
+          "standard": 4.5,
+          "medium": 7,
+          "high": 11
+        },
+        "tertiary-fixed": {
+          "background": "highest-surface",
+          "low": 1,
+          "standard": 1,
+          "medium": 3,
+          "high": 4.5
+        },
+        "tertiary-fixed-dim": {
+          "background": "highest-surface",
+          "low": 1,
+          "standard": 1,
+          "medium": 3,
+          "high": 4.5
+        },
+        "on-tertiary-fixed": {
+          "background": "tertiary-fixed-dim",
+          "low": 4.5,
+          "standard": 7,
+          "medium": 11,
+          "high": 21
+        },
+        "on-tertiary-fixed-variant": {
+          "background": "tertiary-fixed-dim",
+          "low": 3,
+          "standard": 4.5,
+          "medium": 7,
+          "high": 11
+        }
+      }
+    },
+    "typescale": {
+      "display-large": {
+        "font": "Roboto",
+        "weight": 400,
+        "size": "3.5625rem",
+        "size-px": 57,
+        "line-height": "4rem",
+        "line-height-px": 64,
+        "tracking": "-0.015625rem",
+        "tracking-px": -0.25,
+        "opsz": 57,
+        "emphasized-weight": 500,
+        "emphasized-wght-axis": 500
+      },
+      "display-medium": {
+        "font": "Roboto",
+        "weight": 400,
+        "size": "2.8125rem",
+        "size-px": 45,
+        "line-height": "3.25rem",
+        "line-height-px": 52,
+        "tracking": "0rem",
+        "tracking-px": 0,
+        "opsz": 45,
+        "emphasized-weight": 500,
+        "emphasized-wght-axis": 500
+      },
+      "display-small": {
+        "font": "Roboto",
+        "weight": 400,
+        "size": "2.25rem",
+        "size-px": 36,
+        "line-height": "2.75rem",
+        "line-height-px": 44,
+        "tracking": "0rem",
+        "tracking-px": 0,
+        "opsz": 36,
+        "emphasized-weight": 500,
+        "emphasized-wght-axis": 500
+      },
+      "headline-large": {
+        "font": "Roboto",
+        "weight": 400,
+        "size": "2rem",
+        "size-px": 32,
+        "line-height": "2.5rem",
+        "line-height-px": 40,
+        "tracking": "0rem",
+        "tracking-px": 0,
+        "opsz": 32,
+        "emphasized-weight": 500,
+        "emphasized-wght-axis": 500
+      },
+      "headline-medium": {
+        "font": "Roboto",
+        "weight": 400,
+        "size": "1.75rem",
+        "size-px": 28,
+        "line-height": "2.25rem",
+        "line-height-px": 36,
+        "tracking": "0rem",
+        "tracking-px": 0,
+        "opsz": 28,
+        "emphasized-weight": 500,
+        "emphasized-wght-axis": 500
+      },
+      "headline-small": {
+        "font": "Roboto",
+        "weight": 400,
+        "size": "1.5rem",
+        "size-px": 24,
+        "line-height": "2rem",
+        "line-height-px": 32,
+        "tracking": "0rem",
+        "tracking-px": 0,
+        "opsz": 24,
+        "emphasized-weight": 500,
+        "emphasized-wght-axis": 500
+      },
+      "title-large": {
+        "font": "Roboto",
+        "weight": 400,
+        "size": "1.375rem",
+        "size-px": 22,
+        "line-height": "1.75rem",
+        "line-height-px": 28,
+        "tracking": "0rem",
+        "tracking-px": 0,
+        "opsz": 22,
+        "emphasized-weight": 500,
+        "emphasized-wght-axis": 500
+      },
+      "title-medium": {
+        "font": "Roboto",
+        "weight": 500,
+        "size": "1rem",
+        "size-px": 16,
+        "line-height": "1.5rem",
+        "line-height-px": 24,
+        "tracking": "0.009375rem",
+        "tracking-px": 0.15,
+        "opsz": 16,
+        "emphasized-weight": 700,
+        "emphasized-wght-axis": 600
+      },
+      "title-small": {
+        "font": "Roboto",
+        "weight": 500,
+        "size": "0.875rem",
+        "size-px": 14,
+        "line-height": "1.25rem",
+        "line-height-px": 20,
+        "tracking": "0.00625rem",
+        "tracking-px": 0.1,
+        "opsz": 14,
+        "emphasized-weight": 700,
+        "emphasized-wght-axis": 600
+      },
+      "body-large": {
+        "font": "Roboto",
+        "weight": 400,
+        "size": "1rem",
+        "size-px": 16,
+        "line-height": "1.5rem",
+        "line-height-px": 24,
+        "tracking": "0.03125rem",
+        "tracking-px": 0.5,
+        "opsz": 16,
+        "emphasized-weight": 500,
+        "emphasized-wght-axis": 500
+      },
+      "body-medium": {
+        "font": "Roboto",
+        "weight": 400,
+        "size": "0.875rem",
+        "size-px": 14,
+        "line-height": "1.25rem",
+        "line-height-px": 20,
+        "tracking": "0.015625rem",
+        "tracking-px": 0.25,
+        "opsz": 14,
+        "emphasized-weight": 500,
+        "emphasized-wght-axis": 500
+      },
+      "body-small": {
+        "font": "Roboto",
+        "weight": 400,
+        "size": "0.75rem",
+        "size-px": 12,
+        "line-height": "1rem",
+        "line-height-px": 16,
+        "tracking": "0.025rem",
+        "tracking-px": 0.4,
+        "opsz": 12,
+        "emphasized-weight": 500,
+        "emphasized-wght-axis": 500
+      },
+      "label-large": {
+        "font": "Roboto",
+        "weight": 500,
+        "size": "0.875rem",
+        "size-px": 14,
+        "line-height": "1.25rem",
+        "line-height-px": 20,
+        "tracking": "0.00625rem",
+        "tracking-px": 0.1,
+        "opsz": 14,
+        "emphasized-weight": 700,
+        "emphasized-wght-axis": 600
+      },
+      "label-medium": {
+        "font": "Roboto",
+        "weight": 500,
+        "size": "0.75rem",
+        "size-px": 12,
+        "line-height": "1rem",
+        "line-height-px": 16,
+        "tracking": "0.03125rem",
+        "tracking-px": 0.5,
+        "opsz": 12,
+        "emphasized-weight": 700,
+        "emphasized-wght-axis": 600
+      },
+      "label-small": {
+        "font": "Roboto",
+        "weight": 500,
+        "size": "0.6875rem",
+        "size-px": 11,
+        "line-height": "1rem",
+        "line-height-px": 16,
+        "tracking": "0.03125rem",
+        "tracking-px": 0.5,
+        "opsz": 11,
+        "emphasized-weight": 700,
+        "emphasized-wght-axis": 600
+      }
+    },
+    "typeface": {
+      "brand": "Roboto",
+      "plain": "Roboto",
+      "weight-bold": "700",
+      "weight-medium": "500",
+      "weight-regular": "400"
+    },
+    "shape": {
+      "corner-extra-extra-large": "48px",
+      "corner-extra-large": "28px",
+      "corner-extra-large-increased": "32px",
+      "corner-extra-large-top": "28px 28px 0px 0px",
+      "corner-extra-small": "4px",
+      "corner-extra-small-top": "4px 4px 0px 0px",
+      "corner-full": "9999px",
+      "corner-large": "16px",
+      "corner-large-increased": "20px",
+      "corner-large-end": "0px 16px 16px 0px",
+      "corner-large-start": "16px 0px 0px 16px",
+      "corner-large-top": "16px 16px 0px 0px",
+      "corner-medium": "12px",
+      "corner-none": "0px",
+      "corner-small": "8px"
+    },
+    "elevation": {
+      "level0": "0dp",
+      "level1": "1dp",
+      "level2": "3dp",
+      "level3": "6dp",
+      "level4": "8dp",
+      "level5": "12dp"
+    },
+    "state": {
+      "disabled-state-layer-opacity": 0.38,
+      "dragged-state-layer-opacity": 0.16,
+      "focus-state-layer-opacity": 0.1,
+      "hover-state-layer-opacity": 0.08,
+      "pressed-state-layer-opacity": 0.1,
+      "focus-indicator": {
+        "inner-offset": "-3dp",
+        "outer-offset": "2dp",
+        "thickness": "3dp"
+      }
+    },
+    "spacing": {
+      "space0": "0dp",
+      "space25": "2dp",
+      "space50": "4dp",
+      "space75": "6dp",
+      "space100": "8dp",
+      "space125": "10dp",
+      "space150": "12dp",
+      "space175": "14dp",
+      "space200": "16dp",
+      "space250": "20dp",
+      "space300": "24dp",
+      "space400": "32dp",
+      "space450": "36dp",
+      "space500": "40dp",
+      "space600": "48dp",
+      "space700": "56dp",
+      "space800": "64dp",
+      "space900": "72dp"
+    },
+    "breakpoints": {
+      "compact": {
+        "width": "< 600dp",
+        "margin": "16dp",
+        "panes": 1
+      },
+      "medium": {
+        "width": "600–839dp",
+        "margin": "24dp",
+        "spacer": "24dp",
+        "panes": 1
+      },
+      "expanded": {
+        "width": "840–1199dp",
+        "margin": "24dp",
+        "spacer": "24dp",
+        "panes": "1–2",
+        "fixed-pane": "360dp"
+      },
+      "large": {
+        "width": "1200–1599dp",
+        "margin": "24dp",
+        "spacer": "24dp",
+        "panes": 2
+      },
+      "extra-large": {
+        "width": ">= 1600dp",
+        "margin": "24dp",
+        "spacer": "24dp",
+        "panes": "2–3"
+      }
+    }
+  }
+}
