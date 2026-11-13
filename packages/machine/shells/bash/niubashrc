@@ -1,0 +1,6 @@
+# packages/machine/shells/bash/niubashrc — niubash 1.5 en interactif ne lit que ~/.niubashrc (README niubash, « On Windows,
+# configuration is ONE file ») : on y rebranche le bashrc commun.
+# niubash-root-fallback : « / » = NIU_ROOT ; /<chemin> absent de NIU_ROOT -> lecteur système (cd /src -> C:\src),
+# natif (aphrody-labs/niubash nt/fix-root-fallback).
+export NIU_ROOT_FALLBACK=1
+. "${BASH_SOURCE[0]%[/\\]*}/bashrc"

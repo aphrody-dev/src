@@ -1,0 +1,3 @@
+# packages/machine/shells/bash/bash_profile — shells de login (Claude Code lance `bash -c -l`, Git Bash, brush -l).
+# Tout est dans bashrc (garde non interactive incluse) : un seul fichier à maintenir.
+. "${BASH_SOURCE[0]%[/\\]*}/bashrc"

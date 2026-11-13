@@ -1,0 +1,140 @@
+# packages/machine/shells/bash/bashrc — config unique de la famille bash : niubash 1.5, Git Bash 5.3, brush 0.4.
+# Installé par packages/machine/shells/manifest.toml (stubs ~/.bashrc, ~/.bash_profile, ~/.niubashrc).
+# Choix, versions et sources : docs/shell/bash-setup.md. Démarrage : zéro fork hors premier lancement (caches).
+
+# --- Environnement partagé (tous modes, y compris Claude Code `bash -c -l`) ---
+_ay_d=${BASH_SOURCE[0]:-C:/src/packages/machine/shells/bash/bashrc}
+_ay_d=${_ay_d%[/\\]*}
+[[ -r $_ay_d/../env.sh ]] && . "$_ay_d/../env.sh"
+unset _ay_d
+: "${SRC_ROOT:=C:/src}" "${AY_SHELL_CACHE:=$HOME/.cache/shell}"
+[[ -n ${LANG-} ]] || export LANG=C.UTF-8
+
+# Git Bash (runtime MSYS2) : convertit /v, /f, /c... en V:/, F:/, C:/ pour les exe natifs. niubash ne le fait pas
+# (contrat de chemins documenté) et brush n'a pas de conversion : wrappers limités à Git Bash.
+if [[ $BASH == /usr/bin/bash && ( $OSTYPE == cygwin || $OSTYPE == msys ) ]]; then
+  for _ay_c in reg sc schtasks taskkill tasklist icacls robocopy netsh bcdedit findstr cmd wmic sfc dism \
+    certutil xcopy ipconfig shutdown where powercfg wevtutil auditpol bitsadmin fsutil manage-bde winget; do
+    eval "$_ay_c() { MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL='*' command $_ay_c \"\$@\"; }"
+  done
+  unset _ay_c
+fi
+
+# --- Non interactif (Claude Code, scripts) : arrêt ici ---
+[[ $- == *i* ]] || return 0
+# niubash peut lire ~/.bash_profile puis ~/.niubashrc : une seule passe interactive.
+[[ -n ${_AY_BASHRC_I-} ]] && return 0
+_AY_BASHRC_I=1
+
+HISTSIZE=50000 HISTFILESIZE=100000 HISTCONTROL=ignoreboth:erasedups
+HISTIGNORE='&:ls:ll:bg:fg:exit:history:clear' HISTTIMEFORMAT='%F %T '
+shopt -s histappend cmdhist checkwinsize globstar extglob no_empty_cmd_completion 2>/dev/null
+
+# Prompt minimal, sans fork : code retour en rouge s'il est non nul, dossier, $.
+PS1='\[\e[31m\]${?#0}\[\e[0m\]\[\e[34m\]\w\[\e[0m\] \$ '
+# Historique partagé entre sessions : `history -a` est un builtin.
+case ";${PROMPT_COMMAND-};" in *"history -a"*) ;; *) PROMPT_COMMAND="history -a${PROMPT_COMMAND:+; $PROMPT_COMMAND}" ;; esac
+
+alias ll='eza -la --git --icons=auto' gs='git status -sb' gd='git diff' gl='git log --oneline --graph -20'
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git --path-separator /'
+export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git --path-separator /'
+
+# --- Complétion paresseuse : script chargé au premier Tab, mis en cache dans $AY_SHELL_CACHE/comp ---
+# Sources : git = third_party/git (contrib/completion), bun = third_party/bun (completions/bun.bash),
+# just = `just --completions bash` (clap dynamique), rustup = `rustup completions bash rustup`,
+# cargo = <sysroot>/etc/bash_completion.d/cargo (ce que `rustup completions bash cargo` source).
+_ay_comp_lazy() {
+  local c=${1##*[/\\]} f d=$AY_SHELL_CACHE/comp
+  c=${c%.exe}
+  case $c in
+    git | gitk) f=$SRC_ROOT/third_party/git/contrib/completion/git-completion.bash ;;
+    bun) f=$SRC_ROOT/third_party/bun/completions/bun.bash ;;
+    just | cargo | rustup)
+      f=$d/$c.bash
+      if [[ ! -s $f ]]; then
+        [[ -d $d ]] || mkdir -p "$d"
+        case $c in
+          just) just --completions bash >"$f" 2>/dev/null ;;
+          rustup) rustup completions bash rustup >"$f" 2>/dev/null ;;
+          # Script cargo du sysroot sans le préfixe `command -v cargo … &&` (rejeté par le parseur niubash 1.5.0).
+          cargo) local s; s=$(rustc --print sysroot 2>/dev/null) &&
+            sed -e "/^command -v cargo .*&&\$/d" -e "s/^} &&\$/}/" "$s/etc/bash_completion.d/cargo" >"$f" ;;
+        esac
+      fi
+      ;;
+  esac
+  complete -r "$c" 2>/dev/null
+  [[ -n $f && -r $f ]] && . "$f"
+  local spec fn
+  spec=$(complete -p "$c" 2>/dev/null) || return 0
+  [[ $spec =~ -F\ ([^ ]+) ]] || return 0
+  fn=${BASH_REMATCH[1]}
+  [[ $fn == _ay_comp_lazy ]] && return 0
+  "$fn" "$@"
+}
+complete -o bashdefault -o default -F _ay_comp_lazy git gitk bun just cargo rustup
+
+# ay (clap, sans générateur de complétion) : sous-commandes et options lues dans `ay … --help`, une fois par niveau.
+declare -A _ay_help_cache 2>/dev/null
+_ay_complete() {
+  local cur=${COMP_WORDS[COMP_CWORD]} key=ay i line words='' in_cmds=0
+  for ((i = 1; i < COMP_CWORD; i++)); do [[ ${COMP_WORDS[i]} == -* ]] || key+=" ${COMP_WORDS[i]}"; done
+  if [[ -z ${_ay_help_cache[$key]+x} ]]; then
+    while IFS= read -r line; do
+      line=${line%$'\r'}
+      case $line in
+        Commands:) in_cmds=1; continue ;;
+        '') in_cmds=0; continue ;;
+      esac
+      if ((in_cmds)) && [[ $line =~ ^\ \ ([a-z0-9][a-z0-9_-]*) ]]; then
+        [[ ${BASH_REMATCH[1]} == help ]] || words+=" ${BASH_REMATCH[1]}"
+      fi
+      # Lignes d'options clap : « -h, --help » ou « --check ».
+      if [[ $line =~ ^\ +(-[A-Za-z0-9]),\ (--[A-Za-z0-9][A-Za-z0-9-]*) ]]; then
+        words+=" ${BASH_REMATCH[1]} ${BASH_REMATCH[2]}"
+      elif [[ $line =~ ^\ +(--[A-Za-z0-9][A-Za-z0-9-]*) ]]; then
+        words+=" ${BASH_REMATCH[1]}"
+      fi
+    done < <(command $key --help 2>/dev/null)
+    _ay_help_cache[$key]=$words
+  fi
+  COMPREPLY=($(compgen -W "${_ay_help_cache[$key]}" -- "$cur"))
+}
+complete -o bashdefault -o default -F _ay_complete ay
+
+# --- zoxide 0.10 + fzf 0.75 : scripts d'init générés une fois (fork) puis sourcés (régénérer : rm "$AY_SHELL_CACHE"/bash-*.bash).
+# Pas de `command -v` à chaque démarrage (balayage du PATH : ~4 ms chacun mesurés sous Git Bash) : le cache fait foi.
+_ay_c=$AY_SHELL_CACHE/bash-zoxide.bash
+if [[ ! -s $_ay_c ]] && command -v zoxide >/dev/null; then
+  [[ -d $AY_SHELL_CACHE ]] || mkdir -p "$AY_SHELL_CACHE"
+  # Retire les deux substitutions de commande de l'init (forks au chargement).
+  zoxide init bash | sed -e 's|^__zoxide_oldpwd="\$(__zoxide_pwd)"$|__zoxide_oldpwd=$PWD|' \
+    -e 's|\[\[ "\$(declare -p PROMPT_COMMAND 2>&1)" == "declare -a"\* \]\]|[[ ${PROMPT_COMMAND@a} == *a* ]]|' >"$_ay_c"
+fi
+if [[ -s $_ay_c ]]; then
+  . "$_ay_c"
+  # zoxide (Windows) attend C:\x : conversion /c/x ou C:/x en bash pur (sans cygpath), ajout seulement après cd.
+  __zoxide_wpath() {
+    __zoxide_wp=$PWD
+    if [[ $__zoxide_wp =~ ^/([a-zA-Z])(/.*)?$ ]]; then __zoxide_wp="${BASH_REMATCH[1]^^}:${BASH_REMATCH[2]:-/}"; fi
+    __zoxide_wp=${__zoxide_wp//\//\\}
+  }
+  __zoxide_pwd() { __zoxide_wpath; \builtin printf '%s\n' "$__zoxide_wp"; }
+  __zoxide_hook() {
+    \builtin local -r retval="$?"
+    if [[ $__zoxide_oldpwd != "$PWD" ]]; then
+      __zoxide_oldpwd=$PWD
+      [[ -o history ]] && { __zoxide_wpath; \command zoxide add -- "$__zoxide_wp"; }
+    fi
+    return "$retval"
+  }
+fi
+# fzf : Ctrl-R, Ctrl-T, Alt-C (`bind -x`). Le test `command -v perl` du script (~7 ms) est figé à faux : branche awk.
+_ay_c=$AY_SHELL_CACHE/bash-fzf.bash
+if [[ ! -s $_ay_c ]] && command -v fzf >/dev/null; then
+  [[ -d $AY_SHELL_CACHE ]] || mkdir -p "$AY_SHELL_CACHE"
+  fzf --bash 2>/dev/null | sed -n -e 's/^if command -v perl > \/dev\/null; then$/if false; then/' \
+    -e '1,/^### end: key-bindings.bash ###/p' >"$_ay_c"
+fi
+[[ -s $_ay_c ]] && . "$_ay_c"
+unset _ay_c
