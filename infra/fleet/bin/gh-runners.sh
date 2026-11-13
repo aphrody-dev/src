@@ -15,6 +15,7 @@ for k in $(seq 2 "$N"); do
     for f in bin externals config.sh env.sh run.sh runsvc.sh svc.sh run-helper.cmd.template run-helper.sh.template safe_sleep.sh; do
       [ -e "$H/actions-runner/$f" ] && cp -a "$H/actions-runner/$f" "$d/"
     done
+    for f in .path .env; do [ -e "$H/actions-runner/$f" ] && cp -a "$H/actions-runner/$f" "$d/"; done # PATH of the jobs (cargo, bun, ~/.local/bin)
     chown -R "$U:$U" "$d"
     sudo -u "$U" bash -c "cd '$d' && ./config.sh --unattended --url '$REPO_URL' --token '$TOKEN' --name '$name' --labels fr1,build --work _work --replace" >/dev/null
   fi
@@ -40,5 +41,6 @@ WantedBy=multi-user.target
 UNIT
 done
 systemctl daemon-reload
+for k in $(seq 2 "$N"); do for f in .path .env; do cp -a "$H/actions-runner/$f" "$H/actions-runner-$k/$f" 2>/dev/null || true; done; chown -R "$U:$U" "$H/actions-runner-$k"; done
 for k in $(seq 2 "$N"); do systemctl enable --now "actions.runner.aphrody-labs-src.fr1-$k.service" >/dev/null; done
 systemctl list-units "actions.runner.*" --no-legend | awk '{print $1, $3, $4}'

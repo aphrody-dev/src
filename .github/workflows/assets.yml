@@ -40,7 +40,7 @@ jobs:
         id: fp
         run: |
           export PATH="$HOME/.bun/bin:$PATH"
-          bun --cwd packages/assets install --frozen-lockfile
+          (cd packages/assets && bun install --frozen-lockfile)
           bun -e 'import {fingerprint} from "./packages/assets/src/retest.ts"; console.log("fp=" + await fingerprint(process.cwd()))' >> "$GITHUB_OUTPUT"
       - name: Fetch remote assets into the store
         run: |
