@@ -77,7 +77,7 @@ publiques (Cloudflare) dont `https://api.aphrody.com/v1/health`.
 |---|---|---|---|---|
 | fr2 | 40 s (prêt 131 s) | check 27 OK/0 FAIL → 27/0 ; 3/3 conteneurs ; tmux `agents` recréé (03:12:55) ; journald `/var/log/journal` ; vhosts et public identiques | 3/3 sondes sans nouvel échec (prd servait) | PASS ([log](resilience/2026-11-13T0311Z-fr2.txt)) |
 | prd | 550 s (arrêt 4 min 30 : sessions root bloquées, `dd` en D, puis ~4 min hors noyau chez Hostinger ; sshd à +18 s du noyau 7.2.14) | check 37/2 FAIL → 38/1 FAIL (seul FAIL : `rg-steam-post.service`, rosegriffon) ; 28 conteneurs de prod revenus dont `shenron-chat` (llama-server) ; tmux `agents` recréé (03:41:51) ; vhosts et public identiques ; bbr+fq actifs (module absent avant reboot : noyau mis à jour sans reboot) | 0/13 : aucun basculement, tout le public dépend de prd | PASS fonctionnel ; le script dit FAIL car 29 → 28 conteneurs : le manquant est `rg-steam-verify`, job ponctuel rosegriffon sans politique de redémarrage ([log](resilience/2026-11-13T0331Z-prd.txt)) |
-FR1_ROW
+| fr1 | non lancé | check 30 OK/0 FAIL, 4/4 conteneurs, tmux `agents`, journald persistant (avant) | - | NOT RUN : `fleet-reboot-precheck.sh` refuse tant que des builds d'autres agents tournent (cargo/rustc, verrou heavy tenu) ; à relancer par `just fleet-resilience-proof fr1` à la première fenêtre libre ([log](resilience/2026-11-13T0357Z-fr1.txt)) |
 
 Suites : `DefaultTimeoutStopSec=45s` posé sur prd et fr2 (`common.sh sysctl_serve`) pour raccourcir l'arrêt ;
 pas de repli public pendant un reboot de prd (backends uniques) : relève du LB cluster (docs/infra/CLUSTER.md) et de

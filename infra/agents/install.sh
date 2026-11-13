@@ -23,7 +23,8 @@ fi
 git -C "$SRC" config user.name "aphrody-dev"
 git -C "$SRC" config user.email "contact@aphrody.com"
 # Push credentials: gh's helper, which reads GH_TOKEN (injected by the runner from the user credstore).
-git -C "$SRC" config credential.https://github.com.helper ''
+git -C "$SRC" config --unset-all credential.https://github.com.helper 2>/dev/null || true
+git -C "$SRC" config --add credential.https://github.com.helper ''
 git -C "$SRC" config --add credential.https://github.com.helper '!gh auth git-credential'
 git -C "$SRC" pull --ff-only --quiet origin main || true
 install -m 0755 "$SRC/infra/agents/pre-push" "$SRC/.git/hooks/pre-push"

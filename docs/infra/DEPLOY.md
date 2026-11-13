@@ -16,6 +16,13 @@ retenus par brique (versions, commits sources) : [UPSTREAM-STACK.md](UPSTREAM-ST
 | fr1 (Ubuntu) | usine : Chromium/LLVM, builds d'images, CI (runner `fr1`), training, agents lourds | `just fleet-bootstrap fr1` | Docker 29.7, buildx `aphrody` (docker-container, 4 CPU / 12 Gio, amd64+arm64 via binfmt) |
 | fr2 (Ubuntu) | edge : nginx, CDN, cloudflared | `just fleet-bootstrap fr2` | Docker (`ip-forward-no-drop`, `live-restore`), profil `edge` |
 
+Agents et jobs lourds (décision 2026-11-13) : sur les trois hôtes les agents tournent sous l'utilisateur `agent`
+(`sudo NOPASSWD: ALL` par `/etc/sudoers.d/aphrody-agent`, groupe `docker`, linger, runner `infra/agents`), posé par
+`just fleet-bootstrap <rôle>` ou `just agents-install <hôte>`. `aphrody-heavy` n'exécute un job que sur fr1
+(`/etc/aphrody/role`) et sort en 64 ailleurs : depuis le PC ou un autre hôte, `ssh vps aphrody-heavy <cmd>`.
+prd n'a plus ni rustup, ni clang/llvm, ni cmake, ni sccache, ni worker NativeLink, ni BuildKit ; fr2 n'a plus de
+worker NativeLink. Survie au reboot : [RESILIENCE.md](RESILIENCE.md) (`just fleet-resilience-proof <hôte>`).
+
 ## Matrice par service
 
 | Service | Production actuelle | Alternatives rendues | Échelle horizontale | État | Retour arrière (une ligne) |

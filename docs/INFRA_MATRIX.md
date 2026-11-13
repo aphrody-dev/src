@@ -7,6 +7,8 @@ environment variable name only (values live in `C:\src\.env`, managed by `packag
 Owner decision 2026-11-13: **usa (prd) = production backends only, minimal, no compilers. fr1 = the
 factory (builds, CI runner, training, heavy agents). fr2 = edge only, minimal.** Upstream tool per
 infrastructure brick (versions, source commits, rollback): `docs/infra/UPSTREAM-STACK.md`.
+Agents run as user `agent` on every host (sudo NOPASSWD, docker, linger); heavy jobs only on fr1
+(`aphrody-heavy`, exit 64 elsewhere). Reboot/crash survival and the reboot proofs: `docs/infra/RESILIENCE.md`.
 
 ## 1. Machines
 

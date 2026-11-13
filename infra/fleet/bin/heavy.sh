@@ -19,7 +19,9 @@ n=$(nproc)
 limit=$(( n * 2 / 3 ))
 jobs=$(( n / 3 )); [ "$jobs" -ge 1 ] || jobs=1
 export CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-$jobs} MAKEFLAGS=${MAKEFLAGS:--j$jobs} CMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL:-$jobs}
-exec 9>"$lock"
+# Shared by every user (agent, ubuntu, root): created 0666, then opened read-only (flock(2) needs no write access).
+[ -e "$lock" ] || (umask 0; : > "$lock") 2>/dev/null
+exec 9<"$lock"
 flock 9
 waited=0
 while :; do

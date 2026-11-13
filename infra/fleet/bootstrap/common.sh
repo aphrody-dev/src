@@ -130,6 +130,8 @@ docker_multiarch() {
 # with `sudo` (NOPASSWD: ALL, /etc/sudoers.d/aphrody-agent validated by visudo -cf), member of docker.
 # Rollback: sudo rm /etc/sudoers.d/aphrody-agent
 AGENT=${AGENTS_USER:-agent}
+# Repo root of this bootstrap tree (role scripts live in infra/fleet/bootstrap/), independent of where LOCK is.
+ROOT=$(cd "$(dirname "$0")/../../.." && pwd)
 agent_user() {
   id "$AGENT" >/dev/null 2>&1 || { $SUDO useradd -m -s /bin/bash "$AGENT"; log "user $AGENT created"; }
   H=$(getent passwd "$AGENT" | cut -d: -f6)
@@ -163,7 +165,7 @@ agent_runner() {
     systemctl --user disable --now aphrody-agents.service aphrody-agents-health.timer aphrody-agents-pull.timer >/dev/null 2>&1 || true
     rm -rf "$HOME"/.config/systemd/user/aphrody-agents*; systemctl --user daemon-reload 2>/dev/null || true
   fi
-  root=$(dirname "$LOCK")/../..
+  root=$ROOT
   sudo -iu "$AGENT" sh -s < "$root/infra/agents/install.sh"
 }
 
@@ -175,7 +177,7 @@ agent_runner() {
 agent_cli_fullaccess() {
   sudo -iu "$AGENT" sh -s <<'EOF'
 set -eu
-"$HOME/.bun/bin/bun" -e '
+B=$(PATH="$HOME/.bun/bin:$HOME/.local/bin:/usr/local/bin:$PATH" command -v bun); "$B" -e '
 const fs = require("fs"), p = require("path"), H = process.env.HOME;
 const merge = (f, fn) => { fs.mkdirSync(p.dirname(f), { recursive: true });
   const j = fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, "utf8")) : {}; fn(j);
@@ -200,18 +202,21 @@ resilience() {
   $SUDO install -d /etc/systemd/journald.conf.d /var/log/journal
   printf '[Journal]\nStorage=persistent\nSystemMaxUse=%s\n' "${JOURNAL_MAX:-2G}" | $SUDO tee /etc/systemd/journald.conf.d/10-aphrody.conf >/dev/null
   $SUDO systemd-tmpfiles --create --prefix /var/log/journal >/dev/null 2>&1 || true
-  $SUDO systemctl restart systemd-journald
+  # A later drop-in with Storage=volatile/auto (zz-vps-limits.conf on fr1) would win: Storage is set here only.
+  for d in /etc/systemd/journald.conf.d/*.conf; do [ "$d" = /etc/systemd/journald.conf.d/10-aphrody.conf ] || $SUDO sed -i "/^Storage=/d" "$d"; done
+  $SUDO systemctl restart systemd-journald && $SUDO journalctl --flush
   for u in containerd.service docker.socket docker.service; do systemctl cat "$u" >/dev/null 2>&1 && $SUDO systemctl enable "$u" >/dev/null 2>&1; done
   if [ -x /usr/local/bin/fleet-resilience.sh ] && [ -r /etc/fleet/resilience.conf ]; then $SUDO /usr/local/bin/fleet-resilience.sh apply | grep -v '^OK' || true; fi
 }
 # sysctl_serve: one tuning file for the serving hosts (prd, fr2), replacing older per-app drop-ins.
 sysctl_serve() {
-  root=$(dirname "$LOCK")/../..
+  root=$ROOT
   $SUDO install -m 0644 "$root/infra/fleet/sysctl/90-aphrody-serve.conf" /etc/sysctl.d/90-aphrody-serve.conf
   for old in 90-dbfr.conf 90-yolo-swappiness.conf 99-yolo-2026-perf.conf; do $SUDO rm -f "/etc/sysctl.d/$old"; done
   echo tcp_bbr | $SUDO tee /etc/modules-load.d/aphrody-bbr.conf >/dev/null; $SUDO modprobe tcp_bbr 2>/dev/null || true
   $SUDO install -d /etc/systemd/system.conf.d
-  printf '[Manager]\nDefaultLimitNOFILE=1048576\nDefaultTasksMax=infinity\n' | $SUDO tee /etc/systemd/system.conf.d/limits.conf >/dev/null
+  # Stop timeout 45 s (default 90 s): stuck login sessions held the prd reboot of 2026-11-13 for 4.5 min.
+  printf '[Manager]\nDefaultLimitNOFILE=1048576\nDefaultTasksMax=infinity\nDefaultTimeoutStopSec=45s\n' | $SUDO tee /etc/systemd/system.conf.d/limits.conf >/dev/null
   $SUDO sysctl -q --system 2>&1 | grep -v '^\*' | head -3 || true
 }
 
@@ -220,4 +225,8 @@ report() {
 }
 
 # role_mark <fr1|fr2|prd>: /etc/aphrody/role, read by aphrody-heavy (heavy jobs on fr1 only) and the audit.
-role_mark() { $SUDO install -d /etc/aphrody; echo "$1" | $SUDO tee /etc/aphrody/role >/dev/null; }
+role_mark() {
+  $SUDO install -d /etc/aphrody; echo "$1" | $SUDO tee /etc/aphrody/role >/dev/null
+  # aphrody-heavy on every host: runs the job on fr1, refuses elsewhere (exit 64).
+  h=$ROOT/infra/fleet/bin/heavy.sh; if [ -f "$h" ]; then $SUDO install -m 0755 "$h" "$BIN/aphrody-heavy"; fi
+}

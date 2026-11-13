@@ -43,7 +43,8 @@ if ! pgrep -x cargo >/dev/null 2>&1 && ! pgrep -f 'buildx (bake|build)' >/dev/nu
     [ -e "$d" ] && rm -rf "$d" && log "purged $d"
   done
   for f in sccache cargo-zigbuild cargo-nextest cbindgen b3sum protoc go gofmt zig dotnet; do if [ -e "$BIN/$f" ] || [ -L "$BIN/$f" ]; then rm -f "$BIN/$f"; fi; done
-  build_pkgs=$(for p in base-devel clang llvm lld cmake ninja protobuf nasm rustup sccache; do pacman -Qq "$p" 2>/dev/null; done)
+  build_pkgs=$(for p in base-devel clang llvm lld cmake ninja meson protobuf android-tools nasm rustup sccache \
+    cargo-audit cargo-deny cargo-edit cargo-nextest cargo-watch rust-analyzer; do pacman -Qq "$p" 2>/dev/null; done)
   [ -z "$build_pkgs" ] || pacman -Rns --noconfirm $build_pkgs >/dev/null 2>&1 || pacman -Rn --noconfirm $build_pkgs >/dev/null 2>&1 || log "pacman: some build packages kept (required by a runtime package)"
   orphans=$(pacman -Qdtq 2>/dev/null || true); [ -z "$orphans" ] || pacman -Rns --noconfirm $orphans >/dev/null 2>&1 || true
   paccache -rk1 >/dev/null 2>&1 || rm -f /var/cache/pacman/pkg/*.pkg.tar.* 2>/dev/null || true
