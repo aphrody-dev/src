@@ -1,43 +1,7 @@
 {
-  "generatedAt": "2026-11-13T04:07:18.288Z",
+  "generatedAt": "2026-11-13T04:14:36.137Z",
   "source": "api.github.com/graphql",
   "EpicGames": [
-    {
-      "repo": "EpicGames/UnrealEngine",
-      "archived": false,
-      "private": true,
-      "language": "C++",
-      "license": "NOASSERTION",
-      "stars": 34642,
-      "pushed": "2026-11-13T02:18:07Z",
-      "branches": 81,
-      "defaultBranch": "release",
-      "head": "f45729c0b6f097038e72b52d366a62baeca3275b",
-      "headDate": "2026-10-20T12:17:07Z",
-      "headTitle": "5.8.4 release",
-      "latestRelease": {
-        "tag": "5.8.4-release",
-        "date": "2026-10-20T13:15:11Z"
-      }
-    },
-    {
-      "repo": "EpicGames/zen",
-      "archived": false,
-      "private": true,
-      "language": "C++",
-      "license": null,
-      "stars": 237,
-      "pushed": "2026-11-13T00:50:39Z",
-      "branches": 133,
-      "defaultBranch": "main",
-      "head": "da9cd2608fe62fe0feb95f713e99e8b9fef12bb3",
-      "headDate": "2026-11-12T22:57:06Z",
-      "headTitle": "zenplat: console log timestamps take their milliseconds from the elap…",
-      "latestRelease": {
-        "tag": "v5.8.27",
-        "date": "2026-10-20T16:26:15Z"
-      }
-    },
     {
       "repo": "EpicGames/PixelStreamingInfrastructure",
       "archived": false,
@@ -495,21 +459,6 @@
       "latestRelease": null
     },
     {
-      "repo": "EpicGames/UnrealTournament",
-      "archived": false,
-      "private": true,
-      "language": "C++",
-      "license": "NOASSERTION",
-      "stars": 2453,
-      "pushed": "2024-06-06T09:44:07Z",
-      "branches": 2,
-      "defaultBranch": "clean-master",
-      "head": "cc3df7642980e2541fe2d7842f0782bae6c70cd5",
-      "headDate": "2022-01-18T15:45:30Z",
-      "headTitle": "Merge pull request #320 from cnmade/patch-1",
-      "latestRelease": null
-    },
-    {
       "repo": "EpicGames/PythonSamples",
       "archived": true,
       "private": false,
@@ -591,21 +540,6 @@
       "latestRelease": null
     },
     {
-      "repo": "EpicGames/UGCExample",
-      "archived": false,
-      "private": true,
-      "language": "C++",
-      "license": null,
-      "stars": 413,
-      "pushed": "2023-06-10T01:12:41Z",
-      "branches": 1,
-      "defaultBranch": "release",
-      "head": "58eaa3207c283a07227cd62da03f2ec4167c0705",
-      "headDate": "2020-12-03T15:00:55Z",
-      "headTitle": "Update QuickStart.md",
-      "latestRelease": null
-    },
-    {
       "repo": "EpicGames/SPIRV-Reflect",
       "archived": false,
       "private": false,
@@ -633,21 +567,6 @@
       "head": "ccffaffdda0908d26d81041d1a89f018dd59fcf8",
       "headDate": "2022-11-11T07:06:49Z",
       "headTitle": "feat: improve sampling quality by setting all textures to maximal sup…",
-      "latestRelease": null
-    },
-    {
-      "repo": "EpicGames/Shave-And-A-Haircut",
-      "archived": false,
-      "private": true,
-      "language": "C",
-      "license": "NOASSERTION",
-      "stars": 185,
-      "pushed": "2022-10-11T21:59:42Z",
-      "branches": 1,
-      "defaultBranch": "master",
-      "head": "12fb430890d89aa22b77d6e221253c2957e6c929",
-      "headDate": "2019-10-24T15:11:58Z",
-      "headTitle": "Update README.md",
       "latestRelease": null
     },
     {
@@ -729,21 +648,6 @@
       "head": "5760039163ca1ba0bfa7bfd8daa5c7803df43478",
       "headDate": "2021-10-14T18:13:23Z",
       "headTitle": "Update README.md",
-      "latestRelease": null
-    },
-    {
-      "repo": "EpicGames/ARTv2",
-      "archived": false,
-      "private": true,
-      "language": "Mathematica",
-      "license": null,
-      "stars": 243,
-      "pushed": "2020-07-29T15:15:57Z",
-      "branches": 2,
-      "defaultBranch": "master",
-      "head": "89aef5faa84538223bfd751fddb2e123f1f5bce6",
-      "headDate": "2017-08-21T21:51:09Z",
-      "headTitle": "fixed install.mel issue",
       "latestRelease": null
     },
     {
