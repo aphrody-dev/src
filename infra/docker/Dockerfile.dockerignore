@@ -6,6 +6,7 @@
 !rust-toolchain.toml
 !.cargo/config.toml
 !crates/
+!tools/build-model/
 !package.json
 !bun.lock
 !bunfig.toml

@@ -58,6 +58,10 @@ FROM rust-base AS rust-plan
 COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 COPY .cargo/config.toml .cargo/config.toml
 COPY crates/ crates/
+# Explicit workspace members outside crates/ (root Cargo.toml).
+COPY packages/env-kit/loaders/rust/ packages/env-kit/loaders/rust/
+COPY packages/vault/native/ packages/vault/native/
+COPY tools/build-model/ tools/build-model/
 RUN cargo chef prepare --recipe-path /recipe.json
 
 FROM rust-base AS rust-build
@@ -76,6 +80,10 @@ RUN --mount=type=cache,id=cargo-registry,target=/opt/cargo/registry,sharing=lock
     cargo chef cook --zigbuild --profile "${CARGO_PROFILE}" --target "$t" ${RUST_PACKAGES} --recipe-path /recipe.json
 COPY Cargo.toml Cargo.lock ./
 COPY crates/ crates/
+# Explicit workspace members outside crates/ (root Cargo.toml).
+COPY packages/env-kit/loaders/rust/ packages/env-kit/loaders/rust/
+COPY packages/vault/native/ packages/vault/native/
+COPY tools/build-model/ tools/build-model/
 RUN --mount=type=cache,id=cargo-registry,target=/opt/cargo/registry,sharing=locked \
     --mount=type=cache,id=cargo-git,target=/opt/cargo/git,sharing=locked \
     set -eu; t=$([ "$TARGETARCH" = arm64 ] && echo aarch64-unknown-linux-musl || echo x86_64-unknown-linux-musl); \
