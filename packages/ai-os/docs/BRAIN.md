@@ -39,3 +39,4 @@ One brain for Claude Code and agy (Antigravity CLI), owned by `@aphrody/ai-os`.
 - Verified: `claude -p` and `agy -p` each ran a shell write headless with no approval prompt.
 - Reviews: relay Gemini 8/20 then 13/20, fixes applied; third pass on gemini.google.com Carbon High returned an empty answer twice, see
   `docs/reviews/brain-gemini-2026-11-13.md`.
+- agy hooks: both hooks.json files carried a UTF-8 BOM and were silently ignored (a test write reached System32). BOM removed, matcher updated to current tool names (run_command, write_to_file, replace_file_content, multi_replace_file_content); a probe hook captured the real PreToolUse payload and pre-tool-guard denies a System32 write with it. MCP: `agy mcp list` shows ai-os and hostinger, and a headless call to an ai-os tool succeeded.
