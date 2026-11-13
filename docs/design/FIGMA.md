@@ -1,6 +1,6 @@
 # Figma file "Aphrody"
 
-- File: https://www.figma.com/design/brAWl2aN1IfR9N7MpmIioq/Aphrody (file key `brAWl2aN1IfR9N7MpmIioq`, team "Yohan Pierre's team", created 2026-11-13).
+- File: https://www.figma.com/design/brAWl2aN1IfR9N7MpmIioq/Aphrody (file key `brAWl2aN1IfR9N7MpmIioq`, created 2026-11-13).
 - Source of tokens: `packages/design/tokens/figma-variables.json` and `packages/design/DESIGN.md`. Mockup text: written for this file (the `packages/i18n` catalogs hold no home, catalog, play or Craft Apps keys); to move into `packages/i18n/locales/*.json` when the merged app is built.
 - Status: design mockups only. The merged app, the /play game and the Craft Apps hub are not built (`docs/games/PLAN.md`). All art is original geometric vector shapes; no generated images, no third-party characters.
 
