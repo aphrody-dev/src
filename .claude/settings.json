@@ -7,15 +7,15 @@
     "MAX_MCP_OUTPUT_TOKENS": "8000"
   },
   "permissions": {
-    "allow": ["Bash", "PowerShell", "Read", "Edit", "Write", "NotebookEdit", "WebFetch", "WebSearch"],
-    "deny": [
-      "Read(./.env)",
-      "Edit(./.env)",
-      "Write(./.env)",
-      "Edit(//C:/Windows/System32/**)",
-      "Write(//C:/Windows/System32/**)",
-      "Bash(git add .env)",
-      "Bash(git add -f .env)"
+    "allow": [
+      "Bash",
+      "PowerShell",
+      "Read",
+      "Edit",
+      "Write",
+      "NotebookEdit",
+      "WebFetch",
+      "WebSearch"
     ]
   },
   "enabledPlugins": {
