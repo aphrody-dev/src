@@ -205,8 +205,8 @@ async function runRust(
     const cmd = [
       "set -e; cd /srv/build/assets",
       "sudo git -c safe.directory=* fetch -q origin && sudo git -c safe.directory=* reset -q --hard origin/main",
-      "export PATH=/home/ubuntu/.cargo/bin:/usr/local/bin:/usr/bin:/bin CARGO_HOME=/home/ubuntu/.cargo RUSTUP_HOME=/home/ubuntu/.rustup CARGO_TARGET_DIR=/srv/build/target-assets",
-      "sudo env PATH=$PATH CARGO_HOME=$CARGO_HOME RUSTUP_HOME=$RUSTUP_HOME CARGO_TARGET_DIR=$CARGO_TARGET_DIR nice cargo build -q -j8 -p asset-test --profile iteration >&2",
+      "export FFMPEG_LGPL=${FFMPEG_LGPL:-/opt/ffmpeg-lgpl} PKG_CONFIG_PATH=/opt/ffmpeg-lgpl/lib/pkgconfig LD_LIBRARY_PATH=/opt/ffmpeg-lgpl/lib PATH=/home/ubuntu/.cargo/bin:/usr/local/bin:/usr/bin:/bin CARGO_HOME=/home/ubuntu/.cargo RUSTUP_HOME=/home/ubuntu/.rustup CARGO_TARGET_DIR=/srv/build/target-assets",
+      "sudo env PKG_CONFIG_PATH=$PKG_CONFIG_PATH LD_LIBRARY_PATH=$LD_LIBRARY_PATH PATH=$PATH CARGO_HOME=$CARGO_HOME RUSTUP_HOME=$RUSTUP_HOME CARGO_TARGET_DIR=$CARGO_TARGET_DIR nice cargo build -q -j8 -p asset-test --profile iteration >&2",
       `sudo /srv/build/target-assets/iteration/asset-test /srv/build/assets ${typeArg.join(" ")}`,
     ].join("; ");
     const p = Bun.spawnSync(["timeout", "3000", "ssh", "vps", cmd], {

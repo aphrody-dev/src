@@ -71,7 +71,10 @@ const root =
 const OUT = join(root, "assets", "generated");
 const STORE = process.env.WALLPAPER_STORE ?? join(root, "var", "wallpapers");
 const CDN = "https://cdn.aphrody.com/wallpapers/v1/";
-const FFMPEG = process.env.FFMPEG ?? "ffmpeg";
+// LGPL build (/opt/ffmpeg-lgpl on fr1) via FFMPEG_LGPL; FFMPEG overrides the binary.
+const FFMPEG =
+  process.env.FFMPEG ??
+  (process.env.FFMPEG_LGPL ? `${process.env.FFMPEG_LGPL}/bin/ffmpeg` : "ffmpeg");
 const GENERATOR = "aphrody-assets-gen";
 const themesPath =
   process.env.THEMES_JSON ??
