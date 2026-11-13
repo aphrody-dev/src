@@ -1,7 +1,10 @@
 # Rust tier of the PR-less flow on main (tribunal 2026-11-13, docs/reviews/judge-2026-11-13-ci.md).
 # Fast gates (checkdeps, identity, Go, every Bun suite, cargo metadata) live in judge.yml only.
-# GitHub-hosted runner: free for this public repo; fr1 is Chromium/LLVM only, prd is saturated
-# production, fr2 is proxy/CDN (docs/infra/FLEET.md, infra/agents/runner.ts).
+# Self-hosted runner fr1 (labels self-hosted, fr1, build): the factory takes every build, test and CI job
+# (owner decision 2026-11-13); prd serves production only, fr2 is edge (docs/infra/FLEET.md).
+# Every cargo step goes through aphrody-heavy (one heavy job at a time, nice/ionice, load gate) so
+# Chromium/LLVM builds keep priority. Cache: CARGO_TARGET_DIR and ~/.cargo persist on fr1 outside the
+# checkout (actions/checkout cleans the workspace), warmer and faster than a network cache restore.
 # On main a run is never cancelled: at most one runs and one waits (the waiting one is replaced by
 # the newest push), so commits are verified in batches instead of being starved.
 name: ci
@@ -16,11 +19,13 @@ concurrency:
 permissions: { contents: read }
 jobs:
   rust:
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
+    runs-on: [self-hosted, fr1]
+    timeout-minutes: 120
     env:
       RUSTC_WRAPPER: ""
       CARGO_TERM_COLOR: never
+      CARGO_TARGET_DIR: ${{ github.workspace }}/../ci-target
+      HEAVY_WAIT_MAX: "2700"
     steps:
       - id: app
         # GitHub App aphrody-labs (docs/infra/GITHUB-APP.md) : jeton d'installation de 1 h, borné aux permissions listées.
@@ -35,22 +40,13 @@ jobs:
         with:
           token: ${{ steps.app.outputs.token || github.token }}
           submodules: false
-      - uses: actions/cache@v6
-        with:
-          path: |
-            ~/.cargo/bin
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: cargo-${{ runner.os }}-${{ hashFiles('rust-toolchain.toml', 'Cargo.lock') }}
-          restore-keys: cargo-${{ runner.os }}-
       - name: Rust (ay and its libraries; toolchain from rust-toolchain.toml)
         run: |
-          cargo build -p aphrody
-          cargo test -p aphrody -p depot-gclient -p depot-cas -p depot-cipd -p aphrody-up -p aphrody-rt -p archguard -p agent-context
+          aphrody-heavy cargo build -p aphrody
+          aphrody-heavy cargo test -p aphrody -p depot-gclient -p depot-cas -p depot-cipd -p aphrody-up -p aphrody-rt -p archguard -p agent-context
       - name: Supply-chain gate (cargo-deny)
         run: |
-          command -v cargo-deny >/dev/null || cargo install --locked cargo-deny
+          command -v cargo-deny >/dev/null || aphrody-heavy cargo install --locked cargo-deny
           cargo deny --locked check
       - name: Architecture gate
-        run: target/debug/ay arch check --strict
+        run: "\"$CARGO_TARGET_DIR/debug/ay\" arch check --strict"

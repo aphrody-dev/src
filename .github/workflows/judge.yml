@@ -1,7 +1,7 @@
 # Judge of the PR-less flow on main (docs/agents/AGENT-FIRST.md): fast gates on a GitHub-hosted
 # runner, so a verdict exists for every push even when the self-hosted fr1 runner is stopped
-# (docs/infra/FLEET.md). Red -> ci-revert.yml reverts an attributable commit; the prd runner's
-# ci-watch enqueues an sre fix task otherwise. Rust builds and tests stay in ci.yml (tribunal 2026-11-13: no gate is duplicated between the two).
+# (docs/infra/FLEET.md). Red -> ci-revert.yml reverts an attributable commit; the agent runner's
+# ci-watch enqueues a coder fix task otherwise (runs on fr1). Rust builds and tests stay in ci.yml (tribunal 2026-11-13: no gate is duplicated between the two).
 # Action versions: actions/checkout v7.0.1, actions/setup-go v7.0.0 (gh api releases/latest, 2026-11-13).
 name: judge
 on:
@@ -41,10 +41,10 @@ jobs:
         run: bun scripts/js-deps-check.ts
       - name: Cargo graph resolves (members and path dependencies present, no compilation)
         run: cargo metadata --locked --no-deps --format-version 1 >/dev/null
-      - name: No workflow outside Chromium/LLVM targets fr1 (owner fleet rule)
+      - name: No workflow targets prd or fr2 (owner fleet rule; self-hosted CI = fr1 only)
         run: |
-          bad=$(grep -lE '^[[:space:]]*runs-on:.*fr1' .github/workflows/*.yml | grep -vE '/(chromium|llvm)[^/]*[.]yml' || true)
-          [ -z "$bad" ] || { echo "fr1 is Chromium/LLVM only: $bad"; exit 1; }
+          bad=$(grep -lE '^[[:space:]]*runs-on:.*\b(prd|fr2|cdn|usa)\b' .github/workflows/*.yml || true)
+          [ -z "$bad" ] || { echo "prd/fr2 never run CI jobs, use [self-hosted, fr1]: $bad"; exit 1; }
       # One step per Bun suite: a red package never hides the next one. `bun check` needs the workspace
       # installed above: without node_modules/@types/bun every bun version reports the same TS2868/TS2591.
       - name: Bun env-kit
