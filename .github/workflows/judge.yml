@@ -41,7 +41,8 @@ jobs:
         run: |
           bad=$(grep -lE '^[[:space:]]*runs-on:.*fr1' .github/workflows/*.yml | grep -vE '/(chromium|llvm)[^/]*[.]yml' || true)
           [ -z "$bad" ] || { echo "fr1 is Chromium/LLVM only: $bad"; exit 1; }
-      # One step per Bun suite: a red package never hides the next one.
+      # One step per Bun suite: a red package never hides the next one. No `bun check` here yet: bun 1.4.4
+      # (pinned above) lacks the HTMLRewriter/Buffer types that 1.4.5 has (tribunal 2026-11-13, CI run on ee162af).
       - name: Bun env-kit
         if: ${{ !cancelled() }}
         run: bun --no-env-file test packages/env-kit
@@ -53,7 +54,7 @@ jobs:
         run: cd packages/ai-os && bun --no-env-file test test
       - name: Bun chromium-bun
         if: ${{ !cancelled() }}
-        run: cd packages/chromium-bun && bun check && bun --no-env-file test test/ssrf.test.ts test/engines.test.ts test/layers.test.ts test/purge-matrix.test.ts test/winner-picker.test.ts test/chromium-inspector.test.ts
+        run: cd packages/chromium-bun && bun --no-env-file test test/ssrf.test.ts test/engines.test.ts test/layers.test.ts test/purge-matrix.test.ts test/winner-picker.test.ts test/chromium-inspector.test.ts
       - name: Bun apps/aphrody
         if: ${{ !cancelled() }}
-        run: cd apps/aphrody && bun check && bun --no-env-file test
+        run: cd apps/aphrody && bun --no-env-file test
