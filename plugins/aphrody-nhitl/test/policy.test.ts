@@ -73,3 +73,64 @@ test("questions are refused, other tools pass", () => {
   expect(decide("Write", { file_path: "C:/src/x.ts" }, cwd)).toBeNull();
   expect(decide("WebFetch", { url: "https://code.claude.com" }, cwd)).toBeNull();
 });
+
+test("review 2026-11-13: sub-shells and encodings", () => {
+  denied(`pwsh -Command "git push --force"`);
+  denied(`cmd /c "rd /s /q C:\\Users\\moi\\Documents"`);
+  denied(`bash -c "gh release upload v1 Engine.uasset"`);
+  denied(`bash -xc "cat .env"`);
+  denied(`node --eval="require('fs').readFileSync('.env')"`);
+  const enc = Buffer.from("Get-Content .env", "utf16le").toString("base64");
+  denied(`pwsh -enc ${enc}`);
+  expect(decide("PowerShell", { command: "Remove-`Item C:\\Users\\moi\\x" }, cwd)).not.toBeNull();
+  expect(decide("PowerShell", { command: "Get-`Content .env" }, cwd)).not.toBeNull();
+});
+
+test("review 2026-11-13: windows paths and quoting", () => {
+  denied(`cat "C:\\app\\.env"`);
+  denied(`rm "C:\\src\\tmp\\" && git push --force`);
+  denied("rm -rf c:/src/*/../../Users/moi/Documents");
+  denied("rm -rf c:/src/../../tmp");
+  denied("D=/c/Users; rm -rf $D", cwd);
+  denied("rm -rf $SOMETHING_UNKNOWN_X/y");
+  denied("rm D:important.txt");
+  allowed("T=$(mktemp -d); rm -rf $T");
+  allowed("rm -rf $TEMP/x ${HOME}/../../src/x".replace(" ${HOME}/../../src/x", ""));
+  denied("Remove-Item -Path:C:\\Users\\moi\\doc.pdf");
+  denied("Get-ChildItem C:\\Users\\moi\\doc.pdf | Remove-Item");
+  denied("echo C:/Users/moi/doc.pdf | xargs rm");
+  denied("find C:/src C:/Users/moi -delete");
+  denied("find C:/Users/moi -name x -exec rm {} +");
+  denied("git -C C:/Users/moi/proj clean -fdx");
+});
+
+test("review 2026-11-13: git", () => {
+  denied("git --git-dir .git push --force");
+  denied("git push origin :main");
+  denied("git push --delete origin main");
+  denied("git push --mirr");
+  denied("git update-ref refs/heads/main abc123");
+  denied("git show HEAD:.env");
+});
+
+test("review 2026-11-13: secret names", () => {
+  denied("cat prod.env");
+  denied("cat .env.production.local");
+  denied("cat .env*");
+  denied("grep KEY < .env");
+  denied("cat <.env");
+  expect(decide("Read", { file_path: ".env." }, cwd)).not.toBeNull();
+  expect(decide("Read", { file_path: ".env::$DATA" }, cwd)).not.toBeNull();
+  expect(decide("Grep", { pattern: ".", path: "/etc/aphrody" }, cwd)).not.toBeNull();
+  expect(decide("NotebookRead", { notebook_path: "x/.env" }, cwd)).not.toBeNull();
+});
+
+test("review 2026-11-13: false positives", () => {
+  allowed(`cat > notes.ts <<'EOF'\ntype X = 1; // reads .env\ngit push --force\nrm -rf C:/Users/x\nEOF`);
+  allowed(`echo ".env" >> .gitignore`);
+  allowed("del /ah /f/q C:\\src\\foo");
+  allowed("Remove-Item C:\\src\\foo -Filter *.tmp", "C:/Users/aphro");
+  allowed(`gh issue create --title "UE5 push crash"`);
+  allowed("curl -s https://example.com/UE5/push");
+  denied(`bash <<'EOF'\ngit push --force\nEOF`);
+});
