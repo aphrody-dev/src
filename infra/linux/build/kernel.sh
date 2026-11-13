@@ -74,5 +74,9 @@ docker logs --tail 40 "$NAME"
 [ "$code" = 0 ] || { echo "kernel: build failed ($code)" >&2; exit 1; }
 ls -l "$WORK/out"
 # Boot proof (boot.sh): uname of the running kernel + APHRODY-BOOT-OK, KVM when available.
-pkg=$(ls "$WORK"/out/linux-*.pkg.tar.zst | grep -v -e '-headers-' -e '-dbg-' -e '-nvidia' -e '-zfs-' | head -1)
+pkg=""
+for f in "$WORK"/out/linux-*.pkg.tar.zst; do
+  case $f in *-headers-*|*-dbg-*|*-nvidia*|*-zfs-*) ;; *) pkg=$f; break ;; esac
+done
+[ -n "$pkg" ] || { echo "kernel: no kernel package in $WORK/out" >&2; exit 1; }
 sh "$SRC/infra/linux/build/boot.sh" "$pkg" "$WORK/out/boot.log"
