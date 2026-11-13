@@ -18,4 +18,3 @@ serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 aphrody-design-layout = { path = "../aphrody-design-layout" }
 aphrody-design-shared = { path = "../aphrody-design-shared" }
-aphrody-design-tokens = { path = "../aphrody-design-tokens" }

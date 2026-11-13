@@ -344,7 +344,6 @@ dependencies = [
 name = "aphrody-brand"
 version = "0.3.0"
 dependencies = [
- "aphrody-design-tokens",
  "resvg",
  "serde",
  "serde_json",
@@ -436,22 +435,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "aphrody-design-icons"
-version = "0.3.0"
-dependencies = [
- "aphrody-design-shared",
- "aphrody-design-tokens",
- "clap",
- "ico",
- "resvg",
- "serde",
- "serde_json",
- "thiserror 2.0.21",
- "toml 1.2.1+spec-1.1.0",
- "zstd 0.14.4",
-]
-
-[[package]]
 name = "aphrody-design-layout"
 version = "0.3.0"
 dependencies = [
@@ -468,17 +451,6 @@ name = "aphrody-design-shared"
 version = "0.3.0"
 dependencies = [
  "serde",
-]
-
-[[package]]
-name = "aphrody-design-tokens"
-version = "0.3.0"
-dependencies = [
- "aphrody-design-shared",
- "base64 0.23.1",
- "image",
- "serde",
- "serde_json",
 ]
 
 [[package]]
@@ -7595,16 +7567,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ico"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d75e94d66081e4d8dcd098bd8dc5254800fea14a26389b298410158d834de167"
-dependencies = [
- "byteorder",
- "png",
-]
-
-[[package]]
 name = "icu_collections"
 version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -7796,9 +7758,6 @@ dependencies = [
  "byteorder-lite",
  "moxcms",
  "num-traits",
- "png",
- "zune-core",
- "zune-jpeg",
 ]
 
 [[package]]
@@ -10984,7 +10943,6 @@ version = "0.3.0"
 dependencies = [
  "aphrody-design-layout",
  "aphrody-design-shared",
- "aphrody-design-tokens",
  "oxc_allocator",
  "oxc_ast",
  "oxc_parser",
@@ -14007,16 +13965,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ui"
-version = "0.3.0"
-dependencies = [
- "aphrody-design-shared",
- "aphrody-design-tokens",
- "serde",
- "taffy 0.15.1",
-]
-
-[[package]]
 name = "uluru"
 version = "3.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -15953,19 +15901,4 @@ checksum = "f729a06d0257428fd9d997ac8db7e1407bd0262ab016b085b36bc52957c0052d"
 dependencies = [
  "cc",
  "pkg-config",
-]
-
-[[package]]
-name = "zune-core"
-version = "0.5.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d56377fd46368984a170bc5aac5567e52ca5da874caa60bea39fcbca78fb658b"
-
-[[package]]
-name = "zune-jpeg"
-version = "0.5.15"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "27bc9d5b815bc103f142aa054f561d9187d191692ec7c2d1e2b4737f8dbd7296"
-dependencies = [
- "zune-core",
 ]

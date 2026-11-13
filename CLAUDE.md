@@ -27,7 +27,7 @@ bun test packages/env-kit     # test one package
 bun test packages/env-kit/tests/foo.test.ts -t "name"   # single test file / test name
 bun test ./.agents/scripts/pre-tool-guard.test.ts       # dot-dirs need an explicit ./ path
 cargo test --workspace         # root workspace: every crates/* member (one Cargo.lock, one target/)
-cargo test -p aphrody-design-tokens <test_name>
+cargo test -p aphrody-brand <test_name>
 cargo test -p aphrody         # the ay CLI (routing tests); -p archguard, -p xtk, -p depot-cli for the libraries behind it
 go -C infra test ./...        # Go deploy engine
 ay arch check --strict        # architecture / purity / hygiene gate (also: just archguard; ay arch graph, ay arch rules)

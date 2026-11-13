@@ -13,13 +13,18 @@
 //! | `banner/` | ANSI truecolor and plain banners for CLIs and TUIs |
 //! | `profile/` | statistics cards from `docs/profile/stats.json` |
 //!
-//! Colors come from the shared design tokens, `packages/design/tokens/tokens.json` (the M3
-//! schemes generated from brand.toml by Material Color Utilities); only the product tile hues are
-//! resolved here, in HCT. Everything is rasterized by resvg/tiny-skia and every SVG goes through usvg, which resolves
+//! Colors come from the shared design tokens, `packages/design/tokens/tokens.rs` (the M3
+//! schemes and per-hue tonal palettes generated from brand.toml by Material Color Utilities),
+//! included at compile time: no color science runs here. Everything is rasterized by resvg/tiny-skia and every SVG goes through usvg, which resolves
 //! styles, shapes text with the pinned Google Sans Flex and writes plain paths: no output needs a
 //! font, a script or a network request to display.
 
-use aphrody_design_tokens::{hct::Hct, palette::TonalPalette, role::Role};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../packages/design/tokens/tokens.rs"));
+
+/// `0xRRGGBBAA` of tokens.rs to the `0xAARRGGBB` used here.
+const fn argb(rgba: u32) -> u32 {
+    rgba.rotate_right(8)
+}
 use resvg::{
     tiny_skia::{Pixmap, Transform},
     usvg,
@@ -176,21 +181,25 @@ pub fn contrast(a: u32, b: u32) -> f64 {
     (la.max(lb) + 0.05) / (la.min(lb) + 0.05)
 }
 
-/// One M3 color scheme read from packages/design/tokens/tokens.json (role name to ARGB).
+/// One M3 color scheme of packages/design/tokens/tokens.rs (kebab role name to ARGB).
 #[derive(Debug, Clone, Default)]
 pub struct Scheme(pub BTreeMap<String, u32>);
 
 impl Scheme {
     /// ARGB of `role`; opaque magenta when the role is missing, which a review spots at once.
     #[must_use]
-    pub fn argb(&self, role: Role) -> u32 {
-        self.0.get(role.name()).copied().unwrap_or(0xFFFF_00FF)
+    pub fn argb(&self, role: &str) -> u32 {
+        self.0.get(role).copied().unwrap_or(0xFFFF_00FF)
+    }
+
+    fn from_tokens(all: &[(&str, u32)]) -> Self {
+        Self(all.iter().map(|(k, v)| ((*k).to_owned(), argb(*v))).collect())
     }
 }
 
 /// The shared design tokens of the monorepo (`@aphrody/design`, generated from brand.toml by
 /// Material Color Utilities): the single source of the M3 schemes used here.
-pub const DESIGN_TOKENS: &str = "packages/design/tokens/tokens.json";
+pub const DESIGN_TOKENS: &str = "packages/design/tokens/tokens.rs";
 
 /// The resolved colors of the brand.
 pub struct Palette {
@@ -202,39 +211,37 @@ pub struct Palette {
     pub ink: u32,
 }
 
+impl Default for Palette {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Palette {
-    /// Reads the schemes from the shared tokens (`DESIGN_TOKENS` JSON text).
-    pub fn new(brand: &Brand, tokens_json: &str) -> Result<Self> {
-        let tokens: serde_json::Value =
-            serde_json::from_str(tokens_json).map_err(|e| Error::Manifest(format!("{DESIGN_TOKENS}: {e}")))?;
-        let scheme = |mode: &str| -> Result<Scheme> {
-            let map = tokens["color"][mode]
-                .as_object()
-                .ok_or_else(|| Error::Manifest(format!("{DESIGN_TOKENS}: color.{mode} missing")))?;
-            map.iter()
-                .map(|(k, v)| Ok((k.clone(), parse_hex(v.as_str().unwrap_or_default())?)))
-                .collect::<Result<BTreeMap<_, _>>>()
-                .map(Scheme)
-        };
-        let accent = parse_hex(tokens["custom"]["bolt"].as_str().unwrap_or(&brand.accent))?;
-        let ink = parse_hex(tokens["palettes"]["neutral"]["10"].as_str().unwrap_or("#1A1B25"))?;
-        let light = scheme("light")?;
-        let primary_hue = Hct::from_argb(light.argb(Role::Primary)).hue;
-        Ok(Self { dark: scheme("dark")?, light, accent, primary_hue, ink })
+    /// The schemes, accent and ink of the shared tokens (`DESIGN_TOKENS`, compiled in).
+    #[must_use]
+    pub fn new() -> Self {
+        Self {
+            light: Scheme::from_tokens(md::light::ALL),
+            dark: Scheme::from_tokens(md::dark::ALL),
+            accent: argb(md::BOLT),
+            primary_hue: md::hue::PRIMARY,
+            ink: argb(md::INK),
+        }
     }
 
     /// Tile color of a product hue: HCT chroma 56, tone 40 (white glyph at >= 4.5:1).
     #[must_use]
     pub fn product(&self, hue: f64) -> u32 {
-        TonalPalette::from_hue_and_chroma(hue, 56.0).tone(40.0)
+        argb(md::hue::at(&md::hue::TILE_40, hue))
     }
 
     /// `(container, glyph)` of an organisation tile.
     #[must_use]
     pub fn org(&self, container: &str) -> (u32, u32) {
         match container {
-            "ink" => (self.ink, self.dark.argb(Role::Primary)),
-            _ => (self.light.argb(Role::Primary), self.light.argb(Role::OnPrimary)),
+            "ink" => (self.ink, self.dark.argb("primary")),
+            _ => (self.light.argb("primary"), self.light.argb("on-primary")),
         }
     }
 }
@@ -518,8 +525,7 @@ impl Ctx<'_> {
 pub fn build(opts: &BuildOptions) -> Result<Report> {
     let brand_dir = opts.root.join("assets").join("brand");
     let manifest = Manifest::load(&brand_dir.join("brand.toml"))?;
-    let tokens_path = opts.root.join(DESIGN_TOKENS);
-    let palette = Palette::new(&manifest.brand, &read(&tokens_path)?)?;
+    let palette = Palette::new();
     let svg = Svg::new(&manifest.brand.font, &brand_dir.join(&manifest.brand.font_file))?;
     if !svg.has_font() {
         return Err(Error::Manifest(format!(
@@ -547,8 +553,8 @@ pub fn build(opts: &BuildOptions) -> Result<Report> {
                     ("width", width),
                     ("mark", inner(&mark)),
                     ("font", &font),
-                    ("ink", &hex(scheme.argb(Role::OnSurface))),
-                    ("suffix_color", &hex(scheme.argb(Role::Primary))),
+                    ("ink", &hex(scheme.argb("on-surface"))),
+                    ("suffix_color", &hex(scheme.argb("primary"))),
                     ("name", &xml_text(&org.name)),
                     ("suffix", &xml_text(&org.suffix)),
                 ])
@@ -562,7 +568,7 @@ pub fn build(opts: &BuildOptions) -> Result<Report> {
         let title = format!("{} {}", org.name, org.suffix);
         icon_set(&mut cx, &org.id, &title, &mark, container)?;
         social(&mut cx, &og_t, &palette, &font, &org.id, &mark, &title, &org.tagline, &org.url)?;
-        banner(&mut cx, &org.id, &mark, &title, &org.tagline, palette.dark.argb(Role::Primary))?;
+        banner(&mut cx, &org.id, &mark, &title, &org.tagline, palette.dark.argb("primary"))?;
     }
 
     // Products: tile, icon set, social card, banner, deploy.
@@ -584,7 +590,7 @@ pub fn build(opts: &BuildOptions) -> Result<Report> {
         icon_set(&mut cx, &p.id, &p.name, &tile, container)?;
         let url = format!("github.com/aphrody-labs/src/tree/main/{}", p.path);
         social(&mut cx, &og_t, &palette, &font, &p.id, &tile, &p.name, &p.tagline, &url)?;
-        banner(&mut cx, &p.id, &tile, &p.name, &p.tagline, TonalPalette::from_hue_and_chroma(p.hue, 56.0).tone(80.0))?;
+        banner(&mut cx, &p.id, &tile, &p.name, &p.tagline, argb(md::hue::at(&md::hue::TILE_80, p.hue)))?;
         if opts.deploy {
             deploy(&mut cx, p)?;
         }
@@ -657,14 +663,14 @@ fn icon_set(cx: &mut Ctx<'_>, id: &str, name: &str, drawing: &str, theme: u32) -
 fn social(cx: &mut Ctx<'_>, og_t: &str, p: &Palette, font: &str, id: &str, mark: &str, title: &str, tagline: &str, url: &str) -> Result<()> {
     let s = &p.dark;
     let svg = fill(og_t, &[
-        ("bg", &hex(s.argb(Role::SurfaceContainerLowest))),
-        ("band", &hex(s.argb(Role::PrimaryContainer))),
+        ("bg", &hex(s.argb("surface-container-lowest"))),
+        ("band", &hex(s.argb("primary-container"))),
         ("accent", &hex(p.accent)),
         ("mark", inner(mark)),
         ("font", font),
-        ("ink", &hex(s.argb(Role::OnSurface))),
-        ("muted", &hex(s.argb(Role::OnSurfaceVariant))),
-        ("link", &hex(s.argb(Role::Primary))),
+        ("ink", &hex(s.argb("on-surface"))),
+        ("muted", &hex(s.argb("on-surface-variant"))),
+        ("link", &hex(s.argb("primary"))),
         ("title", &xml_text(title)),
         ("tagline", &xml_text(tagline)),
         ("url", &xml_text(url)),
@@ -721,10 +727,10 @@ fn badges(cx: &mut Ctx<'_>, m: &Manifest, p: &Palette, font: &str) -> Result<()>
 <text x=\"{vx}\" y=\"15\" font-family=\"{font}\" font-size=\"12\" font-weight=\"650\" fill=\"{vfg}\">{value}</text></svg>",
             label = xml_text(&b.label),
             value = xml_text(&value),
-            vbg = hex(p.light.argb(Role::Primary)),
+            vbg = hex(p.light.argb("primary")),
             lbg = hex(p.ink),
-            lfg = hex(p.dark.argb(Role::OnSurface)),
-            vfg = hex(p.light.argb(Role::OnPrimary)),
+            lfg = hex(p.dark.argb("on-surface")),
+            vfg = hex(p.light.argb("on-primary")),
             vx = lw + 10.0,
         );
         cx.put(&format!("badges/{}.svg", b.id), cx.svg.optimize(&svg)?)?;
@@ -749,9 +755,9 @@ fn stats_cards(cx: &mut Ctx<'_>, p: &Palette, font: &str) -> Result<()> {
                 t = xml_text(&a.title),
                 w1 = w - 1.0,
                 h1 = h - 1.0,
-                bg = hex(s.argb(Role::SurfaceContainerLow)),
-                line = hex(s.argb(Role::OutlineVariant)),
-                ink = hex(s.argb(Role::OnSurface)),
+                bg = hex(s.argb("surface-container-low")),
+                line = hex(s.argb("outline-variant")),
+                ink = hex(s.argb("on-surface")),
             );
             let mut y = 76.0;
             for (k, v) in &a.rows {
@@ -759,8 +765,8 @@ fn stats_cards(cx: &mut Ctx<'_>, p: &Palette, font: &str) -> Result<()> {
                     svg,
                     "<text x=\"24\" y=\"{y}\" font-family=\"{font}\" font-size=\"14\" fill=\"{m}\">{k}</text>\
 <text x=\"456\" y=\"{y}\" text-anchor=\"end\" font-family=\"{font}\" font-size=\"14\" font-weight=\"650\" fill=\"{ink}\">{v}</text>",
-                    m = hex(s.argb(Role::OnSurfaceVariant)),
-                    ink = hex(s.argb(Role::OnSurface)),
+                    m = hex(s.argb("on-surface-variant")),
+                    ink = hex(s.argb("on-surface")),
                     k = xml_text(k),
                     v = xml_text(v),
                 );
@@ -770,11 +776,11 @@ fn stats_cards(cx: &mut Ctx<'_>, p: &Palette, font: &str) -> Result<()> {
                 let total: u64 = a.languages.iter().map(|l| l.1).sum::<u64>().max(1);
                 let top: Vec<_> = a.languages.iter().take(5).collect();
                 let bar_y = y - 4.0;
-                let _ = write!(svg, "<clipPath id=\"bar\"><rect x=\"24\" y=\"{bar_y}\" width=\"432\" height=\"10\" rx=\"5\"/></clipPath><g clip-path=\"url(#bar)\"><rect x=\"24\" y=\"{bar_y}\" width=\"432\" height=\"10\" fill=\"{}\"/>", hex(s.argb(Role::SurfaceContainerHighest)));
+                let _ = write!(svg, "<clipPath id=\"bar\"><rect x=\"24\" y=\"{bar_y}\" width=\"432\" height=\"10\" rx=\"5\"/></clipPath><g clip-path=\"url(#bar)\"><rect x=\"24\" y=\"{bar_y}\" width=\"432\" height=\"10\" fill=\"{}\"/>", hex(s.argb("surface-container-highest")));
                 let mut x = 24.0_f32;
-                let tone = if theme == "dark" { 70.0 } else { 45.0 };
+                let tones = if theme == "dark" { &md::hue::SERIES_70 } else { &md::hue::SERIES_45 };
                 let colors: Vec<u32> = (0..top.len())
-                    .map(|i| TonalPalette::from_hue_and_chroma((p.primary_hue + 72.0 * i as f64) % 360.0, 60.0).tone(tone))
+                    .map(|i| argb(md::hue::at(tones, p.primary_hue + 72.0 * i as f64)))
                     .collect();
                 for (i, (_, n)) in top.iter().enumerate() {
                     let lw = 432.0 * (*n as f32) / total as f32;
@@ -798,7 +804,7 @@ fn stats_cards(cx: &mut Ctx<'_>, p: &Palette, font: &str) -> Result<()> {
                         cy = ly - 4.0,
                         c = hex(colors[i]),
                         tx = lx + 14.0,
-                        m = hex(s.argb(Role::OnSurfaceVariant)),
+                        m = hex(s.argb("on-surface-variant")),
                         l = xml_text(&label),
                     );
                     lx += 14.0 + 7.2 * label.chars().count() as f32 + 14.0;
@@ -808,7 +814,7 @@ fn stats_cards(cx: &mut Ctx<'_>, p: &Palette, font: &str) -> Result<()> {
                 svg,
                 "<text x=\"24\" y=\"{fy}\" font-family=\"{font}\" font-size=\"11\" fill=\"{m}\">{src}, {gen}</text></svg>",
                 fy = h - 18.0,
-                m = hex(s.argb(Role::Outline)),
+                m = hex(s.argb("outline")),
                 src = xml_text(&stats.source),
                 gen = xml_text(&stats.generated),
             );
@@ -884,19 +890,8 @@ mod tests {
 
     #[test]
     fn product_tiles_keep_white_glyph_readable() {
-        let brand = Brand {
-            name: "A".into(),
-            version: 1,
-            seed: "#3355FF".into(),
-            variant: "vibrant".into(),
-            accent: "#FFB300".into(),
-            font: "X".into(),
-            font_fallback: vec![],
-            font_file: String::new(),
-        };
-        let tokens = std::fs::read_to_string(Path::new(env!("CARGO_MANIFEST_DIR")).join("../..").join(DESIGN_TOKENS)).unwrap();
-        let p = Palette::new(&brand, &tokens).unwrap();
-        assert_eq!(hex(p.light.argb(Role::Primary)), "#1242FF");
+        let p = Palette::new();
+        assert_eq!(hex(p.light.argb("primary")), "#1242FF");
         for hue in (0..360).step_by(15) {
             let c = p.product(f64::from(hue));
             assert!(contrast(0xFFFF_FFFF, c) >= 4.5, "hue {hue}: {}", hex(c));

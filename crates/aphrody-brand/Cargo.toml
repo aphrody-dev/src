@@ -18,7 +18,6 @@ name = "aphrody-brand"
 path = "src/main.rs"
 
 [dependencies]
-aphrody-design-tokens = { workspace = true }
 # resvg re-exports usvg (parse, text shaping and outlining, SVG writer) and tiny-skia (raster).
 resvg = { version = "0.50.0", default-features = false, features = ["text"] }
 serde = { workspace = true, features = ["derive"] }

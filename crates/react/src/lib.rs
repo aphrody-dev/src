@@ -7,13 +7,10 @@
 //!   (replacing C++ Yoga) and C++ JSI `TurboModule` + TypeScript spec code generator.
 //! - [`compiler`]: Native `oxc_parser` (`0.155`) React 19 component, hook, directive (`"use client"`,
 //!   `"use server"`, `"use dom"`), and React Compiler auto-memoization boundary analyzer.
-//! - [`theme_bridge`]: 7-Preset (`Neutral`, `M3`, `Fluent`, `Apple`, `Omarchy` + 23 subthemes,
-//!   `Hyprland`, `Aphrody` brand) Web CSS + React Native `StyleSheet` bridge.
 
 pub mod compiler;
 pub mod react_native;
 pub mod rsc;
-pub mod theme_bridge;
 
 pub use compiler::{ReactComponentAnalysis, analyze_react_component};
 pub use react_native::{
@@ -21,10 +18,6 @@ pub use react_native::{
     TurboRustModuleSpec, compute_rn_layout, emit_turborust_module, find_layout_rect,
 };
 pub use rsc::{RscChunk, RscElement, encode_flight_stream, render_rsc_to_html};
-pub use theme_bridge::{
-    ReactNativeColorTokens, ReactNativeGeometry, ReactNativeHctRoles, ReactNativeThemePayload,
-    build_react_native_theme, export_react_native_theme_json, export_react_web_css,
-};
 pub use aphrody_design_shared::{OmarchySubTheme, YoloManifest, YoloThemePreset, YoloThemeTokens};
 
 #[cfg(test)]
@@ -173,29 +166,5 @@ export function DashboardPanel({ title, initialCount, onSync }) {
         assert!(report.jsx_elements.contains(&String::from("section")));
         assert!(report.jsx_elements.contains(&String::from("Button")));
         assert!(report.react_compiler_memoizable);
-    }
-
-    #[test]
-    fn theme_bridge_exports_all_eight_presets_and_twenty_three_omarchy_subthemes() {
-        for preset in YoloThemePreset::ALL {
-            let web_css = export_react_web_css(preset, true);
-            assert!(web_css.contains(preset.id()));
-            assert!(web_css.contains("--md-sys-color-primary:"));
-
-            let rn_json = export_react_native_theme_json(preset, true, None);
-            assert!(rn_json.contains(preset.id()));
-        }
-
-        for sub in OmarchySubTheme::ALL {
-            let payload = build_react_native_theme(YoloThemePreset::Omarchy, true, Some(sub));
-            assert_eq!(payload.omarchy_subtheme.as_deref(), Some(sub.spec().id));
-            assert_eq!(payload.tokens.bg_primary, sub.spec().background);
-        }
-
-        let hypr = build_react_native_theme(YoloThemePreset::Hyprland, true, None);
-        assert!(hypr.hyprland_border_gradient.unwrap().contains("#33ccff"));
-
-        let aphrody = build_react_native_theme(YoloThemePreset::Aphrody, true, None);
-        assert_eq!(aphrody.tokens.accent_primary, "#BAC3FF");
     }
 }
