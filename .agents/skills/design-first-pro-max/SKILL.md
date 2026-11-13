@@ -1,7 +1,7 @@
 ---
 name: design-first-pro-max
 description: >
-  Sovereign Anti-AI-Slop Design-First Studio and Open Creative Asset Bank workflow for C:\src.
+  Sovereign Anti-AI-Slop Design-First Studio and Open Creative Asset Bank workflow for src.
   Enforces the mandatory Plan -> Cahier des Charges (PRD) -> DESIGN.md Maquette -> Asset Generation ->
   Implementation -> Anti-Slop Audit (impeccable + humanizer) -> Lighthouse/wck 100/100 gate across web,
   desktop, TUI, mobile, and 3D WebGPU surfaces using @aphrody/google-design (gds).
@@ -14,11 +14,11 @@ metadata:
 
 # Sovereign Design-First Pro Max & Anti-AI-Slop Gate
 
-Use this skill before creating, redesigning, or modifying any frontend, desktop, TUI, documentation, brand, or 3D scene in `C:\src`.
+Use this skill before creating, redesigning, or modifying any frontend, desktop, TUI, documentation, brand, or 3D scene in `src`.
 
 ## 1. Sovereign Product Boundary & Visual Philosophy
 
-`C:\src` enforces strict separation between internal autonomous execution and public generalist software craft:
+`src` enforces strict separation between internal autonomous execution and public generalist software craft:
 
 1. **Single Public AI Product (`packages/ai-os`)**: `@aphrody/ai-os` is the sole public AI product and internal MCP/Triad owner.
 2. **Generalist Public Surfaces (`apps/aphrody`, `apps/aphrody-app`, `apps/shenron`, `apps/rosegriffon`, `crates/unix`, `crates/wayland`)**: Built as pure systems, publishing, media, desktop, and creative platforms aligned with three engineering standards:
@@ -29,7 +29,7 @@ Use this skill before creating, redesigning, or modifying any frontend, desktop,
 
 ## 2. Mandatory 7-Stage Design-First Gate
 
-Never jump straight from a prompt to UI markup. Execute all seven stages in sequence using `gds` (`C:\Users\aphro\.local\bin\gds.exe` or `bun C:\src\packages\google-design\cli.ts`):
+Never jump straight from a prompt to UI markup. Execute all seven stages in sequence using `gds` (`C:\Users\aphro\.local\bin\gds.exe` or `bun packages/google-design/cli.ts`):
 
 ```text
 [1. Plan] -> [2. PRD.md] -> [3. DESIGN.md] -> [4. Open Assets] -> [5. Code] -> [6. Anti-Slop Gate] -> [7. WCK 100/100]
@@ -113,11 +113,11 @@ bun test
 ```
 All four scores — Performance, Accessibility, Best Practices, SEO — plus `gds verify` (`>= 90/100`, `0` errors) and `gds audit-slop` (`clean: true`) must pass before shipping.
 
-## 3. Grounded Upstream References in `C:\src`
-- [`C:\src\packages\google-design`](file:///C:/src/packages/google-design): `@aphrody/google-design` source, token compiler, binary encoders, UI gate, and `gds` CLI.
-- [`C:\src\third_party\impeccable`](file:///C:/src/third_party/impeccable): Deterministic UI anti-pattern rules and craft floor (`craft-floor.md`).
-- [`C:\src\third_party\humanizer`](file:///C:/src/third_party/humanizer): Empirical catalog of 26 AI prose tells and neutral rewriting rules.
-- [`C:\src\third_party\ui-ux-pro-max-skill`](file:///C:/src/third_party/ui-ux-pro-max-skill): Pre-delivery UX, contrast, touch-target, and responsive checklists.
-- [`C:\src\third_party\threejs-skills`](file:///C:/src/third_party/threejs-skills): Three.js r186, WebGPU, TSL shaders, PBR lighting, and glTF 2.0 pipelines.
-- [`C:\src\third_party\design-md`](file:///C:/src/third_party/design-md) & [`C:\src\third_party\awesome-design-md`](file:///C:/src/third_party/awesome-design-md): Official `DESIGN.md` token/prose schema and real-world design system analyses.
-- [`C:\src\third_party\omarchy\themes`](file:///C:/src/third_party/omarchy/themes): Canonical workstation color palettes integrated into `gds`.
+## 3. Grounded Upstream References in `src`
+- [`packages/google-design`](packages/google-design): `@aphrody/google-design` source, token compiler, binary encoders, UI gate, and `gds` CLI.
+- [`third_party/impeccable`](third_party/impeccable): Deterministic UI anti-pattern rules and craft floor (`craft-floor.md`).
+- [`third_party/humanizer`](third_party/humanizer): Empirical catalog of 26 AI prose tells and neutral rewriting rules.
+- [`third_party/ui-ux-pro-max-skill`](third_party/ui-ux-pro-max-skill): Pre-delivery UX, contrast, touch-target, and responsive checklists.
+- [`third_party/threejs-skills`](third_party/threejs-skills): Three.js r186, WebGPU, TSL shaders, PBR lighting, and glTF 2.0 pipelines.
+- [`third_party/design-md`](third_party/design-md) & [`third_party/awesome-design-md`](third_party/awesome-design-md): Official `DESIGN.md` token/prose schema and real-world design system analyses.
+- [`third_party/omarchy/themes`](third_party/omarchy/themes): Canonical workstation color palettes integrated into `gds`.

@@ -1,15 +1,15 @@
 # Sovereign AI-OS Canonical Soul (SOUL.md)
 
 ## 1. Identity & Single AI Ownership
-- **Sole AI Owner**: `C:/src/packages/ai-os` (`@aphrody/ai-os`) owns 100% of AI routing, MCP tools, Soul, Brain, Memory, Sessions, Skills, and Cross-AI Triad federation across `C:\src`.
-- **Google Ecosystem Surface**: `C:/src/packages/agy` (`@aphrody/agy`) + `agy-desktop.exe` exposes keyless Google 5-Org Depot/Gitingest sync, Gemma 4 training/inference, DeepMind Research Notebooks, Open NotebookLM, Google AI Ultra FinOps rentabilisation, and dual operating modes (`minimal` Pi-Sudo vs `fullstack` Pro-Max).
+- **Sole AI Owner**: `packages/ai-os` (`@aphrody/ai-os`) owns AI routing, MCP tools, memory, sessions, skills and the multi-agent council (`src/core/council.ts`) across the repository.
+- **Providers and models**: discovered at run time (`llm_models`, `src/llm`); no provider or model name is hard-coded in code, config or docs. Gemini without a browser goes through Antigravity (`agy`); Gemini CLI is legacy.
 
 ## 2. Non-Negotiable Engineering Directives
-- **Sacred Host Userspace**: `C:\Windows\System32` and host OS directories are strictly untouchable. Userland binaries live in `C:\Users\aphro\.local\bin`.
-- **Bun v1.4.4 Full-Rust + Rust 2024 Fat-LTO**: Zero unnecessary npm dependencies. Validate every change via `bun fmt`, `bun check`, and `bun test`.
-- **Keyless & Local-First Security**: Never print, log, or commit raw secrets from `C:\src\.env`. Prefer local Gemma 4 / Ring-3 CUDA `sm_89` and keyless Google ADC / `gcloud` OAuth2 tokens.
-- **Zero Emojis**: Strictly zero emojis in code, Markdown, skills, UI text, and commit messages.
+- **Sacred Host Userspace**: `C:\Windows\System32` and host OS directories are untouchable. Userland binaries live in `~/.local/bin`.
+- **Bun 1.4.4 + Rust 2024**: zero unnecessary npm dependencies. Validate every change via `bun fmt`, `bun check`, and `bun test`.
+- **Keyless & Local-First Security**: never print, log, or commit raw secrets from `.env`. Prefer existing OAuth sessions (`gcloud`, `agy`, `gh`, `cf`) over API keys.
+- **Zero Emojis**: in code, Markdown, skills, UI text, and commit messages.
 
-## 3. Unified Context-Optimized MCP & Progressive Skills
-- Single MCP endpoint: `C:/Users/aphro/.local/bin/ai-os.exe mcp-stdio`.
-- Default tool baseline: Minimal OS & Computer-Use tools (`read`, `write`, `edit`, `bash`, `desktop_snapshot`, `desktop_action`), with one-click collections for Google Cloud, Workspace (`gws`), Android, Gemini, Google Labs (Stitch/Jules/DESIGN.md), DeepMind Science, and Fullstack Pro-Max.
+## 3. MCP & Progressive Skills
+- MCP endpoint: `ai-os relay mcp-stdio` (stdio) or the relay `POST /mcp` (`packages/ai-os/docs/RELAY.md`).
+- Skills: `.agents/skills/*/SKILL.md` is the single source.

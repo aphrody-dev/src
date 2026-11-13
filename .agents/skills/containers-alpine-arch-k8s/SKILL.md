@@ -1,6 +1,6 @@
 ---
 name: containers-alpine-arch-k8s
-description: Build, run, and ship containers and Kubernetes workloads for C:\src. Use when writing or reviewing a Dockerfile, compose.yaml, Kubernetes manifest, Helm chart, kustomization, or Nix dev shell, when picking a base image, or when answering Docker/Kubernetes/Nix questions offline from the local docs mirrors. Policy: never Debian or Ubuntu; Alpine for light images, Arch Linux for heavy toolchain images, Nix as the non-container alternative.
+description: Build, run, and ship containers and Kubernetes workloads for src. Use when writing or reviewing a Dockerfile, compose.yaml, Kubernetes manifest, Helm chart, kustomization, or Nix dev shell, when picking a base image, or when answering Docker/Kubernetes/Nix questions offline from the local docs mirrors. Policy: never Debian or Ubuntu; Alpine for light images, Arch Linux for heavy toolchain images, Nix as the non-container alternative.
 ---
 
 # Containers: Alpine, Arch Linux, Nix, Kubernetes

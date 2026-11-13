@@ -103,4 +103,4 @@ Account notes (2026-11-12):
 
 Aphrody products: aphrody.com (`apps/aphrody`), aphrody.app (`apps/aphrody-app`), `packages/ai-os`.
 Community products maintained by Aphrody (not Aphrody products): dragonballfr.com (`apps/shenron`),
-rosegriffon.fr (`apps/rosegriffon`). Separate project: Aphrody Labs (`C:\labs`, labs.aphrody.com).
+rosegriffon.fr (`apps/rosegriffon`). Aphrody Labs (labs.aphrody.com) is merged into this repository since 2026-11-12 (README, section Labs).

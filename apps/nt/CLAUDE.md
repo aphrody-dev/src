@@ -7,5 +7,5 @@
 - Pile : coque WinUI 3 (Windows App SDK 2.6.5), webui + Fluent UI (forks aphrody-labs), .NET ↔ bun direct (bun:ffi sur NativeAOT ou hostfxr, sans node-api-dotnet), cœur Rust = monorepo windows-rs (fork aphrody-labs, master).
 - Git : aucune worktree ni branche ; tout sur main (nt) et sur la branche par défaut des forks aphrody-labs. Jamais vers l'amont.
 - Entrée unique : `just` (tools, lint, web, serve, index, desktop-svg, probe, app). JS/TS : bun uniquement. .NET 11. C++23 via CMake presets.
-- Aucune compilation sur le poste : CI GitHub (`.github/workflows/ci.yml`) ou prd.
+- Aucune compilation sur le poste : CI GitHub (`.github/workflows/nt.yml` à la racine de src) ou prd.
 - Portable : aucun chemin absolu, lien ou jonction ; recettes `[windows]`/`[unix]` ; shell Windows = niubash.

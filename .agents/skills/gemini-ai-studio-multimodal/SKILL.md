@@ -13,7 +13,7 @@ Use the unified `ai-os` MCP tool `skills_search` (or `agy collections inspect ge
 - `docs_context`
 
 ## Indexed Official Sub-Skills (4 of 4 shown)
-- **`gemini-api-cli`**: Call the Gemini API from the shell with gemini-api. Use for media generation (images, TTS, music, video), file and YouTube analysi (`C:/src/third_party/gemini-skills/skills/gemini-api-cli/SKILL.md`)
-- **`gemini-api-dev`**: Use this skill when writing code that calls the Gemini API for text generation, multi-turn chat, multimodal understanding, image g (`C:/src/third_party/gemini-skills/skills/gemini-api-dev/SKILL.md`)
-- **`gemini-live-api-dev`**: Use this skill when building real-time, bidirectional streaming applications with the Gemini Live API, or migrating legacy Live mo (`C:/src/third_party/gemini-skills/skills/gemini-live-api-dev/SKILL.md`)
-- **`gemini-omni-flash-api`**: Use this skill for generative video editing, text-to-video, image- and video-referenced video generation, first-frame-to-video, fi (`C:/src/third_party/gemini-skills/skills/gemini-omni-flash-api/SKILL.md`)
+- **`gemini-api-cli`**: Call the Gemini API from the shell with gemini-api. Use for media generation (images, TTS, music, video), file and YouTube analysi (`third_party/gemini-skills/skills/gemini-api-cli/SKILL.md`)
+- **`gemini-api-dev`**: Use this skill when writing code that calls the Gemini API for text generation, multi-turn chat, multimodal understanding, image g (`third_party/gemini-skills/skills/gemini-api-dev/SKILL.md`)
+- **`gemini-live-api-dev`**: Use this skill when building real-time, bidirectional streaming applications with the Gemini Live API, or migrating legacy Live mo (`third_party/gemini-skills/skills/gemini-live-api-dev/SKILL.md`)
+- **`gemini-omni-flash-api`**: Use this skill for generative video editing, text-to-video, image- and video-referenced video generation, first-frame-to-video, fi (`third_party/gemini-skills/skills/gemini-omni-flash-api/SKILL.md`)

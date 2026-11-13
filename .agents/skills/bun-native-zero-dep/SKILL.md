@@ -1,6 +1,6 @@
 ---
 name: bun-native-zero-dep
-description: Canonical sovereign guide for Pure Bun v1.4.4 Full-Rust zero-dependency architecture across C:\src. Enforces zero bunx invocations, zero unnecessary dependencies/devDependencies in package.json, native Bun v1.4.4 API replacements (Bun.SQL, bun:sqlite, Bun.S3Client, Bun.Image, Bun.Archive, Bun.serve, Bun.Glob, Bun.CryptoHasher, Bun.password, Bun.semver, Bun.color, Bun.Transpiler, bun:ffi, bun fmt, bun check, bun build --compile --bytecode), and ambient TypeScript declarations (bun-native.d.ts).
+description: Canonical sovereign guide for Pure Bun v1.4.4 Full-Rust zero-dependency architecture across src. Enforces zero bunx invocations, zero unnecessary dependencies/devDependencies in package.json, native Bun v1.4.4 API replacements (Bun.SQL, bun:sqlite, Bun.S3Client, Bun.Image, Bun.Archive, Bun.serve, Bun.Glob, Bun.CryptoHasher, Bun.password, Bun.semver, Bun.color, Bun.Transpiler, bun:ffi, bun fmt, bun check, bun build --compile --bytecode), and ambient TypeScript declarations (bun-native.d.ts).
 ---
 
 # Pure Bun v1.4.4 Zero-Dependency & Zero-bunx Architecture (`bun-native-zero-dep`)
@@ -21,7 +21,7 @@ description: Canonical sovereign guide for Pure Bun v1.4.4 Full-Rust zero-depend
 
 3. **Sacred Host Userspace & Zero Emojis**:
    - Never touch `C:\Windows\System32`. Install compiled `.exe` and `.dll` artifacts only in `C:\Users\aphro\.local\bin`.
-   - Never print, log, or commit raw secrets from `C:\src\.env`.
+   - Never print, log, or commit raw secrets from `.env`.
    - Zero emojis in code, JSON, Markdown, or commit messages.
 
 ---
@@ -34,7 +34,7 @@ Bun v1.4.4 ships a native multi-core Rust port of TypeScript 7 (`bun check`) wit
 
 In TypeScript 7 (`bun check`), omitting `"types"` defaults to `types: []` (no automatic `node_modules/@types/*` lookup). Setting `"types": ["bun"]` forces the checker to search `node_modules/@types/bun` and fails with `TS2688` when `devDependencies` is `{}`.
 
-Instead, include the shared sovereign ambient header [`C:\src\packages\bun-plugins\bun-native.d.ts`](file:///C:/src/packages/bun-plugins/bun-native.d.ts) (or a local `src/bun-env.d.ts` triple-slash reference).
+Instead, include the shared sovereign ambient header [`packages/bun-plugins/bun-native.d.ts`](packages/bun-plugins/bun-native.d.ts) (or a local `src/bun-env.d.ts` triple-slash reference).
 
 ### Canonical Zero-Dependency `package.json`
 

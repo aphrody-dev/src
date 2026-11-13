@@ -9,7 +9,7 @@ Issue du débat Chromium / Servo / Bun (inventaire neutre, 3 avocats, réfutatio
 - `LICENSE_FOR_ABOUT_CREDITS` : 967 lignes au total, dont 829 non vides. Les deux chiffres cités sont exacts.
 - `denoland/deno_core` : `archived: true`. Le crate continue pourtant d'être publié depuis `denoland/deno` `libs/core` (labs l.195 `=0.413.0`). Il n'est donc pas abandonné, mais le dépôt historique est mort.
 - rusty_v8 : dernière release v152.2.0, publiée le 2026-08-20 (V8 15.2). Il faut donc un saut de majeure vers 16.0.
-- `C:\labs\deny.toml` l.6 : MPL-2.0 autorisée, aucune GPL ni LGPL.
+- `deny.toml` (racine de src, ex-labs) l.6 : MPL-2.0 autorisée, aucune GPL ni LGPL (relu le 2026-11-13).
 - Pins labs : `stylo =0.24.0`, `vello =0.12.0`, `vello_cpu =0.4.0`, `lto="fat"` l.287. Le vendor Blitz utilise d'autres versions (vello 0.11).
 - Pas vérifiés : scores wpt.fyi, Servo et test262, tailles de binaire, temps de build. Je les écarte de la décision.
 

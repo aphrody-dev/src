@@ -17,10 +17,10 @@ Use the unified `ai-os` MCP tool `skills_search` (or `agy collections inspect os
 - `skills_search`
 
 ## Indexed Official Sub-Skills (7 of 7 shown)
-- **`agent-browser`**: Browser automation CLI for AI agents. Use when the user needs to interact with websites, including navigating pages, filling forms (`C:/src/third_party/agent-browser/skills/agent-browser/SKILL.md`)
-- **`agent-desktop`**: > (`C:/src/third_party/agent-desktop/skills/agent-desktop/SKILL.md`)
-- **`agent-desktop-ffi`**: > (`C:/src/third_party/agent-desktop/skills/agent-desktop-ffi/SKILL.md`)
-- **`agent-desktop-linux`**: > (`C:/src/third_party/agent-desktop/skills/agent-desktop-linux/SKILL.md`)
-- **`agent-desktop-macos`**: > (`C:/src/third_party/agent-desktop/skills/agent-desktop-macos/SKILL.md`)
-- **`agent-desktop-windows`**: > (`C:/src/third_party/agent-desktop/skills/agent-desktop-windows/SKILL.md`)
-- **`jev-desktop`**: > (`C:/src/third_party/agent-desktop/skills/jev-desktop/SKILL.md`)
+- **`agent-browser`**: Browser automation CLI for AI agents. Use when the user needs to interact with websites, including navigating pages, filling forms (`third_party/agent-browser/skills/agent-browser/SKILL.md`)
+- **`agent-desktop`**: > (`third_party/agent-desktop/skills/agent-desktop/SKILL.md`)
+- **`agent-desktop-ffi`**: > (`third_party/agent-desktop/skills/agent-desktop-ffi/SKILL.md`)
+- **`agent-desktop-linux`**: > (`third_party/agent-desktop/skills/agent-desktop-linux/SKILL.md`)
+- **`agent-desktop-macos`**: > (`third_party/agent-desktop/skills/agent-desktop-macos/SKILL.md`)
+- **`agent-desktop-windows`**: > (`third_party/agent-desktop/skills/agent-desktop-windows/SKILL.md`)
+- **`jev-desktop`**: > (`third_party/agent-desktop/skills/jev-desktop/SKILL.md`)

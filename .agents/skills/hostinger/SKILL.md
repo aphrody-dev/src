@@ -10,7 +10,7 @@ Endpoints below were checked against `third_party/hostinger-api/openapi.json`
 
 ## Credentials
 
-- Key name: `HOSTINGER_API_TOKEN`. Sources: `C:\src\.env`, Windows user env,
+- Key name: `HOSTINGER_API_TOKEN`. Sources: `.env`, Windows user env,
   `/etc/aphrody/hostinger.env` on vps/cdn/prd, GitHub Actions secret, gcloud
   Secret Manager `hostinger-api-token`, Cloudflare Secrets Store
   `default-secrets-store`.

@@ -1,6 +1,8 @@
 # Architecture Reference: Unified LLM-Optimized Monorepo & Git Infrastructure
 **Sovereign Git Engine: Depot Tools, Unreal Engine GitDependencies, Jujutsu (`jj`), and Gitoxide (`gix`)**
 
+> État au 2026-11-13 : le binaire `depot` n'existe plus ; ces commandes passent par `ay git`, `ay ingest`, `ay graph` (crates/depot-cli, voir CLAUDE.md). Pas de worktree : tout se fait sur main.
+
 ---
 
 ## 1. Executive Summary & Vision
@@ -149,15 +151,6 @@ depot graph build C:\src\crates\depot\crates --out-dir C:\src\crates\depot\graph
 
 # Query symbol dependencies in milliseconds
 depot graph query Worktree C:\src\crates\depot
-```
-
-### 6.3 Windows-Safe Worktrees for Parallel LLM Agents (`depot worktree`)
-```bash
-# List all active worktrees
-depot worktree list
-
-# Create a clean parallel branch worktree sharing .git objects
-depot worktree add C:\src\depot-agent-1 agent-branch --new
 ```
 
 ### 6.4 Git Weight Reduction (`depot slim` / `depot clone`)

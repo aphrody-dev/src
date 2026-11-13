@@ -16,7 +16,7 @@ Activate this skill when inspecting native binaries (`.exe`, `.dll`, `.so`, `.dy
   ```powershell
   n2b mingw doctor
   n2b mingw audit --binary C:\Users\aphro\.local\bin\n2b_ffi.dll
-  n2b mingw proxy-dll --binary C:\src\third_party\n2b\migrations\ue58-sovereign\rust-kernel\target\release\ue58_rust_kernel.dll
+  n2b mingw proxy-dll --binary third_party/n2b/migrations/ue58-sovereign/rust-kernel/target/release/ue58_rust_kernel.dll
   ```
 - **MCP Server (`sovereign-n2b-rea-ghidra`, 8 tools)**:
-  Exposes `rea_ghidra_decompile`, `rea_mingw_optimize`, `n2b_dotnet_interop`, `n2b_scan_monorepo`, `n2b_search_ripgrep`, `n2b_polyglot_ast`, `n2b_migrate_project`, and `n2b_llvm_ir_analyze` (`bun run C:/src/third_party/n2b/src/mcp.ts`).
+  Exposes `rea_ghidra_decompile`, `rea_mingw_optimize`, `n2b_dotnet_interop`, `n2b_scan_monorepo`, `n2b_search_ripgrep`, `n2b_polyglot_ast`, `n2b_migrate_project`, and `n2b_llvm_ir_analyze` (`bun run third_party/n2b/src/mcp.ts`).

@@ -3,7 +3,7 @@
 Emplacement : `plugins/labs` (v0.1.0). Validé le 2026-11-12 avec `claude plugin validate` (OK) et un script de contrôle : frontmatter, noms uniques, liens relatifs.
 
 ## Installation
-- Local : `claude --plugin-dir C:\labs\plugins\labs`
+- Local : `claude --plugin-dir plugins/labs` (depuis la racine de src)
 - Marketplace : déclarer une entrée dans `.claude-plugin/marketplace.json` à la racine du dépôt, puis `/plugin marketplace add aphrody-labs/labs` et `/plugin install labs@<marketplace>`. Ce fichier n'est pas encore créé.
   ```json
   {"name":"aphrody-labs","owner":{"name":"Aphrody Labs"},"plugins":[{"name":"labs","source":"./plugins/labs"}]}

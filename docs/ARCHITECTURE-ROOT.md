@@ -54,7 +54,7 @@ Cible commune avec la session labs (référence : `labs/docs/ROOT-ARCHITECTURE.m
 
 | Origine                                | Destination                                                            | Note                                                                                                 |
 | -------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `nt` (aphrody-labs/nt, purgé le 2026-11-12) | `packages/nt` (coque web, outils hôte bun) + `apps/nt-app` (WinUI 3) | cœur Rust = monorepo windows-rs (fork aphrody-labs, branches `nt/monorepo`, `nt/wasm`) → `third_party/windows-rs` |
+| `nt` (aphrody-labs/nt, encore actif sur GitHub au 2026-11-13) | `apps/nt` (coque WinUI 3, scène web, outils hôte bun) | cœur Rust = monorepo windows-rs (fork aphrody-labs, branche unique `master`) → `third_party/windows-rs` |
 | `nt/docs`                              | `docs/nt`, `docs/ms`, `docs/bun`, `docs/research`                      | dédupliqués avec l'existant                                                                          |
 | `nt/vendor` (35 clones) | supprimé le 2026-11-12 (sans modification locale) ; LiberNT déplacé dans `third_party/LiberNT` | doublons de `third_party` |
 | `labs/crates/*`                        | `crates/*`                                                             | merge par la session labs (worktree `merge/labs`) : dependencies, profils, cargo-features, `[patch]` |
@@ -79,5 +79,5 @@ Cible commune avec la session labs (référence : `labs/docs/ROOT-ARCHITECTURE.m
 1. Base de référence (fait le 2026-11-12, avant la consigne « pas de build sur le PC ») : 9/9 étapes vertes, cargo 805 tests OK, bun 45 OK (`var/baseline-verify-all.log`).
 2. Merge labs (session labs) → vérification sur prd/fr2.
 3. third_party à plat + dédup → `ay lock`.
-4. nt → `packages/nt` + `apps/nt-app` ; cœur Rust via le monorepo windows-rs (`third_party/windows-rs`, branches nt/*) → vérification, mesure d'affichage réelle (?report=1).
+4. nt → `apps/nt` (fait le 2026-11-13) ; cœur Rust via le monorepo windows-rs (`third_party/windows-rs`, fork aphrody-labs, branche master ; aucune branche nt/*) → vérification, mesure d'affichage réelle (?report=1).
 5. `identity.toml` + `ay identity` ; `.sh`/`.ps1` restants → recettes `just` vers Rust/bun (`forks-aphrody-labs.sh` déjà remplacé par `packages/machine/src/forks.ts`).

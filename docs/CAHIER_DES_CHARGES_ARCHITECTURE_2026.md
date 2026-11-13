@@ -8,7 +8,7 @@
   3. `https://yolo.aphrody.com` / Framework Fullstack ([`C:\src\apps\yolo`](file:///C:/src/apps/yolo))
   4. `C:\src\packages\*` (Packages Bun v1.4.4 Full-Rust `@aphrody/*`)
   5. `C:\src\crates\*` (Crates Rust Edition 2024 natives, WASM32, WebGPU, Kernel, Craft & Identity)
-  6. Cluster Datacenter 3-VPS (`f1p` `10.200.77.1`, `f2p` `10.200.77.3`, `usp` `10.200.77.5`)
+  6. Cluster Datacenter 3-VPS (`fr1` `10.200.77.1`, `fr2` `10.200.77.3`, `prd` `10.200.77.5`)
 
 ---
 
@@ -57,12 +57,12 @@ Les recherches approfondies exécutées via Context7 (`ske research`, rapport co
 ## 3. Inventaire Exhaustif du Code Legacy Clone dans `C:\src\var\legacy` et Cartographie vers `C:\src`
 
 ### 3.1 Ce qui a été cloné dans `C:\src\var\legacy`
-1. **`C:\src\var\legacy\bunos`** (`/home/ubuntu/src/bun-os` depuis `f1p`) :
+1. **`C:\src\var\legacy\bunos`** (`/home/ubuntu/src/bun-os` depuis `fr1`) :
    - **571 crates Rust** dans `crates/` (`aphrody-identity`, `aphrody-sprite-sheet`, `aphrody-m3`, `aphrody-m3-tokens`, `libm3`, `libm3-wasm`, `craft-ui`, `craft-atomic`, `craft-fonts`, `aphrody-web`, `aphrody-rag`, `aphrody-search`, `aphrody-site`, `aphrody-webos-server`, `aphrody-webos-client`, `aphrody-webos-protocol`, `aphrody-webos-sessions`, `aphrody-remote-desktop`, `aphrody-google`, `bun-os-google`, plus les ~250 sous-crates des 14 studios `*craft-*` et les 45 crates `aphrody-nie-*` / `dust` / `starpsx` / `zakuro`).
    - **139 packages Bun** dans `packages/` (`app-ui`, `m3`, `m3-tokens`, `m3-theme`, `m3-icons`, `material-design-icons`, `m3-react`, `m3-bun`, `m3-os-themes`, `google`, `aphrody-web`, `fluent`, `canvas`, `menu-render-webgpu`, `inagle`, `nie-ui`, `nie-web`, `re`, etc.).
    - **62 applications** dans `apps/` (`*craft`, `*craft-cli`, `*craft-web`, `desktop`, `webos`, `lu`, `iecode-web`, `bunos-wsl`).
    - **Assets binaires certifiés** dans `crates/aphrody-identity/assets/` (atlas PNG/WebP `8x11` de Byron Love, `animations.json`, `pet.json`, `aphrody.json`, logos `.ico`/`.png`/`.svg`/`.webp`, `m3-tokens.css`).
-2. **`C:\src\var\legacy\f1p-apps`** (`/home/ubuntu/apps` depuis `f1p`) :
+2. **`C:\src\var\legacy\f1p-apps`** (`/home/ubuntu/apps` depuis `fr1`) :
    - `craft-web` : Release de production complète de `craft.aphrody.app` avec les 14 studios WASM/WebGPU compilés (`/art/`, `/cad/`, `/deck/`, `/design/`, `/effect/`, `/fig/`, `/film/`, `/grid/`, `/light/`, `/pdf/`, `/photo/`, `/sound/`, `/vector/`, `/word/`), le simulateur WebGPU, et la configuration Nginx HTTP/3 QUIC + COOP/COEP.
    - `aphrody`, `webos`, `store`, `creator`, `remote-desktop`, `bunos-status`, `chat`.
 3. **`C:\src\var\legacy\yolo-rs\*`** (40 dépôts GitHub `yolo-rs`) :
@@ -84,7 +84,7 @@ Pour respecter strictement `archguard check --strict` (pureté de domaine : `cra
 | **[`C:\src\apps\aphrody-app`](file:///C:/src/apps/aphrody-app)** | `https://aphrody.app` & `https://craft.aphrody.app` | **Workstation WebGPU/Wayland/CRDT (`aphrody.app`) + Suite des 14 Studios Craft WASM/WebGPU (`/word/`, `/grid/`, `/deck/`, `/pdf/`, `/photo/`, `/vector/`, `/design/`, `/fig/`, `/light/`, `/film/`, `/effect/`, `/sound/`, `/cad/`, `/art/`) + Session Streamée Bun OS WebOS + Spacedrive VDFS + Locally Uncensored** | `C:\src\apps\aphrody-app` (`aphrody-core`, `aphrody-wasm`, `aphrody-host`, `aphrody-android`) + `f1p-apps/craft-web` (14 studios WASM/WebGPU) + `bunos/crates/aphrody-webos-*` + `bunos/crates/craft-ui` |
 | **[`C:\src\apps\yolo`](file:///C:/src/apps/yolo)** | `https://yolo.aphrody.com` | **Framework Fullstack Reproductible Bun v1.4.4 + Rust** : Exploite 100% des primitives natives de Bun (`Bun.serve`, `Bun.build`, `HTMLRewriter`, `bun:sqlite`, `Bun.SQL`, `bun:ffi`, `Bun.Transpiler`, `Bun.CryptoHasher`, `Bun.Archive`, `Bun.Glob`, `Bun.semver`, `Bun.color`), inspecteur de graphe AST SQLite (`.yolo/graph.sqlite`), Design System M3 HCT, galerie complète des icônes M3 optimisées, runtime Pet Byron Love & Gemini Pet, et console d'inspection du Cluster Search 3-VPS | `C:\src\apps\yolo` + `yolo-rs/yolo` + `yolo-rs/yolo-bun` + `yolo-rs/yolo-ui` + `bunos/packages/m3-*` + `aphrody-labs/gemini-super-app` (`openpets_gemini`) |
 | **[`C:\src\packages\google-design`](file:///C:/src/packages/google-design)** | `@aphrody/google-design` (`gds`) | **Système de Design Unifié M3 Expressive HCT + Palette Oklch Byron Love + Fluent 2 + macOS + Icônes Material Symbols Optimisées (`aphrody-m3`) + Runtime Web `<aphrody-pet>` (Byron Love 8x11 + Gemini Pet)** | `C:\src\packages\google-design` + `aphrody-labs/aphrody-m3` (`m3-tokens`, `m3-theme`, `m3-icons`, `material-design-icons`) + `bunos/crates/aphrody-identity` (`web.json`, `m3-tokens.css`, `aphrody-logo.css`) + `openpets_gemini` |
-| **[`C:\src\packages\chromium-bun`](file:///C:/src/packages/chromium-bun)** | `@aphrody/chromium-bun` | **Moteur de Crawl, Rendu CDP Obscura/Playwright, Recherche Fédérée (Google / SearXNG / SQLite FTS5+Vecteurs RRF) et Orchestration du Cluster 3-VPS (`f1p`, `f2p`, `usp`)** | `C:\src\packages\chromium-bun` + `bunos/crates/aphrody-web` + `bunos/packages/aphrody-web` + `yolo-web/packages/google` |
+| **[`C:\src\packages\chromium-bun`](file:///C:/src/packages/chromium-bun)** | `@aphrody/chromium-bun` | **Moteur de Crawl, Rendu CDP Obscura/Playwright, Recherche Fédérée (Google / SearXNG / SQLite FTS5+Vecteurs RRF) et Orchestration du Cluster 3-VPS (`fr1`, `fr2`, `prd`)** | `C:\src\packages\chromium-bun` + `bunos/crates/aphrody-web` + `bunos/packages/aphrody-web` + `yolo-web/packages/google` |
 | **[`C:\src\packages\ai-os`](file:///C:/src/packages/ai-os)** | `@aphrody/ai-os` | **Unique Propriétaire Public IA & MCP (`ai-os.exe`)** : Mode `design-first` global activé par défaut, POSIX VFS, Nix Store, WASM/WebGPU kernels, Gemini 4/3.8 + Locally Uncensored bridge | `C:\src\packages\ai-os` + `bunos/crates/aphrody-mcp` |
 | **[`C:\src\crates\design-system`](file:///C:/src/crates/design-system)** | `crates/design-system` | **Socle Rust Natif & WASM32 de Design, Identité & Craft UI** : Intègre `aphrody-identity` (mesure Oklab `pixel.rs`, palette 10 teintes / 26 rôles Oklch `design.rs`, cadrage et vectorisation SVG `logo.rs`, atlas `8x11` Byron Love), `aphrody-sprite-sheet` (CSS/SVG/JSON sprite sheets), `aphrody-m3-tokens` & `aphrody-m3` (contrats M3 + Taffy layout), et `craft-ui` (composants egui partagés des 14 studios) | `C:\src\crates\design-system` + `bunos/crates/aphrody-identity` + `bunos/crates/aphrody-sprite-sheet` + `bunos/crates/aphrody-m3` + `bunos/crates/aphrody-m3-tokens` + `bunos/crates/craft-ui` |
 
@@ -142,10 +142,10 @@ Pour respecter strictement `archguard check --strict` (pureté de domaine : `cra
      - **Bun OS & WebOS Live** : Showcase interactif 60 FPS (Android 17 Waydroid, Emulateurs, COSMIC Desktop, Craft Suite, Gemini Multimodal) + lancement de session WebOS (`aphrody.app`).
 
 2. **Backend API Réel (`Bun.serve` + Cluster 3-VPS + SQLite FTS5/RAG)** :
-   - `GET /api/search?q=...&vertical=...&mode=search|agent` : Interroge le cluster de recherche 3-VPS (`f1p`, `f2p`, `usp`) + l'index local SQLite FTS5 (`aphrody-rag` / `knowledge-engine`) et retourne de vrais résultats structurés avec latence par nœud et digest Blake3.
+   - `GET /api/search?q=...&vertical=...&mode=search|agent` : Interroge le cluster de recherche 3-VPS (`fr1`, `fr2`, `prd`) + l'index local SQLite FTS5 (`aphrody-rag` / `knowledge-engine`) et retourne de vrais résultats structurés avec latence par nœud et digest Blake3.
    - `GET /api/ecosystem` : Retourne le catalogue complet des 16 applications Google->Aphrody Workspace, des 14 studios Craft WASM/WebGPU, et des 21 applications Top-1 Rust/Bun/Bevy `*.aphrody.app`.
    - `GET /api/identity/pet` & Assets `/byron.webp`, `/spritesheet.webp`, `/animations.json`, `/icon.svg`, `/favicon.ico` : Servis directement depuis les assets authentiques de `aphrody-identity` avec cache immuable et hash SHA-256/Blake3.
-   - `GET /api/cluster/health` : Télémétrie temps réel des 3 VPS (`f1p` `10.200.77.1`, `f2p` `10.200.77.3`, `usp` `10.200.77.5`).
+   - `GET /api/cluster/health` : Télémétrie temps réel des 3 VPS (`fr1` `10.200.77.1`, `fr2` `10.200.77.3`, `prd` `10.200.77.5`).
 
 ---
 
@@ -165,7 +165,7 @@ Pour respecter strictement `archguard check --strict` (pureté de domaine : `cra
 2. **Graphe AST & SQLite (`bun:sqlite` + `Bun.Transpiler`)** : Analyse tous les modules TS/JS/Rust/WGSL de l'application et persiste le graphe de dépendances et les digests Blake3 dans `.yolo/graph.sqlite`.
 3. **Suite de Diagnostics Primitives Bun v1.4.4** : Benchmark et vérification en direct de `Bun.serve`, `bun:sqlite`, `Bun.Transpiler`, `HTMLRewriter`, `Bun.CryptoHasher` (Blake3/SHA256), `Bun.gzipSync`/`deflateSync`, `Bun.semver`, `Bun.color`, `Bun.Glob`.
 4. **Intégration Native de `aphrody-identity` (Byron Love `8x11` + Palette Oklch) & `aphrody-m3` (Catalogue d'icônes Material 3 & Générateur de thèmes HCT)**.
-5. **Inspecteur End-to-End du Cluster de Recherche 3-VPS (`f1p`, `f2p`, `usp`)**.
+5. **Inspecteur End-to-End du Cluster de Recherche 3-VPS (`fr1`, `fr2`, `prd`)**.
 
 ---
 
@@ -200,7 +200,7 @@ flowchart TD
   - Connecter le shell Pure-Rust Wayland/WebGPU/Fluid CRDT (`aphrody-core`, `aphrody-wasm`, `aphrody-host`) aux 14 studios Craft WASM/WebGPU de `f1p-apps/craft-web` et au protocole de session `aphrody-webos-protocol`.
 - **Phase 5 : Perfectionnement de `C:\src\apps\yolo` (`https://yolo.aphrody.com`)** :
   - Enrichir `apps/yolo` avec la palette Oklch Byron Love, le composant `<aphrody-pet>` (Byron Love + Gemini Pet), les icônes `aphrody-m3`, et l'intégration complète des primitives Bun v1.4.4.
-- **Phase 6 : Vérification End-to-End & Déploiement Cluster 3-VPS (`f1p`, `f2p`, `usp`)** :
+- **Phase 6 : Vérification End-to-End & Déploiement Cluster 3-VPS (`fr1`, `fr2`, `prd`)** :
   - Exécuter `bun fmt`, `bun check`, `bun test`, `cargo test`, `archguard check --strict --root C:\src`.
   - Vérifier visuellement et fonctionnellement chaque route avec `agent-browser`, Playwright (Desktop 1920x1080, Tablet 768x1024, Mobile 375x667) et Lighthouse / `wck` (>= 95 Performance, 100 Accessibility, 100 Best Practices, 100 SEO, 0 emoji `ARCH-009`, 0 AI slop `ARCH-010`).
-  - Déployer et équilibrer sur les 3 VPS (`f1p` `10.200.77.1`, `f2p` `10.200.77.3`, `usp` `10.200.77.5`).
+  - Déployer et équilibrer sur les 3 VPS (`fr1` `10.200.77.1`, `fr2` `10.200.77.3`, `prd` `10.200.77.5`).
