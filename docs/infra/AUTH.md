@@ -12,7 +12,13 @@
 | `ay auth gh-secrets [--dry-run]` | `gh secret set <NOM> --repo/--org … --body -` (valeur sur stdin) pour `[auth.github.*]` ; refuse un jeton que son fournisseur rejette (`whoami`) ; empreinte HMAC locale pour l'idempotence |
 | `ay auth tunnels [--dry-run]` | jeton connecteur lu par l'API Cloudflare → `systemd-creds encrypt` sur l'hôte (`/etc/credstore.encrypted/cloudflared-<tunnel>`), drop-in `LoadCredentialEncrypted=` + `--token-file %d/…`, fichier en clair supprimé ; ne redémarre que s'il y a dérive |
 | `ay auth rotate cloudflare` | `PUT /accounts/<id>/tokens/<id>/value` : nouveau `CLOUDFLARE_API_TOKEN`, ancien révoqué, propagé (stockage, `.env`, env utilisateur, éditeurs, GitHub) |
+| `ay auth login [cli…]` | connecte les seules CLI en échec, device flow (RFC 8628) sans navigateur local : gh (code d'appareil), wrangler `--device`, codex `--device-auth`, claude `setup-token` |
+| `ay auth oidc [--dry-run]` | fédération GitHub Actions OIDC → GCP (WIF) de `[auth.oidc.gcp]`, idempotente ; `status --only oidc` signale les secrets que `[auth.oidc.replaces]` rend inutiles |
+| `ay auth mint cloudflare --perm "<groupes>" [--ttl s] -- cmd` | jeton de compte limité à ces groupes, `expires_on`, injecté dans l'enfant puis supprimé |
+| `ay auth mint gcp [--sa <email>] [--ttl s] -- cmd` | jeton d'accès par impersonation, sans clé (`CLOUDSDK_AUTH_ACCESS_TOKEN`) |
 | `ay secret info/list/set/exec/pipe/has/rm/import` | stockage chiffré par l'OS (ci-dessous) |
+
+Comparaison de l'écosystème et choix « AI first » : [AUTH-ECOSYSTEM.md](AUTH-ECOSYSTEM.md). Le relais ai-os sert OAuth 2.1 (MCP 2026-07-28, A2A 1.0) : `relay mcp-add`, `relay approve`, `relay client add`.
 
 Règles : aucune valeur en argv ni sur stdout (pas de `secret get` : une sortie capturée par un agent ou un journal CI n'est pas un terminal). Une valeur entre par stdin (`… | ay secret set NOM`) et sort vers l'env (`ay secret exec NOM -- cmd`) ou le stdin (`ay secret pipe NOM -- cmd`) d'un processus enfant.
 
