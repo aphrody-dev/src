@@ -45,7 +45,7 @@ Rust builds run in CI or on fr1, never on the workstation.
 
 | # | Step | Check | State |
 | :--- | :--- | :--- | :--- |
-| 1 | Graph the checkouts that exist with `just graph third_party/<path> <name>`: FFmpeg libraries, then `third_party/artcraft/crates` | `GRAPH_REPORT.md` with node and edge counts | Started: `ay graph build third_party/ffmpeg/libavutil` (272 `.c`/`.h` files at the top level) wrote `graphify-out/ffmpeg-libavutil/GRAPH_REPORT.md` with 5055 nodes, 11345 edges, 198 communities in about one second |
+| 1 | Graph the checkouts that exist with `just graph third_party/<path> <name>` | `GRAPH_REPORT.md` with node and edge counts | Done 2026-11-13 with `ay graph build`, output in `graphify-out/` (not tracked), nodes / edges: libavutil 5055 / 11345, libavcodec 29819 / 97225, libavformat 10006 / 40174, libavfilter 11588 / 38477, libswscale 3022 / 6917, libswresample 404 / 724, libavdevice 1778 / 3407, `artcraft/crates` 34314 / 69018, `storyteller-bevy` 5317 / 7256. Each run took 6 s or less on the workstation |
 | 2 | LLVM IR of the same libraries with the shared clang (`docs/llvm/UNIFIED-TOOLCHAIN.md`) on fr1 | `.bc` files produced from a configured LGPL build | Not started |
 | 3 | Format layer: evaluate `storytold/craft-libs` (Apache-2.0, 114 `craft-<name>` crates such as psd, pdf, exr, heif, tiff, webp, svg, raw, docx, xlsx) as git dependencies pinned by `rev`, without copying | `cargo deny check licenses` passes in CI with the pins | Not started |
 | 4 | Media: extend `crates/tv-*` as `docs/tv` describes; this plan adds nothing | tests of `tv-ffmpeg`, including `ffmpeg_build_is_lgpl` | Owned by the session that maintains `crates/tv-*` |
