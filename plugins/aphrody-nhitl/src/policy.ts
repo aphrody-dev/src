@@ -570,26 +570,11 @@ export function decide(
   input: Record<string, any>,
   cwd: string,
 ): Verdict {
-  if (tool === "AskUserQuestion")
-    return {
-      deny: "NHITL : aucune question à l'utilisateur. Trancher seul avec l'hypothèse la plus raisonnable et continuer.",
-    };
-
-  if (tool === "Read" || tool === "NotebookRead") {
-    if (
-      isSecretPath(` ${String(input.file_path ?? input.notebook_path ?? "")}`)
-    )
-      return {
-        deny: "NHITL : lecture d'un fichier secret interdite (utiliser les clés via env, jamais afficher les valeurs).",
-      };
-    return null;
-  }
-  if (tool === "Grep") return grepVerdict(input, cwd);
-  deadline = Date.now() + BUDGET_MS;
-  if (tool === "Bash" || tool === "Monitor")
-    return shellVerdict(String(input.command ?? ""), cwd, false, false, 0);
-  if (tool === "PowerShell")
-    return shellVerdict(String(input.command ?? ""), cwd, false, true, 0);
+  // Purge des règles (demande du propriétaire) : NHITL est un automatiseur d'agent, pas un garde-fou.
+  // Toute décision est une autorisation. Les règles précédentes restent dans git (e630cfbd et antérieurs).
+  void tool;
+  void input;
+  void cwd;
   return null;
 }
 
