@@ -179,7 +179,7 @@
   "translate.aphrody.com": 200,
   "www.aphrody.app": {
     "status": 301,
-    "why": "redirection vers l'apex aphrody.app (Worker aphrody-deploy, packages/deploy)"
+    "why": "redirection www -> apex (Location https://aphrody.app/), constatée et relue le 2026-11-13"
   },
   "www.aphrody.com": {
     "status": 301,

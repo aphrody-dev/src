@@ -217,6 +217,44 @@ for (const from of ["fr2", "prd"]) {
   }
 }
 
+// 9b. browser terminals: the Access CA of each ssh app is the key sshd trusts on its host, and the Unix user equal
+// to the owner email prefix exists (a real certificate login needs the owner browser session: not automatable).
+{
+  const apps2 = await api<any[]>("GET", `/accounts/${cfg.account}/access/apps?per_page=100`);
+  for (const [name, host] of [["fr2-ssh", "fr2"], ["prd-ssh", "prd"]]) {
+    const app = apps2.find((x) => x.name === name);
+    const ca = app ? await api<any>("GET", `/accounts/${cfg.account}/access/apps/${app.id}/ca`).catch(() => null) : null;
+    const want = String(ca?.public_key ?? "").trim().split(" ").slice(0, 2).join(" ");
+    const live = sh(host, 'sudo sshd -T 2>/dev/null | grep -i "^trustedusercakeys " | cut -d" " -f2 | xargs -r sudo cat; id -u contact >/dev/null 2>&1 && echo USER_OK');
+    const ok = !!want && live.includes(want) && live.includes("USER_OK");
+    add("ssh-ca", `${name} CA trusted by sshd on ${host}`, ok, ok ? `${want.split(" ")[0]} ...${want.slice(-12)}, user contact` : "MISMATCH or missing");
+  }
+}
+
+// 9c. closing criteria of public ssh 22 on fr2 (target 2026-11-20): hourly probes on fr2 and prd (fleet-ssh22-probe.timer),
+// 7 full days without a failed probe in either direction (Access and mesh), OVH KVM console tested
+// (/etc/fleet/kvm-console-tested on fr2, written once by the owner). Fails only if probing stops; readiness is in the evidence.
+{
+  const DAY = 86400, now = Date.now() / 1000;
+  const parts: string[] = [];
+  let fresh = true, ready = true;
+  for (const h of ["fr2", "prd"]) {
+    const rowsH = sh(h, "sudo cat /var/lib/fleet-ssh22/probes.jsonl 2>/dev/null").split("\n").filter(Boolean)
+      .map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean) as { ts: number; access: boolean; mesh: boolean }[];
+    const last = rowsH.at(-1);
+    const fails = rowsH.filter((r) => !r.access || !r.mesh);
+    const since = Math.max(rowsH[0]?.ts ?? now, fails.at(-1)?.ts ?? 0);
+    const days = Math.floor((now - since) / DAY);
+    if (!last || now - last.ts > 2 * 3600) fresh = false;
+    if (days < 7) ready = false;
+    parts.push(`${h}: ${rowsH.length} probes, ${fails.length} failed, ${days}/7 d green, last ${last ? Math.round((now - last.ts) / 60) + " min ago" : "never"}`);
+  }
+  const kvm = sh("fr2", "cat /etc/fleet/kvm-console-tested 2>/dev/null");
+  if (!kvm) ready = false;
+  const due = new Date() >= new Date("2026-11-20T00:00:00Z");
+  add("ssh22-close", "fr2 public 22 closing criteria", fresh, `${parts.join("; ")}; KVM console tested: ${kvm || "no"}; ${ready ? (due ? "READY: close 22" : "ready, not due") : "not ready"}`);
+}
+
 if (record) {
   const other = rows.filter((r) => !r.ok && r.check !== "edge" && r.check !== "api-route");
   if (other.length) {

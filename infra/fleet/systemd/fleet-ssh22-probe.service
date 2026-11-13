@@ -1,0 +1,10 @@
+# Hourly probe of the ssh 22 closing criteria (Access ssh + mesh ssh). Source: infra/fleet/bin/ssh22-probe.sh
+[Unit]
+Description=ssh 22 closing criteria probe (Access + mesh)
+After=network-online.target cloudflared-fr2.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+Nice=19
+ExecStart=/usr/local/bin/ssh22-probe.sh
