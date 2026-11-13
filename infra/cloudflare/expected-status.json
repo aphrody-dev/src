@@ -65,8 +65,8 @@
     "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
   },
   "art.aphrody.com": {
-    "status": 502,
-    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+    "status": 404,
+    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
   },
   "auth.aphrody.app": {
     "status": 404,
@@ -76,8 +76,8 @@
   "bot.aphrody.com": 200,
   "bxc.aphrody.com": 200,
   "cad.aphrody.com": {
-    "status": 502,
-    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+    "status": 404,
+    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
   },
   "calendar.aphrody.com": {
     "status": 404,
@@ -98,12 +98,12 @@
     "why": "redirection vers https://aphrody.app/dashboard (Worker aphrody-deploy)"
   },
   "design.aphrody.com": {
-    "status": 502,
-    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+    "status": 404,
+    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
   },
   "docs.aphrody.com": {
-    "status": 502,
-    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+    "status": 404,
+    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
   },
   "downloads.aphrody.com": {
     "status": 404,
@@ -111,8 +111,8 @@
   },
   "drive.aphrody.com": 200,
   "fig.aphrody.com": {
-    "status": 502,
-    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+    "status": 404,
+    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
   },
   "git.aphrody.app": {
     "status": 302,
@@ -140,12 +140,12 @@
     "why": "404 du Worker ou du conteneur (pas de page racine)"
   },
   "pdf.aphrody.com": {
-    "status": 502,
-    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+    "status": 404,
+    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
   },
   "photos.aphrody.com": {
-    "status": 502,
-    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+    "status": 404,
+    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
   },
   "play.aphrody.app": {
     "status": 404,
@@ -157,16 +157,16 @@
   },
   "search.aphrody.com": 200,
   "sheets.aphrody.com": {
-    "status": 502,
-    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+    "status": 404,
+    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
   },
   "slides.aphrody.com": {
-    "status": 502,
-    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+    "status": 404,
+    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
   },
   "sound.aphrody.com": {
-    "status": 502,
-    "why": "502 rendu par le Worker aphrody-webos sur sa route (pas l origine)"
+    "status": 404,
+    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
   },
   "source.aphrody.app": {
     "status": 302,

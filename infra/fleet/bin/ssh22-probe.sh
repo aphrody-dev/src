@@ -7,7 +7,8 @@
 # Host keys are pinned (StrictHostKeyChecking=yes, known_hosts provisioned at install). secrets.env is never sourced:
 # only the two Access variables are read, and handed to cloudflared through its environment.
 set -u
-val() { sed -n "s/^$1=//p" "$2" | head -1; }
+# dotenv-like read: last occurrence wins, optional "export ", surrounding quotes removed; nothing is executed.
+val() { sed -n -E "s/^(export +)?$1=//p" "$2" | tail -1 | sed -E 's/^"(.*)"$/\1/; s/^'"'"'(.*)'"'"'$/\1/'; }
 cfgf=/etc/fleet/ssh22-probe.conf
 sec=/etc/aphrody/secrets.env
 ACCESS_TARGET=$(val ACCESS_TARGET $cfgf)

@@ -25,11 +25,13 @@ async function doh(name: string, type = "A"): Promise<string[]> {
   // ~75 lookups run in parallel: the resolver sometimes refuses a connection, so retry before failing the run.
   let r: Response | undefined;
   for (let i = 0; i < 4 && !r; i++) {
-    r = await fetch(`https://cloudflare-dns.com/dns-query?name=${name}&type=${type}`, { headers: { accept: "application/dns-json" } }).catch(async (e) => {
-      if (i === 3) throw e;
-      await Bun.sleep(500 * (i + 1));
-      return undefined;
-    });
+    r = await fetch(`https://cloudflare-dns.com/dns-query?name=${name}&type=${type}`, { headers: { accept: "application/dns-json" } })
+      .then((x) => (x.ok ? x : Promise.reject(new Error(`DoH HTTP ${x.status}`))))
+      .catch(async (e) => {
+        if (i === 3) throw e;
+        await Bun.sleep(500 * (i + 1));
+        return undefined;
+      });
   }
   if (!r) throw new Error(`DoH ${name}: no answer`);
   return (((await r.json()) as any).Answer ?? []).filter((a: any) => a.type === (type === "A" ? 1 : 28)).map((a: any) => a.data);
@@ -239,12 +241,29 @@ for (const from of ["fr2", "prd"]) {
       'f=$(sudo sshd -T 2>/dev/null | grep -i "^trustedusercakeys " | cut -d" " -f2)',
       'echo "MODE $(stat -c "%U %a" "$f")"; echo "KEYS $(grep -c . "$f")"; sudo cat "$f"',
       'echo "APF $(sudo sshd -T 2>/dev/null | grep -i "^authorizedprincipalsfile " | cut -d" " -f2)"',
+      'for u in contact root ubuntu; do echo "EFF $u $(sudo sshd -T -C user=$u,host=x,addr=127.0.0.1 2>/dev/null | grep -i -E "^(trustedusercakeys|authorizedprincipalsfile) " | cut -d" " -f2 | tr "\n" " ")$(test -e /etc/ssh/access-principals/$u && echo P)"; done',
       'echo "PRINC $(ls /etc/ssh/access-principals | tr "\\n" " ")"',
       "id -u contact >/dev/null 2>&1 && echo USER_OK",
     ].join("; "));
     const ok = !!want && live.includes(want) && live.includes("MODE root 644") && live.includes("KEYS 1")
-      && live.includes("APF /etc/ssh/access-principals/%u") && /PRINC contact \n/.test(live + "\n") && live.includes("USER_OK");
+      && live.includes("APF /etc/ssh/access-principals/%u") && /PRINC contact \n/.test(live + "\n") && live.includes("USER_OK")
+      && /^EFF contact \/etc\/ssh\/ca-access\.pub \/etc\/ssh\/access-principals\/%u P$/m.test(live)
+      && /^EFF root \/etc\/ssh\/ca-access\.pub \/etc\/ssh\/access-principals\/%u $/m.test(live)
+      && /^EFF ubuntu \/etc\/ssh\/ca-access\.pub \/etc\/ssh\/access-principals\/%u $/m.test(live);
     add("ssh-ca", `${name} CA trusted by sshd on ${host}`, ok, ok ? `${want.split(" ")[0]} ...${want.slice(-12)}, sole CA, root 644, principals: contact only; certificate login not proven (owner browser session)` : live.replace(/\n/g, " | ").slice(0, 200) || "MISSING");
+  }
+}
+
+// 9b'. who can get a certificate: every policy of the ssh apps must include only the exact owner email.
+{
+  const apps3 = await api<any[]>("GET", `/accounts/${cfg.account}/access/apps?per_page=100`);
+  for (const name of ["fr2-ssh", "prd-ssh"]) {
+    const app = apps3.find((x) => x.name === name);
+    const pols = app ? await Promise.all((app.policies ?? []).map((p: any) => api<any>("GET", `/accounts/${cfg.account}/access/policies/${p.id}`).catch(() => p))) : [];
+    const ident = pols.filter((p: any) => p.decision !== "non_identity");
+    const emails = ident.flatMap((p: any) => (p.include ?? []).map((x: any) => x.email?.email ?? JSON.stringify(x)));
+    const ok = ident.length > 0 && emails.every((e: string) => e === "contact@aphrody.com");
+    add("access-policy", `${name} identity policies`, ok, `${ident.length} identity polic${ident.length > 1 ? "ies" : "y"}: ${emails.join(", ") || "none"}; service tokens: ${pols.length - ident.length}`);
   }
 }
 
@@ -273,8 +292,15 @@ for (const from of ["fr2", "prd"]) {
     if (days < 7 || rowsH.length < 150) ready = false;
     parts.push(`${label}: ${rowsH.length} probes, ${fails} failed, ${days}/7 d green, last ${last ? Math.round((now - last.ts) / 60) + " min ago" : "never"}`);
   }
-  const kvm = sh("fr2", "cat /etc/fleet/kvm-console-tested 2>/dev/null");
-  if (!kvm) ready = false;
+  // Owner attestations on fr2, each an ISO date on the first line, valid 30 days: OVH KVM console, browser terminal.
+  const att = (f: string) => {
+    const v = sh("fr2", `head -1 /etc/fleet/${f} 2>/dev/null`).trim();
+    const t = Date.parse(v);
+    return Number.isFinite(t) && now - t / 1000 < 30 * DAY ? v : v ? `stale or invalid (${v.slice(0, 20)})` : "";
+  };
+  const kvmA = att("kvm-console-tested"), browserA = att("browser-ssh-tested");
+  const kvm = kvmA && !kvmA.startsWith("stale") ? `${kvmA}; browser terminal tested: ${browserA || "no"}` : "";
+  if (!kvm || !browserA || browserA.startsWith("stale")) ready = false;
   const due = new Date() >= new Date("2026-11-20T00:00:00Z");
   add("ssh22-close", "fr2 public 22 closing criteria", fresh, `${parts.join("; ")}; KVM console tested: ${kvm || "no"}; ${ready ? (due ? "READY: close 22" : "ready, not due") : "not ready"}`);
 }

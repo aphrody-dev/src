@@ -33,13 +33,15 @@ for (const [name, host] of Object.entries(HOST)) {
     "install -d -m 755 /etc/ssh/sshd_config.d",
     "grep -qE '^Include /etc/ssh/sshd_config.d/' /etc/ssh/sshd_config || { echo 'sshd_config has no Include of sshd_config.d: refusing'; exit 1; }",
     // Validate before installing: copy the live config tree to a temp dir, add the new files there, sshd -t -f on it.
-    "w=$(mktemp -d); trap 'rm -rf $w' EXIT; cp -a /etc/ssh/. $w/",
+    "w=$(mktemp -d); trap 'rm -rf $w' EXIT; cp -a /etc/ssh/sshd_config $w/; cp -a /etc/ssh/sshd_config.d $w/; cp -a /etc/ssh/access-principals $w/",
     `cat > $w/ca-access.pub <<'CAKEY'\n${key}\nCAKEY`,
-    "printf '# Cloudflare Access short-lived certificates (infra/cloudflare/ssh-ca.ts)\\nTrustedUserCAKeys /etc/ssh/ca-access.pub\\nAuthorizedPrincipalsFile /etc/ssh/access-principals/%%u\\n' > $w/sshd_config.d/40-access-ca.conf",
+    // Test drop-in points at the copies, so sshd -t really parses the new CA key; the installed one at the final paths.
+    "printf '# Cloudflare Access short-lived certificates (infra/cloudflare/ssh-ca.ts)\\nTrustedUserCAKeys %s/ca-access.pub\\nAuthorizedPrincipalsFile %s/access-principals/%%%%u\\n' $w $w > $w/sshd_config.d/40-access-ca.conf",
+    "ssh-keygen -l -f $w/ca-access.pub >/dev/null",
     "sed -i \"s#/etc/ssh/sshd_config.d/#$w/sshd_config.d/#\" $w/sshd_config",
     "sshd -t -f $w/sshd_config",
     "install -m 644 -o root -g root $w/ca-access.pub /etc/ssh/ca-access.pub",
-    "install -m 644 -o root -g root $w/sshd_config.d/40-access-ca.conf /etc/ssh/sshd_config.d/40-access-ca.conf",
+    "printf '# Cloudflare Access short-lived certificates (infra/cloudflare/ssh-ca.ts)\\nTrustedUserCAKeys /etc/ssh/ca-access.pub\\nAuthorizedPrincipalsFile /etc/ssh/access-principals/%%u\\n' > /etc/ssh/sshd_config.d/40-access-ca.conf; chmod 644 /etc/ssh/sshd_config.d/40-access-ca.conf",
     "sshd -t || { rm -f /etc/ssh/sshd_config.d/40-access-ca.conf; echo 'live sshd -t failed: drop-in removed'; exit 1; }",
     "systemctl reload ssh 2>/dev/null || systemctl reload sshd",
     "sshd -T 2>/dev/null | grep -i -E '^(trustedusercakeys|authorizedprincipalsfile)'",

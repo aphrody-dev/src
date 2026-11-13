@@ -218,3 +218,7 @@ Défauts : contournement de l'AOP par un SNI différent du Host, preuve fleet-on
 ## Passe 6 (2026-11-13 ~04:20) : 12/20
 
 Exactitude 4/6, réseau 4/5, sécurité 2,5/5, complétude 1,5/4. Défauts : runs cités incohérents, critère mesh « depuis fr1 » non mesuré, jours verts sans contrôle de continuité, ssh-ca.ts sans retour arrière si la validation sshd échoue, CA sans AuthorizedPrincipalsFile et sudo sans mot de passe non documenté, unité de sonde dépendante de cloudflared-fr2, fichier de secrets exécuté par la sonde et première clé d'hôte acceptée, contrôle ssh-ca trop faible, jeton posé après l'import de lib.ts, ordre des passes, détails (colos, doublon KVM, chemins installés).
+
+## Passe 7 (2026-11-13 ~04:35) : 12/20
+
+Exactitude 3/6, réseau 4/5, sécurité 3/5, complétude 2/4. Défauts : statuts 502 de *.aphrody.app contredits par le run (404/302), dérive des routes webos classée à tort hors périmètre, version cloudflared de prd, date du port 22 non datée par hôte (fr1), clés d'hôte posées par ssh-keyscan (TOFU), aop.ts sans garde si CF_AOP_TOKEN manque, validation SSH sur copie qui ne lisait pas la nouvelle clé, sshd -T sans -C, politique Access des apps ssh non vérifiée, attestation KVM non datée, DoH non réessayé sur 429/5xx, lecture dotenv incorrecte, fleet-only prouvé par grep seulement. Tous corrigés sauf le dernier (sonde négative impossible depuis le PC, documenté).

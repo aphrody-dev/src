@@ -11,7 +11,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 // Dedicated token aop-rotate (SSL and Certificates Write + Zone Read on aphrody.com only, vault CF_AOP_TOKEN): no OAuth.
 // Set before lib.ts is loaded (dynamic import), so its token resolution can only ever see this token.
-if (Bun.env.CF_AOP_TOKEN) process.env.CLOUDFLARE_API_TOKEN = Bun.env.CF_AOP_TOKEN;
+if (!Bun.env.CF_AOP_TOKEN) throw new Error("CF_AOP_TOKEN absent: run through just cf-aop / cf-aop-prune (vault), never with a broader token");
+process.env.CLOUDFLARE_API_TOKEN = Bun.env.CF_AOP_TOKEN;
+delete process.env.CF_AUTH;
 const { api } = await import("./lib");
 const prune = Bun.argv.includes("--prune");
 const hosts = Bun.argv.slice(2).filter((x) => !x.startsWith("--")).length ? Bun.argv.slice(2).filter((x) => !x.startsWith("--")) : ["dbfr.aphrody.com"];
