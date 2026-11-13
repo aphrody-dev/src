@@ -5,7 +5,8 @@
 # bun pack (résout workspace: et catalog:) ; npm publie, car bun publish ne gère ni OIDC ni --provenance
 # (oven-sh/bun#22423, #15601 ouverts au 2026-11-13 ; le release.yml de bun publie lui-même avec npm publish).
 # Les dépôts des sous-modules (rosegriffon, shenron) appellent ce workflow depuis leur propre npm-publish.yml : npm
-# vérifie le nom du workflow appelant, d'où le même nom de fichier partout.
+# vérifie le nom du workflow appelant, d'où le même nom de fichier partout. Un dry-run ne fait ni échange OIDC ni
+# signature de provenance : il valide pack, version et registre ; l'OIDC se prouve au premier vrai publish.
 name: npm-publish
 
 on:
@@ -60,8 +61,9 @@ jobs:
           registry-url: https://registry.npmjs.org
       - name: npm 12.2.2 (OIDC, provenance)
         run: bun add -g npm@12.2.2 && echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+      - run: test "$(npm --version)" = 12.2.2
       - name: bun install
-        run: bun install
+        run: bun install --frozen-lockfile
       - name: pack + publish
         env:
           PACKAGES: ${{ inputs.packages }}
@@ -70,16 +72,20 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
-          npm --version
+          [[ "$TAG" =~ ^[a-z][a-z0-9._-]*$ ]] || { echo "::error::dist-tag invalide : $TAG"; exit 1; }
           out="$RUNNER_TEMP/npm"; mkdir -p "$out"
           for dir in $PACKAGES; do
-            name=$(jq -r .name "$dir/package.json"); version=$(jq -r .version "$dir/package.json")
+            case "$dir" in /*|*..*) echo "::error::chemin refusé : $dir"; exit 1;; esac
+            [ -f "$dir/package.json" ] || { echo "::error::$dir/package.json absent"; exit 1; }
+            name=$(jq -er .name "$dir/package.json"); version=$(jq -er .version "$dir/package.json")
             if [ "$(jq -r '.private // false' "$dir/package.json")" = true ]; then echo "::warning::$name privé, ignoré"; continue; fi
-            if npm view "$name@$version" version >/dev/null 2>&1; then echo "$name@$version déjà publié"; continue; fi
+            if v=$(npm view "$name@$version" version 2>"$out/view.err"); then
+              if [ -n "$v" ]; then echo "$name@$version déjà publié"; continue; fi
+            elif ! grep -q E404 "$out/view.err"; then cat "$out/view.err"; exit 1; fi
             (cd "$dir" && bun run --if-present build)
             tgz=$(cd "$dir" && bun pm pack --destination "$out" --quiet | tail -1)
             flags=(--access public --tag "$TAG" --provenance)
-            [ "$DRY_RUN" = true ] && flags+=(--dry-run)
+            if [ "$DRY_RUN" = true ]; then flags+=(--dry-run); fi
             npm publish "$out/$(basename "$tgz")" "${flags[@]}"
             echo "### $name@$version $([ "$DRY_RUN" = true ] && echo '(dry-run)')" >> "$GITHUB_STEP_SUMMARY"
           done
