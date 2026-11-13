@@ -54,3 +54,14 @@ describe("spatial navigation", () => {
     expect(stickDir(0, -0.8)).toBe("up");
   });
 });
+
+import { renderPlay } from "../src/play/page";
+describe("play launcher markup", () => {
+  const html = renderPlay();
+  test("has real buttons, no inline script, and hides the loading message behind it", () => {
+    expect(html).toContain('<button id="l-start"');
+    expect(html).toContain('aria-pressed="true"');
+    expect(html).toContain("#launcher:not([hidden]) ~ #msg{visibility:hidden}");
+    expect(html).not.toMatch(/<script(?![^>]*\bsrc=)[^>]*>/);
+  });
+});

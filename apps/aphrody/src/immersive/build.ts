@@ -26,6 +26,14 @@ export async function buildImmersive(root: string, dist: string, entries: Record
       await Bun.write(join(out, `${m.name}_${suffix}.webp`), bytes);
       log.push(`stage/${m.name}_${suffix}.webp ${bytes.byteLength} B`);
     }
+  const audio = join(out, "audio");
+  mkdirSync(audio, { recursive: true });
+  for (const f of ["rollover1.ogg", "click1.ogg"]) {
+    const from = join(lib, "audio", "ui", f);
+    if (!existsSync(from)) throw new Error(`stage sound missing in the asset library: ${from}`);
+    await Bun.write(join(audio, f), Bun.file(from));
+    log.push(`stage/audio/${f}`);
+  }
   for (const [name, entry] of Object.entries(entries)) {
     const r = await Bun.build({ entrypoints: [join(root, "src", "immersive", entry)], outdir: dist, naming: name, minify: true, target: "browser", format: "esm" });
     if (!r.success) throw new Error(`immersive bundle ${name}: ${r.logs.join("\n")}`);

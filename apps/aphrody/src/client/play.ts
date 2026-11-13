@@ -1,6 +1,6 @@
 // Boot of /play: WebGPU check, then the wasm game built from crates/game (wasm-bindgen output
 // game.js + game_bg.wasm next to this file). Exposes window.__play for scripts/game-fps.ts.
-export {};
+import { launcher } from "../immersive/play-launcher.ts";
 
 interface PlayState {
   gpu: boolean;
@@ -96,4 +96,5 @@ async function main() {
   requestAnimationFrame(tick);
 }
 
+await launcher();
 await main();

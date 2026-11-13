@@ -3,7 +3,7 @@
 // the p95 frame time as one JSON line. Exit 0 = measured (and above --min-fps when given),
 // 1 = measured but below target, 2 = not measured (no Chrome, no WebGPU, game did not start).
 //
-//   bun scripts/game-fps.ts [--url http://127.0.0.1:3000/play] [--seconds 20] [--warmup 8]
+//   bun scripts/game-fps.ts [--url http://127.0.0.1:3000/play?autostart=1] [--seconds 20] [--warmup 8]
 //                           [--width 1920] [--height 1080] [--min-fps 120] [--chrome <path>] [--headed]
 import { existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -123,7 +123,7 @@ function notMeasured(reason: string): never {
 }
 
 if (import.meta.main) {
-  const url = arg("url", "http://127.0.0.1:3000/play");
+  const url = arg("url", "http://127.0.0.1:3000/play?autostart=1");
   const seconds = Number(arg("seconds", "20"));
   const warmup = Number(arg("warmup", "8"));
   const width = arg("width", "1920");
