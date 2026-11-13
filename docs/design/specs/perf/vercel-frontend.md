@@ -1,0 +1,49 @@
+# Vercel : bonnes pratiques de performance front
+
+Réécriture dans nos mots de la documentation propriétaire Vercel ; seuils et directives repris comme faits. Les mécanismes propres à la plateforme (optimiseur, ISR, CDN) sont traduits en principes applicables à n'importe quel hébergeur de src (Cloudflare, fr2).
+
+Spec `vercel.frontend-perf`, domaine `perf`, sources lues le 2026-11-13. Version machine : `vercel-frontend.json` (schéma `../spec.schema.json`).
+
+## Sources et licences
+
+- https://vercel.com/docs/speed-insights/metrics : Propriétaire Vercel (https://vercel.com/legal/terms) : seuils repris comme faits, texte réécrit
+- https://vercel.com/docs/speed-insights/package : Propriétaire Vercel : noms d'options repris, texte réécrit
+- https://vercel.com/docs/image-optimization : Propriétaire Vercel : texte réécrit
+- https://vercel.com/docs/image-optimization/managing-image-optimization-costs : Propriétaire Vercel : valeurs reprises, texte réécrit
+- https://vercel.com/docs/caching/cache-control-headers : Propriétaire Vercel : directives et valeurs reprises, texte réécrit
+- https://vercel.com/docs/caching/cdn-cache : Propriétaire Vercel : texte réécrit
+- https://vercel.com/docs/incremental-static-regeneration : Propriétaire Vercel : valeurs reprises, texte réécrit
+- https://vercel.com/docs/functions/streaming-functions : Propriétaire Vercel : texte réécrit
+- https://vercel.com/font : Propriétaire Vercel (page) ; police Geist OFL-1.1
+
+## Règles
+
+| id | niveau | règle | valeur | source |
+|---|---|---|---|---|
+| `vercel.cwv.lcp` | MUST | Largest Contentful Paint au 75e centile : 2,5 s ou moins. | <=2.5s @p75 | https://vercel.com/docs/speed-insights/metrics |
+| `vercel.cwv.inp` | MUST | Interaction to Next Paint : 200 ms ou moins. | <=200ms @p75 | https://vercel.com/docs/speed-insights/metrics |
+| `vercel.cwv.cls` | MUST | Cumulative Layout Shift : 0,1 ou moins. | <=0.1 @p75 | https://vercel.com/docs/speed-insights/metrics |
+| `vercel.cwv.fcp` | SHOULD | First Contentful Paint : 1,8 s ou moins. | <=1.8s @p75 | https://vercel.com/docs/speed-insights/metrics |
+| `vercel.cwv.ttfb` | SHOULD | Time to First Byte : moins de 800 ms. | <800ms @p75 | https://vercel.com/docs/speed-insights/metrics |
+| `vercel.cwv.percentile` | MUST | Juger sur données de terrain (RUM) au P75 par défaut ; consulter P90/P95/P99 pour la traîne. | p75 | https://vercel.com/docs/speed-insights/metrics |
+| `vercel.cwv.score-bands` | SHOULD | Scores 0-100 en trois bandes : 90-100 bon, 50-89 à améliorer, 0-49 mauvais ; viser le passage de bande plutôt que le 100, dont le coût marginal explose. | {"good":"90-100","needs-improvement":"50-89","poor":"0-49"} | https://vercel.com/docs/speed-insights/metrics |
+| `vercel.cwv.lab-vs-field` | SHOULD | Compléter la mesure réelle par un score de laboratoire avant mise en production pour éviter les régressions ; en labo, TBT remplace INP. |  | https://vercel.com/docs/speed-insights/metrics |
+| `vercel.rum.route` | SHOULD | Agréger la mesure par route dynamique (modèle /blog/[slug]) plutôt que par URL concrète. |  | https://vercel.com/docs/speed-insights/package |
+| `vercel.rum.redact` | MUST | Filtrer ou expurger les données sensibles des événements de mesure avant envoi (hook beforeSend) ; réduire l'échantillon (sampleRate) pour maîtriser le coût. |  | https://vercel.com/docs/speed-insights/package |
+| `vercel.img.modern-formats` | SHOULD | Servir des images redimensionnées par appareil dans des formats modernes (AVIF, WebP), mises en cache après transformation ; un seul format cible suffit souvent. | ["image/avif","image/webp"] | https://vercel.com/docs/image-optimization |
+| `vercel.img.skip-small` | SHOULD-NOT | Ne pas faire transiter par l'optimiseur les sources qui n'y gagnent rien : images de moins de 10 Ko, vectorielles (SVG), animées (GIF). | <10KB, svg, gif | https://vercel.com/docs/image-optimization/managing-image-optimization-costs |
+| `vercel.img.allowlists` | MUST | Restreindre l'optimiseur par listes blanches (motifs d'hôtes et de chemins distants et locaux, qualités, largeurs) pour limiter les variantes et les abus ; inclure un identifiant de compte dans le chemin quand l'hôte n'est pas à soi. |  | https://vercel.com/docs/image-optimization |
+| `vercel.img.ttl` | SHOULD | Si les images changent moins d'une fois par mois, durée de cache d'au moins 31 jours. | max-age=2678400 | https://vercel.com/docs/image-optimization/managing-image-optimization-costs |
+| `vercel.img.quality-range` | MAY | Le paramètre de qualité va de 1 à 100 ; baisser la qualité réduit poids et coût. | 1-100 | https://vercel.com/docs/image-optimization |
+| `vercel.font.subset-scope` | SHOULD | Ne charger que les familles et variantes réellement utilisées (points d'entrée séparés par variante) et déclarer font-display swap ; conserver les axes variables nécessaires lors du chargement. | display: swap | https://vercel.com/font |
+| `vercel.cache.default` | MUST | Sans en-tête explicite, une réponse dynamique n'est cachée ni par le CDN ni par le navigateur (public, max-age=0, must-revalidate) : tout contenu partageable doit déclarer sa politique. | public, max-age=0, must-revalidate | https://vercel.com/docs/caching/cache-control-headers |
+| `vercel.cache.ssr-start` | SHOULD | Page rendue côté serveur identique pour tous : point de départ max-age=0 et s-maxage d'un jour (cache CDN invalidé au déploiement, navigateur toujours frais) ; ajouter un max-age court (60-120 s) pour soulager les visites répétées. | max-age=0, s-maxage=86400 | https://vercel.com/docs/caching/cache-control-headers |
+| `vercel.cache.swr` | SHOULD | Associer s-maxage à stale-while-revalidate pour servir le cache périmé pendant la régénération en arrière-plan, et stale-if-error pour servir le périmé en cas d'erreur d'origine. | s-maxage=1, stale-while-revalidate=59 ; s-maxage=604800, stale-if-error=86400 | https://vercel.com/docs/caching/cache-control-headers |
+| `vercel.cache.bounds` | MUST | Durée de cache CDN entre 1 s et 1 an. | 1..31536000s | https://vercel.com/docs/caching/cache-control-headers |
+| `vercel.cache.no-store` | MUST | no-store pour toute réponse sensible ou temps réel ; private pour un contenu propre à l'utilisateur. | no-store | https://vercel.com/docs/caching/cache-control-headers |
+| `vercel.cache.cdn-header` | SHOULD | Séparer la politique navigateur (Cache-Control) de la politique CDN (CDN-Cache-Control, ou un en-tête propre au fournisseur) quand elles diffèrent. |  | https://vercel.com/docs/caching/cache-control-headers |
+| `vercel.cache.vary` | SHOULD-NOT | Éviter Vary sur des en-têtes à forte cardinalité (Cookie notamment, non caché) ; pour du contenu par utilisateur, utiliser un cache applicatif. |  | https://vercel.com/docs/caching/cdn-cache |
+| `vercel.cache.immutable-assets` | MUST | Les ressources statiques à nom haché sont servies immuables avec la durée maximale ; elles survivent aux déploiements. |  | https://vercel.com/docs/caching/cdn-cache |
+| `vercel.render.isr` | SHOULD | Pour le contenu rarement modifié, préférer la régénération statique incrémentale (modèle stale-while-revalidate) : réponse en cache immédiate, régénération par intervalle ou à la demande, contenu précédent conservé en cas d'échec avec nouvel essai à 30 s. | {"retryOnFailure":"30s","globalPurge":"300ms","evictionIfUnused":"31 jours"} | https://vercel.com/docs/incremental-static-regeneration |
+| `vercel.render.collapse` | SHOULD | Regrouper les requêtes simultanées sur une même entrée non cachée pour n'invoquer l'origine qu'une fois. |  | https://vercel.com/docs/caching |
+| `vercel.render.streaming` | SHOULD | Diffuser les réponses longues (dont les sorties de LLM) en flux plutôt que d'attendre la réponse complète. |  | https://vercel.com/docs/functions/streaming-functions |
