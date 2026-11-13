@@ -1,7 +1,8 @@
 // Serveur du relais : un processus bun, toutes les liaisons sur 127.0.0.1 (ou RELAY_HOST), autorisation obligatoire
 // (sauf carte d'agent A2A et métadonnées OAuth) : jeton d'accès OAuth 2.1 du serveur embarqué (oauth.ts, MCP 2026-07-28)
 // ou jeton fixe du relais en en-tête Authorization ; jamais de jeton dans l'URL hors amorçage de /webmcp.
-//   HTTP   POST /rpc (relais natif)  POST /mcp (MCP Streamable HTTP)  POST /a2a (A2A 1.0, SSE : a2a.ts)  GET /.well-known/agent-card.json
+//   HTTP   GET /metrics (compteurs hit/miss/coalescés des appels sortants, outbound.ts, sans authentification)
+//          POST /rpc (relais natif)  POST /mcp (MCP Streamable HTTP)  POST /a2a (A2A 1.0, SSE : a2a.ts)  GET /.well-known/agent-card.json
 //   WS     /ws : JSON-RPC du relais natif, un message par trame
 //   WebMCP GET /webmcp?token=… : outils exposés à l agent du navigateur (document.modelContext)
 //   TCP    RELAY_TCP_PORT : JSON-RPC délimité par lignes (NDJSON) ; TLS sur RELAY_TLS_PORT si RELAY_TLS_CERT/KEY sont définis
@@ -11,6 +12,7 @@ import { relayHome } from "./cdp.ts";
 import { webmcpPage } from "./webmcp.ts";
 import { a2aHttp, agentCard } from "./a2a.ts";
 import { createOAuth, relayCookie } from "./oauth.ts";
+import { outbound } from "./outbound.ts";
 import { dispatch, mcpRpc, nativeRpc, VERSION } from "./protocols.ts";
 
 /** Jeton du relais (32 octets aléatoires, créé au premier lancement dans le dossier privé de l'utilisateur). */
@@ -99,6 +101,11 @@ export async function serve() {
       ...oauth.routes,
       "/health": () =>
         Response.json({ name: "aphrody-relay", version: VERSION }),
+      // Compteurs du dédoublonnage sortant (outbound.ts), format Prometheus ; aucune donnée de requête.
+      "/metrics": () =>
+        new Response(outbound().metrics(), {
+          headers: { "content-type": "text/plain; version=0.0.4" },
+        }),
       "/rpc": { POST: guard("rpc", rpc(nativeRpc)) },
       "/webmcp": webmcp,
       "/mcp": {

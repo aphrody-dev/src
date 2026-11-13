@@ -4,6 +4,7 @@ import { listModels } from "../llm/models.ts";
 import { AGENT_TOOLS } from "./agent-tools.ts";
 import { ORCH_TOOLS } from "./orch-tools.ts";
 import { accountsSync } from "./accounts.ts";
+import { outbound } from "./outbound.ts";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
@@ -195,11 +196,32 @@ export const TOOLS: Tool[] = [
         model: str("provider/model from llm_models"),
         prompt: str("Prompt"),
         system: str("System prompt (optional)"),
+        temperature: {
+          type: "number",
+          description:
+            "Sampling temperature (optional); 0 makes the answer cacheable by the relay",
+        },
+        seed: {
+          type: "integer",
+          description: "Fixed seed (optional); also makes the answer cacheable",
+        },
       },
       ["model", "prompt"],
     ),
     readOnly: false,
-    run: (a) => llmAsk(String(a.model), String(a.prompt), a.system),
+    run: (a) =>
+      llmAsk(String(a.model), String(a.prompt), a.system, {
+        temperature: a.temperature,
+        seed: a.seed,
+      }),
+  },
+  {
+    name: "relay_cache_stats",
+    description:
+      "Outbound dedup of the relay: singleflight and response cache counters (hit, miss, coalesced, bypass, stored, Idempotency-Key, mesh routing).",
+    inputSchema: obj({}),
+    readOnly: true,
+    run: async () => outbound().stats(),
   },
   {
     name: "accounts_sync",

@@ -14,6 +14,7 @@
 //   cloudflare    CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID  GET /ai/models/search (Text Generation)    /ai/v1/chat/completions
 //   antigravity   CLI agy authentifiée                          agy models                                 agy -p
 //   claude        CLI claude authentifiée                       (alias de la CLI)                          claude -p
+import { outboundFetch } from "../relay/outbound.ts";
 import { agy, claude } from "./agents";
 
 export type Model = {
@@ -40,7 +41,12 @@ const getJson = async (
   headers: Record<string, string> = {},
   ms = 4000,
 ) => {
-  const r = await fetch(url, { headers, signal: AbortSignal.timeout(ms) });
+  // Listes de modèles : lectures, cachées le TTL court du relais (relay/outbound.ts).
+  const r = await outboundFetch(url, {
+    headers,
+    signal: AbortSignal.timeout(ms),
+    deterministic: true,
+  });
   if (!r.ok) throw new Error(`${url} : HTTP ${r.status}`);
   return r.json() as Promise<any>;
 };

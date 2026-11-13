@@ -50,7 +50,7 @@ Ordre de résolution : stockage, puis `.env` (ACL NTFS, `env-kit doctor`). `env-
 | Tunnels Cloudflare | `cloudflared` 2026.10.7 sur prd | `systemd-creds` `cloudflared-mig-prd`, `cloudflared-prod` (plus de fichier en clair) | `ay auth tunnels` (API Cloudflare) | 4 tunnels healthy (API) : prod, mig-prd, auto-usa, shenron-dbfr |
 | Certificats | certbot sur fr2 (DNS-01, `/etc/letsencrypt/cloudflare.ini`) | jeton Cloudflare utilisateur, actif | `certbot.timer` | réparé : 3 lignées (aphrody.com, dragonballfr.com, rosegriffon.fr) refaites en liens symboliques, `certbot renew --dry-run` ok |
 | R2 S3 temporaire | `shenron-cloudflare-s3-renew` (prd, 10 min) | `/srv/shenron/config/cloudflare/api-token` (`LoadCredential=`) | timer | réparé : verrou et fichier `.next` d'une exécution interrompue (2026-11-12 17:31) bloquaient tout ; drop-in `10-stale-lock.conf` les purge |
-| Steam | `rg-steam-depot` (prd) | aucun jeton : connexion anonyme | `bun-steam-depot login-qr` | **en échec** : les dépôts de l'app 2799860 refusent l'anonyme ; approbation QR une fois dans l'app Steam du propriétaire (hors navigateur) |
+| Steam | `rg-steam-depot` (prd) | refresh token `/srv/rosegriffon/steam/steam-tokens.json` (0600, montage hôte persistant) ; copie coffre `STEAM_REFRESH_TOKEN` | `bun-steam-depot login-qr` (`bun scripts/steam-login.ts --qr`, QR renouvelé jusqu'à approbation) | actif : QR approuvé le 2026-11-13, expire 2027-06-12 ; `list` authentifié voit le manifeste du dépôt 2799861 |
 
 ## Incidents et rotations du 2026-11-13 (UTC)
 
@@ -67,4 +67,4 @@ Points encore ouverts : index NHITL, `just nhitl list --status open` (`var/agent
 1. Rotation WireGuard du PC : `bash infra/fleet/wg/rotate-wg-win.sh` (une invite UAC), puis `ay auth status --only fleet` doit ne plus signaler `wireguard-key`.
 2. `ay auth repair --browser` : cliquer les consentements gcloud (2 comptes) et npm.
 3. `SUBMODULES_TOKEN` : page du PAT fin ouverte dans Chrome (Contents: read sur aphrody-labs, 90 jours) ; après la passkey et « Generate », copier le jeton : il est lu au presse-papiers, rangé dans le coffre et poussé dans les secrets Actions de `aphrody-dev/src` et `aphrody-labs/src`.
-4. Steam : image `rosegriffon/steam-depot` reconstruite sur prd avec steam-depot d098b41 (`login-qr` présent) ; `bun scripts/steam-login.ts --qr` (apps/rosegriffon) affiche le QR dans Chrome, à approuver dans l'app Steam (le QR du 2026-11-13 a expiré sans approbation).
+4. Steam : image `rosegriffon/steam-depot` reconstruite sur prd avec steam-depot d098b41 (`login-qr` présent) ; `bun scripts/steam-login.ts --qr` (apps/rosegriffon) affiche le QR dans Chrome, à approuver dans l'app Steam (fait le 2026-11-13 : approuvé, jeton rangé sur prd et dans le coffre).

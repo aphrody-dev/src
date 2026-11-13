@@ -3,6 +3,7 @@
 //   resolveModel()                  AGENT_MODEL, else the first model of the first active provider
 //   providerEmbedder("provider/model")  /v1/embeddings (core/model.ts resolveEmbedder: AGENT_EMBEDDER=hash|provider/model)
 // OpenAI-compatible providers get native tool calling; CLI providers (antigravity, claude) answer in text only.
+import { outboundFetch } from "../relay/outbound.ts";
 import { type Provider, listModels, providers } from "./models";
 import type {
   ChatRequest,
@@ -64,7 +65,7 @@ export function chatModel(
     id,
     tools: true,
     async chat(req: ChatRequest): Promise<ChatResponse> {
-      const r = await fetch(
+      const r = await outboundFetch(
         `${chat.base()}${chat.path ?? "/v1/chat/completions"}`,
         {
           method: "POST",
@@ -89,6 +90,10 @@ export function chatModel(
                 }
               : {}),
             ...(req.maxOutputTokens ? { max_tokens: req.maxOutputTokens } : {}),
+            ...(req.temperature !== undefined
+              ? { temperature: req.temperature }
+              : {}),
+            ...(req.seed !== undefined ? { seed: req.seed } : {}),
           }),
           signal: req.signal ?? AbortSignal.timeout(600_000),
         },
@@ -227,7 +232,8 @@ export function providerEmbedder(spec: string): Embedder {
     async embed(texts) {
       const out: number[][] = [];
       for (let i = 0; i < texts.length; i += 64) {
-        const r = await fetch(`${p.chat!.base()}${path}`, {
+        const r = await outboundFetch(`${p.chat!.base()}${path}`, {
+          deterministic: true,
           method: "POST",
           headers: { "content-type": "application/json", ...p.chat!.headers() },
           body: JSON.stringify({ model, input: texts.slice(i, i + 64) }),
@@ -249,11 +255,17 @@ export function providerEmbedder(spec: string): Embedder {
 }
 
 /** Appel d'un modèle « fournisseur/modèle » (le modèle est celui que renvoie la liste ; rien n'est supposé). */
-export async function llmAsk(model: string, prompt: string, system?: string) {
+export async function llmAsk(
+  model: string,
+  prompt: string,
+  system?: string,
+  opts: { temperature?: number; seed?: number } = {},
+) {
   const t0 = performance.now();
   const m = await resolveModel(model);
   const r = await m.chat({
     system,
+    ...opts,
     messages: [{ role: "user", content: prompt }],
   });
   return {

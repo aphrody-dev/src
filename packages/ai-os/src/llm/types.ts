@@ -35,6 +35,9 @@ export type ChatRequest = {
   tools?: ToolSpec[];
   toolChoice?: "auto" | "required" | "none";
   maxOutputTokens?: number;
+  /** 0 (ou un seed entier) rend la requête déterministe, donc cachable par le relais (relay/outbound.ts). */
+  temperature?: number;
+  seed?: number;
   signal?: AbortSignal;
 };
 

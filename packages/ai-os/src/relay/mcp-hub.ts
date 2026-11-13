@@ -5,6 +5,7 @@
 // par une session Claude Code : outil `workspace_ask` (tools.ts).
 import { homedir } from "node:os";
 import { join } from "node:path";
+import { outboundFetch } from "./outbound.ts";
 
 type Conf = {
   type?: string;
@@ -133,8 +134,10 @@ class StdioServer {
 class HttpServer {
   private seq = 0;
   constructor(private conf: Conf) {}
-  async call(method: string, params: unknown) {
-    const r = await fetch(this.conf.url!, {
+  async call(method: string, params: unknown, readOnly = false) {
+    // tools/list et tools/call d'un outil readOnlyHint : lectures, cachées ; le reste passe par le singleflight.
+    const r = await outboundFetch(this.conf.url!, {
+      deterministic: method === "tools/list" || readOnly,
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -215,8 +218,13 @@ export async function hubCall(prefixed: string, args: unknown) {
     throw Object.assign(new Error(`outil inconnu : ${prefixed}`), {
       code: -32601,
     });
-  return (await server(prefixed.slice(0, i))).call("tools/call", {
-    name: prefixed.slice(i + 2),
-    arguments: args ?? {},
-  });
+  const [srv, tool] = [prefixed.slice(0, i), prefixed.slice(i + 2)];
+  const readOnly =
+    toolCache.get(srv)?.find((t) => t.name === tool)?.annotations
+      ?.readOnlyHint === true;
+  return (await server(srv)).call(
+    "tools/call",
+    { name: tool, arguments: args ?? {} },
+    readOnly,
+  );
 }
