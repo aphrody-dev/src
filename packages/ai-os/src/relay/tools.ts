@@ -3,7 +3,12 @@ import { llmAsk } from "../llm/model.ts";
 import { listModels } from "../llm/models.ts";
 import { AGENT_TOOLS } from "./agent-tools.ts";
 import { ORCH_TOOLS } from "./orch-tools.ts";
-import { GOOGLE_TOOLS } from "../google/tools.ts";
+// packages/ai-os/src/google may be absent from a checkout (module not yet on main): the relay then
+// starts without these tools instead of crashing (prd rollback 2026-11-13, src-checkout-update).
+const GOOGLE_TOOLS: Tool[] = await import("../google/tools.ts").then(
+  (m: { GOOGLE_TOOLS: Tool[] }) => m.GOOGLE_TOOLS,
+  () => [],
+);
 import { accountsSync } from "./accounts.ts";
 import { outbound } from "./outbound.ts";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
