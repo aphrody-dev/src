@@ -50,6 +50,7 @@ context7, GitHub MCP et Microsoft Learn étaient injoignables (ENOTFOUND) : les 
 Pièges relevés :
 - Claude Code refuse `bypassPermissions` en root, et ce garde-fou n'est pas contourné : aucun runner ne tourne en root (`runner.ts work` refuse uid 0, `install.sh` aussi). Sur prd, le runner tourne sous l'utilisateur dédié `agent` (sans sudo), créé par `bootstrap-user.sh`. `install.sh` marque le checkout comme approuvé (`hasTrustDialogAccepted`) dans `~/.claude.json`.
 - Bun charge automatiquement le `.env` du répertoire courant : `C:\src\.env` contient une clé `ANTHROPIC_API_KEY` non rattachée à un workspace, qui passait devant la connexion claude.ai (erreur 400). Le runner, ses unités et la tâche planifiée tournent en `bun --no-env-file`, et les variables `ANTHROPIC_*`, `CLAUDECODE`, `CLAUDE_CODE_*` de la session parente sont retirées de l'environnement des enfants (`AGENTS_KEEP_ENV=1` pour les garder).
+- Aucun shell entre le runner et une CLI : sous Windows, les shims `.cmd` sont résolus vers leur `.exe` par `resolveExe` (`packages/ai-os/src/llm/agents.ts`) et lancés directement ; un shim non résoluble est refusé (`codex.cmd` du PC, dont la cible est introuvable). Test : `bun test infra/agents` (prompt avec `& | ^ % " < >`).
 - psmux casse les guillemets doubles de la commande de fenêtre : chemins non quotés sous Windows quand ils n'ont pas d'espace.
 - `~/.local/bin/codex` sur fr2 était un lien vers un autre binaire : l'install vérifie `~/.bun/bin/<cli>`, et le runner met `~/.bun/bin` en tête du PATH.
 - Codex sur le PC répond 401 (`codex login` à refaire par le propriétaire, OAuth) : le runner a basculé tout seul sur le fournisseur suivant.
@@ -128,6 +129,7 @@ Chaque hôte déclare ses cibles dans `fleet.toml` (`ssh = [alias, IP WireGuard,
 ## 9. Reste à faire (hors de portée des agents)
 
 - Connexions de l'utilisateur `agent` sur prd (OAuth, interactif) : `sudo -iu agent claude login`, `sudo -iu agent codex login`, `sudo -iu agent gh auth login` (push sur main). Tant qu'elles manquent, les CLI de prd répondent « not logged in » (refroidissement, tâche remise en file) et un commit non poussé met la tâche en `failed`.
+- OAuth Claude expiré sur fr2 (`claude` interactif, une connexion).
 - WARP sur le PC (UAC) pour le chemin Cloudflare ; `codex login` sur le PC.
 - Réinstaller un runner GitHub pour `ci.yml` (prd trop chargé d'après FLEET.md) ou porter ses étapes vers `judge.yml`.
 - Les tâches planifiées sans `providers` passent par le relais (texte seulement) : ai-os doit nommer une CLI de code pour `deps-update`, ou prendre la planification à son compte.
