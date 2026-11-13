@@ -581,10 +581,10 @@ function tmux(args: string[]) {
 function workerCmd(role: string): string {
   const bun = process.execPath.replace(/\\/g, "/");
   const runner = join(HERE, "runner.ts").replace(/\\/g, "/");
-  // Restart the worker in-place if it ever exits.
-  return WIN
-    ? `"${bun}" "${runner}" work ${role}`
-    : `while :; do "${bun}" "${runner}" work ${role}; sleep 5; done`;
+  // Restart the worker in-place if it ever exits. psmux (Windows) mangles double quotes: paths
+  // there are quoted only when they contain spaces.
+  const q = (p: string) => (WIN && !/\s/.test(p) ? p : `"${p}"`);
+  return `while :; do ${q(bun)} ${q(runner)} work ${role}; sleep 5; done`;
 }
 function up() {
   ensureDirs();
