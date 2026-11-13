@@ -1,17 +1,22 @@
 // `ay release freeze [--check]`: the frozen versioning system of docs/VERSIONING.md, applied by code.
 // VERSION (repo root, one SemVer line) is the only hand-written monorepo version. freeze copies it into
 //   - Cargo.toml [workspace.package] version (every crate with version.workspace = true inherits it),
-//   - the `version = "..."` of every path dependency that points at such a crate (any workspace Cargo.toml),
+//   - the `version` of every path dependency on such a crate (inline tables and [*dependencies.<name>] tables,
+//     in every workspace Cargo.toml; only inside dependency sections),
 //   - the root package.json "version",
 // then refreshes Cargo.lock offline (cargo metadata, no build). --check (judge.yml) writes nothing and exits 1 on
-// any drift, on a VERSION that is not SemVer, or on a VERSION not above the latest stable tag vX.Y.Z (a canary
-// X.Y.Z-canary.N must sort after the stable it follows).
+// any drift, on a VERSION that is not SemVer, when the tags cannot be listed, or when VERSION is not above the
+// latest stable tag vX.Y.Z (allowed equal only on the tagged commit itself): a canary X.Y.Z-canary.N must sort
+// after the stable it follows.
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 
-export const SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/;
+// SemVer 2.0.0 (semver.org): numeric identifiers without leading zeros, optional pre-release and build metadata.
+const NUM = "0|[1-9]\\d*";
+const PRE = `(?:${NUM}|\\d*[A-Za-z-][0-9A-Za-z-]*)`;
+export const SEMVER = new RegExp(`^(${NUM})\\.(${NUM})\\.(${NUM})(?:-(${PRE}(?:\\.${PRE})*))?(?:\\+([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?$`);
 
-/** SemVer precedence of two X.Y.Z[-pre] strings (build metadata not accepted). */
+/** SemVer precedence (build metadata ignored, as the spec requires). */
 export function cmp(a: string, b: string): number {
   const pa = SEMVER.exec(a), pb = SEMVER.exec(b);
   if (!pa || !pb) throw new Error(`not SemVer: ${pa ? b : a}`);
@@ -29,32 +34,68 @@ export function cmp(a: string, b: string): number {
   return 0;
 }
 
-/** Highest stable (no pre-release) version among tag names vX.Y.Z. */
+/** Highest stable version among tag names vX.Y.Z (pre-releases and non-SemVer tags ignored). */
 export function latestStable(tags: string[]): string | null {
-  const v = tags.map((t) => t.replace(/^refs\/tags\//, "").replace(/\^\{\}$/, "")).filter((t) => /^v\d+\.\d+\.\d+$/.test(t)).map((t) => t.slice(1));
+  const v = tags
+    .map((t) => t.replace(/^refs\/tags\//, "").replace(/\^\{\}$/, ""))
+    .filter((t) => t.startsWith("v") && SEMVER.test(t.slice(1)) && !/[-+]/.test(t))
+    .map((t) => t.slice(1));
   return v.sort(cmp).at(-1) ?? null;
 }
 
-/** Root Cargo.toml with [workspace.package] version set to v. */
+const header = (line: string) => /^\s*\[\[?\s*([^\]]+?)\s*\]\]?\s*(#.*)?$/.exec(line)?.[1] ?? null;
+
+/** Root Cargo.toml with [workspace.package] version set to v; throws when the key is absent. */
 export function setWorkspaceVersion(toml: string, v: string): string {
-  return toml.replace(/(\[workspace\.package\][^[]*?\nversion\s*=\s*")[^"]*(")/, `$1${v}$2`);
+  let sec = "", done = false;
+  const out = toml.split("\n").map((line) => {
+    const h = header(line);
+    if (h !== null) { sec = h; return line; }
+    if (sec === "workspace.package" && !done && /^\s*version\s*=\s*"/.test(line)) { done = true; return line.replace(/(=\s*")[^"]*(")/, `$1${v}$2`); }
+    return line;
+  });
+  if (!done) throw new Error("Cargo.toml: no version key in [workspace.package]");
+  return out.join("\n");
 }
 
-/** A manifest with the version of every inline path dependency on an inheriting crate set to v.
- *  `dir` = the manifest's directory, `inherit` = absolute directories of crates that use version.workspace. */
+/** A manifest with the version of every path dependency on an inheriting crate set to v, in dependency sections
+ *  only: inline `name = { path = "..", version = ".." }` and `[<...>dependencies.<name>]` tables.
+ *  `dir` = the manifest's directory, `inherit` = norm()ed directories of crates that use version.workspace. */
 export function setPathDepVersions(toml: string, dir: string, inherit: Set<string>, v: string): string {
-  return toml
-    .split("\n")
-    .map((line) => {
-      const p = /\bpath\s*=\s*"([^"]+)"/.exec(line);
-      if (!p || !/\bversion\s*=\s*"/.test(line)) return line;
-      if (!inherit.has(norm(resolve(dir, p[1]!)))) return line;
-      return line.replace(/(\bversion\s*=\s*")[^"]*(")/, `$1${v}$2`);
-    })
-    .join("\n");
+  const lines = toml.split("\n");
+  const isDeps = (s: string) => /(^|\.)(dev-|build-)?dependencies$/.test(s);
+  const isDepTable = (s: string) => /(^|\.)(dev-|build-)?dependencies\.[^.]+$/.test(s);
+  const hits = (p: string) => inherit.has(norm(resolve(dir, p)));
+  let sec = "";
+  let table: number[] = [], tablePath: string | null = null;
+  const flush = () => {
+    if (tablePath && hits(tablePath)) for (const i of table) lines[i] = lines[i]!.replace(/(=\s*")[^"]*(")/, `$1${v}$2`);
+    table = []; tablePath = null;
+  };
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]!;
+    const h = header(line);
+    if (h !== null) { flush(); sec = h; continue; }
+    if (isDepTable(sec)) {
+      const p = /^\s*path\s*=\s*"([^"]+)"/.exec(line);
+      if (p) tablePath = p[1]!;
+      if (/^\s*version\s*=\s*"/.test(line)) table.push(i);
+      continue;
+    }
+    if (!isDeps(sec)) continue;
+    const p = /\bpath\s*=\s*"([^"]+)"/.exec(line);
+    if (!p || !/\bversion\s*=\s*"/.test(line) || !hits(p[1]!)) continue;
+    lines[i] = line.replace(/(\bversion\s*=\s*")[^"]*(")/, `$1${v}$2`);
+  }
+  flush();
+  return lines.join("\n");
 }
 
-export const norm = (p: string) => p.replace(/\\/g, "/").replace(/\/$/, "").toLowerCase();
+/** Path key: forward slashes, no trailing slash; case-folded only on Windows (case-insensitive file system). */
+export const norm = (p: string) => {
+  const s = p.replace(/\\/g, "/").replace(/\/$/, "");
+  return process.platform === "win32" ? s.toLowerCase() : s;
+};
 
 export type Drift = { file: string; what: string };
 
@@ -63,7 +104,8 @@ export function freeze(root: string, check: boolean): { version: string; drift: 
   const drift: Drift[] = [];
   const vf = join(root, "VERSION");
   const version = existsSync(vf) ? readFileSync(vf, "utf8").trim() : "";
-  if (!SEMVER.test(version)) return { version, drift, errors: [`VERSION: missing or not SemVer X.Y.Z[-pre] (${JSON.stringify(version)})`] };
+  if (!SEMVER.test(version) || version.includes("+"))
+    return { version, drift, errors: [`VERSION: missing or not SemVer X.Y.Z[-pre] without build metadata (${JSON.stringify(version)})`] };
 
   const meta = Bun.spawnSync(["cargo", "metadata", "--no-deps", "--format-version", "1", "--offline"], { cwd: root, stdout: "pipe", stderr: "pipe" });
   if (meta.exitCode !== 0) return { version, drift, errors: [`cargo metadata: ${meta.stderr.toString().trim().split("\n").at(-1)}`] };
@@ -83,7 +125,11 @@ export function freeze(root: string, check: boolean): { version: string; drift: 
     if (!check) writeFileSync(file, after);
   };
   const rootToml = join(root, "Cargo.toml");
-  edit(rootToml, (s) => setPathDepVersions(setWorkspaceVersion(s, version), root, inherit, version), `[workspace.package] / workspace path deps -> ${version}`);
+  try {
+    edit(rootToml, (s) => setPathDepVersions(setWorkspaceVersion(s, version), root, inherit, version), `[workspace.package] / workspace path deps -> ${version}`);
+  } catch (e) {
+    return { version, drift, errors: [String((e as Error).message)] };
+  }
   for (const m of manifests) if (resolve(m) !== resolve(rootToml)) edit(m, (s) => setPathDepVersions(s, dirname(m), inherit, version), `path deps -> ${version}`);
   edit(join(root, "package.json"), (s) => s.replace(/("version"\s*:\s*")[^"]*(")/, `$1${version}$2`), `"version" -> ${version}`);
 
@@ -92,12 +138,21 @@ export function freeze(root: string, check: boolean): { version: string; drift: 
     if (lock.exitCode !== 0) errors.push(`Cargo.lock refresh: ${lock.stderr.toString().trim().split("\n").at(-1)}`);
   }
 
-  const tags = Bun.spawnSync(["git", "ls-remote", "--tags", "--refs", "origin", "v*"], { cwd: root, stdout: "pipe", stderr: "pipe" });
-  const local = Bun.spawnSync(["git", "tag", "--list", "v*"], { cwd: root, stdout: "pipe" });
-  const names = [...tags.stdout.toString().split("\n").map((l) => l.split("\t")[1] ?? ""), ...local.stdout.toString().split("\n")].filter(Boolean);
-  const stable = latestStable(names);
-  if (stable && cmp(version, stable) <= 0 && !names.some((t) => t.endsWith(`v${version}`)))
-    errors.push(`VERSION ${version} is not above the latest stable tag v${stable}: bump it (canaries must sort after stable)`);
+  // Tags from origin (the CI checkout is shallow, without tags); unreachable origin = explicit failure.
+  const remote = Bun.spawnSync(["git", "ls-remote", "--tags", "origin", "v*"], { cwd: root, stdout: "pipe", stderr: "pipe" });
+  if (remote.exitCode !== 0) {
+    errors.push(`git ls-remote origin: ${remote.stderr.toString().trim().split("\n").at(-1)} (tags needed to compare VERSION with the last stable)`);
+    return { version, drift, errors };
+  }
+  const refs = remote.stdout.toString().split("\n").filter(Boolean).map((l) => l.split("\t") as [string, string]);
+  const stable = latestStable(refs.map(([, r]) => r));
+  if (stable && cmp(version, stable) < 0) errors.push(`VERSION ${version} is below the latest stable tag v${stable}`);
+  else if (stable && cmp(version, stable) === 0) {
+    // Equal is valid only on the tagged commit itself; the next commit bumps VERSION (docs/VERSIONING.md).
+    const head = Bun.spawnSync(["git", "rev-parse", "HEAD"], { cwd: root, stdout: "pipe" }).stdout.toString().trim();
+    const at = refs.filter(([, r]) => r === `refs/tags/v${stable}` || r === `refs/tags/v${stable}^{}`).map(([h]) => h);
+    if (!at.includes(head)) errors.push(`VERSION ${version} equals the stable tag v${stable} but HEAD is not that commit: bump VERSION (a canary ${version}-canary.N would sort before v${stable})`);
+  }
   return { version, drift, errors };
 }
 

@@ -25,3 +25,41 @@ test("workspace version and path deps on inheriting crates are rewritten, others
   expect(out).toContain('b = { version = "1.4.8", path = "crates/b" }');
   expect(out).toContain('serde = { version = "1" }');
 });
+
+test("SemVer 2.0.0: leading zeros refused in numeric pre-release ids, build metadata ignored by cmp", () => {
+  expect(SEMVER.test("0.3.0-canary.01")).toBe(false);
+  expect(SEMVER.test("0.3.0-canary.1+abc1234")).toBe(true);
+  expect(cmp("0.3.0-canary.1+aaa", "0.3.0-canary.1+bbb")).toBe(0);
+  // semver.org §11 chain
+  const chain = ["1.0.0-alpha", "1.0.0-alpha.1", "1.0.0-alpha.beta", "1.0.0-beta", "1.0.0-beta.2", "1.0.0-beta.11", "1.0.0-rc.1", "1.0.0"];
+  for (let i = 1; i < chain.length; i++) expect(cmp(chain[i - 1]!, chain[i]!)).toBeLessThan(0);
+  expect(latestStable(["v01.2.3", "v1.2.3+meta", "v0.4.0"])).toBe("0.4.0");
+});
+
+test("[workspace.package] with arrays before version; missing key throws", () => {
+  const t = '[workspace.package]\nauthors = ["a"]\nkeywords = ["x", "y"]\nversion = "0.2.0"\n[workspace.dependencies]\nx = "1"\n';
+  expect(setWorkspaceVersion(t, "0.3.0")).toContain('keywords = ["x", "y"]\nversion = "0.3.0"');
+  expect(() => setWorkspaceVersion('[package]\nversion = "1.0.0"\n', "0.3.0")).toThrow();
+});
+
+test("dependency tables are rewritten, non-dependency sections are not", () => {
+  const root = "/r";
+  const inh = new Set([norm(resolve(root, "../a"))]);
+  const t = [
+    "[package.metadata.x]",
+    'foo = { path = "../a", version = "0.2.0" }',
+    "[dependencies.a]",
+    'path = "../a"',
+    'version = "0.2.0"',
+    "[target.'cfg(windows)'.dev-dependencies]",
+    'a = { version = "0.2.0", path = "../a" }',
+    "[build-dependencies.other]",
+    'path = "../other"',
+    'version = "0.2.0"',
+  ].join("\n");
+  const out = setPathDepVersions(t, root, inh, "0.3.0").split("\n");
+  expect(out[1]).toBe('foo = { path = "../a", version = "0.2.0" }');
+  expect(out[4]).toBe('version = "0.3.0"');
+  expect(out[6]).toBe('a = { version = "0.3.0", path = "../a" }');
+  expect(out[9]).toBe('version = "0.2.0"');
+});

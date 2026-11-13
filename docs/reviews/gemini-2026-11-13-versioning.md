@@ -30,3 +30,22 @@ contradictoire, `just ping` qui passe sur des pannes, canary publié depuis un m
 
 - Injection de la version canary dans le binaire (`option_env!` côté crates/ay).
 - Unités systemd en échec sur vps et prd, désormais visibles par `just ping`.
+
+## Passe 2 : code du gel (`packages/release/src/freeze.ts`) et VERSIONING.md, note 11/20
+
+Moteur : relais `gemini_review` (antigravity), une passe, sur l'état de 006858bd.
+
+| # | Défaut | Suite |
+|---|---|---|
+| 1, 6 | identifiants numériques à zéro initial acceptés ; `latestStable` filtre plus large que `SEMVER` | corrigé : regex SemVer 2.0.0 (pré-release sans zéro initial), tags filtrés par `SEMVER` sans `-`/`+` |
+| 2 | `+build` refusé par `SEMVER`, `cmp` lève | corrigé : build metadata acceptée et ignorée par `cmp` ; refusée dans `VERSION` |
+| 3 | `setWorkspaceVersion` (`[^[]*?`) échoue en silence si un tableau précède `version` | corrigé : section lue ligne à ligne, exception si la clé manque |
+| 4 | tables `[dependencies.x]` ignorées, sections non dépendances réécrites | corrigé : seules les sections `*dependencies` (inline et tables pointées) |
+| 5 | `norm` passe en minuscules sous Linux | corrigé : casse repliée seulement sous win32 |
+| 7, 11 | `VERSION` = dernier stable toléré hors du commit tagué : canary sous le stable | corrigé : égalité admise seulement si le tag pointe sur HEAD |
+| 8 | `ls-remote` en échec non spécifié | corrigé : échec explicite (le checkout CI est superficiel, sans tags) |
+| 12 | patch sur main embarque les features | corrigé (doc) : patch fix-only seulement semaines 5-6, sinon train suivant |
+| 13 | « Enforced by code » couvre aussi le gel du fichier | corrigé (doc) : règle de procédure, seul le versionnement est vérifié par code |
+| 10, 15 | npm publics et crates à version propre non vérifiés ; rc via dist | précisé (doc) : SemVer indépendante hors gel ; rc = prerelease dist |
+| 9 | `version = { workspace = true }` raté | réfuté : la regex couvre les deux formes |
+| 14, 16 | tableaux sans en-tête ; pas de tests | réfuté : en-têtes présents (perdus dans l'extrait soumis) ; `tests/freeze.test.ts` (chaîne §11 de semver.org, tables, sections), 11/11 verts |
