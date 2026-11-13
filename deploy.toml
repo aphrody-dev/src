@@ -246,3 +246,8 @@ units = ["certbot"]
 tunnels = { cloudflared-mig-prd = "mig-prd", cloudflared-prod = "prod" }
 wireguard = ["prod", "vps"]
 units = ["shenron-cloudflare-s3-renew", "rg-steam-depot"]
+
+# Public keys leaked in aphrody-labs/mesh-vn history (docs/publish/STATUS.md): rotate with
+# infra/fleet/wg/rotate-wg-win.sh (UAC), then remove the peer everywhere.
+[auth.wireguard]
+revoked = ["up+fbCDKsbVlLZSFXR3k4U3I784oSqwO8/ijyHSM/yM="]

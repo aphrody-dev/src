@@ -251,7 +251,8 @@ async function runSecretCommand(envPath: string, args: readonly string[]): Promi
     const value = await readStdin();
     if (!value) return 1;
     secretSet(name, value);
-    console.log(`[env-kit] ${name} -> ${storeInfo().backend} (${maskValue(name, value)})`);
+    // Length only: maskValue() shows values whose name does not look secret.
+    console.log(`[env-kit] ${name} -> ${storeInfo().backend} (SET [len=${value.length}])`);
     return 0;
   }
   // No "get": a captured stdout (agent, CI log) is not a terminal, so a TTY guard cannot keep a

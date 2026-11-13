@@ -40,7 +40,7 @@ Ordre de résolution : stockage, puis `.env` (ACL NTFS, `env-kit doctor`). `env-
 | Jetons d'API | `env-kit whoami` | stockage puis `.env` | fournisseur | ok : Cloudflare, OVH, Hostinger, Vercel, Neon, crates.io, Supabase ; invalide : npm |
 | CI GitHub Actions | `ay auth gh-secrets` | secrets dépôt `aphrody-dev/src`, org `aphrody-labs` | à chaque rotation | 7/8 synchronisés ; `SUBMODULES_TOKEN` présent sur GitHub mais sans source locale (PAT à recréer puis `ay secret set`) |
 | ssh | OpenSSH, `~/.ssh/config` → `fleet/ssh_config` | clés ed25519 (`id_ed25519_vn`, `hostinger_us_ed25519`, `github_aphrody_dev`) | `ay auth repair` (authorized_keys) | ok vers fr1, fr2, prd et `git@github.com` |
-| WireGuard | `wg`, service Windows `WireGuardTunnel$wg-win` | clés privées sur chaque hôte (`/etc/wireguard`), rotation `infra/fleet/wg/rotate-wg-win.sh` | manuel (UAC sur le PC) | PC RUNNING ; fr2 `wg1` 2/2 ; prd `prod` 1/1, `vps` 2/2 ; fr1 `wg1` 4/6 (2 pairs inconnus sans handshake, cf. CLOUDFLARE-ONE.md) |
+| WireGuard | `wg`, service Windows `WireGuardTunnel$wg-win` | clés privées sur chaque hôte (`/etc/wireguard`), rotation `infra/fleet/wg/rotate-wg-win.sh` | `infra/fleet/wg/rotate-wg-win.sh` (UAC sur le PC) | PC RUNNING ; fr2 `wg1` 2/2 ; prd `prod` 1/1, `vps` 2/2 ; fr1 `wg1` 4/6 (2 pairs inconnus sans handshake, cf. CLOUDFLARE-ONE.md). **Clé révoquée encore active** : le service `wg-win` du PC tourne toujours avec `up+fbCDK…` (fuitée, `[auth.wireguard].revoked`), pair présent sur fr1 `wg1` et prd `prod` ; la nouvelle paire `08E2m1El…` (`~/.ssh/fleet/wg/`) n’est installée nulle part. L’ancienne conf en clair `~/.ssh/wireguard-prod.conf` est passée dans le stockage DPAPI (`WG_WIN_OLD_CONF`, repli) et supprimée |
 | Tunnels Cloudflare | `cloudflared` 2026.10.7 sur prd | `systemd-creds` `cloudflared-mig-prd`, `cloudflared-prod` (plus de fichier en clair) | `ay auth tunnels` (API Cloudflare) | 4 tunnels healthy (API) : prod, mig-prd, auto-usa, shenron-dbfr |
 | Certificats | certbot sur fr2 (DNS-01, `/etc/letsencrypt/cloudflare.ini`) | jeton Cloudflare utilisateur, actif | `certbot.timer` | réparé : 3 lignées (aphrody.com, dragonballfr.com, rosegriffon.fr) refaites en liens symboliques, `certbot renew --dry-run` ok |
 | R2 S3 temporaire | `shenron-cloudflare-s3-renew` (prd, 10 min) | `/srv/shenron/config/cloudflare/api-token` (`LoadCredential=`) | timer | réparé : verrou et fichier `.next` d'une exécution interrompue (2026-11-12 17:31) bloquaient tout ; drop-in `10-stale-lock.conf` les purge |
@@ -48,6 +48,7 @@ Ordre de résolution : stockage, puis `.env` (ACL NTFS, `env-kit doctor`). `env-
 
 ## Ce qui reste au propriétaire
 
-1. `ay auth repair --browser` : cliquer les consentements gcloud (2 comptes) et npm.
-2. Recréer le PAT `SUBMODULES_TOKEN` (lecture des sous-modules), puis `… | ay secret set SUBMODULES_TOKEN` et `ay auth gh-secrets`.
-3. Steam : `docker compose --profile tools run --rm steam-depot login-qr` sur prd et approuver le QR dans l'app Steam ; l'image doit être reconstruite avec `STEAM_DEPOT_REV` ≥ d098b41 (la révision déployée a79da1a n'a pas `login-qr`).
+1. Rotation WireGuard du PC : `bash infra/fleet/wg/rotate-wg-win.sh` (une invite UAC), puis `ay auth status --only fleet` doit ne plus signaler `wireguard-key`.
+2. `ay auth repair --browser` : cliquer les consentements gcloud (2 comptes) et npm.
+3. Recréer le PAT `SUBMODULES_TOKEN` (lecture des sous-modules), puis `… | ay secret set SUBMODULES_TOKEN` et `ay auth gh-secrets`.
+4. Steam : `docker compose --profile tools run --rm steam-depot login-qr` sur prd et approuver le QR dans l'app Steam ; l'image doit être reconstruite avec `STEAM_DEPOT_REV` ≥ d098b41 (la révision déployée a79da1a n'a pas `login-qr`).

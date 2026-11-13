@@ -47,6 +47,8 @@ interface Manifest {
       org_secrets?: Record<string, string[]>;
     };
     hosts?: Record<string, HostAuth>;
+    /** WireGuard public keys known to be leaked: any peer still using one is reported invalid. */
+    wireguard?: { revoked?: string[] };
   };
   cloud?: { cloudflare_account_id?: string };
 }
@@ -355,7 +357,7 @@ export function syncGithubSecrets(m: Manifest, o: AuthOptions, apply: boolean, r
 // --- Fleet: ssh, WireGuard, cloudflared, renewal units (one ssh session per host) ------------------
 
 /** Bash run on each host (stdin of `ssh <alias> bash -s`); prints `kind\ttarget\tstatus\tproof`. */
-export function hostScript(h: HostAuth, pubkeys: string[], repair: boolean): string {
+export function hostScript(h: HostAuth, pubkeys: string[], repair: boolean, revoked: string[] = []): string {
   const q = (xs: string[]) => xs.map((x) => `'${x.replace(/'/g, "")}'`).join(" ");
   return `set -u
 S=; [ "$(id -u)" = 0 ] || S="sudo -n"
@@ -384,6 +386,9 @@ for i in ${q(h.wireguard ?? [])}; do
   while read -r k t; do [ -z "$k" ] && continue; tot=$((tot+1)); if [ "$t" != 0 ] && [ $((now-t)) -lt 180 ]; then fresh=$((fresh+1)); else stale="$stale \${k:0:8}"; fi; done <<< "$hs"
   st=ok; [ $fresh = 0 ] && st=invalid; [ $fresh != 0 ] && [ $fresh != $tot ] && st=action
   p wireguard "$i" $st "wg show $i latest-handshakes: $fresh/$tot pairs < 180 s\${stale:+ ; sans handshake:$stale}"
+  for r in ${q(revoked)}; do
+    grep -qF "$r" <<< "$hs" && p wireguard-key "$i:\${r:0:8}" invalid "pair encore actif avec une clé révoquée (deploy.toml [auth.wireguard].revoked)"
+  done
 done
 for u in ${q(h.units ?? [])}; do
   f=$(systemctl is-failed "$u.service" 2>/dev/null); r=$(systemctl show -p Result --value "$u.service" 2>/dev/null)
@@ -406,7 +411,7 @@ export function checkFleet(m: Manifest, o: AuthOptions, repair: boolean): Check[
     const canRepair = repair && h.repair !== false && !o.dryRun;
     const t0 = Date.now();
     const r = sh("ssh", ["-o", "BatchMode=yes", "-o", "ConnectTimeout=10", n.ssh_alias, "bash", "-s"], {
-      input: hostScript(h, pubkeysFor(n.ssh_alias), canRepair),
+      input: hostScript(h, pubkeysFor(n.ssh_alias), canRepair, m.auth.wireguard?.revoked ?? []),
       timeout: 90_000,
     });
     if (!r.ok && !r.out) {
