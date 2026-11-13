@@ -56,7 +56,7 @@ Details: [`references/tickets.md`](references/tickets.md).
 ### Account login (IAuthenticationService)
 
 Account login uses the `Authentication` service (credentials or QR, Steam Guard, refresh and
-access tokens); the RPC sequence and what `apps/rosegriffon/crates/bun-steam` implements:
+access tokens); the RPC sequence and what `crates/steam-depot` implements:
 [`references/sessions.md`](references/sessions.md).
 
 ## Additional Resources
@@ -80,4 +80,4 @@ access tokens); the RPC sequence and what `apps/rosegriffon/crates/bun-steam` im
 - https://openid.net/specs/openid-authentication-2_0.html
 - `third_party/steam-protobufs/steam/steammessages_auth.steamclient.proto`
 - `third_party/node-steam-session` (README and src)
-- `apps/rosegriffon/crates/bun-steam/src/depot/auth.rs`, `apps/rosegriffon/crates/bun-steam/src/depot/token_store.rs`
+- `crates/steam-depot/src/depot/auth.rs`, `crates/steam-depot/src/depot/token_store.rs`

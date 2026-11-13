@@ -8,12 +8,12 @@ allowed-tools: Bash, Read
 # Inspect the local Steam install
 
 Read-only inspection of the Steam client on this machine (Windows, Linux, Flatpak, Snap,
-macOS) through `apps/rosegriffon/plugins/steam/scripts/steam-inspect.ts`. The script uses Bun
+macOS) through `${CLAUDE_PLUGIN_ROOT}/scripts/steam-inspect.ts`. The script uses Bun
 built-ins only and shares its parsers with the `steam` MCP server (`plugins/steam/lib/steam.ts`).
 
 ## Procedure
 
-1. Locate Steam: `bun run apps/rosegriffon/plugins/steam/scripts/steam-inspect.ts root`.
+1. Locate Steam: `bun run ${CLAUDE_PLUGIN_ROOT}/scripts/steam-inspect.ts root`.
    `--steam-path <dir>` overrides the lookup; otherwise the order in
    [`references/layout.md`](references/layout.md) applies.
 2. List libraries (`libraries`) and installed apps (`apps [filter]`). Apps come from
@@ -57,4 +57,4 @@ The verified IEVR example (AppID 2799860) is in [`references/layout.md`](referen
 - `third_party/steamlocate-rs/src` (library discovery, StateFlag bit offsets)
 - `third_party/steamappinfo/README.md` (appinfo.vdf v39 to v41 layout)
 - `third_party/valvekeyvalue` (binary KeyValues type bytes)
-- `apps/rosegriffon/crates/bun-steam/src/install.rs` and `apps/rosegriffon/crates/bun-steam/src/vdf.rs`
+- `crates/steam-depot/src/install.rs` and `crates/steam-depot/src/vdf.rs`
