@@ -349,11 +349,18 @@ lb_port = 19780
 targets = { prd = "127.0.0.1:8780" }
 check = { path = "/", host = "mig-test.aphrody.com", expect = "status 200" }
 cache = "honor"
-[cluster.services.aphrody]           # aphrody.com / *.aphrody.com (mig-prd ingress); blue/green switch = edit this target only
+[cluster.services.aphrody]           # aphrody.com / *.aphrody.com (mig-prd ingress); blue/green switch = active colour here
 lb_port = 19300
-targets = { prd = "127.0.0.1:23000" }
+bluegreen = { service = "aphrody", active = "green" } # origins = [services.aphrody] green_port (primary), blue_port (backup)
+targets = { prd = "127.0.0.1" }
 check = { path = "/", host = "aphrody.com", expect = "rstatus ^[23]" }
 cache = "honor"
+[cluster.services.ai-os]             # ai.aphrody.com gateway; same blue/green rule
+lb_port = 19400
+bluegreen = { service = "ai-os", active = "green" }
+targets = { prd = "127.0.0.1" }
+check = { path = "/health", host = "ai.aphrody.com", expect = "status 200" }
+cache = "off"
 [cluster.services.ssh-prd]           # Tunnel ingress ssh-prd: always prd's sshd, whichever member runs the connector
 mode = "tcp"
 lb_port = 19022

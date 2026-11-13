@@ -242,6 +242,15 @@
       "excerpt": "2FA du compte npm (security key ou authenticator) et défi 2FA de npm trust / npm access set / création de jeton / approbation npm stage",
       "fix": "page https://www.npmjs.com/settings/yohan971/tfa ouverte chez le propriétaire ; ensuite just npm login (un clic) puis just npm trust (skip 2FA 5 min) ; publication en CI par trusted publishing OIDC (docs/infra/NPM.md)",
       "reason": "2026-11-13 : la 2FA est le facteur du propriétaire ; depuis août 2026 les jetons bypass 2FA ne passent plus ces actions (github.blog changelog 2026-07-31, docs.npmjs.com npm-trust)"
+    },
+    {
+      "location": "flotte:gpu2",
+      "category": "inventaire",
+      "severity": "medium",
+      "status": "inevitable",
+      "excerpt": "Second hôte Windows à GPU NVIDIA demandé pour le tissu d inférence, absent de deploy.toml, fleet.toml, docs/infra, ~/.ssh/config et des pairs WireGuard",
+      "fix": "nœud gpu2 prêt dans infra/ai/fabric.toml (reach vide), admis dès que son port 50052 répond ; étapes dans docs/ai/DISTRIBUTED-INFERENCE.md §4",
+      "reason": "2026-11-13 : hôte non déclaré par le propriétaire"
     }
   ]
 }
