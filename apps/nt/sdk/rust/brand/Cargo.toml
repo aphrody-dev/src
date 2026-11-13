@@ -1,0 +1,10 @@
+[package]
+name = "nt-brand"
+version = "0.1.0"
+edition.workspace = true
+publish.workspace = true
+description = "Couleurs de marque de nt : rôles Material 3 de packages/design/tokens/tokens.rs (RGBA u32)."
+license = "MIT OR Apache-2.0"
+
+[lib]
+path = "src/lib.rs"

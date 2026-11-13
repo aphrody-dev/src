@@ -4,6 +4,7 @@
 // icônes extraites des PE réels, chemins réels. Textes : atlas de glyphes ; icônes : atlas RGBA ; tout est GPU.
 import { FRAME, MAGIC, type Slow, THREAD_STATE, WAIT_REASON } from "./ntsys-format.ts";
 import shaderSrc from "./scene.wgsl" with { type: "text" };
+import { role, tokens } from "../../../../packages/design/src/index.ts";
 
 const W = 3840;
 const H = 2160;
@@ -132,7 +133,11 @@ const colorAtt: GPURenderPassColorAttachment = {
   resolveTarget: undefined,
   loadOp: "clear",
   storeOp: "discard",
-  clearValue: { r: 0.02, g: 0.027, b: 0.043, a: 1 },
+  clearValue: (() => {
+    const h = role("surface-container-lowest", "dark");
+    const [r, g, b] = [1, 3, 5].map((i) => Number.parseInt(h.slice(i, i + 2), 16) / 255);
+    return { r, g, b, a: 1 };
+  })(),
 };
 const passDesc: GPURenderPassDescriptor = {
   colorAttachments: [colorAtt],
@@ -221,6 +226,8 @@ function text(s: string, screen: boolean, x: number, y: number, z: number, px: n
 const panel = (x: number, y: number, w: number, h: number, c: RGB, a = 0.85) => sprite(true, x, y, 0, w, h, 0, 0, SOLID, c, a);
 
 // --- Couleurs ------------------------------------------------------------------------------------------------------------
+// Chrome (texte, fonds, plaques, titres) = rôles M3 sombres de la marque (packages/design, Material Color Utilities depuis
+// assets/brand/brand.toml) ; les couleurs de données (user, kernel, DPC, ISR, états, attentes) restent une palette de visualisation.
 const hex = (h: string): RGB => [
   Number.parseInt(h.slice(1, 3), 16) / 255,
   Number.parseInt(h.slice(3, 5), 16) / 255,
@@ -228,17 +235,17 @@ const hex = (h: string): RGB => [
 ];
 const mix = (a: RGB, b: RGB, t: number): RGB => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
 const C = {
-  text: hex("#dfe7f2"),
-  dim: hex("#8a9ab5"),
-  title: hex("#ffd166"),
-  bg: hex("#0b1220"),
+  text: hex(role("on-surface", "dark")),
+  dim: hex(role("on-surface-variant", "dark")),
+  title: hex(tokens.custom.bolt),
+  bg: hex(role("surface", "dark")),
   user: hex("#4895ef"),
   kernel: hex("#f4a261"),
   dpc: hex("#9d4edd"),
   isr: hex("#e63946"),
   idle: hex("#1a2333"),
-  plate: hex("#0c121c"),
-  tile: hex("#1a2740"),
+  plate: hex(role("surface-container-lowest", "dark")),
+  tile: hex(role("surface-container-high", "dark")),
   hot: hex("#ff6b35"),
   used: hex("#2f6db5"),
   free: hex("#121a28"),

@@ -196,8 +196,10 @@ ${Object.entries(shape).filter(([, x]) => x.endsWith("px")).map(([k, x]) => `   
 ${Object.entries(motion).filter(([k]) => k.startsWith("duration")).map(([k, x]) => `    pub const MOTION_${UP(k)}_MS: u32 = ${parseInt(x)};`).join("\n")}
 }
 `;
+const ZIG_KEYWORDS = new Set(["error", "type", "test", "const", "var", "fn", "struct", "enum", "union", "opaque", "return", "if", "else", "while", "for", "switch", "try", "catch", "and", "or", "align", "inline", "export", "extern", "packed", "pub", "comptime", "defer", "errdefer", "break", "continue", "unreachable", "volatile", "anytype", "orelse"]);
+const zigId = (s: string) => (ZIG_KEYWORDS.has(s) ? `@"${s}"` : s);
 files["tokens.zig"] = `${header("//")}// Couleurs en RGBA u32 (0xRRGGBBFF).
-${MODES.map(([m]) => `pub const ${m.replace(/-/g, "_")} = struct {\n${Object.entries(color[m]).map(([k, x]) => `    pub const ${k.replace(/-/g, "_")}: u32 = ${rgba(x)};`).join("\n")}\n};`).join("\n")}
+${MODES.map(([m]) => `pub const ${m.replace(/-/g, "_")} = struct {\n${Object.entries(color[m]).map(([k, x]) => `    pub const ${zigId(k.replace(/-/g, "_"))}: u32 = ${rgba(x)};`).join("\n")}\n};`).join("\n")}
 pub const bolt: u32 = ${rgba(tokens.custom.bolt)};
 pub const font_brand = ${JSON.stringify(brand.font)};
 `;

@@ -3,6 +3,10 @@
 version = 4
 
 [[package]]
+name = "nt-brand"
+version = "0.1.0"
+
+[[package]]
 name = "reactor-winui-hello"
 version = "0.0.0"
 dependencies = [

@@ -2,7 +2,7 @@
 # Le cœur Rust de nt vit dans le monorepo windows-rs (fork aphrody-labs, master) ; ici seulement des échantillons.
 [workspace]
 resolver = "3"
-members = ["winui-hello"]
+members = ["brand", "winui-hello"]
 
 [workspace.package]
 edition = "2024"

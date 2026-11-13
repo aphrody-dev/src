@@ -50,3 +50,10 @@ jobs:
           cargo deny --locked check
       - name: Architecture gate
         run: "\"$CARGO_TARGET_DIR/debug/ay\" arch check --strict"
+      - name: Design tokens (packages/design/tokens/tokens.rs via nt-brand, tokens.zig)
+        # tokens.rs et tokens.zig sont générés par bun (packages/design/src/build.ts) ; on les compile ici.
+        run: |
+          CARGO_MANIFEST_DIR="$PWD/apps/nt/sdk/rust/brand" aphrody-heavy rustc --edition 2024 --test -D warnings \
+            -o "$CARGO_TARGET_DIR/nt-brand-test" apps/nt/sdk/rust/brand/src/lib.rs
+          "$CARGO_TARGET_DIR/nt-brand-test"
+          aphrody-heavy zig test packages/design/tokens/tokens_test.zig
