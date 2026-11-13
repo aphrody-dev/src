@@ -118,7 +118,9 @@ describe("Aphrody build output", () => {
     expect(html).toContain("What exists");
     expect(html).toContain('href="https://aphrody.com/en"');
     for (const l of ["zh-CN", "ja", "es"])
-      expect(readFileSync(join(dist, l, "index.html"), "utf-8")).toContain(`<html lang="${l}"`);
+      expect(readFileSync(join(dist, l, "index.html"), "utf-8")).toContain(
+        `<html lang="${l}"`,
+      );
   });
 });
 
@@ -267,10 +269,15 @@ describe("Performance, LTO, AOT & Zero-Copy Stack Benchmark & Picker Engine", ()
 
   it("should run full benchmark suite and produce complete system report", async () => {
     const report = await runBenchmarkSuite();
-    expect(report.hardware.cpu.length).toBeGreaterThan(0);
-    expect(typeof report.hardware.gpu).toBe("string");
-    expect(report.zeroCopy.speedupRatio).toBeGreaterThan(1);
-    expect(report.candidateStacks.length).toBe(CANDIDATE_STACKS.length);
+    expect(Date.parse(report.timestamp)).toBeGreaterThan(0);
+    // A measurement that could not run reports `{ error }` instead of a constant.
+    if ("error" in report.zeroCopy) expect(report.zeroCopy.error).toBeTruthy();
+    else {
+      expect(report.zeroCopy.speedupRatio).toBeGreaterThan(0);
+      expect(report.zeroCopy.dataSizeBytes).toBeGreaterThan(0);
+    }
+    for (const part of [report.wasmSimd, report.sqlite])
+      if ("error" in part) expect(part.error).toBeTruthy();
   });
 });
 

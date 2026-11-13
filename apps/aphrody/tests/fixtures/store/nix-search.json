@@ -1,0 +1,21 @@
+{
+  "query": "ripgrep",
+  "total_results": 9,
+  "results": [
+    {
+      "name": "ripgrep",
+      "summary": "Utility that combines the usability of The Silver Searcher with the raw speed of grep",
+      "last_updated": "2026-10-02T22:55:44Z"
+    },
+    {
+      "name": "ripgrep-all",
+      "summary": "Ripgrep, but also search in PDFs, E-Books, Office documents, zip, tar.gz, and more",
+      "last_updated": "2026-10-02T22:55:44Z"
+    },
+    {
+      "name": "emacs27Packages.ripgrep",
+      "summary": "",
+      "last_updated": "2022-04-13T09:49:25Z"
+    }
+  ]
+}

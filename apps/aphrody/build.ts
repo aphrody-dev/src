@@ -45,6 +45,7 @@ import {
   holding404,
   HOME_LOCALES,
   artSprite,
+  UI_SCRIPTS,
   holdingCss,
   productIcons,
   renderHolding,
@@ -99,6 +100,7 @@ for (const l of HOME_LOCALES)
 
 // 4. Crawler, agent and compliance documents.
 emit("art.svg", artSprite(SRC_ROOT));
+for (const [name, js] of Object.entries(UI_SCRIPTS)) emit(name, js);
 emit("robots.txt", robotsTxt());
 for (const [name, xml] of Object.entries(buildSitemaps(BUILD_DATE)))
   emit(name, xml);

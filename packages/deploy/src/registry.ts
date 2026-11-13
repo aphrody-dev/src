@@ -4,6 +4,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { firstPath, parseAlphabet, plain, section } from "./alphabet.ts";
 import { readBrand, tokensCss } from "./m3.ts";
+import { themeBlocks } from "./ui.ts";
 import {
   NAME,
   type InventoryItem,
@@ -176,7 +177,7 @@ export async function buildRegistry(
     projects,
     inventory: inventory(projects, root),
     labs: await labs(root),
-    css: tokensCss(root),
+    css: tokensCss(root) + themeBlocks(root).replace(/\s+/g, " "),
     mark: brand.mark,
   };
 }

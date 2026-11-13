@@ -8,11 +8,16 @@ function boot() {
   if (!stageSupported().ok) return;
   const items = [...document.querySelectorAll<HTMLElement>(".products .card")];
   if (!items.length) return;
-  void startStage({ items, assetBase: "/stage", materials: MATERIALS }).then((h) => {
-    (window as unknown as { __stage?: unknown }).__stage = h?.stats ?? null;
-  });
+  void startStage({ items, assetBase: "/stage", materials: MATERIALS }).then(
+    (h) => {
+      (window as unknown as { __stage?: unknown }).__stage = h?.stats ?? null;
+    },
+  );
 }
 
-const idle = (f: () => void) => ("requestIdleCallback" in window ? requestIdleCallback(f, { timeout: 2500 }) : setTimeout(f, 800));
+const idle = (f: () => void) =>
+  "requestIdleCallback" in window
+    ? requestIdleCallback(f, { timeout: 2500 })
+    : setTimeout(f, 800);
 if (document.readyState === "complete") idle(boot);
 else addEventListener("load", () => idle(boot), { once: true });
