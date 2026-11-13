@@ -330,6 +330,9 @@ export function rewriteMessage(
 
 export function findPatch(patches: Patch[], key: string): Patch {
   const n = Number(key);
+  // A plain integer is a patch index and wins over sha/slug prefixes (a sha can start with the same digit).
+  const byIndex = Number.isInteger(n) ? patches.filter((p) => p.index === n) : [];
+  if (byIndex.length === 1) return byIndex[0]!;
   const hits = patches.filter(
     (p) =>
       (Number.isInteger(n) && p.index === n) ||
