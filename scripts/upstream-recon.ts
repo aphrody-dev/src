@@ -4,6 +4,8 @@
 // nothing is written by hand. Output: docs/epic/snapshot.json.
 // Usage: GITHUB_TOKEN=... bun scripts/upstream-recon.ts [out]
 
+import { rename } from "node:fs/promises";
+
 const OWNERS = ["EpicGames", "bevyengine"];
 // Community repositories tracked in docs/epic/RESOURCES.md.
 const COMMUNITY = [
@@ -20,7 +22,7 @@ const COMMUNITY = [
   "verselang/book",
 ];
 
-const token = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN;
+const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
 if (!token) throw new Error("GITHUB_TOKEN or GH_TOKEN required");
 
 const FIELDS = `nameWithOwner isArchived isPrivate pushedAt stargazerCount
@@ -41,11 +43,14 @@ async function gql(
     },
     body: JSON.stringify({ query, variables }),
   });
-  const body = (await res.json()) as {
-    data?: any;
-    errors?: { message: string }[];
-  };
-  if (!res.ok || !body.data)
+  const text = await res.text();
+  let body: { data?: any; errors?: { message: string }[] };
+  try {
+    body = JSON.parse(text);
+  } catch {
+    throw new Error(`GraphQL ${res.status}: non-JSON response`);
+  }
+  if (!res.ok || !body.data || body.errors?.length)
     throw new Error(
       `GraphQL ${res.status}: ${body.errors?.map((e) => e.message).join("; ")}`,
     );
@@ -94,15 +99,16 @@ const row = (r: any) => ({
     : null,
 });
 
-const snapshot: Record<string, unknown> = {
-  generatedAt: new Date().toISOString(),
-  source: "api.github.com/graphql",
-};
-for (const o of OWNERS) snapshot[o] = (await orgRepos(o)).map(row);
-snapshot.community = (await namedRepos(COMMUNITY)).map(row);
+// No timestamp: the file only changes when upstream state changes, so commits stay meaningful.
+const byRepo = (a: { repo: string }, b: { repo: string }) =>
+  a.repo.localeCompare(b.repo);
+const snapshot: Record<string, unknown> = { source: "api.github.com/graphql" };
+for (const o of OWNERS) snapshot[o] = (await orgRepos(o)).map(row).sort(byRepo);
+snapshot.community = (await namedRepos(COMMUNITY)).map(row).sort(byRepo);
 
 const out = process.argv[2] ?? "docs/epic/snapshot.json";
-await Bun.write(out, JSON.stringify(snapshot, null, 2) + "\n");
+await Bun.write(`${out}.tmp`, JSON.stringify(snapshot, null, 2) + "\n");
+await rename(`${out}.tmp`, out);
 console.log(
   `${out}: ${OWNERS.map((o) => `${o}=${(snapshot[o] as unknown[]).length}`).join(" ")} community=${(snapshot.community as unknown[]).length}`,
 );

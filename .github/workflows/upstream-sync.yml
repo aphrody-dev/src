@@ -1,9 +1,10 @@
 # Continuous upstream tracking for the Epic Games and Bevy surface (docs/epic/RESOURCES.md):
-# 1. fast-forwards every aphrody-labs fork listed in third_party/forks.txt whose upstream owner
-#    is EpicGames, bevyengine or a tracked community project (gh repo sync, default branch);
+# 1. fast-forwards the default branch of every aphrody-labs fork listed in third_party/forks.txt
+#    whose upstream owner is EpicGames, bevyengine or a tracked community project (gh repo sync);
 # 2. regenerates docs/epic/snapshot.json (repos, branches, head commits, releases) from the
 #    GitHub GraphQL API and commits it on main when it changed.
-# GitHub-hosted runner only. Needs APHRODY_DEPLOY_TOKEN with contents:write on aphrody-labs forks.
+# GitHub-hosted runner only. Step 1 needs APHRODY_DEPLOY_TOKEN with contents:write on the forks;
+# step 2 uses the workflow token. Failed syncs fail the run after the snapshot is committed.
 name: upstream-sync
 on:
   schedule:
@@ -17,27 +18,34 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    env:
-      GH_TOKEN: ${{ secrets.APHRODY_DEPLOY_TOKEN || github.token }}
     steps:
       - uses: actions/checkout@v7
         with:
           submodules: false
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
       - name: Sync forks with upstream
+        id: sync
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.APHRODY_DEPLOY_TOKEN }}
         run: |
+          list="$RUNNER_TEMP/upstreams.txt"
+          log="$RUNNER_TEMP/sync.log"
+          grep -E '^(EpicGames|bevyengine|trumank|FabianFG|UE4SS-RE|legendary-gl|3ddelano)/' third_party/forks.txt | cut -d' ' -f1 | sort -u > "$list"
           fail=0
-          grep -E '^(EpicGames|bevyengine|trumank|FabianFG|UE4SS-RE|legendary-gl|3ddelano)/' third_party/forks.txt | cut -d' ' -f1 | sort -u > upstreams.txt
           while read -r up; do
             name="${up#*/}"
-            if gh repo sync "aphrody-labs/$name" --source "$up" >/dev/null 2>log.txt; then
+            if gh repo sync "aphrody-labs/$name" --source "$up" >/dev/null 2>"$log"; then
               echo "synced $up"
             else
-              echo "::warning::sync failed for $up: $(tail -1 log.txt)"
+              echo "::warning::sync failed for $up: $(tail -1 "$log")"
               fail=$((fail+1))
             fi
-          done < upstreams.txt
+          done < "$list"
           echo "failures=$fail" >> "$GITHUB_STEP_SUMMARY"
+          test "$fail" -eq 0
       - name: Regenerate snapshot
         env:
           GH_TOKEN: ${{ github.token }}
@@ -51,3 +59,8 @@ jobs:
           git commit -m "docs/epic : instantane upstream regenere (upstream-sync)"
           git pull --rebase origin main
           git push origin HEAD:main
+      - name: Report sync failures
+        if: steps.sync.outcome == 'failure'
+        run: |
+          echo "::error::fork sync failed, see warnings of the sync step"
+          exit 1
