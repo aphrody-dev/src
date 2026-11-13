@@ -1,5 +1,6 @@
 // Outils du relais, partagés par toutes les surfaces (JSON-RPC HTTP/WebSocket/TCP/TLS, MCP, A2A, ACP).
-import { listModels, llmAsk } from "../llm/models.ts";
+import { llmAsk } from "../llm/model.ts";
+import { listModels } from "../llm/models.ts";
 import { AGENT_TOOLS } from "./agent-tools.ts";
 import { accountsSync } from "./accounts.ts";
 import { existsSync, readdirSync, readFileSync } from "node:fs";

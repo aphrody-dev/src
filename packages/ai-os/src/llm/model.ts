@@ -1,7 +1,7 @@
 // LanguageModel and Embedder over the providers discovered at run time (models.ts). Nothing is hardcoded:
 //   resolveModel("provider/model")  any id returned by listModels()/llm_models
 //   resolveModel()                  AGENT_MODEL, else the first model of the first active provider
-//   resolveEmbedder()               AGENT_EMBEDDER = hash (offline, default) | provider/model (/v1/embeddings)
+//   providerEmbedder("provider/model")  /v1/embeddings (core/model.ts resolveEmbedder: AGENT_EMBEDDER=hash|provider/model)
 // OpenAI-compatible providers get native tool calling; CLI providers (antigravity, claude) answer in text only.
 import { type Provider, listModels, providers } from "./models";
 import type {
@@ -93,21 +93,32 @@ export function chatModel(
           signal: req.signal ?? AbortSignal.timeout(600_000),
         },
       );
-      const j: any = await r.json().catch(() => ({}));
-      if (!r.ok)
+      const raw = await r.text();
+      let j: any;
+      try {
+        j = JSON.parse(raw);
+      } catch {
+        throw new Error(
+          `${id} : HTTP ${r.status}, réponse non JSON : ${raw.slice(0, 200)}`,
+        );
+      }
+      if (!r.ok || j.error || (!j.choices && !j.result))
         throw new Error(
           `${id} : HTTP ${r.status} ${JSON.stringify(j.error ?? j.errors ?? j).slice(0, 300)}`,
         );
       const msg = j.choices?.[0]?.message ?? {};
+      const content = Array.isArray(msg.content)
+        ? msg.content.map((p: any) => p?.text ?? "").join("")
+        : msg.content;
       const toolCalls: ToolCall[] = (msg.tool_calls ?? []).map(
         (c: any, i: number) => ({
-          id: String(c.id ?? `call_${i}`),
+          id: String(c.id ?? `call_${crypto.randomUUID()}_${i}`),
           name: String(c.function?.name ?? c.name),
           input: parseArgs(c.function?.arguments ?? c.arguments),
         }),
       );
       return {
-        text: String(msg.content ?? j.result?.response ?? ""),
+        text: String(content ?? j.result?.response ?? ""),
         toolCalls,
         finishReason: String(
           j.choices?.[0]?.finish_reason ??
@@ -146,11 +157,14 @@ export function cliModel(
   return {
     id,
     tools: false,
-    chat: async (req) => ({
-      text: await p.ask!(model, flatten(req)),
-      toolCalls: [],
-      finishReason: "stop",
-    }),
+    chat: async (req) => {
+      req.signal?.throwIfAborted();
+      return {
+        text: await p.ask!(model, flatten(req)),
+        toolCalls: [],
+        finishReason: "stop",
+      };
+    },
   };
 }
 
@@ -190,12 +204,15 @@ export async function resolveModel(
     throw new Error(
       `fournisseur inconnu ou inactif : ${pid} (voir llm_models)`,
     );
+  if (!mid)
+    throw new Error(`modèle manquant : ${id} (attendu fournisseur/modèle)`);
   return p.chat ? chatModel(id, p, mid!) : cliModel(id, p, mid!);
 }
 
 /** OpenAI-compatible /v1/embeddings of a discovered provider. */
 export function providerEmbedder(spec: string): Embedder {
   const [pid, model] = split(spec);
+  if (!model) throw new Error(`modèle d'embeddings manquant : ${spec}`);
   const p = providers().find((x) => x.id === pid);
   if (!p?.chat)
     throw new Error(
@@ -216,11 +233,33 @@ export function providerEmbedder(spec: string): Embedder {
           body: JSON.stringify({ model, input: texts.slice(i, i + 64) }),
           signal: AbortSignal.timeout(120_000),
         });
+        const batch = texts.slice(i, i + 64);
         const j: any = await r.json().catch(() => ({}));
-        if (!r.ok) throw new Error(`${spec} : HTTP ${r.status}`);
-        out.push(...(j.data ?? []).map((d: any) => d.embedding as number[]));
+        const data: any[] = Array.isArray(j.data) ? [...j.data] : [];
+        if (!r.ok || data.length !== batch.length)
+          throw new Error(
+            `${spec} : HTTP ${r.status}, ${data.length}/${batch.length} vecteurs`,
+          );
+        data.sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
+        out.push(...data.map((d) => d.embedding as number[]));
       }
       return out;
     },
+  };
+}
+
+/** Appel d'un modèle « fournisseur/modèle » (le modèle est celui que renvoie la liste ; rien n'est supposé). */
+export async function llmAsk(model: string, prompt: string, system?: string) {
+  const t0 = performance.now();
+  const m = await resolveModel(model);
+  const r = await m.chat({
+    system,
+    messages: [{ role: "user", content: prompt }],
+  });
+  return {
+    text: r.text,
+    model: m.id,
+    usage: r.usage,
+    ms: Math.round(performance.now() - t0),
   };
 }

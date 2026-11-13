@@ -68,23 +68,38 @@ switch (cmd) {
     await acp();
     break;
   case "mcp-stdio": {
+    // UTF-8 décodé en flux (caractères coupés entre deux blocs) ; requêtes traitées en parallèle.
+    const dec = new TextDecoder("utf-8");
+    const pending = new Set<Promise<void>>();
+    const send = (o: unknown) =>
+      void process.stdout.write(`${JSON.stringify(o)}\n`);
     let buf = "";
     for await (const chunk of process.stdin) {
-      buf += Buffer.from(chunk).toString("utf8");
+      buf += dec.decode(chunk, { stream: true });
       let i: number;
       while ((i = buf.indexOf("\n")) >= 0) {
         const line = buf.slice(0, i).trim();
         buf = buf.slice(i + 1);
         if (!line) continue;
-        const out = await dispatch(
-          await Promise.resolve()
-            .then(() => JSON.parse(line))
-            .catch(() => null),
-          mcpRpc,
-        );
-        if (out) process.stdout.write(`${JSON.stringify(out)}\n`);
+        let body: unknown;
+        try {
+          body = JSON.parse(line);
+        } catch {
+          send({
+            jsonrpc: "2.0",
+            id: null,
+            error: { code: -32700, message: "Parse error" },
+          });
+          continue;
+        }
+        const p = dispatch(body, mcpRpc).then((out) => {
+          if (out) send(out);
+        });
+        pending.add(p);
+        p.finally(() => pending.delete(p));
       }
     }
+    await Promise.all(pending);
     break;
   }
   case "token":

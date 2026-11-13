@@ -42,8 +42,8 @@ export type GenerateResult = {
   usage: Usage;
 };
 
-const stringify = (v: unknown) =>
-  typeof v === "string" ? v : JSON.stringify(v);
+const stringify = (v: unknown): string =>
+  typeof v === "string" ? v : JSON.stringify(v ?? null);
 
 export async function generateText(
   o: GenerateOptions,
@@ -81,7 +81,11 @@ export async function generateText(
     });
     const step: Step = { ...r, toolResults: [] };
     for (const call of r.toolCalls) {
-      const t = o.tools?.[call.name];
+      o.signal?.throwIfAborted();
+      const t =
+        o.tools && Object.hasOwn(o.tools, call.name)
+          ? o.tools[call.name]
+          : undefined;
       let output: unknown;
       let error: string | undefined;
       if (!t) error = `unknown tool ${call.name}`;

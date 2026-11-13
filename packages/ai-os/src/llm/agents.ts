@@ -1,0 +1,120 @@
+// Agents en ligne de commande servant de fournisseurs de modèles (Antigravity `agy`, Claude Code `claude`) :
+// partagés par le pont de modèles (models.ts) et le relais (relay/backends.ts). Exécution sans shell, délai borné.
+
+export type Answer = {
+  text: string;
+  engine: string;
+  chat?: string;
+  ms: number;
+};
+
+// Une clé d'API Anthropic dans l'environnement prime sur la connexion claude.ai et désactive ses connecteurs (Gmail,
+// Drive…) ; GOOGLE_GENAI_USE_VERTEXAI envoie Gemini CLI vers Vertex au lieu du compte Google. Retirées pour ces moteurs.
+const without = (...keys: string[]) =>
+  Object.fromEntries(
+    Object.entries(process.env).filter(([k]) => !keys.includes(k)),
+  ) as Record<string, string>;
+export const CLAUDE_ENV = () =>
+  without(
+    "ANTHROPIC_API_KEY",
+    "ANTHROPIC_AUTH_TOKEN",
+    "ANTHROPIC_CUSTOM_HEADERS",
+    "ANTHROPIC_SERVICE_ACCOUNT_ID",
+    "ANTHROPIC_WORKSPACE_ID",
+  );
+
+export async function cli(
+  engine: string,
+  argv: string[],
+  pick: (j: any) => string,
+  env?: Record<string, string>,
+): Promise<Answer> {
+  const t0 = performance.now();
+  const p = Bun.spawn(argv, {
+    stdout: "pipe",
+    stderr: "pipe",
+    stdin: "ignore",
+    timeout: Number(Bun.env.AGENT_CLI_TIMEOUT_MS ?? 600_000),
+    ...(env ? { env } : {}),
+  });
+  const [out, err, code] = await Promise.all([
+    new Response(p.stdout).text(),
+    new Response(p.stderr).text(),
+    p.exited,
+  ]);
+  if (code !== 0)
+    throw new Error(`${engine} : code ${code} ${err.slice(0, 400)}`);
+  let text = out.trim();
+  try {
+    text = pick(JSON.parse(out));
+  } catch {}
+  return { text, engine, ms: Math.round(performance.now() - t0) };
+}
+
+/** Antigravity CLI headless (`agy -p … --output-format json --mode plan`, 1.5.7) : session Antigravity déjà ouverte,
+ * modèles Gemini 4. Modèle demandé (argument ou RELAY_AGY_MODEL, ex. gemini-4-carbon-high) ; s'il est épuisé
+ * (RESOURCE_EXHAUSTED, crédits insuffisants), nouvel essai avec le modèle par défaut du compte. Mesuré : 1,96 s. */
+export async function agy(
+  prompt: string,
+  model?: string,
+  conversation?: string,
+): Promise<Answer> {
+  const argv = (m?: string) => [
+    "agy",
+    "-p",
+    prompt,
+    "--output-format",
+    "json",
+    "--mode",
+    "plan",
+    ...(m ? ["--model", m] : []),
+    ...(conversation ? ["--conversation", conversation] : []),
+  ];
+  const pick = (j: any) => String(j.response ?? "").trim();
+  const wanted = model ?? Bun.env.RELAY_AGY_MODEL;
+  try {
+    return await cli("antigravity", argv(wanted), pick);
+  } catch (e: any) {
+    if (!wanted || !/RESOURCE_EXHAUSTED|credits balance/i.test(e.message))
+      throw e;
+    const a = await cli("antigravity", argv(), pick);
+    return { ...a, engine: `antigravity (repli : ${wanted} épuisé)` };
+  }
+}
+
+/** Claude Code headless limité aux outils listés (ex. connecteurs claude.ai Google), sans autre permission. */
+export const claudeWithTools = (prompt: string, tools: string[]) =>
+  cli(
+    "claude",
+    [
+      "claude",
+      "-p",
+      prompt,
+      "--output-format",
+      "json",
+      "--permission-mode",
+      "dontAsk",
+      "--allowedTools",
+      tools.join(","),
+      "--disallowedTools",
+      "mcp__relay",
+    ],
+    (j) => String(j.result ?? ""),
+    CLAUDE_ENV(),
+  );
+
+export const claude = (prompt: string, model?: string) =>
+  cli(
+    "claude",
+    [
+      "claude",
+      "-p",
+      prompt,
+      "--output-format",
+      "json",
+      "--permission-mode",
+      "plan",
+      ...(model ? ["--model", model] : []),
+    ],
+    (j) => String(j.result ?? ""),
+  );

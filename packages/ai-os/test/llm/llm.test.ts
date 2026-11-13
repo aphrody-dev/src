@@ -110,7 +110,7 @@ test("generateText: tool loop, invalid input reported to the model", async () =>
 });
 
 test("discovered OpenAI-compatible provider: models listed, tool calls over the wire, embeddings", async () => {
-  const fakeModels = (await listModels("^fake/")).find(
+  const fakeModels = (await listModels("fake/")).find(
     (p) => p.provider === "fake",
   );
   expect(fakeModels?.models.map((x) => x.id)).toEqual(["fake/tiny-1"]);
@@ -146,4 +146,24 @@ test("echo model and unknown provider", async () => {
     ).text,
   ).toBe("e: hi");
   expect(resolveModel("nope/x")).rejects.toThrow("fournisseur inconnu");
+});
+
+test("schema: own keys only, optional undefined, finite numbers; tool loop ignores prototype names", async () => {
+  const sc = s.object({ a: s.number(), b: s.string() }, ["b"]);
+  expect(validate(sc, { a: 1, b: undefined })).toEqual([]);
+  expect(validate(sc, { a: Number.NaN })).toEqual([
+    "$.a: expected number, got number",
+  ]);
+  expect(validate(sc, JSON.parse('{"a":1,"constructor":1}'))).toEqual([
+    "$.constructor: unexpected",
+  ]);
+  const m = scriptedModel({ toolCalls: [call("1", "toString", {})] }, "ok");
+  const r = await generateText({
+    model: m,
+    prompt: "x",
+    tools: { add },
+    maxSteps: 3,
+  });
+  expect(r.steps[0]!.toolResults[0]!.error).toBe("unknown tool toString");
+  expect(r.text).toBe("ok");
 });

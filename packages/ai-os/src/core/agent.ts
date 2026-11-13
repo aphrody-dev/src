@@ -40,8 +40,8 @@ export async function run(o: RunOptions) {
     await skills.sync();
     await indexHomeDocs(o.home, memory.ctx);
     const selected = await memory.ctx.select(o.task, {
-      ...cfg.context,
       sources: ["memory", "skill", "research", "doc"],
+      ...cfg.context,
       ...o.mask,
       redact: Bun.env,
     });
@@ -66,7 +66,7 @@ export async function run(o: RunOptions) {
         ? (st) => {
             for (const t of st.toolResults)
               console.error(
-                `[tool] ${t.call.name} ${JSON.stringify(t.error ?? t.output).slice(0, 300)}`,
+                `[tool] ${t.call.name} ${String(JSON.stringify(t.error ?? t.output ?? null)).slice(0, 300)}`,
               );
           }
         : undefined,

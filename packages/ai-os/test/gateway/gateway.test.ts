@@ -47,3 +47,28 @@ test("gateway: openai-compatible, webhook channel, websocket (A2A lives in the r
   expect(reply.text).toBe("gw: over ws");
   ws.close();
 });
+
+test("gateway: channel webhooks require the gateway token unless the channel verifies itself", async () => {
+  const g = createGateway({
+    home,
+    model: await resolveModel("echo/gw"),
+    token: "t0k",
+  });
+  try {
+    const u = new URL("/channels/webhook", g.url).href;
+    expect(
+      (await fetch(u, { method: "POST", body: JSON.stringify({ text: "x" }) }))
+        .status,
+    ).toBe(401);
+    const okRes: any = await (
+      await fetch(u, {
+        method: "POST",
+        headers: { authorization: "Bearer t0k" },
+        body: JSON.stringify({ text: "x" }),
+      })
+    ).json();
+    expect(okRes.text).toBe("gw: x");
+  } finally {
+    g.stop();
+  }
+});

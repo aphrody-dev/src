@@ -13,13 +13,9 @@ export {
   defaultModelId,
   echoModel,
   flatten,
+  llmAsk,
   providerEmbedder,
   resolveModel,
 } from "./model";
-export {
-  listModels,
-  llmAsk,
-  type Model,
-  type Provider,
-  providers,
-} from "./models";
+export { listModels, type Model, type Provider, providers } from "./models";
+export { type Answer, agy, claude, claudeWithTools } from "./agents";

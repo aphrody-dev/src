@@ -19,19 +19,32 @@ export const HELP = "/help  /clear  /exit   Enter sends, Ctrl+C quits";
 /** Minimal markdown styling for the transcript (terminal escapes only when the output is a TTY). */
 export function renderMarkdown(md: string, color = true) {
   if (!color) return md;
+  let fenced = false;
   return md
     .split("\n")
-    .map((l) =>
-      /^#{1,6}\s/.test(l)
-        ? styleText(["bold", "cyan"], l.replace(/^#+\s/, ""))
-        : l
-            .replace(/\*\*([^*]+)\*\*/g, (_, x) => styleText("bold", x))
-            .replace(/`([^`]+)`/g, (_, x) => styleText("yellow", x))
-            .replace(
-              /(^|\s)_([^_]+)_(?=\s|$)/g,
-              (_, a, x) => a + styleText("italic", x),
-            ),
-    )
+    .map((l) => {
+      if (/^\s*```/.test(l)) {
+        fenced = !fenced;
+        return styleText("dim", l);
+      }
+      if (fenced) return styleText("green", l);
+      // Inline code first; its content is kept out of the bold/italic rules.
+      const parts = l.split(/(`[^`]+`)/);
+      if (/^#{1,6}\s/.test(l))
+        return styleText(["bold", "cyan"], l.replace(/^#+\s/, ""));
+      return parts
+        .map((p) =>
+          p.startsWith("`") && p.endsWith("`") && p.length > 1
+            ? styleText("yellow", p.slice(1, -1))
+            : p
+                .replace(/\*\*([^*]+)\*\*/g, (_, x) => styleText("bold", x))
+                .replace(
+                  /(^|\s)_([^_\s][^\n]*?)_(?=\s|$)/g,
+                  (_, a, x) => a + styleText("italic", x),
+                ),
+        )
+        .join("");
+    })
     .join("\n");
 }
 
@@ -63,7 +76,7 @@ export async function handle(
       history: s.history,
     });
     s.busy(false);
-    if (r.toolCalls.length) s.print(`_tools: ${r.toolCalls.join(", ")}_`);
+    if (r.toolCalls.length) s.print(`tools: \`${r.toolCalls.join(", ")}\``);
     s.print(r.text || "_(no text)_");
   } catch (e) {
     s.busy(false);
@@ -88,6 +101,13 @@ export async function startTui(o: TuiOptions) {
   const print = (md: string) =>
     void output.write(`${renderMarkdown(md, color)}\n`);
   const busy = (on: boolean) => {
+    if (spin) {
+      clearInterval(spin);
+      spin = undefined;
+      output.write("\r\x1b[2K");
+    }
+    if (on) rl.pause();
+    else rl.resume();
     if (on && color) {
       let i = 0;
       spin = setInterval(
@@ -97,24 +117,18 @@ export async function startTui(o: TuiOptions) {
           ),
         120,
       );
-    } else if (spin) {
-      clearInterval(spin);
-      spin = undefined;
-      output.write("\r\x1b[2K");
     }
   };
   output.write(
     `${color ? styleText("bold", "ai-os") + styleText("dim", `  ${HELP}`) : `ai-os  ${HELP}`}\n`,
   );
-  rl.on("SIGINT", () => {
-    rl.close();
-    process.exit(0);
-  });
+  // Ctrl+C closes the prompt; the caller (agent CLI) decides how the process ends.
+  rl.on("SIGINT", () => rl.close());
   rl.prompt();
   for await (const line of rl) {
     if (!(await handle(line, { history, print, busy }, o))) break;
     rl.prompt();
   }
+  busy(false);
   rl.close();
-  process.exit(0);
 }

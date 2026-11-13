@@ -4,14 +4,10 @@
 //                bouton d'arrêt présent tant que la génération court ; aller-retour mesuré : 10,5 s).
 //   antigravity : Antigravity CLI headless (`agy -p … --output-format json`), session Antigravity de l'utilisateur, modèles Gemini 4.
 //   claude     : Claude Code headless (`claude -p --output-format json`), authentification existante de la CLI.
+import { type Answer, agy, claude, claudeWithTools } from "../llm/agents.ts";
 import { Tab, launchBrowser } from "./cdp.ts";
 
-export type Answer = {
-  text: string;
-  engine: string;
-  chat?: string;
-  ms: number;
-};
+export { type Answer, agy, claude, claudeWithTools };
 
 const GEMINI = "https://gemini.google.com/";
 let queue: Promise<unknown> = Promise.resolve();
@@ -97,48 +93,6 @@ export function geminiWeb(
   });
 }
 
-// Une clé d'API Anthropic dans l'environnement prime sur la connexion claude.ai et désactive ses connecteurs (Gmail,
-// Drive…) ; GOOGLE_GENAI_USE_VERTEXAI envoie Gemini CLI vers Vertex au lieu du compte Google. Retirées pour ces moteurs.
-const without = (...keys: string[]) =>
-  Object.fromEntries(
-    Object.entries(process.env).filter(([k]) => !keys.includes(k)),
-  ) as Record<string, string>;
-const CLAUDE_ENV = () =>
-  without(
-    "ANTHROPIC_API_KEY",
-    "ANTHROPIC_AUTH_TOKEN",
-    "ANTHROPIC_CUSTOM_HEADERS",
-    "ANTHROPIC_SERVICE_ACCOUNT_ID",
-    "ANTHROPIC_WORKSPACE_ID",
-  );
-
-async function cli(
-  engine: string,
-  argv: string[],
-  pick: (j: any) => string,
-  env?: Record<string, string>,
-): Promise<Answer> {
-  const t0 = performance.now();
-  const p = Bun.spawn(argv, {
-    stdout: "pipe",
-    stderr: "pipe",
-    stdin: "ignore",
-    ...(env ? { env } : {}),
-  });
-  const [out, err, code] = await Promise.all([
-    new Response(p.stdout).text(),
-    new Response(p.stderr).text(),
-    p.exited,
-  ]);
-  if (code !== 0)
-    throw new Error(`${engine} : code ${code} ${err.slice(0, 400)}`);
-  let text = out.trim();
-  try {
-    text = pick(JSON.parse(out));
-  } catch {}
-  return { text, engine, ms: Math.round(performance.now() - t0) };
-}
-
 // NotebookLM (devenu « Gemini Notebook », notebook.google.com) : sélecteurs relevés le 2026-11-13 —
 // textarea[aria-label="Query box"], button[aria-label="Submit"], réponse = dernier chat-message .to-user-container
 // (bloc thinking-chain-view exclu) ; aller-retour mesuré : 22,5 s.
@@ -205,74 +159,6 @@ export function notebookAsk(
     }
   });
 }
-
-/** Antigravity CLI headless (`agy -p … --output-format json --mode plan`, 1.5.7) : session Antigravity déjà ouverte,
- * modèles Gemini 4. Modèle demandé (argument ou RELAY_AGY_MODEL, ex. gemini-4-carbon-high) ; s'il est épuisé
- * (RESOURCE_EXHAUSTED, crédits insuffisants), nouvel essai avec le modèle par défaut du compte. Mesuré : 1,96 s. */
-export async function agy(
-  prompt: string,
-  model?: string,
-  conversation?: string,
-): Promise<Answer> {
-  const argv = (m?: string) => [
-    "agy",
-    "-p",
-    prompt,
-    "--output-format",
-    "json",
-    "--mode",
-    "plan",
-    ...(m ? ["--model", m] : []),
-    ...(conversation ? ["--conversation", conversation] : []),
-  ];
-  const pick = (j: any) => String(j.response ?? "").trim();
-  const wanted = model ?? Bun.env.RELAY_AGY_MODEL;
-  try {
-    return await cli("antigravity", argv(wanted), pick);
-  } catch (e: any) {
-    if (!wanted || !/RESOURCE_EXHAUSTED|credits balance/i.test(e.message))
-      throw e;
-    const a = await cli("antigravity", argv(), pick);
-    return { ...a, engine: `antigravity (repli : ${wanted} épuisé)` };
-  }
-}
-
-/** Claude Code headless limité aux outils listés (ex. connecteurs claude.ai Google), sans autre permission. */
-export const claudeWithTools = (prompt: string, tools: string[]) =>
-  cli(
-    "claude",
-    [
-      "claude",
-      "-p",
-      prompt,
-      "--output-format",
-      "json",
-      "--permission-mode",
-      "dontAsk",
-      "--allowedTools",
-      tools.join(","),
-      "--disallowedTools",
-      "mcp__relay",
-    ],
-    (j) => String(j.result ?? ""),
-    CLAUDE_ENV(),
-  );
-
-export const claude = (prompt: string, model?: string) =>
-  cli(
-    "claude",
-    [
-      "claude",
-      "-p",
-      prompt,
-      "--output-format",
-      "json",
-      "--permission-mode",
-      "plan",
-      ...(model ? ["--model", model] : []),
-    ],
-    (j) => String(j.result ?? ""),
-  );
 
 /** Gemini : Antigravity (agy) par défaut ; « web » = gemini.google.com dans le Chrome du relais. RELAY_GEMINI=agy|web. */
 export async function gemini(

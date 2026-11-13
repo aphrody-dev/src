@@ -53,8 +53,13 @@ export function validate(
     : value === null
       ? "null"
       : typeof value;
-  if (t === "integer" ? !Number.isInteger(value) : t && t !== kind)
-    return [`${path}: expected ${t}, got ${kind}`];
+  const bad =
+    t === "integer"
+      ? !Number.isInteger(value)
+      : t === "number"
+        ? typeof value !== "number" || !Number.isFinite(value)
+        : t && t !== kind;
+  if (bad) return [`${path}: expected ${t}, got ${kind}`];
   if (schema.enum && !schema.enum.includes(value))
     out.push(`${path}: not one of ${schema.enum.join(", ")}`);
   if (typeof value === "string") {
@@ -74,12 +79,16 @@ export function validate(
         out.push(...validate(schema.items!, v, `${path}[${i}]`)),
       );
   }
-  if (kind === "object" && schema.properties) {
+  if (kind === "object") {
+    // Own keys only: "constructor" or "toString" must not resolve through Object.prototype.
     const o = value as Record<string, unknown>;
+    const props = schema.properties ?? {};
     for (const k of schema.required ?? [])
-      if (o[k] === undefined) out.push(`${path}.${k}: required`);
+      if (!Object.hasOwn(o, k) || o[k] === undefined)
+        out.push(`${path}.${k}: required`);
     for (const [k, v] of Object.entries(o)) {
-      const p = schema.properties[k];
+      if (v === undefined) continue; // absent optional property
+      const p = Object.hasOwn(props, k) ? props[k] : undefined;
       if (p) out.push(...validate(p, v, `${path}.${k}`));
       else if (schema.additionalProperties === false)
         out.push(`${path}.${k}: unexpected`);

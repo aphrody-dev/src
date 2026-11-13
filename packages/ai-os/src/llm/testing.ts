@@ -17,6 +17,7 @@ export function scriptedModel(...turns: Turn[]): ScriptedModel {
     tools: true,
     calls,
     async chat(req): Promise<ChatResponse> {
+      req.signal?.throwIfAborted();
       calls.push(structuredClone({ ...req, signal: undefined }));
       const t = turns[Math.min(calls.length - 1, turns.length - 1)] ?? "";
       const turn = typeof t === "string" ? { text: t } : t;

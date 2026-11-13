@@ -15,10 +15,10 @@ Status: done / partial / todo / skip (out of scope: macOS/Apple-only, org ops, f
 | Repo                                                                                        | Target module                                                | Status                                                                                     |
 | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
 | openclaw/openclaw (agent loop, tools, memory, sessions)                                     | packages/core (all reads through core/context.ts)            | partial (loop, tools, memory, skills, heartbeat, home, context)                            |
-| openclaw/openclaw (gateway, channels, plugins SDK)                                          | src/gateway, packages/plugins                           | todo                                                                                       |
-| openclaw/openclaw docs/reference/templates                                                  | templates/home                                 | done                                                                                       |
+| openclaw/openclaw (gateway, channels, plugins SDK)                                          | src/gateway, packages/plugins                                | todo                                                                                       |
+| openclaw/openclaw docs/reference/templates                                                  | templates/home                                               | done                                                                                       |
 | NousResearch/hermes-agent agent/, tools/ (memory, skills, learning loop, cron, compression) | packages/core + python/hermes_agent_memory (pyo3 agent_core) | partial (skill lint/usage/curation, cron, memory provider on the shared store, skills hub) |
-| NousResearch/hermes-agent acp_adapter                                                       | src/gateway (ACP)                                       | todo                                                                                       |
+| NousResearch/hermes-agent acp_adapter                                                       | src/gateway (ACP)                                            | todo                                                                                       |
 | NousResearch/hermes-agent SOUL / persona                                                    | templates/home/SOUL.md                                       | done                                                                                       |
 | openclaw/openclaw-windows-node, openclaw-windows-packaging (C#)                             | crates/windows (windows-rs) + MSIX in packaging/             | todo                                                                                       |
 | openclaw/ocm (Rust manager)                                                                 | crates/ocm                                                   | todo                                                                                       |
@@ -42,11 +42,11 @@ Status: done / partial / todo / skip (out of scope: macOS/Apple-only, org ops, f
 
 | Repo                                                                                    | Target                                    | Status  |
 | --------------------------------------------------------------------------------------- | ----------------------------------------- | ------- |
-| openclaw/acpx (ACP client)                                                              | src/gateway ACP                      | todo    |
-| openclaw/mcporter (MCP as TS API)                                                       | src/relay (MCP) client                       | todo    |
-| openclaw/turnwire (MCP relay, Go)                                                       | src/relay (MCP) relay                        | todo    |
+| openclaw/acpx (ACP client)                                                              | src/gateway ACP                           | todo    |
+| openclaw/mcporter (MCP as TS API)                                                       | src/relay (MCP) client                    | todo    |
+| openclaw/turnwire (MCP relay, Go)                                                       | src/relay (MCP) relay                     | todo    |
 | openclaw/lobster (workflow shell)                                                       | packages/core workflows (Vercel Workflow) | todo    |
-| openclaw/libterminal                                                                    | src/tui                              | todo    |
+| openclaw/libterminal                                                                    | src/tui                                   | todo    |
 | openclaw/fs-safe, proc-safe, proxyline                                                  | core sandbox/fs (bun-native)              | todo    |
 | openclaw/clawrouter (provider router)                                                   | core/model.ts + AI Gateway                | partial |
 | openclaw/clawpdf, ffmpeg-wasm, libopus-wasm, rastermill                                 | packages/media                            | todo    |
@@ -55,12 +55,12 @@ Status: done / partial / todo / skip (out of scope: macOS/Apple-only, org ops, f
 
 ## Channels and crawlers
 
-| Repo                                                                                                                                    | Target                                                                   | Status |
-| --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------ |
+| Repo                                                                                                                                    | Target                                                              | Status |
+| --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ------ |
 | openclaw/wacli, wacrawl, telecrawl, slacrawl, discrawl, imsgcrawl, notcrawl, graincrawl, photoscrawl, gitcrawl, birdclaw, crawlkit (Go) | src/gateway channels via Chat SDK + packages/crawl (TS, bun:sqlite) | todo   |
-| openclaw/crabline (mock channel server)                                                                                                 | gateway tests                                                            | todo   |
-| openclaw/clickclack, clawdex, clawgo, esp-openclaw-node (C)                                                                             | evaluate (esp node -> firmware/)                                         | todo   |
-| openclaw/gogcli, goplaces, spogo, remindctl                                                                                             | tools via MCP                                                            | todo   |
+| openclaw/crabline (mock channel server)                                                                                                 | gateway tests                                                       | todo   |
+| openclaw/clickclack, clawdex, clawgo, esp-openclaw-node (C)                                                                             | evaluate (esp node -> firmware/)                                    | todo   |
+| openclaw/gogcli, goplaces, spogo, remindctl                                                                                             | tools via MCP                                                       | todo   |
 
 ## Eval, ops
 

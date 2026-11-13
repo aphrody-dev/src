@@ -3,6 +3,8 @@
 //   - MCP Streamable HTTP, double époque : 2025-11-25 (initialize) et 2026-07-28 (server/discover, sans état,
 //     _meta par requête, resultType, ttlMs/cacheScope) — spec modelcontextprotocol@2026-07-28 ;
 //   - A2A 1.0.1 (JSON-RPC, SendMessage, carte d'agent /.well-known/agent-card.json, supportedInterfaces).
+import { validate } from "../llm/schema.ts";
+import type { JsonSchema } from "../llm/types.ts";
 import { hubCall, hubTools } from "./mcp-hub.ts";
 import { TOOLS, toolByName } from "./tools.ts";
 
@@ -44,11 +46,19 @@ const text = (v: unknown) =>
       : JSON.stringify(v, null, 1);
 
 async function call(name: string, args: unknown) {
+  if (typeof name !== "string")
+    throw Object.assign(new Error("méthode absente"), { code: -32600 });
   const t = toolByName.get(name);
   if (!t && name.includes("__")) return hubCall(name, args);
   if (!t)
     throw Object.assign(new Error(`outil inconnu : ${name}`), { code: -32601 });
-  return t.run(args ?? {});
+  const input = args ?? {};
+  const bad = validate(t.inputSchema as JsonSchema, input);
+  if (bad.length)
+    throw Object.assign(new Error(`arguments invalides : ${bad.join("; ")}`), {
+      code: -32602,
+    });
+  return t.run(input);
 }
 
 /** Relais natif : { method: "gemini_ask", params: { prompt } } ; « tools/list » pour l'inventaire. */
@@ -62,7 +72,7 @@ export async function nativeRpc(r: Req): Promise<Res | null> {
     const v = await call(r.method, r.params);
     return r.id === undefined ? null : ok(r.id, v);
   } catch (e: any) {
-    return fail(r.id, e.code ?? -32000, e.message);
+    return r.id === undefined ? null : fail(r.id, e.code ?? -32000, e.message);
   }
 }
 
@@ -138,7 +148,10 @@ export async function mcpRpc(r: Req): Promise<Res | null> {
             r.id,
             complete({
               content: [{ type: "text", text: text(v) }],
-              structuredContent: v,
+              // structuredContent doit être un objet JSON (spécification MCP).
+              ...(v !== null && typeof v === "object" && !Array.isArray(v)
+                ? { structuredContent: v }
+                : {}),
               isError: false,
             }),
           );
@@ -159,9 +172,19 @@ export async function mcpRpc(r: Req): Promise<Res | null> {
           : fail(r.id, -32601, `méthode MCP inconnue : ${r.method}`);
     }
   } catch (e: any) {
-    return fail(r.id, e.code ?? -32603, e.message);
+    return r.id === undefined ? null : fail(r.id, e.code ?? -32603, e.message);
   }
 }
+
+/** Outils exposés comme skills A2A : la carte et SendMessage lisent la même liste. */
+export const A2A_SKILLS = [
+  "gemini_ask",
+  "claude_ask",
+  "agy_ask",
+  "gemini_review",
+  "agent_run",
+  "llm_ask",
+];
 
 export const agentCard = (url: string) => ({
   name: "aphrody-relay",
@@ -181,7 +204,7 @@ export const agentCard = (url: string) => ({
   securityRequirements: [{ schemes: { bearer: { list: [] } } }],
   defaultInputModes: ["text/plain"],
   defaultOutputModes: ["text/plain"],
-  skills: TOOLS.filter((t) => /ask|review|agent_run/.test(t.name)).map((t) => ({
+  skills: TOOLS.filter((t) => A2A_SKILLS.includes(t.name)).map((t) => ({
     id: t.name,
     name: t.name,
     description: t.description,
@@ -205,11 +228,7 @@ export async function a2aRpc(r: Req): Promise<Res | null> {
   const skill = String(
     m.metadata?.skill ?? r.params?.metadata?.skill ?? "gemini_ask",
   );
-  if (
-    !/^(gemini_ask|claude_ask|agy_ask|gemini_review|agent_run|llm_ask)$/.test(
-      skill,
-    )
-  )
+  if (!A2A_SKILLS.includes(skill))
     return fail(r.id, -32602, `skill inconnu : ${skill}`);
   try {
     const v: any = await call(
@@ -241,13 +260,22 @@ export async function dispatch(
   body: unknown,
   h: (r: Req) => Promise<Res | null>,
 ) {
+  const invalid = (b: unknown) =>
+    !b ||
+    typeof b !== "object" ||
+    Array.isArray(b) ||
+    (b as Req).jsonrpc !== "2.0" ||
+    typeof (b as Req).method !== "string";
+  const one = (b: unknown) =>
+    invalid(b)
+      ? Promise.resolve(
+          fail((b as Req)?.id ?? null, -32600, "requête JSON-RPC 2.0 invalide"),
+        )
+      : h(b as Req);
   if (Array.isArray(body)) {
-    const out = (await Promise.all(body.map((b) => h(b as Req)))).filter(
-      Boolean,
-    );
+    if (!body.length) return fail(null, -32600, "lot JSON-RPC vide");
+    const out = (await Promise.all(body.map(one))).filter(Boolean);
     return out.length ? out : null;
   }
-  if (!body || typeof body !== "object" || (body as Req).jsonrpc !== "2.0")
-    return fail(null, -32600, "requête JSON-RPC 2.0 invalide");
-  return h(body as Req);
+  return one(body);
 }

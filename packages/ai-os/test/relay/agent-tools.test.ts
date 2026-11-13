@@ -50,3 +50,37 @@ test("MCP : agent_run sur le modèle echo", async () => {
   });
   expect(r.result.structuredContent.text).toBe("bot: ping");
 });
+
+test("JSON-RPC : lot vide, élément invalide, structuredContent objet seulement, arguments validés, cwd confiné", async () => {
+  const { dispatch } = await import("../../src/relay/protocols.ts");
+  expect(((await dispatch([], mcpRpc)) as any).error.code).toBe(-32600);
+  const batch: any = await dispatch(
+    [null, { jsonrpc: "2.0", id: 9, method: "ping" }],
+    mcpRpc,
+  );
+  expect(batch.map((x: any) => x.error?.code ?? "ok")).toEqual([-32600, "ok"]);
+  const s: any = await mcpRpc({
+    jsonrpc: "2.0",
+    id: 5,
+    method: "tools/call",
+    params: { name: "memory_search", arguments: { query: "sky" } },
+  });
+  expect(s.result.structuredContent).toBeUndefined();
+  const bad: any = await mcpRpc({
+    jsonrpc: "2.0",
+    id: 6,
+    method: "tools/call",
+    params: { name: "memory_add", arguments: {} },
+  });
+  expect(bad.result.isError).toBe(true);
+  const esc: any = await mcpRpc({
+    jsonrpc: "2.0",
+    id: 7,
+    method: "tools/call",
+    params: {
+      name: "agent_run",
+      arguments: { task: "x", model: "echo/e", cwd: "../.." },
+    },
+  });
+  expect(esc.result.content[0].text).toContain("hors de AGENT_HOME");
+});

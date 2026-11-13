@@ -4,6 +4,7 @@
 // A2A is served once, by the relay (A2A 1.0.1 SendMessage, skill agent_run; src/relay/protocols.ts).
 // - channels (/channels/<id>): pluggable adapters; Chat SDK adapters (Slack, Telegram, Discord, Teams...) plug in here.
 // Sessions keep per-id history (multi-turn) and every turn goes through core run() (Context-selected memory/skills).
+import { timingSafeEqual } from "node:crypto";
 import { run } from "../core/agent";
 import type { LanguageModel, Message } from "../llm/types";
 
@@ -15,6 +16,8 @@ export type Inbound = {
 };
 export interface Channel {
   id: string;
+  /** Own authentication of a public webhook (provider signature). Without it the gateway token is required. */
+  verify?(req: Request): Promise<boolean>;
   /** Parse a webhook request into an inbound message (or a direct Response, e.g. a verification challenge). */
   parse(req: Request): Promise<Inbound | Response>;
   /** Deliver the reply (for push channels); return value becomes the HTTP response body when defined. */
@@ -71,16 +74,25 @@ export function createGateway(o: GatewayOptions) {
       });
       return r.text;
     });
-    queue.set(
-      session,
-      next.catch(() => {}),
-    );
+    const settled = next
+      .catch(() => {})
+      .finally(() => {
+        if (queue.get(session) === settled) queue.delete(session);
+      });
+    queue.set(session, settled);
     return next;
   };
+  const same = (a: string | null, b: string) => {
+    const x = Buffer.from(a ?? "");
+    const y = Buffer.from(b);
+    return x.length === y.length && timingSafeEqual(x, y);
+  };
   const authed = (req: Request) =>
-    !o.token || req.headers.get("authorization") === `Bearer ${o.token}`;
+    !o.token || same(req.headers.get("authorization"), `Bearer ${o.token}`);
 
   const server = Bun.serve<{ session: string }>({
+    // Agent turns outlast the default 10 s idle timeout.
+    idleTimeout: 255,
     port: o.port ?? 0,
     hostname: o.hostname ?? "127.0.0.1",
     routes: {
@@ -120,6 +132,8 @@ export function createGateway(o: GatewayOptions) {
         POST: async (req: Bun.BunRequest<"/channels/:id">) => {
           const ch = channels.get(req.params.id);
           if (!ch) return new Response("unknown channel", { status: 404 });
+          if (!(ch.verify ? await ch.verify(req.clone()) : authed(req)))
+            return new Response("unauthorized", { status: 401 });
           const msg = await ch.parse(req);
           if (msg instanceof Response) return msg;
           const text = await turn(`${ch.id}:${msg.session}`, msg.text);
@@ -133,7 +147,7 @@ export function createGateway(o: GatewayOptions) {
       if (new URL(req.url).pathname === "/ws") {
         if (
           !authed(req) &&
-          new URL(req.url).searchParams.get("token") !== o.token
+          !same(new URL(req.url).searchParams.get("token"), o.token ?? "")
         )
           return new Response("unauthorized", { status: 401 });
         if (srv.upgrade(req, { data: { session: crypto.randomUUID() } }))

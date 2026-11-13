@@ -13,8 +13,7 @@
 //   cloudflare    CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID  GET /ai/models/search (Text Generation)    /ai/v1/chat/completions
 //   antigravity   CLI agy authentifiée                          agy models                                 agy -p
 //   claude        CLI claude authentifiée                       (alias de la CLI)                          claude -p
-import { agy, claude } from "../relay/backends.ts";
-import { resolveModel } from "./model";
+import { agy, claude } from "./agents";
 
 export type Model = {
   id: string;
@@ -49,6 +48,7 @@ const run = async (argv: string[]) => {
     stdout: "pipe",
     stderr: "pipe",
     stdin: "ignore",
+    timeout: 15_000,
   });
   const [out, , code] = await Promise.all([
     new Response(p.stdout).text(),
@@ -102,7 +102,8 @@ export function providers(): Provider[] {
   for (const pair of (env("RELAY_OPENAI_ENDPOINTS") ?? "")
     .split(",")
     .filter(Boolean)) {
-    const [name, url] = pair.split("=");
+    const eq = pair.indexOf("=");
+    const [name, url] = eq > 0 ? [pair.slice(0, eq), pair.slice(eq + 1)] : [];
     if (name && url)
       out.push(
         compat(
@@ -167,8 +168,10 @@ export function providers(): Provider[] {
   out.push({
     id: "antigravity",
     available: async () => !!Bun.which("agy"),
-    list: async () =>
-      (await run(["agy", "models"])).out
+    list: async () => {
+      const r = await run(["agy", "models"]);
+      if (r.code !== 0) throw new Error(`agy models : code ${r.code}`);
+      return r.out
         .split(/\r?\n/)
         .map((l) => l.split("\t"))
         .filter((c) => c.length >= 2 && /^[\w.-]+$/.test(c[0]!))
@@ -176,7 +179,8 @@ export function providers(): Provider[] {
           id: `antigravity/${id}`,
           provider: "antigravity",
           name,
-        })),
+        }));
+    },
     ask: async (model, prompt) => (await agy(prompt, model || undefined)).text,
   });
   out.push({
@@ -213,25 +217,12 @@ export async function listModels(filter?: string) {
       }
     }),
   );
-  const re = filter ? new RegExp(filter, "i") : null;
+  // Filtre = sous-chaîne insensible à la casse (pas d'expression régulière venant d'un client MCP/A2A).
+  const f = filter?.toLowerCase();
   return res.map((r) => ({
     ...r,
-    models: re ? r.models.filter((m) => re.test(m.id)) : r.models,
+    models: f
+      ? r.models.filter((m) => m.id.toLowerCase().includes(f))
+      : r.models,
   }));
-}
-
-/** Appel d'un modèle « fournisseur/modèle » (le modèle est celui que renvoie la liste ; rien n'est supposé). */
-export async function llmAsk(model: string, prompt: string, system?: string) {
-  const t0 = performance.now();
-  const m = await resolveModel(model);
-  const r = await m.chat({
-    system,
-    messages: [{ role: "user", content: prompt }],
-  });
-  return {
-    text: r.text,
-    model,
-    usage: r.usage,
-    ms: Math.round(performance.now() - t0),
-  };
 }

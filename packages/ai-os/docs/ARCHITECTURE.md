@@ -21,11 +21,11 @@ toolchain (see `C:\src\docs\llvm\UNIFIED-TOOLCHAIN.md`); native CI runs on the `
 
 | Module                                   | Path                             | Status                                       |
 | ---------------------------------------- | -------------------------------- | -------------------------------------------- |
-| core loop, tools, memory, skills         | `src/core`                  | done: `agent run`, e2e test green on Windows |
+| core loop, tools, memory, skills         | `src/core`                       | done: `agent run`, e2e test green on Windows |
 | scheduler / heartbeat                    | `packages/scheduler`             | planned                                      |
-| gateway + channels                       | `src/gateway`               | planned                                      |
-| tui                                      | `src/tui`                   | planned                                      |
-| mcp server/client                        | `src/relay` (MCP)                   | planned                                      |
+| gateway + channels                       | `src/gateway`                    | planned                                      |
+| tui                                      | `src/tui`                        | planned                                      |
+| mcp server/client                        | `src/relay` (MCP)                | planned                                      |
 | inference / weights                      | `crates/infer`, `crates/weights` | planned                                      |
 | python bridge                            | `python/agent_py` (pyo3)         | planned                                      |
 | legacy (migrated as-is, to be dissolved) | `legacy/*`                       | imported                                     |

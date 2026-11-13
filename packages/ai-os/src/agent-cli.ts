@@ -193,6 +193,7 @@ switch (cmd) {
       model: await resolveModel(values.model),
       allowShell: values["allow-shell"],
     });
+    process.exit(0);
     break;
   }
   default:
