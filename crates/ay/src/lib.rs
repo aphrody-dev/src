@@ -25,12 +25,13 @@ pub struct Rest {
 /// Commands by area, after the alphabetical table (`ay --help`).
 const OVERVIEW: &str = "\
 Areas:
-  repo       arch, lock, manifests, git, ingest, graph, conformance
+  repo       arch, lock, manifests, git, ingest, graph, conformance, brand
   toolchain  up, doctor, sys, build, self-update, rt
   bun        bun (upstream watch), docs (Bun docs index), flat (fork crates in crates/bun-flat), hash, time
   chromium   chromium (fr1 build chain), gclient, fetch, gn, ninja, cipd, cl, vpy, engines (V8, JSC, Dawn, wgpu)
   fleet      ssh, deploy, auth, secret, vault, ai, agents
   measure    bench, time
+  gaming     gaming (Steam, Proton, Vulkan, DirectX via packages/gaming), steam (Steam data as JSON)
 
 Every command takes --help; machine output is --json where offered.
 Plan: docs/ay/MIGRATION.md; command table: docs/NAMING.md";
@@ -74,6 +75,9 @@ pub enum Cmd {
     /// Gamescope mode (runs the `gamescope-rs` binary)
     #[command(disable_help_flag = true)]
     Scope(Rest),
+    /// Gaming stack (packages/gaming): status, apps, proton, layers, dx, steamcmd, run, skills
+    #[command(disable_help_flag = true)]
+    Gaming(Rest),
     /// Patch stacks of the bun and Chromium forks: status, sync, check, pr, mark, gc, export (packages/upstream)
     #[command(disable_help_flag = true)]
     Upstream(Rest),
@@ -89,6 +93,9 @@ pub enum Cmd {
     /// Pure-Rust SSH (russh): exec <host|all|a,b> -- cmd, cp, hosts, check
     #[command(disable_help_flag = true)]
     Ssh(Rest),
+    /// Brand assets (assets/brand): build [--deploy], banner <id>, check-ico (runs `aphrody-brand`)
+    #[command(disable_help_flag = true)]
+    Brand(Rest),
     /// Runtimes: Python engines (uv, RustPython), Bun versions, package managers, PyTorch
     #[command(disable_help_flag = true)]
     Rt(Rest),
@@ -234,6 +241,7 @@ pub fn route(cmd: Cmd) -> Route {
         }
         Cmd::Bench(r) => Route::Bench(r.args),
         Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
+        Cmd::Gaming(r) => Route::Package("gaming", r.args),
         Cmd::Upstream(r) => Route::Package("upstream", r.args),
         Cmd::Linux(r) => Route::Package("linux", r.args),
         Cmd::Pkg(r) => Route::Package("linux", prefixed(&["pkg"], &r.args)),
@@ -243,6 +251,7 @@ pub fn route(cmd: Cmd) -> Route {
         }
         Cmd::Ssh(r) => Route::Ssh(r.args),
         Cmd::Conformance(r) => Route::Conformance(r.args),
+        Cmd::Brand(r) => Route::External("aphrody-brand", r.args),
         Cmd::Rt(r) => Route::Rt(r.args),
         Cmd::Gclient(r) => Route::Chromium(chromium::Tool::Gclient, r.args),
         Cmd::Fetch(r) => Route::Chromium(chromium::Tool::Fetch, r.args),
@@ -342,7 +351,8 @@ pub fn run(args: &[String]) -> i32 {
 }
 
 /// Repository root: `$SRC_ROOT`, else the nearest ancestor of the current directory that holds
-/// `identity.toml` (or `src.lock.json`), else the current directory.
+/// `identity.toml` (or `src.lock.json`), else the fleet's read-only checkout `/srv/src`
+/// (infra/fleet `src-checkout-update`, on fr1, fr2 and prd), else the current directory.
 pub fn repo_root() -> PathBuf {
     if let Some(root) = std::env::var_os("SRC_ROOT").filter(|v| !v.is_empty()) {
         return PathBuf::from(root);
@@ -351,8 +361,15 @@ pub fn repo_root() -> PathBuf {
     cwd.ancestors()
         .find(|dir| dir.join("identity.toml").is_file() || dir.join("src.lock.json").is_file())
         .map(PathBuf::from)
+        .or_else(|| {
+            let fleet = PathBuf::from(FLEET_CHECKOUT);
+            (cfg!(unix) && fleet.join("identity.toml").is_file()).then_some(fleet)
+        })
         .unwrap_or(cwd)
 }
+
+/// Read-only src checkout kept up to date on every VPS (infra/fleet/*/resilience.conf `SRC_CHECKOUT`).
+pub const FLEET_CHECKOUT: &str = "/srv/src";
 
 /// Spawn `cmd`, inherit stdio, return its exit code (127 when it cannot start).
 pub fn status_of(cmd: &mut Command) -> i32 {
@@ -508,6 +525,17 @@ mod tests {
         assert_eq!(parse("engines matrix --json"), Route::Low(LowCmd::Engines(Rest { args: v(&["matrix", "--json"]) })));
         assert_eq!(parse("agents plan goal"), Route::Low(LowCmd::Agents(Rest { args: v(&["plan", "goal"]) })));
         assert_eq!(run(&v(&["chromium", "--dry-run", "status"])), 0);
+    }
+
+    #[test]
+    fn gaming_runs_the_bun_package() {
+        assert_eq!(parse("gaming status --json"), Route::Package("gaming", v(&["status", "--json"])));
+        assert!(matches!(parse("steam apps --filter proton"), Route::Low(_)));
+    }
+
+    #[test]
+    fn brand_runs_the_brand_binary() {
+        assert_eq!(parse("brand build --deploy"), Route::External("aphrody-brand", v(&["build", "--deploy"])));
     }
 
     #[test]
