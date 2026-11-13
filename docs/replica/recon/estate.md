@@ -1,0 +1,150 @@
+# Recon de l'estate web (replica-recon)
+
+Relevé du 2026-11-13, commit de départ `7f09620e`. Sources : arbre de `C:\src` (fichiers cités par chemin), API Cloudflare en lecture seule (DNS, Workers, routes, domaines, R2 du compte `ca22c1a5…`), pages live ouvertes dans notre Chromium piloté par DevTools (Chrome 157, contexte isolé `recon-estate`, 1440 x 900), `gh api` pour les références amont. Aucun enregistrement ni ressource live n'a été modifié.
+
+Références amont lues en direct le 2026-11-13 :
+
+- `cloudflare/vinext` : `main` @ `ef897ed727`, dernière release `@vinext/cloudflare@1.3.4` (2026-11-10). README : App Router + Pages Router, RSC, Server Actions, middleware, SSG, ISR, `output: "export"`, `next/image` optimisé à la requête sur Workers, cache adapters, pré-chauffage selon le trafic, `vinext check` / `vinext init`, cible Next.js 16.x uniquement.
+- `vercel/next.js` : `canary` @ `10056bad53`, dernière release stable `v16.4.6` (2026-11-09).
+- Vercel, équipe `aphrody-dev` : inventaire déjà fait dans `packages/deploy/README.md` (3 projets rosegriffon sans déploiement, compte hobby bloqué) ; la CLI vercel n'a pas été relancée ici.
+
+Captures : `docs/replica/recon/shots/estate/`. Les pages de dragonballfr.com et rosegriffon.fr sont capturées images masquées (CSS injectée : `img, video, canvas, background-image` cachés), car leurs visuels sont des œuvres de tiers (Toei, Level-5, fan art) qui n'entrent pas dans le dépôt public.
+
+## 1. Unités web de `C:\src`
+
+| Unité | Chemin | Framework | Build | Sortie | Fichiers ts/tsx/js/css/html/rs | Hébergement live | Domaines |
+|---|---|---|---|---|---|---|---|
+| aphrody.com | `apps/aphrody` | aucun : SSR en chaînes TS (`src/seo/*`), bun sans dépendance | `bun run build.ts` (CI `deploy.yml`) | `dist/` 82 fichiers, 548 Ko | 36/0/0/2/0/0 | Worker `aphrody` (`edge/worker.ts`, 86 lignes) lit `deploys/aphrody/_state.json` dans R2 `aphrody-dist` ; `/api/*`, `/g/*` vers bun sur prd par tunnel | aphrody.com (route), www.aphrody.com (custom domain) |
+| backend aphrody.com | `apps/aphrody/server.ts` | `Bun.serve` | `bun run server.ts`, AOT `bun build --compile` | binaire `dist/aphro` | (inclus ci-dessus) | prd, tunnel `mig-prd` -> `127.0.0.1:19300` | aphrody.com/api, *.aphrody.com |
+| plateforme aphrody.app | `packages/deploy` | aucun : Worker TS, HTML serveur (`src/pages.ts`), Material Web `src/client/md.ts` | aucun build : `wrangler deploy` du TS | Worker `aphrody-deploy` | 14/0/0/0/0/0 | Worker + R2 `aphrody-dist` + DO `Insights` + binding Images | aphrody.app, www.aphrody.app, `*.aphrody.app/*` (previews) |
+| yolo | `apps/yolo` | framework maison (`src/framework/{ssr,graph,primitives}.ts`, HTMLRewriter) | `bun run build.ts` | `dist/` 15 fichiers, 2,0 Mo (dont police 1,9 Mo) | 8/0/0/1/1/0 | projet `yolo` de la plateforme ; Worker orphelin `yolo-aphrody-com` | yolo.aphrody.app, yolo.aphrody.com |
+| shell WebGPU | `apps/aphrody-app` | Rust wasm-bindgen, WGSL (`mica.wgsl`) | cargo (fr1) -> `build-dist` | `dist/` 10 fichiers, 500 Ko (wasm 427 Ko brut, 147 Ko transférés) | 0/0/0/0/1/20 | Worker `aphrody-app-site` (live) ; `wrangler.toml` du dépôt nomme `aphrody-app` | shell.aphrody.app |
+| r2-site (cdn, downloads) | `apps/r2-site` + `infra/fleet/workers/r2-site/*.toml` | `@aphrody/runtime-adapter` (entrées cf, vps, vercel) | aucun | Workers `cdn-aphrody-com`, `downloads-aphrody-com`, `creator-aphrody-com`, `aphrody-com`, `aphrody-app-site` | 5/0/0/0/0/0 | Workers + R2 `aphrody-assets`, `aphrody-dist` | cdn., downloads., creator.aphrody.com |
+| api-gateway | `infra/fleet/workers/api-gateway` | Worker JS | aucun | Worker `api-aphrody-com` | 0/0/1/0/0/0 | Worker | api.aphrody.com |
+| GitHub App | `infra/cloudflare/workers/github-app` | Vite + `@cloudflare/vite-plugin`, `cloudflare.config.ts` | `cf deploy` | Worker `aphrody-github` | 4/0/0/0/0/0 | Worker (`/github`, `/health`) | workers.dev |
+| design system web | `packages/design` | tokens MCU + `@material/web`, `material-symbols` | `bun run src/build.ts` | `tokens/tokens.css`, `.json`, `.rs`, `.zig`, Figma | 12/0/1/4/0/1 | consommé au build | — |
+| assets de marque | `assets/brand` | `ay brand build`, `capture.ts` (Chrome DevTools) | sur fr1 | R2 `aphrody-assets`, préfixe `brand/v1/` | 3 ts | `cdn.aphrody.com/brand/v1/...` | — |
+| rosegriffon (communauté) | `apps/rosegriffon/apps/rg-website` (+ 29 paquets `packages/*`) | Next.js 16.5 canary via `@aphrody/next-bun` (webpack), Tailwind 4, shadcn, Sentry | `bun ../../scripts/next-build.ts` | `.next/` | 458/712/7/7/2/0 | prd 72.60.186.43:9443 derrière le proxy CF (cache stale) | rosegriffon.fr, www |
+| shenron / DBFR (communauté) | `apps/shenron/apps/site` (+ `packages/ui`, 509 fichiers) | Next.js 16.5 canary, `next-bun`, Tailwind 4, next-intl, tiptap | `next build` ; `vercel.json` présent (inutilisé) | `.next/` | 1029/691/0/35/1/0 | prd 72.60.186.43 proxied | dragonballfr.com, www, bot., play., game-api., mcp., files. |
+| auto | `apps/auto/apps/{web,admin,api,worker,...}` | bun `--hot`, React, `@aphrody/m3-*`, xyflow | aucun build web (bun sert le TSX) | — | web : 54/50/6/13/11/0 | tunnels `auto`, `recette-auto` (connecteurs hors `cloudflare.toml`) | auto.aphrody.com, recette-auto.aphrody.com |
+| nt | `apps/nt` | .NET + bun + WebGPU | justfile | — | hors périmètre web public | — | — |
+| r2b, unixwin, l2l | `apps/r2b`, `apps/unixwin`, `apps/l2l` | outils, aucun site | — | — | — | — | — |
+
+Sous-modules (`.gitmodules`) : `apps/shenron`, `apps/rosegriffon`, `apps/r2b`, `apps/auto`.
+
+## 2. Domaines et origines (DNS live)
+
+Nœuds (`infra/deploy.toml`) : fr1 51.77.147.152 (build), fr2 51.255.162.6 (edge, test), prd 72.60.186.43 (Hostinger, production). Tunnels : `mig-prd` (prd), `fr2`, plus trois connecteurs live absents de `infra/cloudflare/cloudflare.toml` : `6df6fb40…` (auto), `f8ba0d09…` (recette-auto), `7a6e3e3d…` (desktop.aphrody.app).
+
+| Zone | Enregistrements | Servi par |
+|---|---|---|
+| aphrody.com (72) | apex + 38 sous-domaines en CNAME tunnel `mig-prd` ; `dbfr` A fr2 ; `vps` A fr1 non proxifié ; `video` CNAME r2.dev ; AAAA `100::` pour api, bun, cdn, creator, downloads, www, yolo (domaines de Workers) ; MX OVH, SPF/DKIM OVH + Resend | Worker `aphrody` intercepte `aphrody.com/*` avant le tunnel ; 15 sous-domaines (fig, play, docs, photos, sound, design, art, calendar, console, sheets, slides, maps, pdf, cad, os) routés vers le Worker `aphrody-webos` ; `video.` -> `bun-video-showcase` |
+| aphrody.app (59) | `* AAAA 100::` (previews) ; 21 CNAME tunnel (api, auth, craft, deploy, git, play, source, 14 `app-*`) ; `assets`, `bun-lib`, `dist`, `video` CNAME r2.dev ; apex, 14 noms `*craft`, apt, bun, shell, www en AAAA `100::` ; MX Cloudflare Email Routing | `aphrody.app`, `www` -> `aphrody-deploy` ; `*.aphrody.app/*` -> `aphrody-deploy` ; `app-*` et `*craft` -> `aphrody-webos` ; `bun.` -> `aphrody-app` ; `shell.` -> `aphrody-app-site` |
+| dragonballfr.com (19) | apex, www, cdn, origin-cdn, bot, files, game-api, mcp, play en A prd proxifié ; MX OVH | `cdn.dragonballfr.com/*` -> Worker `shenron-cdn` (R2 `shenron-cdn`) ; le reste prd |
+| rosegriffon.fr (35) | apex, www, achillea, api, azalee, bot, db, mcp, ranked, shop en A prd ; `cdn` A fr2 ; `r2` CNAME r2.dev ; mail OVH ; restes : 4 TXT `_vercel`, défi GitHub Pages | prd (port d'origine 9443 par règle), `cdn.` fr2 (nginx cache devant R2) |
+
+R2 (11 buckets) : `aphrody-archive`, `aphrody-assets`, `aphrody-chromium`, `aphrody-dist`, `aphrody-lore`, `aphrody-video`, `bun-lib`, `bun-os-private`, `dbfr-backups`, `rosegriffon-cdn`, `shenron-cdn`.
+
+### Workers live et source dans le dépôt
+
+| Worker (modifié le) | Source | Écart |
+|---|---|---|
+| `aphrody` (11-13) | `apps/aphrody/wrangler.toml` | — |
+| `aphrody-deploy` (11-13) | `packages/deploy/wrangler.toml` | — |
+| `aphrody-github` (11-13) | `infra/cloudflare/workers/github-app` | — |
+| `cdn-aphrody-com`, `downloads-aphrody-com`, `creator-aphrody-com`, `aphrody-com`, `aphrody-app-site` (11-12) | `infra/fleet/workers/r2-site/*.toml` | `deploy.toml` décrit aussi `cdn-portable` / `downloads-portable` ; `downloads-portable` existe en live, `cdn-portable` non |
+| `api-aphrody-com` (11-12) | `infra/fleet/workers/api-gateway` | — |
+| `aphrody-app` (10-23) | `apps/aphrody-app/wrangler.toml` porte ce nom mais contient le shell wasm | le live sert le site Bun sur bun.aphrody.app/.com : un `wrangler deploy` depuis `apps/aphrody-app` remplacerait ce site par le shell |
+| `aphrody-webos` (11-07) | aucune | orphelin, sert 49 hôtes (15 domaines, 34 routes) |
+| `yolo-aphrody-com` (11-05), `bun-video-showcase` (10-22), `aphrody-email-worker` (11-07) | aucune | orphelins |
+| `shenron-cdn` (11-08), `rosegriffon-maintenance` (10-12) | sous-modules (`apps/shenron/deploy/cloudflare`, `apps/rosegriffon/infra/cloudflare/maintenance/wrangler.jsonc`) | — |
+
+## 3. Préfixes CDN et dossiers
+
+| Préfixe | Origine | Règle relevée |
+|---|---|---|
+| `cdn.aphrody.com/brand/v<version>/{logo,icons/<produit>}/` | R2 `aphrody-assets`, Worker `cdn-aphrody-com` | `brand.toml` le dit immuable, mais le live répond `cache-control: public, max-age=3600` (4 fichiers testés, ETag présent) ; la racine du bucket répond une page « Status: OK » |
+| `aphrody.com/_aphrody/{image,insights.js,v,config}` | Worker `aphrody` + `packages/deploy/src/runtime.ts` | optimiseur d'images (binding Images), analytics, beacon de vitesse, edge config |
+| `aphrody.app/_/md.js` | upload `cli.ts` -> `/api/assets/md.js` | même bundle Material Web que `aphrody.com/md.js` (construit deux fois : `apps/aphrody/build.ts` l. 159 et `packages/deploy/src/m3.ts` l. 125) |
+| `dist.aphrody.app/packages/<nom>/<version>/<sha256>/package.tgz` | R2 `aphrody-dist` (CNAME r2.dev + route `aphrody-webos`) | registre de paquets (cité par `apps/shenron/package.json`) |
+| `cdn.rosegriffon.fr/{dx11,model-full,model,model-chr,model-avatar,cfg,raw,x,a,video,audio,storage,g4tx,cross,raimon}` | fr2 nginx -> R2 `rosegriffon-cdn` | 404 servis `public, max-age=31536000, immutable` : une 404 reste un an dans les caches |
+| `cdn.dragonballfr.com/{media,assets,dragonball-super,publications,games,wiki,episodes,exports,fonts,_next,...}` (40 préfixes, 200+ références) | Worker `shenron-cdn`, R2 `shenron-cdn` | `cache-control: no-store` sur `/health` et les 404 ; pas de `Timing-Allow-Origin`, donc tailles JS illisibles côté client |
+
+Préfixes de dossiers côté code : `apps/*` (sites), `packages/*` (bibliothèques TS), `crates/*` (Rust), `infra/cloudflare` (déclaratif CF), `infra/fleet/workers` (Workers déployés par API), `assets/brand` (source des assets), `docs/*`. Un même rôle vit dans trois arbres : Workers sous `apps/*/edge`, `packages/deploy/src`, `infra/cloudflare/workers/*` et `infra/fleet/workers/*`.
+
+## 4. APIs exposées
+
+| Hôte | Routes | Accès |
+|---|---|---|
+| aphrody.com (bun sur prd) | `/api/health`, `/api/q`, `/api/complete`, `/api/bench`, `/api/store/search`, `/api/seo/indexnow`, `/g/collect`, `/healthz` ; `/api/pm`, `/api/bnc` -> 410 ; `/search` -> 301 | public |
+| aphrody.app (`aphrody-deploy`) | `GET /api/projects`, `GET /api/projects/<p>/deployments`, `GET /api/projects/<p>/insights?days=`, `GET|PUT /api/projects/<p>/config`, `POST /api/projects/<p>/deployments`, `PUT …/deployments/<sha>/files/<path>`, `POST …/finalize`, `GET …/<sha>/log`, `POST /api/projects/<p>/promote|rollback`, `/dashboard` (Access), `/llms.txt`, `/robots.txt`, `/sitemap.xml` | lectures publiques ; écritures et journaux : jeton `DEPLOY_TOKEN` ou Access |
+| aphrody-github | `/github` (webhook), `/health` | signature GitHub |
+| api.aphrody.com | passerelle `api-gateway` | limite 400 req / 10 s par IP |
+| rosegriffon.fr, dragonballfr.com | `/api/*` Next (route handlers), `bot.*/api`, GraphQL Yoga, MCP (`mcp.*`) | — |
+
+`GET https://aphrody.app/api/projects` (public, 1,7 Ko) renvoie chemins du dépôt, commandes de build, noms de variables d'environnement et messages de commit : c'est du détail technique publié sous aphrody.app, contraire à la règle des sites publics (la page HTML, elle, n'en contient aucun : 0 occurrence de GitHub, npm, commit, code).
+
+## 5. Mesures live (notre Chromium, 2026-11-13)
+
+| URL | Statut | TTFB | Load | HTML | Requêtes / transfert | Capture |
+|---|---|---|---|---|---|---|
+| https://aphrody.com/ | 200 | 317 ms | 769 ms | 2,8 Ko transférés | 11 req : `holding.css` 5 Ko, `md.js` 21,7 Ko, image via `/_aphrody/image` 91 Ko, `fonts.googleapis.com/css2` 2 Ko | `aphrody.com.webp` |
+| https://aphrody.app/ | 200 | 219 ms | 1 488 ms | 40,6 Ko | 6 req, 25 Ko ; éléments `md-filled-tonal-button`, `md-text-button` ; `/labs` redirige vers `/` | `aphrody.app.webp` |
+| https://yolo.aphrody.app/ | 200 | 558 ms | — | 9,6 Ko | 7 req, 1 969 Ko dont `GoogleSansFlex-latin.woff2` 1,9 Mo (police OFL, `google/fonts/ofl/googlesansflex`, non sous-ensemblée) | `yolo.aphrody.app.webp` |
+| https://shell.aphrody.app/ | 200 | 384 ms | — | 4,2 Ko | 5 req, 158 Ko (wasm 147 Ko) ; `navigator.gpu` présent ; le titre mentionne « Rust WebGPU » | `shell.aphrody.app.webp` |
+| https://bun.aphrody.app/ | 200 | — | — | 65 Ko | 10 req, 311 Ko | `bun.aphrody.app.webp` |
+| https://cdn.aphrody.com/brand/v1/logo/aphrody-labs-wordmark-dark.svg | 200 | — | — | 8,3 Ko | max-age=3600 | `cdn.aphrody.com-brand-v1.webp` |
+| https://downloads.aphrody.com/ | 404 | — | — | « not found » | racine sans index | `downloads.aphrody.com.webp` |
+| https://rosegriffon.fr/ | 200 | 113 ms | 589 ms | 1 319 Ko décodés | 80 req, 1 372 Ko, 41 scripts (511 Ko) ; tiers : discord.com, cdn.discordapp.com ; préfixes `/_next`, `/achillea`, `/emote` | `rosegriffon.fr.webp` (images masquées) |
+| https://dragonballfr.com/ | 200 | 755 ms | 2 545 ms | 557 Ko décodés | 93 req, 2 630 Ko ; `_next` et polices sur `cdn.dragonballfr.com` | `dragonballfr.com.webp` (images masquées) |
+| https://cdn.dragonballfr.com/ | 200 | — | — | JSON `{"service":"shenron-cdn"}` | — | `cdn.dragonballfr.com.webp` |
+| https://cdn.rosegriffon.fr/health | 200 | — | — | JSON ; racine en 404 | — | `cdn.rosegriffon.fr-health.webp` |
+
+Tous les hôtes proxifiés exposent `/cdn-cgi/speculation` (règles de spéculation Cloudflare actives).
+
+## 6. Doublons UI et CSS
+
+Implémentations Material 3 parallèles (définitions de `--md-sys-color-primary` dans 27 fichiers) :
+
+| Implémentation | Chemin | Taille |
+|---|---|---|
+| tokens de référence | `packages/design/tokens/tokens.css` (+ `.json`, `.rs`, `.zig`, Figma) | 821 lignes CSS, 39 fichiers |
+| tokens `--m3-*` maison d'aphrody.com | `apps/aphrody/src/m3.css`, `src/design/material-tokens.ts`, `src/seo/{home-css,page-css}.ts`, `style.css` | rendu `holding.css` 33 Ko + `style.css` 33 Ko |
+| CSS M3 de la plateforme | `packages/deploy/src/m3.ts` (importait `google-design/color-utils/hct.ts`) | — |
+| bundle Material Web | `packages/design/src/components.ts` et sous-ensemble `packages/deploy/src/client/md.ts` | 77 Ko brut, 21,7 Ko br, construit deux fois |
+| google-design (à supprimer selon `docs/ui/INVENTORY.md`) | `packages/google-design/src/{web,assets,color-utils,theme-builder}` | 211 fichiers |
+| Rust | `crates/aphrody-ui/src/color/*`, `crates/aphrody-brand-gpu`, couleurs en dur dans `mica.wgsl` | 175 fichiers |
+| shenron | `apps/shenron/packages/ui` (`tokens-m3/tokens.css`, `home-theme.generated.css`, `episode-themes.css`) | 8 845 lignes CSS, 509 fichiers |
+| rosegriffon | `packages/rg-ui` (`themes.generated.css`, `brands.css`), `packages/nie-ui` | 1 747 + 351 lignes CSS |
+| auto | `packages/ui/src/tokens.css`, `apps/web/public/craft/{word,pdf,grid}/theme.css` (3 copies), `@aphrody/m3-react`, `m3-tailwind`, `m3-tokens`, `material-web` publiés à part | 959 lignes CSS |
+
+Autres doublons : trois frameworks SSR maison (`apps/aphrody/src/seo/html.ts`, `apps/yolo/src/framework/ssr.ts`, `packages/deploy/src/pages.ts`) ; deux couches Next sur bun dans les sous-modules (`@aphrody/next-bun` dans rg-website et shenron) ; deux écritures des Workers de fichiers R2 (`apps/r2-site` + `infra/fleet/workers/r2-site/worker.js`) ; trois polices titre (Atkinson Hyperlegible Next sur aphrody.com, Google Sans Flex sur aphrody.app et yolo, et la feuille `fonts.googleapis.com` encore chargée par aphrody.com).
+
+## 7. Bundles
+
+| Livrable | Brut | Compressé |
+|---|---|---|
+| `apps/aphrody/dist/md.js` | 76,9 Ko | 19,9 Ko gz, 17,4 Ko br (21,7 Ko transférés) |
+| `apps/aphrody/dist/holding.css` / `style.css` | 33,5 / 32,9 Ko | 5 Ko transférés |
+| `apps/aphrody/dist/atkinson-next.woff2` | 34 Ko | — |
+| `apps/aphrody-app/dist/aphrody_app_wasm.wasm` | 426,5 Ko | 147 Ko transférés |
+| `apps/yolo/dist/assets/fonts/GoogleSansFlex-latin.woff2` | 1 915 Ko | 1 915 Ko (déjà compressé) |
+| `apps/yolo/dist/app.js` | 7,7 Ko | 2,5 Ko br |
+| rosegriffon.fr, JS client | — | 511 Ko transférés, 41 fichiers |
+| dragonballfr.com, page entière | — | 2 630 Ko transférés |
+
+## 8. Matrice de fonctionnalités (source -> notre équivalent)
+
+Voir la liste structurée retournée avec ce document ; elle couvre Vercel (plateforme), Next.js / vinext (framework), Cloudflare (edge) et Google Workspace. Résumé : la plateforme `packages/deploy` couvre déjà le socle Vercel (déploiements immuables, previews par commit, promote/rollback instantané, journaux, analytics, speed insights, images, edge config, Access) ; la couche framework (RSC, ISR, Server Actions, middleware déclaratif, `next/image` au build, cache adapters, pré-chauffage) est absente des sites Aphrody et n'existe que dans les sous-modules communautaires via Next 16.5 canary auto-hébergé, que vinext pourrait porter sur Workers.
+
+## 9. Constats prioritaires
+
+1. Worker `aphrody-app` : le nom du `wrangler.toml` d'`apps/aphrody-app` correspond au Worker live qui sert bun.aphrody.app et bun.aphrody.com ; le shell live tourne sous `aphrody-app-site`. Renommer côté dépôt avant tout déploiement.
+2. Quatre Workers live sans source : `aphrody-webos` (49 hôtes), `yolo-aphrody-com`, `bun-video-showcase`, `aphrody-email-worker`, et les connecteurs de tunnel `auto`, `recette-auto`, `desktop` absents de `cloudflare.toml`.
+3. `GET aphrody.app/api/projects` publie des détails techniques (chemins, commandes, commits).
+4. `brand/v1` annoncé immuable mais servi `max-age=3600` ; `cdn.rosegriffon.fr` met ses 404 en cache un an.
+5. Police Google Sans Flex non sous-ensemblée : 1,9 Mo sur yolo ; aphrody.com charge encore `fonts.googleapis.com`.
+6. Neuf implémentations M3 et deux builds du même bundle Material Web ; `packages/design/tokens` doit rester la seule source.
+7. rosegriffon.fr sert 1,3 Mo de HTML (payload RSC en ligne) ; dragonballfr.com 2,6 Mo par visite.
+8. Restes DNS : 4 TXT `_vercel` et défi GitHub Pages sur rosegriffon.fr ; `vps.aphrody.com` expose fr1 sans proxy.
+9. Aucun Turnstile ni KV/D1 ; état d'edge uniquement en R2 + Durable Object.
