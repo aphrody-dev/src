@@ -6,9 +6,17 @@
 //   managed block, and both CLIs get the same no-human-in-the-loop settings.
 // restore <path>: writes a compressed file back to its original path.
 import { Database } from "bun:sqlite";
-import { existsSync, readdirSync, rmSync, statSync, utimesSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  utimesSync,
+  writeFileSync,
+} from "node:fs";
 import { homedir } from "node:os";
-import { join, relative, resolve, sep } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { parseArgs } from "node:util";
 import { Context } from "../core/context";
 
@@ -26,7 +34,9 @@ const CLAUDE = join(H, ".claude");
 const GEMINI = join(H, ".gemini");
 const home = values.home ?? Bun.env.AGENT_HOME ?? join(H, ".agent");
 const dry = values["dry-run"];
-const days = Number(values.days);
+const days = /^\d+(\.\d+)?$/.test(values.days ?? "")
+  ? Number(values.days)
+  : Number.NaN;
 if (!Number.isFinite(days) || days < 0)
   throw new Error(`--days must be a number >= 0, got ${values.days}`);
 const cutoff = Date.now() - days * 86_400_000;
@@ -194,9 +204,15 @@ async function absorb() {
       const back = blobs
         .query("SELECT data FROM blobs WHERE path = ?")
         .get(relative(H, p)) as { data: Uint8Array };
-      if (Bun.hash(Bun.zstdDecompressSync(back.data)) !== Bun.hash(raw))
+      if (Buffer.compare(Bun.zstdDecompressSync(back.data), raw) !== 0)
         throw new Error(`verify failed: ${p}`);
-      rmSync(p);
+      const now = statSync(p);
+      if (now.mtimeMs !== st.mtimeMs || now.size !== st.size) continue; // changed while packing: keep it
+      try {
+        rmSync(p);
+      } catch (e) {
+        console.error(`kept (locked): ${p}: ${(e as Error).message}`);
+      }
     }
   if (!dry && n.packed) blobs.run("VACUUM");
   blobs.close();
@@ -263,13 +279,12 @@ async function restore(path: string) {
   }[];
   for (const r of rows) {
     const out = resolve(H, r.path);
-    if (!out.startsWith(H + sep))
-      throw new Error(`refusing path outside home: ${r.path}`);
     if (existsSync(out)) {
       console.error(`exists, skipped: ${r.path}`);
       continue;
     }
-    await Bun.write(out, Bun.zstdDecompressSync(r.data));
+    mkdirSync(dirname(out), { recursive: true });
+    writeFileSync(out, Bun.zstdDecompressSync(r.data), { flag: "wx" });
     utimesSync(out, r.mtime / 1000, r.mtime / 1000);
     console.log(`restored ${r.path}`);
   }
