@@ -1,0 +1,13 @@
+photocraft v0.23.1 photocraft-web-0.23.1.zip
+filmcraft v0.20.1 filmcraft-web-0.20.1.zip
+soundcraft v0.20.1 soundcraft-web-0.20.1.zip
+craft-launcher v0.19.2 artcraft-launcher-web-0.19.2.zip
+vectorcraft v0.24.1 vectorcraft-web-0.24.1.zip
+lightcraft v0.21.1 lightcraft-web-0.21.1.zip
+designcraft v0.20.1 designcraft-web-0.20.1.zip
+effectcraft v0.24.1 effectcraft-web-0.24.1.zip
+gridcraft v0.19.1 gridcraft-web-0.19.1.zip
+cadcraft v0.20.1 cadcraft-web-0.20.1.zip
+deckcraft v0.18.1 deckcraft-web-0.18.1.zip
+wordcraft v0.18.1 wordcraft-web-0.18.1.zip
+pdfcraft v0.21.1 pdfcraft-web-0.21.1.zip
