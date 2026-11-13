@@ -859,7 +859,7 @@ export async function review(o: ReviewOptions = {}): Promise<ReviewResult> {
         title: o.content.title,
         spec: [],
         files: o.content.files ?? diffFiles(o.content.text),
-        text: o.content.text.slice(0, cfg.max_bytes),
+        text: scrub(o.content.text).slice(0, cfg.max_bytes),
         truncated: Math.max(0, o.content.text.length - cfg.max_bytes),
         kind: "content",
       }

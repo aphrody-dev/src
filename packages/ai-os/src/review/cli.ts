@@ -6,6 +6,7 @@
 //   ai-os review sources [--force]   rafraîchit les sources officielles (var/review/sources, commit source noté)
 //   ai-os review mine                notes de tous les verdicts archivés, par voix
 import { appendFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { parseArgs } from "node:util";
 import { srcRoot } from "../orch/fleet";
 import { loadConfig, mine, review } from "./index";
@@ -92,7 +93,9 @@ export async function main(argv: string[]): Promise<number> {
 }
 
 // Lancé directement ou par le répartiteur src/cli.ts ; importé par les tests sans exécution (bun test : NODE_ENV=test).
-if (import.meta.main || Bun.env.NODE_ENV !== "test") {
+// Exécuté seulement comme point d'entrée : direct, ou via le répartiteur src/cli.ts (`ai-os review`).
+const entry = Bun.argv[1] ? resolve(Bun.argv[1]) : "";
+if (import.meta.main || entry === resolve(import.meta.dir, "..", "cli.ts")) {
   try {
     process.exitCode = await main(Bun.argv.slice(2));
   } catch (e: any) {
