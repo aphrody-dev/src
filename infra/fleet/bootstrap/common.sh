@@ -123,12 +123,99 @@ docker_multiarch() {
   docker buildx inspect aphrody | grep -E '^Platforms' | head -1
 }
 
-# Agent CLIs belong to infra/agents/install.sh (agent-first runner); call it when present.
-agents_cli() {
+# --- Agents (owner decision 2026-11-13, NHITL): user `agent` = full root through sudo, on every host. ---
+# Claude Code refuses bypassPermissions as uid 0 without a sandbox, so agents run as `agent` and escalate
+# with `sudo` (NOPASSWD: ALL, /etc/sudoers.d/aphrody-agent validated by visudo -cf), member of docker.
+# Rollback: sudo rm /etc/sudoers.d/aphrody-agent
+AGENT=${AGENTS_USER:-agent}
+agent_user() {
+  id "$AGENT" >/dev/null 2>&1 || { $SUDO useradd -m -s /bin/bash "$AGENT"; log "user $AGENT created"; }
+  H=$(getent passwd "$AGENT" | cut -d: -f6)
+  # Login keys = public keys of the bootstrap user (and root's), appended once.
+  { cat "$HOME/.ssh/authorized_keys" 2>/dev/null; $SUDO cat /root/.ssh/authorized_keys 2>/dev/null; } |
+    sudo -u "$AGENT" sh -c 'umask 077; mkdir -p "$1/.ssh"; touch "$1/.ssh/authorized_keys"; cat - "$1/.ssh/authorized_keys" | sort -u > "$1/.ssh/k" && mv "$1/.ssh/k" "$1/.ssh/authorized_keys"' _ "$H"
+  getent group docker >/dev/null && $SUDO usermod -aG docker "$AGENT"
+  t=$(mktemp); printf '# infra/fleet/bootstrap/common.sh agent_user (owner decision 2026-11-13)\n%s ALL=(ALL:ALL) NOPASSWD: ALL\n' "$AGENT" > "$t"
+  $SUDO visudo -cf "$t" >/dev/null && $SUDO install -m 0440 -o root -g root "$t" /etc/sudoers.d/aphrody-agent; rm -f "$t"
+  $SUDO visudo -c >/dev/null
+  $SUDO loginctl enable-linger "$AGENT"
+  $SUDO install -d -m 0755 -o "$AGENT" -g "$AGENT" /var/lib/aphrody-agents /var/lib/aphrody-agents/logs
+  $SUDO chown -R "$AGENT:$AGENT" /var/lib/aphrody-agents
+  sudo -u "$AGENT" sudo -n true && log "agent: sudo NOPASSWD ok, groups $(id -nG "$AGENT")"
+}
+
+# Runner (infra/agents/install.sh) as `agent`. On hosts whose login user is not root (fr1, fr2), the login
+# user's CLI logins (OAuth files, never in git) and checkout seed the agent user once, then its own runner
+# units are retired: one runner per host.
+agent_runner() {
+  H=$(getent passwd "$AGENT" | cut -d: -f6); me=$(id -un)
+  if [ "$me" != "$AGENT" ] && [ "$me" != root ]; then
+    for f in .claude/.credentials.json .codex/auth.json .config/gh/hosts.yml; do
+      [ -f "$HOME/$f" ] && ! $SUDO test -f "$H/$f" &&
+        sudo -u "$AGENT" sh -c 'umask 077; mkdir -p "$(dirname "$1")"; cat > "$1"' _ "$H/$f" < "$HOME/$f" && log "seeded $AGENT ~/$f"
+    done
+    if [ -d "$HOME/agents/src/.git" ] && ! $SUDO test -d "$H/agents/src/.git"; then
+      $SUDO install -d -o "$AGENT" -g "$AGENT" "$H/agents"
+      $SUDO cp -a "$HOME/agents/src" "$H/agents/src" && $SUDO chown -R "$AGENT:$AGENT" "$H/agents/src"
+    fi
+    systemctl --user disable --now aphrody-agents.service aphrody-agents-health.timer aphrody-agents-pull.timer >/dev/null 2>&1 || true
+    rm -rf "$HOME"/.config/systemd/user/aphrody-agents*; systemctl --user daemon-reload 2>/dev/null || true
+  fi
   root=$(dirname "$LOCK")/../..
-  [ -x "$root/infra/agents/install.sh" ] && "$root/infra/agents/install.sh" || true
+  sudo -iu "$AGENT" sh -s < "$root/infra/agents/install.sh"
+}
+
+# Agent CLIs in full-access mode for interactive use too (the runner already passes the flags).
+# Keys checked against the installed builds (2026-11-13): Claude Code 2.1.32x permissions.defaultMode +
+# skipDangerousModePermissionPrompt; codex 0.16x approval_policy/sandbox_mode (values from `codex --help`);
+# opencode 1.19 `permission` (action string). gemini-cli 0.68 ignores defaultApprovalMode=yolo from
+# settings (flag --approval-mode yolo only) and pi has no permission gate: nothing to write for them.
+agent_cli_fullaccess() {
+  sudo -iu "$AGENT" sh -s <<'EOF'
+set -eu
+"$HOME/.bun/bin/bun" -e '
+const fs = require("fs"), p = require("path"), H = process.env.HOME;
+const merge = (f, fn) => { fs.mkdirSync(p.dirname(f), { recursive: true });
+  const j = fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, "utf8")) : {}; fn(j);
+  fs.writeFileSync(f, JSON.stringify(j, null, 2) + "\n", { mode: 0o600 }); };
+merge(H + "/.claude/settings.json", j => { j.permissions = { ...(j.permissions ?? {}), defaultMode: "bypassPermissions" }; j.skipDangerousModePermissionPrompt = true; });
+merge(H + "/.config/opencode/opencode.json", j => { j.$schema ??= "https://opencode.ai/config.json"; j.permission = "allow"; });'
+c=$HOME/.codex/config.toml; mkdir -p "$HOME/.codex"; touch "$c"
+sed -i '/^approval_policy *=/d;/^sandbox_mode *=/d' "$c"
+{ printf 'approval_policy = "never"\nsandbox_mode = "danger-full-access"\n'; cat "$c"; } > "$c.new" && mv "$c.new" "$c"
+EOF
+  log "agent CLIs: full access (claude, codex, opencode)"
+}
+# Entry point called by every <role>.sh.
+agents_cli() { agent_user; agent_runner; agent_cli_fullaccess; }
+
+# --- Resilience (owner decision 2026-11-13, docs/infra/RESILIENCE.md): everything survives reboot/crash. ---
+# Units, timers, linger, user units, compose restart policy and fstab nofail are driven by
+# infra/fleet/bin/fleet-resilience.sh from infra/fleet/<host>/resilience.conf (`just fleet-resilience apply`);
+# this adds what that file does not own: persistent bounded journald and the docker engine at boot.
+# Rollback: rm /etc/systemd/journald.conf.d/10-aphrody.conf && systemctl restart systemd-journald
+resilience() {
+  $SUDO install -d /etc/systemd/journald.conf.d /var/log/journal
+  printf '[Journal]\nStorage=persistent\nSystemMaxUse=%s\n' "${JOURNAL_MAX:-2G}" | $SUDO tee /etc/systemd/journald.conf.d/10-aphrody.conf >/dev/null
+  $SUDO systemd-tmpfiles --create --prefix /var/log/journal >/dev/null 2>&1 || true
+  $SUDO systemctl restart systemd-journald
+  for u in containerd.service docker.socket docker.service; do systemctl cat "$u" >/dev/null 2>&1 && $SUDO systemctl enable "$u" >/dev/null 2>&1; done
+  if [ -x /usr/local/bin/fleet-resilience.sh ] && [ -r /etc/fleet/resilience.conf ]; then $SUDO /usr/local/bin/fleet-resilience.sh apply | grep -v '^OK' || true; fi
+}
+# sysctl_serve: one tuning file for the serving hosts (prd, fr2), replacing older per-app drop-ins.
+sysctl_serve() {
+  root=$(dirname "$LOCK")/../..
+  $SUDO install -m 0644 "$root/infra/fleet/sysctl/90-aphrody-serve.conf" /etc/sysctl.d/90-aphrody-serve.conf
+  for old in 90-dbfr.conf 90-yolo-swappiness.conf 99-yolo-2026-perf.conf; do $SUDO rm -f "/etc/sysctl.d/$old"; done
+  echo tcp_bbr | $SUDO tee /etc/modules-load.d/aphrody-bbr.conf >/dev/null; $SUDO modprobe tcp_bbr 2>/dev/null || true
+  $SUDO install -d /etc/systemd/system.conf.d
+  printf '[Manager]\nDefaultLimitNOFILE=1048576\nDefaultTasksMax=infinity\n' | $SUDO tee /etc/systemd/system.conf.d/limits.conf >/dev/null
+  $SUDO sysctl -q --system 2>&1 | grep -v '^\*' | head -3 || true
 }
 
 report() {
   for c in "$@"; do printf '  %-14s %s\n' "$c" "$( (command -v "$c" >/dev/null && case $c in go) go version ;; zig) zig version ;; caddy) caddy version ;; nginx) nginx -v ;; rustc) rustc +"$(lock_get rust version)" -V ;; *) "$c" --version ;; esac) 2>&1 | head -1 || echo MISSING)"; done
 }
+
+# role_mark <fr1|fr2|prd>: /etc/aphrody/role, read by aphrody-heavy (heavy jobs on fr1 only) and the audit.
+role_mark() { $SUDO install -d /etc/aphrody; echo "$1" | $SUDO tee /etc/aphrody/role >/dev/null; }

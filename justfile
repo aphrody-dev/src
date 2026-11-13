@@ -288,8 +288,8 @@ docker-run recipe="verify-all":
 
 # Toolchain bootstrap of a fleet host from packages/machine/toolchains.lock.toml (usage: just fleet-bootstrap prd|fr1|fr2)
 fleet-bootstrap role:
-    tar -cf - -C "{{root}}/infra/fleet/bootstrap" common.sh {{role}}.sh -C "{{root}}/infra/fleet/bin" heavy.sh -C "{{root}}/packages/machine" toolchains.lock.toml | timeout 120 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'rm -rf /tmp/aphrody-bootstrap && mkdir -p /tmp/aphrody-bootstrap && tar -xf - -C /tmp/aphrody-bootstrap'
-    timeout 1800 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'cd /tmp/aphrody-bootstrap && LOCK=$PWD/toolchains.lock.toml sh {{role}}.sh'
+    tar -cf - -C "{{root}}" infra/fleet/bootstrap/common.sh infra/fleet/bootstrap/{{role}}.sh infra/fleet/bin/heavy.sh infra/fleet/sysctl infra/agents/install.sh packages/machine/toolchains.lock.toml | timeout 120 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'rm -rf /tmp/aphrody-bootstrap && mkdir -p /tmp/aphrody-bootstrap && tar -xf - -C /tmp/aphrody-bootstrap'
+    timeout 1800 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'cd /tmp/aphrody-bootstrap && LOCK=$PWD/packages/machine/toolchains.lock.toml sh infra/fleet/bootstrap/{{role}}.sh'
 
 # Regenerate the pinned toolchain manifest (versions + upstream checksums)
 toolchains-lock:
@@ -453,9 +453,10 @@ test ref="origin/main":
 agents cmd="status" *args:
     bun "{{root}}/infra/agents/runner.ts" {{cmd}} {{args}}
 
-# Install/refresh the runner on a Linux host (fr1, fr2 as ubuntu; prd as the non-root user agent)
+# Install/refresh the runner on a Linux host (usage: just agents-install prd|vps|cdn): user agent everywhere (sudo NOPASSWD, docker)
 agents-install host:
-    if [ "{{host}}" = prd ]; then ssh prd 'sh -s' < "{{root}}/infra/agents/bootstrap-user.sh" && ssh agent@prd 'sh -s' < "{{root}}/infra/agents/install.sh"; else ssh {{host}} 'sh -s' < "{{root}}/infra/agents/install.sh"; fi
+    timeout 120 ssh {{host}} 'sudo sh -s' < "{{root}}/infra/agents/bootstrap-user.sh"
+    timeout 1800 ssh agent@{{host}} 'sh -s' < "{{root}}/infra/agents/install.sh"
 
 # Install the runner on this Windows PC (scheduled tasks + psmux session)
 agents-install-pc:

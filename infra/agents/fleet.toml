@@ -45,21 +45,21 @@ budget_usd = 2
 # then PC aliases, WireGuard 10.200.77.0/24, public IP). `ship` = where every host sends log.jsonl.
 [hosts.prd]
 roles = ["coder", "reviewer", "tester", "linter", "deployer", "sre", "growth"]
-# Dedicated non-root user `agent` (systemd --user + linger), never root.
+# Every host: user `agent` (systemd --user + linger, sudo NOPASSWD, docker), never uid 0.
 src = "/home/agent/agents/src"
 ssh = ["agent@prd-mesh", "agent@prd", "agent@10.200.77.5", "agent@72.60.186.43"]
 
 [hosts.fr1]
 # Chromium/LLVM builds only: no general runner, only role chromium.
 roles = ["chromium"]
-src = "/home/ubuntu/agents/src"
-ssh = ["ubuntu@fr1-mesh", "fr1", "ubuntu@10.200.77.1", "ubuntu@51.77.147.152"]
+src = "/home/agent/agents/src"
+ssh = ["agent@fr1-mesh", "agent@fr1", "agent@10.200.77.1", "agent@51.77.147.152"]
 
 [hosts.fr2]
 # Proxy/CDN host, 11 GB RAM: light roles only.
 roles = ["linter", "sre"]
-src = "/home/ubuntu/agents/src"
-ssh = ["ubuntu@fr2-mesh", "fr2", "ubuntu@10.200.77.3", "ubuntu@51.255.162.6"]
+src = "/home/agent/agents/src"
+ssh = ["agent@fr2-mesh", "agent@fr2", "agent@10.200.77.3", "agent@51.255.162.6"]
 
 [hosts.pc]
 roles = ["coder", "reviewer", "designer", "growth"]

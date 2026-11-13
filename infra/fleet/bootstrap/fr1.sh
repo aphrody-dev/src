@@ -22,3 +22,10 @@ bun_pinned
 agents_cli
 log "fr1 versions:"
 report rustc clang ld.lld cmake ninja python3 git-lfs sccache just bun
+
+# --- Factory (owner decision 2026-11-13): heavy jobs, CI runner of aphrody-labs/src, REAPI. ---
+role_mark fr1
+for u in /etc/systemd/system/actions.runner.*.service; do
+  [ -f "$u" ] && $SUDO systemctl enable --now "$(basename "$u")" >/dev/null 2>&1 && log "CI runner $(basename "$u") enabled"
+done
+resilience

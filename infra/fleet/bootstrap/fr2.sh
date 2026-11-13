@@ -21,3 +21,15 @@ $SUDO nginx -t >/dev/null 2>&1 && log "nginx config ok"
 log "fr2 versions:"
 report docker nginx cloudflared
 $SUDO docker compose version
+
+# --- Edge only (owner decision 2026-11-13): nginx, cloudflared, ACME, cluster LB.
+# Build workers (REAPI) run on fr1. Rollback: git revert + just fleet-bootstrap fr2 (unit files come back from git).
+role_mark fr2
+if systemctl cat nativelink-worker.service >/dev/null 2>&1; then
+  $SUDO systemctl disable --now nativelink-worker.service >/dev/null 2>&1 || true
+  $SUDO rm -rf /etc/systemd/system/nativelink-worker.service /etc/systemd/system/nativelink-worker.service.d /var/lib/private/nativelink /etc/nativelink
+  $SUDO systemctl daemon-reload; log "purged nativelink-worker (REAPI workers live on fr1)"
+fi
+agents_cli
+JOURNAL_MAX=1G resilience
+sysctl_serve
