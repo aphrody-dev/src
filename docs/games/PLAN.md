@@ -54,12 +54,25 @@ Rust builds run in CI or on fr1, never on the workstation.
 | 7   | Captures of the Craft Apps (screenshots, tokens) from release builds made on fr1, stored outside git                                                                                                     | files listed in `docs/games/ARTCRAFT.md`               | Done 2026-11-13 on fr1: photocraft, filmcraft, soundcraft (one local line patched, upstream compile error) and craft-launcher built and run under Xvfb and llvmpipe; 5 PNG, 4 logs and token tables listed in `docs/games/ARTCRAFT.md` (Captures, Theme tokens) ||
 | 8   | Unreal Engine: unchanged, private fork, interop only                                                                                                                                                     | `docs/epic/RESOURCES.md`                               | No work planned here                                                                                                                                                                                                                                                                                                                                                                           |
 
-## 5. Not done
+## 5. State on 2026-11-13 (what exists, what is not done)
 
-- No crate was added, no code moved and no build was run for this plan. Refactoring src into a game engine and creative suite has not started.
-- Gates that failed when measured on 2026-11-13, independently of these documents: `ay arch check --strict` (72 errors or more, among them binaries over 50 MB), `ay manifests verify` (pins that are not gitlinks), `ay doctor` (`cl.exe` missing).
+Exists, with the commit that added it:
 
-## 6. Target set by the owner on 2026-11-13 (recorded, nothing started)
+- Vertical slice `crates/game` (Bevy, streamed procedural terrain, third-person controller, day/night, procedural audio), served by `/play` in `apps/aphrody`: `f2c17b18`, `f21e7927`.
+- Format layer `crates/craft-formats` (craft-libs `a9949872`, one winit): `62debc12`. Asset validators `crates/asset-test`: `f71400f7`.
+- Asset library and pipeline `packages/assets`, `assets/library`, procedural wallpapers `assets/generated`: `03eba945`, `45f937ba`, `093a2f97`; `assets verify` also reads `assets/generated/manifest.toml` and `ay assets gen` routes to the generator: `eb824acd`.
+- Themes (7, light and dark; `workshop` and `frost` now use `fidelity` seeds): `b20c410d`, `eb824acd`. i18n layer `packages/i18n` and `crates/aphrody-i18n`: `2cf0fc9b`, `d158d27a`.
+- `ay flat` per fork: `6fbba4e3`. Feature matrix and platform equivalence: `31506186`. Craft Apps captures and FFmpeg `.bc`: `e13ccbc6`.
+- LGPL FFmpeg built on fr1 with the Chromium 157 clang (LLVM 24) into `/opt/ffmpeg-lgpl`; `asset-test` builds and `gen` runs against it: `e410f398`.
+- `Cargo.lock` regenerated on fr1 for the root workspace: `b2d86ae0`.
+
+Not done:
+
+- Multiplayer is a design note only; no merged Aphrody app, no CI browser run measuring frame rate, no parity list per replaced feature (section 6).
+- Gates still failing when measured: `ay arch check --strict` (remaining errors in `tools/`, `crates/lore-*`, Zero-NPM rule on `packages/assets` and `packages/design`), `ay manifests verify` (pins that are not gitlinks), `ay doctor` (`cl.exe` missing).
+- Duplicate versions in `cargo tree -d` come from upstream crates (craft-libs `exr` pins `miniz_oxide` 0.8, Bevy pulls two `hashbrown`, `itertools`, `getrandom`); not fixable without forking.
+
+## 6. Target set by the owner on 2026-11-13 (recorded; the vertical slice in section 5 is a first step, the merge has not started)
 
 - Three apps only, one per domain: `shenron`, `rosegriffon`, and one Aphrody app merging `apps/aphrody` (aphrody.com) and `apps/aphrody-app` (aphrody.app). Every other app, package and crate is flattened into shared code; code of `shenron` and `rosegriffon` that is not specific to their product moves to shared crates and packages and is reused.
 - The merged Aphrody app hosts and deploys the Craft Apps, ArtCraft and the game: full-screen WebAssembly and WebGPU in the browser, open-world multiplayer, 120 fps at 1080p, gamepad (Xbox, PlayStation), keyboard and mouse, audio and video, built on Bevy with a feature matrix against Unreal Engine.
