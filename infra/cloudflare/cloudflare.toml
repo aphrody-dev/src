@@ -180,6 +180,58 @@ expression = '(http.host in {"rosegriffon.fr" "www.rosegriffon.fr"} and http.req
 action = "set_cache_settings"
 action_parameters = { cache = true, edge_ttl = { mode = "bypass_by_default" }, browser_ttl = { mode = "respect_origin" }, serve_stale = { disable_stale_while_updating = false } }
 
+# aphrody.app R2 CDN host, 30 days at the edge. cdn.aphrody.app and dragonballfr.aphrody.app (no DNS record) removed
+# from the live expression. Rollback: restore the three hosts in the expression, then apply rules.
+[[rules]]
+zone = "aphrody.app"
+phase = "http_request_cache_settings"
+ref = "aphrody-r2-cdn"
+description = "R2 CDN hosts: cache everything for 30 days at the edge"
+expression = '(http.host in {"assets.aphrody.app"})'
+action = "set_cache_settings"
+action_parameters = { cache = true, edge_ttl = { default = 2592000, mode = "override_origin" }, browser_ttl = { mode = "respect_origin" }, serve_stale = { disable_stale_while_updating = false } }
+
+# Immutable CDN prefix /_static/* (docs/replica/ARCHITECTURE.md §3): eligible for the edge cache, TTL from the origin
+# Cache-Control (public, max-age=31536000, immutable). Rollback: delete the rule by ref, then drop the block.
+[[rules]]
+zone = "aphrody.com"
+phase = "http_request_cache_settings"
+ref = "aphrody-static"
+description = "/_static/*: edge cache following the origin Cache-Control"
+expression = '(starts_with(http.request.uri.path, "/_static/"))'
+action = "set_cache_settings"
+action_parameters = { cache = true, edge_ttl = { mode = "respect_origin" }, browser_ttl = { mode = "respect_origin" } }
+
+[[rules]]
+zone = "aphrody.app"
+phase = "http_request_cache_settings"
+ref = "aphrody-static"
+description = "/_static/*: edge cache following the origin Cache-Control"
+expression = '(starts_with(http.request.uri.path, "/_static/"))'
+action = "set_cache_settings"
+action_parameters = { cache = true, edge_ttl = { mode = "respect_origin" }, browser_ttl = { mode = "respect_origin" } }
+
+# The 2 legacy page rules of aphrody.com imported as cache rules (same effect: cache everything, browser 1 year,
+# edge 30 days). They come last in the phase, so they win over aphrody-origin-cdn as the page rule does today.
+# The page rules themselves stay live until the owner removes them (cf.ts never deletes).
+[[rules]]
+zone = "aphrody.com"
+phase = "http_request_cache_settings"
+ref = "aphrody-pagerule-cdn"
+description = "Imported page rule cdn.aphrody.com/*: cache everything, browser 1 year, edge 30 days"
+expression = '(http.host eq "cdn.aphrody.com")'
+action = "set_cache_settings"
+action_parameters = { cache = true, edge_ttl = { default = 2592000, mode = "override_origin" }, browser_ttl = { default = 31536000, mode = "override_origin" } }
+
+[[rules]]
+zone = "aphrody.com"
+phase = "http_request_cache_settings"
+ref = "aphrody-pagerule-assets"
+description = "Imported page rule *aphrody.com/assets/*: cache everything, browser 1 year, edge 30 days"
+expression = '((http.host eq "aphrody.com" or ends_with(http.host, ".aphrody.com")) and starts_with(http.request.uri.path, "/assets/"))'
+action = "set_cache_settings"
+action_parameters = { cache = true, edge_ttl = { default = 2592000, mode = "override_origin" }, browser_ttl = { default = 31536000, mode = "override_origin" } }
+
 # Access: browser-rendered SSH (type ssh) + a service token for agents (cloudflared access ssh --service-token-*).
 [access]
 owner_policy = "f3931268-9a0c-417c-b133-807ec2ca93e8" # mig-owner-only (contact@aphrody.com)
