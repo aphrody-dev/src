@@ -48,7 +48,7 @@ Kept in the Worker (unchanged, nothing lost): host routing of the Craft studios 
 
 ## Gaps (not done)
 
-- Bazzite and CachyOS: they are 64-bit distros; v86 is 32-bit x86 only. A 64-bit path (container2wasm with QEMU) was started on fr1; see the section below for what it produced.
+- Bazzite and CachyOS: they are 64-bit distros; v86 is 32-bit x86 only. A 64-bit path (container2wasm with QEMU) was started on fr1 by a separate agent; its result is not recorded here yet.
 - Smithay (Wayland compositor library) and the gamescope binary need Linux DRM, libinput and a GPU stack; they do not compile to WebAssembly. The in-browser equivalent here is the DOM window manager plus the gamescope WGSL pipeline; no Wayland protocol is implemented, `apps/unixwin` (a Windows layer) is not used.
 - Steam Gaming Mode, Proton, ujust and Bazzite or CachyOS tooling do not exist in the browser; Steam is a link, not a client.
 - Real emulator frames (needs a user ROM), gamepad hardware, Firefox and Safari, mobile and 4K are not tested. Game wasm presence depends on `target/game-web` at build time.
