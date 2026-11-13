@@ -1,0 +1,23 @@
+#!/bin/sh
+# fr2 (Ubuntu, user ubuntu + sudo): edge runtime ONLY (nginx vhosts/CDN, cloudflared, docker compose for
+# self-hosted images pulled from GHCR). No compilers are added here; existing ones are left alone.
+#   sh infra/fleet/bootstrap/fr2.sh        (just fleet-bootstrap fr2)
+LOCK=${LOCK:-$(cd "$(dirname "$0")/../../.." && pwd)/packages/machine/toolchains.lock.toml}
+. "$(dirname "$0")/common.sh"
+
+pkgs="docker.io docker-buildx docker-compose-v2 nginx wireguard-tools curl"
+missing=$(for p in $pkgs; do dpkg-query -W -f='${Status}' "$p" 2>/dev/null | grep -q "ok installed" || echo "$p"; done)
+[ -z "$missing" ] || { log "apt: $missing"; $SUDO apt-get install -y --no-install-recommends $missing >/dev/null; }
+
+# Docker must not flip the FORWARD policy to DROP (WireGuard mesh forwarding goes through this host).
+if [ ! -f /etc/docker/daemon.json ]; then
+  $SUDO mkdir -p /etc/docker
+  printf '{\n  "ip-forward-no-drop": true,\n  "log-driver": "local",\n  "live-restore": true\n}\n' | $SUDO tee /etc/docker/daemon.json >/dev/null
+fi
+docker_runtime
+$SUDO usermod -aG docker "$(id -un)" 2>/dev/null || true
+has_version "$(lock_get cloudflared version)" cloudflared --version || install_archive_bin cloudflared cloudflared-linux-amd64 cloudflared
+$SUDO nginx -t >/dev/null 2>&1 && log "nginx config ok"
+log "fr2 versions:"
+report docker nginx cloudflared
+$SUDO docker compose version

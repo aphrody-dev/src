@@ -1,0 +1,28 @@
+# Allowlist build context for infra/docker/Dockerfile (BuildKit reads <Dockerfile>.dockerignore next to it).
+# Everything is excluded, then only what the images compile from is re-included. Secrets never enter.
+*
+!Cargo.toml
+!Cargo.lock
+!rust-toolchain.toml
+!.cargo/config.toml
+!crates/
+!third_party/patches/
+!package.json
+!bun.lock
+!packages/
+!infra/ffi-bridge/
+!infra/fleet/workers/
+!apps/aphrody/
+!apps/yolo/
+!apps/r2-site/
+**/target/
+**/node_modules/
+**/dist/
+**/.git
+**/graphify-out/
+**/var/
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+**/secrets*

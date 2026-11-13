@@ -1,0 +1,153 @@
+# Deployable stack of src (images from GHCR, built by infra/docker/docker-bake.hcl / .github/workflows/images.yml).
+#   docker compose -f infra/docker/compose.yaml --profile core up -d          (prd: backends; just docker-up)
+#   docker compose -f infra/docker/compose.yaml --profile edge up -d          (fr2: stateless edge services)
+#   docker compose -f infra/docker/compose.yaml --profile dev run --rm dev    (Arch toolchain shell, repo at /src)
+# Host ports = deploy.toml green ports, bound to 127.0.0.1: nginx/cloudflared front them, systemd units keep the
+# blue ports, so the containers run side by side with prd's current services (blue/green, no port clash).
+# Rollback: SRC_TAG=<previous sha> docker compose -f infra/docker/compose.yaml --profile core up -d
+# Secrets: env_file /etc/aphrody/secrets.env on the host (never in images or here).
+name: aphrody-src
+
+x-svc: &svc
+  restart: unless-stopped
+  env_file:
+    - path: ${SRC_SECRETS_ENV:-/etc/aphrody/secrets.env}
+      required: false
+  read_only: true
+  tmpfs: [/tmp]
+  security_opt: ["no-new-privileges:true"]
+  cap_drop: [ALL]
+  logging: { driver: local, options: { max-size: 20m, max-file: "3" } }
+  deploy:
+    resources: { limits: { memory: 1g } }
+
+
+services:
+  # ---------------------------------------------------------------- core (prd)
+  ai-os-relay:
+    <<: *svc
+    profiles: [core]
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/ai-os:${SRC_TAG:-latest}
+    ports: ["127.0.0.1:${RELAY_HOST_PORT:-28790}:8790", "127.0.0.1:${RELAY_TCP_HOST_PORT:-28791}:8791"]
+    volumes: [ai-os-home:/home/bun]
+    read_only: false
+
+  ai-os-gateway:
+    <<: *svc
+    profiles: [core]
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/ai-os:${SRC_TAG:-latest}
+    command: ["bun", "src/cli.ts", "gateway"]
+    # AGENT_MODEL=<provider>/<model> (e.g. llama/<gguf name>); echo/echo keeps the gateway up until a model is set.
+    environment: { PORT: "4000", HEALTH_PATH: /health, RELAY_OPENAI_ENDPOINTS: "llama=http://llama:8080", AGENT_MODEL: "${AGENT_MODEL:-echo/echo}" }
+    ports: ["127.0.0.1:${GATEWAY_HOST_PORT:-24000}:4000"]
+    volumes: [ai-os-home:/home/bun]
+    read_only: false
+    depends_on: { llama: { condition: service_started, required: false } }
+
+  aphrody:
+    <<: *svc
+    profiles: [core]
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/aphrody:${SRC_TAG:-latest}
+    ports: ["127.0.0.1:${APHRODY_HOST_PORT:-23000}:3000"]
+
+  yolo:
+    <<: *svc
+    profiles: [core]
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/yolo:${SRC_TAG:-latest}
+    ports: ["127.0.0.1:${YOLO_HOST_PORT:-23092}:3092"]
+    read_only: false
+
+  rust-stack:
+    <<: *svc
+    profiles: [core]
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/rust-stack:${SRC_TAG:-latest}
+    ports: ["127.0.0.1:${RUST_STACK_HOST_PORT:-24100}:4100"]
+    volumes: [rust-stack-data:/data]
+
+  r3d:
+    <<: *svc
+    profiles: [core]
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/r3d:${SRC_TAG:-latest}
+    ports: ["127.0.0.1:${R3D_HOST_PORT:-28080}:8080"]
+
+  loreserver:
+    <<: *svc
+    profiles: [core]
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/loreserver:${SRC_TAG:-latest}
+    ports: ["127.0.0.1:${LORE_HTTP_HOST_PORT:-31339}:41339", "127.0.0.1:${LORE_QUIC_HOST_PORT:-31337}:41337/udp"]
+    volumes: [lore-data:/data]
+    deploy: { resources: { limits: { memory: 4g } } }
+
+  # Local models for ai-os (OpenAI-compatible /v1). Upstream image pinned by digest; GGUF files in the volume.
+  llama:
+    <<: *svc
+    profiles: [core, ai]
+    image: ghcr.io/ggml-org/llama.cpp:server-b12316@sha256:2103d1f4f2e2e223ad80587dcb39fc15a9f912f29ae1fa9fc1193fe8c1aea82f
+    command: ["--host", "0.0.0.0", "--port", "8080", "-m", "/models/${LLAMA_MODEL:-model.gguf}", "--ctx-size", "${LLAMA_CTX:-8192}", "--jinja"]
+    ports: ["127.0.0.1:${LLAMA_HOST_PORT:-28088}:8080"]
+    volumes: [llama-models:/models:ro]
+    healthcheck: { test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/health"], interval: 30s, timeout: 5s, start_period: 120s }
+    deploy: { resources: { limits: { memory: 16g } } }
+
+  # ---------------------------------------------------------------- edge (fr2 or prd): stateless, scale with --scale
+  downloads:
+    <<: *svc
+    profiles: [edge, core]
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/r2-site:${SRC_TAG:-latest}
+    environment: { PORT: "8797", S3_BUCKET: aphrody-dist, PREFIX: aphrody, SERVICE: aphrody-downloads, SPA: "0" }
+    ports: ["127.0.0.1:${DOWNLOADS_HOST_PORT:-28797}:8797"]
+
+  cdn:
+    <<: *svc
+    profiles: [edge, core]
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/r2-site:${SRC_TAG:-latest}
+    environment: { PORT: "8796", S3_BUCKET: aphrody-assets, PREFIX: "", SERVICE: aphrody-cdn, SPA: "0" }
+    ports: ["127.0.0.1:${CDN_HOST_PORT:-28796}:8796"]
+
+  api-gateway:
+    <<: *svc
+    profiles: [edge, core]
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/api-gateway:${SRC_TAG:-latest}
+    environment: { S3_BUCKET_BUCKET: aphrody-dist }
+    ports: ["127.0.0.1:${API_GATEWAY_HOST_PORT:-28081}:8080"]
+
+  # ---------------------------------------------------------------- dev (toolchain containers, repo bind-mounted)
+  dev:
+    profiles: [dev]
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/src-dev:${SRC_TAG:-latest}
+    build: { context: ../.., dockerfile: infra/docker/Dockerfile, target: dev }
+    platform: linux/amd64
+    working_dir: /src
+    environment: { SRC_ROOT: /src, AGENT_GUARD: "${AGENT_GUARD:-off}" }
+    volumes:
+      - ../..:/src
+      - node-modules:/src/node_modules
+      - cargo-target:/src/target
+      - cargo-registry:/root/.cargo/registry
+      - bun-cache:/root/.bun/install/cache
+    stdin_open: true
+    tty: true
+
+  verify:
+    profiles: [dev]
+    extends: { service: dev }
+    command: ["just", "verify-all"]
+
+  runtime:
+    profiles: [dev]
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/src-runtime:${SRC_TAG:-latest}
+    working_dir: /src
+    environment: { SRC_ROOT: /src }
+    volumes: ["../..:/src"]
+    stdin_open: true
+    tty: true
+
+volumes:
+  ai-os-home:
+  rust-stack-data:
+  lore-data:
+  llama-models:
+  node-modules:
+  cargo-target:
+  cargo-registry:
+  bun-cache:

@@ -171,21 +171,58 @@ verify-all:
     cargo test --workspace --manifest-path "{{root}}/Cargo.toml"
     go -C "{{root}}/infra" test ./...
 
-# Build all container images (Arch dev + Alpine runtime); versions come from build args, see compose.yaml
-docker-build:
-    docker compose -f "{{root}}/compose.yaml" build
+# --- Containers (infra/docker: Dockerfile, docker-bake.hcl, compose.yaml; docs/infra/DEPLOY.md) ---
+# The PC has no local engine (no WSL): `docker context use prd` sends every docker command to prd over ssh.
+docker := if os() == "windows" { "docker.exe" } else { "docker" }
+docker_tag := env("SRC_TAG", `git rev-parse --short=12 HEAD`)
+docker_compose := docker + " compose -f " + root + "/infra/docker/compose.yaml"
+
+# Build + push src images (amd64+arm64) to ghcr.io/aphrody-dev on the prd engine (usage: just docker-build, just docker-build bun)
+docker-build targets="default":
+    {{docker}} buildx inspect aphrody >/dev/null 2>&1 || {{docker}} buildx create --name aphrody --driver docker-container --bootstrap
+    cd "{{root}}" && TAG={{docker_tag}} {{docker}} buildx bake --builder aphrody -f infra/docker/docker-bake.hcl --push {{targets}}
+
+# Local amd64 build loaded into the engine, then health-checked (usage: just docker-smoke, just docker-smoke bun)
+docker-smoke targets="smoke" profile="release":
+    {{docker}} buildx inspect aphrody >/dev/null 2>&1 || {{docker}} buildx create --name aphrody --driver docker-container --bootstrap
+    cd "{{root}}" && TAG={{docker_tag}} CARGO_PROFILE={{profile}} {{docker}} buildx bake --builder aphrody -f infra/docker/docker-bake.hcl --set '*.platform=linux/amd64' --set '*.attest=' --load {{targets}}
+    DOCKER={{docker}} SRC_TAG={{docker_tag}} sh "{{root}}/infra/docker/smoke.sh"
+
+# Deploy the compose stack: profile core on prd, edge on fr2 (usage: just docker-up, just docker-up edge fr2, SRC_TAG=<sha> to roll back)
+docker-up profile="core" ctx="prd":
+    SRC_TAG={{docker_tag}} {{docker}} --context {{ctx}} compose -f "{{root}}/infra/docker/compose.yaml" --profile {{profile}} pull
+    SRC_TAG={{docker_tag}} {{docker}} --context {{ctx}} compose -f "{{root}}/infra/docker/compose.yaml" --profile {{profile}} up -d --wait --remove-orphans
+
+# Stack status on a host
+docker-ps profile="core" ctx="prd":
+    {{docker}} --context {{ctx}} compose -f "{{root}}/infra/docker/compose.yaml" --profile {{profile}} ps
+
+# Products with their own container flows (sources untouched): shenron lanes + runtime, rosegriffon compose build
+docker-products:
+    cd "{{root}}/apps/shenron" && {{docker}} buildx bake -f docker-bake.hcl lanes
+    cd "{{root}}" && TAG={{docker_tag}} {{docker}} buildx bake -f infra/docker/docker-bake.hcl --push products
+    RG_REGISTRY=ghcr.io/aphrody-dev/rosegriffon RG_TAG={{docker_tag}} {{docker}} compose -f "{{root}}/apps/rosegriffon/compose.yaml" build
 
 # Arch Linux workstation shell with the monorepo mounted at /src
 docker-shell:
-    docker compose -f "{{root}}/compose.yaml" run --rm dev
+    {{docker_compose}} --profile dev run --rm dev
 
-# Alpine runtime shell (first-party CLIs + Bun only)
+# Alpine runtime shell (ay + Bun only)
 docker-runtime:
-    docker compose -f "{{root}}/compose.yaml" run --rm runtime
+    {{docker_compose}} --profile dev run --rm runtime
 
 # Run any recipe inside the Arch dev container (usage: just docker-run verify-all)
 docker-run recipe="verify-all":
-    docker compose -f "{{root}}/compose.yaml" run --rm dev just {{recipe}}
+    {{docker_compose}} --profile dev run --rm dev just {{recipe}}
+
+# Toolchain bootstrap of a fleet host from packages/machine/toolchains.lock.toml (usage: just fleet-bootstrap prd|fr1|fr2)
+fleet-bootstrap role:
+    tar -cf - -C "{{root}}/infra/fleet/bootstrap" common.sh {{role}}.sh -C "{{root}}/packages/machine" toolchains.lock.toml | timeout 120 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'rm -rf /tmp/aphrody-bootstrap && mkdir -p /tmp/aphrody-bootstrap && tar -xf - -C /tmp/aphrody-bootstrap'
+    timeout 1800 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'cd /tmp/aphrody-bootstrap && LOCK=$PWD/toolchains.lock.toml sh {{role}}.sh'
+
+# Regenerate the pinned toolchain manifest (versions + upstream checksums)
+toolchains-lock:
+    bun "{{root}}/scripts/toolchains-lock.ts"
 
 # Nix alternative to containers: dev shell from flake.nix
 nix-shell:

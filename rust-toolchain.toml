@@ -1,5 +1,6 @@
 [toolchain]
-# Upstream-first: track nightly. Floor for users stays rust-version = 1.97.
-channel = "nightly"
-components = ["rustfmt", "clippy", "rust-src"]
+# Pinned nightly (packages/machine/toolchains.lock.toml): rustc 3ef0c22cd, LLVM 23.1.5 = clang 23.1.5,
+# required for cross-language LTO (docs/llvm/UNIFIED-TOOLCHAIN.md). Bump both together.
+channel = "nightly-2026-11-12"
+components = ["rustfmt", "clippy", "rust-src", "rustc-codegen-cranelift-preview"]
 profile = "minimal"
