@@ -4,6 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The canonical cross-agent contract is [`AGENTS.md`](./AGENTS.md) plus [`.agents/SOUL.md`](./.agents/SOUL.md). This file adds what Claude Code specifically needs: commands, architecture, and the autonomous operating loop.
 
+@AGENTS.md
+@.agents/SOUL.md
+
 ## Repository Conventions (checked by `archguard` and CI)
 
 - `packages/ai-os` (`@aphrody/ai-os`) is the sole AI product and owner of AI routing, MCP, skills, memory. Other units are generalist software; do not add AI features or AI-flavored copy outside `ai-os`.

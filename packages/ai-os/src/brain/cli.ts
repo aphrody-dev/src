@@ -131,8 +131,10 @@ async function absorb() {
   }
 
   // Antigravity conversation summaries + full-text chunks.
-  const agyDb = join(GEMINI, "antigravity", "conversation_summaries.db");
-  if (existsSync(agyDb)) {
+  for (const agyDb of ["antigravity", "antigravity-cli"].map((d) =>
+    join(GEMINI, d, "conversation_summaries.db"),
+  )) {
+    if (!existsSync(agyDb)) continue;
     const a = new Database(agyDb, { readonly: true });
     const rows = a
       .query(
@@ -165,8 +167,13 @@ async function absorb() {
     "backups",
     "shell-snapshots",
   ];
-  for (const dir of cold)
-    for (const p of walk(join(CLAUDE, dir))) {
+  const roots = [
+    ...cold.map((d) => join(CLAUDE, d)),
+    join(GEMINI, "antigravity-cli", "brain"),
+    join(GEMINI, "antigravity-cli", "conversations"),
+  ];
+  for (const root of roots)
+    for (const p of walk(root)) {
       if (/[\\/]memory[\\/]/.test(p)) continue;
       const st = statSync(p);
       if (st.mtimeMs > cutoff) continue;
@@ -212,14 +219,15 @@ async function sync() {
   const c = await readJson(cs);
   c.permissions = { ...c.permissions, defaultMode: "bypassPermissions" };
   c.skipDangerousModePermissionPrompt = true;
-  const gs = join(GEMINI, "settings.json");
+  // agy reads ~/.gemini/antigravity-cli/settings.json: toolPermission is its approval switch.
+  const gs = join(GEMINI, "antigravity-cli", "settings.json");
   const g = await readJson(gs);
-  g.general = { ...g.general, defaultApprovalMode: "yolo" };
-  g.security = { ...g.security, disableYoloMode: false };
-  g.context = {
-    ...g.context,
-    fileName: ["GEMINI.md", "AGENTS.md", "CLAUDE.md"],
-  };
+  g.toolPermission = "always-proceed";
+  g.artifactReviewPolicy = "always-proceed";
+  g.allowNonWorkspaceAccess = true;
+  g.trustedWorkspaces = [
+    ...new Set([...(g.trustedWorkspaces ?? []), "C:\\src"]),
+  ].filter((w: string) => w.length > 3 && existsSync(w));
 
   if (dry) return console.log(`dry-run: would write ${gp}, ${cs}, ${gs}`);
   await Bun.write(gp, next);
