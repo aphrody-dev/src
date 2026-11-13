@@ -1,0 +1,68 @@
+# Canary channel (docs/VERSIONING.md): every green ci run on main + daily, built on fr1, published
+# as the rolling GitHub prerelease `canary` (Bun canary / Chromium Canary / Rust nightly model).
+name: canary
+on:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+    branches: [main]
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+concurrency:
+  group: canary
+  cancel-in-progress: true
+permissions: { contents: write }
+jobs:
+  canary:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: [self-hosted, fr1]
+    timeout-minutes: 90
+    env:
+      RUSTC_WRAPPER: ""
+      CARGO_TERM_COLOR: never
+      CARGO_TARGET_DIR: ${{ github.workspace }}/../canary-target
+      HEAVY_WAIT_MAX: "2700"
+      TARGET: x86_64-unknown-linux-musl
+      SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+    steps:
+      - id: app
+        # GitHub App aphrody-labs (docs/infra/GITHUB-APP.md) : jeton d'installation de 1 h, borné aux permissions listées.
+        if: vars.APHRODY_APP_CLIENT_ID != ''
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.APHRODY_APP_CLIENT_ID }}
+          private-key: ${{ secrets.APHRODY_APP_KEY }}
+          owner: aphrody-labs
+          permission-contents: read
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.SHA }}
+          token: ${{ steps.app.outputs.token || github.token }}
+          submodules: false
+      - name: Toolchain
+        run: bun scripts/toolchain.ts install
+      - name: Build ay (profile dist, musl)
+        run: aphrody-heavy cargo build --profile dist -p aphrody --target "$TARGET"
+      - name: Package
+        id: pkg
+        run: |
+          base=$(cargo metadata --no-deps --format-version 1 | jaq -r '.packages[]|select(.name=="aphrody").version')
+          ver="$base-canary.${{ github.run_number }}+${SHA::7}"
+          out="$RUNNER_TEMP/canary"; rm -rf "$out"; mkdir -p "$out/aphrody-$TARGET"
+          cp "$CARGO_TARGET_DIR/$TARGET/dist/ay" "$out/aphrody-$TARGET/ay"
+          echo "$ver" > "$out/aphrody-$TARGET/VERSION"
+          tar -C "$out" -cJf "$out/aphrody-$TARGET.tar.xz" "aphrody-$TARGET"
+          (cd "$out" && sha256sum "aphrody-$TARGET.tar.xz" > "aphrody-$TARGET.tar.xz.sha256")
+          echo "ver=$ver" >> "$GITHUB_OUTPUT"; echo "dir=$out" >> "$GITHUB_OUTPUT"
+      - name: Publish rolling prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete canary --cleanup-tag --yes 2>/dev/null || true
+          gh release create canary --target "$SHA" --prerelease --latest=false \
+            --title "canary ${{ steps.pkg.outputs.ver }}" \
+            --notes "Canary ${{ steps.pkg.outputs.ver }} from main@$SHA (docs/VERSIONING.md). Not for production." \
+            "${{ steps.pkg.outputs.dir }}"/aphrody-$TARGET.tar.xz "${{ steps.pkg.outputs.dir }}"/aphrody-$TARGET.tar.xz.sha256
+      - name: Canary ring (fr1, side by side)
+        run: install -D -m755 "$CARGO_TARGET_DIR/$TARGET/dist/ay" "$HOME/.local/bin/ay-canary" && "$HOME/.local/bin/ay-canary" --version

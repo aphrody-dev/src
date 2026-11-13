@@ -333,6 +333,10 @@ fleet-bootstrap role:
 fleet-resilience-proof host:
     sh "{{root}}/infra/fleet/bin/fleet-resilience-proof.sh" {{host}}
 
+# Fleet hosts + public endpoints health, exit 1 if anything is down (docs/VERSIONING.md)
+ping:
+    sh "{{root}}/infra/fleet/bin/fleet-ping.sh"
+
 # Survive reboot/crash/kill on every host (infra/fleet/<host>/resilience.conf; usage: just fleet-resilience apply|check [pc fr2 prd fr1])
 fleet-resilience mode="check" *hosts:
     bash "{{root}}/infra/fleet/bin/fleet-resilience-remote.sh" {{ if mode =~ '^(apply|check)$' { mode } else { error("mode: apply|check") } }} {{hosts}}
