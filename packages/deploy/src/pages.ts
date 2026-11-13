@@ -227,9 +227,9 @@ export function insightsHtml(s: Summary | null): string {
     `<section class="card"><h3 class="title">${title}</h3>${rows.length ? `<table><thead><tr><th scope="col">Valeur</th><th scope="col">Vues</th></tr></thead><tbody>${rows.map((r) => `<tr><td>${esc(r.key || "(direct)")}</td><td>${r.n}</td></tr>`).join("")}</tbody></table>` : '<p class="support">Aucune donnée.</p>'}</section>`;
   const vit = METRICS.map((m) => {
     const x = s.vitals[m];
-    return `<section class="card"><h3 class="title">${m} (p75)</h3>${x ? `<p class="kpi ${rating(m, x.p75)}">${fmt(m, x.p75)}</p><p class="support">${x.n} visites</p>` : '<p class="support">Aucune mesure.</p>'}</section>`;
+    return `<section class="card"><h3 class="title">${m === "INP" ? "INP approché" : m} (p75)</h3>${x ? `<p class="kpi ${rating(m, x.p75)}">${fmt(m, x.p75)}</p><p class="support">${x.n} visites</p>` : '<p class="support">Aucune mesure.</p>'}</section>`;
   }).join("");
-  return `<h2>Analytics (${s.days} jours)</h2><div class="grid"><section class="card"><h3 class="title">Pages vues</h3><p class="kpi">${s.views}</p><p class="support">Sans cookie ni identifiant ; robots exclus.</p></section>${top("Pages", s.paths)}${top("Référents", s.referrers)}${top("Pays", s.countries)}${top("Appareils", s.devices)}</div><h2>Speed Insights</h2><p class="support">Core Web Vitals mesurées chez les visiteurs (RUM), 75e centile, seuils web.dev.</p><div class="grid">${vit}</div>`;
+  return `<h2>Analytics (${s.days} jours)</h2><div class="grid"><section class="card"><h3 class="title">Pages vues</h3><p class="kpi">${s.views}</p><p class="support">Sans cookie ni identifiant ; robots exclus.</p></section>${top("Pages", s.paths)}${top("Référents", s.referrers)}${top("Pays", s.countries)}${top("Appareils", s.devices)}</div><h2>Speed Insights</h2><p class="support">Core Web Vitals mesurées chez les visiteurs (RUM), 75e centile, seuils web.dev. INP approché : plus longue interaction de la visite (web-vitals prend le 98e centile au-delà de 50 interactions).</p><div class="grid">${vit}</div>`;
 }
 
 export function dashboard(

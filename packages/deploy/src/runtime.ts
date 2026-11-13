@@ -53,11 +53,11 @@ export async function runtime(
     return new Response(CLIENT, {
       headers: {
         "content-type": "text/javascript; charset=utf-8",
-        "cache-control": "public, max-age=3600",
+        "cache-control": "public, max-age=600, stale-while-revalidate=86400",
         "x-content-type-options": "nosniff",
       },
     });
-  if (sub === "v") return beacon(req, env, project);
+  if (sub === "v") return beacon(req, env, project, ctx);
   if (sub === "image") return image(req, env, project, sha, ctx);
   if (sub === "config" || sub.startsWith("config/"))
     return config(env, project, sub.slice(7));
@@ -68,28 +68,44 @@ async function beacon(
   req: Request,
   env: RuntimeEnv,
   project: string,
+  ctx?: Ctx,
 ): Promise<Response> {
   if (req.method !== "POST")
     return new Response(null, { status: 405, headers: NOSTORE });
   if (!env.INSIGHTS) return new Response(null, { status: 204 });
+  // Same-origin beacons only: another site cannot post into this project's numbers.
+  const origin = req.headers.get("origin");
+  const site = req.headers.get("sec-fetch-site");
+  if (
+    (origin && origin !== new URL(req.url).origin) ||
+    (site && site !== "same-origin")
+  )
+    return new Response(null, { status: 403, headers: NOSTORE });
+  const len = Number(req.headers.get("content-length") ?? 0);
+  if (len > 2048) return new Response(null, { status: 413, headers: NOSTORE });
   const body = await req.text();
-  if (body.length > 2048)
+  if (new TextEncoder().encode(body).length > 2048)
     return new Response(null, { status: 413, headers: NOSTORE });
   const cf = (req as { cf?: { country?: string } }).cf;
   const ua = req.headers.get("user-agent") ?? "";
-  if (/bot|crawl|spider|lighthouse|headless/i.test(ua))
+  // Best effort only: declared crawlers and lab tools are skipped; a disguised client is still counted.
+  if (!ua || /bot|crawl|spider|lighthouse|headless/i.test(ua))
     return new Response(null, { status: 204 });
   const stub = env.INSIGHTS.get(env.INSIGHTS.idFromName(project));
-  await stub.fetch(
-    new Request("https://insights/ingest", {
-      method: "POST",
-      body,
-      headers: {
-        "x-country": cf?.country ?? "XX",
-        "x-device": /Mobi|Android/i.test(ua) ? "mobile" : "desktop",
-      },
-    }),
-  );
+  const write = stub
+    .fetch(
+      new Request("https://insights/ingest", {
+        method: "POST",
+        body,
+        headers: {
+          "x-country": cf?.country ?? "XX",
+          "x-device": /Mobi|Android/i.test(ua) ? "mobile" : "desktop",
+        },
+      }),
+    )
+    .catch(() => undefined);
+  if (ctx) ctx.waitUntil(write);
+  else await write;
   return new Response(null, { status: 204, headers: NOSTORE });
 }
 
@@ -107,6 +123,10 @@ export async function insightsSummary(
   return r.ok ? ((await r.json()) as Summary) : null;
 }
 
+const QUALITIES = [50, 75, 90]; // quantized: a bounded number of variants per image and width
+const OUT = new Set(["image/avif", "image/webp", "image/png", "image/jpeg"]);
+const MAX_INPUT = 20 * 1024 * 1024;
+
 async function image(
   req: Request,
   env: RuntimeEnv,
@@ -117,10 +137,14 @@ async function image(
   const url = new URL(req.url);
   const src = url.searchParams.get("url") ?? "";
   const w = Number(url.searchParams.get("w"));
-  const q = Math.min(100, Math.max(1, Number(url.searchParams.get("q") ?? 75)));
+  const asked = Number(url.searchParams.get("q")) || 75;
+  const q = QUALITIES.reduce((a, b) =>
+    Math.abs(b - asked) < Math.abs(a - asked) ? b : a,
+  );
+  // Plain relative paths only: no encoded byte, backslash, empty segment or dot segment.
   if (
-    !/^\/[^/\\]/.test(src) ||
-    src.includes("..") ||
+    !/^\/[A-Za-z0-9._\-]+(\/[A-Za-z0-9._\-]+)*$/.test(src) ||
+    /(^|\/)\.\.?(\/|$)/.test(src) ||
     !WIDTHS.includes(w) ||
     !/\.(png|jpe?g|webp|avif|gif)$/i.test(src)
   )
@@ -133,7 +157,7 @@ async function image(
       : undefined;
   const cache = (globalThis as { caches?: { default?: any } }).caches?.default;
   const key = new Request(
-    `https://deploy-cache.aphrody.app/_img/${keys.base(project, sha)}${encodeURI(src)}?w=${w}&q=${q}&f=${format ?? "orig"}`,
+    `https://deploy-cache.aphrody.app/_img/${keys.base(project, sha)}${src}?w=${w}&q=${q}&f=${format ?? "orig"}`,
   );
   const hit = cache
     ? ((await cache.match(key)) as Response | undefined)
@@ -141,29 +165,45 @@ async function image(
   if (hit) return hit;
   const obj = await env.BUCKET.get(keys.file(project, sha, src));
   if (!obj) return new Response("not found", { status: 404, headers: NOSTORE });
-  let res: Response;
-  if (env.IMAGES) {
-    const out = await env.IMAGES.input(obj.body)
-      .transform({ width: w, fit: "scale-down" })
-      .output({
-        format: format ?? obj.httpMetadata?.contentType ?? "image/png",
-        quality: q,
-      });
-    const r = out.response() as Response;
-    res = new Response(r.body, { headers: r.headers });
-  } else {
-    res = new Response(obj.body, {
+  const type = obj.httpMetadata?.contentType ?? "application/octet-stream";
+  const original = () =>
+    new Response(obj.body, {
       headers: {
-        "content-type":
-          obj.httpMetadata?.contentType ?? "application/octet-stream",
+        "content-type": type,
+        // Not optimized (binding absent, input too large or transform error): short cache, retried soon.
+        "cache-control": "public, max-age=300",
+        vary: "Accept",
+        "x-content-type-options": "nosniff",
       },
     });
+  const outFormat = format ?? (OUT.has(type) ? type : "image/png");
+  if (!env.IMAGES || (obj.size ?? 0) > MAX_INPUT) return original();
+  let res: Response;
+  try {
+    const out = await env.IMAGES.input(obj.body)
+      .transform({ width: w, fit: "scale-down" })
+      .output({ format: outFormat, quality: q });
+    const r = out.response() as Response;
+    if (!r.ok) throw new Error(`images ${r.status}`);
+    res = new Response(r.body, { headers: r.headers });
+  } catch {
+    const again = await env.BUCKET.get(keys.file(project, sha, src));
+    return again
+      ? new Response(again.body, {
+          headers: {
+            "content-type": type,
+            "cache-control": "public, max-age=300",
+            vary: "Accept",
+            "x-content-type-options": "nosniff",
+          },
+        })
+      : new Response("not found", { status: 404, headers: NOSTORE });
   }
   res.headers.set("cache-control", "public, max-age=31536000, immutable");
   res.headers.set("vary", "Accept");
   res.headers.set("x-content-type-options", "nosniff");
   if (cache) {
-    const put = cache.put(key, res.clone());
+    const put = cache.put(key, res.clone()).catch(() => undefined);
     if (ctx) ctx.waitUntil(put);
     else await put;
   }
@@ -231,6 +271,7 @@ const CAP = 50_000; // samples per metric and day
 
 export class Insights {
   sql: SqlLike;
+  cleaned = ""; // day of the last retention sweep (once per day and instance)
   constructor(state: { storage: { sql: SqlLike } }) {
     this.sql = state.storage.sql;
     this.sql.exec(
@@ -239,7 +280,7 @@ export class Insights {
     this.sql.exec(
       "CREATE TABLE IF NOT EXISTS vit(day TEXT, metric TEXT, path TEXT, v REAL)",
     );
-    this.sql.exec("CREATE INDEX IF NOT EXISTS vit_dm ON vit(day, metric)");
+    this.sql.exec("CREATE INDEX IF NOT EXISTS vit_dmv ON vit(day, metric, v)");
   }
 
   async fetch(req: Request): Promise<Response> {
@@ -291,11 +332,14 @@ export class Insights {
           );
         }
       }
-      const old = new Date(Date.now() - 90 * 86400_000)
-        .toISOString()
-        .slice(0, 10);
-      this.sql.exec("DELETE FROM pv WHERE day < ?", old);
-      this.sql.exec("DELETE FROM vit WHERE day < ?", old);
+      if (this.cleaned !== day) {
+        const old = new Date(Date.now() - 90 * 86400_000)
+          .toISOString()
+          .slice(0, 10);
+        this.sql.exec("DELETE FROM pv WHERE day < ?", old);
+        this.sql.exec("DELETE FROM vit WHERE day < ?", old);
+        this.cleaned = day;
+      }
       return new Response(null, { status: 204 });
     }
     if (url.pathname === "/summary") {

@@ -98,6 +98,21 @@ describe("runtime", () => {
     expect(s.views).toBe(0);
   });
 
+  test("beacons from another site are refused", async () => {
+    const env = { BUCKET: bucket() as any, INSIGHTS: ns() };
+    const r = await runtime(
+      new Request("https://yolo.aphrody.app/_aphrody/v", {
+        method: "POST",
+        body: '{"k":"pv","p":"/"}',
+        headers: { ...UA, origin: "https://evil.example" },
+      }),
+      env,
+      "yolo",
+      "a".repeat(40),
+    );
+    expect(r!.status).toBe(403);
+  });
+
   test("image requests are validated", async () => {
     const env = { BUCKET: bucket() as any };
     for (const q of [
