@@ -1,0 +1,1504 @@
+{
+ "site": "material.io",
+ "generated": "2026-11-13",
+ "mode": "index",
+ "license": "Google Terms of Service (aucune licence libre affichée)",
+ "license_evidence": "https://material.io/ : aucune mention de licence de contenu ; renvoie aux conditions Google",
+ "robots": "https://material.io/robots.txt",
+ "count": 370,
+ "sections": {
+  "/": 1,
+  "blog": 7,
+  "collections": 1,
+  "components": 105,
+  "design": 85,
+  "develop": 94,
+  "go": 65,
+  "material-theme-builder": 1,
+  "resources": 9,
+  "subscribe": 1,
+  "whats-new": 1
+ },
+ "urls": [
+  {
+   "url": "https://material.io/",
+   "section": "/"
+  },
+  {
+   "url": "https://material.io/blog",
+   "section": "blog"
+  },
+  {
+   "url": "https://material.io/blog/design-material-theme-color",
+   "section": "blog"
+  },
+  {
+   "url": "https://material.io/blog/device-metrics",
+   "section": "blog"
+  },
+  {
+   "url": "https://material.io/blog/digital-wellbeing-face-retouching",
+   "section": "blog"
+  },
+  {
+   "url": "https://material.io/blog/google-material-custom-theme",
+   "section": "blog"
+  },
+  {
+   "url": "https://material.io/blog/material-partner-studies",
+   "section": "blog"
+  },
+  {
+   "url": "https://material.io/blog/whats-new-material-you",
+   "section": "blog"
+  },
+  {
+   "url": "https://material.io/collections/google-io18",
+   "section": "collections"
+  },
+  {
+   "url": "https://material.io/components",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/app-bars-bottom",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/app-bars-bottom/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/app-bars-bottom/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/app-bars-bottom/ios",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/app-bars-top",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/app-bars-top/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/app-bars-top/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/app-bars-top/ios",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/app-bars-top/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/backdrop",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/banners",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/banners/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/banners/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/bottom-navigation",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/bottom-navigation/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/bottom-navigation/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/bottom-navigation/ios",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/buttons",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/buttons-floating-action-button",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/buttons-floating-action-button/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/buttons-floating-action-button/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/buttons-floating-action-button/ios",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/buttons-floating-action-button/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/buttons/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/buttons/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/buttons/ios",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/buttons/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/cards",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/cards/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/cards/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/cards/ios",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/cards/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/checkboxes",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/chips",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/chips/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/chips/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/chips/ios",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/chips/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/data-tables",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/data-tables/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/data-tables/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/date-pickers",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/date-pickers/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/dialogs",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/dialogs/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/dialogs/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/dialogs/ios",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/dialogs/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/dividers",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/dividers/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/image-lists",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/image-lists/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/lists",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/lists/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/lists/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/lists/ios",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/lists/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/menus",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/menus/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/menus/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/menus/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/navigation-drawer",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/navigation-drawer/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/navigation-drawer/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/navigation-drawer/ios",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/navigation-drawer/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/navigation-rail",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/progress-indicators",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/progress-indicators/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/progress-indicators/ios",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/progress-indicators/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/radio-buttons",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/selection-controls",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/sheets-bottom",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/sheets-bottom/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/sheets-bottom/ios",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/sheets-side",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/sliders",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/sliders/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/sliders/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/sliders/ios",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/sliders/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/snackbars",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/snackbars/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/snackbars/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/snackbars/ios",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/snackbars/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/switches",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/tabs",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/tabs/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/tabs/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/tabs/ios",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/tabs/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/text-fields",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/text-fields/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/text-fields/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/text-fields/ios",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/text-fields/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/time-pickers",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/time-pickers/android",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/time-pickers/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/tooltips",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/tooltips/flutter",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/components/tooltips/web",
+   "section": "components"
+  },
+  {
+   "url": "https://material.io/design",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/color/applying-color-to-ui.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/color/color-usage.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/color/dark-theme.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/color/text-legibility.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/color/the-color-system.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/communication/confirmation-acknowledgement.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/communication/data-formats.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/communication/data-visualization.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/communication/empty-states.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/communication/help-feedback.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/communication/imagery.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/communication/launch-screen.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/communication/offline-states.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/communication/onboarding.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/communication/writing.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/environment",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/environment/elevation.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/environment/light-shadows.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/environment/surfaces.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/foundation-overview",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/guidelines-overview",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/iconography/animated-icons.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/iconography/product-icons.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/iconography/system-icons.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/interaction/gestures.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/interaction/selection.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/interaction/states.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/introduction",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/layout/applying-density.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/layout/component-behavior.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/layout/pixel-density.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/layout/responsive-layout-grid.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/layout/spacing-methods.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/layout/understanding-layout.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/machine-learning/barcode-scanning.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/machine-learning/object-detection-live-camera.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/machine-learning/object-detection-static-image.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/machine-learning/understanding-ml-patterns.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/material-studies/about-our-material-studies.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/material-studies/basil.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/material-studies/crane.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/material-studies/fortnightly.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/material-studies/owl.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/material-studies/rally.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/material-studies/reply.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/material-studies/shrine.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/material-theming/implementing-your-theme.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/material-theming/overview.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/motion/choreography.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/motion/customization.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/motion/speed.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/motion/the-motion-system.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/motion/understanding-motion.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/navigation/navigation-transitions.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/navigation/search.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/navigation/understanding-navigation.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/platform-guidance/android-bars.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/platform-guidance/android-fingerprint.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/platform-guidance/android-haptics.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/platform-guidance/android-icons.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/platform-guidance/android-navigating-between-apps.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/platform-guidance/android-notifications.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/platform-guidance/android-permissions.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/platform-guidance/android-slices.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/platform-guidance/android-split-screen.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/platform-guidance/android-swipe-to-refresh.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/platform-guidance/android-text-selection-toolbar.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/platform-guidance/android-widget.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/platform-guidance/cross-platform-adaptation.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/shape/about-shape.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/shape/applying-shape-to-ui.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/shape/shape-as-expression.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/shape/shape-hierarchy.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/shape/shape-motion.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/sound/about-sound.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/sound/applying-sound-to-ui.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/sound/sound-attributes.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/sound/sound-choreography.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/sound/sound-resources.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/typography/language-support.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/typography/the-type-system.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/typography/understanding-typography.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/usability/accessibility.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/design/usability/bidirectionality.html",
+   "section": "design"
+  },
+  {
+   "url": "https://material.io/develop",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/components",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/components/badging",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/components/bottom-sheet-dialog-fragment",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/components/checkboxes",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/components/radiobuttons",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/components/switches",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/docs/building-from-source",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/docs/catalog-app",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/docs/contributing",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/docs/getting-started",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/supporting/badge",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/supporting/text-view",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/theming/color",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/theming/dark",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/theming/motion",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/theming/shape",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/theming/theming-overview",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/android/theming/typography",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/flutter",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/flutter/components/checkboxes",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/flutter/components/radio-buttons",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/flutter/components/switches",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/components/ink",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/components/library-info",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/components/navigation-bar",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/components/progress-indicators/progress-views",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/components/shapelibrary",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/components/shapes",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/components/theming",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/components/theming/bidirectionality",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/components/theming/color",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/components/theming/shape",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/components/theming/typography",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/docs/build-env",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/docs/contributing",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/docs/faq",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/docs/supporting-shapes",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/supporting/action-sheet",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/supporting/animation-timing",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/supporting/feature-highlights",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/supporting/flexible-header",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/supporting/header-stack-view",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/supporting/overlay-window",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/supporting/page-controls",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/supporting/palette",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/supporting/ripple",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/ios/supporting/shadow-elevations",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/components/buttons/icon-buttons",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/components/circular-progress",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/components/input-controls/checkboxes",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/components/input-controls/select-menus",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/components/input-controls/select-menus/icon",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/components/input-controls/text-field/helper-text",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/components/linear-progress",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/components/selection-controls/radio-buttons",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/components/switches",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/components/tabs/scroller",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/components/theme",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/examples",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/getting-started",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/guides/authoring-components",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/guides/framework-integration",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/guides/framework-wrappers",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/guides/importing-js",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/guides/migrating-from-mdl",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/guides/typography",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/animation",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/auto-init",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/base",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/density",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/dom",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/elevation",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/feature-targeting",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/floating-label",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/form-fields",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/layout-grid",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/line-ripple",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/menu-surface",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/notched-outline",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/ripple",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/rtl",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/tab-bar",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/tab-indicator",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/text-counter",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/text-field-icon",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/text-helper",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/supporting/touch-target",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/theming/color",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/theming/shape",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/develop/web/theming/theming-guide",
+   "section": "develop"
+  },
+  {
+   "url": "https://material.io/go/android-backdrop",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/android-banner",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/android-checkboxes",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/android-data-tables",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/android-dialogs",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/android-dividers",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/android-extended-fab",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/android-image-list",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/android-lists",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/android-menus",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/android-progress-indicators",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/android-radio-buttons",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/android-sheets-side",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/android-sliders",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/android-switches",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/android-tooltips",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/coming-soon",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-app-bar-bottom",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-app-bar-top",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-bidirectionality",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-bottom-navigation",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-buttons",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-cards",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-checkboxes",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-chips",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-color-theming",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-data-tables",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-dialogs",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-dividers",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-elevation",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-extended-fab",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-fab",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-lists",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-menus",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-motion",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-navigation-drawer",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-progress-indicators",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-radio-buttons",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-shape",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-sheets-bottom",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-sheets-side",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-sliders",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-snackbar",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-states",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-switches",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-tabs",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-text-fields",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-theming",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-tooltips",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/flutter-typography",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/ios-backdrop",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/ios-banner",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/ios-checkboxes",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/ios-data-tables",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/ios-dividers",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/ios-image-list",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/ios-lists",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/ios-menus",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/ios-navigation-drawer",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/ios-radio-buttons",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/ios-sheets-side",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/ios-switches",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/ios-tooltips",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/tools-color",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/go/tools-icons",
+   "section": "go"
+  },
+  {
+   "url": "https://material.io/material-theme-builder",
+   "section": "material-theme-builder"
+  },
+  {
+   "url": "https://material.io/resources",
+   "section": "resources"
+  },
+  {
+   "url": "https://material.io/resources/color",
+   "section": "resources"
+  },
+  {
+   "url": "https://material.io/resources/gallery",
+   "section": "resources"
+  },
+  {
+   "url": "https://material.io/resources/get-started",
+   "section": "resources"
+  },
+  {
+   "url": "https://material.io/resources/icons",
+   "section": "resources"
+  },
+  {
+   "url": "https://material.io/resources/motion-design-kit",
+   "section": "resources"
+  },
+  {
+   "url": "https://material.io/resources/motion-sticker-sheet",
+   "section": "resources"
+  },
+  {
+   "url": "https://material.io/resources/theme-editor",
+   "section": "resources"
+  },
+  {
+   "url": "https://material.io/resources/tutorials",
+   "section": "resources"
+  },
+  {
+   "url": "https://material.io/subscribe",
+   "section": "subscribe"
+  },
+  {
+   "url": "https://material.io/whats-new",
+   "section": "whats-new"
+  }
+ ]
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/aphrody-labs/src/docs/design/specs/spec.schema.json",
+  "title": "Spec de design normalisée (docs/design/specs)",
+  "type": "object",
+  "required": ["spec", "domain", "verified", "sources", "rules"],
+  "properties": {
+    "spec": { "type": "string", "description": "identifiant, ex. material-3.tokens" },
+    "domain": { "enum": ["tokens", "components", "motion", "a11y", "seo", "perf", "gpu-wasm", "principles"] },
+    "verified": { "type": "string", "format": "date", "description": "date de lecture des sources en ligne" },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["url", "license"],
+        "properties": {
+          "url": { "type": "string" },
+          "license": { "type": "string" },
+          "mirror": { "type": "string", "description": "chemin dans third_party/design-mirror si recopié" }
+        }
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "level", "rule"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*(\\.[a-z0-9-]+)+$" },
+          "level": { "enum": ["MUST", "MUST-NOT", "SHOULD", "SHOULD-NOT", "MAY"] },
+          "rule": { "type": "string", "description": "réécrit dans nos mots, jamais copié d'une source propriétaire" },
+          "value": {},
+          "source": { "type": "string" }
+        }
+      }
+    },
+    "tokens": { "type": "object", "description": "nom de token -> valeur ou description (domain tokens/motion)" },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "source"],
+        "properties": {
+          "name": { "type": "string" },
+          "source": { "type": "string" },
+          "variants": { "type": "array", "items": { "type": "string" } },
+          "anatomy": { "type": "array", "items": { "type": "string" } },
+          "states": { "type": "array", "items": { "type": "string" } },
+          "measures": { "type": "object" },
+          "a11y": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,73 @@
+# Sources de design de référence (scripts/design-mirror.ts). Licence vérifiée en ligne le 2026-11-13.
+# mode = "mirror" : texte recopié dans third_party/design-mirror/<site>/ (licence libre, attribution).
+# mode = "index"  : contenu propriétaire ; seul l'index des URLs (docs/design/index/<site>.json) est gardé,
+#                   les specs de docs/design/specs/ sont réécrites, sans texte ni image recopiés.
+# include/exclude : regex sur le chemin d'URL. robots.txt respecté ; delay_ms entre deux requêtes par site.
+
+[[site]]
+name = "m3.material.io"
+base = "https://m3.material.io"
+sitemaps = ["https://m3.material.io/sitemap.xml"]
+mode = "index"
+license = "Google Terms of Service (aucune licence libre affichée)"
+license_evidence = "pied de page rendu : seuls Privacy Policy et https://policies.google.com/terms ; pas de mention CC BY"
+include = ['.']
+exclude = ['^/archive', '\?']
+delay_ms = 1000
+
+[[site]]
+name = "material.io"
+base = "https://material.io"
+sitemaps = ["https://material.io/sitemap.xml"]
+mode = "index"
+license = "Google Terms of Service (aucune licence libre affichée)"
+license_evidence = "https://material.io/ : aucune mention de licence de contenu ; renvoie aux conditions Google"
+include = ['.']
+exclude = ['^/archive', '\?']
+delay_ms = 1000
+
+[[site]]
+name = "design.google"
+base = "https://design.google"
+sitemaps = ["https://design.google/sitemap.xml/"]
+mode = "index"
+license = "Google Terms of Service"
+license_evidence = "données de page (__NEXT_DATA__) : legal.terms = https://policies.google.com/terms ; pas de licence libre"
+include = ['.']
+exclude = ['^/api/']
+delay_ms = 1000
+
+[[site]]
+name = "vercel.com"
+base = "https://vercel.com"
+sitemaps = ["https://vercel.com/sitemap.xml"]
+mode = "index"
+license = "Vercel Terms of Service (propriétaire)"
+license_evidence = "https://vercel.com/legal/terms : Vercel conserve tous les droits sur les Services et leur documentation"
+include = ['^/geist', '^/(features|products)(/|$)', '^/docs/(frameworks|image-optimization|speed-insights|incremental-static-regeneration|edge-network|caching|cdn|fonts|functions|rendering|observability|analytics|web-analytics|accessibility|seo)', '^/(font|design)(/|$)', '^/guides/.*(performance|core-web-vitals|seo|accessib|image|font|lcp|inp|cls)']
+exclude = ['^/api/', '^/blog/authors', '^/changelog/authors']
+delay_ms = 1500
+
+[[site]]
+name = "web.dev"
+base = "https://web.dev"
+sitemaps = ["https://web.dev/sitemap.xml"]
+mode = "mirror"
+license = "CC-BY-4.0 (texte), Apache-2.0 (exemples de code)"
+license_evidence = "pied de page de chaque page : « Except as otherwise noted, the content of this page is licensed under the Creative Commons Attribution 4.0 License, and code samples are licensed under the Apache 2.0 License »"
+attribution = "Google LLC et les auteurs cités, web.dev"
+include = ['^/(learn/(accessibility|performance|design|html|css|forms|images)|explore/(accessible|fast|learn-core-web-vitals|seo|webassembly|progressive-web-apps)|articles/[^/]*(a11y|accessib|aria|focus|contrast|color|keyboard|screen-reader|alt|label|semantic|landmark|headings|seo|crawl|structured-data|canonical|robots|sitemap|meta|vitals|lcp|inp|cls|fid|ttfb|fcp|tbt|long-task|interaction|responsiveness|layout-shift|optimize|lighthouse|crux|rum|performance|preload|preconnect|fetch-priority|lazy|font|image|render|hydration|bfcache|prerender|speculation|content-visibility|webgpu|gpu|wasm|webassembly|simd|threads|offscreen|worker|view-transition|scroll|animation)[^/]*)(/|$)']
+exclude = ['\?', '/i18n/']
+delay_ms = 800
+
+[[site]]
+name = "developer.chrome.com"
+base = "https://developer.chrome.com"
+sitemaps = ["https://developer.chrome.com/sitemap.xml"]
+mode = "mirror"
+license = "CC-BY-4.0 (texte), Apache-2.0 (exemples de code)"
+license_evidence = "pied de page de chaque page : « Except as otherwise noted, the content of this page is licensed under the Creative Commons Attribution 4.0 License, and code samples are licensed under the Apache 2.0 License »"
+attribution = "Google LLC et les auteurs cités, developer.chrome.com"
+include = ['^/docs/(web-platform/webgpu|lighthouse/(accessibility|seo|performance|best-practices)|crux|performance|devtools/(performance|accessibility|lighthouse)|web-platform/(view-transitions|scroll-driven|prerender|long-animation|bfcache))', '^/blog/[^/]*(webgpu|gpu|wasm|webassembly|inp|lcp|cls|vitals|crux|loaf|long-animation|soft-nav|speculation|prerender|view-transition|scroll-driven|a11y|accessib|seo)[^/]*(/|$)']
+exclude = ['\?', '/i18n/']
+delay_ms = 800

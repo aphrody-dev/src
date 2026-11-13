@@ -5,6 +5,7 @@
 // sync: the same directives (global CLAUDE.md + MEMORY.md index) are written into agy's ~/.gemini/GEMINI.md
 //   managed block, and both CLIs get the same no-human-in-the-loop settings.
 // restore <path>: writes a compressed file back to its original path.
+// design: the design corpus of src (docs/design specs, URL indexes, third_party/design-mirror) alone; absorb includes it.
 import { Database } from "bun:sqlite";
 import {
   existsSync,
@@ -19,6 +20,8 @@ import { homedir } from "node:os";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { parseArgs } from "node:util";
 import { Context } from "../core/context";
+import { srcRoot } from "../orch/fleet";
+import { designEntries } from "./design";
 
 const { values, positionals } = parseArgs({
   args: Bun.argv.slice(2),
@@ -93,7 +96,7 @@ async function absorb() {
   const put = blobs.query(
     "INSERT INTO blobs(path, mtime, size, data) VALUES (?, ?, ?, ?) ON CONFLICT(path) DO UPDATE SET mtime=excluded.mtime, size=excluded.size, data=excluded.data",
   );
-  const n = { memory: 0, history: 0, session: 0, agy: 0, packed: 0, bytes: 0 };
+  const n = { memory: 0, history: 0, session: 0, agy: 0, design: 0, packed: 0, bytes: 0 };
   const entries: Parameters<Context["ingest"]>[0] & any[] = [];
 
   // Memories: every project's memory/*.md, one fact per file.
@@ -108,6 +111,11 @@ async function absorb() {
     });
     n.memory++;
   }
+
+  // Design corpus of src (scope "design").
+  const design = await designEntries(srcRoot());
+  entries.push(...design);
+  n.design = design.length;
 
   // Prompt history, grouped per project.
   const hist = join(CLAUDE, "history.jsonl");
@@ -218,7 +226,7 @@ async function absorb() {
   blobs.close();
   ctx.close();
   console.log(
-    `${dry ? "dry-run " : ""}absorbed memory=${n.memory} history=${n.history} sessions=${n.session} agy=${n.agy}; packed ${n.packed} files (${(n.bytes / 1e6).toFixed(1)} MB) older than ${values.days} d into ${join(home, "brain.sqlite")}`,
+    `${dry ? "dry-run " : ""}absorbed memory=${n.memory} history=${n.history} sessions=${n.session} agy=${n.agy} design=${n.design}; packed ${n.packed} files (${(n.bytes / 1e6).toFixed(1)} MB) older than ${values.days} d into ${join(home, "brain.sqlite")}`,
   );
 }
 
@@ -291,13 +299,28 @@ async function restore(path: string) {
   if (!rows.length) process.exitCode = 1;
 }
 
+async function design() {
+  mkdirSync(home, { recursive: true });
+  const ctx = new Context(join(home, "memory.sqlite"), undefined);
+  const entries = await designEntries(srcRoot());
+  const ids = new Set(entries.map((e) => e.id));
+  if (!dry) {
+    await ctx.ingest(entries);
+    for (const e of ctx.list({ scopes: ["design"] }, 100_000))
+      if (!ids.has(e.id)) ctx.remove(e.id);
+  }
+  ctx.close();
+  console.log(`${dry ? "dry-run " : ""}design corpus: ${entries.length} entries (scope design) in ${join(home, "memory.sqlite")}`);
+}
+
 const cmd = positionals[0];
 if (cmd === "absorb") await absorb();
+else if (cmd === "design") await design();
 else if (cmd === "sync") await sync();
 else if (cmd === "restore" && positionals[1]) await restore(positionals[1]);
 else {
   console.error(
-    "usage: ai-os brain <absorb|sync|restore <path>> [--days 7] [--dry-run] [--home ~/.agent]",
+    "usage: ai-os brain <absorb|sync|design|restore <path>> [--days 7] [--dry-run] [--home ~/.agent]",
   );
   process.exitCode = 2;
 }

@@ -1,0 +1,1786 @@
+{
+ "site": "web.dev",
+ "generated": "2026-11-13",
+ "mode": "mirror",
+ "license": "CC-BY-4.0 (texte), Apache-2.0 (exemples de code)",
+ "license_evidence": "pied de page de chaque page : « Except as otherwise noted, the content of this page is licensed under the Creative Commons Attribution 4.0 License, and code samples are licensed under the Apache 2.0 License »",
+ "robots": "https://web.dev/robots.txt",
+ "count": 354,
+ "sections": {
+  "articles": 188,
+  "explore": 4,
+  "learn": 162
+ },
+ "urls": [
+  {
+   "url": "https://web.dev/articles/a11y-for-teams",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:29+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/a11y-tips-for-web-dev",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:12+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/accent-color",
+   "section": "articles",
+   "lastmod": "2026-11-12T22:02:34+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/accessibility",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:15+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/accessibility-auditing-react",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:57+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/accessible-angular-with-codelyzer",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/accessible-responsive-design",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/accessible-tap-targets",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:39+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/animations-and-performance",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/animations-examples",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/animations-guide",
+   "section": "articles",
+   "lastmod": "2026-11-11T21:30:47+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/animations-overview",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/api-for-fast-beautiful-web-fonts",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:53+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/aria-labels-and-relationships",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/aria-poison-or-antidote",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:19+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/asymmetric-animation-timing",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/baseline-in-action-color-theme",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/baseline-in-action-image-gallery",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/better-layout-shift-metric",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/bfcache",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:46+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/browser-level-image-lazy-loading",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:53+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/browser-level-lazy-loading-for-cmss",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:25+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/canvas-imagefilters",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/canvas-performance",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/choose-the-right-image-format",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/client-side-ai-performance",
+   "section": "articles",
+   "lastmod": "2026-11-12T22:02:34+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/client-side-rendering-of-html-and-interactivity",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/cls",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:57+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/codelab-adapt-video-to-image-serving-based-on-network-quality",
+   "section": "articles",
+   "lastmod": "2026-11-12T16:17:04+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/codelab-imagemin-webpack",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/codelab-notifications-service-worker",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/codelab-optimize-third-party-javascript",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/codelab-preload-critical-assets",
+   "section": "articles",
+   "lastmod": "2026-11-12T20:26:33+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/codelab-preload-web-fonts",
+   "section": "articles",
+   "lastmod": "2026-11-12T20:26:33+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/codelab-serve-images-correct-dimensions",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/codelab-serve-images-webp",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:32+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/codelab-service-workers",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:19+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/codelab-setting-performance-budgets-with-webpack",
+   "section": "articles",
+   "lastmod": "2026-11-12T20:26:33+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/color-and-contrast-accessibility",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:46+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/color-scheme",
+   "section": "articles",
+   "lastmod": "2026-11-12T22:02:34+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/compiling-mkbitmap-to-webassembly",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:33+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/compress-images",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:19+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/compress-images-avif",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:32+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/content-visibility",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:57+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/control-focus-with-tabindex",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:53+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:19+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path/adding-interactivity-with-javascript",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:39+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path/analyzing-crp",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:22+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path/constructing-the-object-model",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:15+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path/measure-crp",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:29+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path/optimizing-critical-rendering-path",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:46+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path/page-speed-rules-and-recommendations",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:53+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path/render-blocking-css",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/critical-rendering-path/render-tree-construction",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:39+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/crux-and-rum-differences",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:22+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/css-border-animations",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:46+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/css-scroll-snap",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:32+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/css-web-vitals",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:22+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/debounce-your-input-handlers",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/debug-layout-shifts",
+   "section": "articles",
+   "lastmod": "2026-11-12T22:02:34+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/debug-performance-in-the-field",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:19+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/defining-core-web-vitals-thresholds",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/discover-performance-opportunities-with-lighthouse",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:46+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/easy-high-dpi-images",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:22+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/fast-playback-with-preload",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/fcp",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/fetch-metadata",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/fetch-priority",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/fid",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/find-slow-interactions-in-the-field",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/font-best-practices",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:46+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/gde-focus/alba-silvente-fuentes",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:46+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/gde-focus/helpdev",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/gde-focus/lars-knudsen",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/gde-focus/nishu-goel",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:15+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/get-started-optimize-angular",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/get-started-optimize-react",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/headings-and-landmarks",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/how-can-performance-improve-conversion",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/icons-and-browser-colors",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/iframe-lazy-loading",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:22+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/image-cdns",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/image-optimization-survey-2019",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/image-policies",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:12+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/images-tooling-report",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:57+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/incorporate-performance-budgets-into-your-build-tools",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/inp",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/keyboard-access",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/labels-and-text-alternatives",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/lazy-loading-video",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:32+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/lcp",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:12+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/lcp-lazy-loading",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/learn-core-web-vitals",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/lighthouse-ci",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:33+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/lighthouse-user-flows",
+   "section": "articles",
+   "lastmod": "2026-11-11T21:30:47+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/loading-wasm",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:19+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/long-tasks-devtools",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/manually-diagnose-slow-interactions-in-the-lab",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/media-capturing-images",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:33+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/mobile-optimization-and-performance",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:32+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/module-workers",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/modulepreload",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:32+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/offscreen-canvas",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/optimize-cls",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:32+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/optimize-css-background-images-with-media-queries",
+   "section": "articles",
+   "lastmod": "2026-11-12T16:17:57+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/optimize-cwv-business",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/optimize-inp",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:33+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/optimize-input-delay",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/optimize-javascript-execution",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/optimize-lcp",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/optimize-long-tasks",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/optimize-ttfb",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:15+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/optimize-vitals-lighthouse",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/optimize-webfont-loading",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:57+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/optimizing-content-efficiency-optimize-encoding-and-transfer",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:19+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/pass-lighthouse-seo-audit",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/performance-as-a-default-with-nextjs",
+   "section": "articles",
+   "lastmod": "2026-11-12T16:17:57+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/performance-audit",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/performance-audit-next",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:33+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/performance-audit-prework",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/performance-audit-security",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/performance-audit-share",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:12+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/performance-audit-tools",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:22+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/performance-budgets-101",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:46+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/performance-budgets-with-the-angular-cli",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/performance-mystery",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:19+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/performance-optimizing-content-efficiency",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/performance-optimizing-content-efficiency-client-hints",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:29+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/performance-poor-connectivity",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/precaching-with-the-angular-service-worker",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:32+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/preconnect-and-dns-prefetch",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/prefers-color-scheme",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:12+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/preload-critical-assets",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:29+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/preload-optional-fonts",
+   "section": "articles",
+   "lastmod": "2026-11-12T22:03:57+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/preload-responsive-images",
+   "section": "articles",
+   "lastmod": "2026-11-12T16:17:57+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/preload-scanner",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:57+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/prerender-with-react-snap",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/reduce-webfont-size",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/rendering-on-the-web",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:57+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/rendering-performance",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/responsive-images",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:33+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/route-preloading-in-angular",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:29+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/scaling-multithreaded-webassembly-applications",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:15+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/script-evaluation-and-long-tasks",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/semantics-and-screen-readers",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:33+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/semantics-aria",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/semantics-builtin",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:29+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/serve-images-webp",
+   "section": "articles",
+   "lastmod": "2026-11-12T22:03:57+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/serve-images-with-correct-dimensions",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/serve-responsive-images",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/service-worker-caching-and-http-caching",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/service-worker-lifecycle",
+   "section": "articles",
+   "lastmod": "2026-11-12T16:17:57+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/service-worker-mindset",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/service-workers-cache-storage",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/service-workers-registration",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:33+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/speed-rendering",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:29+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/style-focus",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:19+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/tbt",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/testing-web-design-color-contrast",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/text-alternatives-for-images",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:33+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/the-accessibility-tree",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:32+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/ttfb",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:12+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/use-imagemin-to-compress-images",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:32+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/use-lighthouse-for-performance-budgets",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/use-srcset-to-automatically-choose-the-right-image",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/user-centric-performance-metrics",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/using-lighthouse-bot-to-set-a-performance-budget",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/variable-fonts",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/variable-fonts-in-real-life",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/vitals",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:32+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/vitals-field-measurement-best-practices",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:53+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/vitals-ga4",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:15+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/vitals-measurement-getting-started",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/vitals-spa-faq",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/vitals-tools",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:46+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/wasm-av1",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:46+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/wasm-libraries",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:19+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/wasm-threads",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:39+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/web-performance-made-easy",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/webassembly-feature-detection",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:57+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/webassembly-memory-debugging",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/webassembly-performance-patterns-for-web-apps",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/webassembly-threads",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:12+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/webfonts-quick",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:29+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/what-is-accessibility",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:58:53+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/what-is-webassembly",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:25+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/workers-overview",
+   "section": "articles",
+   "lastmod": "2026-11-11T21:30:47+00:00"
+  },
+  {
+   "url": "https://web.dev/articles/your-first-performance-budget",
+   "section": "articles",
+   "lastmod": "2026-11-11T16:59:22+00:00"
+  },
+  {
+   "url": "https://web.dev/explore/fast",
+   "section": "explore",
+   "lastmod": "2026-05-26T14:09:07+00:00"
+  },
+  {
+   "url": "https://web.dev/explore/learn-core-web-vitals",
+   "section": "explore",
+   "lastmod": "2026-05-26T14:09:07+00:00"
+  },
+  {
+   "url": "https://web.dev/explore/progressive-web-apps",
+   "section": "explore",
+   "lastmod": "2026-07-29T12:49:27+00:00"
+  },
+  {
+   "url": "https://web.dev/explore/webassembly",
+   "section": "explore",
+   "lastmod": "2026-05-27T08:22:00+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/aria-html",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/color-contrast",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:39+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/conclusion",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/design-ux",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:29+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/focus",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/forms",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:39+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/glossary",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/images",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:25+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/javascript",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/measure",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:53+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/more-html",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/motion",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:36+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/patterns",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/structure",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:57+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/test-assistive-technology",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/test-automated",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:22+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/test-manual",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:39+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/typography",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/video-audio",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/welcome",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:33+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/accessibility/why",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:46+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/anchor-positioning",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/animations",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/backgrounds",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/blend-modes",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/borders",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:19+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/box-model",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/color",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/conclusion",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:57+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/container-queries",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:53+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/counters",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:46+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/cursors-and-pointers",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/custom-properties",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/filters",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:36+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/flexbox",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:32+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/focus",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:46+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/functions",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/gradients",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:19+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/grid",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:25+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/inheritance",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/layout",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/lists",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:22+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/logical-properties",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:15+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/nesting",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/overflow",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/paths-shapes-clipping-masking",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/popover-and-dialog",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:36+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/pseudo-classes",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:33+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/pseudo-elements",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:25+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/quiz",
+   "section": "learn",
+   "lastmod": "2025-01-05T18:11:06+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/selectors",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:32+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/shadows",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:29+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/sizing",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:53+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/spacing",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:15+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/specificity",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:53+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/the-cascade",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:25+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/transitions",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:25+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/typography",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:19+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/view-transitions-spas",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/welcome",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:39+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/css/z-index",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:29+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/accessibility",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:12+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/conclusion",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/icons",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:53+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/interaction",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/internationalization",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:22+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/intro",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/macro-layouts",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/media-features",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/media-queries",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:33+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/micro-layouts",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:53+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/picture-element",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:32+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/responsive-images",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/screen-configurations",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/theming",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/typography",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:33+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/ui-patterns",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/design/welcome",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:36+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/accessibility",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/address",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:25+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/attributes",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:57+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/auto",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:57+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/autofill",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:36+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/conclusion",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:46+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/cross-platform-testing",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/data",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/design-basics",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/fields",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:36+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/form",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/form-element",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:12+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/form-fields",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:22+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/identity",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:29+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/internationalization",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:29+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/javascript",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/payment",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:12+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/security-privacy",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:46+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/styling",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/styling-form-controls",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/testing",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:25+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/usability-testing",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:33+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/validation",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:33+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/forms/welcome",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:53+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:46+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/apis",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/attributes",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/audio-video",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/conclusion",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:57+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/details",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/dialog",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/document-structure",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/focus",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:46+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/forms",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:46+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/headings-and-sections",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:46+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/images",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:15+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/inline-text",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:25+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/links",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:25+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/lists",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:53+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/metadata",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/navigation",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:29+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/overview",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:53+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/semantic-html",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/tables",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/template",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:22+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/text-basics",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/html/welcome",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:46+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/automating",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:29+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/avif",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:25+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/cdn",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/cms",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:57+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/conclusion",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/descriptive",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/gif",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/history",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/jpeg",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:39+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/performance-issues",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:12+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/png",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:33+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/prescriptive",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:29+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/raster-images",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/responsive-images",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/vector-images",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/webp",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:12+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/images/welcome",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/performance",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/performance/code-split-javascript",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:40+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/performance/general-html-performance",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:57+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/performance/image-performance",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:08+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/performance/lazy-load-images-and-iframe-elements",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:00+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/performance/optimize-resource-loading",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/performance/optimize-web-fonts",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:43+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/performance/prefetching-prerendering-precaching",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:25+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/performance/resource-hints",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:53+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/performance/understanding-the-critical-path",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:25+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/performance/video-performance",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:04+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/performance/web-worker-demo",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:58:49+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/performance/web-worker-overview",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:25+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/performance/welcome",
+   "section": "learn",
+   "lastmod": "2025-07-24T17:14:04+00:00"
+  },
+  {
+   "url": "https://web.dev/learn/performance/why-speed-matters",
+   "section": "learn",
+   "lastmod": "2026-11-11T16:59:43+00:00"
+  }
+ ]
+}
