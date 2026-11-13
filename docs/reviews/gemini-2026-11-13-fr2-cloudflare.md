@@ -214,3 +214,7 @@ Exactitude 4/6, réseau 4/5, sécurité 2/5, complétude 2/4. Défauts : total d
 ## Passe 5 (2026-11-13 ~03:50) : 12/20
 
 Défauts : contournement de l'AOP par un SNI différent du Host, preuve fleet-only statique, prune multi-hôtes et à un seul PoP, fichier temporaire root prévisible, trois listes de pairs, clé de CA au coffre non documentée, CF_PROOF_TOKEN non documenté et rotation AOP dépendante d'OAuth, KEEP conservant destinations, storedClientId confondant fichier absent et hôte injoignable, critères du port 22 non mesurables.
+
+## Passe 6 (2026-11-13 ~04:20) : 12/20
+
+Exactitude 4/6, réseau 4/5, sécurité 2,5/5, complétude 1,5/4. Défauts : runs cités incohérents, critère mesh « depuis fr1 » non mesuré, jours verts sans contrôle de continuité, ssh-ca.ts sans retour arrière si la validation sshd échoue, CA sans AuthorizedPrincipalsFile et sudo sans mot de passe non documenté, unité de sonde dépendante de cloudflared-fr2, fichier de secrets exécuté par la sonde et première clé d'hôte acceptée, contrôle ssh-ca trop faible, jeton posé après l'import de lib.ts, ordre des passes, détails (colos, doublon KVM, chemins installés).
