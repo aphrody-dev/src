@@ -13,6 +13,7 @@
 | vectors.json | vecteurs de traits par shell (0-1) |
 | ROADMAP.md | jalons et critères de sortie |
 | PLAN.md | écarts, snapshot, install, tests, upstream |
+| pwsh-setup.md | profil pwsh 7.7 / 5.1 canonique : réglages, versions, sources, mesures |
 
 ## Shells
 
