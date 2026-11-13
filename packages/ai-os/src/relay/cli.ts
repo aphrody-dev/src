@@ -9,7 +9,11 @@
 //   relay acp                    agent ACP sur stdio
 //   relay mcp-stdio              même serveur MCP que POST /mcp, en stdio (JSON-RPC délimité par lignes)
 //   relay token                  affiche le jeton (pour claude mcp add)
-//   relay mcp-add                enregistre le relais dans Claude Code (claude mcp add --transport http, portée utilisateur)
+//   relay mcp-add [--bearer]     enregistre le relais dans Claude Code (portée utilisateur) : OAuth 2.1 (DCR + PKCE,
+//                                approbation automatique en boucle locale, zéro clic) ; --bearer : jeton fixe en en-tête
+//   relay approve <code> [--deny]  consent d'une demande OAuth en attente (code utilisateur RFC 8628 ou demande /authorize)
+//   relay client add <nom> [--scope "mcp a2a"]  client confidentiel client_credentials ; secret écrit dans
+//                                <relayHome>/clients/<nom>.json (0600), jamais affiché
 import { browserInfo, launchBrowser } from "./cdp.ts";
 import { acp } from "./acp.ts";
 import { claude, gemini } from "./backends.ts";
@@ -106,9 +110,8 @@ switch (cmd) {
     console.log(await relayToken());
     break;
   case "mcp-add": {
-    const t = await relayToken();
     const port = Bun.env.RELAY_PORT ?? "8790";
-    const p = Bun.spawnSync([
+    const args = [
       "claude",
       "mcp",
       "add",
@@ -118,15 +121,72 @@ switch (cmd) {
       "user",
       "relay",
       `http://127.0.0.1:${port}/mcp`,
-      "--header",
-      `Authorization: Bearer ${t}`,
-    ]);
+    ];
+    if (flag("--bearer"))
+      args.push("--header", `Authorization: Bearer ${await relayToken()}`);
+    const p = Bun.spawnSync(args);
     console.log(p.stdout.toString() || p.stderr.toString());
+    break;
+  }
+  case "approve": {
+    const port = Bun.env.RELAY_PORT ?? "8790";
+    const r = await fetch(`http://127.0.0.1:${port}/oauth/approve`, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${await relayToken()}`,
+        "content-type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        user_code: rest[0] ?? "",
+        request: rest[0] ?? "",
+        decision: flag("--deny") ? "deny" : "allow",
+      }),
+    });
+    console.log(r.ok ? "approuvé" : `refus : ${await r.text()}`);
+    process.exit(r.ok ? 0 : 1);
+  }
+  case "client": {
+    const name = rest[1];
+    if (rest[0] !== "add" || !name || !/^[\w.-]+$/.test(name))
+      throw new Error('usage : relay client add <nom> [--scope "mcp a2a"]');
+    const port = Bun.env.RELAY_PORT ?? "8790";
+    const i = rest.indexOf("--scope");
+    const scope = i >= 0 ? rest[i + 1] : "mcp a2a";
+    const r = await fetch(`http://127.0.0.1:${port}/oauth/register`, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${await relayToken()}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        client_name: name,
+        grant_types: ["client_credentials"],
+        token_endpoint_auth_method: "client_secret_basic",
+        scope,
+      }),
+    });
+    if (!r.ok) throw new Error(`enregistrement refusé : ${await r.text()}`);
+    const { join } = await import("node:path");
+    const { mkdirSync } = await import("node:fs");
+    const { relayHome } = await import("./cdp.ts");
+    const dir = join(relayHome(), "clients");
+    mkdirSync(dir, { recursive: true });
+    const f = join(dir, `${name}.json`);
+    const j = (await r.json()) as { client_id: string };
+    await Bun.write(
+      f,
+      JSON.stringify({
+        ...j,
+        token_endpoint: `http://127.0.0.1:${port}/oauth/token`,
+      }),
+    );
+    if (process.platform !== "win32") Bun.spawnSync(["chmod", "600", f]);
+    console.log(`client ${j.client_id} : identifiants dans ${f}`);
     break;
   }
   default:
     console.error(
-      "usage : relay serve | browser [--headful] | login | ask <prompt> [--claude|--web] | review <fichier> | inspect | recon [url] | acp | mcp-stdio | token | mcp-add",
+      "usage : relay serve | browser [--headful] | login | ask <prompt> [--claude|--web] | review <fichier> | inspect | recon [url] | acp | mcp-stdio | token | mcp-add [--bearer] | approve <code> | client add <nom>",
     );
     process.exit(2);
 }

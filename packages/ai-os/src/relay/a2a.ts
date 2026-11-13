@@ -16,6 +16,7 @@ import {
   VERSION,
 } from "./protocols.ts";
 import { TOOLS } from "./tools.ts";
+import { a2aSecurity } from "./oauth.ts";
 
 export const A2A_VERSION = "1.0";
 
@@ -631,8 +632,7 @@ export const agentCard = (url: string) => ({
     pushNotifications: false,
     extendedAgentCard: false,
   },
-  securitySchemes: { bearer: { httpAuthSecurityScheme: { scheme: "Bearer" } } },
-  securityRequirements: [{ schemes: { bearer: { list: [] } } }],
+  ...a2aSecurity(url),
   defaultInputModes: ["text/plain", "application/json"],
   defaultOutputModes: ["text/plain"],
   skills: TOOLS.filter((t) => A2A_SKILLS.includes(t.name)).map((t) => ({

@@ -1,5 +1,6 @@
-// Serveur du relais : un processus bun, toutes les liaisons sur 127.0.0.1 (ou RELAY_HOST), jeton porteur obligatoire
-// (sauf carte d'agent A2A) :
+// Serveur du relais : un processus bun, toutes les liaisons sur 127.0.0.1 (ou RELAY_HOST), autorisation obligatoire
+// (sauf carte d'agent A2A et métadonnées OAuth) : jeton d'accès OAuth 2.1 du serveur embarqué (oauth.ts, MCP 2026-07-28)
+// ou jeton fixe du relais en en-tête Authorization ; jamais de jeton dans l'URL hors amorçage de /webmcp.
 //   HTTP   POST /rpc (relais natif)  POST /mcp (MCP Streamable HTTP)  POST /a2a (A2A 1.0, SSE : a2a.ts)  GET /.well-known/agent-card.json
 //   WS     /ws : JSON-RPC du relais natif, un message par trame
 //   WebMCP GET /webmcp?token=… : outils exposés à l agent du navigateur (document.modelContext)
@@ -9,6 +10,7 @@ import { join } from "node:path";
 import { relayHome } from "./cdp.ts";
 import { webmcpPage } from "./webmcp.ts";
 import { a2aHttp, agentCard } from "./a2a.ts";
+import { createOAuth } from "./oauth.ts";
 import { dispatch, mcpRpc, nativeRpc, VERSION } from "./protocols.ts";
 
 /** Jeton du relais (32 octets aléatoires, créé au premier lancement dans le dossier privé de l'utilisateur). */
@@ -29,14 +31,23 @@ export async function serve() {
   const token = await relayToken();
   const host = Bun.env.RELAY_HOST ?? "127.0.0.1";
   const port = Number(Bun.env.RELAY_PORT ?? 8790);
-  const authed = (req: Request) => {
-    const a = req.headers.get("authorization") ?? "";
-    return (
-      a === `Bearer ${token}` ||
-      new URL(req.url).searchParams.get("token") === token ||
-      (req.headers.get("cookie") ?? "").split(/;\s*/).includes(`relay=${token}`)
-    );
-  };
+  const oauth = createOAuth({ token, host });
+  const cookie = (req: Request) =>
+    (req.headers.get("cookie") ?? "").split(/;\s*/).includes(`relay=${token}`);
+  // Cookie HttpOnly SameSite=Strict : posé par l'amorçage de /webmcp, accepté pour la page et ses appels /mcp.
+  const authed = (req: Request, resource: "mcp" | "a2a" | "rpc" = "rpc") =>
+    cookie(req) || typeof oauth.verify(req, resource) === "object";
+  const guard =
+    (
+      resource: "mcp" | "a2a" | "rpc",
+      h: (req: Request) => Response | Promise<Response>,
+    ) =>
+    (req: Request) => {
+      if (cookie(req)) return h(req);
+      const v = oauth.verify(req, resource);
+      if (v === "insufficient") return oauth.challenge(req, resource, true);
+      return v ? h(req) : oauth.challenge(req, resource);
+    };
   // Page WebMCP : ouverte une fois avec ?token=…, le jeton passe en cookie HttpOnly et quitte l'URL.
   const webmcp = async (req: Request) => {
     const u = new URL(req.url);
@@ -48,7 +59,7 @@ export async function serve() {
           "set-cookie": `relay=${token}; HttpOnly; SameSite=Strict; Path=/`,
         },
       });
-    if (!authed(req)) return deny();
+    if (!cookie(req)) return deny();
     return new Response(await webmcpPage(), {
       headers: {
         "content-type": "text/html; charset=utf-8",
@@ -59,7 +70,6 @@ export async function serve() {
   const deny = () =>
     new Response("jeton requis (Authorization: Bearer)", { status: 401 });
   const rpc = (h: Parameters<typeof dispatch>[1]) => async (req: Request) => {
-    if (!authed(req)) return deny();
     let body: unknown;
     try {
       body = await req.json();
@@ -81,21 +91,22 @@ export async function serve() {
     idleTimeout: 255,
     routes: {
       "/.well-known/agent-card.json": (req: Request) =>
-        Response.json(agentCard(new URL(req.url).origin)),
+        Response.json(agentCard(oauth.origin(req))),
+      ...oauth.routes,
       "/health": () =>
         Response.json({ name: "aphrody-relay", version: VERSION }),
-      "/rpc": { POST: rpc(nativeRpc) },
+      "/rpc": { POST: guard("rpc", rpc(nativeRpc)) },
       "/webmcp": webmcp,
       "/mcp": {
-        POST: rpc(mcpRpc),
+        POST: guard("mcp", rpc(mcpRpc)),
         GET: () => new Response(null, { status: 405 }),
       },
       "/a2a": {
-        POST: (req: Request) => (authed(req) ? a2aHttp(req) : deny()),
+        POST: guard("a2a", a2aHttp),
       },
       "/ws": (req: Request, srv: Bun.Server<{ open: number }>) =>
-        !authed(req)
-          ? deny()
+        !authed(req, "rpc")
+          ? oauth.challenge(req, "rpc")
           : srv.upgrade(req, { data: { open: Date.now() } })
             ? undefined
             : new Response("WebSocket attendu", { status: 426 }),
@@ -164,5 +175,5 @@ export async function serve() {
   console.error(
     `relay ${VERSION} http://${host}:${http.port} (rpc, mcp, a2a, ws) tcp ${tcp.port}${tls ? ` tls ${tls.port}` : ""}`,
   );
-  return { http, tcp, tls, token };
+  return { http, tcp, tls, token, oauth };
 }
