@@ -15,7 +15,13 @@ import {
   randomBytes,
   timingSafeEqual,
 } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 import { relayHome } from "./cdp.ts";
 
@@ -83,6 +89,33 @@ const eq = (a: string, b: string) => {
 export const isLoopbackHost = (h: string) =>
   h === "127.0.0.1" || h === "localhost" || h === "::1" || h === "[::1]";
 
+/** Redirection refusée : ni https, ni http en boucle locale, ni schéma privé (RFC 8252 §7.1), ou avec fragment. */
+export const badRedirect = (u: string) => {
+  try {
+    const x = new URL(u);
+    return (
+      !!x.hash ||
+      (x.protocol !== "https:" &&
+        !(x.protocol === "http:" && isLoopbackHost(x.hostname)) &&
+        !/^[a-z][a-z0-9+.-]*\.[a-z0-9+.-]+:$/.test(x.protocol))
+    );
+  } catch {
+    return true;
+  }
+};
+
+/** Hôte interdit pour la récupération d'un Client ID Metadata Document (SSRF). */
+const privateHost = (h: string) =>
+  isLoopbackHost(h) ||
+  h.endsWith(".localhost") ||
+  h.endsWith(".internal") ||
+  /^(10\.|127\.|169\.254\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|0\.)/.test(h) ||
+  /^\[?(f[cd]|fe80)/i.test(h);
+
+/** Valeur du cookie de session du relais : dérivée du jeton fixe, jamais le jeton lui-même. */
+export const relayCookie = (token: string) =>
+  createHmac("sha256", token).update("relay-cookie-v1").digest("base64url");
+
 export interface Principal {
   sub: string;
   client_id: string;
@@ -107,21 +140,23 @@ export function createOAuth(o: OAuthOptions) {
   let st: State;
   const load = (): State => {
     if (st) return st;
-    try {
-      st = JSON.parse(readFileSync(file, "utf8"));
-    } catch {
+    // Seule l'absence du fichier régénère la clé ; un fichier illisible est une erreur (jetons préservés).
+    if (!existsSync(file)) {
       st = { key: rand(32), clients: {}, refresh: {} };
       save();
-    }
+    } else st = JSON.parse(readFileSync(file, "utf8")) as State;
     return st;
   };
   const save = () => {
     const dir = join(file, "..");
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-    writeFileSync(file, JSON.stringify(st));
-    if (process.platform !== "win32") Bun.spawnSync(["chmod", "600", file]);
+    // Écriture atomique, droits 0600 dès la création (clé HMAC).
+    const tmp = `${file}.${process.pid}.tmp`;
+    writeFileSync(tmp, JSON.stringify(st), { mode: 0o600 });
+    renameSync(tmp, file);
   };
   const pending = new Map<string, Pending>();
+  const DEVICE = "urn:ietf:params:oauth:grant-type:device_code";
   const autoApprove =
     Bun.env.RELAY_OAUTH_AUTO !== "0" && isLoopbackHost(o.host);
   const cimdCache = new Map<string, { c: Client; exp: number }>();
@@ -147,6 +182,8 @@ export function createOAuth(o: OAuthOptions) {
       .digest("base64url");
     if (!eq(s, want)) return null;
     try {
+      const hd = JSON.parse(Buffer.from(h, "base64url").toString());
+      if (hd.alg !== "HS256" || hd.typ !== "at+jwt") return null;
       const c = JSON.parse(Buffer.from(p, "base64url").toString());
       return typeof c.exp === "number" && c.exp > now() ? c : null;
     } catch {
@@ -157,7 +194,8 @@ export function createOAuth(o: OAuthOptions) {
   async function client(id: string): Promise<Client | null> {
     const c = load().clients[id];
     if (c) return c;
-    if (!/^https:\/\/[^/]+\/.+/.test(id)) return null;
+    if (!/^https:\/\/[^/]+\/.+/.test(id) || privateHost(new URL(id).hostname))
+      return null;
     // Client ID Metadata Document : le document doit nommer exactement la même URL.
     const hit = cimdCache.get(id);
     if (hit && hit.exp > Date.now()) return hit.c;
@@ -168,11 +206,14 @@ export function createOAuth(o: OAuthOptions) {
           fetch(u, { signal: AbortSignal.timeout(5000), redirect: "error" }))
       )(id);
       if (!r.ok) return null;
-      const d = (await r.json()) as Partial<Client> & { client_id?: string };
+      const raw = await r.text();
+      if (raw.length > 65536) return null;
+      const d = JSON.parse(raw) as Partial<Client> & { client_id?: string };
       if (
         d.client_id !== id ||
         !Array.isArray(d.redirect_uris) ||
-        !d.redirect_uris.length
+        !d.redirect_uris.length ||
+        d.redirect_uris.some((u) => badRedirect(u))
       )
         return null;
       const c: Client = {
@@ -186,6 +227,7 @@ export function createOAuth(o: OAuthOptions) {
       const age = Number(
         /max-age=(\d+)/.exec(r.headers.get("cache-control") ?? "")?.[1] ?? 300,
       );
+      if (cimdCache.size > 256) cimdCache.clear();
       cimdCache.set(id, { c, exp: Date.now() + Math.min(age, 86400) * 1000 });
       return c;
     } catch {
@@ -222,6 +264,7 @@ export function createOAuth(o: OAuthOptions) {
     scope: string,
     resource: string[],
     family?: string,
+    refresh = true,
   ) {
     const exp = now() + TTL();
     const access_token = sign({
@@ -240,9 +283,10 @@ export function createOAuth(o: OAuthOptions) {
       expires_in: TTL(),
       scope,
     };
-    {
+    if (refresh) {
       const rt = rand(32);
-      load().refresh[sha(rt)] = {
+      const s = load();
+      s.refresh[sha(rt)] = {
         client_id,
         scope,
         resource,
@@ -250,8 +294,8 @@ export function createOAuth(o: OAuthOptions) {
         exp: now() + REFRESH_TTL,
       };
       // Purge des jetons expirés.
-      for (const [k, v] of Object.entries(st.refresh))
-        if (v.exp < now()) delete st.refresh[k];
+      for (const [k, v] of Object.entries(s.refresh))
+        if (v.exp < now()) delete s.refresh[k];
       save();
       body.refresh_token = rt;
     }
@@ -269,9 +313,10 @@ export function createOAuth(o: OAuthOptions) {
     let secret = f.get("client_secret") ?? "";
     const a = req.headers.get("authorization") ?? "";
     if (a.startsWith("Basic ")) {
-      const [u, p] = Buffer.from(a.slice(6), "base64").toString().split(":");
-      id = decodeURIComponent(u ?? "");
-      secret = decodeURIComponent(p ?? "");
+      const raw = Buffer.from(a.slice(6), "base64").toString();
+      const i = raw.indexOf(":");
+      id = decodeURIComponent(i < 0 ? raw : raw.slice(0, i));
+      secret = decodeURIComponent(i < 0 ? "" : raw.slice(i + 1));
     }
     const c = await client(id);
     if (!c) return err("invalid_client", "client inconnu", 401);
@@ -348,22 +393,12 @@ export function createOAuth(o: OAuthOptions) {
       : [];
     if (grants.includes("authorization_code") && !redirects.length)
       return err("invalid_redirect_uri", "redirect_uris requis");
-    for (const u of redirects) {
-      try {
-        const x = new URL(u);
-        if (
-          x.protocol !== "https:" &&
-          !(x.protocol === "http:" && isLoopbackHost(x.hostname)) &&
-          !/^[a-z][a-z0-9+.-]*\.[a-z0-9+.-]+:$/.test(x.protocol)
-        )
-          return err(
-            "invalid_redirect_uri",
-            `${u} : https, boucle locale ou schéma privé attendu`,
-          );
-      } catch {
-        return err("invalid_redirect_uri", `${u} invalide`);
-      }
-    }
+    for (const u of redirects)
+      if (typeof u !== "string" || badRedirect(u))
+        return err(
+          "invalid_redirect_uri",
+          `${u} : https, boucle locale ou schéma privé attendu, sans fragment`,
+        );
     const confidential =
       grants.includes("client_credentials") ||
       (m.token_endpoint_auth_method && m.token_endpoint_auth_method !== "none");
@@ -400,10 +435,19 @@ export function createOAuth(o: OAuthOptions) {
     );
   }
 
+  const cookieValue = relayCookie(o.token);
   const cookieAuthed = (req: Request) =>
     (req.headers.get("cookie") ?? "")
       .split(/;\s*/)
-      .includes(`relay=${o.token}`);
+      .some((c) => c.startsWith("relay=") && eq(c.slice(6), cookieValue));
+  /** POST porté par le cookie : même origine exigée (Sec-Fetch-Site ou Origin), protection CSRF. */
+  const sameOrigin = (req: Request) => {
+    const site = req.headers.get("sec-fetch-site");
+    if (site) return site === "same-origin";
+    const og = req.headers.get("origin");
+    return !!og && og === new URL(req.url).origin;
+  };
+  const ownerPost = (req: Request) => cookieAuthed(req) && sameOrigin(req);
 
   function redirectWith(
     base: string,
@@ -430,6 +474,9 @@ export function createOAuth(o: OAuthOptions) {
           "content-type": "text/html; charset=utf-8",
           "cache-control": "no-store",
           "x-frame-options": "DENY",
+          "x-content-type-options": "nosniff",
+          "content-security-policy":
+            "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'",
         },
       },
     );
@@ -447,7 +494,7 @@ export function createOAuth(o: OAuthOptions) {
     if (decision && req.method === "POST") {
       const id = q.get("request") ?? "";
       const p = pending.get(id);
-      if (!p || p.kind !== "code" || !cookieAuthed(req))
+      if (!p || p.kind !== "code" || !ownerPost(req))
         return err("access_denied", "demande inconnue ou non autorisée", 403);
       pending.delete(id);
       if (decision !== "allow")
@@ -526,11 +573,12 @@ export function createOAuth(o: OAuthOptions) {
     if (!resource) return err("invalid_target", "ressource inconnue");
     const device_code = rand(32);
     const alphabet = "BCDFGHJKLMNPQRSTVWXZ";
-    const bytes = randomBytes(8);
-    const user_code = [...bytes]
-      .map((b) => alphabet[b % alphabet.length])
-      .join("")
-      .replace(/^(.{4})/, "$1-");
+    // Échantillonnage par rejet : 8 caractères sans biais de modulo (256 n'est pas multiple de 20).
+    const chars: string[] = [];
+    while (chars.length < 8)
+      for (const b of randomBytes(16))
+        if (b < 240 && chars.length < 8) chars.push(alphabet[b % 20]!);
+    const user_code = chars.join("").replace(/^(.{4})/, "$1-");
     pending.set(device_code, {
       kind: "device",
       client_id: c.client_id,
@@ -569,7 +617,7 @@ export function createOAuth(o: OAuthOptions) {
   async function approveHttp(req: Request) {
     const ok =
       eq(req.headers.get("authorization") ?? "", `Bearer ${o.token}`) ||
-      cookieAuthed(req);
+      ownerPost(req);
     if (!ok) return err("access_denied", "jeton du relais requis", 401);
     const f =
       req.method === "POST"
@@ -595,6 +643,7 @@ export function createOAuth(o: OAuthOptions) {
         `<p>Approuver depuis un terminal du propriétaire : <code>relay approve ${esc(code)}</code>.</p>`,
       );
     if (req.method === "POST") {
+      if (!sameOrigin(req)) return err("access_denied", "origine refusée", 403);
       const f = new URLSearchParams(await req.text());
       return page(
         "Appareil",
@@ -615,7 +664,6 @@ export function createOAuth(o: OAuthOptions) {
     const c = await tokenClient(req, f);
     if (c instanceof Response) return c;
     const grant = f.get("grant_type") ?? "";
-    const DEVICE = "urn:ietf:params:oauth:grant-type:device_code";
     const g = c.grant_types;
     const allowed =
       g.includes(grant) ||
@@ -647,7 +695,14 @@ export function createOAuth(o: OAuthOptions) {
       const resource = asked.length ? pickResources(base, asked) : p.resource;
       if (!resource || !resource.every((r) => p.resource.includes(r)))
         return err("invalid_target", "ressource hors autorisation");
-      return issue(base, c.client_id, p.scope, resource);
+      return issue(
+        base,
+        c.client_id,
+        p.scope,
+        resource,
+        undefined,
+        c.grant_types.includes("refresh_token"),
+      );
     }
     if (grant === "refresh_token") {
       const h = sha(f.get("refresh_token") ?? "");
@@ -656,14 +711,19 @@ export function createOAuth(o: OAuthOptions) {
         return err("invalid_grant", "jeton de rafraîchissement invalide");
       if (r.used) {
         // Réutilisation d'un jeton déjà tourné : toute la famille est révoquée (OAuth 2.1 §4.3.1).
-        for (const [k, v] of Object.entries(st.refresh))
-          if (v.family === r.family) delete st.refresh[k];
+        const s = load();
+        for (const [k, v] of Object.entries(s.refresh))
+          if (v.family === r.family) delete s.refresh[k];
         save();
         return err(
           "invalid_grant",
           "jeton de rafraîchissement réutilisé : famille révoquée",
         );
       }
+      const asked = f.getAll("resource");
+      const resource = asked.length ? pickResources(base, asked) : r.resource;
+      if (!resource || !resource.every((x) => r.resource.includes(x)))
+        return err("invalid_target", "ressource hors autorisation");
       r.used = true;
       const scope = f.get("scope")
         ? f
@@ -672,7 +732,7 @@ export function createOAuth(o: OAuthOptions) {
             .filter((s) => r.scope.split(" ").includes(s))
             .join(" ")
         : r.scope;
-      return issue(base, c.client_id, scope || r.scope, r.resource, r.family);
+      return issue(base, c.client_id, scope || r.scope, resource, r.family);
     }
     if (grant === "client_credentials") {
       if (!c.secret_sha256) return err("unauthorized_client", "client public");
@@ -722,7 +782,14 @@ export function createOAuth(o: OAuthOptions) {
         );
       }
       pending.delete(dc);
-      return issue(base, c.client_id, p.scope, p.resource);
+      return issue(
+        base,
+        c.client_id,
+        p.scope,
+        p.resource,
+        undefined,
+        c.grant_types.includes("refresh_token"),
+      );
     }
     return err("unsupported_grant_type", grant);
   }
@@ -734,8 +801,9 @@ export function createOAuth(o: OAuthOptions) {
     const h = sha(f.get("token") ?? "");
     const r = load().refresh[h];
     if (r && r.client_id === c.client_id) {
-      for (const [k, v] of Object.entries(st.refresh))
-        if (v.family === r.family) delete st.refresh[k];
+      const s = load();
+      for (const [k, v] of Object.entries(s.refresh))
+        if (v.family === r.family) delete s.refresh[k];
       save();
     }
     return new Response(null, { status: 200 });
@@ -750,7 +818,7 @@ export function createOAuth(o: OAuthOptions) {
     if (!p.approved)
       return page(
         "Approbation requise",
-        `<p>En attente : <code>relay approve ${esc(id)}</code>.</p><script>setTimeout(()=>location.reload(),3000)</script>`,
+        `<meta http-equiv=refresh content=3><p>En attente : <code>relay approve ${esc(id)}</code>.</p>`,
       );
     pending.delete(id);
     const code = rand(24);
@@ -808,14 +876,13 @@ export function createOAuth(o: OAuthOptions) {
 
   const routes = {
     "/.well-known/oauth-authorization-server": metadata,
-    "/.well-known/openid-configuration": metadata,
     "/.well-known/oauth-protected-resource": prm(null),
     "/.well-known/oauth-protected-resource/mcp": prm("mcp"),
     "/.well-known/oauth-protected-resource/a2a": prm("a2a"),
     "/.well-known/oauth-protected-resource/rpc": prm("rpc"),
     "/oauth/register": { POST: register },
     "/oauth/authorize": { GET: authorize, POST: authorize },
-    "/oauth/wait": waiting,
+    "/oauth/wait": { GET: waiting },
     "/oauth/token": { POST: token },
     "/oauth/device_authorization": { POST: deviceAuthorization },
     "/oauth/device": { GET: devicePage, POST: devicePage },

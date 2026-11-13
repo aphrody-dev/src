@@ -275,3 +275,15 @@ test("carte A2A : securitySchemes OAuth 2 conformes à a2a.proto", async () => {
     "Bearer",
   );
 });
+
+test("redirection avec fragment refusée, métadonnées sans alias OpenID", async () => {
+  const r = await fetch(`${base}/oauth/register`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ redirect_uris: ["http://127.0.0.1:9/cb#x"] }),
+  });
+  expect(r.status).toBe(400);
+  expect((await fetch(`${base}/.well-known/openid-configuration`)).status).toBe(
+    404,
+  );
+});

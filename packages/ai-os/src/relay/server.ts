@@ -10,7 +10,7 @@ import { join } from "node:path";
 import { relayHome } from "./cdp.ts";
 import { webmcpPage } from "./webmcp.ts";
 import { a2aHttp, agentCard } from "./a2a.ts";
-import { createOAuth } from "./oauth.ts";
+import { createOAuth, relayCookie } from "./oauth.ts";
 import { dispatch, mcpRpc, nativeRpc, VERSION } from "./protocols.ts";
 
 /** Jeton du relais (32 octets aléatoires, créé au premier lancement dans le dossier privé de l'utilisateur). */
@@ -32,8 +32,12 @@ export async function serve() {
   const host = Bun.env.RELAY_HOST ?? "127.0.0.1";
   const port = Number(Bun.env.RELAY_PORT ?? 8790);
   const oauth = createOAuth({ token, host });
+  // Cookie de session dérivé du jeton (HMAC), jamais le jeton lui-même.
+  const session = relayCookie(token);
   const cookie = (req: Request) =>
-    (req.headers.get("cookie") ?? "").split(/;\s*/).includes(`relay=${token}`);
+    (req.headers.get("cookie") ?? "")
+      .split(/;\s*/)
+      .includes(`relay=${session}`);
   // Cookie HttpOnly SameSite=Strict : posé par l'amorçage de /webmcp, accepté pour la page et ses appels /mcp.
   const authed = (req: Request, resource: "mcp" | "a2a" | "rpc" = "rpc") =>
     cookie(req) || typeof oauth.verify(req, resource) === "object";
@@ -56,7 +60,7 @@ export async function serve() {
         status: 303,
         headers: {
           location: "/webmcp",
-          "set-cookie": `relay=${token}; HttpOnly; SameSite=Strict; Path=/`,
+          "set-cookie": `relay=${session}; HttpOnly; SameSite=Strict; Path=/`,
         },
       });
     if (!cookie(req)) return deny();
