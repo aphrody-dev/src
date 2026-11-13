@@ -80,13 +80,15 @@ bin = "~/AppData/Local/Programs/Jan/Jan-Desktop.exe"
 install.windows = [["winget", "install", "--id", "Jan.Jan", "--exact", "--source", "winget", "--silent", "--accept-package-agreements", "--accept-source-agreements", "--disable-interactivity"]]
 health = "http://127.0.0.1:1337/v1/models"
 
-# prd (sans GPU) : roue CPU officielle de vLLM et binaire CPU de mistral.rs, petit modèle HF public.
+# prd (sans GPU) : roue CPU officielle de vLLM et binaire CPU de mistral.rs, installables, jamais servis :
+# pas de serveur d'inférence CPU sur l'hôte de production (consigne du 2026-11-13, charge à 306).
+# Ligne `serve` en commentaire : sans elle, `ay ai service` et `ay ai up` les ignorent.
 [[runtime]]
 id = "vllm"
 os = ["linux"]
 bin = "vllm"
 install.linux = [["uv", "tool", "install", "--python", "3.12", "--torch-backend", "cpu", "vllm @ https://github.com/vllm-project/vllm/releases/download/v0.32.0/vllm-0.32.0+cpu-cp38-abi3-manylinux_2_39_x86_64.whl"]]
-serve = ["vllm", "serve", "Qwen/Qwen3-0.6B", "--host", "127.0.0.1", "--port", "8000", "--max-model-len", "4096", "--served-model-name", "qwen3-0.6b"]
+# serve = ["vllm", "serve", "Qwen/Qwen3-0.6B", "--host", "127.0.0.1", "--port", "8000", "--max-model-len", "4096", "--served-model-name", "qwen3-0.6b"]
 env = { VLLM_CPU_KVCACHE_SPACE = "2", VLLM_CPU_OMP_THREADS_BIND = "0-3", OMP_NUM_THREADS = "4" }
 health = "http://127.0.0.1:8000/health"
 
@@ -95,7 +97,7 @@ id = "mistralrs"
 os = ["linux"]
 bin = "mistralrs"
 install.linux = [["ay", "up", "mistral.rs"]]
-serve = ["mistralrs", "serve", "--cpu", "--host", "127.0.0.1", "-p", "8001", "-m", "Qwen/Qwen3-0.6B"]
+# serve = ["mistralrs", "serve", "--cpu", "--host", "127.0.0.1", "-p", "8001", "-m", "Qwen/Qwen3-0.6B"]
 env = { RAYON_NUM_THREADS = "4", OMP_NUM_THREADS = "4" }
 health = "http://127.0.0.1:8001/v1/models"
 
