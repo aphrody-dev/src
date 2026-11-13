@@ -2,11 +2,11 @@
 
 Done and pushed: `docs/epic/RESOURCES.md`, `docs/epic/TRACKING.md`, `docs/games/MEDIA-STACK.md`, `docs/games/ARTCRAFT.md`; forks of 18 bevyengine repos, the Epic and community set, 32 storytold repos plus egui, storytold-winit, storytold-wgpu; upstream sync on fr1 (timer) and CI (`upstream-sync.yml`).
 
-## Decisions needed from the owner (blocking the merge)
+## Decisions (taken 2026-11-13 by default, owner may override)
 
-1. UI layer of the suite: egui 0.37 (what every Craft App uses) or Bevy UI. One pinned wgpu/winit pair must follow.
-2. Whether unlicensed storytold repos (`storyteller-bevy`, `bevy-mocap`, Unreal plugins) may be used: no license means all rights reserved.
-3. Where the C root folder lives: a new root dir needs `ALLOWED_ROOT_PHYSICAL_DIRS` (`crates/archguard/src/constants.rs`) and `archguard.rules.json` edits.
+1. UI layer: egui 0.37 for the suite (what every Craft App uses, permissive), Bevy as the engine and runtime; one wgpu/winit pair pinned in the root workspace.
+2. Unlicensed storytold repos stay unused and unforked until a license is granted.
+3. C root folder: not created before the archguard whitelist change and a first LLVM-IR extraction of FFmpeg on fr1 prove the shape.
 
 ## Work order once decided (all builds on fr1)
 
