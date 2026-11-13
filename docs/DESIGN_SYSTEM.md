@@ -2,6 +2,8 @@
 
 > 2026-11-13 : le cœur Rust du design system est le crate unique `crates/aphrody-ui` (modules `color` = HCT/CAM16/palettes/schémas/contraste vérifiés contre les fixtures de `@material/material-color-utilities` 0.4.0 avec typo, forme, élévation, mouvement et state layers ; `components` = contrats M3 (états, variantes, ARIA, focus, mesures) ; `layout`, `shared`, `react`, `next`, `brand` avec le binaire `aphrody-brand`). Les tokens de marque viennent de `packages/design` (tokens.rs, tokens.css). Les anciens crates `aphrody-design-*`, `ui`, `react`, `next` et `aphrody-brand` y sont fusionnés. La suite décrit l ancien ensemble.
 
+> 2026-11-13 : le système de design unique est `packages/design` (tokens Material 3 via Material Color Utilities, Material Web, Material Symbols), voir `docs/ui/STACK.md` et `docs/ui/INVENTORY.md`. `aphrody-design-emit` est supprimé ; les autres crates sont en cours de retrait (plan dans INVENTORY).
+
 The remaining design crates are members of the root Cargo workspace (`C:/src/Cargo.toml`); the asset catalog lives in `crates/aphrody-design-icons/catalog/`.
 
 Pure-Rust (Edition 2024, `#![forbid(unsafe_code)]`) multi-surface design token, layout, theme-emitter, and vector icon workspace consolidated into `C:\src\crates\design-system`.
