@@ -28,6 +28,6 @@ done
 export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
 systemctl --user daemon-reload
 systemctl --user enable --now aphrody-upstream.timer >/dev/null
-"$BUN" "$SRC/packages/upstream/src/cli.ts" status $(echo "$STACKS" | tr , ' ') --no-fetch || true
+SRC_ROOT=$SRC "$BUN" "$SRC/packages/upstream/src/cli.ts" status $(echo "$STACKS" | tr , ' ') --no-fetch || true
 echo "upstream install: ok host=$(hostname) stacks=$STACKS"
 systemctl --user list-timers aphrody-upstream.timer --no-pager | head -3
