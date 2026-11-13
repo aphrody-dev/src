@@ -13,12 +13,10 @@
     "gen": "bun run src/gen/gen.ts",
     "test": "bun test"
   },
-  "dependencies": {
-    "svgo": "4.1.0",
-    "wawoff2": "2.0.1"
-  },
   "devDependencies": {
-    "gltf-validator": "2.0.0-dev.3.10"
+    "gltf-validator": "catalog:",
+    "svgo": "catalog:",
+    "wawoff2": "catalog:"
   },
   "license": "MIT OR Apache-2.0",
   "repository": {

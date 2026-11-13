@@ -97,6 +97,9 @@ const EXACT = /^\d+\.\d+\.\d+(-[\w.]+)?(\+[\w.]+)?$/;
 // Their transitive closure is exempt from the builtin and duplicate rules only when nothing else reaches it.
 const DELEGATES: Record<string, string[]> = {
   "infra/cloudflare/workers/": ["@cloudflare/vite-plugin", "vite"],
+  // Asset optimizers run at build time by `ay assets` (no bun built-in replaces them; wawoff2 is google/woff2 as wasm,
+  // svgo has no maintained alternative); never shipped in an app bundle.
+  "packages/assets/": ["svgo", "wawoff2", "gltf-validator"],
 };
 const delegateOf = (where: string, field: string, name: string) =>
   field === "devDependencies" &&
