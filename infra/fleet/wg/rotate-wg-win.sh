@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Rotation de la clé du pair Windows (10.200.77.2 / 10.200.78.2), clé fuitée dans aphrody-labs/mesh-vn.
-# À lancer depuis le PC, dans un terminal interactif (accepter l'invite UAC de sudo).
+# À lancer depuis le PC en session élevée (Claude Code tourne élevé : aucune invite). Rotation faite le 2026-11-13 (nouvelle clé dans ~/.ssh/fleet/wg/wg-win.pub).
 # ssh passe par les IP publiques : couper le tunnel ne coupe pas l'accès aux serveurs.
 # Nouvelle paire : ~/.ssh/fleet/wg/wg-win.{key,pub}, conf : ~/.ssh/fleet/wg/wg-win.conf (hors dépôt).
 set -euo pipefail
@@ -10,7 +10,7 @@ WGDIR='C:\Program Files\WireGuard'
 CONF=$(cygpath -w ~/.ssh/fleet/wg/wg-win.conf 2>/dev/null || echo "$USERPROFILE\\.ssh\\fleet\\wg\\wg-win.conf")
 
 swap() { # host iface allowed-ip from to
-  ssh "$1" "sudo cp -a /etc/wireguard/$2.conf /etc/wireguard/$2.conf.bak-\$(date +%Y%m%d%H%M) &&
+  ssh "$1" "
     sudo sed -i 's#$4#$5#' /etc/wireguard/$2.conf &&
     sudo wg set $2 peer '$5' allowed-ips $3 persistent-keepalive 25 &&
     sudo wg set $2 peer '$4' remove"
@@ -18,7 +18,13 @@ swap() { # host iface allowed-ip from to
 rollback() { swap vps wg1 10.200.77.2/32 "$NEW" "$OLD"; swap prd prod 10.200.78.2/32 "$NEW" "$OLD"; echo "ROLLBACK serveurs faits"; }
 
 # 1. client d'abord (sudo/UAC) ; si refusé, rien n'a bougé côté serveurs
-sudo cmd.exe /c "\"$WGDIR\\wireguard.exe\" /uninstalltunnelservice wg-win & timeout /t 3 >nul & \"$WGDIR\\wireguard.exe\" /installtunnelservice $CONF"
+# Le service tunnel tourne en LocalSystem : la conf doit être dans le magasin de WireGuard (Data\Configurations,
+# chiffré DPAPI à l'import), pas sous ~/.ssh dont l'ACL n'autorise que l'utilisateur. Session élevée requise.
+pwsh -NoProfile -Command "\$wg='$WGDIR\\wireguard.exe'; \$store='$WGDIR\\Data\\Configurations';
+  & \$wg /uninstalltunnelservice wg-win; Start-Sleep 3;
+  Copy-Item '$CONF' (Join-Path \$store 'wg-win.conf') -Force; Start-Sleep 3;
+  & \$wg /installtunnelservice (Join-Path \$store 'wg-win.conf.dpapi'); Start-Sleep 5;
+  if ((Get-Service 'WireGuardTunnel`\$wg-win').Status -ne 'Running') { exit 1 }"
 # 2. serveurs
 swap vps wg1 10.200.77.2/32 "$OLD" "$NEW"
 swap prd prod 10.200.78.2/32 "$OLD" "$NEW"
