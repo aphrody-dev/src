@@ -1,0 +1,12 @@
+{
+  "name": "aphrody",
+  "owner": { "name": "aphrody-dev" },
+  "description": "Local plugins of the aphrody src monorepo.",
+  "plugins": [
+    {
+      "name": "aphrody-nhitl",
+      "source": "./aphrody-nhitl",
+      "description": "No human in the loop hooks, status line and headless launcher (bun)."
+    }
+  ]
+}
