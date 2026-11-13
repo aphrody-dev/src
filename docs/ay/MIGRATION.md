@@ -199,4 +199,18 @@ tests of `crates/ay/src/lib.rs` cover them and the new ones (`low_level_commands
 
 ## 10. Benchmark of lot 1
 
-See section 10 results, filled from the prd run of `cargo bench -p aphrody-bun-flat`.
+`BENCH_CORPUS=third_party/bun/docs cargo bench -p aphrody-bun-flat` (benches/flat.rs, median of
+10 to 30 runs, release profile), fr1, 2026-11-13 03:00 UTC, `nice -n 19` with the host loaded
+(load average about 45 on 12 cores, so absolute times are pessimistic; ratios are what counts).
+"Before" is what ay used (std SipHash, blake3 as in crates/factory, `slice::sort_by_key`, a sort
+for percentiles); "after" is the bun crate now linked.
+
+| Case | Before | After (bun) | Speedup |
+|---|---:|---:|---:|
+| change detection, 1406 docs pages, 4.72 MiB | std SipHash 2.575 ms | wyhash 0.276 ms | 9.3x |
+| same | blake3 7.131 ms | wyhash 0.276 ms | 25.9x |
+| ranking sort, 200k hits of 64 bytes | `slice::sort_by_key` 50.96 ms | `sort_by_u64` 37.60 ms | 1.36x |
+| p50/p90/p99 of 1M samples | `sort_unstable` 42.94 ms | HdrHistogram 7.36 ms | 5.8x |
+
+wyhash is not a cryptographic hash: it detects changes in the docs index and in `ay hash`; supply-chain
+checks keep blake3 and sha256.
