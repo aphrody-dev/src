@@ -29,7 +29,7 @@ Areas:
   toolchain  up, doctor, sys, build, self-update, rt
   bun        bun (upstream watch), docs (Bun docs index), flat (fork crates in crates/bun-flat), hash, time
   chromium   chromium (fr1 build chain), gclient, fetch, gn, ninja, cipd, cl, vpy, engines (V8, JSC, Dawn, wgpu)
-  fleet      ssh, deploy, auth, secret, ai, agents
+  fleet      ssh, deploy, auth, secret, vault, ai, agents
   measure    bench, time
 
 Every command takes --help; machine output is --json where offered.
@@ -113,6 +113,9 @@ pub enum Cmd {
     /// OS secret store (DPAPI on Windows, systemd-creds on Linux): info, list, set, exec, pipe, import
     #[command(disable_help_flag = true)]
     Secret(Rest),
+    /// Vault (docs/infra/VAULT.md): init, add, import-chrome-csv, export-chrome-csv, sync, status, rotate, hosts
+    #[command(disable_help_flag = true)]
+    Vault(Rest),
     /// Conformance suites: [--fetch] [suite...] writes conformance/results/; `channels [platform]` refreshes Chrome pins
     #[command(disable_help_flag = true)]
     Conformance(Rest),
@@ -237,6 +240,7 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Gn(r) => Route::Chromium(chromium::Tool::Gn, r.args),
         Cmd::Auth(r) => Route::EnvKit(prefixed(&["auth"], &r.args)),
         Cmd::Secret(r) => Route::EnvKit(prefixed(&["secret"], &r.args)),
+        Cmd::Vault(r) => Route::EnvKit(prefixed(&["vault"], &r.args)),
         Cmd::Build(b) => Route::Build(b),
         Cmd::Sys(s) => Route::Sys(s),
         Cmd::Up(u) => Route::Up(u),
@@ -405,6 +409,7 @@ mod tests {
         assert_eq!(parse("auth repair --browser"), Route::EnvKit(v(&["auth", "repair", "--browser"])));
         assert_eq!(parse("secret exec CF -- wrangler deploy"), Route::EnvKit(v(&["secret", "exec", "CF", "--", "wrangler", "deploy"])));
         assert_eq!(parse("secret --help"), Route::EnvKit(v(&["secret", "--help"])));
+        assert_eq!(parse("vault sync --force"), Route::EnvKit(v(&["vault", "sync", "--force"])));
     }
 
     #[test]

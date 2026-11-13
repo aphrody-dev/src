@@ -1,0 +1,30 @@
+# Hosts of the aphrody vault (docs/infra/VAULT.md). Public data only: each recipient is the public
+# half of an age X25519 identity whose private half never leaves its host (DPAPI on the PC,
+# systemd-creds credential "aphrody-vault-age" on a VPS). Recipients are written by
+# `env-kit vault hosts init <host>` and changed by `env-kit vault rotate <host>`.
+
+[pc]
+os = "windows"
+recipient = "age1m26zgufngsrmn2ach9ayrnys6pff2dw42hfjt7e5mp372zj7vyys3qar3g"
+
+# prd (USA, backends): runner user `agent`, user credstore; reached through the fr2 mesh hop.
+[prd]
+os = "linux"
+ssh = ["-o", "HostKeyAlias=72.60.186.43", "-J", "fr2", "agent@10.200.77.5"]
+# Public route (pinned host key "usa") when the mesh hop is down.
+fallback = [["-l", "agent", "usp"], ["-l", "agent", "usa"]]
+recipient = "age178yp32swtmrew7lhsz97cgqc9fxsmatn6n0gwuam0qj5uackh4nq2e4pp5"
+
+# fr2 (proxy, vhosts, CDN): user `ubuntu`, user credstore, mesh 10.200.77.3.
+[fr2]
+os = "linux"
+ssh = ["fr2"]
+fallback = [["f2p"]]
+recipient = "age1t58pdvctqrkt3t3hmqv8t85fqs854skg75efrrpctk79zurdgststcgjc6"
+
+# fr1 (Chromium/LLVM builds only): user `ubuntu`, mesh 10.200.77.1.
+[fr1]
+os = "linux"
+ssh = ["fr1"]
+fallback = [["f1p"]]
+recipient = "age1wtpumsxfp9wxcgej5f8qygcsem9rtrlshmvugm44arjyhp0ry5qqdhhsue"

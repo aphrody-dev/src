@@ -35,6 +35,7 @@ export async function serve() {
   const host = Bun.env.RELAY_HOST ?? "127.0.0.1";
   const port = Number(Bun.env.RELAY_PORT ?? 8790);
   const oauth = createOAuth({ token, host });
+  await oauth.ready;
   // Cookie de session dérivé du jeton (HMAC), jamais le jeton lui-même.
   const session = relayCookie(token);
   const cookie = (req: Request) =>

@@ -238,10 +238,47 @@ async function readStdin(): Promise<string> {
   return text.replace(/\r?\n$/, "");
 }
 
+/** The async vault (packages/vault) when this env-kit runs inside the monorepo; else undefined. */
+type VaultModule = typeof import("../../vault/src/index.ts");
+let vaultModule: Promise<VaultModule | undefined> | undefined;
+export function loadVault(): Promise<VaultModule | undefined> {
+  const p = join(import.meta.dir, "..", "..", "vault", "src", "index.ts");
+  vaultModule ??= existsSync(p) ? import(p).catch(() => undefined) : Promise.resolve(undefined);
+  return vaultModule;
+}
+
+/** Store API: async vault (same files, no FFI on the event loop) or the sync fallback. */
+async function secretApi() {
+  const v = await loadVault();
+  if (v)
+    return {
+      get: v.getSecret,
+      set: (n: string, x: string) => v.setSecret(n, x),
+      has: v.hasSecret,
+      list: v.listSecrets,
+      rm: v.deleteSecret,
+      // A secret scoped to hosts is sealed for them at once; the scheduled sync pushes it.
+      after: async (n: string) => {
+        const [policy, registry] = await Promise.all([v.loadPolicy(), v.loadRegistry()]);
+        const hosts = v.scopeOf(n, registry[n]?.kind ?? "token", policy, registry).filter((h) => h !== "pc");
+        if (hosts.length) await v.sealOutbox(hosts).catch(() => undefined);
+      },
+    };
+  return {
+    get: async (n: string) => secretGet(n),
+    set: async (n: string, x: string) => secretSet(n, x),
+    has: async (n: string) => secretHas(n),
+    list: async () => secretList(),
+    rm: async (n: string) => secretDelete(n),
+    after: async (_n: string) => {},
+  };
+}
+
 async function runSecretCommand(
   envPath: string,
   args: readonly string[],
 ): Promise<number> {
+  const S = await secretApi();
   const sub = args[0] ?? "list";
   const name = args[1];
   const json = args.includes("--json");
@@ -251,7 +288,7 @@ async function runSecretCommand(
     return 0;
   }
   if (sub === "list") {
-    const names = secretList();
+    const names = await S.list();
     console.log(json ? JSON.stringify(names) : names.join("\n"));
     return 0;
   }
@@ -265,7 +302,8 @@ async function runSecretCommand(
     }
     const value = await readStdin();
     if (!value) return 1;
-    secretSet(name, value);
+    await S.set(name, value);
+    await S.after(name);
     // Length only: maskValue() shows values whose name does not look secret.
     console.log(
       `[env-kit] ${name} -> ${storeInfo().backend} (SET [len=${value.length}])`,
@@ -290,7 +328,7 @@ async function runSecretCommand(
       );
       return 2;
     }
-    const values = names.map((n) => [n, secretGet(n)] as const);
+    const values = await Promise.all(names.map(async (n) => [n, await S.get(n)] as const));
     const missing = values.filter(([, v]) => v === undefined).map(([n]) => n);
     if (missing.length) {
       console.error(`[env-kit] absent from the store: ${missing.join(", ")}`);
@@ -306,8 +344,8 @@ async function runSecretCommand(
     });
     return r.status ?? 1;
   }
-  if (sub === "has" && name) return secretHas(name) ? 0 : 1;
-  if (sub === "rm" && name) return secretDelete(name) ? 0 : 1;
+  if (sub === "has" && name) return (await S.has(name)) ? 0 : 1;
+  if (sub === "rm" && name) return (await S.rm(name)) ? 0 : 1;
   if (sub === "import") {
     // .env -> store, for the given keys or every secret-like key; idempotent.
     const env = existsSync(envPath)
@@ -318,12 +356,13 @@ async function runSecretCommand(
     for (const [k, v] of Object.entries(env)) {
       if (!v || (keys.length ? !keys.includes(k) : !isSecretKey(k, v)))
         continue;
-      if (secretGet(k) === v) continue;
-      secretSet(k, v);
+      if ((await S.get(k)) === v) continue;
+      await S.set(k, v);
+      await S.after(k);
       n++;
     }
     console.log(
-      `[env-kit] secret import: ${n} updated, ${secretList().length} in ${storeInfo().dir}`,
+      `[env-kit] secret import: ${n} updated, ${(await S.list()).length} in ${storeInfo().dir}`,
     );
     return 0;
   }
@@ -449,6 +488,7 @@ Usage:
   env-kit vercel-env [projectDir]      Preview masked Vercel env summary (or write .env.local with --write)
   env-kit exec -- <cmd> [args...]      Execute command with C:/src/.env injected into child process
   env-kit secret <info|list|set|exec|pipe|has|rm|import>  OS secret store (DPAPI / systemd-creds); values in via stdin, out via child env/stdin only
+  env-kit vault <init|add|import-chrome-csv|export-chrome-csv|sync|status|rotate|hosts|doc|fp|backup|restore|hello>  age vault per host (docs/infra/VAULT.md)
   env-kit auth status [--json] [--only k,..]  Every auth: CLIs, Chrome, tokens, store, CI secrets, ssh, WireGuard, tunnels
   env-kit auth repair [--browser]      Fix without password; --browser opens sign-in pages the owner clicks
   env-kit auth login [cli...]          Log in the CLIs whose check fails, device flow (RFC 8628) when headless
@@ -546,6 +586,17 @@ ${formatIdentities(ids)}`);
 
   if (cmd === "secret") {
     return runSecretCommand(envPath, argv.slice(1));
+  }
+
+  // Vault (docs/infra/VAULT.md): age envelopes per host, Chromium CSV, documents, profiles.
+  if (cmd === "vault") {
+    const p = join(import.meta.dir, "..", "..", "vault", "src", "cli.ts");
+    if (!existsSync(p)) {
+      console.error("env-kit vault: packages/vault absent (monorepo only)");
+      return 2;
+    }
+    const { main: vaultMain } = (await import(p)) as { main: (a: string[]) => Promise<number> };
+    return vaultMain(argv.slice(1));
   }
 
   if (cmd === "auth") {

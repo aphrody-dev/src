@@ -24,6 +24,11 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 import { relayHome } from "./cdp.ts";
+import {
+  readDocument,
+  shred,
+  writeDocument,
+} from "../../../vault/src/index.ts";
 
 export const SCOPES: Record<string, string> = {
   mcp: "outils MCP du relais (POST /mcp)",
@@ -153,17 +158,37 @@ export interface OAuthOptions {
   token: string;
   /** Hôte d'écoute : l'approbation automatique n'existe que sur la boucle locale. */
   host: string;
-  /** Fichier d'état (clé HMAC, clients, jetons de rafraîchissement) ; défaut : <relayHome>/oauth.json. */
+  /** Fichier d'état en clair (tests). Sans lui, l'état est le document scellé du coffre `relay-oauth`
+   *  (AYV1, clé maîtresse DPAPI/systemd-creds, docs/infra/VAULT.md) ; un ancien <relayHome>/oauth.json y migre. */
   file?: string;
   /** Récupération des Client ID Metadata Documents (injectable pour les tests). */
   fetchDoc?: (url: string) => Promise<Response>;
 }
 
 export function createOAuth(o: OAuthOptions) {
+  const sealed = o.file === undefined;
   const file = o.file ?? join(relayHome(), "oauth.json");
   let st: State;
+  let saving: Promise<void> = Promise.resolve();
+  /** Mode scellé : état lu (et migré) avant de servir ; les écritures sont sérialisées et asynchrones. */
+  const ready: Promise<void> = sealed
+    ? (async () => {
+        const doc = await readDocument<State>(SEALED_DOC, "json");
+        if (doc) st = doc;
+        else if (existsSync(file)) {
+          st = JSON.parse(readFileSync(file, "utf8")) as State;
+          await writeDocument(SEALED_DOC, "json", st);
+          await shred(file);
+        } else {
+          st = { key: rand(32), clients: {}, refresh: {} };
+          await writeDocument(SEALED_DOC, "json", st);
+        }
+      })()
+    : Promise.resolve();
   const load = (): State => {
     if (st) return st;
+    if (sealed)
+      throw new Error("oauth: état scellé non chargé (await oauth.ready)");
     // Seule l'absence du fichier régénère la clé ; un fichier illisible est une erreur (jetons préservés).
     if (!existsSync(file)) {
       st = { key: rand(32), clients: {}, refresh: {} };
@@ -172,6 +197,15 @@ export function createOAuth(o: OAuthOptions) {
     return st;
   };
   const save = () => {
+    if (sealed) {
+      const snapshot = structuredClone(st);
+      saving = saving
+        .then(() => writeDocument(SEALED_DOC, "json", snapshot))
+        .catch((e) =>
+          console.error(`[oauth] scellement : ${(e as Error).message}`),
+        );
+      return;
+    }
     const dir = join(file, "..");
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
     // Écriture atomique, droits 0600 dès la création (clé HMAC).
@@ -918,8 +952,18 @@ export function createOAuth(o: OAuthOptions) {
     "/oauth/revoke": { POST: revoke },
   };
 
-  return { routes, verify, challenge, approve, origin };
+  return {
+    routes,
+    verify,
+    challenge,
+    approve,
+    origin,
+    ready,
+    flushed: () => saving,
+  };
 }
+
+const SEALED_DOC = "relay-oauth";
 
 /** securitySchemes A2A 1.0 (a2a.proto : SecurityScheme, OAuthFlows est un oneof : un schéma par flux). */
 export const a2aSecurity = (base: string) => {

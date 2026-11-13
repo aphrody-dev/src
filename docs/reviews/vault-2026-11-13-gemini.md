@@ -1,0 +1,99 @@
+# Revue Gemini 2026-11-13 : packages/vault, infra/vault
+
+- Moteur : antigravity (170792 ms), via le relais (`gemini_review`), lot de 40 Ko : vault-host.sh, crypto.ts, sync.ts, chrome.ts, hosts.ts, store.ts
+- Note : 10/20
+
+## Suite donnée
+
+| # | Grief | Suite |
+|---|---|---|
+| 1 | émetteur non authentifié, rejeu, MANIFEST vide | corrigé en partie : `# seq` monotone refusé si non croissant (rejeu), MANIFEST vide refusé sans `# allow-empty`, entrées non régulières refusées. Signature non ajoutée : pousser exige une session ssh de l'utilisateur, qui lit déjà son credstore (même frontière) |
+| 2 | révocation en mode ouvert (readdir, registre) | corrigé : `listSecrets` et `loadRegistry` lèvent hors ENOENT |
+| 3 | receive non atomique, sans verrou | corrigé : `flock` sur tout le script, `mv -T` ; `apply` sans `inbox/MANIFEST` n'applique ni ne révoque rien |
+| 4 | blob DPAPI renommable (nom hors entropie) | accepté, non corrigé : format v1 partagé avec env-kit ; à traiter dans un format v2 |
+| 5 | injection via `fp NAME` | corrigé : `assertName` avant ssh |
+| 6 | rétrogradation Hello silencieuse | documenté : Hello optionnel tant que non enrôlé ; le résultat d'import expose `hello` |
+| 7 | verrou de sync | corrigé : reprise si le PID détenteur est mort |
+| 8 | échecs invisibles de la tâche | corrigé : `state/last-error.json` ; `last-sync.json` par hôte |
+| 9 | retrait d'hôte | non corrigé : retirer le nom des portées pousse un MANIFEST `# allow-empty`, qui révoque ; `hosts decommission` reste à écrire |
+| 10 | apply en échec chronique | corrigé : sortie 0, échecs par nom comptés |
+| 11 | perte de clé avec `--force` | corrigé : `identity.old` conservé jusqu'à un apply sans échec |
+| 12 | épinglage du destinataire | accepté : le destinataire arrive par ssh à clé d'hôte épinglée et part dans git (revue au diff) |
+| 13 | timer utilisateur, linger, outils | corrigé : linger signalé, `XDG_RUNTIME_DIR` posé, timer exigé `active`, outils vérifiés |
+| 14 | schtasks InteractiveToken, execPath | accepté : DPAPI utilisateur exige la session ; documenté dans VAULT.md |
+| 15 | séparation de domaine | corrigé : clé d'empreinte dérivée (HMAC « aphrody/vault/fp-key/v1 ») |
+| 16 | création concurrente de la clé maîtresse | corrigé : création exclusive (`.master.lock`, relecture) |
+| 19 | écritures non atomiques | corrigé : `.age` et systemd-creds par fichier caché puis rename |
+| 22 | BLAKE3 nu par `fp` | accepté pour les preuves sur valeurs aléatoires ; les index sont des HMAC |
+| 17, 18, 20, 21, 23-26 | moyens | consignés ; `shred` et clichés VSS déjà dans le modèle de menace |
+
+## Texte de la revue
+
+**Note : 10/20.** Le schéma est sain (age par hôte, HMAC, AAD). Les défauts viennent de l'absence d'authentification de l'émetteur, de la révocation qui échoue en mode ouvert et de la concurrence. Je n'ai pas pu relire `age.ts`, `doc.ts`, `paths.ts`, `win/pool.ts` ni `VAULT.md`, et je n'ai rien exécuté. Les lignes sont celles de chaque fichier, pas celles du prompt.
+
+## Critiques
+
+1. **Aucune authentification de l'émetteur** (`vault-host.sh:42-52`). Le MANIFEST ne garantit que l'intégrité. Quiconque peut ouvrir une session ssh peut pousser des enveloppes chiffrées vers la clé publique de l'hôte. Un tar avec un MANIFEST vide est accepté, et `apply` révoque alors tout (`:66-70`). Rien n'empêche non plus le rejeu d'un ancien tar, qui ressuscite des secrets révoqués. Correction : signer le MANIFEST (clé age ou minisign du PC) avec un numéro de séquence monotone vérifié par l'hôte.
+2. **Révocation qui échoue en mode ouvert**
+   - `listSecrets` avale les erreurs de `readdir` (`store.ts:121-123`). Un dossier momentanément illisible donne `names=[]`, donc `want=[]` (`sync.ts:107-118`), donc des enveloppes supprimées (`:136-142`) et un MANIFEST vide. Tous les hôtes révoquent alors tous leurs credentials.
+   - `loadRegistry` renvoie `{}` sur toute erreur (`hosts.ts:81-87`). Tous les noms deviennent des `token` et prennent le scope par défaut. Si `defaults.token` contient un hôte, des documents partiraient vers les hôtes. Je suppose ici que les documents sont dans le même store, car `doc.ts` n'est pas fourni.
+   - Correction : lever l'erreur sur tout ce qui n'est pas ENOENT, et refuser un MANIFEST vide sans option explicite.
+3. **`receive` non atomique et sans verrou** (`vault-host.sh:51`). Un crash entre les deux `mv` laisse `inbox` absent. Le `apply` suivant révoque alors tout. Le timer `apply` peut aussi s'exécuter pendant l'échange. Correction : `flock` sur tout le script, et échange par `mv -T` (ou `renameat2 RENAME_EXCHANGE`).
+4. **Substitution de fichiers DPAPI** (`store.ts:62`). `protect` n'utilise pas `name`, contrairement à la branche systemd-creds. Renommer le blob de A en B est indétectable. Correction : passer `name` en entropie optionnelle dans `dpapiProtect`. Il faut migrer le format v1 ou accepter les deux.
+5. **Injection de commande distante** (`sync.ts:247`). `secret` est interpolé dans la commande ssh. Le script valide ensuite, mais le shell distant a déjà interprété `x; …`. Correction : appeler `assertName(secret)` avant l'appel, ou quoter la valeur.
+6. **Rétrogradation silencieuse de Hello** (`crypto.ts:75-76`)
+   - `helloAvailable` met `.catch(() => ({key:false}))` et accepte `VAULT_HELLO=0`.
+   - `importChromeCsv` scelle alors les mots de passe sans Hello (`chrome.ts:65`) et le signale seulement par `hello:false`.
+   - Correction : échouer si un document est marqué Hello-requis, et refuser la variable d'environnement pour les documents sensibles.
+7. **Verrou de synchronisation** (`sync.ts:59-74`)
+   - La reprise d'un verrou périmé est un TOCTOU : deux processus peuvent se supprimer mutuellement leur verrou frais (`:63`).
+   - Le `rm` du `finally` peut retirer le verrou d'un autre processus.
+   - Si la tâche est tuée par la limite PT10M (`:295`), le verrou reste 15 minutes et trois cycles de 5 minutes échouent.
+   - Correction : verrou à durée de vie liée au processus (`LockFileEx` ou un mutex nommé).
+8. **Échecs invisibles dans la tâche planifiée** (`sync.ts:295`, `:197`). `conhost --headless` jette stdout et stderr. `last-sync.json` n'est pas écrit si `sync()` lève une exception (verrou pris, erreur DPAPI, `b3sum` introuvable). Aucun journal n'existe. Correction : `try/catch` autour de `main` qui écrit `state/last-error.json` et l'Event Log, et ajouter `RestartOnFailure`.
+9. **Revocation de l'hôte non couverte** (`sync.ts:108`). Un hôte retiré de `hosts.toml`, ou sans recipient, est ignoré sans effacement : ses credentials restent. Il n'y a pas de commande `host revoke` ni de rotation des secrets eux-mêmes, et `rotateHost` ne change que l'identité. Correction : ajouter un `hosts decommission` qui pousse un MANIFEST vide signé, plus `rotate-secrets`.
+
+## Majeurs
+
+10. **`apply` en échec chronique** (`vault-host.sh:59,73` et `sync.ts:184-187`). Un seul nom invalide ou une seule enveloppe indéchiffrable fait sortir `apply` en code 1. `push` ne mémorise alors jamais l'état (`sync.ts:187`) et repousse tout toutes les 5 minutes. Correction : séparer le code de sortie de transport de celui d'application, et mettre en quarantaine les noms invalides.
+11. **Perte de la clé de l'hôte avec `--force`** (`vault-host.sh:33-36`). L'ancienne identité est écrasée sans conservation. Les enveloppes déjà en inbox deviennent indéchiffrables jusqu'au prochain push. Correction : garder l'ancienne identité sous `.old` jusqu'à ce que `apply` réussisse.
+12. **Pas d'epinglage de la clé à `init`** (`sync.ts:231-233`, `hosts.ts:55-70`). Le recipient lu via ssh remplace silencieusement celui du dépôt, sans confirmation hors bande. `setRecipient` réécrit `hosts.toml` sans verrou ni écriture atomique (`:69`). Deux `init` simultanés perdent une mise à jour. Les commentaires de fin de ligne sont aussi supprimés.
+13. **Timer systemd en mode utilisateur** (`sync.ts:215,222`). Il n'y a pas de `loginctl enable-linger`, et `XDG_RUNTIME_DIR` manque dans une session ssh non interactive. `systemctl --user` échoue souvent. `installHost` masque l'échec (`>/dev/null 2>&1`) et ne lève rien si le timer n'est pas actif. Il ne vérifie pas non plus que `age`, `age-keygen`, `b3sum` et `systemd-creds` existent sur l'hôte.
+14. **`schtasks`** (`sync.ts:276-284,302-303`)
+    - `InteractiveToken` signifie qu'il n'y a ni synchronisation ni révocation tant que la session est fermée ou verrouillée.
+    - `process.execPath` est figé à l'installation et casse silencieusement à la mise à jour de bun.
+    - `USERDOMAIN` ou `USERNAME` absents donnent `undefined\undefined`.
+    - `--headless` n'est pas un contrat documenté.
+15. **Les clés AES et HMAC viennent de la même master key** (`crypto.ts:68` et `:92`). La clé AES-GCM du chemin non-Hello est la master directe. Elle sert aussi de clé HMAC pour les empreintes. Pas de séparation de domaine. Correction : HKDF avec des étiquettes distinctes.
+16. **Master key créée sans exclusion mutuelle** (`crypto.ts:41-48`, `sync.ts:81-87`). Deux processus qui démarrent à vide créent deux clés, et la seconde écrase la première. Les documents scellés avec la première sont perdus. `initPc` a la même fenêtre de course. Correction : création exclusive (`wx`) puis relecture.
+
+## Moyens
+
+17. `locate()` choisit le fichier le plus récent parmi le store et ses dossiers legacy (`store.ts:34-43`). Une copie ancienne restaurée avec un mtime plus récent écrase la valeur courante, ce qui annule une rotation. Préférer le dossier principal.
+18. Les noms valides sur NTFS posent des problèmes (`store.ts:15`)
+    - `NUL`, `CON`, `AUX` et `COM1` résolvent vers des périphériques, même avec le suffixe `.dpapi`.
+    - `Foo` et `FOO` collisionnent (`.age` côté outbox).
+    - Le point final est supprimé.
+19. Écritures non atomiques
+    - `setSecret` systemd écrit directement sur le fichier final (`store.ts:88`).
+    - `writeFile` des `.age` ne passe pas par tmp puis rename (`sync.ts:131`). Un fichier tronqué avec index inchangé est poussé comme valide, et le MANIFEST le couvre.
+    - Sur le backend systemd, `listSecrets` expose tout fichier parasite qui valide `NAME`, comme `x.tmp` (`store.ts:125`).
+20. `b3Files` passe tous les chemins en argv (`crypto.ts:144`). La limite d'environ 32 Ko de la ligne de commande Windows est atteinte vers 300 secrets. Passer les chemins par stdin avec `--no-names`.
+21. `resolveSecret` retombe sur `process.env` si le store est illisible (`store.ts:165-176`), ce qui masque une panne DPAPI en tâche planifiée. `runWithSecrets` en mode `pipe` ignore tous les noms sauf le premier (`:157`). Il permet aussi d'écraser `PATH` ou `NODE_OPTIONS` via un secret de ce nom.
+22. L'empreinte BLAKE3 non keyée d'un secret circule par ssh (`vault-host.sh:76-80` et `sync.ts:247`, `localFingerprint`). Elle est brute-forçable pour les secrets de faible entropie. Cela contredit le commentaire de `crypto.ts:68` qui interdit un hash non keyé d'un secret. Utiliser un HMAC avec challenge.
+23. `chrome.ts`
+    - La vérification ne compare que le nombre de lignes (`:67-68`), pas le contenu.
+    - `shred` est inefficace sur SSD, NTFS et les clichés VSS (`:69`).
+    - `exportChromeCsv` écrit les mots de passe en clair, sans `flag:"wx"`, et le `mode:0o600` n'a aucun effet sous Windows (`:76-77`).
+    - Un BOM UTF-8 casse la détection des en-têtes.
+    - La fusion « le dernier fichier gagne » écrase une valeur plus récente par une plus ancienne (`:60`).
+24. `hosts.ts:42-49` ne valide pas le schéma. `ssh` en chaîne est étalé caractère par caractère dans argv. Un nom d'hôte commençant par `-` s'injecte comme option. `VAULT_HOSTS_FILE` et `VAULT_POLICY_FILE` redirigent par variable d'environnement. Le registre non signé (`registry.json`) peut élargir un scope (`hosts.ts:103-107`).
+25. La protection DPAPI avec entropie v1 statique donne tout accès à n'importe quel processus du même utilisateur. De même, le credential systemd lié à la clé de l'hôte, sans TPM, ne protège que par les permissions du fichier.
+26. Défauts de forme dans `vault-host.sh`
+    - La ligne 76 (`fp`) sort silencieusement avec un code 1 si la validation échoue.
+    - `hash()` masque le builtin bash (`:27`).
+    - `"${USERFLAG[@]}"` sous `set -u` casse sur bash < 4.4.
+    - Le PATH est complété par la fin (`:17`).
+    - `process substitution <(identity)` masque l'échec de décryptage de l'identité (`:62`).
+    - Un `.new` abandonné par un crash n'est jamais nettoyé.
+    - `receive` accepte des liens symboliques et physiques dans le tar (`:41`). Ajouter `--no-same-owner` ne suffit pas : vérifier le type de chaque entrée.

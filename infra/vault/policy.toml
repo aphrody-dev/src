@@ -1,0 +1,20 @@
+# Scope of each secret: the hosts that receive it (age envelope to that host only). Anything not
+# listed keeps the default of its kind, and the defaults never leave the PC. Names only, no values.
+# Precedence: `env-kit vault add NAME --scope a,b` (local registry) > [scope] here > [defaults].
+
+[defaults]
+token = ["pc"]
+document = ["pc"]
+chrome-passwords = ["pc"]
+profile = ["pc"]
+
+[scope]
+# Proof secret of the sync (random, no meaning): PC -> prd, fr2 within one timer period.
+VAULT_PROOF_TOKEN = ["pc", "prd", "fr2"]
+# Same value the agents login flow (packages/ai-os/src/nhitl/login.ts) installs on the runners.
+CLAUDE_CODE_OAUTH_TOKEN = ["pc", "prd", "fr2"]
+
+# Never synced whatever the scope says (enforced in packages/vault/src/hosts.ts).
+[never]
+names = ["VAULT_MASTER_KEY", "VAULT_AGE_IDENTITY", "aphrody-vault-age"]
+kinds = ["chrome-passwords", "profile"]

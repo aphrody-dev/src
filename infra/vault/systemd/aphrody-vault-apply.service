@@ -1,0 +1,10 @@
+# Applies the age envelopes pushed by the PC (env-kit vault sync) into the systemd-creds store.
+# User unit (system unit for root), installed by `env-kit vault hosts install <host>`.
+[Unit]
+Description=aphrody vault: apply age envelopes into credstore.encrypted
+ConditionPathExists=%h/.local/libexec/aphrody/vault-host.sh
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/libexec/aphrody/vault-host.sh apply
+Nice=10

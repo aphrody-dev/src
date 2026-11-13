@@ -1,13 +1,13 @@
 // Connexions des CLI d'agents sans saisie par un agent : seul le clic final revient au propriétaire.
 //   claude : le propriétaire lance `claude setup-token` sur le PC et copie le jeton ; il est lu au presse-papiers
-//            (jamais affiché), rangé dans le coffre (env-kit secret set CLAUDE_CODE_OAUTH_TOKEN, DPAPI), presse-papiers
-//            vidé, puis chiffré par `systemd-creds --user` chez l'utilisateur du runner de chaque hôte et vérifié.
+//            (jamais affiché), rangé dans le coffre (@aphrody/vault, DPAPI), presse-papiers vidé, puis livré aux
+//            hôtes par le coffre (enveloppe age par hôte -> systemd-creds --user du runner, docs/infra/VAULT.md), vérifié.
 //   codex  : `codex login --device-auth` dans une fenêtre tmux de l'hôte ; le code d'appareil (public) est écrit dans
 //            <RELAY_HOME>/device-code.txt pour la page https://auth.openai.com/codex/device ouverte chez le propriétaire.
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { relayHome } from "../relay/cdp";
-import { srcRoot } from "../orch/fleet";
+import { register, setSecret, sync } from "../../../vault/src/index.ts";
 
 const TOKEN = /sk-ant-oat01-[A-Za-z0-9_-]{60,}/;
 const DEVICE = /\b[A-Z0-9]{4}-[A-Z0-9]{5}/; // 9 caractères ; sous ConPTY, le texte suivant est collé au code
@@ -41,8 +41,8 @@ const clip = () =>
     "Get-Clipboard -Raw",
   ]).stdout.toString();
 
-const PUSH =
-  "umask 077; mkdir -p ~/.config/credstore.encrypted && systemd-creds --user --name=CLAUDE_CODE_OAUTH_TOKEN encrypt - ~/.config/credstore.encrypted/CLAUDE_CODE_OAUTH_TOKEN 2>/dev/null && " +
+/** Vérification sur l'hôte : le jeton livré par le coffre est lu dans le credstore et testé (jamais affiché). */
+const VERIFY =
   "CLAUDE_CODE_OAUTH_TOKEN=$(systemd-creds --user decrypt --name=CLAUDE_CODE_OAUTH_TOKEN ~/.config/credstore.encrypted/CLAUDE_CODE_OAUTH_TOKEN - 2>/dev/null) " +
   "PATH=$HOME/.local/bin:/usr/local/bin:$PATH timeout 120 claude -p 'Reply with the single word: ok' --output-format text 2>&1 | head -c 200";
 
@@ -102,22 +102,25 @@ export async function login(
         error: "aucun jeton sk-ant-oat01 au presse-papiers",
       };
     Bun.spawnSync(["pwsh", "-NoProfile", "-c", "Set-Clipboard -Value $null"]);
-    const set = Bun.spawnSync(
-      [
-        "bun",
-        "run",
-        "--cwd",
-        join(srcRoot(), "packages/env-kit"),
-        "src/cli.ts",
-        "secret",
-        "set",
-        "CLAUDE_CODE_OAUTH_TOKEN",
-      ],
-      { stdin: Buffer.from(tok) },
+    // Coffre : DPAPI local, portée PC + hôtes, enveloppes age poussées tout de suite (le timer reprend sinon).
+    const remote = hosts.filter((h) => h !== "pc" && h !== "local");
+    await setSecret("CLAUDE_CODE_OAUTH_TOKEN", tok);
+    await register("CLAUDE_CODE_OAUTH_TOKEN", "token", ["pc", ...remote]);
+    const delivered = await sync({ force: true, only: remote }).catch(
+      (e: Error) => ({ error: e.message }),
     );
-    const out: Record<string, unknown> = { cli, vault: set.exitCode === 0 };
-    for (const h of hosts) {
-      const r = ssh(h, PUSH, tok);
+    const out: Record<string, unknown> = {
+      cli,
+      vault: true,
+      sync:
+        "pushed" in delivered
+          ? delivered.pushed.map(
+              (p) => `${p.host}:${p.pushed ? "ok" : (p.error ?? "unchanged")}`,
+            )
+          : delivered.error,
+    };
+    for (const h of remote) {
+      const r = ssh(h, VERIFY);
       out[h] = {
         exit: r.exitCode,
         reply: r.stdout
