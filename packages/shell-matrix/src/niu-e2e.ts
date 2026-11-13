@@ -50,10 +50,11 @@ export async function runAll(): Promise<Check[]> {
   return res;
 }
 
-if (import.meta.main) {
+async function main(): Promise<void> {
   const rs = await runAll();
   for (const r of rs) console.log(`${r.ok ? "PASS" : "FAIL"} ${r.name} ${r.detail}`);
   const bad = rs.filter(r => !r.ok).length;
   console.log(`${rs.length - bad}/${rs.length} passed`);
   process.exit(bad ? 1 : 0);
 }
+if (import.meta.main) main();
