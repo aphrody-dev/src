@@ -4,12 +4,12 @@ State as of 2026-11-12, written during the migration. The versioned sources are 
 
 ## Roles
 
-| Node | Mesh | Public | Provider | Role |
-|---|---|---|---|---|
-| fr1 (`vps-203bea89`) | 10.200.77.1 (hub wg1) | 51.77.147.152, 2001:41d0:404:200::4d8e | OVH VPS (KVM) | Google, Chromium and LLVM only |
-| fr2 (`bunos`, alias cdn) | 10.200.77.3 | 51.255.162.6, 2001:41d0:305:2100::a461 | OVH Public Cloud (DMI `OpenStack Nova`, OVH IPv6) | vhosts, reverse proxy, CDN, sync, ACME |
-| prd (`srv2116886`, USA) | 10.200.77.5 | 72.60.186.43 | Hostinger | application backends |
-| Windows PC | 10.200.77.2, 10.200.78.2 | – | – | workstation |
+| Node                     | Mesh                     | Public                                 | Provider                                          | Role                                   |
+| ------------------------ | ------------------------ | -------------------------------------- | ------------------------------------------------- | -------------------------------------- |
+| fr1 (`vps-203bea89`)     | 10.200.77.1 (hub wg1)    | 51.77.147.152, 2001:41d0:404:200::4d8e | OVH VPS (KVM)                                     | Google, Chromium and LLVM only         |
+| fr2 (`bunos`, alias cdn) | 10.200.77.3              | 51.255.162.6, 2001:41d0:305:2100::a461 | OVH Public Cloud (DMI `OpenStack Nova`, OVH IPv6) | vhosts, reverse proxy, CDN, sync, ACME |
+| prd (`srv2116886`, USA)  | 10.200.77.5              | 72.60.186.43                           | Hostinger                                         | application backends                   |
+| Windows PC               | 10.200.77.2, 10.200.78.2 | –                                      | –                                                 | workstation                            |
 
 ## Done
 
@@ -112,3 +112,12 @@ Details and checksums in `FR1-CHROMIUM-HOST.md`.
 - ssh keys: delete the key without comment `u13O5I5n…` and the duplicates in `fr1:~ubuntu/.ssh/authorized_keys`.
 - alerts: choose a channel (`FLEET_ALERT_URL`).
 - fr1: delete the archived data as `CHECK rc=0` lines come in (see `FR1-CHROMIUM-HOST.md`).
+
+## src checkout, runners, build-all (2026-11-13)
+
+- One checkout per host: `/srv/src`, full tree of `aphrody-labs/src` (`aphrody-dev/src`), `main` only, owned by `ubuntu` (`root` on prd). `src-checkout-update.timer` (every 5 min, `infra/fleet/bin/src-checkout-update.sh`) fast-forwards it; it skips a dirty tracked tree or a non-main HEAD, rolls back a restarted unit that fails, writes `/var/lib/src-sync/status.json` and journald tag `src-checkout`; on fr1 it then runs `ay manifests --check`. prd and fr2 use it as read-only source of deploy config: no compiler there, images come from `ghcr.io/aphrody-labs`.
+- `third_party/*` forks (src.lock.json, shallow blobless at the pinned commit) exist on fr1 only (`third-party-sync.sh`, result in `~/.cache/src-sync/third-party.tsv`). Excluded: Chromium (gclient tree `/srv/chromium`), Linux, LLVM, WebKit, AOSP manifest, Unreal; fetch on demand with `ay git`. `third_party/bun` is cloned shallow and blobless.
+- fr1 CI runners: four instances (`actions.runner.aphrody-dev-src.fr1`, `actions.runner.aphrody-labs-src.fr1-{2,3,4}`), labels `self-hosted, Linux, X64, fr1, build`, `Restart=always`. `aphrody-heavy` has two slots (`HEAVY_SLOTS`) and a load gate. Shared cargo target dirs live in `/home/ubuntu/build/*-target`.
+- Setup of a host, idempotent: `just fleet-bootstrap <role>` (toolchains from tools.toml) then `just fleet-setup <role>`; runners need a registration token on stdin (`gh api -X POST repos/aphrody-labs/src/actions/runners/registration-token --jq .token | ssh vps gh-runners.sh 4`).
+- `just build-all` (fr1, `infra/fleet/bin/build-all.sh`): images to ghcr, ay, game wasm, site, artifacts in `/srv/artifacts/builds/<sha>` and `r2:aphrody-dist/builds/<sha>`; then `SRC_TAG=<sha> just deploy core prd` and `SRC_TAG=<sha> just deploy edge fr2`. `just ci-local` and `just ci-lint` mirror the workflows.
+- Purge ledger: `docs/infra/VPS-PURGE-2026-11-13.md`.
