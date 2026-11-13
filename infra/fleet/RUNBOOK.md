@@ -1,78 +1,78 @@
-# Runbook flotte (fr1, fr2, prd)
+# Fleet runbook (fr1, fr2, prd)
 
-## Accès de secours
+## Emergency access
 
-| Nœud | Fournisseur | Console / secours |
+| Node | Provider | Console / rescue |
 |---|---|---|
-| fr1 `vps-203bea89` 51.77.147.152 | OVH VPS (KVM) | Manager OVH > Bare Metal Cloud > VPS > `vps-203bea89.vps.ovh.net` > « Redémarrer en mode rescue » (identifiants envoyés par e-mail), ou console KVM web (série `ttyS0` et `tty1` actifs dans la cmdline). En rescue : `mount /dev/sda1 /mnt` (ext4 root) ; `/home` = btrfs `sdb1+sdc1`, subvol `@home`. |
-| fr2 `bunos` 51.255.162.6 | OVH Public Cloud (OpenStack Nova) | Manager OVH > Public Cloud > Instances > « Console VNC » ou « Rescue » (image rescue-pro). API : `openstack server rescue`. |
-| prd `srv2116886` 72.60.186.43 | Hostinger VPS (id 2116886) | hPanel > VPS > Console navigateur / Recovery mode. API : `https://developers.hostinger.com/api/vps/v1/virtual-machines/2116886` (`HOSTINGER_API_TOKEN` sur le PC) : `POST .../recovery`, `POST .../restart`. |
+| fr1 `vps-203bea89` 51.77.147.152 | OVH VPS (KVM) | OVH Manager > Bare Metal Cloud > VPS > `vps-203bea89.vps.ovh.net` > "Reboot in rescue mode" (credentials sent by e-mail), or web KVM console (serial `ttyS0` and `tty1` active in the cmdline). In rescue: `mount /dev/sda1 /mnt` (ext4 root); `/home` = btrfs `sdb1+sdc1`, subvol `@home`. |
+| fr2 `bunos` 51.255.162.6 | OVH Public Cloud (OpenStack Nova) | OVH Manager > Public Cloud > Instances > "VNC console" or "Rescue" (rescue-pro image). API: `openstack server rescue`. |
+| prd `srv2116886` 72.60.186.43 | Hostinger VPS (id 2116886) | hPanel > VPS > Browser console / Recovery mode. API: `https://developers.hostinger.com/api/vps/v1/virtual-machines/2116886` (`HOSTINGER_API_TOKEN` on the PC): `POST .../recovery`, `POST .../restart`. |
 
-ssh : clés uniquement sur les trois nœuds (`PasswordAuthentication no`, root `prohibit-password`). Le PC passe par les IP publiques (`~/.ssh/config`), jamais par le mesh. Couper le mesh ne coupe donc pas l'accès.
+ssh: keys only on all three nodes (`PasswordAuthentication no`, root `prohibit-password`). The PC goes through the public IPs (`~/.ssh/config`), never through the mesh. Cutting the mesh therefore does not cut access.
 
-## Reboot sécurisé (noyau)
+## Safe reboot (kernel)
 
-1. Vérifier ce qui démarre au boot : `systemctl is-enabled ssh.socket wg-quick@wg1 fleet-firewall fleet-mesh-forward fail2ban` (fr1). Ne jamais activer ufw ni nftables.service : le filtrage passe par fleet-firewall, firewalld et netavark.
-2. `GRUB_DEFAULT=saved`, défaut = noyau éprouvé (`grub-set-default '<submenu>><entry>'`), nouveau noyau en coup unique : `grub-reboot '<submenu>><nouvelle entry>'`.
-3. `systemd-run --on-active=5 systemctl reboot`, puis attendre ssh (`until ssh ...`).
-4. Vérifications : `uname -r`, ping 10.200.77.{1,3,5}, `fleet-health.sh`, NativeLink (:50051/:50061, 3 workers sur :50061), `aphrody-factory doctor`.
-5. Rendre permanent seulement si tout est vert : `grub-set-default '<submenu>><nouvelle entry>'`. Garder l'ancien noyau en `apt-mark manual`.
-6. Si pas de ssh après environ 5 min : reboot depuis le Manager. GRUB repart sur le défaut éprouvé, puisque `next_entry` ne vaut qu'une fois. Si ça ne suffit pas, passer en rescue (tableau ci-dessus).
+1. Check what starts at boot: `systemctl is-enabled ssh.socket wg-quick@wg1 fleet-firewall fleet-mesh-forward fail2ban` (fr1). Never enable ufw or nftables.service: filtering goes through fleet-firewall, firewalld and netavark.
+2. `GRUB_DEFAULT=saved`, default = proven kernel (`grub-set-default '<submenu>><entry>'`), new kernel as a one-shot: `grub-reboot '<submenu>><new entry>'`.
+3. `systemd-run --on-active=5 systemctl reboot`, then wait for ssh (`until ssh ...`).
+4. Checks: `uname -r`, ping 10.200.77.{1,3,5}, `fleet-health.sh`, NativeLink (:50051/:50061, 3 workers on :50061), `aphrody-factory doctor`.
+5. Make it permanent only if everything is green: `grub-set-default '<submenu>><new entry>'`. Keep the old kernel as `apt-mark manual`.
+6. If there is no ssh after about 5 min: reboot from the Manager. GRUB falls back to the proven default, since `next_entry` applies only once. If that is not enough, go to rescue (table above).
 
 ## WireGuard
 
-- Topologie : hub fr1 `wg1` 10.200.77.0/24 (port 51821). fr2 (45667) et prd (`vps`, 52245) ont un pair direct entre eux, et `fleet-wg-failover@` (timer 30 s) retire la route directe quand le handshake a plus de 150 s : le hub prend alors le relais. Le PC passe par le hub, plus un lien direct avec prd (`prod`, 10.200.78.0/30).
-- Problème connu (2026-11-12) : l'UDP depuis OVH (fr1 et fr2) vers prd est filtré en amont par intermittence après de gros volumes, pendant environ 15 à 20 min. L'ICMP passe toujours. Les gros transferts vers prd passent donc en TCP : NativeLink via `fleet-tunnel-nativelink` (ssh -L), rsync via `ssh root@72.60.186.43`.
-- Configs : `/etc/wireguard/*.conf` (0600), sauvegardées chaque jour dans `r2:aphrody-archive/fleet/<hôte>/` (tar de `/etc`).
-- Rotation de la clé du PC : `wg/rotate-wg-win.sh`.
+- Topology: fr1 hub `wg1` 10.200.77.0/24 (port 51821). fr2 (45667) and prd (`vps`, 52245) have a direct peer between them, and `fleet-wg-failover@` (30 s timer) removes the direct route when the handshake is older than 150 s: the hub then takes over. The PC goes through the hub, plus a direct link with prd (`prod`, 10.200.78.0/30).
+- Known issue (2026-11-12): UDP from OVH (fr1 and fr2) to prd is intermittently filtered upstream after large volumes, for about 15 to 20 min. ICMP still passes. Large transfers to prd therefore go over TCP: NativeLink via `fleet-tunnel-nativelink` (ssh -L), rsync via `ssh root@72.60.186.43`.
+- Configs: `/etc/wireguard/*.conf` (0600), backed up every day to `r2:aphrody-archive/fleet/<host>/` (tar of `/etc`).
+- Rotation of the PC key: `wg/rotate-wg-win.sh`.
 
-## Sauvegardes
+## Backups
 
-- Chaque hôte se sauvegarde lui-même : `fleet-backup.timer` (03:30, 09:30, 15:30, 21:30 UTC, `Persistent`). L'unité tourne en Nice 19, I/O idle, CPUWeight 10, rclone limité à 2 transferts et 10 MB/s ; sur prd, sous `flock /var/lock/aphrody-heavy.lock`. Contenu : `BACKUP_PATHS` de `infra/fleet/<hôte>/resilience.conf` (`/etc` avec les credstores systemd-creds, la clé hôte `/var/lib/systemd/credential.secret`, unités et credstores utilisateur, état applicatif), plus une copie cohérente (`sqlite3 .backup`) de chaque base de `BACKUP_SQLITE`, rangée sous `.fleet-sqlite/<chemin>` dans l'archive.
-- Chiffrement age vers `infra/fleet/backup-age.pub`. L'identité reste sur le PC (`~/.ssh/fleet/backup-age.key`, 0600, hors dépôt). Destination : `r2:aphrody-archive/fleet/<hôte>/<UTC>.tar.zst.age`, rétention 30 j.
-- Test de restauration : `just fleet-restore-test <hôte>`. La dernière archive est déchiffrée sur l'hôte (identité passée par ssh dans un fichier tmpfs 0600, effacé ensuite), puis `PRAGMA integrity_check` de chaque base et contrôle de `/etc/fstab`, `resilience.conf` et de la clé credstore.
-- Restauration manuelle : `rclone cat r2:aphrody-archive/fleet/<hôte>/<f>.tar.zst.age | age -d -i backup-age.key | zstd -d | tar -x -C /restore`.
-- Lore : sauvegarde horaire `lore-r2-backup` vers `r2-lore:aphrody-lore`, même régime de priorité (drop-in `BATCH`).
+- Each host backs itself up: `fleet-backup.timer` (03:30, 09:30, 15:30, 21:30 UTC, `Persistent`). The unit runs at Nice 19, idle I/O, CPUWeight 10, rclone limited to 2 transfers and 10 MB/s; on prd, under `flock /var/lock/aphrody-heavy.lock`. Content: `BACKUP_PATHS` of `infra/fleet/<host>/resilience.conf` (`/etc` with the systemd-creds credstores, the host key `/var/lib/systemd/credential.secret`, user units and credstores, application state), plus a consistent copy (`sqlite3 .backup`) of each database in `BACKUP_SQLITE`, stored under `.fleet-sqlite/<path>` in the archive.
+- age encryption to `infra/fleet/backup-age.pub`. The identity stays on the PC (`~/.ssh/fleet/backup-age.key`, 0600, outside the repository). Destination: `r2:aphrody-archive/fleet/<host>/<UTC>.tar.zst.age`, 30-day retention.
+- Restore test: `just fleet-restore-test <host>`. The latest archive is decrypted on the host (identity passed over ssh into a 0600 tmpfs file, erased afterwards), then `PRAGMA integrity_check` of each database and check of `/etc/fstab`, `resilience.conf` and the credstore key.
+- Manual restore: `rclone cat r2:aphrody-archive/fleet/<host>/<f>.tar.zst.age | age -d -i backup-age.key | zstd -d | tar -x -C /restore`.
+- Lore: hourly backup `lore-r2-backup` to `r2-lore:aphrody-lore`, same priority regime (drop-in `BATCH`).
 
-## Résilience (reboot, crash, kill)
+## Resilience (reboot, crash, kill)
 
-- `just fleet-resilience apply|check [pc fr2 prd fr1]` pousse `infra/fleet/bin`, les timers et `<hôte>/resilience.conf`, puis lance `fleet-resilience.sh apply` :
-  - drop-in `50-fleet-resilience.conf` sur `SERVICES` : Restart=always (on-failure pour un oneshot), RestartSec 5 s, StartLimit 20/600 s, network-online ;
-  - `enable --now` des `TIMERS`, `wg-quick@` enabled avec Restart=on-failure, linger et unités utilisateur (`USER_UNITS`) ;
-  - docker `live-restore` : sans lui, un crash de dockerd tuait les conteneurs sans les relancer (constaté sur fr2) ; politique `unless-stopped` des conteneurs compose ;
-  - `nofail` sur les montages secondaires (`NOFAIL`), unités mortes désactivées (`DISABLE`, `DISABLE_USER`), priorité basse des sauvegardes et synchros (`BATCH`).
-  Le filtrage reste `fleet-firewall` (`/etc/fleet/firewall.nft`) ; `check` vérifie qu'ufw et nftables.service restent inactifs.
-- Pas de `WatchdogSec` : aucun de ces services n'émet `WATCHDOG=1`. Les sondes HTTP `PROBES` de `fleet-resilience.sh heal` (3 échecs : restart) en tiennent lieu.
-- prd : le relais ai-os tourne depuis le checkout git en lecture seule `/srv/src` (clone partiel et sparse), tenu à jour par `src-checkout-update.timer` (10 min, `--ff-only`, redémarrage du relais si `packages/ai-os` change).
-- PC : `infra/fleet/pc/resilience.ps1`. AphrodyRelay et WireGuard en Automatic (Delayed Start) avec recovery restart 5/10/30 s ; tâches `Aphrody\Agents*` et `ay-ai-*` relançables, StartWhenAvailable.
-- Crash : `bash infra/fleet/bin/fleet-kill-test.sh <hôte> <unité|user:unité|wg:iface>...`. Reboot réel : `just fleet-resilience-proof <hôte>` (un seul à la fois, verrou sur le PC, refus si un hôte a booté depuis moins de 15 min).
+- `just fleet-resilience apply|check [pc fr2 prd fr1]` pushes `infra/fleet/bin`, the timers and `<host>/resilience.conf`, then runs `fleet-resilience.sh apply`:
+  - drop-in `50-fleet-resilience.conf` on `SERVICES`: Restart=always (on-failure for a oneshot), RestartSec 5 s, StartLimit 20/600 s, network-online;
+  - `enable --now` of the `TIMERS`, `wg-quick@` enabled with Restart=on-failure, linger and user units (`USER_UNITS`);
+  - docker `live-restore`: without it, a dockerd crash killed the containers without restarting them (observed on fr2); `unless-stopped` policy for compose containers;
+  - `nofail` on secondary mounts (`NOFAIL`), dead units disabled (`DISABLE`, `DISABLE_USER`), low priority for backups and syncs (`BATCH`).
+  Filtering stays `fleet-firewall` (`/etc/fleet/firewall.nft`); `check` verifies that ufw and nftables.service stay inactive.
+- No `WatchdogSec`: none of these services emits `WATCHDOG=1`. The HTTP `PROBES` of `fleet-resilience.sh heal` (3 failures: restart) take its place.
+- prd: the ai-os relay runs from the read-only git checkout `/srv/src` (partial and sparse clone), kept up to date by `src-checkout-update.timer` (10 min, `--ff-only`, relay restarted if `packages/ai-os` changes).
+- PC: `infra/fleet/pc/resilience.ps1`. AphrodyRelay and WireGuard as Automatic (Delayed Start) with recovery restart 5/10/30 s; `Aphrody\Agents*` and `ay-ai-*` tasks restartable, StartWhenAvailable.
+- Crash: `bash infra/fleet/bin/fleet-kill-test.sh <host> <unit|user:unit|wg:iface>...`. Real reboot: `just fleet-resilience-proof <host>` (only one at a time, lock on the PC, refused if a host booted less than 15 min ago).
 
-## Santé et alertes
+## Health and alerts
 
-- `fleet-health.timer` (2 min) sur fr1, fr2 et prd. Il lance d'abord le self-heal local, puis contrôle chaque pair par ssh sur IP publique (`HEAL_PEERS`) : un pair dégradé ou dont le timer est arrêté est réparé à distance ; un pair injoignable est compté et alerté. Il vérifie ensuite le mesh, les ports `FLEET_TCP` et l'edge fr2 (`curl --resolve`). Les échecs vont dans journald, tag `fleet-health`, et vers `FLEET_ALERT_URL` si cette variable est définie dans `/etc/fleet/health.env`. La bascule de service entre hôtes est celle du LB cluster (`infra/cluster`, pools HAProxy fr1/fr2/prd).
-- Authentifications et accès réseau (ssh, WireGuard, cloudflared, unités de renouvellement, secrets CI) : `ay auth status` depuis le PC, `ay auth repair` pour réparer sans mot de passe, `ay auth tunnels` pour les jetons cloudflared (systemd-creds). Détail : `docs/infra/AUTH.md`.
-- Failover DNS : désactivé (`FLEET_DNS_FAILOVER=0`). Pour l'activer, il faut un token Cloudflare `Zone.DNS:Edit` (`CF_API_TOKEN`) et `/etc/fleet/dns-failover.tsv` (zone, record, IP de repli). Le repli valable aujourd'hui est fr1, qui garde ses vhosts nginx en rollback tant que rosegriffon-52 n'a pas confirmé.
+- `fleet-health.timer` (2 min) on fr1, fr2 and prd. It first runs the local self-heal, then checks each peer over ssh on the public IP (`HEAL_PEERS`): a degraded peer or one whose timer is stopped is repaired remotely; an unreachable peer is counted and alerted. It then checks the mesh, the `FLEET_TCP` ports and the fr2 edge (`curl --resolve`). Failures go to journald, tag `fleet-health`, and to `FLEET_ALERT_URL` if this variable is set in `/etc/fleet/health.env`. Service failover between hosts is that of the cluster LB (`infra/cluster`, HAProxy pools fr1/fr2/prd).
+- Authentication and network access (ssh, WireGuard, cloudflared, renewal units, CI secrets): `ay auth status` from the PC, `ay auth repair` to repair without a password, `ay auth tunnels` for cloudflared tokens (systemd-creds). Details: `docs/infra/AUTH.md`.
+- DNS failover: disabled (`FLEET_DNS_FAILOVER=0`). Enabling it requires a Cloudflare `Zone.DNS:Edit` token (`CF_API_TOKEN`) and `/etc/fleet/dns-failover.tsv` (zone, record, fallback IP). The valid fallback today is fr1, which keeps its nginx vhosts as rollback until rosegriffon-52 has confirmed.
 
-## Réinstallation d'un nœud
+## Reinstalling a node
 
-1. Réinstaller l'image du fournisseur (Ubuntu 26.10 pour fr1 et fr2, Arch pour prd) avec la clé ssh du PC.
-2. `just fleet-rebuild <hôte>` (`--dry-run` pour voir le plan) :
-   - sshd en clés seules, puis `just fleet-bootstrap` ;
-   - restauration de la dernière archive R2, récupérée par un pair et déchiffrée sur le PC. Sont conservés de l'image neuve : machine-id, clés d'hôte ssh, fstab, grub et réseau. Les bases SQLite sont remises en place ;
-   - `just fleet-resilience apply`, `just cluster-deploy`, `just agents-install` ;
-   - enfin check, fleet-health, sauvegarde et test de restauration.
-3. fr1 seulement : `infra/fleet/fr1/sysctl` et `limits`, `install-build-deps.py --no-prompt --unsupported --no-syms --no-arm --no-chromeos-fonts`, NativeLink `deploy.sh server` puis `deploy.sh worker 10.200.77.1 100000000000 10` (cache sur le subvol btrfs `/home/nativelink-worker`).
+1. Reinstall the provider image (Ubuntu 26.10 for fr1 and fr2, Arch for prd) with the PC's ssh key.
+2. `just fleet-rebuild <host>` (`--dry-run` to see the plan):
+   - sshd with keys only, then `just fleet-bootstrap`;
+   - restore of the latest R2 archive, fetched by a peer and decrypted on the PC. Kept from the fresh image: machine-id, ssh host keys, fstab, grub and network. SQLite databases are put back in place;
+   - `just fleet-resilience apply`, `just cluster-deploy`, `just agents-install`;
+   - finally check, fleet-health, backup and restore test.
+3. fr1 only: `infra/fleet/fr1/sysctl` and `limits`, `install-build-deps.py --no-prompt --unsupported --no-syms --no-arm --no-chromeos-fonts`, NativeLink `deploy.sh server` then `deploy.sh worker 10.200.77.1 100000000000 10` (cache on the btrfs subvol `/home/nativelink-worker`).
 
-## Limites de charge
+## Load limits
 
-- fr1 : `build.slice` (MemoryHigh 34G, MemoryMax 38G, oomd kill à 80 % de pression). NativeLink worker en Nice=5.
-- prd : `fleet-apps.slice` (CPUWeight 50, MemoryHigh 6G, MemoryMax 8G, oomd) pour commons-relay, aphrody-gpu-depot et agent-relay-broker.
-- Transferts : `nice -n 19 ionice -c3`, `--bwlimit` ≤ 10 MB/s vers prd. Avant d'écrire sur une cible qui existe déjà : `rsync --dry-run --itemize-changes`, puis `--backup --backup-dir=<cible>.rsync-backup-<date>`.
+- fr1: `build.slice` (MemoryHigh 34G, MemoryMax 38G, oomd kill at 80 % pressure). NativeLink worker at Nice=5.
+- prd: `fleet-apps.slice` (CPUWeight 50, MemoryHigh 6G, MemoryMax 8G, oomd) for commons-relay, aphrody-gpu-depot and agent-relay-broker.
+- Transfers: `nice -n 19 ionice -c3`, `--bwlimit` ≤ 10 MB/s to prd. Before writing to a target that already exists: `rsync --dry-run --itemize-changes`, then `--backup --backup-dir=<target>.rsync-backup-<date>`.
 
-## Disque, swap, FS et sysctl (fleet-tune)
+## Disk, swap, FS and sysctl (fleet-tune)
 
-- `infra/fleet/bin/fleet-tune.sh apply|check|clean` (installé dans `/usr/local/bin`), configuration par hôte `infra/fleet/<hôte>/tune.conf` copiée dans `/etc/fleet/tune.conf`. `fleet-tune.service` le réapplique à chaque boot, `fleet-clean.timer` (05:23) nettoie chaque jour.
-- Mémoire : zram en priorité 100 (zram-generator sur fr2 et prd, `zram-swap.service` maison sur fr1), swapfile en priorité 10 (fr1 8 Gio ext4, fr2 2 Gio ext4, prd 8 Gio btrfs nocow créé par `btrfs filesystem mkswapfile` dans le sous-volume `/swap`). `vm.swappiness` 150 sur fr2 et prd, 100 sur fr1 ; `vm.page-cluster` 0 ; `dirty_bytes` dimensionnés par hôte dans `/etc/sysctl.d/95-fleet-tune.conf`.
-- FS : `noatime` partout. La racine de prd n'a pas de ligne fstab (montée par la cmdline du noyau) : elle est remontée en `noatime` au boot par `fleet-tune.service`. btrfs garde `compress=zstd:1,space_cache=v2,discard=async`. `fstrim.timer` actif sur les trois hôtes.
-- Nettoyage (quotas dans `tune.conf`) : cibles cargo (`CACHEDIR.TAG`) inactives depuis N jours, jamais pendant que le verrou lourd est tenu ; caches bun et sccache au-dessus de leur plafond ; `docker builder prune --keep-storage`, images inutilisées de plus de 14 j ; `journalctl --vacuum-size`.
-- Noyau : aucun changement appliqué ici. Tout changement de noyau passe par docs/linux et `fleet-reboot-precheck.sh` ; jamais de reboot depuis fleet-tune.
+- `infra/fleet/bin/fleet-tune.sh apply|check|clean` (installed in `/usr/local/bin`), per-host configuration `infra/fleet/<host>/tune.conf` copied to `/etc/fleet/tune.conf`. `fleet-tune.service` reapplies it at every boot, `fleet-clean.timer` (05:23) cleans up every day.
+- Memory: zram at priority 100 (zram-generator on fr2 and prd, in-house `zram-swap.service` on fr1), swapfile at priority 10 (fr1 8 GiB ext4, fr2 2 GiB ext4, prd 8 GiB btrfs nocow created by `btrfs filesystem mkswapfile` in the `/swap` subvolume). `vm.swappiness` 150 on fr2 and prd, 100 on fr1; `vm.page-cluster` 0; `dirty_bytes` sized per host in `/etc/sysctl.d/95-fleet-tune.conf`.
+- FS: `noatime` everywhere. prd's root has no fstab line (mounted by the kernel cmdline): it is remounted `noatime` at boot by `fleet-tune.service`. btrfs keeps `compress=zstd:1,space_cache=v2,discard=async`. `fstrim.timer` active on all three hosts.
+- Cleanup (quotas in `tune.conf`): cargo targets (`CACHEDIR.TAG`) inactive for N days, never while the heavy lock is held; bun and sccache caches above their cap; `docker builder prune --keep-storage`, unused images older than 14 days; `journalctl --vacuum-size`.
+- Kernel: no change applied here. Any kernel change goes through docs/linux and `fleet-reboot-precheck.sh`; never a reboot from fleet-tune.

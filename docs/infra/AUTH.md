@@ -1,82 +1,82 @@
-# Authentifications et accès réseau du parc
+# Authentication and network access of the fleet
 
-État relevé le 2026-11-13 (UTC) sur le PC, fr2 (`ssh cdn`) et prd (`ssh prd`) avec `ay auth status`. fr1 n'est que lu (`repair = false`). Inventaire : `infra/deploy.toml` (`[nodes.*]`, `[auth.*]`). Code : `packages/env-kit/src/{auth,secret-store}.ts`, routé par `ay auth` et `ay secret` (`crates/ay/src/exec.rs`).
+State recorded on 2026-11-13 (UTC) on the PC, fr2 (`ssh cdn`) and prd (`ssh prd`) with `ay auth status`. fr1 is read only (`repair = false`). Inventory: `infra/deploy.toml` (`[nodes.*]`, `[auth.*]`). Code: `packages/env-kit/src/{auth,secret-store}.ts`, routed by `ay auth` and `ay secret` (`crates/ay/src/exec.rs`).
 
-## Mécanisme
+## Mechanism
 
-| Commande | Effet |
+| Command | Effect |
 |---|---|
-| `ay auth status [--json] [--only cli,browser,token,store,ci,fleet,tunnel-api]` | lecture seule ; code 1 si un contrôle est `invalid` |
-| `ay auth repair` | répare sans mot de passe : jeton `gh` du trousseau réexporté, `gh auth setup-git`, clés ssh publiques ajoutées à `authorized_keys`, unités cloudflared relancées, secrets GitHub resynchronisés |
-| `ay auth repair --browser` | lance en plus `gcloud auth login <compte>`, `npm login --auth-type=web`, `vercel login`, `wrangler login` : le Chrome connecté s'ouvre, le propriétaire clique ; le nouveau jeton part dans le stockage |
-| `ay auth gh-secrets [--dry-run]` | `gh secret set <NOM> --repo/--org … --body -` (valeur sur stdin) pour `[auth.github.*]` ; refuse un jeton que son fournisseur rejette (`whoami`) ; empreinte HMAC locale pour l'idempotence |
-| `ay auth tunnels [--dry-run]` | jeton connecteur lu par l'API Cloudflare → `systemd-creds encrypt` sur l'hôte (`/etc/credstore.encrypted/cloudflared-<tunnel>`), drop-in `LoadCredentialEncrypted=` + `--token-file %d/…`, fichier en clair supprimé ; ne redémarre que s'il y a dérive |
-| `ay auth rotate cloudflare` | `PUT /accounts/<id>/tokens/<id>/value` : nouveau `CLOUDFLARE_API_TOKEN`, ancien révoqué, propagé (stockage, `.env`, env utilisateur, éditeurs, GitHub) |
-| `ay auth login [cli…]` | connecte les seules CLI en échec, device flow (RFC 8628) sans navigateur local : gh (code d'appareil), wrangler `--device`, codex `--device-auth`, claude `setup-token` |
-| `ay auth oidc [--dry-run]` | fédération GitHub Actions OIDC → GCP (WIF) de `[auth.oidc.gcp]`, idempotente ; `status --only oidc` signale les secrets que `[auth.oidc.replaces]` rend inutiles |
-| `ay auth mint cloudflare --perm "<groupes>" [--ttl s] -- cmd` | jeton de compte limité à ces groupes, `expires_on`, injecté dans l'enfant puis supprimé |
-| `ay auth mint gcp [--sa <email>] [--ttl s] -- cmd` | jeton d'accès par impersonation, sans clé (`CLOUDSDK_AUTH_ACCESS_TOKEN`) |
-| `ay secret info/list/set/exec/pipe/has/rm/import` | stockage chiffré par l'OS (ci-dessous) |
+| `ay auth status [--json] [--only cli,browser,token,store,ci,fleet,tunnel-api]` | read only; exit code 1 if a check is `invalid` |
+| `ay auth repair` | repairs without a password: `gh` token from the keyring re-exported, `gh auth setup-git`, public ssh keys added to `authorized_keys`, cloudflared units restarted, GitHub secrets resynchronized |
+| `ay auth repair --browser` | additionally runs `gcloud auth login <account>`, `npm login --auth-type=web`, `vercel login`, `wrangler login`: the logged-in Chrome opens, the owner clicks; the new token goes into the store |
+| `ay auth gh-secrets [--dry-run]` | `gh secret set <NAME> --repo/--org … --body -` (value on stdin) for `[auth.github.*]`; refuses a token that its provider rejects (`whoami`); local HMAC fingerprint for idempotence |
+| `ay auth tunnels [--dry-run]` | connector token read through the Cloudflare API → `systemd-creds encrypt` on the host (`/etc/credstore.encrypted/cloudflared-<tunnel>`), drop-in `LoadCredentialEncrypted=` + `--token-file %d/…`, plain-text file deleted; restarts only if there is drift |
+| `ay auth rotate cloudflare` | `PUT /accounts/<id>/tokens/<id>/value`: new `CLOUDFLARE_API_TOKEN`, old one revoked, propagated (store, `.env`, user env, editors, GitHub) |
+| `ay auth login [cli…]` | logs in only the failing CLIs, device flow (RFC 8628) without a local browser: gh (device code), wrangler `--device`, codex `--device-auth`, claude `setup-token` |
+| `ay auth oidc [--dry-run]` | GitHub Actions OIDC federation → GCP (WIF) of `[auth.oidc.gcp]`, idempotent; `status --only oidc` reports the secrets that `[auth.oidc.replaces]` makes unnecessary |
+| `ay auth mint cloudflare --perm "<groups>" [--ttl s] -- cmd` | account token limited to these groups, `expires_on`, injected into the child then deleted |
+| `ay auth mint gcp [--sa <email>] [--ttl s] -- cmd` | access token by impersonation, keyless (`CLOUDSDK_AUTH_ACCESS_TOKEN`) |
+| `ay secret info/list/set/exec/pipe/has/rm/import` | OS-encrypted store (below) |
 
-Comparaison de l'écosystème et choix « AI first » : [AUTH-ECOSYSTEM.md](AUTH-ECOSYSTEM.md). Le relais ai-os sert OAuth 2.1 (MCP 2026-07-28, A2A 1.0) : `relay mcp-add`, `relay approve`, `relay client add`.
+Ecosystem comparison and "AI first" choices: [AUTH-ECOSYSTEM.md](AUTH-ECOSYSTEM.md). The ai-os relay serves OAuth 2.1 (MCP 2026-07-28, A2A 1.0): `relay mcp-add`, `relay approve`, `relay client add`.
 
-Règles : aucune valeur en argv ni sur stdout (pas de `secret get` : une sortie capturée par un agent ou un journal CI n'est pas un terminal). Une valeur entre par stdin (`… | ay secret set NOM`) et sort vers l'env (`ay secret exec NOM -- cmd`) ou le stdin (`ay secret pipe NOM -- cmd`) d'un processus enfant.
+Rules: no value in argv or on stdout (no `secret get`: output captured by an agent or a CI log is not a terminal). A value enters through stdin (`… | ay secret set NAME`) and leaves to the env (`ay secret exec NAME -- cmd`) or the stdin (`ay secret pipe NAME -- cmd`) of a child process.
 
-## Stockage des secrets
+## Secret storage
 
-| Hôte | Backend | Emplacement |
+| Host | Backend | Location |
 |---|---|---|
-| Windows | DPAPI utilisateur (`CryptProtectData`, crypt32 via bun:ffi, entropie applicative) | `%LOCALAPPDATA%\aphrody\secrets\<NOM>.dpapi` |
-| Linux, root | `systemd-creds` (clé hôte, TPM2 si présent) | `/etc/credstore.encrypted/<NOM>`, lu nativement par `LoadCredentialEncrypted=<NOM>` |
-| Linux, utilisateur | `systemd-creds --user` (systemd ≥ 256 ; fr2 261, prd 262) | `~/.config/credstore.encrypted/<NOM>` |
+| Windows | user DPAPI (`CryptProtectData`, crypt32 via bun:ffi, application entropy) | `%LOCALAPPDATA%\aphrody\secrets\<NAME>.dpapi` |
+| Linux, root | `systemd-creds` (host key, TPM2 if present) | `/etc/credstore.encrypted/<NAME>`, read natively by `LoadCredentialEncrypted=<NAME>` |
+| Linux, user | `systemd-creds --user` (systemd ≥ 256; fr2 261, prd 262) | `~/.config/credstore.encrypted/<NAME>` |
 
-Ordre de résolution : stockage, puis `.env` (ACL NTFS, `env-kit doctor`). `env-kit set` et `env-kit sync-gh` écrivent aussi dans le stockage. API TypeScript : `secretSet/secretGet/resolveSecret` (`packages/env-kit/src/secret-store.ts`), à réutiliser telle quelle par l'outillage des fournisseurs d'IA.
+Resolution order: store, then `.env` (NTFS ACL, `env-kit doctor`). `env-kit set` and `env-kit sync-gh` also write to the store. TypeScript API: `secretSet/secretGet/resolveSecret` (`packages/env-kit/src/secret-store.ts`), to be reused as is by the AI provider tooling.
 
-## État par type d'authentification (2026-11-13)
+## State per authentication type (2026-11-13)
 
-| Type | Outil | Secret | Renouvellement | État |
+| Type | Tool | Secret | Renewal | State |
 |---|---|---|---|---|
-| CLI GitHub | `gh` 2.x | trousseau Windows + `GH_TOKEN` (.env, stockage) | `ay auth repair` réexporte le jeton du trousseau | ok, `aphrody-dev`, scopes repo, workflow, admin:org |
-| CLI Google | `gcloud` | `%APPDATA%\gcloud` (7 configurations) | `ay auth repair --browser` | 5/7 ok ; `ai-agent` (<ai-google>) et `org-contact` (contact@aphrody.com) sans identifiants : clic propriétaire |
-| CLI Cloudflare | `cf`, `wrangler` | `CLOUDFLARE_API_TOKEN` (jeton de compte `cfat_`) | `ay auth rotate cloudflare` | ok ; roulé le 2026-11-13 (valeur exposée dans une session d'agent), GitHub resynchronisé |
-| CLI Vercel | `vercel` | `VERCEL_TOKEN` | navigateur | ok, `aphrody-dev` |
-| CLI npm | `npm` | `~/.npmrc`, `NPM_TOKEN` | `ay auth repair --browser` (connexion web) | **E401** : jeton révoqué ou expiré, clic propriétaire |
-| CLI Claude, Antigravity | `claude`, `agy` | gérés par leurs CLI | – | ok (clé d'API prioritaire sur claude.ai : périmètre fournisseurs IA) |
-| Navigateur | Chrome 3 profils, claude-in-chrome, agent-browser | sessions Chrome | clics propriétaire | ok : <owner-google>, contact@aphrody.com, <ai-google> ; hôte natif claude-in-chrome enregistré |
-| Jetons d'API | `env-kit whoami` | stockage puis `.env` | fournisseur | ok : Cloudflare, OVH, Hostinger, Vercel, Neon, crates.io, Supabase ; invalide : npm |
-| CI GitHub Actions | `ay auth gh-secrets` | secrets dépôt `aphrody-labs/src`, org `aphrody-labs` | à chaque rotation | plus de PAT : `APHRODY_APP_KEY` (secret d org aphrody-labs et yolo-rs) alimente l App GitHub `aphrody-labs` (docs/infra/GITHUB-APP.md) ; `SUBMODULES_TOKEN` supprimé |
-| ssh | OpenSSH, `~/.ssh/config` → `fleet/ssh_config` | clés ed25519 (`id_ed25519_vn`, `hostinger_us_ed25519`, `github_aphrody_dev`) | `ay auth repair` (authorized_keys) | ok vers fr1, fr2, prd et `git@github.com` |
-| WireGuard | `wg`, service Windows `WireGuardTunnel$wg-win` | clés privées sur chaque hôte (`/etc/wireguard`), rotation `infra/fleet/wg/rotate-wg-win.sh` | `infra/fleet/wg/rotate-wg-win.sh` (UAC sur le PC) | PC RUNNING ; fr2 `wg1` 2/2 ; prd `prod` 1/1, `vps` 2/2 ; fr1 `wg1` 4/6 (2 pairs inconnus sans handshake, cf. CLOUDFLARE-ONE.md). **Clé révoquée encore active** : le service `wg-win` du PC tourne toujours avec `up+fbCDK…` (fuitée, `[auth.wireguard].revoked`), pair présent sur fr1 `wg1` et prd `prod` ; la nouvelle paire `08E2m1El…` (`~/.ssh/fleet/wg/`) n’est installée nulle part. L’ancienne conf en clair `~/.ssh/wireguard-prod.conf` est passée dans le stockage DPAPI (`WG_WIN_OLD_CONF`, repli) et supprimée |
-| Tunnels Cloudflare | `cloudflared` 2026.10.7 sur prd | `systemd-creds` `cloudflared-mig-prd`, `cloudflared-prod` (plus de fichier en clair) | `ay auth tunnels` (API Cloudflare) | 4 tunnels healthy (API) : prod, mig-prd, auto-usa, shenron-dbfr |
-| Certificats | certbot sur fr2 (DNS-01, `/etc/letsencrypt/cloudflare.ini`) | jeton Cloudflare utilisateur, actif | `certbot.timer` | réparé : 3 lignées (aphrody.com, dragonballfr.com, rosegriffon.fr) refaites en liens symboliques, `certbot renew --dry-run` ok |
-| R2 S3 temporaire | `shenron-cloudflare-s3-renew` (prd, 10 min) | `/srv/shenron/config/cloudflare/api-token` (`LoadCredential=`) | timer | réparé : verrou et fichier `.next` d'une exécution interrompue (2026-11-12 17:31) bloquaient tout ; drop-in `10-stale-lock.conf` les purge |
-| Steam | `rg-steam-depot` (prd) | refresh token `/srv/rosegriffon/steam/steam-tokens.json` (0600, montage hôte persistant) ; copie coffre `STEAM_REFRESH_TOKEN` | `bun-steam-depot login-qr` (`bun scripts/steam-login.ts --qr`, QR renouvelé jusqu'à approbation) | actif : QR approuvé le 2026-11-13, expire 2027-06-12 ; `list` authentifié voit le manifeste du dépôt 2799861 |
+| GitHub CLI | `gh` 2.x | Windows keyring + `GH_TOKEN` (.env, store) | `ay auth repair` re-exports the keyring token | ok, `aphrody-dev`, scopes repo, workflow, admin:org |
+| Google CLI | `gcloud` | `%APPDATA%\gcloud` (7 configurations) | `ay auth repair --browser` | 5/7 ok; `ai-agent` (<ai-google>) and `org-contact` (contact@aphrody.com) without credentials: owner click |
+| Cloudflare CLI | `cf`, `wrangler` | `CLOUDFLARE_API_TOKEN` (account token `cfat_`) | `ay auth rotate cloudflare` | ok; rolled on 2026-11-13 (value exposed in an agent session), GitHub resynchronized |
+| Vercel CLI | `vercel` | `VERCEL_TOKEN` | browser | ok, `aphrody-dev` |
+| npm CLI | `npm` | `~/.npmrc`, `NPM_TOKEN` | `ay auth repair --browser` (web login) | **E401**: token revoked or expired, owner click |
+| Claude, Antigravity CLIs | `claude`, `agy` | managed by their CLIs | – | ok (API key takes precedence over claude.ai: AI provider scope) |
+| Browser | Chrome 3 profiles, claude-in-chrome, agent-browser | Chrome sessions | owner clicks | ok: <owner-google>, contact@aphrody.com, <ai-google>; claude-in-chrome native host registered |
+| API tokens | `env-kit whoami` | store then `.env` | provider | ok: Cloudflare, OVH, Hostinger, Vercel, Neon, crates.io, Supabase; invalid: npm |
+| GitHub Actions CI | `ay auth gh-secrets` | repository secrets `aphrody-labs/src`, org `aphrody-labs` | at each rotation | no more PATs: `APHRODY_APP_KEY` (org secret of aphrody-labs and yolo-rs) feeds the GitHub App `aphrody-labs` (docs/infra/GITHUB-APP.md); `SUBMODULES_TOKEN` deleted |
+| ssh | OpenSSH, `~/.ssh/config` → `fleet/ssh_config` | ed25519 keys (`id_ed25519_vn`, `hostinger_us_ed25519`, `github_aphrody_dev`) | `ay auth repair` (authorized_keys) | ok to fr1, fr2, prd and `git@github.com` |
+| WireGuard | `wg`, Windows service `WireGuardTunnel$wg-win` | private keys on each host (`/etc/wireguard`), rotation `infra/fleet/wg/rotate-wg-win.sh` | `infra/fleet/wg/rotate-wg-win.sh` (UAC on the PC) | PC RUNNING; fr2 `wg1` 2/2; prd `prod` 1/1, `vps` 2/2; fr1 `wg1` 4/6 (2 unknown peers without handshake, see CLOUDFLARE-ONE.md). **Revoked key still active**: the PC's `wg-win` service still runs with `up+fbCDK…` (leaked, `[auth.wireguard].revoked`), peer present on fr1 `wg1` and prd `prod`; the new pair `08E2m1El…` (`~/.ssh/fleet/wg/`) is installed nowhere. The old plain-text conf `~/.ssh/wireguard-prod.conf` was moved into the DPAPI store (`WG_WIN_OLD_CONF`, fallback) and deleted |
+| Cloudflare tunnels | `cloudflared` 2026.10.7 on prd | `systemd-creds` `cloudflared-mig-prd`, `cloudflared-prod` (no more plain-text file) | `ay auth tunnels` (Cloudflare API) | 4 healthy tunnels (API): prod, mig-prd, auto-usa, shenron-dbfr |
+| Certificates | certbot on fr2 (DNS-01, `/etc/letsencrypt/cloudflare.ini`) | Cloudflare user token, active | `certbot.timer` | repaired: 3 lineages (aphrody.com, dragonballfr.com, rosegriffon.fr) redone as symbolic links, `certbot renew --dry-run` ok |
+| Temporary R2 S3 | `shenron-cloudflare-s3-renew` (prd, 10 min) | `/srv/shenron/config/cloudflare/api-token` (`LoadCredential=`) | timer | repaired: lock and `.next` file of an interrupted run (2026-11-12 17:31) blocked everything; drop-in `10-stale-lock.conf` purges them |
+| Steam | `rg-steam-depot` (prd) | refresh token `/srv/rosegriffon/steam/steam-tokens.json` (0600, persistent host mount); vault copy `STEAM_REFRESH_TOKEN` | `bun-steam-depot login-qr` (`bun scripts/steam-login.ts --qr`, QR renewed until approval) | active: QR approved on 2026-11-13, expires 2027-06-12; authenticated `list` sees the manifest of depot 2799861 |
 
-## Règle : pas de relance de connexion (`ay auth daemon`)
+## Rule: no login retries (`ay auth daemon`)
 
-Ordre du propriétaire du 2026-11-13 : plus de rafales de connexions ni d'états périmés.
+Owner order of 2026-11-13: no more bursts of logins or stale states.
 
-- Un seul service par hôte, `ay auth daemon` (`packages/env-kit/src/auth-daemon.ts`) : unité utilisateur `infra/fleet/systemd/aphrody-auth-daemon.service` sur prd et fr2, tâche planifiée `aphrody-auth-daemon` (à l'ouverture de session) sur le PC ; installation `just auth-daemon-install`.
-- Sonde réelle toutes les 5 min, valeurs relues dans le coffre à chaque passe ; `<état>/auth-state.json` n'est jamais plus vieux que 5 min et tout rapport s'appuie sur une sonde, jamais sur un état en cache.
-- Rafraîchissement sans humain toutes les 30 min (`repair` sans navigateur), et dans les CLI : refresh tokens (gcloud, codex), impersonation de compte de service, jetons d'installation de l'App GitHub, OIDC en CI.
-- Identifiants préférés : sans interaction et longue durée. Impersonation d'un compte de service plutôt qu'un login utilisateur gcloud ; `claude setup-token` (1 an) ; refresh token codex ; OIDC CI.
-- Dernier recours : un identifiant qui exige un clic est signalé au plus une fois par 24 h, tous regroupés dans une seule notification (`<état>/auth-pending.md`, notification Windows). Aucune page n'est ouverte et aucune connexion n'est relancée ; le propriétaire répond par `ay auth daemon --ack <cible>`, qui lance une seule connexion.
-- Tout agent qui relance une connexion hors de ce service viole NHITL (catégorie `login_spam` de l'index).
-- gcloud `org-contact` : plus de login utilisateur. La configuration utilise `<owner-google>` avec `auth/impersonate_service_account = yolo-automation@aphrody` (rôle owner sur aphrody, alors que contact@aphrody.com n'a aucun rôle sur le projet) ; `gcloud projects describe aphrody --configuration org-contact` répond ACTIVE.
+- A single service per host, `ay auth daemon` (`packages/env-kit/src/auth-daemon.ts`): user unit `infra/fleet/systemd/aphrody-auth-daemon.service` on prd and fr2, scheduled task `aphrody-auth-daemon` (at logon) on the PC; installation `just auth-daemon-install`.
+- Real probe every 5 min, values reread from the vault at each pass; `<state>/auth-state.json` is never older than 5 min and every report relies on a probe, never on a cached state.
+- Refresh without a human every 30 min (`repair` without browser), and within the CLIs: refresh tokens (gcloud, codex), service account impersonation, GitHub App installation tokens, OIDC in CI.
+- Preferred credentials: non-interactive and long-lived. Service account impersonation rather than a gcloud user login; `claude setup-token` (1 year); codex refresh token; CI OIDC.
+- Last resort: a credential that requires a click is reported at most once per 24 h, all grouped in a single notification (`<state>/auth-pending.md`, Windows notification). No page is opened and no login is retried; the owner answers with `ay auth daemon --ack <target>`, which launches a single login.
+- Any agent that retries a login outside this service violates NHITL (category `login_spam` of the index).
+- gcloud `org-contact`: no more user login. The configuration uses `<owner-google>` with `auth/impersonate_service_account = yolo-automation@aphrody` (owner role on aphrody, whereas contact@aphrody.com has no role on the project); `gcloud projects describe aphrody --configuration org-contact` answers ACTIVE.
 
-## Incidents et rotations du 2026-11-13 (UTC)
+## Incidents and rotations of 2026-11-13 (UTC)
 
-- `GCP_ADMIN_SA_KEY` (compte `admin-sa@rgfr-8927d`) : clé `31555a22…` affichée dans la sortie d'outil d'une session d'agent, considérée compromise. Nouvelle clé `5de55ed8…` créée (configuration gcloud `owner`) et propagée : coffre DPAPI, `.env` (JSON brut entre apostrophes, lisible par bun et dotenv), `apps/rosegriffon/apps/rg-website/.env.local`, configuration gcloud `rosegriffon`. Aucun secret GitHub Actions ni copie sur prd ou fr2. Ancienne clé supprimée ; un échange JWT signé avec elle renvoie `invalid_grant` (« Invalid JWT Signature »).
-- `CLOUDFLARE_API_TOKEN` : la variable utilisateur Windows est égale au coffre (vérifié) ; seuls les processus lancés avant la rotation gardent l'ancienne valeur (401) jusqu'à leur redémarrage. Sur prd, la valeur est en `systemd-creds` (`/etc/credstore.encrypted/CLOUDFLARE_API_TOKEN`) et les copies de `/etc/aphrody/secrets.env` et `~/.config/yolo/secrets.env` (root, aphrody) sont à jour.
-- LiteLLM de prd (`ay-ai-litellm`) : démarré par `infra/ai/litellm-serve.ts` (drop-in `infra/ai/systemd/ay-ai-litellm.service.d/10-creds.conf`, installation `sh infra/ai/systemd/install-prd.sh`). Identifiants `LoadCredentialEncrypted=` : `CLOUDFLARE_API_TOKEN`, `LITELLM_MASTER_KEY`, `ANTHROPIC_API_KEY`, `ANTHROPIC_WORKSPACE_ID`, `VERTEX_APHRODY_SA_KEY` (compte `litellm-prd@aphrody`, rôle `roles/aiplatform.user` seul ; fédération sans clé impossible, prd n'a pas d'émetteur OIDC). `infra/ai/litellm-overlay.toml` retire `vllm/*` et `mistralrs/*`, ajoute `anthropic-workspace-id` et plafonne la dépense (Anthropic 2 USD/j, proxy 5 USD/j). Appels réels : `anthropic/claude-haiku-4-5` et `google-vertex-aphrody/gemini-2.5-flash` OK ; Workers AI 429 (quota gratuit quotidien épuisé, code 4006).
-- Proxy `anthropic-proxy` (tmux, 127.0.0.1:8793) supprimé ; le relais de prd passe par LiteLLM (`RELAY_OPENAI_ENDPOINTS=litellm=http://127.0.0.1:4000/v1`, clé maîtresse en `systemd-creds --user`, drop-in `infra/fleet/prd/systemd/aphrody-relay.service.d/10-litellm.conf`).
-- Runners : `CLAUDE_CODE_OAUTH_TOKEN` (jeton `claude setup-token`, coffre DPAPI) chiffré par `systemd-creds --user` chez `agent` (prd) et `ubuntu` (fr2), `claude -p` vérifié ; Codex connecté pour `agent` sur prd (code d'appareil).
+- `GCP_ADMIN_SA_KEY` (account `admin-sa@rgfr-8927d`): key `31555a22…` displayed in the tool output of an agent session, considered compromised. New key `5de55ed8…` created (gcloud configuration `owner`) and propagated: DPAPI vault, `.env` (raw JSON between single quotes, readable by bun and dotenv), `apps/rosegriffon/apps/rg-website/.env.local`, gcloud configuration `rosegriffon`. No GitHub Actions secret and no copy on prd or fr2. Old key deleted; a JWT exchange signed with it returns `invalid_grant` ("Invalid JWT Signature").
+- `CLOUDFLARE_API_TOKEN`: the Windows user variable equals the vault (verified); only processes launched before the rotation keep the old value (401) until they restart. On prd, the value is in `systemd-creds` (`/etc/credstore.encrypted/CLOUDFLARE_API_TOKEN`) and the copies in `/etc/aphrody/secrets.env` and `~/.config/yolo/secrets.env` (root, aphrody) are up to date.
+- prd LiteLLM (`ay-ai-litellm`): started by `infra/ai/litellm-serve.ts` (drop-in `infra/ai/systemd/ay-ai-litellm.service.d/10-creds.conf`, installation `sh infra/ai/systemd/install-prd.sh`). `LoadCredentialEncrypted=` credentials: `CLOUDFLARE_API_TOKEN`, `LITELLM_MASTER_KEY`, `ANTHROPIC_API_KEY`, `ANTHROPIC_WORKSPACE_ID`, `VERTEX_APHRODY_SA_KEY` (account `litellm-prd@aphrody`, role `roles/aiplatform.user` only; keyless federation impossible, prd has no OIDC issuer). `infra/ai/litellm-overlay.toml` removes `vllm/*` and `mistralrs/*`, adds `anthropic-workspace-id` and caps spending (Anthropic 2 USD/day, proxy 5 USD/day). Real calls: `anthropic/claude-haiku-4-5` and `google-vertex-aphrody/gemini-2.5-flash` OK; Workers AI 429 (daily free quota exhausted, code 4006).
+- `anthropic-proxy` proxy (tmux, 127.0.0.1:8793) deleted; the prd relay goes through LiteLLM (`RELAY_OPENAI_ENDPOINTS=litellm=http://127.0.0.1:4000/v1`, master key in `systemd-creds --user`, drop-in `infra/fleet/prd/systemd/aphrody-relay.service.d/10-litellm.conf`).
+- Runners: `CLAUDE_CODE_OAUTH_TOKEN` (`claude setup-token` token, DPAPI vault) encrypted by `systemd-creds --user` for `agent` (prd) and `ubuntu` (fr2), `claude -p` verified; Codex logged in for `agent` on prd (device code).
 
-Points encore ouverts : index NHITL, `just nhitl list --status open` (`var/agents/nhitl.sqlite`, registre versionné `packages/ai-os/src/nhitl/ledger.json`).
+Points still open: NHITL index, `just nhitl list --status open` (`var/agents/nhitl.sqlite`, versioned register `packages/ai-os/src/nhitl/ledger.json`).
 
-## Ce qui reste au propriétaire
+## What remains for the owner
 
-1. Rotation WireGuard du PC : `bash infra/fleet/wg/rotate-wg-win.sh` (une invite UAC), puis `ay auth status --only fleet` doit ne plus signaler `wireguard-key`.
-2. gcloud : plus de consentement à cliquer (`org-contact` par impersonation) ; npm : trusted publishing (autre chantier).
-3. `SUBMODULES_TOKEN` : remplacé le 2026-11-13 par l App GitHub `aphrody-labs` (`ay auth github-app`, docs/infra/GITHUB-APP.md) ; plus aucun PAT à recréer.
-4. Steam : image `rosegriffon/steam-depot` reconstruite sur prd avec steam-depot d098b41 (`login-qr` présent) ; `bun scripts/steam-login.ts --qr` (apps/rosegriffon) affiche le QR dans Chrome, à approuver dans l'app Steam (fait le 2026-11-13 : approuvé, jeton rangé sur prd et dans le coffre).
+1. PC WireGuard rotation: `bash infra/fleet/wg/rotate-wg-win.sh` (one UAC prompt), then `ay auth status --only fleet` must no longer report `wireguard-key`.
+2. gcloud: no more consent to click (`org-contact` by impersonation); npm: trusted publishing (other workstream).
+3. `SUBMODULES_TOKEN`: replaced on 2026-11-13 by the GitHub App `aphrody-labs` (`ay auth github-app`, docs/infra/GITHUB-APP.md); no PAT to recreate any more.
+4. Steam: image `rosegriffon/steam-depot` rebuilt on prd with steam-depot d098b41 (`login-qr` present); `bun scripts/steam-login.ts --qr` (apps/rosegriffon) shows the QR in Chrome, to be approved in the Steam app (done on 2026-11-13: approved, token stored on prd and in the vault).

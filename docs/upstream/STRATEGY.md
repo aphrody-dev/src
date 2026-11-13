@@ -1,34 +1,34 @@
-# Forks bun et Chromium : rester compatibles avec l'amont
+# bun and Chromium forks: staying compatible with upstream
 
-Date : 2026-11-13. Commande : `ay upstream` (`packages/upstream`, lancé par bun). Configuration : `infra/upstream/stacks.toml`. Statuts : `infra/upstream/status/<pile>.toml`.
+Date: 2026-11-13. Command: `ay upstream` (`packages/upstream`, run by bun). Configuration: `infra/upstream/stacks.toml`. Statuses: `infra/upstream/status/<stack>.toml`.
 
-## 1. Modèle retenu, d'après les forks qui durent
+## 1. Chosen model, based on forks that last
 
-| Projet | Mécanisme relevé (source lue le 2026-11-13) | Ce qu'on en garde |
+| Project | Mechanism found (source read on 2026-11-13) | What we keep |
 |---|---|---|
-| Electron | `patches/config.json` (dossier de patchs -> dépôt), un `.patch` par commit, ordre dans `.patches` ; `git-import-patches` (`git am`) et `git-export-patches` (`format-patch --keep-subject --no-stat --no-signature --zero-commit --full-index`) ; chaque patch justifie sa raison : temporaire (lien vers la revue amont), compilation, ou fonctionnel incompatible (`electron/electron` `docs/development/patches.md`, `script/lib/git.py` au 2026-10-15) | modèle « série » pour Chromium ; mêmes options d'export (`ay upstream export`) ; noms de fichiers par la même règle (`munge_subject_to_filename`) |
-| ungoogled-chromium | `patches/series` (quilt), dossier `upstream-fixes/` pour les correctifs destinés à l'amont, `devutils/validate_patches.py` contre l'arbre réel | vérification d'application sur l'amont à chaque passage, séparation explicite de ce qui va en amont |
-| Brave | un `.patch` par fichier modifié de Chromium, `npm run update_patches`, `build/commands/lib/applyPatches.js` | écarté : un patch par fichier ne correspond pas à une PR, or l'unité ici est la PR |
-| Yocto | trailer `Upstream-Status: Pending | Submitted [où] | Backport [où] | Denied | Inappropriate [raison]` (docs.yoctoproject.org, contributor guide, Patch Upstream Status) | vocabulaire des statuts, tel quel |
+| Electron | `patches/config.json` (patch folder -> repository), one `.patch` per commit, order in `.patches`; `git-import-patches` (`git am`) and `git-export-patches` (`format-patch --keep-subject --no-stat --no-signature --zero-commit --full-index`); each patch justifies its reason: temporary (link to the upstream review), build, or incompatible functional change (`electron/electron` `docs/development/patches.md`, `script/lib/git.py` as of 2026-10-15) | "series" model for Chromium; same export options (`ay upstream export`); file names by the same rule (`munge_subject_to_filename`) |
+| ungoogled-chromium | `patches/series` (quilt), `upstream-fixes/` folder for fixes meant for upstream, `devutils/validate_patches.py` against the real tree | check that patches apply on upstream at each pass, explicit separation of what goes upstream |
+| Brave | one `.patch` per modified Chromium file, `npm run update_patches`, `build/commands/lib/applyPatches.js` | rejected: one patch per file does not match a PR, and the unit here is the PR |
+| Yocto | trailer `Upstream-Status: Pending | Submitted [where] | Backport [where] | Denied | Inappropriate [reason]` (docs.yoctoproject.org, contributor guide, Patch Upstream Status) | status vocabulary, as is |
 
-Deux modèles, un par forge :
+Two models, one per forge:
 
-- **bun, modèle « branche »** : la branche par défaut du fork (`aphrody-labs/bun` `main`) = `oven-sh/bun` `main` (le canal canary) + une série linéaire de commits, un commit = un patch = une PR potentielle. Plusieurs agents poussent sur cette branche ; la pile reste lisible par `git log upstream/main..origin/main`.
-- **Chromium, modèle « série »** : fichiers `.patch` dans `infra/upstream/chromium/patches/` (ordre `.patches`), appliqués sur la pointe de `chromium/src` `main` dans un index temporaire (rien n'est écrit dans le checkout). Le fork GitHub `aphrody-labs/chromium` reste un miroir avancé en avance rapide (API « merge-upstream ») : les contributions passent par Gerrit, pas par GitHub.
+- **bun, "branch" model**: the fork's default branch (`aphrody-labs/bun` `main`) = `oven-sh/bun` `main` (the canary channel) + a linear series of commits, one commit = one patch = one potential PR. Several agents push to this branch; the stack stays readable with `git log upstream/main..origin/main`.
+- **Chromium, "series" model**: `.patch` files in `infra/upstream/chromium/patches/` (order `.patches`), applied on the tip of `chromium/src` `main` in a temporary index (nothing is written to the checkout). The GitHub fork `aphrody-labs/chromium` stays a mirror advanced by fast-forward ("merge-upstream" API): contributions go through Gerrit, not through GitHub.
 
-## 2. Statuts
+## 2. Statuses
 
-| Statut (`Upstream-Status`) | Sens | Action automatique |
+| Status (`Upstream-Status`) | Meaning | Automatic action |
 |---|---|---|
-| `Pending` | à proposer | `ay upstream check` puis `ay upstream pr` |
-| `Submitted [url]` + `Upstream-PR` | proposé (PR ou CL) | état lu en direct (gh api, REST Gerrit) |
-| `Backport [url]` | présent en amont | retiré au prochain `sync` |
-| `Denied [raison]` | refusé | à retravailler ou à passer en `Inappropriate` |
-| `Inappropriate [raison]` | propre à Aphrody | gardé ; `check` refuse d'en faire une PR |
+| `Pending` | to be proposed | `ay upstream check` then `ay upstream pr` |
+| `Submitted [url]` + `Upstream-PR` | proposed (PR or CL) | state read live (gh api, Gerrit REST) |
+| `Backport [url]` | present upstream | removed at the next `sync` |
+| `Denied [reason]` | refused | to be reworked or moved to `Inappropriate` |
+| `Inappropriate [reason]` | Aphrody-specific | kept; `check` refuses to make a PR of it |
 
-Le statut s'écrit dans `infra/upstream/status/<pile>.toml` (clé = nom du patch), par `ay upstream mark`. Il peut aussi vivre dans le message du commit (`--trailer`), mais réécrire la branche partagée pour un statut fait rebaser tous les agents : le registre est la voie par défaut. Une PR fusionnée est détectée en direct ; un patch devenu vide sur la nouvelle base (changement déjà en amont) est retiré, comme un patch au statut `Backport`.
+The status is written in `infra/upstream/status/<stack>.toml` (key = patch name), by `ay upstream mark`. It can also live in the commit message (`--trailer`), but rewriting the shared branch for a status makes every agent rebase: the register is the default path. A merged PR is detected live; a patch that becomes empty on the new base (change already upstream) is removed, like a patch with status `Backport`.
 
-## 3. Commandes
+## 3. Commands
 
 ```sh
 ay upstream status [bun|chromium] [--json|--markdown] [--no-fetch]
@@ -41,76 +41,76 @@ ay upstream gc bun                      # supprime les têtes up/* et pr/* dont 
 ay upstream export bun <dossier>        # .patch + .patches au format d'Electron
 ```
 
-La pile est reconstruite par plomberie (`git merge-tree --write-tree --merge-base`, `git commit-tree`, `update-ref`, `push --force-with-lease`) : aucune extraction, aucun worktree, aucune branche locale. Le bail (`--force-with-lease`) fait échouer le push si un agent a poussé entre-temps ; le passage suivant reprend. Après un `sync`, un agent qui travaille dans un clone fait `git pull --rebase` : git écarte ses commits déjà présents (même patch-id).
+The stack is rebuilt with plumbing (`git merge-tree --write-tree --merge-base`, `git commit-tree`, `update-ref`, `push --force-with-lease`): no checkout, no worktree, no local branch. The lease (`--force-with-lease`) makes the push fail if an agent pushed in the meantime; the next pass resumes. After a `sync`, an agent working in a clone runs `git pull --rebase`: git drops its commits that are already present (same patch-id).
 
-`ay bun watch` (veille de l'amont : commits, PR, issues, versions) reste distinct : il dit ce que fait l'amont, `ay upstream` garde nos patchs dessus.
+`ay bun watch` (upstream watch: commits, PRs, issues, versions) stays separate: it says what upstream does, `ay upstream` keeps our patches on top of it.
 
-## 4. Exception aux branches
+## 4. Exception to branches
 
-Règle du propriétaire : aucune branche dans nos dépôts, tout sur la branche par défaut. GitHub exige une branche de tête pour ouvrir une PR depuis un fork. Exception, limitée à cela :
+Owner rule: no branch in our repositories, everything on the default branch. GitHub requires a head branch to open a PR from a fork. Exception, limited to that:
 
-- refs `up/<nom>` (celles d'`ay upstream pr`) et `pr/<nom>` (poussées à la main par d'autres agents) sur le fork seulement, jamais dans `src` ;
-- chacune est générée depuis un patch de la pile, = `amont` + ce seul patch (message sans nos trailers) ;
-- `ay upstream gc` (lancé après chaque `sync`) la supprime dès que la PR est fusionnée ou fermée.
+- refs `up/<name>` (those of `ay upstream pr`) and `pr/<name>` (pushed by hand by other agents) on the fork only, never in `src`;
+- each one is generated from a patch of the stack, = `upstream` + that single patch (message without our trailers);
+- `ay upstream gc` (run after each `sync`) deletes it as soon as the PR is merged or closed.
 
-Côté Chromium, `git cl upload` demande une branche locale avec un amont : branche locale éphémère `up-<nom>` dans le checkout de fr1, jamais poussée vers un fork, supprimée après fusion ou abandon.
+On the Chromium side, `git cl upload` requires a local branch with an upstream: ephemeral local branch `up-<name>` in fr1's checkout, never pushed to a fork, deleted after merge or abandonment.
 
-## 5. CI et calendrier
+## 5. CI and schedule
 
-| Quoi | Où | Quand | Charge |
+| What | Where | When | Load |
 |---|---|---|---|
-| `sync bun --push` puis `gc bun` | prd, utilisateur `agent`, `~/agents/src` (`infra/upstream/install.sh`, unité `aphrody-upstream.timer`) | chaque jour 05:30 UTC (+ 0 à 20 min) | git seul, `Nice=19`, E/S idle |
-| `sync chromium --push` (vérification de la série + miroir GitHub) | fr1, utilisateur `ubuntu`, checkout `/srv/chromium/src` | même timer | fetch + index temporaire |
-| build et tests du sous-ensemble Chromium | fr1, `infra/upstream/chromium-verify.sh`, checkout dédié `/srv/chromium/upstream` (jamais celui de l'usine) | après chaque changement de la série ; ne fait rien tant qu'elle est vide | `nice -n 19 ionice -c3`, pool NativeLink ; cibles = exécutables de test qui dépendent des fichiers touchés (`gn refs --testonly`), au plus 8, puis `git cl presubmit` |
-| CI amont de bun sur la tête éphémère | GitHub Actions du fork : `format.yml`, `lint.yml`, `rust-lints.yml`, `source-lints.yml` d'oven-sh/bun, activés sur `aphrody-labs/bun` le 2026-11-13 et lancés par `ay upstream pr --lint` | avant chaque PR | runners GitHub |
-| build et tests complets de bun | Buildkite d'oven-sh une fois la PR ouverte ; côté fork, les workflows `native` et `aphrody windows` (agents build natif et bun Windows) | à la PR | — |
-| tests d'`ay upstream` | `.github/workflows/ci.yml` (`bun test packages/upstream`) | chaque push sur `src` | — |
+| `sync bun --push` then `gc bun` | prd, user `agent`, `~/agents/src` (`infra/upstream/install.sh`, unit `aphrody-upstream.timer`) | every day 05:30 UTC (+ 0 to 20 min) | git only, `Nice=19`, idle I/O |
+| `sync chromium --push` (series check + GitHub mirror) | fr1, user `ubuntu`, checkout `/srv/chromium/src` | same timer | fetch + temporary index |
+| build and tests of the Chromium subset | fr1, `infra/upstream/chromium-verify.sh`, dedicated checkout `/srv/chromium/upstream` (never the factory's) | after each change of the series; does nothing while it is empty | `nice -n 19 ionice -c3`, NativeLink pool; targets = test executables that depend on the touched files (`gn refs --testonly`), at most 8, then `git cl presubmit` |
+| bun upstream CI on the ephemeral head | the fork's GitHub Actions: `format.yml`, `lint.yml`, `rust-lints.yml`, `source-lints.yml` from oven-sh/bun, enabled on `aphrody-labs/bun` on 2026-11-13 and run by `ay upstream pr --lint` | before each PR | GitHub runners |
+| full bun build and tests | oven-sh's Buildkite once the PR is open; on the fork side, the `native` and `aphrody windows` workflows (native build and bun Windows agents) | at PR time | — |
+| `ay upstream` tests | `.github/workflows/ci.yml` (`bun test packages/upstream`) | every push to `src` | — |
 
-Rien ne compile sur le poste.
+Nothing compiles on the workstation.
 
-## 6. Règles de contribution vérifiées par `check`
+## 6. Contribution rules checked by `check`
 
-- **bun** (`oven-sh/bun` `9ea3c693a2`) : pas de CLA ni de DCO. Gabarit de PR : « What does this PR do? », « How did you verify your code works? » (`.github/pull_request_template.md`) ; le corps est tiré du message, le paragraphe `Tested:` remplit la seconde section. `on-slop.yml` ferme les PR qui ne vérifient pas que le problème existe ou ne testent pas le correctif : `check` exige un paragraphe `Tested:` et un test sous `test/` dès que `src/` change. Format et lints : les workflows de l'amont, lancés sur la tête.
-- **Chromium** (`docs/contributing.md`, `agents/ai_policy.md` au 2026-11-11) : CLA individuel Google, entrée dans `AUTHORS` dans la première CL (aucune entrée `aphrody.com` aujourd'hui), description à 72 colonnes, pied `Bug:` ou `Fixed:`, `git cl format`, `git cl presubmit`, `git cl upload` vers chromium-review.googlesource.com. La politique IA impose que l'humain derrière le compte relise, comprenne et réponde lui-même aux relecteurs ; elle recommande de signaler les parties écrites avec un outil IA.
-- **commun** (`AGENTS.md`) : pas d'emoji, pas d'attribution IA, pas de secret, sujet de 72 caractères au plus.
+- **bun** (`oven-sh/bun` `9ea3c693a2`): no CLA or DCO. PR template: "What does this PR do?", "How did you verify your code works?" (`.github/pull_request_template.md`); the body is taken from the message, the `Tested:` paragraph fills the second section. `on-slop.yml` closes PRs that do not verify that the problem exists or do not test the fix: `check` requires a `Tested:` paragraph and a test under `test/` as soon as `src/` changes. Format and lints: the upstream workflows, run on the head.
+- **Chromium** (`docs/contributing.md`, `agents/ai_policy.md` as of 2026-11-11): Google individual CLA, entry in `AUTHORS` in the first CL (no `aphrody.com` entry today), description at 72 columns, `Bug:` or `Fixed:` footer, `git cl format`, `git cl presubmit`, `git cl upload` to chromium-review.googlesource.com. The AI policy requires that the human behind the account reviews, understands and answers reviewers personally; it recommends flagging the parts written with an AI tool.
+- **common** (`AGENTS.md`): no emoji, no AI attribution, no secret, subject of at most 72 characters.
 
-Exception à `AGENTS.md` (décision du 2026-11-13, inscrite aussi dans `AGENTS.md`) : pour une contribution amont, la politique du projet amont l'emporte quand elle l'exige. Chaque CL Chromium porte un paragraphe `AI assistance: <outil, parties concernées>` dans sa description ; `check` l'exige pour Chromium (règle `cr-ai-note`) et n'y applique pas l'interdiction d'attribution IA, qui reste en vigueur pour bun et partout ailleurs. Le propriétaire relit chaque CL, l'envoie et répond lui-même aux relecteurs : exigence humaine inévitable, inscrite dans l'index NHITL (`packages/ai-os/src/nhitl/ledger.json`, statut `inevitable`, avec la signature du CLA).
+Exception to `AGENTS.md` (decision of 2026-11-13, also recorded in `AGENTS.md`): for an upstream contribution, the upstream project's policy prevails when it requires it. Each Chromium CL carries an `AI assistance: <tool, parts concerned>` paragraph in its description; `check` requires it for Chromium (rule `cr-ai-note`) and does not apply the AI attribution ban there, which remains in force for bun and everywhere else. The owner reviews each CL, sends it and answers reviewers personally: unavoidable human requirement, recorded in the NHITL index (`packages/ai-os/src/nhitl/ledger.json`, status `inevitable`, along with the CLA signature).
 
-## 7. État des piles (2026-11-13 03:30 UTC, `ay upstream status --markdown`)
+## 7. State of the stacks (2026-11-13 03:30 UTC, `ay upstream status --markdown`)
 
-bun : `aphrody-labs/bun` = `oven-sh/bun` `9ea3c693a2` (« Bump to 1.4.5 ») + 15 patchs ; le patch docs du minifier (sans effet visible : la page publiée a déjà son titre) a été retiré du fork le 2026-11-13.
+bun: `aphrody-labs/bun` = `oven-sh/bun` `9ea3c693a2` ("Bump to 1.4.5") + 15 patches; the minifier docs patch (no visible effect: the published page already has its title) was removed from the fork on 2026-11-13.
 
-| # | Patch | Statut | Revue | Porteur |
+| # | Patch | Status | Review | Owner |
 |---|---|---|---|---|
-| 1 | child_process: expose the parent-end pipe fd through stream._handle | proposé (portage) | oven-sh/bun#39760 (robobun), ouverte | amont |
-| 2 | build: pass the .bind.ts schema list to the codegen scripts in a file | proposé | oven-sh/bun#48787, ouverte (section 8) | upstream |
-| 4, 5, 15 | ci: native release build ; ci(native): sysroot ; ci(native): dispatch only | propre à Aphrody (CI du fork) | - | build natif |
-| 6 | upgrade: unpack the Windows release in-process and check canary downloads against the API digest | à proposer | - | bun Windows |
-| 7 | completions: print the script for bash, zsh and fish on Windows (Fixes #25042) | à proposer | - | bun Windows |
-| 8 | sys(windows): report ENOENT for an empty path | proposé (portage) | oven-sh/bun#38052, ouverte | amont |
-| 9 | node:fs: resolve a relative path that normalizes to nothing to the cwd on Windows | proposé (portage) | oven-sh/bun#45410, ouverte | amont |
-| 10 | import.meta.main: compare the main module's key as a URL in every executable | proposé (portage) | oven-sh/bun#48698, ouverte | amont |
-| 11 | shell: skip a dead bin link for the script words bun, bunx and node (Windows) | proposé (portage) | oven-sh/bun#45742, ouverte | amont |
-| 12 | ci(aphrody): cross-compile bun.exe for Windows x64 and run the fork's Windows regression tests | propre à Aphrody | - | bun Windows |
-| 13 | build: xwin 0.10.0, which reads the current Visual Studio manifest | proposé | oven-sh/bun#48784, ouverte | bun Windows |
-| 14 | docs: sizes Bun.gzipSync and Bun.deflateSync give for the utils examples | proposé | oven-sh/bun#48786, ouverte | audit bun |
+| 1 | child_process: expose the parent-end pipe fd through stream._handle | proposed (port) | oven-sh/bun#39760 (robobun), open | upstream |
+| 2 | build: pass the .bind.ts schema list to the codegen scripts in a file | proposed | oven-sh/bun#48787, open (section 8) | upstream |
+| 4, 5, 15 | ci: native release build ; ci(native): sysroot ; ci(native): dispatch only | Aphrody-specific (fork CI) | - | native build |
+| 6 | upgrade: unpack the Windows release in-process and check canary downloads against the API digest | to be proposed | - | bun Windows |
+| 7 | completions: print the script for bash, zsh and fish on Windows (Fixes #25042) | to be proposed | - | bun Windows |
+| 8 | sys(windows): report ENOENT for an empty path | proposed (port) | oven-sh/bun#38052, open | upstream |
+| 9 | node:fs: resolve a relative path that normalizes to nothing to the cwd on Windows | proposed (port) | oven-sh/bun#45410, open | upstream |
+| 10 | import.meta.main: compare the main module's key as a URL in every executable | proposed (port) | oven-sh/bun#48698, open | upstream |
+| 11 | shell: skip a dead bin link for the script words bun, bunx and node (Windows) | proposed (port) | oven-sh/bun#45742, open | upstream |
+| 12 | ci(aphrody): cross-compile bun.exe for Windows x64 and run the fork's Windows regression tests | Aphrody-specific | - | bun Windows |
+| 13 | build: xwin 0.10.0, which reads the current Visual Studio manifest | proposed | oven-sh/bun#48784, open | bun Windows |
+| 14 | docs: sizes Bun.gzipSync and Bun.deflateSync give for the utils examples | proposed | oven-sh/bun#48786, open | bun audit |
 
-Piles Linux (2026-11-13) : `linux-cachyos` (1 patch, `_llvm_prefix`), `cachyos-pkgbuilds`, `kernel-patches`, `liquorix`, `scx` (séries vides), modèle « série », patchs dans `infra/upstream/patches/<pile>/`, synchronisées sur prd avec bun ; patchsets suivis sans fork dans `infra/linux/patchsets.toml` (`docs/linux/PATCHSETS.md`).
+Linux stacks (2026-11-13): `linux-cachyos` (1 patch, `_llvm_prefix`), `cachyos-pkgbuilds`, `kernel-patches`, `liquorix`, `scx` (empty series), "series" model, patches in `infra/upstream/patches/<stack>/`, synchronized on prd with bun; patchsets tracked without a fork in `infra/linux/patchsets.toml` (`docs/linux/PATCHSETS.md`).
 
-Pas de pile `bunx-sh/bun` : org abandonnée par le propriétaire le 2026-11-13.
+No `bunx-sh/bun` stack: org abandoned by the owner on 2026-11-13.
 
-Chromium : série vide ; `aphrody-labs/chromium` `main` était à 908 commits de retard, avancé en avance rapide le 2026-11-13 (0/0 depuis).
+Chromium: empty series; `aphrody-labs/chromium` `main` was 908 commits behind, fast-forwarded on 2026-11-13 (0/0 since).
 
-## 8. Correctifs proposés par cette pile
+## 8. Fixes proposed by this stack
 
-**bun, liste des schémas `.bind.ts` dans un fichier.** Sur un hôte Windows, les règles codegen de `scripts/build/codegen.ts` passent par `cmd /c`, limité à 8191 caractères (Microsoft Learn, « Command prompt (Cmd.exe) command-line string limitation » ; mesuré ici : 8 100 acceptés, 8 200 refusés, « La ligne de commande est trop longue. »). `bun scripts/build.ts --configure-only --profile=release` sous Windows 11 build 28120, checkout `C:\src\third_party\bun`, 150 schémas : commandes développées de l'arête bindgen et de la table des built-ins = 11 602 et 11 537 caractères sur `main` de l'amont ; 8 152 et 8 087 avec l'ancien patch du fork (chemins relatifs, marge de 39 caractères) ; 686 et 621 avec la liste dans un fichier (`--sources=@<fichier>`, lu par `argParse`), quel que soit le nombre de schémas. Nouveau test dans `test/internal/build-codegen-declared-outputs.test.ts`. Le patch relatif du fork a été remplacé par celui-ci, à la même place. PR : https://github.com/oven-sh/bun/pull/48787 ; les workflows format, lint, source-lints et clippy de l'amont passent sur la tête dans le fork.
+**bun, list of `.bind.ts` schemas in a file.** On a Windows host, the codegen rules of `scripts/build/codegen.ts` go through `cmd /c`, limited to 8191 characters (Microsoft Learn, "Command prompt (Cmd.exe) command-line string limitation"; measured here: 8,100 accepted, 8,200 refused, "La ligne de commande est trop longue."). `bun scripts/build.ts --configure-only --profile=release` on Windows 11 build 28120, checkout `C:\src\third_party\bun`, 150 schemas: expanded commands of the bindgen edge and of the built-ins table = 11,602 and 11,537 characters on upstream `main`; 8,152 and 8,087 with the fork's old patch (relative paths, 39-character margin); 686 and 621 with the list in a file (`--sources=@<file>`, read by `argParse`), whatever the number of schemas. New test in `test/internal/build-codegen-declared-outputs.test.ts`. The fork's relative-path patch was replaced by this one, at the same place. PR: https://github.com/oven-sh/bun/pull/48787; the upstream format, lint, source-lints and clippy workflows pass on the head in the fork.
 
-Écartés (pas de PR) : le patch docs du minifier (aucun effet visible, retiré du fork) ; aucune CL Chromium tant qu'aucun défaut n'est reproduit et mesuré sur la pointe.
+Rejected (no PR): the minifier docs patch (no visible effect, removed from the fork); no Chromium CL as long as no defect is reproduced and measured on the tip.
 
-## 9. Conflit pendant `sync`
+## 9. Conflict during `sync`
 
-`sync` s'arrête au premier patch qui ne s'applique plus, écrit `var/upstream/<pile>/last-sync.json` (patch, fichiers en conflit, nombre de patchs rejoués) et laisse le fork tel quel ; l'unité systemd passe en échec. Résolution, par le porteur du patch : rejouer le patch à la main sur `upstream/main` dans un clone, le pousser à sa place sur la branche par défaut, ou le retirer si l'amont a résolu le problème autrement ; puis `ay upstream sync <pile> --push`.
+`sync` stops at the first patch that no longer applies, writes `var/upstream/<stack>/last-sync.json` (patch, conflicting files, number of patches replayed) and leaves the fork as is; the systemd unit fails. Resolution, by the patch owner: replay the patch by hand on `upstream/main` in a clone, push it in its place on the default branch, or remove it if upstream solved the problem differently; then `ay upstream sync <stack> --push`.
 
 ## 10. Communication
 
-Brouillons dans `var/agents/outbox/upstream-2026-11-13/` (billet, post X, page wiki, page du site). `.agents/owner-rules.json` n'existe pas : rien n'est publié sur X, le blog ou le site. Les messages de PR et d'issue accompagnent la contribution et partent avec elle.
+Drafts in `var/agents/outbox/upstream-2026-11-13/` (blog post, X post, wiki page, site page). `.agents/owner-rules.json` does not exist: nothing is published on X, the blog or the site. PR and issue messages accompany the contribution and go out with it.

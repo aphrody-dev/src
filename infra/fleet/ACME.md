@@ -1,13 +1,13 @@
-# ACME partagé sur fr2 (cdn, 51.255.162.6, 10.200.77.3)
+# Shared ACME on fr2 (cdn, 51.255.162.6, 10.200.77.3)
 
-Un seul client ACME pour la flotte : **certbot** sur fr2 (`/usr/bin/certbot`, timer `certbot.timer` actif).
+A single ACME client for the fleet: **certbot** on fr2 (`/usr/bin/certbot`, timer `certbot.timer` active).
 
-- Compte Let's Encrypt épinglé : `account = 5d88992863b82d549899a769e692edbb` dans `/etc/letsencrypt/cli.ini`.
-- Zones Cloudflare (aphrody.com, aphrody.app, dragonballfr.com, rosegriffon.fr…) : DNS-01, credentials `/etc/letsencrypt/cloudflare.ini` (0600).
-- Zones hors Cloudflare (ex. rpbey.fr, DNS OVH) : HTTP-01 webroot `/var/www/letsencrypt` une fois le DNS pointé sur fr2.
-- Hook de déploiement : `/etc/letsencrypt/renewal-hooks/deploy/50-nginx-reload` (`nginx -t && systemctl reload nginx`).
+- Pinned Let's Encrypt account: `account = 5d88992863b82d549899a769e692edbb` in `/etc/letsencrypt/cli.ini`.
+- Cloudflare zones (aphrody.com, aphrody.app, dragonballfr.com, rosegriffon.fr…): DNS-01, credentials `/etc/letsencrypt/cloudflare.ini` (0600).
+- Zones outside Cloudflare (e.g. rpbey.fr, OVH DNS): HTTP-01 webroot `/var/www/letsencrypt` once the DNS points to fr2.
+- Deploy hook: `/etc/letsencrypt/renewal-hooks/deploy/50-nginx-reload` (`nginx -t && systemctl reload nginx`).
 
-## Émettre un certificat
+## Issuing a certificate
 
 ```sh
 # zone Cloudflare (wildcard)
@@ -22,11 +22,11 @@ ln -sfn /etc/letsencrypt/live/<domaine> /etc/nginx/certs/<domaine>
 
 ## Convention
 
-- vhost : `/etc/nginx/sites/<domaine>.conf` (inclus par `nginx.conf`, ligne `include /etc/nginx/sites/*.conf;`).
-- certificat : `/etc/nginx/certs/<domaine>/{fullchain,privkey}.pem`, symlink vers `/etc/letsencrypt/live/<domaine>` quand certbot le gère, sinon copie statique (0600) à remplacer par un symlink au premier renouvellement.
-- `--cert-name` = domaine apex ; wildcard `*.<domaine>` systématique sur les zones Cloudflare.
-- Sources versionnées : `infra/fleet/fr2/nginx/` (sites + snippets).
+- vhost: `/etc/nginx/sites/<domain>.conf` (included by `nginx.conf`, line `include /etc/nginx/sites/*.conf;`).
+- certificate: `/etc/nginx/certs/<domain>/{fullchain,privkey}.pem`, symlink to `/etc/letsencrypt/live/<domain>` when certbot manages it, otherwise a static copy (0600) to be replaced by a symlink at the first renewal.
+- `--cert-name` = apex domain; wildcard `*.<domain>` always on Cloudflare zones.
+- Versioned sources: `infra/fleet/fr2/nginx/` (sites + snippets).
 
-Contrôle : `ay auth status --only fleet` (unité `certbot` de fr2, `[auth.hosts.fr2]` de infra/deploy.toml). Le 2026-11-13, les lignées aphrody.com, dragonballfr.com et rosegriffon.fr avaient des fichiers copiés dans `live/` au lieu de liens (certbot : « expected cert.pem to be a symlink », unité en échec) ; les fichiers ont été versés dans `archive/` comme nouvelle version et `live/` refait en liens, `certbot renew --dry-run` ok. Ne jamais copier dans `live/` : `certbot certonly --cert-name` ou un lien.
+Check: `ay auth status --only fleet` (fr2's `certbot` unit, `[auth.hosts.fr2]` of infra/deploy.toml). On 2026-11-13, the aphrody.com, dragonballfr.com and rosegriffon.fr lineages had files copied into `live/` instead of links (certbot: "expected cert.pem to be a symlink", unit failing); the files were moved into `archive/` as a new version and `live/` redone as links, `certbot renew --dry-run` ok. Never copy into `live/`: `certbot certonly --cert-name` or a link.
 
-État au 2026-11-12 : aphrody.com et aphrody.app (wildcards, expirent le 2027-02-05) gérés par certbot ; rpbey.fr = copie statique depuis fr1 (expire le 2027-02-05), à passer en webroot après bascule DNS OVH.
+State as of 2026-11-12: aphrody.com and aphrody.app (wildcards, expire on 2027-02-05) managed by certbot; rpbey.fr = static copy from fr1 (expires on 2027-02-05), to be moved to webroot after the OVH DNS switch.

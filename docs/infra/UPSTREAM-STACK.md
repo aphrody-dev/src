@@ -1,103 +1,103 @@
-# Stack upstream de l'infra aphrody (2026-11-13)
+# Upstream stack of the aphrody infra (2026-11-13)
 
-Règle maison : assembler les meilleures briques upstream, aucun moteur maison. Chaque version ci-dessous a été lue le
-2026-11-13 avec `gh api repos/<o>/<r>` (licence, `pushed_at`, archivé), `gh api repos/<o>/<r>/releases/latest` et
-`gh api repos/<o>/<r>/git/ref/tags/<tag>` (tag annoté déréférencé par `git/tags/<sha>`) ; les MCP github et context7 étaient
-injoignables (ENOTFOUND). « commit » = commit pointé par le tag de la release citée (12 caractères), pas la tête de branche.
-Critère de rétention : release ou commit de moins de 6 mois, dépôt non archivé, licence OSI permissive ou copyleft faible
-(MPL-2.0) ; AGPL et BUSL écartées. La colonne « outil » donne la release upstream de référence ; l'épingle réellement
-déployée est celle de `tools.toml` (écarts listés au §3).
+House rule: assemble the best upstream building blocks, no in-house engine. Each version below was read on
+2026-11-13 with `gh api repos/<o>/<r>` (license, `pushed_at`, archived), `gh api repos/<o>/<r>/releases/latest` and
+`gh api repos/<o>/<r>/git/ref/tags/<tag>` (annotated tag dereferenced via `git/tags/<sha>`); the github and context7 MCPs were
+unreachable (ENOTFOUND). "commit" = commit pointed to by the tag of the cited release (12 characters), not the branch head.
+Retention criterion: release or commit less than 6 months old, repository not archived, permissive OSI or weak copyleft license
+(MPL-2.0); AGPL and BUSL rejected. The "tool" column gives the reference upstream release; the pin actually
+deployed is the one in `tools.toml` (gaps listed in §3).
 
-Rôles de la flotte (décision du 2026-11-13) : **fr1** (`ssh vps`) = usine (builds, CI, training, agents lourds) ;
-**prd** (`ssh prd`, USA) = backends de prod uniquement, sans compilateur ; **fr2** (`ssh cdn`) = edge uniquement.
+Fleet roles (decision of 2026-11-13): **fr1** (`ssh vps`) = factory (builds, CI, training, heavy agents);
+**prd** (`ssh prd`, USA) = production backends only, no compiler; **fr2** (`ssh cdn`) = edge only.
 
-## 1. Brique → outil retenu
+## 1. Building block → chosen tool
 
-Une ligne par brique : version et commit source, raison, code maison remplacé, migration / retour arrière.
+One row per building block: source version and commit, reason, in-house code replaced, migration / rollback.
 
-| Brique | Outil retenu (version, commit) | Raison | Remplace dans notre code | Migration ; retour arrière (une ligne) |
+| Building block | Chosen tool (version, commit) | Reason | Replaces in our code | Migration; rollback (one line) |
 |---|---|---|---|---|
-| Build d'images | docker/buildx v0.39.0 (`360040a78d61`) + moby/buildkit v0.35.0 (`f55949dea4f0`) ; CI docker/bake-action v7.5.0 (`59cb1203cd42`), setup-buildx-action v4.4.1 (`f87e5991a6d7`), login-action v4.8.0 (`8aa5831fb8d4`) | `docker-bake.hcl` existe déjà (matrice amd64+arm64, cache registre, SBOM et provenance) | `infra/internal/oci` (layout OCI 1.1 sans démon + client HTTP Docker Engine en Go) et `src-deploy oci-pack` : supprimés ; builder buildx `aphrody` retiré de prd, recréé sur fr1 | `just docker-build` / `just docker-smoke` = `gh workflow run images.yml` (build puis job smoke) ; build manuel sur l'usine : `ssh vps docker buildx bake --builder aphrody …` ; retour : `git revert <sha>` |
-| Déploiement | docker/compose v5.7.1 (`fb1fd129f868`) sur moby v29.9.3 (`70efc0e31da3`) | `compose up -d --wait` attend les HEALTHCHECK, profils `core`/`edge`, `SRC_TAG` = retour arrière. Limite : compose recrée le conteneur (arrêt puis démarrage), pas de blue/green ni de retour automatique ; le zéro-coupure tient aux ports verts (compose) à côté des ports bleus et à la bascule nginx/HAProxy après `curl --resolve` | `src-deploy detect/plan/up/caddyfile` (Go, 4 300 lignes), unités `sovereign-*@.service` blue/green générées, `infra/generated/{Caddyfile,deploy-plan.json}` : supprimés ; `ay deploy <sub>` → `just docker-<sub>` | `just deploy [profil] [hôte]` ; retour : `SRC_TAG=<sha précédent> just docker-up <profil> <hôte>` |
-| Registre OCI | GHCR `ghcr.io/aphrody-labs` ; repli auto-hébergé : distribution/distribution v3.1.2 (`3220848f15d9`) ou project-zot/zot v2.1.23 (`d7915e82e669`), non déployés ; copie/inspection : regclient v0.11.7, skopeo v1.25.1 | push par `GITHUB_TOKEN` en CI, aucun service à opérer | Artifact Registry `bunos` + `infra/gcloud/cloudbuild.yaml` (images Debian, doublon d'`images.yml`) : supprimés | déjà en place ; seul le fichier de pipeline est supprimé, le dépôt Artifact Registry `bunos` n'est pas touché ; retour : `git checkout <sha>~ -- infra/gcloud/cloudbuild.yaml` |
-| CI | GitHub Actions + runner auto-hébergé fr1 (`self-hosted,Linux,X64,fr1,build`, en ligne sur aphrody-labs/src) ; local : nektos/act v0.2.97 | source unique `.github/workflows` ; fr1 = usine | `verify-go-infra` (Cloud Build) supprimé ; `go test ./...` retiré de `just verify-all` | rien à migrer ; retour : `git revert <sha>` |
-| Workers / edge functions | cloudflare/workerd v1.20261113.1 (`6cd7d1ae6382`), wrangler 4.161.0 (workers-sdk, tag `wrangler@4.161.0` = `1e688baedfe8`), workers-rs v0.9.0 (`fcc2fae203cf`), CLI `cf` 1.0.0-beta.31 (cloudflare/cf, `4dd33739da3c`), agents 0.33.0 | Workers existants (aphrody, aphrody-app, r2-site, api) ; `cf` hors projets Wrangler | `infra/internal/providers/cloudflare.go` (client REST v4 + upload de Workers en Go) : supprimé | inchangé (wrangler/cf) ; retour : `bunx wrangler rollback -c <wrangler.toml>` |
-| Proxy (origine L7) | nginx (distro 1.29 ; upstream nginx/nginx release-1.31.8, `140aa9427118`) | déjà sur les 3 hôtes, vhosts + caches de la couche cluster | générateur de Caddyfile HTTP/3 (`providers/vps.go`) : supprimé, Caddy n'était installé sur aucun VPS (vérifié) | rien ; retour : `git revert <sha>` |
-| Edge, cache/CDN | Cloudflare (anycast, cache de zone, WAF, R2) | voir [FR2-CLOUDFLARE.md](FR2-CLOUDFLARE.md) (chantier fr2) | — | référence |
-| LB, mesh, dédup | HAProxy (dernière branche stable taguée v3.4.0 ; HAProxy 3.4 en service) mTLS TCP 7444 + WireGuard noyau | voir [CLUSTER.md](CLUSTER.md) (chantier cluster) | — | référence |
-| Tunnel | cloudflare/cloudflared 2026.11.0 (`b0297f0b24c6`, publié le 2026-11-12) | connecteurs existants (prd `mig-prd`/`prod`, fr2) | — | épingle du lock : 2026.10.7, montée proposée au chantier fr2 (§3) |
-| TLS / ACME | certificats edge Cloudflare + Origin CA ; certbot v5.10.0 sur fr2 pour les origines restantes ; rustls v/0.23.46 dans le code Rust ; alternative go-acme/lego v5.6.0 | Cloudflare termine le TLS public, aucune ACME à opérer sur prd | plan Let's Encrypt de Caddy (`src-deploy`) : supprimé | rien ; retour : `git revert <sha>` |
-| Secrets | systemd-creds (systemd v262.2) + `ay secret` (DPAPI sur le PC), `/etc/aphrody/secrets.env` en `env_file`, gh secrets + OIDC (GCP WIF) | déjà câblé ([AUTH.md](AUTH.md)), aucun serveur à opérer ; limite : un `env_file` est visible par `docker inspect` (voir §3) ; sops v3.13.3 / age v1.3.2 non requis (aucun secret dans le dépôt) ; OpenBao v2.7.2 écarté (service en plus) | `infra/internal/envvault` (chargeur .env masqué en Go) : supprimé, doublon de `packages/env-kit` | rien ; retour : `git revert <sha>` |
-| Stockage objet | Cloudflare R2 (API S3) + rclone v1.76.0 (`e982ff36668f`) ; repli auto-hébergé : rustfs 1.0.5 (`34e6449ed90e`, Apache-2.0), non déployé ; Garage v2.5.0 écarté (AGPL-3.0) | R2 = production actuelle ; RustFS = S3 en Rust sous licence permissive | signeur S3v4 R2 en Go (`providers/cloudflare.go`) : supprimé ; `api-gateway`/`r2-site` restent sur l'API S3 | rien ; retour : `git revert <sha>` |
-| Observabilité / logs | **cible, non déployée** : vectordotdev/vector v0.61.0 (`17e017e3c07b`, MPL-2.0) en agent sur chaque hôte (journald, `docker_logs`, `/metrics`) → VictoriaMetrics v1.156.0 (`0c1bf87a0c98`, Apache-2.0) pour les métriques et VictoriaLogs v1.53.0 (Apache-2.0) pour les logs, sur fr1 dans une tranche systemd plafonnée (`MemoryMax`, `CPUWeight` bas) ; aujourd'hui journald + pilote de logs `local` + `/metrics` HAProxy (stats 19900) | un binaire Rust par hôte, rien de lourd sur prd ni fr2 (rôles) ; Loki v3.7.9 écarté (AGPL-3.0) ; VictoriaMetrics ne stocke pas de logs, d'où VictoriaLogs | — | à faire : unité vector sur fr1 d'abord ; retour : `systemctl disable --now vector` |
-| Bundling monorepo | oven-sh/bun bun-v1.4.4 (`38afee6c84fc`, `bun build`, workspaces, `--compile`) + `just` + cargo | règle globale : bun remplace les bundlers JS | — | rien |
-| Vercel (softBlock) | aucun outil retenu ; OSS consulté, utilisable sans déployer : vercel/ai (`146396263d28`, SDK IA), vercel/nft 1.11.1, vercel/ncc 0.45.0, vercel/turborepo v2.11.11, CLI `vercel` pour `env pull`/`inspect` | aucune production sur Vercel ; turborepo/nft/ncc écartés : bun workspaces + `bun build --compile` couvrent le besoin | `providers/vercel.go` (client API v13 en Go) : supprimé | `scripts/deploy-target.ts <app> vercel` reste un rendu de portabilité ; retour : sans objet |
+| Image build | docker/buildx v0.39.0 (`360040a78d61`) + moby/buildkit v0.35.0 (`f55949dea4f0`); CI docker/bake-action v7.5.0 (`59cb1203cd42`), setup-buildx-action v4.4.1 (`f87e5991a6d7`), login-action v4.8.0 (`8aa5831fb8d4`) | `docker-bake.hcl` already exists (amd64+arm64 matrix, registry cache, SBOM and provenance) | `infra/internal/oci` (daemonless OCI 1.1 layout + Docker Engine HTTP client in Go) and `src-deploy oci-pack`: deleted; buildx builder `aphrody` removed from prd, recreated on fr1 | `just docker-build` / `just docker-smoke` = `gh workflow run images.yml` (build then smoke job); manual build on the factory: `ssh vps docker buildx bake --builder aphrody …`; rollback: `git revert <sha>` |
+| Deployment | docker/compose v5.7.1 (`fb1fd129f868`) on moby v29.9.3 (`70efc0e31da3`) | `compose up -d --wait` waits for HEALTHCHECKs, profiles `core`/`edge`, `SRC_TAG` = rollback. Limit: compose recreates the container (stop then start), no blue/green or automatic rollback; zero downtime relies on green ports (compose) next to blue ports and on the nginx/HAProxy switch after `curl --resolve` | `src-deploy detect/plan/up/caddyfile` (Go, 4,300 lines), generated blue/green `sovereign-*@.service` units, `infra/generated/{Caddyfile,deploy-plan.json}`: deleted; `ay deploy <sub>` → `just docker-<sub>` | `just deploy [profile] [host]`; rollback: `SRC_TAG=<previous sha> just docker-up <profile> <host>` |
+| OCI registry | GHCR `ghcr.io/aphrody-labs`; self-hosted fallback: distribution/distribution v3.1.2 (`3220848f15d9`) or project-zot/zot v2.1.23 (`d7915e82e669`), not deployed; copy/inspection: regclient v0.11.7, skopeo v1.25.1 | push by `GITHUB_TOKEN` in CI, no service to operate | Artifact Registry `bunos` + `infra/gcloud/cloudbuild.yaml` (Debian images, duplicate of `images.yml`): deleted | already in place; only the pipeline file is deleted, the Artifact Registry repository `bunos` is untouched; rollback: `git checkout <sha>~ -- infra/gcloud/cloudbuild.yaml` |
+| CI | GitHub Actions + self-hosted fr1 runner (`self-hosted,Linux,X64,fr1,build`, online on aphrody-labs/src); local: nektos/act v0.2.97 | single source `.github/workflows`; fr1 = factory | `verify-go-infra` (Cloud Build) deleted; `go test ./...` removed from `just verify-all` | nothing to migrate; rollback: `git revert <sha>` |
+| Workers / edge functions | cloudflare/workerd v1.20261113.1 (`6cd7d1ae6382`), wrangler 4.161.0 (workers-sdk, tag `wrangler@4.161.0` = `1e688baedfe8`), workers-rs v0.9.0 (`fcc2fae203cf`), CLI `cf` 1.0.0-beta.31 (cloudflare/cf, `4dd33739da3c`), agents 0.33.0 | existing Workers (aphrody, aphrody-app, r2-site, api); `cf` outside Wrangler projects | `infra/internal/providers/cloudflare.go` (REST v4 client + Workers upload in Go): deleted | unchanged (wrangler/cf); rollback: `bunx wrangler rollback -c <wrangler.toml>` |
+| Proxy (L7 origin) | nginx (distro 1.29; upstream nginx/nginx release-1.31.8, `140aa9427118`) | already on the 3 hosts, vhosts + caches of the cluster layer | HTTP/3 Caddyfile generator (`providers/vps.go`): deleted, Caddy was installed on no VPS (verified) | nothing; rollback: `git revert <sha>` |
+| Edge, cache/CDN | Cloudflare (anycast, zone cache, WAF, R2) | see [FR2-CLOUDFLARE.md](FR2-CLOUDFLARE.md) (fr2 workstream) | — | reference |
+| LB, mesh, dedup | HAProxy (latest tagged stable branch v3.4.0; HAProxy 3.4 in service) mTLS TCP 7444 + kernel WireGuard | see [CLUSTER.md](CLUSTER.md) (cluster workstream) | — | reference |
+| Tunnel | cloudflare/cloudflared 2026.11.0 (`b0297f0b24c6`, published 2026-11-12) | existing connectors (prd `mig-prd`/`prod`, fr2) | — | lock pin: 2026.10.7, bump proposed to the fr2 workstream (§3) |
+| TLS / ACME | Cloudflare edge certificates + Origin CA; certbot v5.10.0 on fr2 for the remaining origins; rustls v/0.23.46 in the Rust code; alternative go-acme/lego v5.6.0 | Cloudflare terminates public TLS, no ACME to operate on prd | Caddy's Let's Encrypt plan (`src-deploy`): deleted | nothing; rollback: `git revert <sha>` |
+| Secrets | systemd-creds (systemd v262.2) + `ay secret` (DPAPI on the PC), `/etc/aphrody/secrets.env` as `env_file`, gh secrets + OIDC (GCP WIF) | already wired ([AUTH.md](AUTH.md)), no server to operate; limit: an `env_file` is visible through `docker inspect` (see §3); sops v3.13.3 / age v1.3.2 not required (no secret in the repository); OpenBao v2.7.2 rejected (extra service) | `infra/internal/envvault` (masked .env loader in Go): deleted, duplicate of `packages/env-kit` | nothing; rollback: `git revert <sha>` |
+| Object storage | Cloudflare R2 (S3 API) + rclone v1.76.0 (`e982ff36668f`); self-hosted fallback: rustfs 1.0.5 (`34e6449ed90e`, Apache-2.0), not deployed; Garage v2.5.0 rejected (AGPL-3.0) | R2 = current production; RustFS = S3 in Rust under a permissive license | R2 S3v4 signer in Go (`providers/cloudflare.go`): deleted; `api-gateway`/`r2-site` stay on the S3 API | nothing; rollback: `git revert <sha>` |
+| Observability / logs | **target, not deployed**: vectordotdev/vector v0.61.0 (`17e017e3c07b`, MPL-2.0) as an agent on each host (journald, `docker_logs`, `/metrics`) → VictoriaMetrics v1.156.0 (`0c1bf87a0c98`, Apache-2.0) for metrics and VictoriaLogs v1.53.0 (Apache-2.0) for logs, on fr1 in a capped systemd slice (`MemoryMax`, low `CPUWeight`); today journald + `local` log driver + HAProxy `/metrics` (stats 19900) | one Rust binary per host, nothing heavy on prd or fr2 (roles); Loki v3.7.9 rejected (AGPL-3.0); VictoriaMetrics does not store logs, hence VictoriaLogs | — | to do: vector unit on fr1 first; rollback: `systemctl disable --now vector` |
+| Monorepo bundling | oven-sh/bun bun-v1.4.4 (`38afee6c84fc`, `bun build`, workspaces, `--compile`) + `just` + cargo | global rule: bun replaces JS bundlers | — | nothing |
+| Vercel (softBlock) | no tool chosen; OSS consulted, usable without deploying: vercel/ai (`146396263d28`, AI SDK), vercel/nft 1.11.1, vercel/ncc 0.45.0, vercel/turborepo v2.11.11, CLI `vercel` for `env pull`/`inspect` | no production on Vercel; turborepo/nft/ncc rejected: bun workspaces + `bun build --compile` cover the need | `providers/vercel.go` (API v13 client in Go): deleted | `scripts/deploy-target.ts <app> vercel` remains a portability rendering; rollback: not applicable |
 
-Forks : aucun nouveau fork, tous les outils retenus sont consommés tels quels (binaires, images ou actions épinglées) ;
-un fork n'est créé (skill gh-fork, `third_party/forks.txt`) que si un patch devient nécessaire.
+Forks: no new fork, all chosen tools are consumed as is (binaries, images or pinned actions);
+a fork is created (skill gh-fork, `third_party/forks.txt`) only if a patch becomes necessary.
 
-## 2. Exécuté dans ce chantier (2026-11-13)
+## 2. Executed in this workstream (2026-11-13)
 
-- Supprimé : `infra/cmd/src-deploy`, `infra/internal/{detect,envvault,oci,providers}`, `infra/cshared`, `infra/go.mod`,
-  la partie Go d'`infra/ffi-bridge` (`index.ts`, `polyglot.test.ts`, crate `src/lib.rs`), `infra/generated/Caddyfile`,
+- Deleted: `infra/cmd/src-deploy`, `infra/internal/{detect,envvault,oci,providers}`, `infra/cshared`, `infra/go.mod`,
+  the Go part of `infra/ffi-bridge` (`index.ts`, `polyglot.test.ts`, crate `src/lib.rs`), `infra/generated/Caddyfile`,
   `infra/generated/deploy-plan.json`, `infra/generated/systemd/sovereign-*@.service`, `infra/gcloud/cloudbuild.yaml`,
-  l'étape `src-deploy` de `tools.toml`, les recettes `deploy-plan` et `go test` de `verify-all`.
-- `ay deploy <sub>` route vers `just docker-<sub>` (`crates/ay/src/lib.rs`, test unitaire mis à jour) ; `just deploy` =
+  the `src-deploy` step of `tools.toml`, the `deploy-plan` and `go test` recipes of `verify-all`.
+- `ay deploy <sub>` routes to `just docker-<sub>` (`crates/ay/src/lib.rs`, unit test updated); `just deploy` =
   `just docker-up`.
-- Builds déplacés de prd vers fr1 et la CI : `just docker-build` et `just docker-smoke` passent par `images.yml`, builder
-  buildx `aphrody` créé sur fr1, contexte Docker `fr1` (`ssh://vps`) ajouté sur le PC. `infra/fleet/bootstrap/fr1.sh` installe go, zig, .NET, cargo-zigbuild, cargo-nextest,
-  protoc, cbindgen, b3sum, wrangler/cf et le builder buildx `aphrody` (4 CPU / 12 Gio, Chromium garde la priorité) ;
-  `prd.sh` n'installe plus que le runtime (Docker, compose, nginx, WireGuard, bun, cloudflared) ; go, zig et .NET
-  rejoignent la purge « backends only » du chantier résilience/NHITL (commit 17a8f11 : workers REAPI, BuildKit,
-  rustup, paquets de build, caches ; différée si un `cargo` ou un `buildx` tourne).
-  `common.sh` : repli IPv4 dans `fetch` (fr1 reçoit un 404 de dl.google.com en IPv6).
-- `scripts/toolchains-lock.ts` / `tools.toml` : `hosts` alignés sur les rôles (prd n'a plus
+- Builds moved from prd to fr1 and CI: `just docker-build` and `just docker-smoke` go through `images.yml`, buildx builder
+  `aphrody` created on fr1, Docker context `fr1` (`ssh://vps`) added on the PC. `infra/fleet/bootstrap/fr1.sh` installs go, zig, .NET, cargo-zigbuild, cargo-nextest,
+  protoc, cbindgen, b3sum, wrangler/cf and the buildx builder `aphrody` (4 CPU / 12 GiB, Chromium keeps priority);
+  `prd.sh` now installs only the runtime (Docker, compose, nginx, WireGuard, bun, cloudflared); go, zig and .NET
+  join the "backends only" purge of the resilience/NHITL workstream (commit 17a8f11: REAPI workers, BuildKit,
+  rustup, build packages, caches; deferred if a `cargo` or a `buildx` is running).
+  `common.sh`: IPv4 fallback in `fetch` (fr1 gets a 404 from dl.google.com over IPv6).
+- `scripts/toolchains-lock.ts` / `tools.toml`: `hosts` aligned with the roles (prd no longer has
   rust, llvm, cmake, ninja, sccache, nextest, ffmpeg, go, zig, .NET, protoc, cbindgen, wrangler, cf).
 
-## 3. Propositions aux autres chantiers (non appliquées)
+## 3. Proposals to the other workstreams (not applied)
 
-- **Cluster** : Pingora 0.9.1 (`f86ffda5d3ae`, Apache-2.0) pourrait remplacer HAProxy + nginx shard (LB, cache, retries
-  dans un seul process Rust, rechargement à chaud). Non recommandé maintenant : Pingora est une bibliothèque, il faudrait
-  écrire et maintenir le binaire (code maison), alors que HAProxy couvre déjà mTLS, hachage cohérent et checks actifs.
-- **Cluster** : `nativelink-worker` (TraceMachina/nativelink v1.8.5, `82149a27fd93`) tourne aussi sur fr2 (worker de build, contraire à
-  « fr2 edge seul ») ; la purge de prd est faite par 17a8f11, fr2 reste à traiter.
-- **Cluster / résilience** : les conteneurs `edge` (`downloads`, `cdn`, `api-gateway`) tournent aussi sur fr1 ; l'usine
-  n'a pas à servir de trafic, retirer fr1 des membres edge ou lui garder un poids nul.
-- **Résilience / agents** : des agents compilaient encore sur prd (`cargo test`/`cargo check` de root observés le
-  2026-11-13) ; tant qu'ils tournent, la purge de `prd.sh` est différée : les router vers `ssh vps aphrody-heavy`.
-- **Résilience / agents** : `agent_runner` (common.sh) échoue sur fr1 : `rm -f ~/.config/systemd/user/aphrody-agents*`
-  rencontre le dossier `aphrody-agents.service.d` (« Is a directory ») ; `rm -rf` ou exclure les `.d`.
-- **fr2 Cloudflare** : monter cloudflared 2026.10.7 → 2026.11.0 (release du 2026-11-12) dans `scripts/toolchains-lock.ts`
-  puis `just fleet-bootstrap fr2|prd` (remplacement atomique du binaire, connecteurs redémarrés un par un).
-- **Deps** : moby v29.9.3 et buildx v0.39.0 sont sortis (lock : docker-engine 29.9.2, buildx 0.38) ; nginx du lock = 1.29
-  distro contre upstream 1.31.8.
+- **Cluster**: Pingora 0.9.1 (`f86ffda5d3ae`, Apache-2.0) could replace HAProxy + nginx shard (LB, cache, retries
+  in a single Rust process, hot reload). Not recommended now: Pingora is a library, we would have to
+  write and maintain the binary (in-house code), while HAProxy already covers mTLS, consistent hashing and active checks.
+- **Cluster**: `nativelink-worker` (TraceMachina/nativelink v1.8.5, `82149a27fd93`) also runs on fr2 (build worker, contrary to
+  "fr2 edge only"); the prd purge is done by 17a8f11, fr2 remains to be handled.
+- **Cluster / resilience**: the `edge` containers (`downloads`, `cdn`, `api-gateway`) also run on fr1; the factory
+  has no business serving traffic, remove fr1 from the edge members or keep its weight at zero.
+- **Resilience / agents**: agents were still compiling on prd (`cargo test`/`cargo check` as root observed on
+  2026-11-13); as long as they run, the `prd.sh` purge is deferred: route them to `ssh vps aphrody-heavy`.
+- **Resilience / agents**: `agent_runner` (common.sh) fails on fr1: `rm -f ~/.config/systemd/user/aphrody-agents*`
+  hits the `aphrody-agents.service.d` directory ("Is a directory"); `rm -rf` or exclude the `.d`.
+- **fr2 Cloudflare**: bump cloudflared 2026.10.7 → 2026.11.0 (release of 2026-11-12) in `scripts/toolchains-lock.ts`
+  then `just fleet-bootstrap fr2|prd` (atomic binary replacement, connectors restarted one by one).
+- **Deps**: moby v29.9.3 and buildx v0.39.0 are out (lock: docker-engine 29.9.2, buildx 0.38); the lock's nginx = 1.29
+  distro versus upstream 1.31.8.
 
-- **Déploiement (ce chantier, suite)** : zéro-coupure et retour automatique par Wowu/docker-rollout v0.14 (MIT, actif
-  2026-10-28 : démarre la nouvelle réplique, attend le HEALTHCHECK, retire l'ancienne ou avorte) ; épingler les images de
-  prd par digest et consigner le tag précédent sur l'hôte (`/var/lib/aphrody/{current,previous}-tag`).
-- **Résilience / auth** : passer les secrets des conteneurs de `env_file` à `secrets:` de compose (fichiers en tmpfs sous
-  `/run/secrets`, absents de `docker inspect`).
-- **CI / deps** : épingler les actions par SHA complet (bake-action, setup-buildx-action, login-action : commits des tags
-  ci-dessus) ; `just docker-build` attend désormais le run (`gh run watch --exit-status`), `docker-smoke` à aligner.
+- **Deployment (this workstream, continued)**: zero downtime and automatic rollback through Wowu/docker-rollout v0.14 (MIT, active
+  2026-10-28: starts the new replica, waits for the HEALTHCHECK, removes the old one or aborts); pin prd images
+  by digest and record the previous tag on the host (`/var/lib/aphrody/{current,previous}-tag`).
+- **Resilience / auth**: move container secrets from `env_file` to compose `secrets:` (tmpfs files under
+  `/run/secrets`, absent from `docker inspect`).
+- **CI / deps**: pin actions by full SHA (bake-action, setup-buildx-action, login-action: commits of the tags
+  above); `just docker-build` now waits for the run (`gh run watch --exit-status`), `docker-smoke` to be aligned.
 
-## 4. Écartés à l'inventaire
+## 4. Rejected during the inventory
 
-| Dépôt | Motif (gh api, 2026-11-13) |
+| Repository | Reason (gh api, 2026-11-13) |
 |---|---|
-| minio/minio | archivé (`archived: true`), dernière release RELEASE.2025-10-15 |
-| containrrr/watchtower | archivé ; fork actif nicholas-fedor/watchtower v1.24.0 écarté aussi (pull automatique hors du flux CI → smoke → up) |
-| varnish/Varnish-Cache, varnishcache/varnish-cache | les deux dépôts GitHub sont archivés (gh api) ; cache = Cloudflare + nginx |
-| cloudflare/boringtun | dernière release 2022-07 (boringtun-cli-0.5.2) ; WireGuard noyau déjà en place |
-| cloudflare/foundations | dernière release v3.4.0 de 2024-10 (commits actifs) ; bibliothèque pour services Pingora, sans usage ici |
-| basecamp/kamal v2.12.0, kamal-proxy | runtime Ruby en plus ; compose + healthchecks suffit |
-| traefik v3.7.18, caddy v2.11.9 | actifs, mais nginx + HAProxy + Cloudflare couvrent déjà proxy, LB et TLS ; un 3e proxy serait un doublon |
-| tailscale v1.104.7, headscale v0.29.7, nebula v1.12.0 | plan de contrôle en plus ; mesh = WireGuard + HAProxy mTLS (chantier cluster) |
-| hashicorp/nomad v2.1.1 | Business Source License (fichier LICENSE lu ; `NOASSERTION` côté gh), non OSI |
-| grafana/loki v3.7.9 | AGPL-3.0 et plus lourd que Vector + VictoriaMetrics |
-| woodpecker v3.20.1, forgejo (hébergé sur Codeberg, non inventorié par gh) | la CI de référence est GitHub Actions |
-| vercel/turborepo, ncc, nft, evanw/esbuild, rolldown | bun remplace (règle globale) |
+| minio/minio | archived (`archived: true`), latest release RELEASE.2025-10-15 |
+| containrrr/watchtower | archived; active fork nicholas-fedor/watchtower v1.24.0 rejected too (automatic pull outside the CI → smoke → up flow) |
+| varnish/Varnish-Cache, varnishcache/varnish-cache | both GitHub repositories are archived (gh api); cache = Cloudflare + nginx |
+| cloudflare/boringtun | latest release 2022-07 (boringtun-cli-0.5.2); kernel WireGuard already in place |
+| cloudflare/foundations | latest release v3.4.0 from 2024-10 (active commits); library for Pingora services, no use here |
+| basecamp/kamal v2.12.0, kamal-proxy | extra Ruby runtime; compose + healthchecks is enough |
+| traefik v3.7.18, caddy v2.11.9 | active, but nginx + HAProxy + Cloudflare already cover proxy, LB and TLS; a 3rd proxy would be a duplicate |
+| tailscale v1.104.7, headscale v0.29.7, nebula v1.12.0 | extra control plane; mesh = WireGuard + HAProxy mTLS (cluster workstream) |
+| hashicorp/nomad v2.1.1 | Business Source License (LICENSE file read; `NOASSERTION` on the gh side), not OSI |
+| grafana/loki v3.7.9 | AGPL-3.0 and heavier than Vector + VictoriaMetrics |
+| woodpecker v3.20.1, forgejo (hosted on Codeberg, not inventoried by gh) | the reference CI is GitHub Actions |
+| vercel/turborepo, ncc, nft, evanw/esbuild, rolldown | bun replaces them (global rule) |
 
 ## 5. Validation
 
-Gemini 4 Carbon High (web, 2026-11-13) : 5/20, verdict et suites dans
+Gemini 4 Carbon High (web, 2026-11-13): 5/20, verdict and follow-ups in
 [docs/reviews/gemini-2026-11-13-upstream-stack.md](../reviews/gemini-2026-11-13-upstream-stack.md).

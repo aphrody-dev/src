@@ -1,65 +1,65 @@
-# Agent-first : modèle d'exploitation de src
+# Agent-first: operating model of src
 
-État au 2026-11-13. src est codé, relu, testé, corrigé, déployé et maintenu par des agents, sans humain dans la boucle. Le propriétaire n'intervient que pour publier les brouillons commerciaux (file `publish/`) et pour les gestes qui exigent son identité (UAC, OAuth).
+State as of 2026-11-13. src is coded, reviewed, tested, fixed, deployed and maintained by agents, with no human in the loop. The owner steps in only to publish commercial drafts (queue `publish/`) and for actions that require their identity (UAC, OAuth).
 
-## 1. Partage des responsabilités
+## 1. Division of responsibilities
 
-| Couche | Propriétaire | Contenu |
+| Layer | Owner | Content |
 |---|---|---|
-| Orchestration, routage, choix du fournisseur/modèle | `packages/ai-os` (session nt-d6) | workflows dynamiques, bascule automatique, registre de modèles (relais `llm_models` / `llm_ask`, MCP `/mcp`, A2A `/a2a`) |
-| Exécution sur les hôtes | `infra/agents/` (ce document) | sessions tmux, unités systemd user, tâche planifiée Windows, file de tâches, santé, redémarrage, journaux |
-| Juge | `.github/workflows/judge.yml`, `ci.yml`, `ci-revert.yml` | verdict de chaque push sur main, revert automatique |
-| Interface unique des agents | `justfile` | `check`, `fmt`, `lint`, `test`, `affected`, `test-affected`, `deploy`, `docker-*`, `agents*` |
+| Orchestration, routing, provider/model choice | `packages/ai-os` (session nt-d6) | dynamic workflows, automatic failover, model registry (relay `llm_models` / `llm_ask`, MCP `/mcp`, A2A `/a2a`) |
+| Execution on hosts | `infra/agents/` (this document) | tmux sessions, systemd user units, Windows scheduled task, task queue, health, restart, logs |
+| Judge | `.github/workflows/judge.yml`, `ci.yml`, `ci-revert.yml` | verdict on every push to main, automatic revert |
+| Single agent interface | `justfile` | `check`, `fmt`, `lint`, `test`, `affected`, `test-affected`, `deploy`, `docker-*`, `agents*` |
 
-Le runner ne choisit jamais un fournisseur : il exécute ce que la tâche nomme, dans l'ordre donné. Sans nom, il prend la réponse du relais `llm_models` (premier modèle de chaque fournisseur disponible, dans l'ordre du relais). Aucune chaîne statique n'existe dans `infra/agents`.
+The runner never chooses a provider: it runs what the task names, in the given order. With no name, it takes the answer of the relay `llm_models` (first model of each available provider, in relay order). No static chain exists in `infra/agents`.
 
-## 2. Rôles
+## 2. Roles
 
-| Rôle | Entrées | Sorties | Juge | Hôtes |
+| Role | Inputs | Outputs | Judge | Hosts |
 |---|---|---|---|---|
-| `coder` | prompt, `cwd`, `commit.paths` | commit sur main | `check` de la tâche, puis `judge`/`ci` | fr1 |
-| `reviewer` | sha ou chemin | rapport `results/<id>/` | humain absent : verdict LLM (relais) ou Gemini Carbon pour les livrables | fr1, pc |
-| `tester` | unité, `just test-affected` | tests + commit | `check` = recette `just` | fr1 |
-| `linter` | recette `fmt`/`lint` ciblée | commit de formatage | `bun fmt --check <dir>`, `cargo clippy` | fr1 |
-| `designer` | PRD, `DESIGN.md` (porte design-first d'AGENTS.md) | maquettes, tokens | `wck` / Lighthouse | fr1, pc |
-| `deployer` | `just deploy <cible>` | déploiement | santé de la cible | prd |
-| `sre` | santé, journaux, relances ; `ci-watch` crée des `coder` | correctif léger | `judge` vert | prd, fr1, fr2 |
-| `chromium` | tâches Chromium/LLVM | builds | factory (`docs/CHROMIUM-FACTORY.md`) | fr1 |
-| `build` | images, artefacts, toolchains (`aphrody-heavy`) | artefacts | recette `just` | fr1 |
-| `training` | entraînement | modèles | évaluation | fr1 |
-| `growth` | modèles `infra/agents/tasks/*` | brouillons dans `var/agents/publish/<id>/` | revue du propriétaire | prd, pc |
+| `coder` | prompt, `cwd`, `commit.paths` | commit on main | the task's `check`, then `judge`/`ci` | fr1 |
+| `reviewer` | sha or path | report `results/<id>/` | no human: LLM verdict (relay) or Gemini Carbon for deliverables | fr1, pc |
+| `tester` | unit, `just test-affected` | tests + commit | `check` = `just` recipe | fr1 |
+| `linter` | targeted `fmt`/`lint` recipe | formatting commit | `bun fmt --check <dir>`, `cargo clippy` | fr1 |
+| `designer` | PRD, `DESIGN.md` (design-first gate of AGENTS.md) | mockups, tokens | `wck` / Lighthouse | fr1, pc |
+| `deployer` | `just deploy <target>` | deployment | target health | prd |
+| `sre` | health, logs, restarts; `ci-watch` creates `coder` tasks | light fix | green `judge` | prd, fr1, fr2 |
+| `chromium` | Chromium/LLVM tasks | builds | factory (`docs/CHROMIUM-FACTORY.md`) | fr1 |
+| `build` | images, artifacts, toolchains (`aphrody-heavy`) | artifacts | `just` recipe | fr1 |
+| `training` | training | models | evaluation | fr1 |
+| `growth` | templates `infra/agents/tasks/*` | drafts in `var/agents/publish/<id>/` | owner review | prd, pc |
 
-`growth` a `approval = "owner"` par défaut : la tâche finit `done`, ses fichiers sont déplacés dans `publish/<id>/` (`changes.patch`, `files/`, journaux, `README.txt`) et le checkout est restauré. Rien n'est publié, posté, envoyé ni déployé ; le propriétaire publie depuis cette file.
+`growth` has `approval = "owner"` by default: the task ends `done`, its files are moved to `publish/<id>/` (`changes.patch`, `files/`, logs, `README.txt`) and the checkout is restored. Nothing is published, posted, sent or deployed; the owner publishes from that queue.
 
-## 3. CLI et SDK (vérifiés dans la session)
+## 3. CLIs and SDKs (verified in the session)
 
-context7, GitHub MCP et Microsoft Learn étaient injoignables (ENOTFOUND) : les versions viennent des registres (`registry.npmjs.org/<pkg>/latest`, `pypi.org/pypi/<pkg>/json`, lus depuis prd), de `--help` sur les binaires installés et de `gh api`.
+context7, GitHub MCP and Microsoft Learn were unreachable (ENOTFOUND): versions come from the registries (`registry.npmjs.org/<pkg>/latest`, `pypi.org/pypi/<pkg>/json`, read from prd), from `--help` of the installed binaries and from `gh api`.
 
-| Outil | Dernière version (registre) | Installé | Mode headless utilisé par le runner |
+| Tool | Latest version (registry) | Installed | Headless mode used by the runner |
 |---|---|---|---|
-| Claude Code `@anthropic-ai/claude-code` | 2.1.323 | pc 2.1.322, fr1 2.1.322, prd 2.1.318, fr2 2.1.302 | `claude -p --permission-mode bypassPermissions --output-format json --max-turns 200 --max-budget-usd B [--model M]`, prompt sur stdin ; lanceur NHITL `plugins/aphrody-nhitl/bin/claude-nhitl.ts` quand il est présent |
-| Claude Agent SDK TS `@anthropic-ai/claude-agent-sdk` | 0.3.323 | consommé par ai-os | – |
-| Claude Agent SDK Python `claude-agent-sdk` | 0.2.181 | consommé par ai-os | – |
+| Claude Code `@anthropic-ai/claude-code` | 2.1.323 | pc 2.1.322, fr1 2.1.322, prd 2.1.318, fr2 2.1.302 | `claude -p --permission-mode bypassPermissions --output-format json --max-turns 200 --max-budget-usd B [--model M]`, prompt on stdin; NHITL launcher `plugins/aphrody-nhitl/bin/claude-nhitl.ts` when present |
+| Claude Agent SDK TS `@anthropic-ai/claude-agent-sdk` | 0.3.323 | consumed by ai-os | – |
+| Claude Agent SDK Python `claude-agent-sdk` | 0.2.181 | consumed by ai-os | – |
 | Codex CLI `@openai/codex` | 0.167.2 | fr2 0.167.2, prd 0.166.0, fr1 0.162.1, pc 0.162.0-alpha.17.2 | `codex exec --json --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox [-m M] -` |
-| OpenCode `opencode-ai` | 1.19.5 | prd/fr1/fr2 1.19.5 ; pc `opencode v2.2.7` (autre distribution, conflit non résolu) | `opencode run --format json [-m provider/model] <prompt>` |
-| pi `@earendil-works/pi-coding-agent` | 1.5.2 (l'ancien `@mariozechner/pi-coding-agent` 0.73.1 est marqué deprecated par npm) | prd/fr1/fr2 1.5.2 ; absent du pc | `pi -p [--model M] <prompt>` |
-| Antigravity `agy` | – | pc 1.5.7, prd 1.4.12 | `agy -p <prompt> --output-format json --dangerously-skip-permissions [--model M]` ; remplace Gemini CLI (`@google/gemini-cli` 0.68.0 existe mais est legacy pour ai-os) |
-| litellm (PyPI) | 1.109.1 | non installé : le routage est dans ai-os | – |
+| OpenCode `opencode-ai` | 1.19.5 | prd/fr1/fr2 1.19.5; pc `opencode v2.2.7` (another distribution, unresolved conflict) | `opencode run --format json [-m provider/model] <prompt>` |
+| pi `@earendil-works/pi-coding-agent` | 1.5.2 (the former `@mariozechner/pi-coding-agent` 0.73.1 is marked deprecated by npm) | prd/fr1/fr2 1.5.2; absent from the pc | `pi -p [--model M] <prompt>` |
+| Antigravity `agy` | – | pc 1.5.7, prd 1.4.12 | `agy -p <prompt> --output-format json --dangerously-skip-permissions [--model M]`; replaces Gemini CLI (`@google/gemini-cli` 0.68.0 exists but is legacy for ai-os) |
+| litellm (PyPI) | 1.109.1 | not installed: routing lives in ai-os | – |
 | tmux | – | prd 3.8, fr1/fr2 3.7b, pc psmux 3.4.0 (winget `arndawg.tmux-windows`) | session `agents` |
 | cloudflared | – | fr1 2026.11.0, prd/fr2/pc 2026.10.7 | tunnel `mig-prd` |
-| Renovate `renovate` | 44.236.5 | non utilisé (voir 7) | – |
+| Renovate `renovate` | 44.236.5 | not used (see 7) | – |
 
-Pièges relevés :
-- Claude Code refuse `bypassPermissions` en root, et ce garde-fou n'est pas contourné : aucun runner ne tourne en root (`runner.ts work` refuse uid 0, `install.sh` aussi). Sur prd, le runner tourne sous l'utilisateur dédié `agent` (sans sudo), créé par `bootstrap-user.sh`. `install.sh` marque le checkout comme approuvé (`hasTrustDialogAccepted`) dans `~/.claude.json`.
-- Bun charge automatiquement le `.env` du répertoire courant : `C:\src\.env` contient une clé `ANTHROPIC_API_KEY` non rattachée à un workspace, qui passait devant la connexion claude.ai (erreur 400). Le runner, ses unités et la tâche planifiée tournent en `bun --no-env-file`, et les variables `ANTHROPIC_*`, `CLAUDECODE`, `CLAUDE_CODE_*` de la session parente sont retirées de l'environnement des enfants (`AGENTS_KEEP_ENV=1` pour les garder).
-- Aucun shell entre le runner et une CLI : sous Windows, les shims `.cmd` sont résolus vers leur `.exe` par `resolveExe` (`packages/ai-os/src/llm/agents.ts`) et lancés directement ; un shim non résoluble est refusé (`codex.cmd` du PC, dont la cible est introuvable). Test : `bun test infra/agents` (prompt avec `& | ^ % " < >`).
-- psmux casse les guillemets doubles de la commande de fenêtre : chemins non quotés sous Windows quand ils n'ont pas d'espace.
-- `~/.local/bin/codex` sur fr2 était un lien vers un autre binaire : l'install vérifie `~/.bun/bin/<cli>`, et le runner met `~/.bun/bin` en tête du PATH.
-- Codex sur le PC répond 401 (`codex login` à refaire par le propriétaire, OAuth) : le runner a basculé tout seul sur le fournisseur suivant.
+Pitfalls found:
+- Claude Code refuses `bypassPermissions` as root, and this safeguard is not bypassed: no runner runs as root (`runner.ts work` refuses uid 0, so does `install.sh`). On prd, the runner runs under the dedicated user `agent` (no sudo), created by `bootstrap-user.sh`. `install.sh` marks the checkout as trusted (`hasTrustDialogAccepted`) in `~/.claude.json`.
+- Bun automatically loads the `.env` of the current directory: `C:\src\.env` contains an `ANTHROPIC_API_KEY` key not attached to a workspace, which took precedence over the claude.ai login (error 400). The runner, its units and the scheduled task run with `bun --no-env-file`, and the `ANTHROPIC_*`, `CLAUDECODE`, `CLAUDE_CODE_*` variables of the parent session are removed from the children's environment (`AGENTS_KEEP_ENV=1` to keep them).
+- No shell between the runner and a CLI: on Windows, `.cmd` shims are resolved to their `.exe` by `resolveExe` (`packages/ai-os/src/llm/agents.ts`) and launched directly; an unresolvable shim is refused (the PC's `codex.cmd`, whose target cannot be found). Test: `bun test infra/agents` (prompt with `& | ^ % " < >`).
+- psmux breaks double quotes in the window command: unquoted paths on Windows when they have no space.
+- `~/.local/bin/codex` on fr2 was a link to another binary: the install checks `~/.bun/bin/<cli>`, and the runner puts `~/.bun/bin` at the front of PATH.
+- Codex on the PC answers 401 (`codex login` to be redone by the owner, OAuth): the runner failed over to the next provider on its own.
 
-## 4. File de tâches (format v1)
+## 4. Task queue (format v1)
 
-File par hôte, dans le checkout du runner : `var/agents/` (ignoré par git). Pas de serveur : des fichiers JSON et `rename` atomique, comme maildir.
+One queue per host, in the runner's checkout: `var/agents/` (ignored by git). No server: JSON files and atomic `rename`, like maildir.
 
 ```
 var/agents/queue/{tmp,new,claimed,done,failed}/<id>.json
@@ -69,7 +69,7 @@ var/agents/state/{health.json,heartbeat-<role>,cooldown-<provider>,schedule-<nam
 var/agents/log.jsonl                expédié vers prd:/var/lib/aphrody-agents/logs/<hôte>.jsonl
 ```
 
-Checkouts : prd `/home/agent/agents/src` (utilisateur `agent`), fr1 et fr2 `/home/ubuntu/agents/src`, PC `C:/src`.
+Checkouts: prd `/home/agent/agents/src` (user `agent`), fr1 and fr2 `/home/ubuntu/agents/src`, PC `C:/src`.
 
 ```json
 {
@@ -84,65 +84,65 @@ Checkouts : prd `/home/agent/agents/src` (utilisateur `agent`), fr1 et fr2 `/hom
 }
 ```
 
-Dépôt : écrire `queue/tmp/<id>.json` puis le renommer en `queue/new/<id>.json`, ou `just agents enqueue --role R --prompt P [--host H] [--providers a,b] [--check C] [--paths p1,p2] [--message M] [--template NOM]` (hôte distant : ssh, voir 6).
+Submission: write `queue/tmp/<id>.json` then rename it to `queue/new/<id>.json`, or `just agents enqueue --role R --prompt P [--host H] [--providers a,b] [--check C] [--paths p1,p2] [--message M] [--template NAME]` (remote host: ssh, see 6).
 
-Transitions : `new` -> `claimed/<id>@<hôte>.<pid>.json` (le rename désigne un seul gagnant) -> `done` | `failed` | retour en `new` quand toutes les tentatives ont échoué pour indisponibilité. Un fournisseur qui répond 429, quota, crédit, 401/403/5xx ou « not logged in » passe en refroidissement 15 min et la tâche continue sur le suivant. Chaque fournisseur a un tour d'auto-correction : la sortie du `check` en échec lui est renvoyée. Les tâches réclamées par un worker mort sont remises en `new` par le contrôle de santé.
+Transitions: `new` -> `claimed/<id>@<host>.<pid>.json` (the rename designates a single winner) -> `done` | `failed` | back to `new` when every attempt failed for unavailability. A provider that answers 429, quota, credit, 401/403/5xx or "not logged in" goes into a 15 min cooldown and the task continues on the next one. Each provider gets one self-correction round: the output of the failing `check` is sent back to it. Tasks claimed by a dead worker are put back in `new` by the health check.
 
-Commit : seulement les fichiers modifiés par la tâche (différence `git status` avant/après) sous `commit.paths` (`""` = tout), trailers `Agent-Task`, `Agent-Role`, `Agent-Provider`, `Agent-Host`, `git push origin HEAD:main` avec rebase `--autostash` et trois essais.
+Commit: only the files modified by the task (`git status` difference before/after) under `commit.paths` (`""` = everything), trailers `Agent-Task`, `Agent-Role`, `Agent-Provider`, `Agent-Host`, `git push origin HEAD:main` with `--autostash` rebase and three attempts.
 
-Budgets : `budget_usd` par rôle (`fleet.toml`) passé à `--max-budget-usd` de Claude ; les autres CLI sont bornées par `timeout_s`. Les plafonds par fournisseur (quotas, coût global) relèvent d'ai-os.
+Budgets: `budget_usd` per role (`fleet.toml`) passed to Claude's `--max-budget-usd`; the other CLIs are bounded by `timeout_s`. Per-provider caps (quotas, global cost) belong to ai-os.
 
-## 5. Runner par hôte
+## 5. Runner per host
 
-- `infra/agents/runner.ts` (Bun, sans dépendance) : `up`, `work <rôle>`, `health`, `enqueue`, `status`.
-- `infra/agents/fleet.toml` : rôles par hôte, timeouts, budgets, cibles ssh, planification, hôte de collecte.
-- Linux (`just agents-install <hôte>` = `ssh <hôte> 'sh -s' < infra/agents/install.sh` ; pour prd, d'abord `bootstrap-user.sh` en root puis `install.sh` en `agent@prd` ; idempotent, appelé aussi par `infra/fleet/bootstrap/*.sh`) : clone blobless de main, hook `pre-push` qui refuse force-push et suppression, CLI en `bun add -g`, unités user `aphrody-agents.service` (session tmux `agents`, une fenêtre par rôle, boucle de redémarrage), `aphrody-agents-health.timer` (2 min : répare les fenêtres, ressuscite les workers sans battement depuis 120 s, remet les orphelins en file, sonde les CLI, expédie les journaux, `ci-watch`, planification), `aphrody-agents-pull.timer` (10 min, fast-forward). Linger activé.
-- PC (`just agents-install-pc`) : tâches planifiées `\Aphrody\AgentsHealth` (5 min) et `\Aphrody\AgentsLogon`, `conhost.exe --headless bun --no-env-file runner.ts health`, session psmux `agents`. Sans droits admin.
-- Journaux : une seule destination, `prd:/var/lib/aphrody-agents/logs/<hôte>.jsonl` (offset par hôte dans `state/ship-offset`).
-- Planification (`[schedule]`, enqueue par prd) : `deps-update`, `release-notes`, `seo-check` chaque semaine. Les pages produit (`product-page-shenron`, `product-page-rosegriffon`) se lancent à la demande : `just agents enqueue --template product-page-shenron`.
+- `infra/agents/runner.ts` (Bun, no dependency): `up`, `work <role>`, `health`, `enqueue`, `status`.
+- `infra/agents/fleet.toml`: roles per host, timeouts, budgets, ssh targets, scheduling, collection host.
+- Linux (`just agents-install <host>` = `ssh <host> 'sh -s' < infra/agents/install.sh`; for prd, first `bootstrap-user.sh` as root then `install.sh` as `agent@prd`; idempotent, also called by `infra/fleet/bootstrap/*.sh`): blobless clone of main, `pre-push` hook that refuses force-push and deletion, CLIs via `bun add -g`, user units `aphrody-agents.service` (tmux session `agents`, one window per role, restart loop), `aphrody-agents-health.timer` (2 min: repairs windows, revives workers without a heartbeat for 120 s, requeues orphans, probes CLIs, ships logs, `ci-watch`, scheduling), `aphrody-agents-pull.timer` (10 min, fast-forward). Linger enabled.
+- PC (`just agents-install-pc`): scheduled tasks `\Aphrody\AgentsHealth` (5 min) and `\Aphrody\AgentsLogon`, `conhost.exe --headless bun --no-env-file runner.ts health`, psmux session `agents`. No admin rights.
+- Logs: a single destination, `prd:/var/lib/aphrody-agents/logs/<host>.jsonl` (offset per host in `state/ship-offset`).
+- Scheduling (`[schedule]`, enqueued by prd): `deps-update`, `release-notes`, `seo-check` every week. The product pages (`product-page-shenron`, `product-page-rosegriffon`) run on demand: `just agents enqueue --template product-page-shenron`.
 
-Placement (2026-11-13, décision propriétaire) : les rôles `heavy = true` de `fleet.toml` (`coder tester linter build chromium training`) ne tournent que sur fr1, imposé par `runner.ts` à l'enqueue et au claim ; prd ne garde que `deployer sre growth`, fr2 `sre`, pc `reviewer designer growth`. Une tâche déposée sur un hôte qui ne la prend pas (CI rouge, alertes, revues reçues par prd) est transférée par `health` (`route()`), copie locale dans `done/<id>@fwd-<hôte>.json`. `ci-fix-*` et alertes sécurité sont des tâches `coder`.
+Placement (2026-11-13, owner decision): the `heavy = true` roles of `fleet.toml` (`coder tester linter build chromium training`) run only on fr1, enforced by `runner.ts` at enqueue and at claim; prd keeps only `deployer sre growth`, fr2 `sre`, pc `reviewer designer growth`. A task submitted on a host that does not take it (red CI, alerts, reviews received by prd) is forwarded by `health` (`route()`), local copy in `done/<id>@fwd-<host>.json`. `ci-fix-*` and security alerts are `coder` tasks.
 
-## 6. Accès aux hôtes (tunnels)
+## 6. Host access (tunnels)
 
-| Chemin | Usage | Test du 2026-11-13 |
+| Path | Use | Test of 2026-11-13 |
 |---|---|---|
-| ssh public, alias `prd`/`fr1`/`fr2` du PC (clés uniquement) | PC -> runners : `just agents-attach prd`, `just agents status`, enqueue distant | OK (installs, enqueue PC -> prd) |
-| WireGuard 10.200.77.0/24 (fr1 .1, fr2 .3, prd .5) | VPS -> VPS : expédition des journaux, enqueue | OK : fr1 et fr2 -> `root@10.200.77.5` ; ping PC -> .1/.5 OK, mais le port 22 du mesh est fermé depuis le PC (timeout), conforme au RUNBOOK |
-| Tunnel Cloudflare `mig-prd` + Access for Infrastructure `mig-prd-ssh` | ssh prd sans IP publique | tunnel prêt (`/ready` : 4 connexions) ; inutilisable tant que WARP n'est pas installé sur le PC (UAC, propriétaire) |
+| public ssh, aliases `prd`/`fr1`/`fr2` from the PC (keys only) | PC -> runners: `just agents-attach prd`, `just agents status`, remote enqueue | OK (installs, enqueue PC -> prd) |
+| WireGuard 10.200.77.0/24 (fr1 .1, fr2 .3, prd .5) | VPS -> VPS: log shipping, enqueue | OK: fr1 and fr2 -> `root@10.200.77.5`; ping PC -> .1/.5 OK, but mesh port 22 is closed from the PC (timeout), as per the RUNBOOK |
+| Cloudflare tunnel `mig-prd` + Access for Infrastructure `mig-prd-ssh` | ssh prd without public IP | tunnel ready (`/ready`: 4 connections); unusable until WARP is installed on the PC (UAC, owner) |
 
-Chaque hôte déclare ses cibles dans `fleet.toml` (`ssh = [alias, IP WireGuard, IP publique]`), essayées dans l'ordre. Rien n'est exposé publiquement : ni tmux ni la file n'écoutent sur le réseau.
+Each host declares its targets in `fleet.toml` (`ssh = [alias, WireGuard IP, public IP]`), tried in order. Nothing is exposed publicly: neither tmux nor the queue listens on the network.
 
-## 7. CI juge, main sans PR, rollback
+## 7. CI judge, main without PRs, rollback
 
-- Push direct sur main. Ruleset GitHub `main-no-rewrite` (id 27169448) : interdit force-push et suppression de main, laisse passer les pushes directs.
-- `judge.yml` (runner GitHub hébergé) : verdict rapide de chaque push (checkdeps, identity, runner, `go test` de infra). `ci.yml` garde les builds lourds sur le runner `fr1`, arrêté exprès (`docs/infra/FLEET.md`) : ses runs restent annulés tant qu'il n'est pas réinstallé.
-- `ci-revert.yml` : quand `judge` ou `ci` échoue sur un commit dont le parent était vert, le commit est reverté sur main (équivalent en une ligne : `git revert --no-edit <sha> && git push origin HEAD:main`). Ignorés : les reverts et les commits marqués `[no-revert]`.
-- `ci-watch` (prd) : une CI rouge non attribuable donne une tâche `sre` `ci-fix-<sha>` (une seule ouverte à la fois).
-- Dépendances : pas de Renovate, qui a besoin de branches et de PR (exclus). La tâche hebdomadaire `deps-update` applique `just deps-bump` / `just deps-lock` (ay lock) dans les bornes, vérifie, commite sur main ; le juge et le revert font le reste.
+- Direct push to main. GitHub ruleset `main-no-rewrite` (id 27169448): forbids force-push and deletion of main, allows direct pushes.
+- `judge.yml` (GitHub-hosted runner): fast verdict on every push (checkdeps, identity, runner, `go test` of infra). `ci.yml` keeps the heavy builds on the `fr1` runner, stopped on purpose (`docs/infra/FLEET.md`): its runs stay cancelled until it is reinstalled.
+- `ci-revert.yml`: when `judge` or `ci` fails on a commit whose parent was green, the commit is reverted on main (one-line equivalent: `git revert --no-edit <sha> && git push origin HEAD:main`). Ignored: reverts and commits marked `[no-revert]`.
+- `ci-watch` (prd): a red CI that cannot be attributed yields an `sre` task `ci-fix-<sha>` (only one open at a time).
+- Dependencies: no Renovate, which needs branches and PRs (excluded). The weekly task `deps-update` applies `just deps-bump` / `just deps-lock` (ay lock) within the bounds, verifies, commits on main; the judge and the revert do the rest.
 
-## 8. Tests de bout en bout (2026-11-13)
+## 8. End-to-end tests (2026-11-13)
 
-| Hôte | Tâche | Déroulé | Résultat |
+| Host | Task | Run | Result |
 |---|---|---|---|
-| prd | `smoke-prd-lint-epic-fmt` (linter, `bun fmt` de `packages/epic-games`, check `bun fmt --check`) | claude refusé (root) -> bascule sur codex -> check vert -> commit. Le runner prd a été déplacé ensuite sous l'utilisateur `agent` | `0c8f6e4` sur main |
-| pc | `smoke-pc-lint-gds-fmt` (coder, `bun fmt` de `packages/google-design`) | 1er essai : 400 (clé du `.env`) -> refroidissement + remise en file ; après `--no-env-file` : claude -> check vert -> commit | `82215ad` sur main |
+| prd | `smoke-prd-lint-epic-fmt` (linter, `bun fmt` of `packages/epic-games`, check `bun fmt --check`) | claude refused (root) -> failover to codex -> green check -> commit. The prd runner was then moved under the user `agent` | `0c8f6e4` on main |
+| pc | `smoke-pc-lint-gds-fmt` (coder, `bun fmt` of `packages/google-design`) | 1st attempt: 400 (`.env` key) -> cooldown + requeue; after `--no-env-file`: claude -> green check -> commit | `82215ad` on main |
 
-## 9. Identifiants des runners (sans humain, sauf le clic final)
+## 9. Runner credentials (no human, except the final click)
 
-Règle : aucune valeur dans le dépôt, les journaux, l'argv ou les unités. Sur Linux, chaque identifiant longue durée est chiffré par `systemd-creds --user` dans `~/.config/credstore.encrypted/<NOM>` de l'utilisateur du runner (même stockage que `ay secret`, docs/infra/AUTH.md). `runner.ts` le déchiffre et le place uniquement dans l'environnement des CLI qu'il lance. Noms lus : `CLAUDE_CODE_OAUTH_TOKEN`, `GH_TOKEN`.
+Rule: no value in the repository, the logs, argv or the units. On Linux, each long-lived credential is encrypted by `systemd-creds --user` in `~/.config/credstore.encrypted/<NAME>` of the runner's user (same storage as `ay secret`, docs/infra/AUTH.md). `runner.ts` decrypts it and puts it only in the environment of the CLIs it launches. Names read: `CLAUDE_CODE_OAUTH_TOKEN`, `GH_TOKEN`.
 
-| Identifiant | État prd (`agent`) | Comment |
+| Credential | prd state (`agent`) | How |
 |---|---|---|
-| `GH_TOKEN` (push sur main) | fait, vérifié : `gh auth status` OK (GH_TOKEN), `git push --dry-run` OK | `gh auth token` (root, prd) passé en stdin à `systemd-creds --user encrypt` ; le helper git est `gh auth git-credential` |
-| Claude Code | fait (2026-11-13) : `claude -p` OK | jeton `claude setup-token` du PC (coffre DPAPI `CLAUDE_CODE_OAUTH_TOKEN`) en stdin de `systemd-creds --user encrypt` ; flux : `ai-os nhitl login claude` |
-| Codex | fait (2026-11-13) : `codex login status` = ChatGPT | `ai-os nhitl login codex --hosts prd` : `codex login --device-auth` en tmux, code d’appareil écrit dans `<RELAY_HOME>/device-code.txt`, validé par le propriétaire |
-| fr2 (`ubuntu`) | Claude fait (même jeton, `claude -p` OK) ; le `codex` installé n’est pas la CLI OpenAI | installer `@openai/codex`, puis `ai-os nhitl login codex --hosts fr2` |
-| PC | `codex.cmd` pointe vers un `codex.exe` introuvable, Codex répond 401 | `codex login` sur le PC (et réinstaller Codex si le binaire manque) |
+| `GH_TOKEN` (push to main) | done, verified: `gh auth status` OK (GH_TOKEN), `git push --dry-run` OK | `gh auth token` (root, prd) passed on stdin to `systemd-creds --user encrypt`; the git helper is `gh auth git-credential` |
+| Claude Code | done (2026-11-13): `claude -p` OK | `claude setup-token` token from the PC (DPAPI vault `CLAUDE_CODE_OAUTH_TOKEN`) on stdin of `systemd-creds --user encrypt`; flow: `ai-os nhitl login claude` |
+| Codex | done (2026-11-13): `codex login status` = ChatGPT | `ai-os nhitl login codex --hosts prd`: `codex login --device-auth` in tmux, device code written to `<RELAY_HOME>/device-code.txt`, validated by the owner |
+| fr2 (`ubuntu`) | Claude done (same token, `claude -p` OK); the installed `codex` is not the OpenAI CLI | install `@openai/codex`, then `ai-os nhitl login codex --hosts fr2` |
+| PC | `codex.cmd` points to a `codex.exe` that cannot be found, Codex answers 401 | `codex login` on the PC (and reinstall Codex if the binary is missing) |
 
-## 10. Reste à faire (hors de portée des agents)
+## 10. Remaining work (out of the agents' reach)
 
-- Points encore ouverts : `just nhitl list --status open` (index NHITL, `var/agents/nhitl.sqlite`).
-- WARP sur le PC (UAC) pour le chemin Cloudflare ; `codex login` sur le PC.
-- Réinstaller un runner GitHub pour `ci.yml` (prd trop chargé d'après FLEET.md) ou porter ses étapes vers `judge.yml`.
-- Les modèles planifiés sans `providers` : `deps-update` finit en `no_cli_provider` tant qu’ai-os ne nomme pas de CLI de code (ou ne reprend pas la planification) ; `release-notes` et `seo-check` passent par le relais.
+- Points still open: `just nhitl list --status open` (NHITL index, `var/agents/nhitl.sqlite`).
+- WARP on the PC (UAC) for the Cloudflare path; `codex login` on the PC.
+- Reinstall a GitHub runner for `ci.yml` (prd too loaded according to FLEET.md) or port its steps to `judge.yml`.
+- Scheduled templates without `providers`: `deps-update` ends in `no_cli_provider` as long as ai-os does not name a coding CLI (or does not take over scheduling); `release-notes` and `seo-check` go through the relay.

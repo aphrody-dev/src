@@ -1,43 +1,43 @@
-# OpenClaw et Hermes Agent en natif Windows
+# OpenClaw and Hermes Agent native on Windows
 
-Mesuré le 2026-11-12 sur le PC (Windows 11 Insider 28120, sans WSL, sans runtime MSYS pour les outils de l'agent). Le paquet unifié packages/ai-os (fusion de aphrody-labs/agent) reprend cette liste.
+Measured on 2026-11-12 on the PC (Windows 11 Insider 28120, no WSL, no MSYS runtime for the agent's tools). The unified package packages/ai-os (merge of aphrody-labs/agent) carries this list forward.
 
-Forks : aphrody-labs/openclaw et aphrody-labs/hermes-agent, branche `windows-native`, clonés dans C:\src\third_party\ (ignorés par src). Chaque fork a un job CI `windows-native.yml` sur windows-latest.
+Forks: aphrody-labs/openclaw and aphrody-labs/hermes-agent, branch `windows-native`, cloned in C:\src\third_party\ (ignored by src). Each fork has a CI job `windows-native.yml` on windows-latest.
 
-## Constat de départ
+## Starting point
 
-Les deux upstreams supportent déjà Windows natif : named pipes pour les IPC (Hermes `\\.\pipe\hermes-gateway-<hash>`), ConPTY et verrous gardés par `sys.platform` ou `process.platform`, lint `windows-footgun` côté Hermes. Les écarts restants viennent du choix du shell et de quelques sondes `/bin/sh`.
+Both upstreams already support native Windows: named pipes for IPC (Hermes `\\.\pipe\hermes-gateway-<hash>`), ConPTY and locks guarded by `sys.platform` or `process.platform`, `windows-footgun` lint on the Hermes side. The remaining gaps come from the choice of shell and a few `/bin/sh` probes.
 
 ## Hermes Agent (v0.22.7, commit 62ecf4d2)
 
-| Échec Windows | Patch | Statut |
+| Windows failure | Patch | Status |
 |---|---|---|
-| Shell : `pm.shell.bash()` impose le bash staged de Git for Windows (MSYS). Aucun moyen d'imposer un autre bash | `HERMES_BASH` passe avant le bash staged ; candidat niubash ajouté (`%LOCALAPPDATA%\Programs\Niubash\winuxcmd\bin\bash.exe`) | OK, `bash()` renvoie niubash |
-| Cron `.sh` : `shutil.which("bash")` peut tomber sur le stub WSL de System32 | passe par `pm.shell.bash()` | OK, script cron exécuté par bash 5.3.20 (niubash) |
-| Client élevé : `client_elevated` refuse de lancer le gateway depuis une session admin (agents, CI) | opt-in `HERMES_ALLOW_ELEVATED_GATEWAY=1`, à utiliser avec un `HERMES_HOME` dédié | OK |
-| `uv sync --all-extras` : l'extra `silk` (pilk) échoue à la compilation native | non patché ; build natif lourd, à faire sur prd | ouvert |
-| Course sur l'installation paresseuse des dépendances (`anthropic` : « another Hermes process is installing ») | non patché ; contournement : `hermes pm install` ou `uv pip install anthropic` | ouvert |
-| Test `test_run_job_no_agent_uses_configured_interpreter` en échec, déjà présent sur upstream | aucun | ouvert (upstream) |
-| AF_UNIX absent de CPython 3.14 sous Windows | déjà géré upstream (named pipe) | OK |
-| fcntl, killpg, pty | déjà gardés upstream (branches POSIX, msvcrt et ConPTY) | OK |
+| Shell: `pm.shell.bash()` forces the staged bash of Git for Windows (MSYS). No way to force another bash | `HERMES_BASH` takes precedence over the staged bash; niubash candidate added (`%LOCALAPPDATA%\Programs\Niubash\winuxcmd\bin\bash.exe`) | OK, `bash()` returns niubash |
+| Cron `.sh`: `shutil.which("bash")` can land on the System32 WSL stub | goes through `pm.shell.bash()` | OK, cron script run by bash 5.3.20 (niubash) |
+| Elevated client: `client_elevated` refuses to launch the gateway from an admin session (agents, CI) | opt-in `HERMES_ALLOW_ELEVATED_GATEWAY=1`, to be used with a dedicated `HERMES_HOME` | OK |
+| `uv sync --all-extras`: the `silk` extra (pilk) fails to compile natively | not patched; heavy native build, to be done on prd | open |
+| Race on lazy dependency installation (`anthropic`: "another Hermes process is installing") | not patched; workaround: `hermes pm install` or `uv pip install anthropic` | open |
+| Test `test_run_job_no_agent_uses_configured_interpreter` failing, already present upstream | none | open (upstream) |
+| AF_UNIX absent from CPython 3.14 on Windows | already handled upstream (named pipe) | OK |
+| fcntl, killpg, pty | already guarded upstream (POSIX, msvcrt and ConPTY branches) | OK |
 
-Vérification e2e (HERMES_HOME isolé, HERMES_BASH=niubash) : outil terminal (fichier écrit), mémoire écrite puis relue dans une nouvelle session, skill `port-check` créée par `skill_manage`, job cron `--script tick.sh --no-agent` lancé avec `cron run` : succès.
+e2e verification (isolated HERMES_HOME, HERMES_BASH=niubash): terminal tool (file written), memory written then read back in a new session, skill `port-check` created by `skill_manage`, cron job `--script tick.sh --no-agent` launched with `cron run`: success.
 
 ## OpenClaw (2026.11.3, commit f75dc5e65)
 
-| Échec Windows | Patch | Statut |
+| Windows failure | Patch | Status |
 |---|---|---|
-| L'outil exec impose PowerShell (`getShellConfig`), alors que la machine interdit pwsh | `OPENCLAW_EXEC_SHELL=bash` sélectionne un bash natif ; `OPENCLAW_BASH` force son chemin (niubash) ; `detectRuntimeShell` annonce `bash` | OK, tests unitaires (41/41 sous Windows) |
-| meeting-bot : les sondes `command -v` passent par `/bin/sh -lc`, donc toute commande est vue absente | `where.exe /q` sous win32 (runtime-setup, configured-node-host) | OK, 362 tests meeting-bot passent |
-| `bun install` réécrit package.json (workspaces/overrides depuis pnpm-workspace.yaml) et résout d'autres versions que pnpm-lock, d'où l'échec de tsdown (`getDefaultSocketTimeout` manquant dans @aws-sdk/core) | non patché ; le build source se fait avec pnpm (CI) ; sur le PC, la release npm s'installe avec `bun add openclaw` | ouvert (bun vs lockfile pnpm) |
-| launchd et systemd (`/bin/sh` dans launchd-*.ts, hosted-stop-executor) | aucun ; code propre à macOS et Linux | sans objet |
-| Sockets `.sock` (exec-approvals, mac-control) | aucun ; propres à macOS, Windows passe par le gateway WebSocket | sans objet |
-| Symlinks : seulement dans des test-support, avec junction sous Windows | aucun | OK |
+| The exec tool forces PowerShell (`getShellConfig`), while the machine forbids pwsh | `OPENCLAW_EXEC_SHELL=bash` selects a native bash; `OPENCLAW_BASH` forces its path (niubash); `detectRuntimeShell` reports `bash` | OK, unit tests (41/41 on Windows) |
+| meeting-bot: the `command -v` probes go through `/bin/sh -lc`, so every command is seen as missing | `where.exe /q` on win32 (runtime-setup, configured-node-host) | OK, 362 meeting-bot tests pass |
+| `bun install` rewrites package.json (workspaces/overrides from pnpm-workspace.yaml) and resolves other versions than pnpm-lock, hence the tsdown failure (`getDefaultSocketTimeout` missing in @aws-sdk/core) | not patched; the source build is done with pnpm (CI); on the PC, the npm release is installed with `bun add openclaw` | open (bun vs pnpm lockfile) |
+| launchd and systemd (`/bin/sh` in launchd-*.ts, hosted-stop-executor) | none; macOS- and Linux-specific code | not applicable |
+| `.sock` sockets (exec-approvals, mac-control) | none; macOS-specific, Windows goes through the WebSocket gateway | not applicable |
+| Symlinks: only in test-support, with a junction on Windows | none | OK |
 
-Vérification e2e (release 2026.11.3 via bun, OPENCLAW_STATE_DIR isolé) : `onboard --non-interactive`. La clé API non scopée exige `models.providers.anthropic.headers.anthropic-workspace-id`, ce qui relève de la configuration et non de Windows. `agent --local` : exec puis écriture de MEMORY.md, relu dans une nouvelle session (VALUE=ok). `gateway run`, puis `cron add --every` et `cron run` : le fichier est écrit par l'agent planifié.
+e2e verification (release 2026.11.3 via bun, isolated OPENCLAW_STATE_DIR): `onboard --non-interactive`. The unscoped API key requires `models.providers.anthropic.headers.anthropic-workspace-id`, which is a configuration matter, not a Windows one. `agent --local`: exec then writing MEMORY.md, read back in a new session (VALUE=ok). `gateway run`, then `cron add --every` and `cron run`: the file is written by the scheduled agent.
 
-## Reste à faire
+## Remaining work
 
-- Build OpenClaw depuis la source sur le PC sans pnpm : ouvert.
-- Proposer les patchs upstream (PR depuis `windows-native`).
-- Lancer les jobs CI des forks et contrôler qu'ils passent.
+- Build OpenClaw from source on the PC without pnpm: open.
+- Propose the patches upstream (PR from `windows-native`).
+- Run the forks' CI jobs and check that they pass.

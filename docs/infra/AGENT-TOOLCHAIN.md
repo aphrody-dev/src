@@ -1,67 +1,67 @@
-# Outillage agent reproductible (skills, plugins, MCP)
+# Reproducible agent tooling (skills, plugins, MCP)
 
-Date : 2026-11-13. Source de vérité : `infra/agents/toolchain.toml`. Applier : `packages/machine/src/toolchain.ts` (appelé par `packages/machine/src/apply-user.ts` sur le PC ; `just agents-sync [--check]`).
+Date: 2026-11-13. Source of truth: `infra/agents/toolchain.toml`. Applier: `packages/machine/src/toolchain.ts` (called by `packages/machine/src/apply-user.ts` on the PC; `just agents-sync [--check]`).
 
-## Cause du défaut
+## Cause of the defect
 
-- Claude Code ne charge `.agents/skills` (42 skills à l'époque) que pour une session lancée dans `C:\src`. Lancé ailleurs (`C:\Users\aphro\nt`, dossier neutre, runners de la flotte), il ne voyait que les 12 dossiers de `~/.claude/skills`, posés à la main.
-- Plugins, marketplaces et MCP étaient installés à la main, sans manifeste : rien ne les reproduisait sur une autre machine.
-- `C:\Users\aphro\nt` est un reste vide (un sous-dossier `C` vide). Ce qui y renvoie encore : l'entrée `projects` de `~/.claude.json`, le dossier mémoire `~/.claude/projects/C--Users-aphro-nt` et deux commentaires (`packages/machine/shell.dsc.winget`, `packages/shell-matrix/src/cases.ts`, cible réelle : `apps/nt/docs/research/shell-replacement.md`).
+- Claude Code loads `.agents/skills` (42 skills at the time) only for a session launched in `C:\src`. Launched elsewhere (`C:\Users\aphro\nt`, neutral folder, fleet runners), it only saw the 12 folders of `~/.claude/skills`, placed by hand.
+- Plugins, marketplaces and MCPs were installed by hand, without a manifest: nothing reproduced them on another machine.
+- `C:\Users\aphro\nt` is an empty leftover (an empty `C` subfolder). What still points to it: the `projects` entry of `~/.claude.json`, the memory folder `~/.claude/projects/C--Users-aphro-nt` and two comments (`packages/machine/shell.dsc.winget`, `packages/shell-matrix/src/cases.ts`, real target: `apps/nt/docs/research/shell-replacement.md`).
 
-## Mécanisme (aucun lien, aucune copie dans le dépôt)
+## Mechanism (no link, no copy in the repository)
 
-- Marketplace racine `aphrody` : `.claude-plugin/marketplace.json`, à la racine de src. Elle remplace `plugins/.claude-plugin/marketplace.json` (`claude plugin marketplace add C:\src` la repointe sans désinstaller ses plugins). Codex lit le même fichier (`.claude-plugin/marketplace.json` fait partie des chemins de `codex-rs/core-plugins/src/marketplace.rs`, openai/codex@aa5f492031f7).
-- Plugin `aphrody-skills` : sa racine est `.agents` (manifeste `.agents/.claude-plugin/plugin.json`, extension Gemini `.agents/gemini-extension.json`). Ses skills sont `.agents/skills`, la source unique. Chaque CLI en garde une copie dans son propre cache : Claude dans `~/.claude/plugins/cache/aphrody/aphrody-skills/<sha>`, Codex dans `~/.codex/plugins/cache`, agy dans `~/.gemini/config/plugins`. L'applier recopie dès que le HEAD de src change (`refresh = true`, état dans `~/.cache/aphrody/agents-sync.json`).
-- Les 9 skills génériques de `~/.claude/skills` sont maintenant dans `.agents/skills` : bun, bun-ffi, fleet, gh-fork, learn, llvm-toolchain, microsoft, r2, tree-sitter. Trois restent propres au PC (`[[skill.private]]`, hors dépôt public) : windows-machine, chrome, shell.
-- Forks aphrody-labs épinglés par sha dans la marketplace : `vercel-agent-skills` (vercel-labs/agent-skills@1a2c79d4e6c4), `web-quality-skills` (addyosmani/web-quality-skills@afa8da942115 : Lighthouse, Core Web Vitals). Les skills Stitch sont fournies par `.agents/skills/stitch-*`, la copie `web-design-guidelines` par vercel-agent-skills : les doublons sont retirés.
-- Réglages : seules les CLI les modifient (`claude plugin marketplace add|install|enable|disable|update`, `claude mcp add|remove`, `codex plugin marketplace add`, `codex plugin add`, `agy plugin install`, `gemini extensions link`). L'applier ne réécrit jamais `settings.json`. L'état MCP est lu dans `~/.claude.json`, sans y écrire.
-- Secrets : `secrets = ["NOM"]` sur une entrée MCP. Le serveur est lancé par `bun packages/env-kit/src/cli.ts secret exec NOM -- <cmd>`, si bien que la valeur ne passe ni par settings ni par argv. hostinger-api avait son jeton en clair dans `~/.claude.json` : l'entrée a été remplacée.
-- Liens interdits : `[cleanup] link_dirs`. L'applier retire tout symlink ou jonction qui pointe vers une skill déjà fournie par aphrody-skills (16 liens retirés de `~/.gemini/skills` le 2026-11-13).
+- Root marketplace `aphrody`: `.claude-plugin/marketplace.json`, at the root of src. It replaces `plugins/.claude-plugin/marketplace.json` (`claude plugin marketplace add C:\src` repoints it without uninstalling its plugins). Codex reads the same file (`.claude-plugin/marketplace.json` is one of the paths of `codex-rs/core-plugins/src/marketplace.rs`, openai/codex@aa5f492031f7).
+- Plugin `aphrody-skills`: its root is `.agents` (manifest `.agents/.claude-plugin/plugin.json`, Gemini extension `.agents/gemini-extension.json`). Its skills are `.agents/skills`, the single source. Each CLI keeps a copy in its own cache: Claude in `~/.claude/plugins/cache/aphrody/aphrody-skills/<sha>`, Codex in `~/.codex/plugins/cache`, agy in `~/.gemini/config/plugins`. The applier copies again as soon as the HEAD of src changes (`refresh = true`, state in `~/.cache/aphrody/agents-sync.json`).
+- The 9 generic skills of `~/.claude/skills` are now in `.agents/skills`: bun, bun-ffi, fleet, gh-fork, learn, llvm-toolchain, microsoft, r2, tree-sitter. Three remain specific to the PC (`[[skill.private]]`, outside the public repository): windows-machine, chrome, shell.
+- aphrody-labs forks pinned by sha in the marketplace: `vercel-agent-skills` (vercel-labs/agent-skills@1a2c79d4e6c4), `web-quality-skills` (addyosmani/web-quality-skills@afa8da942115: Lighthouse, Core Web Vitals). The Stitch skills are provided by `.agents/skills/stitch-*`, the `web-design-guidelines` copy by vercel-agent-skills: the duplicates are removed.
+- Settings: only the CLIs modify them (`claude plugin marketplace add|install|enable|disable|update`, `claude mcp add|remove`, `codex plugin marketplace add`, `codex plugin add`, `agy plugin install`, `gemini extensions link`). The applier never rewrites `settings.json`. MCP state is read from `~/.claude.json`, without writing to it.
+- Secrets: `secrets = ["NAME"]` on an MCP entry. The server is launched by `bun packages/env-kit/src/cli.ts secret exec NAME -- <cmd>`, so that the value goes through neither settings nor argv. hostinger-api had its token in plain text in `~/.claude.json`: the entry was replaced.
+- Forbidden links: `[cleanup] link_dirs`. The applier removes any symlink or junction that points to a skill already provided by aphrody-skills (16 links removed from `~/.gemini/skills` on 2026-11-13).
 
-## Cibles par agent
+## Targets per agent
 
-| Agent | Mécanisme | Vérification |
+| Agent | Mechanism | Verification |
 |---|---|---|
-| Claude Code | marketplace `aphrody` + plugins `[[claude.plugin]]`, MCP `[[claude.mcp]]`, skills épinglées `[[claude.skill]]` | `claude plugin list`, `claude mcp list`, `claude -p --output-format stream-json --verbose` (événement init, champ `skills`) |
-| Codex | `codex plugin marketplace add <src>` + `codex plugin add aphrody-skills@aphrody` (seules les sources locales sont listées par Codex) | `codex plugin list` |
-| agy | `agy plugin install <dossier du plugin>` (source locale, ou cache Claude pour un plugin GitHub) ; vercel-agent-skills refusé (pas de manifeste) | `agy plugin list --json` |
-| Gemini CLI | `gemini extensions link <src>/.agents` | CLI absente du PC et de la flotte le 2026-11-13 |
+| Claude Code | marketplace `aphrody` + plugins `[[claude.plugin]]`, MCP `[[claude.mcp]]`, pinned skills `[[claude.skill]]` | `claude plugin list`, `claude mcp list`, `claude -p --output-format stream-json --verbose` (init event, `skills` field) |
+| Codex | `codex plugin marketplace add <src>` + `codex plugin add aphrody-skills@aphrody` (only local sources are listed by Codex) | `codex plugin list` |
+| agy | `agy plugin install <plugin folder>` (local source, or Claude cache for a GitHub plugin); vercel-agent-skills refused (no manifest) | `agy plugin list --json` |
+| Gemini CLI | `gemini extensions link <src>/.agents` | CLI absent from the PC and the fleet on 2026-11-13 |
 
-Le champ `hosts` vaut pc, prd, fr1 ou fr2 (absent : tous). Sur Linux, l'hôte se lit dans `HOST=` de `/etc/fleet/resilience.conf` et la racine est celle du checkout qui exécute l'applier.
+The `hosts` field is pc, prd, fr1 or fr2 (absent: all). On Linux, the host is read from `HOST=` in `/etc/fleet/resilience.conf` and the root is that of the checkout running the applier.
 
-## Mesures du 2026-11-13 (PC)
+## Measurements of 2026-11-13 (PC)
 
-- Session `claude -p` lancée depuis un dossier neutre : 207 skills, dont 69 aphrody-skills (avant : 12 skills utilisateur, et aucune skill de src hors de `C:\src`), 21 plugins, 13 MCP (hostinger-api connecté via env-kit).
-- agy : aphrody-skills (69 skills) et web-quality-skills (6). Codex : aphrody-skills installé et activé (69 skills).
-- `just agents-sync --check` : aucun écart.
+- `claude -p` session launched from a neutral folder: 207 skills, including 69 aphrody-skills (before: 12 user skills, and no src skill outside `C:\src`), 21 plugins, 13 MCPs (hostinger-api connected via env-kit).
+- agy: aphrody-skills (69 skills) and web-quality-skills (6). Codex: aphrody-skills installed and enabled (69 skills).
+- `just agents-sync --check`: no gap.
 
-## Exécution automatique
+## Automatic execution
 
-- Front unique : `ay agents install|sync|check|list` (crates/ay, route bun vers `packages/machine/src/toolchain.ts`), `just agents-sync [check]`. Les autres verbes de `ay agents` restent l'orchestrateur ai-os.
-- PC : tâches `\\Aphrody\\AgentsSync` (toutes les heures) et `\\Aphrody\\AgentsSyncLogon` (ouverture de session), posées par `infra/agents/install-pc.sh` ; `apply-user.ts` appelle aussi l'applier.
-- Flotte : `infra/fleet/bin/agents-sync.sh` lancé par `aphrody-agents-sync.timer` (toutes les heures, après `src-checkout-update`). Il applique pour root et agent depuis `/srv/src` ; `SRC_SPARSE` contient `.agents`, `.claude-plugin`, `plugins` et `packages/machine`. Le tout est poussé par `fleet-resilience-remote.sh`. Un utilisateur sans aucun agent est ignoré (root sur fr2).
-- Secrets HTTP : `headers = { En-tête = "SECRET" }` pose un `headersHelper` (`packages/machine/src/mcp-headers.ts`) qui lit le coffre env-kit au lancement. `DEVELOPERKNOWLEDGE_API_KEY` ne vit plus que dans le coffre : elle a été retirée de `HKCU\\Environment` et sert le serveur `developer-knowledge` (connecté). Le serveur homonyme du plugin google-cloud-developer, qui attend la variable d'env, reste en échec.
+- Single front: `ay agents install|sync|check|list` (crates/ay, bun route to `packages/machine/src/toolchain.ts`), `just agents-sync [check]`. The other `ay agents` verbs remain the ai-os orchestrator.
+- PC: tasks `\\Aphrody\\AgentsSync` (every hour) and `\\Aphrody\\AgentsSyncLogon` (at logon), set up by `infra/agents/install-pc.sh`; `apply-user.ts` also calls the applier.
+- Fleet: `infra/fleet/bin/agents-sync.sh` launched by `aphrody-agents-sync.timer` (every hour, after `src-checkout-update`). It applies for root and agent from `/srv/src`; `SRC_SPARSE` contains `.agents`, `.claude-plugin`, `plugins` and `packages/machine`. Everything is pushed by `fleet-resilience-remote.sh`. A user without any agent is skipped (root on fr2).
+- HTTP secrets: `headers = { Header = "SECRET" }` sets a `headersHelper` (`packages/machine/src/mcp-headers.ts`) that reads the env-kit vault at launch. `DEVELOPERKNOWLEDGE_API_KEY` now lives only in the vault: it was removed from `HKCU\\Environment` and serves the `developer-knowledge` server (connected). The homonymous server of the google-cloud-developer plugin, which expects the env variable, still fails.
 
-## Mesures du 2026-11-13 (`check` : 0 écart partout)
+## Measurements of 2026-11-13 (`check`: 0 gap everywhere)
 
-| Hôte | Utilisateur | Claude (plugins actifs, MCP) | Codex | agy |
+| Host | User | Claude (active plugins, MCP) | Codex | agy |
 |---|---|---|---|---|
-| pc | aphro | 21 plugins, 14 MCP ; `claude -p` neutre : 207 skills dont 69 aphrody-skills | aphrody-skills | aphrody-skills 69, web-quality-skills 6 |
+| pc | aphro | 21 plugins, 14 MCP; neutral `claude -p`: 207 skills including 69 aphrody-skills | aphrody-skills | aphrody-skills 69, web-quality-skills 6 |
 | prd | root | 17, 7 | aphrody-skills | aphrody-skills 69, web-quality-skills 6 |
-| prd | agent | 17, 7 ; `claude -p` dans /tmp : 197 skills dont 69 aphrody-skills | aphrody-skills | absent |
-| fr1 | root | 17, 7 (Claude passé de 2.1.96 à 2.1.323, agy à 1.5.8) | absent | aphrody-skills 69, web-quality-skills 6 |
+| prd | agent | 17, 7; `claude -p` in /tmp: 197 skills including 69 aphrody-skills | aphrody-skills | absent |
+| fr1 | root | 17, 7 (Claude moved from 2.1.96 to 2.1.323, agy to 1.5.8) | absent | aphrody-skills 69, web-quality-skills 6 |
 | fr1 | agent | 20, 7 | aphrody-skills | absent |
 | fr2 | agent | 17, 8 | aphrody-skills | absent |
-| fr2 | root | aucun agent installé | | |
+| fr2 | root | no agent installed | | |
 
-Avant : 12 skills utilisateur sur le PC, aucune sur la flotte ; plugins et MCP posés à la main sur le PC seulement.
+Before: 12 user skills on the PC, none on the fleet; plugins and MCPs set up by hand on the PC only.
 
-## Décision : APM et vercel-labs/skills non adoptés
+## Decision: APM and vercel-labs/skills not adopted
 
-- vercel-labs/skills (`npx skills`, fork aphrody-labs/skills@e781cb4d0743) installe des skills en copiant ou en liant dans les dossiers de chaque agent (`~/.claude/skills`, `~/.agents/skills`...). Cela fait une copie hors cache par agent, ou un lien, deux choses interdites. Les marketplaces natives (Claude, Codex, agy) font déjà ce travail depuis la marketplace racine.
-- microsoft/apm (fork aphrody-labs/apm@1a6c1df655b7) est un gestionnaire Python (`apm.yml`, `apm install`). Le passer sur bun reviendrait à le réécrire, et son manifeste ferait doublon avec `toolchain.toml`.
-- Les deux forks restent épinglés dans `third_party/forks.txt` comme référence. `toolchain.toml` et `ay agents` sont le seul front ; à réexaminer si un format de paquet d'agents commun aux CLI devient standard.
+- vercel-labs/skills (`npx skills`, fork aphrody-labs/skills@e781cb4d0743) installs skills by copying or linking into each agent's folders (`~/.claude/skills`, `~/.agents/skills`...). That means an out-of-cache copy per agent, or a link, both forbidden. The native marketplaces (Claude, Codex, agy) already do this work from the root marketplace.
+- microsoft/apm (fork aphrody-labs/apm@1a6c1df655b7) is a Python manager (`apm.yml`, `apm install`). Porting it to bun would amount to rewriting it, and its manifest would duplicate `toolchain.toml`.
+- Both forks stay pinned in `third_party/forks.txt` as reference. `toolchain.toml` and `ay agents` are the only front; to be re-examined if an agent package format common to the CLIs becomes standard.
 
-## Reste
+## Remaining
 
-- Gemini CLI : présente pour agent sur prd (extension aphrody-skills liée), absente ailleurs.
+- Gemini CLI: present for agent on prd (aphrody-skills extension linked), absent elsewhere.
