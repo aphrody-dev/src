@@ -169,6 +169,8 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=15s \
 FROM bun-runtime AS ai-os
 COPY --from=bun-deps --chown=bun:bun /src/node_modules /app/node_modules
 COPY --chown=bun:bun packages/ai-os/ /app/
+# src/relay/oauth.ts and src/nhitl/login.ts import ../../../vault/src (= /vault/src here).
+COPY --chown=bun:bun packages/vault/ /vault/
 ENV RELAY_HOST=0.0.0.0 RELAY_PORT=8790 RELAY_TCP_PORT=8791 AGENT_HOST=0.0.0.0 AGENT_PORT=4000 \
     AGENT_HOME=/home/bun/.ai-os PORT=8790 HEALTH_PATH=/health
 EXPOSE 8790 8791 4000

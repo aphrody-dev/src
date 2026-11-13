@@ -31,3 +31,4 @@
 **/*.pem
 **/*.key
 **/secrets*
+!packages/ai-os/src/core/secrets.ts
