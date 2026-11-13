@@ -1,0 +1,2794 @@
+{
+  "spec": "material-3.components",
+  "domain": "components",
+  "verified": "2026-11-13",
+  "sources": [
+    {
+      "url": "https://m3.material.io/components",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://github.com/material-components/material-web/tree/37aa14b843dcaeb3a46f898679fa6fcd109b1905/tokens/versions/latest/sass",
+      "license": "Apache-2.0"
+    },
+    {
+      "url": "https://m3.material.io/components/app-bars/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/badges/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/bottom-sheets/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/button-groups/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/buttons/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/cards/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/carousel/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/checkbox/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/chips/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/date-pickers/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/dialogs/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/divider/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/extended-fab/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/fab-menu/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/floating-action-button/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/icon-buttons/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/lists/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/loading-indicator/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/menus/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/navigation-bar/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/navigation-drawer/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/navigation-rail/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/progress-indicators/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/radio-button/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/search/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/segmented-buttons/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/side-sheets/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/sliders/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/snackbar/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/split-button/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/switch/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/tabs/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/text-fields/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/time-pickers/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/toolbars/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/tooltips/specs",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/app-bars/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/badges/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/bottom-sheets/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/button-groups/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/buttons/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/cards/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/carousel/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/checkbox/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/chips/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/date-pickers/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/dialogs/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/divider/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/extended-fab/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/fab-menu/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/floating-action-button/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/icon-buttons/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/lists/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/loading-indicator/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/menus/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/navigation-bar/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/navigation-drawer/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/navigation-rail/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/progress-indicators/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/radio-button/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/search/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/segmented-buttons/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/side-sheets/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/sliders/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/snackbar/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/split-button/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/switch/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/tabs/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/text-fields/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/time-pickers/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/toolbars/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    },
+    {
+      "url": "https://m3.material.io/components/tooltips/accessibility",
+      "license": "Google Terms of Service (propriétaire, reformulé ; valeurs factuelles seules)"
+    }
+  ],
+  "rules": [
+    {
+      "id": "m3.comp.use-library",
+      "level": "MUST",
+      "rule": "Sur le web, chaque composant M3 vient de @material/web via @aphrody/design/components ; un composant absent de la bibliothèque se construit avec les tokens md.comp/md.sys et les mesures de cette spec, jamais avec des valeurs inventées.",
+      "source": "https://m3.material.io/components"
+    },
+    {
+      "id": "m3.comp.measures-from-tokens",
+      "level": "MUST",
+      "rule": "Les mesures dp listées ici sont des valeurs de contrôle ; le code consomme les tokens générés (packages/design) et un écart se corrige dans le générateur.",
+      "source": "https://github.com/material-components/material-web/tree/37aa14b843dcaeb3a46f898679fa6fcd109b1905/tokens/versions/latest/sass"
+    },
+    {
+      "id": "m3.comp.app-bars.no-baseline-medium-large",
+      "level": "SHOULD-NOT",
+      "rule": "Ne pas employer les app bars medium et large baseline ; utiliser medium flexible et large flexible à la place.",
+      "source": "https://m3.material.io/components/app-bars/specs"
+    },
+    {
+      "id": "m3.comp.app-bars.scroll-surface",
+      "level": "MUST",
+      "rule": "Au défilement du contenu, le conteneur passe du rôle surface au rôle surface container.",
+      "source": "https://m3.material.io/components/app-bars/specs"
+    },
+    {
+      "id": "m3.comp.app-bars.initial-focus",
+      "level": "MUST",
+      "rule": "Le premier focus clavier se pose sur le bouton de tête, et chaque bouton icône a un libellé décrivant son action.",
+      "source": "https://m3.material.io/components/app-bars/accessibility"
+    },
+    {
+      "id": "m3.comp.app-bars.search-contrast",
+      "level": "MUST",
+      "rule": "Le conteneur de recherche et son texte d'invite gardent au moins 3:1 de contraste, même avec des rôles de couleur personnalisés.",
+      "source": "https://m3.material.io/components/app-bars/accessibility"
+    },
+    {
+      "id": "m3.comp.badges.default-colors",
+      "level": "SHOULD",
+      "rule": "Garder les rôles error / on error par défaut ; tout rôle personnalisé doit assurer 3:1 de contraste.",
+      "source": "https://m3.material.io/components/badges/accessibility"
+    },
+    {
+      "id": "m3.comp.badges.announce",
+      "level": "MUST",
+      "rule": "Le badge est annoncé après la destination : nombre lu pour un compteur, mention de nouvelle notification sinon.",
+      "source": "https://m3.material.io/components/badges/accessibility"
+    },
+    {
+      "id": "m3.comp.badges.hide-on-select",
+      "level": "SHOULD",
+      "rule": "Masquer un badge de notification non lue dès que sa destination est sélectionnée.",
+      "source": "https://m3.material.io/components/badges/accessibility"
+    },
+    {
+      "id": "m3.comp.bottom-sheets.max-width",
+      "level": "MUST",
+      "rule": "La feuille occupe toute la largeur jusqu'à 640dp ; au-delà, marges de 56dp en haut et sur les côtés.",
+      "value": "640dp",
+      "source": "https://m3.material.io/components/bottom-sheets/specs"
+    },
+    {
+      "id": "m3.comp.bottom-sheets.drag-alternative",
+      "level": "MUST",
+      "rule": "Tout redimensionnement par glissement a une alternative à pointeur unique : poignée activable au clavier (Espace/Entrée) ou bouton dédié.",
+      "source": "https://m3.material.io/components/bottom-sheets/accessibility"
+    },
+    {
+      "id": "m3.comp.bottom-sheets.handle-role",
+      "level": "MUST",
+      "rule": "Seule la poignée est libellée, avec le rôle button, et elle figure dans l'ordre de tabulation.",
+      "source": "https://m3.material.io/components/bottom-sheets/accessibility"
+    },
+    {
+      "id": "m3.comp.button-groups.container-not-focusable",
+      "level": "MUST-NOT",
+      "rule": "Le conteneur du groupe ne reçoit ni focus ni libellé ; le focus entre sur le premier bouton puis se déplace aux flèches.",
+      "source": "https://m3.material.io/components/button-groups/accessibility"
+    },
+    {
+      "id": "m3.comp.button-groups.keep-padding",
+      "level": "MUST-NOT",
+      "rule": "Ne pas réduire l'espacement interne des groupes XS (18dp) et S (12dp), qui garantit des cibles de 48dp.",
+      "source": "https://m3.material.io/components/button-groups/accessibility"
+    },
+    {
+      "id": "m3.comp.button-groups.connected-gap",
+      "level": "MUST",
+      "rule": "Un groupe connecté espace ses boutons de 2dp à toutes les tailles.",
+      "value": "2dp",
+      "source": "https://m3.material.io/components/button-groups/specs"
+    },
+    {
+      "id": "m3.comp.button-groups.no-containerless",
+      "level": "SHOULD-NOT",
+      "rule": "Éviter les boutons sans conteneur (text, icon standard) dans un groupe.",
+      "source": "https://m3.material.io/components/button-groups/specs"
+    },
+    {
+      "id": "m3.comp.buttons.contrast",
+      "level": "MUST",
+      "rule": "Un bouton actif atteint 3:1 de contraste avec le fond, mesuré sur le conteneur (elevated, filled, tonal) ou sur le libellé (outlined, text).",
+      "source": "https://m3.material.io/components/buttons/accessibility"
+    },
+    {
+      "id": "m3.comp.buttons.target-size",
+      "level": "MUST",
+      "rule": "Les boutons XS et S conservent une zone cible d'au moins 48x48dp.",
+      "value": "48dp",
+      "source": "https://m3.material.io/components/buttons/specs"
+    },
+    {
+      "id": "m3.comp.buttons.label-matches",
+      "level": "MUST",
+      "rule": "Le libellé accessible correspond au texte visible du bouton, complété au besoin par du contexte.",
+      "source": "https://m3.material.io/components/buttons/accessibility"
+    },
+    {
+      "id": "m3.comp.buttons.toggle-shape",
+      "level": "SHOULD",
+      "rule": "Un toggle button inverse sa forme au repos une fois sélectionné (round vers square ou l'inverse) ; aucun toggle en style text.",
+      "source": "https://m3.material.io/components/buttons/specs"
+    },
+    {
+      "id": "m3.comp.cards.no-nested-actions",
+      "level": "MUST-NOT",
+      "rule": "Ne pas placer d'action sur une carte elle-même actionnable ; choisir entre carte actionnable et carte conteneur d'actions.",
+      "source": "https://m3.material.io/components/cards/accessibility"
+    },
+    {
+      "id": "m3.comp.cards.drag-alternative",
+      "level": "MUST",
+      "rule": "Déplacer ou supprimer une carte par glissement exige une alternative à pointeur unique (menu ou feuille).",
+      "source": "https://m3.material.io/components/cards/accessibility"
+    },
+    {
+      "id": "m3.comp.cards.shape",
+      "level": "SHOULD",
+      "rule": "Coins de 12dp et marges latérales de 16dp ; 8dp au plus entre deux cartes.",
+      "value": "12dp",
+      "source": "https://m3.material.io/components/cards/specs"
+    },
+    {
+      "id": "m3.comp.carousel.show-all",
+      "level": "MUST",
+      "rule": "Sur une page à défilement vertical, fournir un accès à tous les éléments sans défilement horizontal (bouton Show all ou flèche d'en-tête), sauf carrousel full-screen.",
+      "source": "https://m3.material.io/components/carousel/accessibility"
+    },
+    {
+      "id": "m3.comp.carousel.focus-items",
+      "level": "MUST-NOT",
+      "rule": "Ne pas donner le focus au conteneur : le premier focus va au premier élément, qui annonce sa position sur le total.",
+      "source": "https://m3.material.io/components/carousel/accessibility"
+    },
+    {
+      "id": "m3.comp.carousel.reduced-motion",
+      "level": "MUST",
+      "rule": "Avec le mouvement réduit, retirer la parallaxe et l'agrandissement : tous les éléments ont la même taille.",
+      "source": "https://m3.material.io/components/carousel/accessibility"
+    },
+    {
+      "id": "m3.comp.carousel.no-overlay-controls",
+      "level": "SHOULD-NOT",
+      "rule": "Éviter de poser des boutons dans le carrousel ou à côté ; les placer au-dessus ou en dessous.",
+      "source": "https://m3.material.io/components/carousel/accessibility"
+    },
+    {
+      "id": "m3.comp.checkbox.target-size",
+      "level": "MUST",
+      "rule": "Case de 18dp dans une cible de 48dp ; aucune densité appliquée par défaut.",
+      "value": "48dp",
+      "source": "https://m3.material.io/components/checkbox/specs"
+    },
+    {
+      "id": "m3.comp.checkbox.label-click",
+      "level": "MUST",
+      "rule": "Le texte adjacent est lié à la case : il sert de libellé accessible et son activation coche la case.",
+      "source": "https://m3.material.io/components/checkbox/accessibility"
+    },
+    {
+      "id": "m3.comp.checkbox.indeterminate",
+      "level": "SHOULD",
+      "rule": "Un parent dont seulement une partie des enfants est cochée passe à l'état indéterminé ; l'activer coche tous les enfants.",
+      "source": "https://m3.material.io/components/checkbox/accessibility"
+    },
+    {
+      "id": "m3.comp.chips.height-shape",
+      "level": "MUST",
+      "rule": "Toutes les variantes de chip ont 32dp de haut, des coins de 8dp et des icônes de 18dp.",
+      "value": "32dp",
+      "source": "https://m3.material.io/components/chips/specs"
+    },
+    {
+      "id": "m3.comp.chips.remove-label",
+      "level": "MUST",
+      "rule": "L'action de suppression est libellée séparément et devient un arrêt de focus distinct quand le chip a une autre action.",
+      "source": "https://m3.material.io/components/chips/accessibility"
+    },
+    {
+      "id": "m3.comp.chips.interactivity-cue",
+      "level": "MUST",
+      "rule": "Signaler par un indice secondaire que les chips sont interactifs (intitulé de groupe, contexte, contour outline à 3:1 ou icône de tête).",
+      "source": "https://m3.material.io/components/chips/accessibility"
+    },
+    {
+      "id": "m3.comp.chips.overflow",
+      "level": "SHOULD",
+      "rule": "Si les chips débordent d'une ligne, proposer un affichage complet (reflow ou menu) plutôt qu'un défilement horizontal ; pas de menu pour des chips à deux actions.",
+      "source": "https://m3.material.io/components/chips/accessibility"
+    },
+    {
+      "id": "m3.comp.date-pickers.text-entry",
+      "level": "MUST",
+      "rule": "Permettre la saisie texte d'une date indépendamment du calendrier ; le modal propose la bascule vers la saisie via l'icône d'édition.",
+      "source": "https://m3.material.io/components/date-pickers/accessibility"
+    },
+    {
+      "id": "m3.comp.date-pickers.no-input-mask",
+      "level": "MUST-NOT",
+      "rule": "Ne pas insérer de séparateurs pendant la frappe ; formater après validation et accepter plusieurs séparateurs et zéros de tête.",
+      "source": "https://m3.material.io/components/date-pickers/accessibility"
+    },
+    {
+      "id": "m3.comp.date-pickers.date-contrast",
+      "level": "MUST",
+      "rule": "Le texte des dates contraste à 4.5:1 avec le fond et chaque date est annoncée en entier.",
+      "value": "4.5:1",
+      "source": "https://m3.material.io/components/date-pickers/accessibility"
+    },
+    {
+      "id": "m3.comp.date-pickers.target-size",
+      "level": "MUST",
+      "rule": "Toutes les cibles interactives font au moins 48x48dp ; ne pas densifier.",
+      "value": "48dp",
+      "source": "https://m3.material.io/components/date-pickers/accessibility"
+    },
+    {
+      "id": "m3.comp.dialogs.focus-trap",
+      "level": "MUST",
+      "rule": "À l'ouverture, focus sur le premier élément interactif ; Tab et Maj+Tab bouclent dans le dialogue et Échap le ferme.",
+      "source": "https://m3.material.io/components/dialogs/accessibility"
+    },
+    {
+      "id": "m3.comp.dialogs.alertdialog-role",
+      "level": "MUST",
+      "rule": "Sur le web, un basic dialog expose le rôle alertdialog avec son titre pour libellé.",
+      "source": "https://m3.material.io/components/dialogs/accessibility"
+    },
+    {
+      "id": "m3.comp.dialogs.sparingly",
+      "level": "SHOULD-NOT",
+      "rule": "Ne pas utiliser de dialogue pour une information non critique.",
+      "source": "https://m3.material.io/components/dialogs/accessibility"
+    },
+    {
+      "id": "m3.comp.dialogs.basic-size",
+      "level": "MUST",
+      "rule": "Basic dialog : largeur entre 280 et 560dp, coins de 28dp, marges internes de 24dp.",
+      "value": "280-560dp",
+      "source": "https://m3.material.io/components/dialogs/specs"
+    },
+    {
+      "id": "m3.comp.divider.thickness",
+      "level": "MUST",
+      "rule": "Ligne de 1dp au rôle outline variant ; retraits de 16dp pour inset et middle-inset.",
+      "value": "1dp",
+      "source": "https://m3.material.io/components/divider/specs"
+    },
+    {
+      "id": "m3.comp.divider.decorative",
+      "level": "MAY",
+      "rule": "Le séparateur étant décoratif, il peut ignorer les seuils de contraste.",
+      "source": "https://m3.material.io/components/divider/accessibility"
+    },
+    {
+      "id": "m3.comp.extended-fab.use-sized",
+      "level": "SHOULD-NOT",
+      "rule": "Ne pas employer l'extended FAB baseline ni la couleur surface pour du neuf ; partir du small extended FAB (ou medium/large).",
+      "source": "https://m3.material.io/components/extended-fab/specs"
+    },
+    {
+      "id": "m3.comp.extended-fab.label-prefix",
+      "level": "MUST",
+      "rule": "Le nom accessible d'un extended FAB reprend en tête le premier mot du libellé visible.",
+      "source": "https://m3.material.io/components/extended-fab/accessibility"
+    },
+    {
+      "id": "m3.comp.extended-fab.single-focus",
+      "level": "MUST",
+      "rule": "Icône et libellé d'un extended FAB constituent une seule cible focalisable, sans infobulle superflue.",
+      "source": "https://m3.material.io/components/extended-fab/accessibility"
+    },
+    {
+      "id": "m3.comp.fab-menu.max-items",
+      "level": "MUST-NOT",
+      "rule": "Un FAB menu ne dépasse pas six éléments.",
+      "value": 6,
+      "source": "https://m3.material.io/components/fab-menu/specs"
+    },
+    {
+      "id": "m3.comp.fab-menu.close-focus",
+      "level": "MUST",
+      "rule": "À l'ouverture du FAB menu, le focus reste sur le bouton de fermeture placé à l'emplacement du FAB, qui expose son état développé/réduit et n'est jamais recouvert par les éléments.",
+      "source": "https://m3.material.io/components/fab-menu/accessibility"
+    },
+    {
+      "id": "m3.comp.fab-menu.close-size",
+      "level": "MUST",
+      "rule": "Le bouton de fermeture du FAB menu mesure 56dp, quelle que soit la taille du FAB d'origine.",
+      "value": "56dp",
+      "source": "https://m3.material.io/components/fab-menu/specs"
+    },
+    {
+      "id": "m3.comp.floating-action-button.no-disabled",
+      "level": "MUST-NOT",
+      "rule": "Ne jamais afficher un FAB désactivé ; masquer le FAB quand son action n'est pas disponible.",
+      "source": "https://m3.material.io/components/floating-action-button/accessibility"
+    },
+    {
+      "id": "m3.comp.floating-action-button.icon-contrast",
+      "level": "MUST",
+      "rule": "L'icône du FAB garde un contraste d'au moins 3:1 avec son conteneur.",
+      "value": "3:1",
+      "source": "https://m3.material.io/components/floating-action-button/accessibility"
+    },
+    {
+      "id": "m3.comp.floating-action-button.no-small",
+      "level": "SHOULD-NOT",
+      "rule": "Éviter le small FAB (40dp) et les couleurs surface, conservés pour compatibilité seulement.",
+      "source": "https://m3.material.io/components/floating-action-button/specs"
+    },
+    {
+      "id": "m3.comp.floating-action-button.state-layer-color",
+      "level": "MUST",
+      "rule": "Avec une couleur autre que celle par défaut, la couche d'état du FAB prend la couleur de l'icône.",
+      "source": "https://m3.material.io/components/floating-action-button/specs"
+    },
+    {
+      "id": "m3.comp.icon-buttons.target",
+      "level": "MUST",
+      "rule": "Tout bouton icône, XS et S compris et même imbriqué, offre une cible d'au moins 48x48dp.",
+      "value": "48dp",
+      "source": "https://m3.material.io/components/icon-buttons/specs"
+    },
+    {
+      "id": "m3.comp.icon-buttons.label",
+      "level": "MUST",
+      "rule": "Un bouton icône porte un nom accessible qui décrit l'action ; sur le web une infobulle l'affiche au survol.",
+      "source": "https://m3.material.io/components/icon-buttons/accessibility"
+    },
+    {
+      "id": "m3.comp.icon-buttons.toggle-shape",
+      "level": "SHOULD",
+      "rule": "Un bouton icône toggle inverse sa forme au repos à la sélection (round vers square, ou square vers round) ; round et square partagent le même rayon à l'appui.",
+      "source": "https://m3.material.io/components/icon-buttons/specs"
+    },
+    {
+      "id": "m3.comp.icon-buttons.no-default-density",
+      "level": "MUST-NOT",
+      "rule": "Ne pas appliquer de densité par défaut aux boutons icône ; la densité est un choix de l'utilisateur qui garde 48x48px CSS.",
+      "source": "https://m3.material.io/components/icon-buttons/accessibility"
+    },
+    {
+      "id": "m3.comp.lists.selection-cue",
+      "level": "MUST",
+      "rule": "La sélection d'un élément de liste se signale par un second indice non chromatique (case, radio, coche, soulignement).",
+      "source": "https://m3.material.io/components/lists/accessibility"
+    },
+    {
+      "id": "m3.comp.lists.listbox-web",
+      "level": "MUST",
+      "rule": "Sur le web, une liste sélectionnable est un listbox nommé selon le mode de sélection, chaque élément un option avec état sélectionné.",
+      "source": "https://m3.material.io/components/lists/accessibility"
+    },
+    {
+      "id": "m3.comp.lists.keyboard",
+      "level": "MUST",
+      "rule": "Tab entre dans la liste sur l'élément sélectionné ou le premier ; les flèches parcourent avec bouclage ; Espace ou Entrée active.",
+      "source": "https://m3.material.io/components/lists/accessibility"
+    },
+    {
+      "id": "m3.comp.lists.swipe-alt",
+      "level": "MUST",
+      "rule": "Une action révélée par balayage dispose d'une alternative à pointeur unique.",
+      "source": "https://m3.material.io/components/lists/accessibility"
+    },
+    {
+      "id": "m3.comp.loading-indicator.role",
+      "level": "MUST",
+      "rule": "L'indicateur de chargement porte le rôle progressbar et un nom qui dit ce qui charge.",
+      "source": "https://m3.material.io/components/loading-indicator/accessibility"
+    },
+    {
+      "id": "m3.comp.loading-indicator.contrast",
+      "level": "MUST",
+      "rule": "L'indicateur actif atteint 3:1 face à son fond ou au composant hôte.",
+      "value": "3:1",
+      "source": "https://m3.material.io/components/loading-indicator/accessibility"
+    },
+    {
+      "id": "m3.comp.loading-indicator.refresh-alt",
+      "level": "MUST",
+      "rule": "Le tirer-pour-actualiser s'accompagne d'une commande d'actualisation à pointeur unique.",
+      "source": "https://m3.material.io/components/loading-indicator/accessibility"
+    },
+    {
+      "id": "m3.comp.menus.initial-focus",
+      "level": "MUST",
+      "rule": "À l'ouverture d'un menu, le focus va sur le premier élément ; Échap, sélection, clic extérieur ou retour le ferment.",
+      "source": "https://m3.material.io/components/menus/accessibility"
+    },
+    {
+      "id": "m3.comp.menus.disabled-focusable",
+      "level": "MUST",
+      "rule": "Les éléments désactivés restent focalisables mais non sélectionnables ; séparateurs et espacements ne reçoivent jamais le focus.",
+      "source": "https://m3.material.io/components/menus/accessibility"
+    },
+    {
+      "id": "m3.comp.menus.no-nested-actions",
+      "level": "MUST-NOT",
+      "rule": "Ne pas insérer de bouton, interrupteur ou autre action directe dans un élément de menu.",
+      "source": "https://m3.material.io/components/menus/accessibility"
+    },
+    {
+      "id": "m3.comp.menus.vibrant-sparingly",
+      "level": "SHOULD",
+      "rule": "Réserver la palette vibrant (tertiary) à des menus ponctuels ; standard (surface) par défaut.",
+      "source": "https://m3.material.io/components/menus/specs"
+    },
+    {
+      "id": "m3.comp.navigation-bar.flexible",
+      "level": "SHOULD",
+      "rule": "Utiliser la navigation bar flexible (64dp) plutôt que la baseline (80dp), avec éléments verticaux en fenêtre compacte et horizontaux en fenêtre moyenne.",
+      "source": "https://m3.material.io/components/navigation-bar/specs"
+    },
+    {
+      "id": "m3.comp.navigation-bar.selected-icon",
+      "level": "MUST",
+      "rule": "La destination active affiche une icône pleine (ou plus épaisse) et un libellé gras ; les autres une icône contour.",
+      "source": "https://m3.material.io/components/navigation-bar/accessibility"
+    },
+    {
+      "id": "m3.comp.navigation-bar.text-scale",
+      "level": "MUST",
+      "rule": "Avec un texte agrandi jusqu'à 200 %, la barre grandit en hauteur et les libellés restent entiers.",
+      "value": "200%",
+      "source": "https://m3.material.io/components/navigation-bar/accessibility"
+    },
+    {
+      "id": "m3.comp.navigation-drawer.deprecated",
+      "level": "SHOULD-NOT",
+      "rule": "Ne pas créer de navigation drawer neuf ; employer le navigation rail étendu.",
+      "source": "https://m3.material.io/components/navigation-drawer/specs"
+    },
+    {
+      "id": "m3.comp.navigation-drawer.modal-dismiss",
+      "level": "MUST",
+      "rule": "Le drawer modal se ferme par un appui sur le voile.",
+      "source": "https://m3.material.io/components/navigation-drawer/accessibility"
+    },
+    {
+      "id": "m3.comp.navigation-drawer.keyboard",
+      "level": "MUST",
+      "rule": "Le focus initial va sur la première destination ; les flèches circulent, Espace ou Entrée sélectionne et porte le focus sur la section ouverte.",
+      "source": "https://m3.material.io/components/navigation-drawer/accessibility"
+    },
+    {
+      "id": "m3.comp.navigation-rail.collapsed",
+      "level": "SHOULD",
+      "rule": "Remplacer le rail baseline par le rail replié (96dp) et le drawer par le rail étendu (220 à 360dp).",
+      "source": "https://m3.material.io/components/navigation-rail/specs"
+    },
+    {
+      "id": "m3.comp.navigation-rail.full-width-target",
+      "level": "MUST",
+      "rule": "La cible de chaque destination du rail couvre toute la largeur du conteneur.",
+      "source": "https://m3.material.io/components/navigation-rail/specs"
+    },
+    {
+      "id": "m3.comp.navigation-rail.initial-focus",
+      "level": "MUST",
+      "rule": "Le focus initial atteint le premier élément interactif du rail (menu, FAB ou première destination), puis Tab ou flèches parcourent les destinations.",
+      "source": "https://m3.material.io/components/navigation-rail/accessibility"
+    },
+    {
+      "id": "m3.comp.progress-indicators.role",
+      "level": "MUST",
+      "rule": "Un indicateur de progression porte le rôle progressbar et un nom citant le processus et le contenu concernés.",
+      "source": "https://m3.material.io/components/progress-indicators/accessibility"
+    },
+    {
+      "id": "m3.comp.progress-indicators.stop-indicator",
+      "level": "MUST",
+      "rule": "Le linéaire garde son indicateur de fin tant que la piste n'atteint pas 3:1 avec son environnement.",
+      "value": "3:1",
+      "source": "https://m3.material.io/components/progress-indicators/accessibility"
+    },
+    {
+      "id": "m3.comp.progress-indicators.in-component",
+      "level": "SHOULD",
+      "rule": "Intégré à un bouton, l'indicateur prend la couleur du libellé ou de l'icône et la piste est supprimée.",
+      "source": "https://m3.material.io/components/progress-indicators/accessibility"
+    },
+    {
+      "id": "m3.comp.radio-button.group",
+      "level": "MUST",
+      "rule": "Les boutons radio sont regroupés dans un radiogroup nommé par son titre, chaque radio nommé par son libellé lié et cliquable.",
+      "source": "https://m3.material.io/components/radio-button/accessibility"
+    },
+    {
+      "id": "m3.comp.radio-button.keyboard",
+      "level": "MUST",
+      "rule": "Tab entre sur le radio sélectionné (sinon le premier) ; les flèches déplacent focus et sélection avec bouclage ; Espace sélectionne.",
+      "source": "https://m3.material.io/components/radio-button/accessibility"
+    },
+    {
+      "id": "m3.comp.radio-button.opt-out",
+      "level": "SHOULD",
+      "rule": "Prévoir une option « aucun » ou une action d'effacement, puisqu'un groupe radio ne peut être désélectionné.",
+      "source": "https://m3.material.io/components/radio-button/accessibility"
+    },
+    {
+      "id": "m3.comp.radio-button.target",
+      "level": "MUST",
+      "rule": "Cible d'au moins 48dp par radio (icône 20dp, couche d'état 40dp), sans densité imposée par défaut.",
+      "value": "48dp",
+      "source": "https://m3.material.io/components/radio-button/specs"
+    },
+    {
+      "id": "m3.comp.search.prefer-contained",
+      "level": "SHOULD",
+      "rule": "Utiliser le style contained ; le style divided (baseline) n'est conservé que pour l'existant.",
+      "source": "https://m3.material.io/components/search/specs"
+    },
+    {
+      "id": "m3.comp.search.label-matches-hint",
+      "level": "MUST",
+      "rule": "Le libellé accessible du champ de recherche reprend le texte indicatif affiché.",
+      "source": "https://m3.material.io/components/search/accessibility"
+    },
+    {
+      "id": "m3.comp.search.announce-results",
+      "level": "MUST",
+      "rule": "Signaler aux technologies d'assistance l'apparition des suggestions, résultats et propositions d'autocomplétion.",
+      "source": "https://m3.material.io/components/search/accessibility"
+    },
+    {
+      "id": "m3.comp.segmented-buttons.deprecated",
+      "level": "SHOULD-NOT",
+      "rule": "Ne pas introduire de segmented buttons dans un nouveau design Expressive ; employer le connected button group.",
+      "source": "https://m3.material.io/components/segmented-buttons/specs"
+    },
+    {
+      "id": "m3.comp.segmented-buttons.selection-not-color-only",
+      "level": "MUST",
+      "rule": "Signaler la sélection par l'icône de coche en plus du changement de couleur, avec un contour d'au moins 3:1.",
+      "source": "https://m3.material.io/components/segmented-buttons/accessibility"
+    },
+    {
+      "id": "m3.comp.segmented-buttons.semantics",
+      "level": "MUST",
+      "rule": "Exposer un ensemble à choix unique comme groupe radio et un ensemble à choix multiple comme cases à cocher.",
+      "source": "https://m3.material.io/components/segmented-buttons/accessibility"
+    },
+    {
+      "id": "m3.comp.side-sheets.close-affordance",
+      "level": "MUST",
+      "rule": "Toute side sheet contient un bouton de fermeture accessible.",
+      "source": "https://m3.material.io/components/side-sheets/accessibility"
+    },
+    {
+      "id": "m3.comp.side-sheets.dialog-role",
+      "level": "MUST",
+      "rule": "Exposer la side sheet avec le rôle dialog.",
+      "source": "https://m3.material.io/components/side-sheets/accessibility"
+    },
+    {
+      "id": "m3.comp.side-sheets.max-width",
+      "level": "SHOULD-NOT",
+      "rule": "Ne pas dépasser 400dp de largeur ; marges de 16dp en mode détaché.",
+      "source": "https://m3.material.io/components/side-sheets/specs"
+    },
+    {
+      "id": "m3.comp.sliders.keyboard",
+      "level": "MUST",
+      "rule": "Le focus atteint la poignée et les flèches modifient la valeur d'un pas ou d'un stop ; Début/Fin vont aux bornes.",
+      "source": "https://m3.material.io/components/sliders/accessibility"
+    },
+    {
+      "id": "m3.comp.sliders.track-end-contrast",
+      "level": "MUST",
+      "rule": "Rendre la fin de la piste inactive visible à 3:1 contre le fond (stop indicator ou icône).",
+      "source": "https://m3.material.io/components/sliders/accessibility"
+    },
+    {
+      "id": "m3.comp.sliders.size-tokens",
+      "level": "SHOULD",
+      "rule": "Changer de taille (XS à XL) en substituant le jeu de tokens md.comp.slider.<taille> plutôt qu'en codant des valeurs.",
+      "source": "https://m3.material.io/components/sliders/specs"
+    },
+    {
+      "id": "m3.comp.snackbar.no-autodismiss-with-action",
+      "level": "MUST-NOT",
+      "rule": "Ne pas faire disparaître automatiquement un snackbar contenant une action.",
+      "source": "https://m3.material.io/components/snackbar/accessibility"
+    },
+    {
+      "id": "m3.comp.snackbar.no-focus-steal",
+      "level": "MUST",
+      "rule": "Annoncer le snackbar à son apparition sans lui donner le focus ni interrompre la tâche en cours.",
+      "source": "https://m3.material.io/components/snackbar/accessibility"
+    },
+    {
+      "id": "m3.comp.snackbar.web-inline-feedback",
+      "level": "MUST",
+      "rule": "Sur le web, doubler l'information d'un snackbar auto-masqué par un retour en ligne près du déclencheur.",
+      "source": "https://m3.material.io/components/snackbar/accessibility"
+    },
+    {
+      "id": "m3.comp.split-button.target-48",
+      "level": "MUST",
+      "rule": "Garantir une cible de 48x48dp à chacun des deux boutons, y compris en tailles XS et S.",
+      "source": "https://m3.material.io/components/split-button/accessibility"
+    },
+    {
+      "id": "m3.comp.split-button.trailing-menu-state",
+      "level": "MUST",
+      "rule": "Le bouton de fin porte toujours une icône de menu et expose l'état ouvert/fermé du menu ainsi que la présence d'options supplémentaires.",
+      "source": "https://m3.material.io/components/split-button/accessibility"
+    },
+    {
+      "id": "m3.comp.split-button.inner-gap",
+      "level": "MUST",
+      "rule": "Maintenir 2dp entre bouton de tête et bouton de fin quelle que soit la taille.",
+      "source": "https://m3.material.io/components/split-button/specs"
+    },
+    {
+      "id": "m3.comp.switch.no-default-density",
+      "level": "MUST-NOT",
+      "rule": "Ne pas appliquer de densité par défaut aux switchs ; une densité accrue reste un choix réversible de l'utilisateur.",
+      "source": "https://m3.material.io/components/switch/accessibility"
+    },
+    {
+      "id": "m3.comp.switch.keyboard-toggle",
+      "level": "MUST",
+      "rule": "Espace et Entrée basculent le switch qui a le focus.",
+      "source": "https://m3.material.io/components/switch/accessibility"
+    },
+    {
+      "id": "m3.comp.switch.descriptive-label",
+      "level": "SHOULD",
+      "rule": "Rendre le libellé accessible plus explicite que le texte visible quand celui-ci est ambigu.",
+      "source": "https://m3.material.io/components/switch/accessibility"
+    },
+    {
+      "id": "m3.comp.tabs.space-enter-activate-only",
+      "level": "MUST-NOT",
+      "rule": "Ne pas utiliser Espace/Entrée pour se déplacer entre onglets : ces touches activent seulement.",
+      "source": "https://m3.material.io/components/tabs/accessibility"
+    },
+    {
+      "id": "m3.comp.tabs.no-infinite-loop",
+      "level": "SHOULD-NOT",
+      "rule": "Ne pas faire boucler indéfiniment les onglets défilants.",
+      "source": "https://m3.material.io/components/tabs/accessibility"
+    },
+    {
+      "id": "m3.comp.tabs.indicator-geometry",
+      "level": "MUST",
+      "rule": "Indicateur actif primary de 3dp, coins supérieurs arrondis, longueur minimale 24dp ; secondary de 2dp.",
+      "source": "https://m3.material.io/components/tabs/specs"
+    },
+    {
+      "id": "m3.comp.text-fields.error-alert",
+      "level": "MUST",
+      "rule": "Exposer le message d'erreur avec le rôle alert, lu après le texte d'aide.",
+      "source": "https://m3.material.io/components/text-fields/accessibility"
+    },
+    {
+      "id": "m3.comp.text-fields.required-asterisk",
+      "level": "MUST",
+      "rule": "Signaler un champ requis par un astérisque en fin de libellé, présent aussi dans le libellé accessible.",
+      "source": "https://m3.material.io/components/text-fields/accessibility"
+    },
+    {
+      "id": "m3.comp.text-fields.container-contrast",
+      "level": "MUST",
+      "rule": "Contour ou conteneur du champ à 3:1 minimum contre le fond.",
+      "source": "https://m3.material.io/components/text-fields/accessibility"
+    },
+    {
+      "id": "m3.comp.time-pickers.keyboard-entry",
+      "level": "MUST",
+      "rule": "Toujours permettre la saisie de l'heure au clavier, sans dépendre du seul cadran.",
+      "source": "https://m3.material.io/components/time-pickers/accessibility"
+    },
+    {
+      "id": "m3.comp.time-pickers.dial-target",
+      "level": "MUST",
+      "rule": "Cibles du cadran de 48x48dp.",
+      "source": "https://m3.material.io/components/time-pickers/accessibility"
+    },
+    {
+      "id": "m3.comp.time-pickers.input-default",
+      "level": "SHOULD",
+      "rule": "Proposer la variante input par défaut quand un cadran n'apporte rien ou que l'écran est trop petit.",
+      "source": "https://m3.material.io/components/time-pickers/accessibility"
+    },
+    {
+      "id": "m3.comp.toolbars.web-role",
+      "level": "MUST",
+      "rule": "Sur le web, donner au conteneur le rôle toolbar.",
+      "source": "https://m3.material.io/components/toolbars/accessibility"
+    },
+    {
+      "id": "m3.comp.toolbars.bottom-app-bar-deprecated",
+      "level": "SHOULD-NOT",
+      "rule": "Ne pas utiliser le bottom app bar baseline dans un nouveau design ; employer le docked toolbar.",
+      "source": "https://m3.material.io/components/toolbars/specs"
+    },
+    {
+      "id": "m3.comp.toolbars.outer-padding",
+      "level": "MUST",
+      "rule": "Hauteur de 64dp et marge intérieure extérieure d'au moins 16dp.",
+      "source": "https://m3.material.io/components/toolbars/specs"
+    },
+    {
+      "id": "m3.comp.tooltips.role",
+      "level": "MUST",
+      "rule": "Donner au conteneur le rôle tooltip et le lier à l'élément décrit.",
+      "source": "https://m3.material.io/components/tooltips/accessibility"
+    },
+    {
+      "id": "m3.comp.tooltips.no-focus-trap",
+      "level": "MUST-NOT",
+      "rule": "Ne pas piéger le focus clavier ni lecteur d'écran dans un rich tooltip.",
+      "source": "https://m3.material.io/components/tooltips/accessibility"
+    },
+    {
+      "id": "m3.comp.tooltips.not-blocking",
+      "level": "MUST-NOT",
+      "rule": "Ne pas masquer d'information essentielle ni empêcher une action avec un tooltip.",
+      "source": "https://m3.material.io/components/tooltips/accessibility"
+    }
+  ],
+  "components": [
+    {
+      "name": "app-bars",
+      "source": "https://m3.material.io/components/app-bars/specs",
+      "variants": [
+        "Search app bar",
+        "Small (absorbe l'ancien center-aligned via la configuration texte centré)",
+        "Medium flexible (M3 Expressive)",
+        "Large flexible (M3 Expressive)",
+        "Center-aligned (déprécié : fusionné dans small)",
+        "Medium baseline (déprécié : remplacé par medium flexible)",
+        "Large baseline (déprécié : remplacé par large flexible)",
+        "Configuration alignement du texte : bord de tête (défaut) ou centré",
+        "Option : sous-titre, image/logo à la place du titre (small), bouton icône rempli en fin (primary ou tonal, taille default ou wide)"
+      ],
+      "anatomy": [
+        "1. Conteneur",
+        "2. Bouton de tête (navigation)",
+        "3. Éléments de fin (actions, avatar)",
+        "4. Titre",
+        "5. Sous-titre (facultatif)",
+        "Search app bar : conteneur, bouton icône de tête, texte d'invite, icône ou avatar de fin, conteneur de recherche"
+      ],
+      "states": [
+        "À plat (surface)",
+        "Au défilement (conteneur en surface container)",
+        "Éléments interactifs : enabled, hovered, focused, pressed"
+      ],
+      "measures": {
+        "md-comp-app-bar-small.container-height": "64px",
+        "md-comp-app-bar-small.search-container-height": "56px",
+        "md-comp-app-bar-small.search-container-shape": "9999px",
+        "md-comp-app-bar-medium-flexible.container-height": "112px",
+        "md-comp-app-bar-medium-flexible.with-subtitle-container-height": "136px",
+        "md-comp-app-bar-large-flexible.container-height": "120px",
+        "md-comp-app-bar-large-flexible.with-subtitle-container-height": "152px",
+        "md-comp-app-bar-medium.container-height": "112px",
+        "md-comp-app-bar-large.container-height": "152px",
+        "md-comp-app-bar.icon-size": "24px",
+        "md-comp-app-bar.avatar-size": "32px",
+        "md-comp-app-bar.leading-space": "4px",
+        "md-comp-app-bar.trailing-space": "4px",
+        "md-comp-app-bar.search-leading-space": "8px",
+        "md-comp-app-bar.search-trailing-space": "8px",
+        "md-comp-app-bar.container-shape": "0px"
+      },
+      "a11y": [
+        "Le libellé accessible du titre reprend le texte visible, complété au besoin pour situer la page courante.",
+        "Le lecteur d'écran annonce le texte puis le rôle du composant.",
+        "Le premier focus clavier va au bouton de tête ; Tab passe à l'élément suivant, Espace ou Entrée l'active.",
+        "Chaque bouton icône porte un libellé décrivant l'action réalisée (pas l'icône).",
+        "Anneau de focus visible sur chaque élément interactif ; les actions restent accessibles pendant le défilement.",
+        "Conteneur et texte de la barre de recherche : contraste minimal 3:1 (rôles par défaut surface container / on surface variant ; surface bright possible sur fond sombre)."
+      ]
+    },
+    {
+      "name": "badges",
+      "source": "https://m3.material.io/components/badges/specs",
+      "variants": [
+        "Small badge (point, sans texte)",
+        "Large badge (compteur ou libellé court)",
+        "Large badge à nombre maximal de caractères"
+      ],
+      "anatomy": [
+        "1. Petit badge",
+        "2. Conteneur du grand badge",
+        "3. Libellé du grand badge",
+        "4. Conteneur du grand badge en longueur maximale",
+        "5. Libellé du grand badge en longueur maximale"
+      ],
+      "states": [
+        "Sur destination inactive avec ou sans libellé",
+        "Sur destination active avec libellé",
+        "Sur destination active sans libellé (navigation bar ou navigation rail)",
+        "Masqué une fois la notification consultée"
+      ],
+      "measures": {
+        "md-comp-badge.size": "6px",
+        "md-comp-badge.large-size": "16px",
+        "md-comp-badge.shape": "9999px",
+        "md-comp-badge.large-shape": "9999px",
+        "md-comp-badge.large-label-text-size": "0.6875rem",
+        "large-badge-max-size": "16x34dp",
+        "small-badge-offset-from-icon-corner": "6x6dp",
+        "large-badge-offset-from-icon-corner": "14x12dp",
+        "large-badge-horizontal-padding": "4dp",
+        "small-badge-corner-radius (page)": "3dp",
+        "large-badge-corner-radius (page)": "8dp"
+      },
+      "a11y": [
+        "Le contenu du badge est annoncé après le libellé de la destination qui le porte.",
+        "Un badge numérique fait lire son nombre ; un badge sans compteur s'annonce comme une nouvelle notification.",
+        "Contraste minimal 3:1 entre badge, libellé et éléments voisins ; garder les rôles error / on error par défaut.",
+        "Le badge disparaît quand la destination concernée est sélectionnée."
+      ]
+    },
+    {
+      "name": "bottom-sheets",
+      "source": "https://m3.material.io/components/bottom-sheets/specs",
+      "variants": [
+        "Standard (sans scrim, contenu principal toujours utilisable)",
+        "Modal (au-dessus d'un scrim, bloque le reste de l'app)"
+      ],
+      "anatomy": [
+        "1. Conteneur",
+        "2. Poignée de glissement (facultative)",
+        "3. Scrim (modal uniquement)"
+      ],
+      "states": [
+        "Hauteurs prédéfinies parcourues via la poignée",
+        "Poignée : enabled, focused, pressed",
+        "Minimisé (docked minimized)"
+      ],
+      "measures": {
+        "max-width": "640dp",
+        "top-margin": "72dp",
+        "top-margin (fenêtre > 640dp)": "56dp",
+        "start-end-margin (fenêtre > 640dp)": "56dp",
+        "drag-handle-padding-top-bottom": "22dp",
+        "touch-target-top-zone": "48dp",
+        "md-comp-sheet-bottom.docked-container-shape": "28px 28px 0px 0px",
+        "md-comp-sheet-bottom.docked-minimized-container-shape": "0px",
+        "md-comp-sheet-bottom.docked-drag-handle-width": "32px",
+        "md-comp-sheet-bottom.docked-drag-handle-height": "4px",
+        "md-comp-sheet-bottom.focus-indicator-thickness": "3px",
+        "md-comp-sheet-bottom.focus-indicator-outline-offset": "2px"
+      },
+      "a11y": [
+        "Seule la poignée reçoit un libellé ; son rôle est button.",
+        "La poignée entre dans l'ordre de tabulation avec un focus visible ; Espace ou Entrée fait passer la feuille d'une hauteur disponible à l'autre.",
+        "Tout redimensionnement par glissement a une alternative à pointeur unique (poignée activable ou bouton dédié).",
+        "Quand le redimensionnement par l'utilisateur est possible, les 48dp du haut de la feuille servent de zone interactive."
+      ]
+    },
+    {
+      "name": "button-groups",
+      "source": "https://m3.material.io/components/button-groups/specs",
+      "variants": [
+        "Standard button group (M3 Expressive)",
+        "Connected button group (M3 Expressive, successeur du segmented button)",
+        "Segmented button (déprécié dans M3 Expressive)",
+        "Tailles XS, S, M, L, XL",
+        "Forme par défaut : round ou square",
+        "Sélection : single-select, multi-select, selection-required"
+      ],
+      "anatomy": [
+        "1. Conteneur invisible qui espace les boutons et ajuste leur forme (aucun bouton par défaut)",
+        "Contenu : boutons à libellé et/ou boutons icône, styles filled, tonal, outlined ou elevated"
+      ],
+      "states": [
+        "Standard : enabled, disabled, hovered, focused, pressed ; à l'appui le bouton et ses voisins changent de largeur et de forme",
+        "Standard toggle sélectionné : forme bascule entre square et round",
+        "Connected non sélectionné : enabled, disabled, hovered, focused, pressed",
+        "Connected sélectionné : enabled, hovered, focused, pressed ; seule la forme du bouton change, les voisins restent fixes"
+      ],
+      "measures": {
+        "md-comp-button-group-standard-xsmall.between-space": "18px",
+        "md-comp-button-group-standard-small.between-space": "12px",
+        "md-comp-button-group-standard-medium.between-space": "8px",
+        "md-comp-button-group-standard-large.between-space": "8px",
+        "md-comp-button-group-standard-xlarge.between-space": "8px",
+        "md-comp-button-group-standard.pressed-item-width-multiplier": "15%",
+        "md-comp-button-group-standard.container-height (XS/S/M/L/XL)": "32/40/56/96/136px",
+        "md-comp-button-group-connected.between-space": "2px",
+        "md-comp-button-group-connected.container-shape": "9999px",
+        "md-comp-button-group-connected.inner-corner-corner-size (XS/S/M/L/XL)": "8/8/8/16/20px",
+        "md-comp-button-group-connected.pressed-inner-corner-corner-size (XS/S/M/L/XL)": "4/4/4/12/16px",
+        "md-comp-button-group-connected.selected-inner-corner-corner-size": "50%",
+        "connected-inner-corner (page, XS/S/M/L/XL)": "4/8/8/16/20dp",
+        "connected-min-width (XS, S)": "48dp",
+        "target-size-min": "48x48dp"
+      },
+      "a11y": [
+        "Le conteneur n'est ni focusable ni libellé ; chaque bouton est libellé selon les règles des boutons et boutons icône.",
+        "Tab entre dans le groupe sur le premier bouton, les flèches parcourent les éléments, Espace ou Entrée active ou sélectionne.",
+        "L'état sélectionné de chaque bouton doit être exposé aux technologies d'assistance.",
+        "Cible minimale 48x48dp par bouton ; ne pas réduire l'espacement interne des tailles XS et S."
+      ]
+    },
+    {
+      "name": "buttons",
+      "source": "https://m3.material.io/components/buttons/specs",
+      "variants": [
+        "Default button",
+        "Toggle button (sélection, M3 Expressive)",
+        "Tailles : XS, S (défaut), M, L, XL",
+        "Formes : round (défaut), square",
+        "Styles de couleur : elevated, filled (défaut), tonal, outlined, text (pas de toggle en style text)",
+        "Padding du small button : 16dp (24dp déprécié)",
+        "Familles voisines (pages dédiées) : icon buttons, FAB, extended FAB, FAB menu, split button, button groups, segmented button (déprécié)"
+      ],
+      "anatomy": [
+        "1. Conteneur",
+        "2. Texte du libellé",
+        "3. Icône (facultative)"
+      ],
+      "states": [
+        "Enabled, disabled, hovered, focused, pressed (default et toggle)",
+        "Toggle : unselected / selected",
+        "Pressed : morphing vers une forme plus carrée, identique pour round et square",
+        "Toggle sélectionné : round devient square (et square devient round)",
+        "Elevated : élévation 1 au repos, 0 désactivé"
+      ],
+      "measures": {
+        "md-comp-button-xsmall.container-height": "32px",
+        "md-comp-button-small.container-height": "40px",
+        "md-comp-button-medium.container-height": "56px",
+        "md-comp-button-large.container-height": "96px",
+        "md-comp-button-xlarge.container-height": "136px",
+        "md-comp-button.icon-size (XS/S/M/L/XL)": "20/20/24/32/40px",
+        "md-comp-button.leading-trailing-space (XS/S/M/L/XL)": "12/16/24/48/64px",
+        "md-comp-button.icon-label-space (XS/S/M/L/XL)": "8/8/8/12/16px",
+        "md-comp-button.outlined-outline-width (XS/S/M/L/XL)": "1/1/1/2/3px",
+        "md-comp-button.container-shape-round": "9999px",
+        "md-comp-button.container-shape-square (XS/S/M/L/XL)": "12/12/16/28/28px",
+        "md-comp-button.pressed-container-shape (XS/S/M/L/XL)": "8/8/12/16/16px",
+        "md-comp-button.pressed-container-corner-size-motion-spring": "damping 0.9, stiffness 1400",
+        "md-comp-button.focus-indicator-thickness": "3px",
+        "md-comp-button.focus-indicator-outline-offset": "2px",
+        "target-size-min (XS, S)": "48x48dp"
+      },
+      "a11y": [
+        "Rôle button ; le libellé accessible reprend le texte visible, éventuellement enrichi de contexte.",
+        "Tab atteint le bouton, Espace ou Entrée l'active ; le toggle expose son état sélectionné.",
+        "Contraste 3:1 avec l'arrière-plan : mesuré sur le conteneur (elevated, filled, tonal) ou sur le libellé (outlined, text).",
+        "Cible 48x48dp minimum, y compris pour XS et S dont le conteneur est plus petit.",
+        "Libellés courts pour rester lisibles à 200 % de taille de texte ; si tronqué, offrir un accès au texte complet.",
+        "Web : courbe de mouvement adaptée si des clics rapides successifs sont attendus."
+      ]
+    },
+    {
+      "name": "cards",
+      "source": "https://m3.material.io/components/cards/specs",
+      "variants": [
+        "Elevated card",
+        "Filled card",
+        "Outlined card"
+      ],
+      "anatomy": [
+        "1. Conteneur",
+        "2. Contour (outlined uniquement)"
+      ],
+      "states": [
+        "Enabled, hovered, focused, pressed, dragged, disabled",
+        "Carte non actionnable : ni survol ni ondulation"
+      ],
+      "measures": {
+        "md-comp-elevated-card.container-shape": "12px",
+        "md-comp-filled-card.container-shape": "12px",
+        "md-comp-outlined-card.container-shape": "12px",
+        "md-comp-outlined-card.outline-width": "1px",
+        "md-comp-elevated-card.icon-size": "24px",
+        "md-comp-elevated-card.focus-indicator-thickness": "3px",
+        "md-comp-elevated-card.focus-indicator-outline-offset": "2px",
+        "horizontal-padding": "16dp",
+        "space-between-cards-max": "8dp"
+      },
+      "a11y": [
+        "Une carte est soit directement actionnable (rôle button ou link, un seul arrêt de tabulation), soit un simple conteneur sans rôle dont chaque élément actionnable est un arrêt de tabulation.",
+        "Pas d'action imbriquée dans une surface déjà actionnable.",
+        "Le contenu informatif est lu dans l'ordre visuel ; les images décoratives sont masquées aux lecteurs d'écran.",
+        "Glisser ou balayer une carte exige une alternative à pointeur unique (menu ou feuille avec déplacer / supprimer).",
+        "Espace ou Entrée déclenche l'action ou ouvre un menu secondaire ; dans ce menu, flèches pour parcourir, Tab pour sortir."
+      ]
+    },
+    {
+      "name": "carousel",
+      "source": "https://m3.material.io/components/carousel/specs",
+      "variants": [
+        "Multi-browse",
+        "Uncontained",
+        "Uncontained multi-aspect ratio (16:9, 9:16, 1:1, 3:4)",
+        "Hero",
+        "Center-aligned hero",
+        "Full-screen (défilement vertical)"
+      ],
+      "anatomy": [
+        "1. Conteneur",
+        "2. Élément large",
+        "3. Élément moyen",
+        "4. Élément petit"
+      ],
+      "states": [
+        "Enabled, hovered, focused, pressed, disabled",
+        "Largeur des éléments dynamique selon leur position dans la disposition"
+      ],
+      "measures": {
+        "md-comp-carousel-item.container-shape": "28px",
+        "md-comp-carousel-item.with-outline-outline-width": "1px",
+        "md-comp-carousel-item.focus-indicator-thickness": "3px",
+        "small-item-width": "40-56dp",
+        "leading-trailing-padding": "16dp",
+        "top-bottom-padding": "8dp",
+        "space-between-items": "8dp",
+        "full-screen-padding": "0dp",
+        "full-screen-space-between-items": "16dp",
+        "show-all-button-padding": "4dp",
+        "show-all-arrow-icon-button-size": "48dp"
+      },
+      "a11y": [
+        "Le conteneur porte un libellé et le rôle de conteneur ; il ne reçoit pas le focus.",
+        "Tab place le focus sur le premier élément ; Tab ou les flèches passent d'un élément à l'autre ; Espace ou Entrée active ; flèches haut/bas pour quitter le carrousel.",
+        "Chaque élément annonce sa position et le total d'éléments.",
+        "Sur une page à défilement vertical, offrir un accès à tous les éléments sans défilement horizontal (bouton Show all ou flèche à côté de l'en-tête), sauf pour le full-screen.",
+        "Mouvement réduit : supprimer la parallaxe et l'agrandissement, éléments de taille égale."
+      ]
+    },
+    {
+      "name": "checkbox",
+      "source": "https://m3.material.io/components/checkbox/specs",
+      "variants": [
+        "Checkbox (unique variante)",
+        "Valeurs : unselected, selected, indeterminate (parent d'un groupe)",
+        "Erreur"
+      ],
+      "anatomy": [
+        "1. Conteneur",
+        "2. Icône (coche ou tiret)",
+        "Couche d'état (state layer) et libellé texte adjacent"
+      ],
+      "states": [
+        "Enabled, disabled, hovered, focused, pressed",
+        "Déclinés pour unselected, selected, indeterminate et error"
+      ],
+      "measures": {
+        "md-comp-checkbox.container-size": "18px",
+        "md-comp-checkbox.container-shape": "2px",
+        "md-comp-checkbox.icon-size": "18px",
+        "md-comp-checkbox.state-layer-size": "40px",
+        "md-comp-checkbox.state-layer-shape": "9999px",
+        "md-comp-checkbox.unselected-outline-width": "2px",
+        "md-comp-checkbox.selected-outline-width": "0px",
+        "md-comp-checkbox.focus-indicator-thickness": "3px",
+        "md-comp-checkbox.focus-indicator-outline-offset": "2px",
+        "target-size": "48dp"
+      },
+      "a11y": [
+        "Rôle checkbox ; le libellé accessible est le texte adjacent, lu suivi du rôle.",
+        "Cliquer le libellé texte coche aussi la case.",
+        "Le parent indéterminé expose l'état mixte ; l'activer coche tous les enfants.",
+        "Tab donne le focus, Espace bascule l'état (la table clavier de la page reprend par erreur celle des chips).",
+        "Pas de densité appliquée par défaut : cible 48x48 px CSS ; densité plus forte seulement au choix de l'utilisateur, réversible par des cibles de 48 px.",
+        "Le libellé adjacent reste en on surface quel que soit l'état."
+      ]
+    },
+    {
+      "name": "chips",
+      "source": "https://m3.material.io/components/chips/specs",
+      "variants": [
+        "Assist chip",
+        "Filter chip",
+        "Input chip",
+        "Suggestion chip",
+        "Chacune en version flat (contour) ou elevated (surface container low facultatif)"
+      ],
+      "anatomy": [
+        "1. Conteneur",
+        "2. Texte du libellé",
+        "3. Icône de tête (ou avatar pour input)",
+        "4. Icône de fin (filter, input : suppression ou menu)"
+      ],
+      "states": [
+        "Enabled, disabled, hovered, focused, pressed, dragged",
+        "Selected / unselected (filter, input)"
+      ],
+      "measures": {
+        "md-comp-assist-chip.container-height": "32px",
+        "md-comp-filter-chip.container-height": "32px",
+        "md-comp-input-chip.container-height": "32px",
+        "md-comp-suggestion-chip.container-height": "32px",
+        "md-comp-assist-chip.container-shape": "8px",
+        "md-comp-assist-chip.with-icon-icon-size": "18px",
+        "md-comp-assist-chip.flat-outline-width": "1px",
+        "md-comp-filter-chip.flat-selected-outline-width": "0px",
+        "md-comp-input-chip.with-avatar-avatar-size": "24px",
+        "md-comp-input-chip.with-avatar-avatar-shape": "9999px",
+        "md-comp-assist-chip.label-text-size": "0.875rem",
+        "md-comp-assist-chip.focus-indicator-thickness": "3px",
+        "horizontal-padding-without-icon": "16dp",
+        "input-chip-avatar-corner (page)": "12dp",
+        "input-chip-remove-target-min": "48dp"
+      },
+      "a11y": [
+        "Le libellé accessible est le texte du chip ; l'icône ou image interne est masquée.",
+        "Rôles web : gridcell (chip simple ou sélectionnable) ; plateformes : button pour une action, radio ou checkbox pour une sélection.",
+        "L'action de suppression a son propre libellé du type « Supprimer {contenu} » et devient un arrêt de focus séparé si le chip a aussi une autre action.",
+        "Tab entre dans le groupe, flèches entre chips, Espace ou Entrée active ou (dé)sélectionne, Retour arrière ou Suppr retire l'input chip focalisé.",
+        "Libellé contrasté à 3:1 ; signaler l'interactivité par un intitulé de groupe, un contexte de page, le rôle outline au lieu d'outline variant, ou une icône de tête.",
+        "Trop de chips pour une ligne : proposer un affichage complet (reflow via un filter chip « Show all » ou menu), pas de défilement horizontal ; pas de densité par défaut (cible 48 px CSS)."
+      ]
+    },
+    {
+      "name": "date-pickers",
+      "source": "https://m3.material.io/components/date-pickers/specs",
+      "variants": [
+        "Docked date picker (sélection jour, mois, année)",
+        "Modal date picker (date unique, plage de dates, sélection d'année)",
+        "Modal date input (date unique ou plage, saisie clavier)"
+      ],
+      "anatomy": [
+        "1. Champ texte outlined (docked, date input)",
+        "2. Boutons menu mois et année",
+        "3. Boutons icône précédent / suivant / édition",
+        "4. En-tête : titre et texte d'appui (modal)",
+        "5. Libellés des jours de la semaine",
+        "6. Dates : non sélectionnée, aujourd'hui, hors mois, sélectionnée, dans la plage (indicateur actif)",
+        "7. Sous-titre de mois (plage)",
+        "8. Liste des années / menu (élément sélectionné et non sélectionné)",
+        "9. Séparateur",
+        "10. Boutons texte (annuler, valider, effacer)",
+        "11. Conteneur"
+      ],
+      "states": [
+        "Dates et années : enabled, disabled, hovered, focused, pressed",
+        "Sélectionnée, aujourd'hui, dans la plage"
+      ],
+      "measures": {
+        "md-comp-date-picker-docked.container-width": "360px",
+        "md-comp-date-picker-docked.container-height": "456px",
+        "md-comp-date-picker-docked.container-shape": "16px",
+        "md-comp-date-picker-docked.date-container-size": "48px",
+        "md-comp-date-picker-docked.header-height": "64px",
+        "md-comp-date-picker-docked.menu-button-container-height": "40px",
+        "md-comp-date-picker-docked.menu-list-item-container-height": "48px",
+        "md-comp-date-picker-modal.container-width": "360px",
+        "md-comp-date-picker-modal.container-height": "524px",
+        "md-comp-date-picker-modal.container-shape": "28px",
+        "md-comp-date-picker-modal.header-container-height": "120px",
+        "md-comp-date-picker-modal.date-container-size": "40px",
+        "md-comp-date-picker-modal.date-state-layer-size": "40px",
+        "md-comp-date-picker-modal.date-container-shape": "9999px",
+        "md-comp-date-picker-modal.date-today-container-outline-width": "1px",
+        "md-comp-date-picker-modal.range-selection-header-container-height": "128px",
+        "md-comp-date-picker-modal.range-selection-active-indicator-container-height": "40px",
+        "md-comp-date-picker-modal.year-selection-year-container": "72x36px",
+        "md-comp-date-input-modal.container-width": "328px",
+        "md-comp-date-input-modal.container-height": "512px",
+        "md-comp-date-input-modal.container-shape": "28px",
+        "target-size": "48x48dp"
+      },
+      "a11y": [
+        "Toujours permettre la saisie texte d'une date sans passer par le calendrier ; l'icône calendrier est le seul point d'entrée du picker et chaque entrée est un arrêt de tabulation distinct.",
+        "Ne pas masquer la saisie en cours (pas de barres obliques auto) : formater après Entrée ou sortie du champ, et accepter tirets, espaces, barres, points et zéros de tête.",
+        "Libellé du champ explicite (ex. date de l'événement) ; le texte d'aide indique le format et sert de description.",
+        "Rôles : boutons précédent/suivant et menus mois/année = button ; jours de semaine = en-têtes de colonne non focalisables ; grille du mois = grid.",
+        "Clavier : Entrée valide et ferme ; Page haut/bas = même date mois suivant/précédent ; Maj+Page = année ; Début/Fin = premier jour du mois ; Maj+M / Maj+Y = listes mois / année.",
+        "Les dates sont annoncées en entier (jour, mois, quantième, année) ; contraste texte/fond 4.5:1 ; raccourcis indiqués dans l'infobulle et la description ; bouton Effacer retiré s'il n'est pas utile."
+      ]
+    },
+    {
+      "name": "dialogs",
+      "source": "https://m3.material.io/components/dialogs/specs",
+      "variants": [
+        "Basic dialog",
+        "Full-screen dialog"
+      ],
+      "anatomy": [
+        "1. Conteneur",
+        "2. Icône (facultative, basic)",
+        "3. Titre (facultatif)",
+        "4. Texte d'appui",
+        "5. Séparateur (facultatif)",
+        "6. Boutons d'action (texte)",
+        "7. Scrim (basic)",
+        "Full-screen : en-tête avec icône de fermeture, titre, bouton texte de validation"
+      ],
+      "states": [
+        "Ouvert / fermé",
+        "Contenu défilant si dépassement"
+      ],
+      "measures": {
+        "md-comp-dialog.container-shape": "28px",
+        "md-comp-dialog.with-icon-icon-size": "24px",
+        "md-comp-dialog.with-divider-divider-height": "1px",
+        "md-comp-dialog.headline-size": "1.5rem",
+        "md-comp-dialog.supporting-text-size": "0.875rem",
+        "basic-container-width": "280-560dp",
+        "basic-padding": "24dp",
+        "space-title-body": "16dp",
+        "space-icon-title": "16dp",
+        "space-body-actions": "24dp",
+        "md-comp-full-screen-dialog.container-shape": "0px",
+        "md-comp-full-screen-dialog.header-container-height": "56px",
+        "md-comp-full-screen-dialog.action-bar-container-height": "56px",
+        "md-comp-full-screen-dialog.header-icon-size": "24px",
+        "full-screen-max-width": "560dp",
+        "full-screen-padding-top-sides": "24dp"
+      },
+      "a11y": [
+        "Web : un basic dialog prend le rôle alertdialog ; son libellé accessible reprend le titre.",
+        "À l'ouverture, le focus va sur le premier élément interactif ; Tab et Maj+Tab bouclent dans le dialogue (piège de focus) ; Espace ou Entrée exécute ; Échap ferme.",
+        "Réserver les dialogues aux informations critiques ; le reste va dans le flux de la page.",
+        "Titre assez court pour tenir en quatre lignes à 200 % de texte ; sinon accès au texte complet.",
+        "Les éléments internes (champs, boutons) suivent leurs propres règles d'accessibilité."
+      ]
+    },
+    {
+      "name": "divider",
+      "source": "https://m3.material.io/components/divider/specs",
+      "variants": [
+        "Full-width",
+        "Inset",
+        "Middle-inset"
+      ],
+      "anatomy": [
+        "1. Ligne de séparation"
+      ],
+      "states": [
+        "Aucun état interactif"
+      ],
+      "measures": {
+        "md-comp-divider.thickness": "1px",
+        "full-width": "100%",
+        "inset-start-margin": "16dp",
+        "middle-inset-start-end-margin": "16dp",
+        "bottom-margin": "8dp"
+      },
+      "a11y": [
+        "Élément décoratif : aucun minimum de contraste requis.",
+        "Pas de focus ni de libellé ; sur le web, l'exposer en séparateur seulement s'il structure le contenu, sinon le masquer."
+      ]
+    },
+    {
+      "name": "extended-fab",
+      "source": "https://m3.material.io/components/extended-fab/specs",
+      "variants": [
+        "Small extended FAB (M3 Expressive)",
+        "Medium extended FAB (M3 Expressive)",
+        "Large extended FAB (M3 Expressive)",
+        "Extended FAB baseline (déprécié : remplacé par small)",
+        "Couleurs : primary container (défaut), secondary container, tertiary container, primary, secondary, tertiary",
+        "Couleur surface container (déprécié)",
+        "Configurations baseline : avec icône, sans icône"
+      ],
+      "anatomy": [
+        "Conteneur",
+        "Texte du libellé",
+        "Icône (facultative)"
+      ],
+      "states": [
+        "enabled",
+        "hovered (élévation 4)",
+        "focused",
+        "pressed"
+      ],
+      "measures": {
+        "small.container-height": "56dp",
+        "small.container-shape": "16dp",
+        "small.icon-size": "24dp",
+        "small.icon-label-space": "8dp",
+        "small.leading-space": "16dp",
+        "small.trailing-space": "16dp",
+        "medium.container-height": "80dp",
+        "medium.container-shape": "20dp",
+        "medium.icon-size": "28dp",
+        "medium.icon-label-space": "12dp",
+        "medium.leading-space": "26dp",
+        "medium.trailing-space": "26dp",
+        "large.container-height": "96dp",
+        "large.container-shape": "28dp",
+        "large.icon-size": "36dp",
+        "large.icon-label-space": "16dp",
+        "large.leading-space": "28dp",
+        "large.trailing-space": "28dp",
+        "baseline.container-height": "56dp",
+        "baseline.container-min-width": "80dp",
+        "baseline.container-shape": "16dp",
+        "baseline.icon-size": "24dp",
+        "baseline.icon-label-space": "12dp",
+        "baseline.leading-space": "16dp",
+        "baseline.trailing-space": "20dp",
+        "focus-indicator-thickness": "3dp",
+        "focus-indicator-outline-offset": "2dp",
+        "margin": "16dp"
+      },
+      "a11y": [
+        "Rôle bouton ; icône et libellé visibles forment un seul élément focalisable",
+        "Clavier : Tab amène le focus, Espace ou Entrée déclenche l'action",
+        "Le nom accessible commence par le même mot que le libellé visible (ex. « Créer » puis « Créer une invitation »)",
+        "Pas d'infobulle nécessaire : le libellé est déjà visible",
+        "Placé tôt dans l'ordre de focus (après barre d'application et barre de navigation sur mobile)",
+        "Placement : coin inférieur droit en fenêtre compacte, dans le rail étendu en haut à gauche sur grand écran web ; jamais par-dessus un autre élément actif"
+      ]
+    },
+    {
+      "name": "fab-menu",
+      "source": "https://m3.material.io/components/fab-menu/specs",
+      "variants": [
+        "FAB menu (M3 Expressive, variante unique)",
+        "Jeux de couleurs : primary, secondary, tertiary"
+      ],
+      "anatomy": [
+        "Bouton de fermeture (remplace le FAB à son emplacement)",
+        "Éléments de menu (six au maximum)"
+      ],
+      "states": [
+        "close-button : enabled, hovered, focused, pressed",
+        "menu-item : enabled, hovered, focused, pressed",
+        "web : enabled, hovered, selected"
+      ],
+      "measures": {
+        "close-button-container-height": "56dp",
+        "close-button-container-width": "56dp",
+        "close-button-icon-size": "20dp",
+        "close-button-container-shape": "9999px (complet)",
+        "close-button-between-space": "8dp",
+        "menu-item-container-height": "56dp",
+        "menu-item-icon-size": "24dp",
+        "menu-item-icon-label-space": "8dp",
+        "menu-item-leading-space": "24dp",
+        "menu-item-trailing-space": "24dp",
+        "menu-item-between-space": "4dp",
+        "menu-item-container-shape": "9999px (complet)",
+        "fab-margin": "16dp",
+        "web.fab-menu-gap": "4dp (recommandé)",
+        "max-items": "6",
+        "target-min": "48dp"
+      },
+      "a11y": [
+        "Bouton de fermeture : rôle bouton, nom « basculer le menu », état développé/réduit exposé",
+        "Éléments : rôle bouton, nom identique au texte affiché",
+        "À l'ouverture le focus reste sur le bouton de fermeture puis descend de l'élément du haut vers celui du bas",
+        "Clavier : Tab passe à l'élément suivant, Espace ou Entrée active",
+        "Sur le web : combinaison FAB + menu ; le nom du FAB décrit le menu qu'il ouvre et les règles des menus s'appliquent",
+        "Cibles d'au moins 48x48dp ; si le menu défile, les éléments passent sous le bouton de fermeture qui reste dégagé"
+      ]
+    },
+    {
+      "name": "floating-action-button",
+      "source": "https://m3.material.io/components/floating-action-button/specs",
+      "variants": [
+        "FAB (M3 Expressive)",
+        "Medium FAB (M3 Expressive)",
+        "Large FAB (M3 Expressive)",
+        "Small FAB (déprécié : utiliser une taille supérieure)",
+        "Couleurs : primary container (défaut), secondary container, tertiary container, primary, secondary, tertiary",
+        "Couleur surface (déprécié)"
+      ],
+      "anatomy": [
+        "Conteneur",
+        "Icône"
+      ],
+      "states": [
+        "enabled",
+        "hovered (couche d'état 8 %, élévation 4)",
+        "focused (couche d'état 10 %)",
+        "pressed (couche d'état 10 %)"
+      ],
+      "measures": {
+        "fab.container-size": "56dp",
+        "fab.container-shape": "16dp",
+        "fab.icon-size": "24dp",
+        "medium.container-size": "80dp",
+        "medium.container-shape": "20dp",
+        "medium.icon-size": "28dp",
+        "large.container-size": "96dp",
+        "large.container-shape": "28dp",
+        "large.icon-size": "36dp",
+        "small.container-size": "40dp (déprécié)",
+        "small.container-shape": "12dp (déprécié)",
+        "small.icon-size": "24dp (déprécié)",
+        "focus-indicator-thickness": "3dp",
+        "focus-indicator-outline-offset": "2dp"
+      },
+      "a11y": [
+        "Rôle bouton ; nom accessible décrivant l'action (ex. « Rédiger un nouveau message »)",
+        "Clavier : Tab amène le focus, Espace ou Entrée déclenche l'action",
+        "Ne jamais afficher de FAB désactivé : si l'action est indisponible, le FAB disparaît",
+        "Contraste icône/conteneur d'au moins 3:1",
+        "Prioritaire dans l'ordre de focus ; infobulle au focus possible sur le web",
+        "Ne doit jamais masquer entièrement un élément actif ni son indicateur de focus"
+      ]
+    },
+    {
+      "name": "icon-buttons",
+      "source": "https://m3.material.io/components/icon-buttons/specs",
+      "variants": [
+        "Default (action)",
+        "Toggle (sélection)",
+        "Tailles M3 Expressive : XS, S (défaut), M, L, XL",
+        "Formes : round (défaut), square",
+        "Couleurs : filled (défaut), tonal, outlined, standard",
+        "Largeurs : default, narrow, wide",
+        "Jeux de tokens filled/tonal/outlined baseline (déprécié)"
+      ],
+      "anatomy": [
+        "Icône",
+        "Conteneur (invisible au repos pour standard)"
+      ],
+      "states": [
+        "enabled",
+        "disabled",
+        "hovered (couche d'état 8 %)",
+        "focused (couche d'état 10 %)",
+        "pressed (couche d'état 10 %, morphing vers plus carré)",
+        "selected / unselected (toggle : round au repos devient square une fois sélectionné, et inversement)"
+      ],
+      "measures": {
+        "xsmall.container-height": "32dp",
+        "xsmall.icon-size": "20dp",
+        "xsmall.default-leading-space": "6dp",
+        "xsmall.narrow-leading-space": "4dp",
+        "xsmall.wide-leading-space": "10dp",
+        "xsmall.container-shape-square": "12dp",
+        "xsmall.pressed-container-shape": "8dp",
+        "small.container-height": "40dp",
+        "small.icon-size": "24dp",
+        "small.default-leading-space": "8dp",
+        "small.narrow-leading-space": "4dp",
+        "small.wide-leading-space": "14dp",
+        "small.container-shape-square": "12dp",
+        "small.pressed-container-shape": "8dp",
+        "medium.container-height": "56dp",
+        "medium.icon-size": "24dp",
+        "medium.default-leading-space": "16dp",
+        "medium.narrow-leading-space": "12dp",
+        "medium.wide-leading-space": "24dp",
+        "medium.container-shape-square": "16dp",
+        "medium.pressed-container-shape": "12dp",
+        "large.container-height": "96dp",
+        "large.icon-size": "32dp",
+        "large.default-leading-space": "32dp",
+        "large.narrow-leading-space": "16dp",
+        "large.wide-leading-space": "48dp",
+        "large.container-shape-square": "28dp",
+        "large.pressed-container-shape": "16dp",
+        "large.outlined-outline-width": "2dp",
+        "xlarge.container-height": "136dp",
+        "xlarge.icon-size": "40dp",
+        "xlarge.default-leading-space": "48dp",
+        "xlarge.narrow-leading-space": "32dp",
+        "xlarge.wide-leading-space": "72dp",
+        "xlarge.container-shape-square": "28dp",
+        "xlarge.pressed-container-shape": "16dp",
+        "xlarge.outlined-outline-width": "3dp",
+        "container-shape-round": "9999px (complet)",
+        "outlined-outline-width": "1dp (XS, S, M)",
+        "pressed-shape-spring": "stiffness 1400, damping 0.9",
+        "focus-indicator-thickness": "3dp",
+        "focus-indicator-outline-offset": "2dp",
+        "target-min": "48dp"
+      },
+      "a11y": [
+        "Rôle bouton (toggle : état pressé/sélectionné exposé) ; nom accessible décrivant l'action (ex. « Ajouter aux favoris »)",
+        "Clavier : Tab atteint les boutons non désactivés, Espace ou Entrée les active",
+        "Contraste icône/fond d'au moins 3:1",
+        "Cible d'au moins 48x48dp, y compris pour XS et S et quand le bouton est imbriqué",
+        "Pas de densité appliquée par défaut ; un réglage de densité opt-in conserve des cibles de 48x48px CSS",
+        "Sur le web, infobulle reprenant le nom accessible au survol"
+      ]
+    },
+    {
+      "name": "lists",
+      "source": "https://m3.material.io/components/lists/specs",
+      "variants": [
+        "Lists expressive (M3 Expressive)",
+        "Lists baseline (déprécié : utiliser expressive)",
+        "Styles : standard, segmented",
+        "Modes de sélection : single-action, multi-action, single-select, multi-select",
+        "Interactions : expand, swipe-to-reveal (Android Views uniquement)",
+        "Baseline : une, deux ou trois lignes"
+      ],
+      "anatomy": [
+        "Conteneur (requis)",
+        "Surtitre",
+        "Texte du libellé (requis)",
+        "Texte de fin",
+        "Texte d'appoint",
+        "Icône de fin",
+        "Séparateur",
+        "Avatar de tête",
+        "Icône de tête",
+        "Média de tête (image ou vidéo)",
+        "Emplacements personnalisés : tête, contenu (le plus large), fin"
+      ],
+      "states": [
+        "enabled",
+        "disabled",
+        "hovered",
+        "focused",
+        "pressed",
+        "dragged",
+        "selected (même série d'états)"
+      ],
+      "measures": {
+        "one-line-container-height": "56dp",
+        "two-line-container-height": "72dp",
+        "three-line-container-height": "88dp",
+        "leading-space": "16dp",
+        "trailing-space": "16dp",
+        "top-space": "10dp",
+        "bottom-space": "10dp",
+        "between-space": "12dp",
+        "leading-icon-size": "24dp",
+        "leading-icon-expressive-size": "20dp",
+        "trailing-icon-expressive-size": "20dp",
+        "leading-avatar-size": "40dp",
+        "leading-image": "56x56dp",
+        "small-leading-video": "100x56dp",
+        "large-leading-video": "114x64dp",
+        "segmented-gap": "2dp",
+        "container-shape": "16dp",
+        "item-expressive-shape": "4dp (coins intérieurs)",
+        "item-hovered-expressive-shape": "12dp",
+        "item-selected-shape": "16dp",
+        "item-dragged-shape": "16dp",
+        "leading-image-expressive-shape": "8dp",
+        "leading-video-shape": "8dp",
+        "divider-height": "1dp",
+        "divider-leading-space": "16dp",
+        "divider-trailing-space": "16dp",
+        "focus-indicator-thickness": "3dp",
+        "focus-indicator-outline-offset": "-3dp",
+        "target-min": "48dp",
+        "baseline.alignment-switch-height": "88dp (au-delà : alignement en haut)",
+        "baseline.trailing-element-right-padding": "24dp"
+      },
+      "a11y": [
+        "Liste sélectionnable sur le web : conteneur role=listbox avec nom décrivant le type de sélection, éléments role=option avec état sélectionné",
+        "Liste non sélectionnable : le libellé est lu sans rôle ; nom de l'élément = libellé + texte d'appoint",
+        "Focus initial sur le premier élément, ou sur l'élément sélectionné s'il existe",
+        "Flèches pour se déplacer (bouclage du dernier au premier et inversement), Espace ou Entrée active ; en multi-action, les flèches parcourent chaque action",
+        "Sélection signalée par plus que la couleur (case, radio, icône de coche, soulignement)",
+        "Toute action cachée par balayage a une alternative à pointeur unique (icône plus, appui long, etc.)",
+        "Un seul contrôle de sélection par élément ; emplacements personnalisés avec cibles de 48x48dp et sans actions imbriquées gênantes"
+      ]
+    },
+    {
+      "name": "loading-indicator",
+      "source": "https://m3.material.io/components/loading-indicator/specs",
+      "variants": [
+        "Loading indicator (M3 Expressive)",
+        "Configurations : default (sans conteneur), contained"
+      ],
+      "anatomy": [
+        "Indicateur actif (forme animée)",
+        "Conteneur (configuration contained)"
+      ],
+      "states": [
+        "actif (animation continue)"
+      ],
+      "measures": {
+        "container-width": "48dp",
+        "container-height": "48dp",
+        "active-indicator-size": "38dp",
+        "container-shape": "9999px (complet)"
+      },
+      "a11y": [
+        "Rôle progressbar avec un nom décrivant ce qui charge (ex. « chargement de l'article »)",
+        "Contraste indicateur actif/fond d'au moins 3:1 ; le conteneur n'y est pas soumis",
+        "Intégré à un autre composant (bouton), l'indicateur garde 3:1 face à ce composant",
+        "Le tirer-pour-actualiser a une alternative à pointeur unique (bouton actualiser dans un menu ou la barre d'application)"
+      ]
+    },
+    {
+      "name": "menus",
+      "source": "https://m3.material.io/components/menus/specs",
+      "variants": [
+        "Vertical menu avec espacement (M3 Expressive)",
+        "Vertical menu avec séparateur (M3 Expressive)",
+        "Couleurs : standard (surface), vibrant (tertiary, M3 Expressive)",
+        "Disposition : standard, grouped (M3 Expressive)",
+        "Menu baseline (déprécié : utiliser les menus verticaux)"
+      ],
+      "anatomy": [
+        "Élément de menu",
+        "Icône de tête (facultative)",
+        "Texte de l'élément",
+        "Icône de fin (facultative)",
+        "Badge (facultatif)",
+        "Texte de fin (facultatif)",
+        "Conteneur",
+        "Texte d'appoint (facultatif)",
+        "Libellé de groupe (facultatif)",
+        "Espacement entre groupes (facultatif)",
+        "Séparateur (facultatif)"
+      ],
+      "states": [
+        "enabled",
+        "disabled",
+        "hovered",
+        "focused",
+        "pressed",
+        "selected",
+        "active (menu parent ouvrant un sous-menu, morphing de forme)"
+      ],
+      "measures": {
+        "menu-item-height": "44dp",
+        "menu-item-leading-space": "16dp",
+        "menu-item-trailing-space": "16dp",
+        "menu-item-top-space": "8dp",
+        "menu-item-bottom-space": "8dp",
+        "menu-item-between-space": "12dp",
+        "menu-item-leading-icon-size": "20dp",
+        "menu-item-trailing-icon-size": "20dp",
+        "container-shape": "16dp",
+        "active-container-shape": "16dp",
+        "inactive-container-shape": "8dp",
+        "group-shape": "8dp",
+        "gap": "2dp",
+        "group-padding": "2dp",
+        "menu-item-shape": "4dp",
+        "menu-item-first-last-child-shape": "12dp",
+        "menu-item-selected-shape": "12dp",
+        "menu-item-focus-indicator-thickness": "3dp",
+        "menu-item-focus-indicator-outline-offset": "-3dp",
+        "baseline.container-width": "112dp min, 280dp max",
+        "baseline.container-shape": "4dp",
+        "baseline.list-item-container-height": "48dp",
+        "baseline.horizontal-padding": "12dp",
+        "baseline.icon-size": "24dp",
+        "baseline.divider-height": "1dp",
+        "baseline.divider-vertical-padding": "8dp",
+        "target-min": "48dp"
+      },
+      "a11y": [
+        "Sur le web : role=menu et éléments role=menuitem ; nom de l'élément = texte affiché ; icône accompagnant un texte marquée décorative",
+        "À l'ouverture, focus sur le premier élément",
+        "Clavier : Espace/Entrée ouvre ou choisit, flèches haut/bas parcourent (et ouvrent un menu fermé), gauche/droite ouvrent ou ferment un sous-menu, une lettre saute à l'élément suivant qui commence par elle, Échap ferme",
+        "Fermeture par sélection, Échap, clic extérieur ou retour système",
+        "Éléments désactivés focalisables mais non sélectionnables ; séparateurs et espacements jamais focalisables",
+        "Sélection signalée par forme + couleur (3:1 entre sélectionné et non sélectionné) et de préférence une coche",
+        "Pas de bouton ou interrupteur imbriqué dans un élément ; cibles d'au moins 48x48dp"
+      ]
+    },
+    {
+      "name": "navigation-bar",
+      "source": "https://m3.material.io/components/navigation-bar/specs",
+      "variants": [
+        "Flexible navigation bar (M3 Expressive)",
+        "Navigation bar baseline (déprécié : utiliser la barre flexible)",
+        "Disposition des éléments : verticale (défaut, fenêtre compacte), horizontale (fenêtre moyenne)",
+        "Baseline : 3, 4 ou 5 destinations"
+      ],
+      "anatomy": [
+        "Conteneur",
+        "Icône",
+        "Texte du libellé",
+        "Indicateur actif",
+        "Petit badge (facultatif)",
+        "Grand badge (facultatif)",
+        "Libellé du grand badge"
+      ],
+      "states": [
+        "enabled",
+        "hovered (couche d'état 8 %)",
+        "focused (couche d'état 10 %)",
+        "pressed (couche d'état 10 %)",
+        "selected (icône pleine, indicateur actif)"
+      ],
+      "measures": {
+        "flexible.container-height": "64dp",
+        "flexible.item-icon-size": "24dp",
+        "flexible.item-active-indicator-shape": "9999px (complet)",
+        "flexible.vertical-item.active-indicator": "56x32dp",
+        "flexible.vertical-item.icon-label-space": "4dp",
+        "flexible.vertical-item.container-between-space": "6dp",
+        "flexible.horizontal-item.active-indicator-height": "40dp",
+        "flexible.horizontal-item.active-indicator-leading-space": "16dp",
+        "flexible.horizontal-item.active-indicator-trailing-space": "16dp",
+        "flexible.horizontal-item.icon-label-space": "4dp",
+        "baseline.container-height": "80dp",
+        "baseline.active-indicator": "64x32dp",
+        "baseline.icon-size": "24dp",
+        "baseline.badge-size": "6dp",
+        "baseline.large-badge-size": "16dp",
+        "focus-indicator-thickness": "3dp",
+        "focus-indicator-outline-offset": "-3dp",
+        "width": "toute la largeur de la fenêtre"
+      },
+      "a11y": [
+        "Sur le web : élément nav nommé ; chaque destination est un lien ou onglet avec aria-current/selected sur la destination active",
+        "Focus initial sur la première destination ; Tab passe d'une destination à l'autre, Espace ou Entrée sélectionne",
+        "Nom accessible = nom de la destination, précisé si le libellé visible est ambigu (« Bibliothèque » devient « Bibliothèque musicale »)",
+        "Destination active : icône pleine et libellé gras ; inactive : icône contour et libellé medium",
+        "Texte agrandi : la barre grandit en hauteur, libellé entier visible jusqu'à 200 %"
+      ]
+    },
+    {
+      "name": "navigation-drawer",
+      "source": "https://m3.material.io/components/navigation-drawer/specs",
+      "variants": [
+        "Navigation drawer (déprécié en M3 Expressive : utiliser le navigation rail étendu)",
+        "Standard",
+        "Modal"
+      ],
+      "anatomy": [
+        "Conteneur",
+        "Titre de section",
+        "Texte du libellé",
+        "Indicateur actif",
+        "Texte du badge",
+        "Voile (scrim, version modale)",
+        "Icône"
+      ],
+      "states": [
+        "enabled",
+        "hovered",
+        "focused",
+        "pressed",
+        "selected"
+      ],
+      "measures": {
+        "container-width": "360dp",
+        "container-height": "100%",
+        "container-shape": "0 16dp 16dp 0",
+        "bottom-container-shape": "16dp 16dp 0 0",
+        "icon-size": "24dp",
+        "active-indicator-height": "56dp",
+        "active-indicator-width": "336dp",
+        "active-indicator-shape": "9999px (complet)",
+        "active-indicator-padding": "12dp",
+        "horizontal-padding": "28dp",
+        "between-elements": "0dp",
+        "focus-indicator-thickness": "3dp",
+        "focus-indicator-outline-offset": "-3dp"
+      },
+      "a11y": [
+        "Sur le web : élément nav nommé ; destination active signalée par aria-current ; version modale = dialogue modal",
+        "Focus initial sur la première destination ; flèches entre destinations, Espace ou Entrée sélectionne et déplace le focus vers la section ouverte",
+        "Version modale fermée par un appui sur le voile (et Échap)",
+        "Destination active : icône pleine, couleur renforcée et indicateur actif",
+        "Nom accessible = nom de la destination, précisé si le libellé visible est ambigu"
+      ]
+    },
+    {
+      "name": "navigation-rail",
+      "source": "https://m3.material.io/components/navigation-rail/specs",
+      "variants": [
+        "Collapsed navigation rail (M3 Expressive)",
+        "Expanded navigation rail (M3 Expressive) : standard (défaut) ou modal",
+        "Comportement étendu : masqué une fois replié",
+        "Navigation rail baseline (déprécié : utiliser le rail replié)"
+      ],
+      "anatomy": [
+        "Conteneur",
+        "Menu (facultatif)",
+        "FAB ou extended FAB (facultatif)",
+        "Icône",
+        "Indicateur actif",
+        "Texte du libellé",
+        "Grand badge (facultatif)",
+        "Libellé du grand badge (facultatif)",
+        "Petit badge (facultatif)"
+      ],
+      "states": [
+        "enabled",
+        "hovered",
+        "focused",
+        "pressed",
+        "selected (destination active / inactive)"
+      ],
+      "measures": {
+        "collapsed.container-width": "96dp",
+        "collapsed.narrow-container-width": "80dp",
+        "collapsed.top-space": "44dp",
+        "collapsed.item-vertical-space": "4dp",
+        "expanded.container-width": "220dp min, 360dp max",
+        "expanded.top-space": "44dp",
+        "expanded.modal-container-shape": "16dp",
+        "item.container-height": "64dp",
+        "item.short-container-height": "56dp",
+        "item.icon-size": "24dp",
+        "item.active-indicator-shape": "9999px (complet)",
+        "item.header-space-min": "40dp",
+        "vertical-item.active-indicator": "56x32dp",
+        "vertical-item.icon-label-space": "4dp",
+        "horizontal-item.active-indicator-height": "56dp",
+        "horizontal-item.icon-label-space": "8dp",
+        "horizontal-item.leading-space": "16dp",
+        "horizontal-item.trailing-space": "16dp",
+        "baseline.container-width": "80dp",
+        "baseline.active-indicator": "56x32dp",
+        "baseline.no-label-active-indicator-height": "56dp"
+      },
+      "a11y": [
+        "Sur le web : élément nav nommé ; destination active signalée (aria-current)",
+        "Focus initial sur le premier élément interactif (menu, FAB ou première destination) ; Tab ou flèches entre éléments, Espace ou Entrée sélectionne",
+        "La zone cible d'un élément couvre toute la largeur du rail même si l'indicateur épouse le contenu",
+        "Destination active : icône pleine (ou graisse semibold à défaut), contraste suffisant des icônes actives et inactives",
+        "Nom accessible = libellé visible, précisé si ambigu ; libellé entier visible jusqu'à 200 % de texte"
+      ]
+    },
+    {
+      "name": "progress-indicators",
+      "source": "https://m3.material.io/components/progress-indicators/specs",
+      "variants": [
+        "Linear progress indicator",
+        "Circular progress indicator",
+        "Comportement : determinate (défaut), indeterminate",
+        "Épaisseur : fixe 4dp ou configurable (M3 Expressive)",
+        "Forme : flat (défaut), wavy (M3 Expressive)",
+        "Jeux de tokens circulaire/linéaire séparés (déprécié)"
+      ],
+      "anatomy": [
+        "Indicateur actif",
+        "Piste",
+        "Indicateur de fin (stop indicator, linéaire)"
+      ],
+      "states": [
+        "determinate",
+        "indeterminate"
+      ],
+      "measures": {
+        "active-indicator-thickness": "4dp",
+        "track-thickness": "4dp",
+        "track-active-indicator-space": "4dp",
+        "shape": "9999px (complet)",
+        "linear.height": "4dp",
+        "linear.stop-indicator-size": "4dp",
+        "linear.with-wave-height": "10dp",
+        "linear.wave-amplitude": "3dp",
+        "linear.wave-wavelength": "40dp",
+        "linear.indeterminate-wave-wavelength": "20dp",
+        "linear.thick-height": "8dp",
+        "linear.thick-with-wave-height": "14dp",
+        "linear.thick-stop-indicator-trailing-space": "2dp",
+        "linear.screen-inset": "4dp",
+        "circular.size": "40dp",
+        "circular.with-wave-size": "48dp",
+        "circular.wave-amplitude": "1.6dp",
+        "circular.wave-wavelength": "15dp",
+        "circular.thick-size": "52dp",
+        "circular.thick-thickness": "8dp"
+      },
+      "a11y": [
+        "Rôle progressbar ; nom décrivant le processus et le contenu concerné (ex. « chargement des épisodes ») ; valeur exposée en mode determinate",
+        "Contraste indicateur actif/fond d'au moins 3:1 ; intégré à un bouton, il prend la couleur du libellé et la piste est retirée",
+        "Indicateur de fin obligatoire sur le linéaire si la piste a moins de 3:1 avec son environnement"
+      ]
+    },
+    {
+      "name": "radio-button",
+      "source": "https://m3.material.io/components/radio-button/specs",
+      "variants": [
+        "Radio button (variante unique)"
+      ],
+      "anatomy": [
+        "Cercle extérieur",
+        "Point intérieur (sélectionné)",
+        "Couche d'état",
+        "Libellé adjacent (rôle on surface)"
+      ],
+      "states": [
+        "selected",
+        "unselected",
+        "enabled",
+        "hover",
+        "focus",
+        "pressed",
+        "disabled"
+      ],
+      "measures": {
+        "icon-size": "20dp",
+        "state-layer-size": "40dp",
+        "target-size": "48dp"
+      },
+      "a11y": [
+        "Groupe role=radiogroup nommé d'après son titre ; chaque bouton role=radio nommé par son libellé adjacent lié",
+        "Tab entre dans le groupe sur le bouton sélectionné, sinon le premier (Maj+Tab : le dernier)",
+        "Flèches déplacent focus et sélection avec bouclage ; Espace sélectionne le bouton focalisé",
+        "Le libellé texte est cliquable comme le bouton",
+        "Une sélection ne s'annule pas : prévoir une option « aucun » ou une action d'effacement",
+        "Pas de densité par défaut ; cibles de 48x48px CSS"
+      ]
+    },
+    {
+      "name": "search",
+      "source": "https://m3.material.io/components/search/specs",
+      "variants": [
+        "search (M3 Expressive)",
+        "style contained (M3 Expressive, recommandé)",
+        "style divided (baseline, déconseillé : préférer contained)",
+        "layout full-screen",
+        "layout docked"
+      ],
+      "anatomy": [
+        "1. Conteneur de la barre de recherche",
+        "2. Icône de tête",
+        "3. Texte indicatif (supporting text)",
+        "4. Icône(s) de fin et avatar (facultatifs)",
+        "5. Texte saisi",
+        "6. Conteneur des suggestions et résultats (liste, vide par défaut ; séparé par un divider en style divided)"
+      ],
+      "states": [
+        "enabled",
+        "hovered",
+        "focused",
+        "pressed (ripple)",
+        "barre déployée quand focus (Expressive)"
+      ],
+      "measures": {
+        "search-bar.container-height": "56px",
+        "search-bar.container-shape": "9999px",
+        "search-bar.avatar-size": "30px",
+        "search-bar.contained-avatar-target-size": "48px",
+        "search-bar.icon-size": "24px",
+        "search-bar.contained-leading-margin": "24px",
+        "search-bar.contained-trailing-margin": "24px",
+        "search-view.contained-leading-margin": "12px",
+        "search-view.contained-trailing-margin": "12px",
+        "search-bar.leading-space": "16px",
+        "search-bar.contained-leading-space": "4px",
+        "search-view.full-screen-header-container-height": "72px",
+        "search-view.docked-container-shape": "28px",
+        "search-view.contained-docked-results-shape": "12px",
+        "search-view.full-screen-container-shape": "0px",
+        "container-width": "min 360dp, max 720dp",
+        "docked-container-height": "min 240dp, max 2/3 de la hauteur d'écran",
+        "focused-search-bar-padding (contained)": "16dp"
+      },
+      "a11y": [
+        "Le champ porte un libellé accessible identique au texte indicatif visible.",
+        "Focus initial sur l'icône de tête si elle existe, sinon directement sur le champ ; Tab parcourt les éléments interactifs, flèches entre résultats.",
+        "L'apparition des suggestions/résultats et l'autocomplétion sont annoncées par le lecteur d'écran.",
+        "Suggestions et résultats sont une liste (rôle list) et suivent l'accessibilité des listes.",
+        "Les icônes boutons de tête/fin ont chacune un libellé accessible propre.",
+        "Avatar et icônes conservent une cible de 48dp."
+      ]
+    },
+    {
+      "name": "segmented-buttons",
+      "source": "https://m3.material.io/components/segmented-buttons/specs",
+      "variants": [
+        "outlined segmented button (déprécié en M3 Expressive : utiliser le connected button group)",
+        "single-select",
+        "multi-select"
+      ],
+      "anatomy": [
+        "1. Conteneur (contour)",
+        "2. Icône (facultative à l'état non sélectionné ; coche à l'état sélectionné)",
+        "3. Libellé"
+      ],
+      "states": [
+        "enabled",
+        "disabled",
+        "hovered",
+        "focused",
+        "pressed",
+        "selected",
+        "hovered on selected",
+        "focused on selected",
+        "pressed on selected"
+      ],
+      "measures": {
+        "container-height": "40px",
+        "outline-width": "1px",
+        "shape": "9999px",
+        "with-icon-icon-size": "18px",
+        "label-padding (gauche/droite)": "min 12dp",
+        "padding-between-elements": "8dp",
+        "target-size": "48dp",
+        "segment-width": "largeur du conteneur / nombre de segments",
+        "density-step": "-4dp de hauteur par cran"
+      },
+      "a11y": [
+        "Sélection unique = sémantique de groupe radio (radiogroup/radio) ; sélection multiple = cases à cocher (checkbox).",
+        "Tab entre dans le composant, flèches entre segments, Espace/Entrée sélectionne ou désélectionne.",
+        "Le focus démarre sur le premier segment (gauche en LTR, droite en RTL), quel que soit l'état de sélection.",
+        "Libellé accessible = texte visible ; segment icône seule : libellé décrivant l'option.",
+        "Contour à 3:1 minimum contre la surface ; la sélection est signalée par la coche en plus de la couleur.",
+        "Cible 48dp par segment."
+      ]
+    },
+    {
+      "name": "side-sheets",
+      "source": "https://m3.material.io/components/side-sheets/specs",
+      "variants": [
+        "standard side sheet",
+        "modal side sheet",
+        "docked",
+        "detached"
+      ],
+      "anatomy": [
+        "1. Conteneur",
+        "2. Titre (headline)",
+        "3. Bouton icône de fermeture",
+        "4. Bouton icône retour (facultatif, modal)",
+        "5. Divider (facultatif)",
+        "6. Boutons d'action en bas (facultatifs)",
+        "7. Scrim (modal)"
+      ],
+      "states": [
+        "enabled",
+        "hovered",
+        "focused",
+        "pressed (ripple)"
+      ],
+      "measures": {
+        "docked-container-width": "256px",
+        "max-width": "400dp",
+        "start-end-padding": "24dp",
+        "start-padding-with-icon (modal)": "16dp",
+        "padding-between-top-elements": "12dp",
+        "bottom-actions-height": "72dp",
+        "bottom-actions-top-padding": "16dp",
+        "bottom-actions-bottom-padding": "24dp",
+        "detached-margins": "16dp",
+        "detached-container-shape": "16px",
+        "docked-modal-container-shape": "16px 0px 0px 16px",
+        "docked-container-shape": "0px",
+        "docked-modal-container-elevation": "1px",
+        "docked-standard-container-elevation": "0px"
+      },
+      "a11y": [
+        "Rôle dialog (modal : focus contenu dans la feuille et rendu à l'élément déclencheur à la fermeture).",
+        "Un bouton de fermeture est toujours présent et étiqueté.",
+        "Les actions sont atteignables au clavier dans l'ordre de tabulation, Espace/Entrée active, focus visible.",
+        "Cibles de 48dp pour les boutons icônes."
+      ]
+    },
+    {
+      "name": "sliders",
+      "source": "https://m3.material.io/components/sliders/specs",
+      "variants": [
+        "standard (continuous)",
+        "centered",
+        "range",
+        "discrete (configuration stops en Expressive)",
+        "orientation horizontale / verticale (Expressive)",
+        "tailles XS (défaut), S, M, L, XL (Expressive)",
+        "icône incrustée (Expressive, tailles M+)",
+        "value indicator"
+      ],
+      "anatomy": [
+        "1. Indicateur de valeur (facultatif)",
+        "2. Indicateurs de stops (facultatifs)",
+        "3. Piste active",
+        "4. Poignée (handle)",
+        "5. Piste inactive",
+        "6. Icône incrustée (facultative)"
+      ],
+      "states": [
+        "enabled",
+        "disabled",
+        "hovered",
+        "focused",
+        "pressed (poignée amincie, valeur affichée)"
+      ],
+      "measures": {
+        "handle-width": "4px",
+        "pressed-handle-width": "2px",
+        "focus-handle-width": "2px",
+        "active-handle-padding": "6px",
+        "state-layer-size": "40px",
+        "stop-indicator-size": "4px",
+        "value-indicator-active-bottom-space": "12px",
+        "xsmall.track-height": "16px",
+        "xsmall.handle-height": "44px",
+        "xsmall.track-shape": "8px",
+        "small.track-height": "24px",
+        "small.handle-height": "44px",
+        "small.track-shape": "8px",
+        "medium.track-height": "40px",
+        "medium.handle-height": "44px",
+        "medium.track-shape": "12px",
+        "medium.icon-size": "24px",
+        "large.track-height": "56px",
+        "large.handle-height": "68px",
+        "large.track-shape": "16px",
+        "large.icon-size": "24px",
+        "xlarge.track-height": "96px",
+        "xlarge.handle-height": "108px",
+        "xlarge.track-shape": "28px",
+        "xlarge.icon-size": "32px",
+        "label-container-height (page m3)": "44dp",
+        "label-container-width (page m3)": "48dp",
+        "label-container-height (mw)": "28px"
+      },
+      "a11y": [
+        "Rôle slider avec valeur courante, min et max exposés ; libellé accessible = libellé texte adjacent.",
+        "Le focus va directement sur la poignée ; flèches = +/- un pas ou un stop, Début/Fin = valeurs extrêmes (range : une poignée focusable chacune).",
+        "Bout de la piste inactive repérable à 3:1 contre le fond (stop indicator ou icône).",
+        "Les boutons icônes hors du slider gardent le rôle button.",
+        "Cible tactile de 48dp autour de la poignée."
+      ]
+    },
+    {
+      "name": "snackbar",
+      "source": "https://m3.material.io/components/snackbar/specs",
+      "variants": [
+        "single line",
+        "single line with action",
+        "two lines",
+        "two lines with action",
+        "two lines with longer action"
+      ],
+      "anatomy": [
+        "1. Conteneur",
+        "2. Texte d'information",
+        "3. Action (facultative)",
+        "4. Icône de fermeture (facultative)"
+      ],
+      "states": [
+        "visible (annoncé)",
+        "auto-dismiss (sans action)",
+        "persistant (avec action)"
+      ],
+      "measures": {
+        "with-single-line-container-height": "48px",
+        "with-two-lines-container-height": "68px",
+        "container-shape": "4px",
+        "container-elevation": "6px",
+        "icon-size": "24px"
+      },
+      "a11y": [
+        "Annoncé à son apparition (région live polie, role status) sans prendre le focus ni bloquer la tâche ; au lancement, annoncé après le titre de page.",
+        "Un snackbar avec action ne disparaît pas automatiquement ; sans action, durée de 4 à 10 s.",
+        "Sur le web, l'information d'un snackbar auto-masqué est aussi donnée en ligne près de l'élément déclencheur.",
+        "Tab entre éléments, Échap ferme quand il a le focus ; à la fermeture le focus revient à l'élément précédent, sinon au suivant logique.",
+        "Couleurs inverse surface par défaut pour se détacher du reste de l'UI."
+      ]
+    },
+    {
+      "name": "split-button",
+      "source": "https://m3.material.io/components/split-button/specs",
+      "variants": [
+        "split button (M3 Expressive)",
+        "couleur elevated, filled, tonal, outlined",
+        "tailles XS, S, M, L, XL",
+        "bouton de tête : libellé + icône, libellé seul, icône seule"
+      ],
+      "anatomy": [
+        "1. Bouton de tête",
+        "2. Icône",
+        "3. Libellé",
+        "4. Bouton de fin (icône de menu)"
+      ],
+      "states": [
+        "enabled",
+        "disabled",
+        "hovered",
+        "focused",
+        "pressed / pressed with focus",
+        "selected / selected with focus (bouton de fin : coins internes arrondis, icône centrée)"
+      ],
+      "measures": {
+        "between-space": "2px",
+        "container-shape": "9999px",
+        "xsmall.container-height": "32px",
+        "small.container-height": "40px",
+        "medium.container-height": "56px",
+        "large.container-height": "96px",
+        "xlarge.container-height": "136px",
+        "xsmall.inner-corner": "4px",
+        "small.inner-corner": "4px",
+        "medium.inner-corner": "4px",
+        "large.inner-corner": "8px",
+        "xlarge.inner-corner": "12px",
+        "small.inner-corner-hovered": "12px",
+        "trailing-button-inner-corner-selected": "50%",
+        "xsmall.trailing-icon-size": "22px",
+        "small.trailing-icon-size": "22px",
+        "medium.trailing-icon-size": "26px",
+        "large.trailing-icon-size": "38px",
+        "xlarge.trailing-icon-size": "50px",
+        "menu-icon-offset (non sélectionné)": "XS -1dp, S -1dp, M -2dp, L -3dp, XL -6dp"
+      },
+      "a11y": [
+        "Chaque bouton a une cible d'au moins 48x48dp (XS et S : zone de cible étendue en hauteur).",
+        "Tab va du bouton de tête au bouton de fin ; Espace/Entrée active le bouton focalisé.",
+        "Bouton de tête étiqueté comme un bouton ordinaire ; bouton de fin étiqueté « plus d'options liées à <action> » avec aria-haspopup=menu et aria-expanded.",
+        "Le menu ouvert suit l'accessibilité des menus."
+      ]
+    },
+    {
+      "name": "switch",
+      "source": "https://m3.material.io/components/switch/specs",
+      "variants": [
+        "sans icône",
+        "icône sur l'état sélectionné",
+        "icône sur les états sélectionné et non sélectionné"
+      ],
+      "anatomy": [
+        "1. Piste (track)",
+        "2. Poignée (handle, ex-thumb)",
+        "3. Icône (facultative)"
+      ],
+      "states": [
+        "enabled",
+        "hovered",
+        "focused",
+        "pressed",
+        "disabled",
+        "selected / unselected"
+      ],
+      "measures": {
+        "track-height": "32px",
+        "track-width": "52px",
+        "track-outline-width": "2px",
+        "track-shape": "9999px",
+        "unselected-handle-size": "16px",
+        "with-icon-handle-size": "24px",
+        "selected-handle-size": "24px",
+        "pressed-handle-size": "28px",
+        "handle-shape": "9999px",
+        "selected-icon-size": "16px",
+        "unselected-icon-size": "16px",
+        "state-layer-size": "40px",
+        "target-size": "48dp"
+      },
+      "a11y": [
+        "Rôle switch (ou checkbox avec état), état on/off exposé.",
+        "Tab amène le focus sur la poignée ; Espace/Entrée bascule.",
+        "Libellé accessible issu du texte adjacent associé, précisé si le texte visible est ambigu.",
+        "Pas de densité par défaut : cible de 48x48 maintenue ; texte adjacent en on surface."
+      ]
+    },
+    {
+      "name": "tabs",
+      "source": "https://m3.material.io/components/tabs/specs",
+      "variants": [
+        "primary tabs",
+        "secondary tabs",
+        "fixed",
+        "scrollable",
+        "label seul / icône + label"
+      ],
+      "anatomy": [
+        "1. Conteneur",
+        "2. Badge (facultatif)",
+        "3. Icône (facultative, primary)",
+        "4. Libellé",
+        "5. Divider",
+        "6. Indicateur actif"
+      ],
+      "states": [
+        "enabled",
+        "hover",
+        "focused",
+        "pressed (destination active et inactive)"
+      ],
+      "measures": {
+        "container-height (label seul)": "48px",
+        "container-height (icône + label)": "64px",
+        "icon-size": "24px",
+        "divider-height": "1px",
+        "primary.active-indicator-height": "3px",
+        "secondary.active-indicator-height": "2px",
+        "primary.active-indicator-shape": "3px 3px 0px 0px",
+        "active-indicator-min-length": "24dp",
+        "primary.active-indicator-inset": "2dp",
+        "inline-icon-text-padding": "8dp",
+        "inline-text-badge-padding": "4dp",
+        "badge-overlap-on-stacked-icon": "6dp"
+      },
+      "a11y": [
+        "Sémantique tablist/tab/tabpanel avec aria-selected sur l'onglet actif.",
+        "Flèches (ou Tab) déplacent le focus entre onglets ; Espace/Entrée active, jamais pour naviguer.",
+        "Pas de boucle infinie dans les onglets défilants.",
+        "Onglet icône seule ou ambigu : libellé accessible explicite.",
+        "Pas de densité par défaut : cibles de 48x48 conservées."
+      ]
+    },
+    {
+      "name": "text-fields",
+      "source": "https://m3.material.io/components/text-fields/specs",
+      "variants": [
+        "filled text field",
+        "outlined text field",
+        "avec supporting text, leading icon, trailing icon, prefix, suffix",
+        "multi-line"
+      ],
+      "anatomy": [
+        "1. Conteneur (filled) / contour (outlined)",
+        "2. Icône de tête (facultative)",
+        "3. Libellé (champ vide)",
+        "4. Libellé flottant (champ rempli)",
+        "5. Icône de fin (facultative)",
+        "6. Indicateur actif / contour en focus",
+        "7. Curseur (caret)",
+        "8. Texte saisi",
+        "9. Texte d'aide (facultatif)",
+        "10. Indicateur actif au repos (filled)"
+      ],
+      "states": [
+        "enabled",
+        "hovered",
+        "focused",
+        "disabled (vide et rempli)",
+        "error : enabled, hovered, focused (vide et rempli)"
+      ],
+      "measures": {
+        "container-height": "56px",
+        "filled.container-shape": "4px 4px 0px 0px",
+        "outlined.container-shape": "4px",
+        "filled.active-indicator-height": "1px",
+        "filled.focus-active-indicator-height": "2px",
+        "outlined.outline-width": "1px",
+        "outlined.focus-outline-width": "3px",
+        "leading-icon-size": "24px",
+        "trailing-icon-size": "24px",
+        "top-bottom-padding (filled)": "8dp",
+        "left-right-padding sans icône": "16dp",
+        "left-right-padding avec icône": "12dp",
+        "icon-text-padding": "16dp",
+        "supporting-text-top-padding": "4dp",
+        "supporting-text-counter-gap": "16dp",
+        "outlined.populated-label-side-padding": "4dp",
+        "target-size": "56dp"
+      },
+      "a11y": [
+        "Libellé accessible = libellé visible (label associé) ; champ requis : astérisque inclus dans le libellé.",
+        "Message d'erreur exposé en rôle alert ; ordre lu : texte d'aide puis erreur.",
+        "Texte d'aide et compteur (« character count ») ont leur propre libellé lié au champ.",
+        "Icône de fin actionnable = bouton au libellé décrivant l'action (ex. afficher/masquer le mot de passe) ; icône d'erreur non actionnable libellée « Erreur ».",
+        "Préfixe/suffixe identifiés (id unique) et inclus dans la description.",
+        "Contour/conteneur à 3:1 minimum contre le fond ; Tab amène le focus sur les champs non désactivés."
+      ]
+    },
+    {
+      "name": "time-pickers",
+      "source": "https://m3.material.io/components/time-pickers/specs",
+      "variants": [
+        "time picker dial (vertical, défaut mobile)",
+        "time picker dial (horizontal)",
+        "dial 24h",
+        "time picker input 12h",
+        "time picker input 24h"
+      ],
+      "anatomy": [
+        "1. Titre",
+        "2. Sélecteur d'heure (conteneur + texte) et séparateur",
+        "3. Sélecteur de période AM/PM (conteneur + texte)",
+        "4. Cadran (conteneur + chiffres)",
+        "5. Sélecteur du cadran : poignée, centre, piste",
+        "6. Bouton texte (annuler/OK)",
+        "7. Bouton icône (bascule cadran/saisie)",
+        "8. Champs de saisie heure/minute (conteneur, texte, texte d'aide) — variante input",
+        "9. Conteneur"
+      ],
+      "states": [
+        "enabled",
+        "hover",
+        "focus",
+        "pressed",
+        "selected"
+      ],
+      "measures": {
+        "container-shape": "28px",
+        "container-elevation": "6px",
+        "container-padding": "24dp",
+        "time-selector-container-width": "96px",
+        "time-selector-24h-vertical-container-width": "114px",
+        "time-selector-container-height": "80px",
+        "time-selector-container-shape": "8px",
+        "period-selector-vertical": "52px x 80px",
+        "period-selector-horizontal": "216px x 38px",
+        "period-selector-container-shape": "8px",
+        "period-selector-outline-width": "1px",
+        "clock-dial-container-size": "256px",
+        "clock-dial-selector-handle-container-size": "48px",
+        "clock-dial-selector-center-container-size": "8px",
+        "clock-dial-selector-track-container-width": "2px",
+        "time-input-field-container": "96px x 72px",
+        "time-input-period-selector-container": "52px x 72px",
+        "time-input-field-container-shape": "8px",
+        "time-input-field-focus-outline-width": "2px"
+      },
+      "a11y": [
+        "La saisie au clavier doit toujours être possible (variante input accessible depuis le cadran via le bouton clavier) ; input par défaut quand le cadran n'est pas nécessaire.",
+        "Champs heure/minute en rôle textbox (spinbutton acceptable) avec libellé.",
+        "Positions du cadran annoncées « <valeur> heures/minutes sur <total> » ; cibles de 48x48dp.",
+        "AM/PM en groupe radio ; boutons de bascule cadran/saisie en rôle button étiqueté.",
+        "Tab parcourt les éléments non désactivés, Espace/Entrée active."
+      ]
+    },
+    {
+      "name": "toolbars",
+      "source": "https://m3.material.io/components/toolbars/specs",
+      "variants": [
+        "docked toolbar",
+        "floating toolbar (horizontal, vertical)",
+        "couleur standard / vibrant",
+        "floating toolbar avec FAB",
+        "bottom app bar (baseline, déprécié : utiliser docked toolbar)"
+      ],
+      "anatomy": [
+        "1. Conteneur",
+        "2. Éléments placés dans les emplacements (boutons icônes, boutons, champs texte, FAB)"
+      ],
+      "states": [
+        "aucun état propre : les états sont ceux des éléments placés"
+      ],
+      "measures": {
+        "container-height": "64px",
+        "docked.leading-trailing-space": "16px",
+        "docked.container-shape": "0px",
+        "floating.container-shape": "9999px",
+        "floating.container-elevation": "6px",
+        "floating.leading-trailing-space": "8px",
+        "floating.between-space": "4px",
+        "floating.horizontal-external-space": "16px",
+        "floating.vertical-external-space": "24px",
+        "floating.vertical-container-width": "64px",
+        "floating-fab.container-size": "56px",
+        "floating-fab.medium-container-size": "80px",
+        "floating-fab.between-space": "8px",
+        "floating-fab.container-shape": "16px",
+        "docked.center-aligned-item-gap": "8dp",
+        "bottom-app-bar.container-height": "80px",
+        "bottom-app-bar.with-fab-container-height": "72px"
+      },
+      "a11y": [
+        "Sur le web, conteneur en role=toolbar avec libellé ; sur mobile, conteneur générique admis.",
+        "Le focus arrive sur le premier élément interactif ; Tab parcourt les actions, Espace/Entrée active.",
+        "Chaque élément placé suit sa propre exigence d'accessibilité (libellés des boutons icônes, cibles 48dp)."
+      ]
+    },
+    {
+      "name": "tooltips",
+      "source": "https://m3.material.io/components/tooltips/specs",
+      "variants": [
+        "plain tooltip",
+        "rich tooltip (sous-titre facultatif, 0 à 2 boutons)"
+      ],
+      "anatomy": [
+        "1. Conteneur",
+        "2. Texte (supporting text)",
+        "3. Sous-titre (rich, facultatif)",
+        "4. Bouton texte (rich, facultatif)"
+      ],
+      "states": [
+        "masqué",
+        "affiché (survol, focus ou sélection pour rich)",
+        "persistant (rich avec action)"
+      ],
+      "measures": {
+        "plain.container-height": "24dp",
+        "plain.padding": "8dp",
+        "plain.container-shape": "4px",
+        "rich.top-padding": "12dp",
+        "rich.bottom-padding": "8dp",
+        "rich.side-padding": "16dp",
+        "rich.container-shape": "12px",
+        "rich.container-elevation": "3px"
+      },
+      "a11y": [
+        "Rôle tooltip, relié à l'élément déclencheur (aria-describedby).",
+        "S'affiche au survol et au focus clavier ; reste visible assez longtemps, y compris un moment après la sortie du curseur.",
+        "Ne masque pas d'information essentielle ni ne bloque une action.",
+        "Rich : focus parcouru de haut en bas, jamais piégé ; le reste de la page reste parcourable linéairement."
+      ]
+    }
+  ]
+}
