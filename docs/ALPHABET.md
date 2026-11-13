@@ -47,3 +47,11 @@ Au 2026-11-13, `docs/gaming`, `infra/gaming`, `docs/linux`, `infra/pkg` et `docs
 2. **Une seule règle de commit** : `git pull --rebase`, puis `git commit -- <chemins>` (l'index est partagé), sans attribution IA.
 3. **Une seule revue** : tribunal à trois voix (Claude, Gemini, juge neutre), verdicts dans `docs/reviews/INDEX.md`.
 4. **Arrêt et gel** : un pari sans progrès mesuré sur deux revues est gelé (`status = frozen` dans ce fichier) ; ses forks restent synchronisés par `ay upstream`, rien n'est supprimé sans export.
+
+## Lettre du fondateur
+
+TODO(owner) : texte de la lettre, publié tel quel en tête d'aphrody.com (`apps/aphrody/src/holding/page.ts` le rend dès que ce marqueur disparaît).
+
+## Investisseurs et contact
+
+TODO(owner) : relations investisseurs (texte et adresse dédiée éventuelle). Contact public : contact@aphrody.com.

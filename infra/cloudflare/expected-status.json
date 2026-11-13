@@ -177,6 +177,12 @@
   "status.aphrody.com": 200,
   "store.aphrody.com": 200,
   "translate.aphrody.com": 200,
-  "www.aphrody.app": 200,
-  "www.aphrody.com": 200
+  "www.aphrody.app": {
+    "status": 301,
+    "why": "redirection vers l'apex aphrody.app (Worker aphrody-deploy, packages/deploy)"
+  },
+  "www.aphrody.com": {
+    "status": 301,
+    "why": "redirection vers l'apex aphrody.com (Worker aphrody, apps/aphrody/edge)"
+  }
 }

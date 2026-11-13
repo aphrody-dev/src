@@ -69,44 +69,36 @@ describe("Aphrody build output", () => {
     expect(statSync(join(dist, "index.html.gz")).size).toBeLessThan(30 * 1024);
   });
 
-  it("homepage is readable without JavaScript and names only Aphrody products", () => {
+  it("homepage is the holding page generated from docs/ALPHABET.md", () => {
     const html = readFileSync(join(dist, "index.html"), "utf-8");
-    expect(html).toContain(
-      "<title>Aphrody — sites et logiciels web indépendants</title>",
-    );
+    expect(html).toContain("<title>Aphrody</title>");
     expect(html).not.toContain('id="root"');
-    expect(html).not.toContain("/app.js");
     expect((html.match(/<h1[ >]/g) || []).length).toBe(1);
+    for (const h of [
+      "<h2>Noyau</h2>",
+      "<h2>Paris</h2>",
+      "<h2>Métriques publiques</h2>",
+      "<h2>Investisseurs et contact</h2>",
+    ])
+      expect(html).toContain(h);
     for (const href of [
       'href="/search"',
-      'href="/search/packages"',
-      'href="/search/benchmarks"',
       'href="mailto:contact@aphrody.com"',
-    ]) {
+      'href="https://aphrody.app/"',
+      'href="https://github.com/aphrody-labs/src/tree/main/apps/nt"',
+    ])
       expect(html).toContain(href);
-    }
-    expect(html).toContain("aphrody.app");
-    expect(html).toContain("En développement");
-    for (const banned of [
-      "Gemini",
-      "dragonballfr",
-      "DBFR",
-      "rosegriffon",
-      "Rose Griffon",
-      "Shenron",
-    ]) {
+    // Public identity is anonymous: no personal name or mailbox, only contact@aphrody.com.
+    for (const banned of ["gmail.com", "Gemini", ...(Bun.env.APHRODY_PII_TERMS ?? "").split(",").filter(Boolean)])
       expect(html).not.toContain(banned);
-    }
     expect(/\p{Extended_Pictographic}/u.test(html)).toBe(false);
   });
 
   it("english homepage mirrors the french one", () => {
     const html = readFileSync(join(dist, "en", "index.html"), "utf-8");
     expect(html).toContain('<html lang="en">');
-    expect(html).toContain(
-      "<title>Aphrody — independent websites and web software</title>",
-    );
-    expect(html).toContain('href="/en/search/packages"');
+    expect(html).toContain("<h2>Core</h2>");
+    expect(html).toContain('href="https://aphrody.com/en"');
   });
 });
 
@@ -388,7 +380,13 @@ describe("Aphrody HTTP Server & Endpoints", () => {
 
 describe("Hosting manifests", () => {
   it("ships no hand-written host manifest besides wrangler.toml (others come from scripts/deploy-target.ts)", () => {
-    for (const f of ["vercel.json", "netlify.toml", "fly.toml", "app.yaml", "firebase.json"])
+    for (const f of [
+      "vercel.json",
+      "netlify.toml",
+      "fly.toml",
+      "app.yaml",
+      "firebase.json",
+    ])
       expect(existsSync(join(ROOT_DIR, f))).toBe(false);
   });
 });

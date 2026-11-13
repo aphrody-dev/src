@@ -29,7 +29,6 @@ import {
 import { minifyCss } from "./src/seo/page-css";
 import {
   render404,
-  renderHome,
   renderNews,
   renderPackageHub,
   renderVertical,
@@ -45,6 +44,7 @@ import {
   verticalPath,
 } from "./src/seo/site";
 import { UniversalStoreManager } from "./src/store/universal-manager";
+import { measure, renderHolding } from "./src/holding/page";
 
 const ROOT = import.meta.dir;
 const DIST_DIR = join(ROOT, "dist");
@@ -93,8 +93,12 @@ const pageFile = (path: string, l: "fr" | "en") => {
   const p = localizedPath(path, l);
   return (p === "/" ? "" : p.slice(1) + "/") + "index.html";
 };
+// Home = holding page generated from docs/ALPHABET.md (abc.xyz model); the former product home stays
+// available as renderHome for the search and package pages it links to.
+const SRC_ROOT = join(ROOT, "..", "..");
+const metrics = measure(SRC_ROOT);
 for (const l of LOCALES) {
-  emit(pageFile("/", l), renderHome(l, cfg));
+  emit(pageFile("/", l), renderHolding(SRC_ROOT, l, metrics));
   for (const v of VERTICALS)
     emit(pageFile(verticalPath(v.slug), l), renderVertical(v, l, cfg));
   for (const eco of PACKAGE_ECOSYSTEMS) {
@@ -137,10 +141,6 @@ emit(
     "  Referrer-Policy: strict-origin-when-cross-origin",
     "  Permissions-Policy: microphone=(), camera=(), geolocation=()",
     `  Content-Security-Policy: ${buildCsp(cfg)}`,
-    "/",
-    '  Link: </atkinson-next.woff2>; rel=preload; as=font; type="font/woff2"; crossorigin, </boot.js>; rel=modulepreload',
-    "/en",
-    '  Link: </atkinson-next.woff2>; rel=preload; as=font; type="font/woff2"; crossorigin, </boot.js>; rel=modulepreload',
     "/atkinson-next.woff2",
     "  Cache-Control: public, max-age=31536000, immutable",
     "/*.xml",

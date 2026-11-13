@@ -131,7 +131,9 @@ for (const u of ["https://aphrody.com/.env", "https://aphrody.app/wp-login.php"]
 // 7. cache: second request is a HIT.
 await head("https://aphrody.com/");
 const c2 = await head("https://aphrody.com/");
-add("cache", "https://aphrody.com/ (2nd request)", c2.h.get("cf-cache-status") === "HIT", `cf-cache-status ${c2.h.get("cf-cache-status")}`);
+// aphrody.com is served from its aphrody.app deployment in R2 through the zone Cache API (x-aphrody-cache).
+const hit = c2.h.get("cf-cache-status") === "HIT" || c2.h.get("x-aphrody-cache") === "hit";
+add("cache", "https://aphrody.com/ (2nd request)", hit, `cf-cache-status ${c2.h.get("cf-cache-status")} | x-aphrody-cache ${c2.h.get("x-aphrody-cache")}`);
 
 // 8. agents: ssh through Access with the service token (no WARP), both directions.
 const viaAccess = (from: string, to: string, user: string) => sh(from,
@@ -171,6 +173,47 @@ for (const from of ["fr2", "prd"]) {
   for (const h of ["fr2", "prd"]) {
     const t = at.find((x) => x.name === `fleet-${h}-dns`);
     add("credential", `API token fleet-${h}-dns`, !!t && t.status === "active" && !soon(t.expires_on), t ? `${t.status}, expires ${t.expires_on}` : "MISSING");
+  }
+}
+
+// 10. aphrody.com (holding page from docs/ALPHABET.md) and aphrody.app (deployment platform, packages/deploy).
+{
+  const page = async (u: string) => {
+    const r = await fetch(u, { redirect: "manual", signal: AbortSignal.timeout(15000) }).catch(() => null);
+    return { status: r?.status ?? 0, h: r?.headers ?? new Headers(), body: r ? await r.text() : "" };
+  };
+  const com = await page("https://aphrody.com/");
+  add("holding", "https://aphrody.com/", com.status === 200 && com.body.includes("<h2>Noyau</h2>") && com.body.includes("<h2>Paris</h2>") && (com.h.get("x-aphrody-deploy") ?? "").startsWith("aphrody@"), `${com.status} | deploy ${com.h.get("x-aphrody-deploy")} | noyau ${com.body.includes("<h2>Noyau</h2>")}`);
+  const app = await page("https://aphrody.app/");
+  add("platform", "https://aphrody.app/", app.status === 200 && app.body.includes("Déployer le monorepo"), `${app.status} | ${app.body.match(/<title>([^<]*)/)?.[1]}`);
+  const labs = await page("https://aphrody.app/labs");
+  add("platform", "https://aphrody.app/labs", labs.status === 200 && (labs.body.match(/<article/g)?.length ?? 0) > 0, `${labs.status} | ${labs.body.match(/<article/g)?.length ?? 0} cards`);
+  const dash = await head("https://aphrody.app/dashboard");
+  add("access", "https://aphrody.app/dashboard", dash.status === 302 && (dash.h.get("location") ?? "").includes("cloudflareaccess.com"), `${dash.status} -> ${(dash.h.get("location") ?? "").split("?")[0]}`);
+  // A push on main deploys the projects it touches at its head: the last commit touching a project must be an
+  // ancestor of a ready deployment whose preview answers with that sha.
+  const reg = Bun.TOML.parse(await Bun.file(join(import.meta.dir, "..", "..", "packages", "deploy", "projects.toml")).text()) as any;
+  for (const [name, p] of Object.entries<any>(reg.project ?? {})) {
+    const paths = (p.watch ?? [p.path]).map((g: string) => g.replace(/\/\*\*$/, ""));
+    const want = Bun.spawnSync(["git", "log", "-1", "--format=%H", "origin/main", "--", ...paths]).stdout.toString().trim();
+    const d = (await fetch(`https://aphrody.app/api/projects/${name}/deployments`).then((r) => r.json()).catch(() => null)) as any;
+    const rec = d?.deployments?.find((x: any) => x.state === "ready" && Bun.spawnSync(["git", "merge-base", "--is-ancestor", want, x.sha]).exitCode === 0);
+    const pv = rec ? await head(`https://${name}-${rec.sha.slice(0, 7)}.aphrody.app/`) : { status: 0, h: new Headers() };
+    add("deploy-push", `${name} (last change ${want.slice(0, 7)})`, rec?.state === "ready" && pv.status === 200 && pv.h.get("x-aphrody-deploy") === `${name}@${rec.sha.slice(0, 12)}`, rec ? `${rec.sha.slice(0, 7)} ${rec.state} | preview ${pv.status} ${pv.h.get("x-aphrody-deploy")} | prod ${d.production?.slice(0, 7)} | run ${rec.run ?? "-"}` : `no deployment for the last commit touching ${name}`);
+  }
+  // Rollback drill on yolo (non-critical): previous production, verify served, promote back, verify served.
+  const tok = Bun.env.APHRODY_DEPLOY_TOKEN;
+  const served = async () => (await head("https://yolo.aphrody.app/")).h.get("x-aphrody-deploy") ?? "";
+  const post = (path: string, body: unknown) => fetch(`https://aphrody.app/api/projects/yolo/${path}`, { method: "POST", headers: { authorization: `Bearer ${tok}`, "content-type": "application/json" }, body: JSON.stringify(body) }).then((r) => r.json()) as Promise<any>;
+  if (!tok) add("rollback", "yolo (drill)", false, "APHRODY_DEPLOY_TOKEN absent (env-kit exec -- just cf-proof)");
+  else {
+    const rb = await post("rollback", {});
+    await Bun.sleep(6000);
+    const after = await served();
+    const back = rb.ok ? await post("promote", { sha: rb.previous }) : null;
+    await Bun.sleep(6000);
+    const restored = await served();
+    add("rollback", "yolo (drill)", !!rb.ok && after === `yolo@${rb.sha.slice(0, 12)}` && !!back?.ok && restored === `yolo@${rb.previous.slice(0, 12)}`, rb.ok ? `${rb.previous.slice(0, 7)} -> ${rb.sha.slice(0, 7)} served ${after} ; back -> ${restored}` : `refused: ${rb.error}`);
   }
 }
 

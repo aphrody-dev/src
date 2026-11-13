@@ -65,7 +65,7 @@ pub enum Cmd {
     /// Tree-sitter code graph: `ay graph <path>` builds; build, query, path, explain, mcp
     #[command(disable_help_flag = true)]
     Graph(Rest),
-    /// Containers: `ay deploy <sub>` runs `just docker-<sub>` (buildx bake + compose, docs/infra/DEPLOY.md)
+    /// aphrody.app: `ay deploy <project>|ls|logs|rollback|promote` (packages/deploy); containers: `ay deploy build|smoke|up|ps|products|shell|runtime|run` runs `just docker-<sub>`
     #[command(disable_help_flag = true)]
     Deploy(Rest),
     /// Hardware and compiler benchmarks (Windows)
@@ -156,6 +156,8 @@ pub struct SysArgs {
 
 /// Depot subcommands that live under `ay graph`.
 const GRAPH_SUBCOMMANDS: &[&str] = &["build", "query", "path", "explain", "mcp"];
+/// `ay deploy <sub>` subcommands that stay container recipes (`just docker-<sub>`); anything else is aphrody.app.
+const DOCKER_SUBCOMMANDS: &[&str] = &["build", "smoke", "up", "ps", "products", "shell", "runtime", "run"];
 
 /// A resolved invocation: which library (or external program) runs and with what arguments.
 #[derive(Debug, PartialEq)]
@@ -224,6 +226,9 @@ pub fn route(cmd: Cmd) -> Route {
             _ => Route::Depot("ay", prefixed(&["graph", "build"], &r.args)),
         },
         Cmd::Deploy(r) => {
+            if r.args.first().is_some_and(|s| !DOCKER_SUBCOMMANDS.contains(&s.as_str())) {
+                return Route::Package("deploy", r.args);
+            }
             let (sub, rest) = r.args.split_first().map_or(("ps", &[][..]), |(s, rest)| (s.as_str(), rest));
             Route::External("just", prefixed(&[format!("docker-{sub}").as_str()], rest))
         }
@@ -406,6 +411,9 @@ mod tests {
     fn external_engines() {
         assert_eq!(parse("deploy up edge fr2"), Route::External("just", v(&["docker-up", "edge", "fr2"])));
         assert_eq!(parse("deploy"), Route::External("just", v(&["docker-ps"])));
+        assert_eq!(parse("deploy ls"), Route::Package("deploy", v(&["ls"])));
+        assert_eq!(parse("deploy aphrody --local"), Route::Package("deploy", v(&["aphrody", "--local"])));
+        assert_eq!(parse("deploy rollback aphrody"), Route::Package("deploy", v(&["rollback", "aphrody"])));
         assert_eq!(parse("scope serve-web"), Route::External("gamescope-rs", v(&["serve-web"])));
         assert_eq!(parse("lfs logs"), Route::External("just", v(&["lfs-logs"])));
         assert_eq!(parse("lfs"), Route::External("just", v(&["lfs-build"])));
