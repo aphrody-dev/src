@@ -1,0 +1,65 @@
+# Agent fleet: which roles run on which host, with per-role timeout and budget.
+# No provider list here: ai-os (packages/ai-os) names the CLI/model in each task (`providers`),
+# otherwise the runner asks the relay (llm_models). growth tasks are drafts only (approval = owner).
+# Read by infra/agents/runner.ts. Doc: docs/agents/AGENT-FIRST.md.
+
+[roles.coder]
+timeout_s = 3600
+budget_usd = 5
+
+[roles.reviewer]
+timeout_s = 1200
+budget_usd = 2
+
+[roles.tester]
+timeout_s = 2400
+budget_usd = 3
+
+[roles.linter]
+timeout_s = 1200
+budget_usd = 1
+
+[roles.designer]
+timeout_s = 2400
+budget_usd = 3
+
+[roles.deployer]
+timeout_s = 1800
+budget_usd = 2
+
+[roles.sre]
+timeout_s = 1200
+budget_usd = 2
+
+[roles.chromium]
+# fr1 only: Chromium/LLVM factory tasks (docs/CHROMIUM-FACTORY.md). Enforced by runner.ts.
+timeout_s = 21600
+budget_usd = 5
+
+[roles.growth]
+timeout_s = 1800
+budget_usd = 2
+
+# Hosts. `src` = git checkout (main) the runner works in. `ship` = where logs are shipped.
+[hosts.prd]
+roles = ["coder", "reviewer", "tester", "linter", "deployer", "sre", "growth"]
+src = "/root/agents/src"
+
+[hosts.fr1]
+# Chromium/LLVM builds only: no general runner, only role chromium.
+roles = ["chromium"]
+src = "/home/ubuntu/agents/src"
+
+[hosts.fr2]
+# Proxy/CDN host, 11 GB RAM: light roles only.
+roles = ["linter", "sre"]
+src = "/home/ubuntu/agents/src"
+
+[hosts.pc]
+roles = ["coder", "reviewer", "designer", "growth"]
+src = "C:/src"
+
+[ship]
+# Every host appends its log.jsonl lines to prd over ssh (WireGuard or public ssh).
+host = "prd"
+dir = "/var/lib/aphrody-agents/logs"

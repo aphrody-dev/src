@@ -1,0 +1,18 @@
+# User unit: tmux session "agents", one window per role of this host (infra/agents/fleet.toml).
+# Installed by infra/agents/install.sh (@SRC@ / @BUN@ substituted). Doc: docs/agents/AGENT-FIRST.md.
+[Unit]
+Description=Aphrody agent runner (tmux session "agents")
+After=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+# tmux server must outlive ExecStart.
+KillMode=process
+Environment=PATH=%h/.bun/bin:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=SRC_ROOT=@SRC@
+ExecStart=@BUN@ @SRC@/infra/agents/runner.ts up
+ExecStop=/usr/bin/env tmux kill-session -t agents
+
+[Install]
+WantedBy=default.target

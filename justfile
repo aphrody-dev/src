@@ -354,3 +354,30 @@ check:
     bun check -b
     just checkdeps
     ay arch check --root "{{root}}"
+
+# --- Agent fleet (docs/agents/AGENT-FIRST.md). `just <recipe>` is the single agent interface. ---
+
+# Lint: Bun typecheck + clippy (compiles: run on prd, never on the PC)
+lint:
+    bun check -b
+    cargo clippy --workspace --quiet
+
+# Tests of the units changed since ref (alias of test-affected)
+test ref="origin/main":
+    just test-affected {{ref}}
+
+# Runner on this host: up | health | status | work <role> | enqueue --role R --prompt P [--host H] ...
+agents cmd="status" *args:
+    bun "{{root}}/infra/agents/runner.ts" {{cmd}} {{args}}
+
+# Install/refresh the runner on a Linux host (prd, fr1, fr2): CLIs, checkout, systemd user units
+agents-install host:
+    ssh {{host}} 'sh -s' < "{{root}}/infra/agents/install.sh"
+
+# Install the runner on this Windows PC (scheduled tasks + psmux session)
+agents-install-pc:
+    sh "{{root}}/infra/agents/install-pc.sh"
+
+# Attach to a host's agent tmux session (WireGuard or public ssh; see AGENT-FIRST.md, Tunnels)
+agents-attach host="prd":
+    ssh -t {{host}} tmux attach -t agents

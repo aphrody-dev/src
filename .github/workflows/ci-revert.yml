@@ -1,0 +1,44 @@
+# CI is the judge of the PR-less flow on main (docs/agents/AGENT-FIRST.md).
+# When `ci` fails on a main commit whose parent was green, that commit is reverted on main
+# (one-line equivalent: git revert --no-edit <sha> && git push origin HEAD:main).
+# Not reverted: reverts themselves, commits with [no-revert] in the message, failures whose parent
+# was not green (attribution unknown): the prd runner's ci-watch enqueues an sre fix task instead.
+name: ci-revert
+on:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+    branches: [main]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: ci-revert
+  cancel-in-progress: false
+jobs:
+  revert:
+    if: github.event.workflow_run.conclusion == 'failure' && github.event.workflow_run.event == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 50
+      - name: Attribute and revert
+        run: |
+          set -eu
+          msg=$(git log -1 --format=%B "$SHA")
+          case "$msg" in Revert*|*"[no-revert]"*) echo "skip: revert or [no-revert]"; exit 0;; esac
+          parent=$(git rev-parse "$SHA^")
+          pc=$(gh run list -R "$GITHUB_REPOSITORY" -w ci -c "$parent" --json conclusion --jq '[.[]|select(.conclusion!="")][0].conclusion // ""')
+          if [ "$pc" != success ]; then echo "skip: parent $parent ci=$pc (not attributable)"; exit 0; fi
+          git config user.name "aphrody-dev"
+          git config user.email "contact@aphrody.com"
+          git revert --no-edit "$SHA"
+          git commit --amend -m "$(git log -1 --format=%B)" -m "CI run: ${{ github.event.workflow_run.html_url }}" -m "Agent-Role: ci-revert"
+          for i in 1 2 3; do git push origin HEAD:main && exit 0; git pull --rebase origin main; done
+          exit 1
