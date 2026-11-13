@@ -1,7 +1,7 @@
 # Judge of the PR-less flow on main (docs/agents/AGENT-FIRST.md): fast gates on a GitHub-hosted
 # runner, so a verdict exists for every push even when the self-hosted fr1 runner is stopped
 # (docs/infra/FLEET.md). Red -> ci-revert.yml reverts an attributable commit; the prd runner's
-# ci-watch enqueues an sre fix task otherwise. Heavy builds stay in ci.yml.
+# ci-watch enqueues an sre fix task otherwise. Rust builds and tests stay in ci.yml (tribunal 2026-11-13: no gate is duplicated between the two).
 # Action versions: actions/checkout v7.0.1, actions/setup-go v7.0.0 (gh api releases/latest, 2026-11-13).
 name: judge
 on:
@@ -33,3 +33,27 @@ jobs:
         run: AGENTS_HOME="$RUNNER_TEMP/agents" bun --no-env-file test infra/agents
       - name: Go deploy engine
         run: go -C infra test ./...
+      - name: JS supply chain (bun workspace deps)
+        run: bun scripts/js-deps-check.ts
+      - name: Cargo graph resolves (members and path dependencies present, no compilation)
+        run: cargo metadata --locked --no-deps --format-version 1 >/dev/null
+      - name: No workflow outside Chromium/LLVM targets fr1 (owner fleet rule)
+        run: |
+          bad=$(grep -lE '^[[:space:]]*runs-on:.*fr1' .github/workflows/*.yml | grep -vE '/(chromium|llvm)[^/]*[.]yml' || true)
+          [ -z "$bad" ] || { echo "fr1 is Chromium/LLVM only: $bad"; exit 1; }
+      # One step per Bun suite: a red package never hides the next one.
+      - name: Bun env-kit
+        if: ${{ !cancelled() }}
+        run: bun --no-env-file test packages/env-kit
+      - name: Bun upstream
+        if: ${{ !cancelled() }}
+        run: bun --no-env-file test packages/upstream
+      - name: Bun ai-os
+        if: ${{ !cancelled() }}
+        run: cd packages/ai-os && bun --no-env-file test test
+      - name: Bun chromium-bun
+        if: ${{ !cancelled() }}
+        run: cd packages/chromium-bun && bun check && bun --no-env-file test test/ssrf.test.ts test/engines.test.ts test/layers.test.ts test/purge-matrix.test.ts test/winner-picker.test.ts test/chromium-inspector.test.ts
+      - name: Bun apps/aphrody
+        if: ${{ !cancelled() }}
+        run: cd apps/aphrody && bun check && bun --no-env-file test
