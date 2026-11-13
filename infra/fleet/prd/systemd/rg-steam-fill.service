@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: Apache-2.0
+# Resumable Rose Griffon game fill (update, verify, boot assets, CDN sync, model-serve reload).
+# Script: infra/fleet/bin/rg-steam-fill.sh -> /usr/local/sbin/rg-steam-fill. Step markers in
+# /var/lib/rg-steam-fill/<step>.done; enabled so an interrupted run resumes after a reboot, and
+# skipped at boot once every step is done. Rerun: rm /var/lib/rg-steam-fill/*.done; systemctl start.
+[Unit]
+Description=rosegriffon steam fill (resumable)
+Wants=network-online.target
+After=network-online.target docker.service
+Requires=docker.service
+ConditionPathExists=!/var/lib/rg-steam-fill/reload.done
+StartLimitIntervalSec=6h
+StartLimitBurst=6
+
+[Service]
+Type=oneshot
+StateDirectory=rg-steam-fill
+ExecStart=/usr/local/sbin/rg-steam-fill
+Nice=19
+IOSchedulingClass=idle
+CPUWeight=10
+IOWeight=10
+TimeoutStartSec=infinity
+Restart=on-failure
+RestartSec=10min
+
+[Install]
+WantedBy=multi-user.target
