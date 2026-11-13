@@ -3,9 +3,9 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "@sovereign/monorepo",
+      "name": "@aphrody/monorepo",
       "devDependencies": {
-        "@types/bun": "latest",
+        "@types/bun": "catalog:",
       },
     },
     "infra/ffi-bridge": {
@@ -102,6 +102,9 @@
         "wck": "./src/cli.ts",
       },
     },
+  },
+  "catalog": {
+    "@types/bun": "1.4.4",
   },
   "packages": {
     "@aphrody/ai-os": ["@aphrody/ai-os@workspace:packages/ai-os"],

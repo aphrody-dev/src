@@ -55,7 +55,7 @@ Ce que src reprend de chaque modèle, ce qu'il refuse, et pourquoi. Marquage : [
 |---|---|---|---|
 | Graphe de tâches + filtre par changement + cache distant ; le cache distant est implémentable par tout serveur HTTP suivant l'API Remote Cache (endpoints v8) | turborepo.dev/docs/core-concepts/remote-caching [V] | Le graphe : `checkdeps --affected REF` calcule unités touchées + dépendants transitifs ; `just test-affected` teste seulement celles-là | turbo : refusé. Il peut cacher n'importe quelle tâche déclarée, mais au grain du package : il faudrait redéclarer le graphe Cargo dans turbo.json/package.json, alors que sccache cache déjà au grain de l'unité de compilation rustc. Il ajouterait un binaire, une config et un second graphe. Le cache distant R2 vaut pour cargo/sccache (TICKET taskgraph-001), pas pour turbo |
 | just comme point d'entrée | `justfile` [V] | Oui : `just check`, `just checkdeps`, `just affected` | Makefiles, scripts .sh/.ps1 |
-| bun workspaces, uv pour Python | `package.json`, `packages/ai-os/python/pyproject.toml` [V] | Oui | npm/pnpm/yarn, pip |
+| bun workspaces, uv pour Python | `package.json`, `pyproject.toml` racine (workspace uv, un seul `uv.lock`) [V] | Oui | npm/pnpm/yarn, pip |
 
 ## 7. FFI / interop et toolchain LLVM
 

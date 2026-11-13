@@ -5,7 +5,7 @@ name = "xtk"
 version = "0.1.0"
 edition = "2024"
 authors = ["aphrody-dev <contact@aphrody.com>"]
-description = "Monorepo maintenance library behind `ay doctor`, `ay lock`, `ay manifests` and `ay git slim --all`"
+description = "Monorepo maintenance library behind `ay doctor [--deps]`, `ay lock [--deps]`, `ay manifests` and `ay git slim --all`"
 
 [lib]
 name = "xtk"
@@ -16,3 +16,5 @@ argh.workspace = true
 depot-core.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+toml_edit.workspace = true
+ureq.workspace = true

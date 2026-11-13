@@ -76,6 +76,18 @@ slim-all:
 lock:
     ay lock --root "{{root}}" --out "{{root}}/src.lock.json"
 
+# Supply-chain policy gate (docs/deps/POLICY.md): manifests, locks, catalog, containers, tools.toml
+deps *flags:
+    ay doctor --deps --root "{{root}}" {{flags}}
+
+# Refresh Cargo.lock, bun.lock and uv.lock without upgrading (--hoist moves inline crate requirements to the workspace)
+deps-lock *flags:
+    ay lock --deps --root "{{root}}" {{flags}}
+
+# Upgrade within declared requirements, report Cargo duplicates before/after (--breaking: majors too); then run on prd
+deps-bump *flags:
+    ay lock --deps --bump --root "{{root}}" {{flags}}
+
 # Synchronize governance manifests (DEPS, .repo/manifests/default.xml, MAINTAINERS, docs/patches/series)
 manifests:
     ay manifests --root "{{root}}"

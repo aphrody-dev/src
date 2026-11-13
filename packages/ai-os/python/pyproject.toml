@@ -1,7 +1,0 @@
-[project]
-name = "ai-os-python"
-version = "0.0.0"
-requires-python = ">=3.14"
-
-[tool.uv.workspace]
-members = ["agent_core", "hermes_agent_memory", "research_ref"]

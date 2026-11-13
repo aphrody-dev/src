@@ -12,6 +12,8 @@ use std::path::{Path, PathBuf};
 use depot_core::{GitSlim, SlimOptions};
 use std::process::Command;
 
+pub mod deps;
+
 #[derive(FromArgs, PartialEq, Debug)]
 /// Sovereign Monorepo Engine & Toolchain Orchestrator (xtk)
 struct TopLevel {
@@ -32,14 +34,27 @@ enum SubCommand {
 #[derive(FromArgs, PartialEq, Debug)]
 /// verify health of all compiler, VCS, and monorepo toolchains
 #[argh(subcommand, name = "doctor")]
-struct DoctorCmd {}
+struct DoctorCmd {
+    /// check the supply-chain policy (docs/deps/POLICY.md) instead of the toolchains
+    #[argh(switch)]
+    deps: bool,
+    /// with --deps: list every crate resolved at several versions
+    #[argh(switch)]
+    dups: bool,
+    /// with --deps: JSON report
+    #[argh(switch)]
+    json: bool,
+    /// repository root (default: $SRC_ROOT, else the nearest ancestor holding src.lock.json)
+    #[argh(option, default = "String::new()")]
+    root: String,
+}
 
 #[derive(FromArgs, PartialEq, Debug)]
 /// run byte-level Git and Scalar optimization across all C:\src repos
 #[argh(subcommand, name = "slim-all")]
 struct SlimAllCmd {
-    /// target root directory (defaults to C:\src)
-    #[argh(option, default = "String::from(\"C:\\\\src\")")]
+    /// repository root (default: $SRC_ROOT, else the nearest ancestor holding src.lock.json)
+    #[argh(option, default = "String::new()")]
     root: String,
 }
 
@@ -47,23 +62,35 @@ struct SlimAllCmd {
 /// generate deterministic C:\src\src.lock.json and synchronize DEPS, AOSP default.xml, and MAINTAINERS
 #[argh(subcommand, name = "lock")]
 struct LockCmd {
-    /// target root directory (defaults to C:\src)
-    #[argh(option, default = "String::from(\"C:\\\\src\")")]
+    /// repository root (default: $SRC_ROOT, else the nearest ancestor holding src.lock.json)
+    #[argh(option, default = "String::new()")]
     root: String,
-    /// output lockfile path (defaults to C:\src\src.lock.json)
-    #[argh(option, default = "String::from(\"C:\\\\src\\\\src.lock.json\")")]
+    /// output lockfile path (default: <root>/src.lock.json)
+    #[argh(option, default = "String::new()")]
     out: String,
     /// skip emitting DEPS, .repo/manifests/default.xml, and MAINTAINERS
     #[argh(switch)]
     lock_only: bool,
+    /// refresh the language locks (Cargo.lock, bun.lock, uv.lock) instead of src.lock.json
+    #[argh(switch)]
+    deps: bool,
+    /// with --deps: upgrade within the declared requirements (cargo update, bun update, uv lock --upgrade)
+    #[argh(switch)]
+    bump: bool,
+    /// with --deps: also raise Cargo requirements across major versions (cargo update --breaking)
+    #[argh(switch)]
+    breaking: bool,
+    /// with --deps: move inline member requirements into [workspace.dependencies] first
+    #[argh(switch)]
+    hoist: bool,
 }
 
 #[derive(FromArgs, PartialEq, Debug)]
 /// deterministically generate Chromium DEPS, AOSP .repo/manifests/default.xml, Linux MAINTAINERS, and quilt series
 #[argh(subcommand, name = "manifests")]
 struct ManifestsCmd {
-    /// target root directory (defaults to C:\src)
-    #[argh(option, default = "String::from(\"C:\\\\src\")")]
+    /// repository root (default: $SRC_ROOT, else the nearest ancestor holding src.lock.json)
+    #[argh(option, default = "String::new()")]
     root: String,
 }
 
@@ -71,8 +98,8 @@ struct ManifestsCmd {
 /// audit 4-pillar VCS governance (Git + Chromium + Kernel + AOSP + NTFS junctions)
 #[argh(subcommand, name = "audit-vcs")]
 struct AuditVcsCmd {
-    /// target root directory (defaults to C:\src)
-    #[argh(option, default = "String::from(\"C:\\\\src\")")]
+    /// repository root (default: $SRC_ROOT, else the nearest ancestor holding src.lock.json)
+    #[argh(option, default = "String::new()")]
     root: String,
     /// emit JSON output
     #[argh(switch)]
@@ -498,7 +525,7 @@ fn collect_locked_repos(root: &Path) -> BTreeMap<String, LockedRepo> {
         locked_repos.insert(
             rel_name.clone(),
             LockedRepo {
-                path: repo.to_string_lossy().to_string(),
+                path: rel_name.clone(),
                 url,
                 upstream_url,
                 commit,
@@ -1217,12 +1244,49 @@ fn run_audit_vcs(root_str: &str, as_json: bool) -> i32 {
     i32::from(!report.healthy)
 }
 
+/// UTC timestamp, RFC 3339, from the system clock (no shell, same output on every OS).
 fn chrono_like_now() -> String {
-    let out = safe_output(
-        "powershell",
-        &["-NoProfile", "-Command", "Get-Date -Format o"],
-    );
-    out.unwrap_or_else(|| "2026-11-11T08:00:00Z".to_string())
+    let secs = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_secs() as i64)
+        .unwrap_or(0);
+    let (days, rem) = (secs.div_euclid(86_400), secs.rem_euclid(86_400));
+    // Civil date from days since 1970-01-01 (H. Hinnant's algorithm).
+    let z = days + 719_468;
+    let era = z.div_euclid(146_097);
+    let doe = z - era * 146_097;
+    let yoe = (doe - doe / 1460 + doe / 36_524 - doe / 146_096) / 365;
+    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+    let mp = (5 * doy + 2) / 153;
+    let d = doy - (153 * mp + 2) / 5 + 1;
+    let m = if mp < 10 { mp + 3 } else { mp - 9 };
+    let y = yoe + era * 400 + i64::from(m <= 2);
+    format!("{y:04}-{m:02}-{d:02}T{:02}:{:02}:{:02}Z", rem / 3600, rem % 3600 / 60, rem % 60)
+}
+
+/// Repository root: the explicit option, else `$SRC_ROOT`, else the nearest ancestor of the
+/// current directory holding `src.lock.json` (or `Cargo.toml` with a `[workspace]`), else `.`.
+pub fn resolve_root(explicit: &str) -> PathBuf {
+    if !explicit.is_empty() {
+        return PathBuf::from(explicit);
+    }
+    if let Ok(r) = std::env::var("SRC_ROOT") {
+        if !r.is_empty() {
+            return PathBuf::from(r);
+        }
+    }
+    let cwd = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
+    for dir in cwd.ancestors() {
+        if dir.join("src.lock.json").is_file() {
+            return dir.to_path_buf();
+        }
+    }
+    for dir in cwd.ancestors() {
+        if fs::read_to_string(dir.join("Cargo.toml")).is_ok_and(|t| t.contains("[workspace]")) {
+            return dir.to_path_buf();
+        }
+    }
+    cwd
 }
 
 /// Run the maintenance CLI. `cmd` is the name shown in usage, `args` follow it
@@ -1240,12 +1304,32 @@ pub fn run(cmd: &str, args: &[String]) -> i32 {
             return 2;
         }
     };
+    let root_of = |r: &str| resolve_root(r).to_string_lossy().to_string();
     match top.cmd {
+        SubCommand::Doctor(cmd) if cmd.deps => {
+            return deps::run_check(&resolve_root(&cmd.root), cmd.dups, cmd.json);
+        }
         SubCommand::Doctor(_) => check_doctor(),
-        SubCommand::SlimAll(cmd) => run_slim_all(&cmd.root),
-        SubCommand::Lock(cmd) => run_lock(&cmd.root, &cmd.out, cmd.lock_only),
-        SubCommand::Manifests(cmd) => run_manifests(&cmd.root),
-        SubCommand::AuditVcs(cmd) => return run_audit_vcs(&cmd.root, cmd.json),
+        SubCommand::SlimAll(cmd) => run_slim_all(&root_of(&cmd.root)),
+        SubCommand::Lock(cmd) if cmd.deps => {
+            let opts = deps::LockOpts {
+                bump: cmd.bump || cmd.breaking,
+                breaking: cmd.breaking,
+                hoist: cmd.hoist,
+            };
+            return deps::run_lock(&resolve_root(&cmd.root), opts);
+        }
+        SubCommand::Lock(cmd) => {
+            let root = root_of(&cmd.root);
+            let out = if cmd.out.is_empty() {
+                Path::new(&root).join("src.lock.json").to_string_lossy().to_string()
+            } else {
+                cmd.out
+            };
+            run_lock(&root, &out, cmd.lock_only)
+        }
+        SubCommand::Manifests(cmd) => run_manifests(&root_of(&cmd.root)),
+        SubCommand::AuditVcs(cmd) => return run_audit_vcs(&root_of(&cmd.root), cmd.json),
     }
     0
 }
@@ -1256,12 +1340,18 @@ mod tests {
 
     #[test]
     fn test_discover_repos_skips_junctions_and_yolo() {
-        let repos = discover_repos(Path::new("C:\\src"));
-        assert!(!repos.is_empty(), "Should discover repos in C:\\src");
-        for r in &repos {
-            let s = r.to_string_lossy();
-            assert!(!s.contains("yolo-archive"), "Must skip yolo-archive");
+        let root = std::env::temp_dir().join(format!("xtk-discover-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&root);
+        for repo in ["third_party/a", "apps/yolo-archive/b", "packages/node_modules/c", "crates/d"] {
+            fs::create_dir_all(root.join(repo).join(".git")).unwrap();
         }
+        let repos = discover_repos(&root);
+        let rels: Vec<String> = repos
+            .iter()
+            .map(|r| r.strip_prefix(&root).unwrap().to_string_lossy().replace('\\', "/"))
+            .collect();
+        assert_eq!(rels, vec!["crates/d".to_string(), "third_party/a".to_string()]);
+        let _ = fs::remove_dir_all(&root);
     }
 
     #[test]

@@ -3,23 +3,29 @@
   "version": "2026.11.0",
   "private": true,
   "description": "Aphrody Sovereign Monorepo Root - Linux/Git/Chromium/depot_tools/Bun-v1.4.4 Workspace Architecture",
-  "workspaces": [
-    "packages/*",
-    "infra/ffi-bridge"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "infra/ffi-bridge"
+    ],
+    "catalog": {
+      "@types/bun": "1.4.4"
+    }
+  },
   "scripts": {
     "fmt": "bun fmt",
     "fmt:check": "bun fmt --check",
-    "arch": "archguard check --strict",
-    "doctor": "archguard check --strict && xtk doctor && env-kit doctor && triad doctor && src-deploy doctor",
+    "arch": "ay arch check --strict",
+    "doctor": "ay arch check --strict && ay doctor && ay doctor --deps && env-kit doctor && src-deploy doctor",
     "test:packages": "bun test packages/env-kit packages/wck packages/epic-games",
     "deploy": "src-deploy up --all --dry-run",
-    "deploy:live": "src-deploy up --all"
+    "deploy:live": "src-deploy up --all",
+    "deps": "ay doctor --deps"
   },
   "engines": {
     "bun": ">=1.4.4"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "catalog:"
   }
 }

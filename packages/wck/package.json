@@ -7,7 +7,7 @@
     "wck": "./src/cli.ts"
   },
   "scripts": {
-    "build": "bun build --compile src/cli.ts --outfile C:/Users/aphro/.local/bin/wck.exe",
+    "build": "bun build --compile src/cli.ts --outfile dist/wck",
     "test": "bun test",
     "check": "bun check",
     "fmt": "bun fmt"

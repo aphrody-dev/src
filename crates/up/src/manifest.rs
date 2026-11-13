@@ -396,7 +396,7 @@ package = "wrangler"
         assert!(files.contains(&"cargo-config") && files.contains(&"jj-config"));
         assert_eq!(m.links.len(), 1);
         let steps: Vec<&str> = m.steps.iter().map(|s| s.name.as_str()).collect();
-        assert_eq!(steps, vec!["src-deploy", "triad", "frg"]);
+        assert_eq!(steps, vec!["src-deploy", "ai-os", "frg"]);
         for t in m
             .tools
             .iter()

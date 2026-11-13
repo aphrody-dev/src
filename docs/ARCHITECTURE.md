@@ -58,7 +58,8 @@ rust-toolchain.toml nightly épinglée
 .cargo/config.toml  vendored-sources, cranelift dev (sans cdylib ni LTO), rust-lld
 identity.toml       noms renommables (source unique, §6)
 src.lock.json       verrou généré ; DEPS en est dérivé (`ay manifests`)
-uv.lock             Python (packages/ai-os/python)
+pyproject.toml      workspace uv (tools/lore, packages/ai-os/python/*)
+uv.lock             Python : un seul lock (docs/deps/POLICY.md)
 justfile            point d'entrée unique
 DEPS                gclient : dépendances externes épinglées (40 caractères)
 DEPS.rules          racine des règles de couches (checkdeps)
@@ -106,7 +107,7 @@ Grammaires : 13 avec extracteur dédié ; les autres découvertes par `crates/co
 | checkdeps-001 | soldé le 2026-11-13 : l'entrée CLI est `packages/ai-os/src/cli.ts`, hors de `src/core` ; ai-os est une seule unité L4 | — |
 | checkdeps-002 | ARCH-017 d'archguard double checkdeps pour les couches mais porte aussi les frontières de domaine | traduire ces frontières en règles `-` (ex. L3 services système sans `dx12-winui-core`/`steam-depot`, agent sans `next`/`react`) avant de retirer ARCH-017 et d'appeler checkdeps depuis `ay arch check` |
 | checkdeps-003 | `apps/rosegriffon` : cycle `rg-db` <-> `rg-types`, vu par un passage manuel de checkdeps à profondeur 3 (hors gate src) | à corriger dans le dépôt rosegriffon, par son propre gate |
-| checkdeps-004 | Python (`packages/ai-os/python/pyproject.toml`, uv) hors checkdeps et test-affected | lire pyproject.toml, ajouter `uv run pytest` à test-affected |
+| checkdeps-004 | Python (workspace uv racine `pyproject.toml` : tools/lore, packages/ai-os/python/*) hors checkdeps et test-affected | lire pyproject.toml, ajouter `uv run pytest` à test-affected |
 | pin-001 | épinglage multiple : DEPS, src.lock.json, sous-modules, vendored-sources | une seule source (src.lock.json), DEPS et .gitmodules générés |
 | toolchain-001 | cranelift (dev) incompatible avec la LTO LLVM et limité sur windows-msvc | cranelift seulement en dev hors cdylib ; trancher clang-cl vs cl.exe (conflit ouvert) |
 | taskgraph-001 | cache distant R2 pour sccache non configuré | backend S3 de sccache vers R2 sur les runners, après lecture de la doc sccache |

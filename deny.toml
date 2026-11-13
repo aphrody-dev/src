@@ -21,7 +21,7 @@ deny = [{ name = "openssl-sys" }, { name = "openssl" }]
 unknown-registry = "deny"
 unknown-git = "deny"
 allow-registry = ["https://github.com/rust-lang/crates.io-index"]
-allow-git = ["https://github.com/aphrody-dev/russh", "https://github.com/aphrody-dev/sntrup761"]
+allow-git = ["https://github.com/aphrody-dev/russh", "https://github.com/aphrody-dev/sntrup761", "https://github.com/aphrody-dev/steamroom"]
 
 [advisories]
 yanked = "deny"

@@ -1,0 +1,9 @@
+# Root uv workspace (virtual: no [project]). One uv.lock for every first-party Python project of src;
+# apps/* submodules keep the lock of their own repository. Policy: docs/deps/POLICY.md.
+[tool.uv.workspace]
+members = [
+  "tools/lore",
+  "packages/ai-os/python/agent_core",
+  "packages/ai-os/python/hermes_agent_memory",
+  "packages/ai-os/python/research_ref",
+]
