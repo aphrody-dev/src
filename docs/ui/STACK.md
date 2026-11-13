@@ -50,6 +50,17 @@ Décision du propriétaire, 2026-11-13 : toutes les UI actuelles sont rejetées 
 | Figma | Material 3 Design Kit officiel : https://www.figma.com/community/file/1035203688168086460/material-3-design-kit (redirection vérifiée) ; nos variables : fichier `2xsZi5wLPAYLGNCLZ2ZJUv` (équipe Aphrody, plan Professional, 4 modes par collection), voir `packages/design/tokens/figma.json` | MCP Figma `whoami`, `use_figma` |
 | design.md | `google-labs-code/design.md` (Apache-2.0, HEAD `1ed38aa9dd`), npm `@google/design.md` 0.4.0, CLI `designmd lint`, absorbé en bun pur dans `packages/google-design/src/design-md` (`ay design lint`, aucune dépendance npm) ; format front matter YAML `version: alpha` | `docs/spec.md` du dépôt |
 
+Forks aphrody-labs ajoutés le 2026-11-13 (`gh api`, licence SPDX et dernier push vus ce jour ; `third_party/forks.txt`) :
+
+| Brique | Upstream | Licence | Constat |
+|---|---|---|---|
+| Polices variables | `googlefonts/roboto-flex`, `googlefonts/googlesans-code`, `vercel/geist-font`, `rsms/inter` | OFL-1.1 | poussés 2026-11-10, 11-04, 11-06, 2024-11-19 |
+| SVG | `linebender/resvg` v0.50.0 (2026-11-11), `noahbald/oxvg` v0.0.9 (2026-10-05) | Apache-2.0 OR MIT, MIT | rendu et optimisation, compilés sur fr1 |
+| Icônes, référence | `lucide-icons/lucide` | ISC | jamais livrée (Material Symbols seule) |
+| 3D | `mrdoob/three.js` r187 (2026-10-30), `gfx-rs/wgpu` v30.0.2 (2026-11-12) | MIT, MIT OR Apache-2.0 | skill `threejs-webgpu` |
+| Skills | `nextlevelbuilder/ui-ux-pro-max-skill`, `blader/humanizer`, `CloudAI-X/threejs-skills`, `anthropics/skills` (frontend-design) | MIT, MIT, MIT, Apache-2.0 | absorbées dans `.agents/skills/{ui-ux-pro-max,humanizer,threejs-webgpu,ui-system}` |
+| Sécurité | `trailofbits/skills` (fork `aphrody-labs/skills-4`) | CC-BY-SA-4.0 | forké, non absorbé (partage à l'identique) |
+
 Police : Google Sans Flex, SIL OFL 1.1 sans Reserved Font Name (google/fonts `ofl/googlesansflex`, voir `assets/brand/brand.toml`) ; le nom ne doit pas servir de nom de produit.
 
 Risque : Material Web est en maintenance. Mitigation : nous ne dépendons que des éléments `md-*` stables et des tokens CSS `--md-sys-*`, que `packages/design` génère lui-même ; un remplacement par des Web Components WebUI garderait les mêmes tokens.
