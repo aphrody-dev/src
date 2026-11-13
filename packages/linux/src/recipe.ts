@@ -153,7 +153,11 @@ export function generate(root: string, r: Recipe, format: Format, distro?: Distr
           `su build -c 'cd /w && makepkg -fd --noconfirm'\n` +
           `pacman -U --noconfirm /w/${r.name}-${r.version}-${r.release}-any.pkg.tar.zst\n` +
           r.files.map((f) => `test -f ${f.dest}\n`).join("") +
-          `pacman -Qi ${r.name} | head -3\n`,
+          `pacman -Qi ${r.name} | head -3\n` +
+          // Blocking lint: any namcap error (E:) on the PKGBUILD or the package fails the job.
+          `pacman -S --noconfirm --needed namcap >/dev/null\n` +
+          `namcap /w/PKGBUILD /w/${r.name}-${r.version}-${r.release}-any.pkg.tar.zst | tee /w/namcap.txt\n` +
+          `if grep -q ' E: ' /w/namcap.txt; then echo 'namcap: errors' >&2; exit 1; fi\n`,
         0o755,
       );
       break;
@@ -193,11 +197,13 @@ export function generate(root: string, r: Recipe, format: Format, distro?: Distr
       put(
         "build.sh",
         `#!/bin/sh\n${header(r)}set -eu\nexport DEBIAN_FRONTEND=noninteractive\n` +
-          `apt-get update -q\napt-get install -y -q --no-install-recommends build-essential debhelper dpkg-dev\n` +
+          `apt-get update -q\napt-get install -y -q --no-install-recommends build-essential debhelper dpkg-dev lintian\n` +
           `cd /w/${d} && dpkg-buildpackage -us -uc -b\n` +
           `apt-get install -y -q /w/${r.name}_${r.version}-${r.release}_all.deb\n` +
           r.files.map((f) => `test -f ${f.dest}\n`).join("") +
-          `dpkg -s ${r.name} | head -3\n`,
+          `dpkg -s ${r.name} | head -3\n` +
+          // Blocking lint: lintian errors and warnings fail the job.
+          `lintian --fail-on error,warning --display-info /w/${r.name}_${r.version}-${r.release}_all.deb\n`,
         0o755,
       );
       break;
@@ -224,11 +230,13 @@ export function generate(root: string, r: Recipe, format: Format, distro?: Distr
         "build.sh",
         `#!/bin/sh\n${header(r)}set -eu\n` +
           // Public key copied to /etc/apk/keys so the repo index is trusted (`-i` needs doas).
-          `apk add --no-cache alpine-sdk\nabuild-keygen -an\ncp /root/.abuild/*.rsa.pub /etc/apk/keys/\n` +
+          `apk add --no-cache alpine-sdk atools\nabuild-keygen -an\ncp /root/.abuild/*.rsa.pub /etc/apk/keys/\n` +
           `cd /w/${dir} && abuild -F -d -P /w/repo\n` +
           `apk add --no-cache --allow-untrusted $(find /w/repo -name '${r.name}-${r.version}-r${r.release - 1}.apk')\n` +
           r.files.map((f) => `test -f ${f.dest}\n`).join("") +
-          `apk info -e ${r.name}\n`,
+          `apk info -e ${r.name}\n` +
+          // Blocking lint: apkbuild-lint (atools) exits non-zero on any finding.
+          `cd /w/${dir} && apkbuild-lint APKBUILD\n`,
         0o755,
       );
       break;

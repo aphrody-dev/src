@@ -73,3 +73,6 @@ code=$(docker inspect -f '{{.State.ExitCode}}' "$NAME")
 docker logs --tail 40 "$NAME"
 [ "$code" = 0 ] || { echo "kernel: build failed ($code)" >&2; exit 1; }
 ls -l "$WORK/out"
+# Boot proof (boot.sh): uname of the running kernel + APHRODY-BOOT-OK, KVM when available.
+pkg=$(ls "$WORK"/out/linux-*.pkg.tar.zst | grep -v -e '-headers-' -e '-dbg-' -e '-nvidia' -e '-zfs-' | head -1)
+sh "$SRC/infra/linux/build/boot.sh" "$pkg" "$WORK/out/boot.log"
