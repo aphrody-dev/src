@@ -62,13 +62,28 @@ fn channels(root: &Path, args: &[String]) -> Result<String, String> {
         .map_err(|e| e.to_string())?
         .as_secs();
     let toml = crate::channels::fetch_toml(platform, &format!("unix:{now}"))?;
-    // Tracked pin file (third_party/ holds the pins of upstream projects, ARCHITECTURE.md §4).
-    let path = root.join("third_party/chrome-channels.toml");
+    // Tracked pin files (third_party/ keeps the version pins of upstream projects, ARCHITECTURE-ROOT
+    // invariant 4): one file per platform, Linux being the factory's `chrome-channels.toml`.
+    let path = root.join("third_party").join(channels_file(platform));
     if let Some(dir) = path.parent() {
         std::fs::create_dir_all(dir).map_err(|e| format!("{}: {e}", dir.display()))?;
     }
-    std::fs::write(&path, &toml).map_err(|e| format!("{}: {e}", path.display()))?;
+    // Only the first line carries the timestamp: an unchanged pin set leaves the file untouched.
+    let body = |t: &str| t.split_once('\n').map_or("", |(_, b)| b).to_string();
+    let unchanged = std::fs::read_to_string(&path).is_ok_and(|old| body(&old) == body(&toml));
+    if !unchanged {
+        std::fs::write(&path, &toml).map_err(|e| format!("{}: {e}", path.display()))?;
+    }
     Ok(toml)
+}
+
+/// `chrome-channels.toml` for Linux, `chrome-channels-<platform>.toml` otherwise.
+pub fn channels_file(platform: &str) -> String {
+    if platform.eq_ignore_ascii_case("linux") {
+        "chrome-channels.toml".to_string()
+    } else {
+        format!("chrome-channels-{}.toml", platform.to_ascii_lowercase())
+    }
 }
 
 #[cfg(test)]
@@ -85,5 +100,7 @@ mod tests {
             USAGE
         );
         assert!(run(root, &["channels".into(), "--nope".into()]).is_err());
+        assert_eq!(channels_file("Linux"), "chrome-channels.toml");
+        assert_eq!(channels_file("Windows"), "chrome-channels-windows.toml");
     }
 }

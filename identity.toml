@@ -14,9 +14,14 @@ crate = "aphrody"        # package name of crates/ay
 
 [naming]
 npm_scope = "@aphrody"   # every packages/*/package.json#name and the root package
-crate_prefix = "aphrody-" # crates.io-colliding member names carry it (docs/NAMING.md)
-env_prefix = "APHRODY_"
-symbol_prefix = "aphrody_"
+crate_prefix = "aphrody-" # crates/<dir> is named <dir> or <crate_prefix><dir> (crates.io collisions, docs/NAMING.md)
+
+# Historical names kept as-is (renaming them is a breaking change for their users).
+# C symbol and env prefixes (aphrody_*, APHRODY_*) are frozen: TICKET identity-001.
+[naming.crate_names]
+bench = "stack-bench"
+xtask = "xtk"
+unix-omarchy = "aphrody-omarchy"
 
 [orgs]
 main = "aphrody-dev"     # github.com/<main>/<product.repo> = this repository

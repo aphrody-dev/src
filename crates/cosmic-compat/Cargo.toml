@@ -8,7 +8,7 @@ authors.workspace = true
 license.workspace = true
 
 [dependencies]
-smithay-wayland-wire = { version = "0.2.0", path = "../smithay-wayland-wire" }
+smithay-wayland-wire.workspace = true
 hypr-tiler = { version = "0.2.0", path = "../hypr-tiler" }
 tracing.workspace = true
 thiserror.workspace = true

@@ -1,5 +1,5 @@
 {
-  "name": "@aphrody/infra-ffi-bridge",
+  "name": "@aphrody/ffi-bridge",
   "version": "1.27.0",
   "private": true,
   "description": "Three-Way Rust <-> Bun v1.4.4 <-> Go 1.27 Zero-Copy Native FFI Bridge",

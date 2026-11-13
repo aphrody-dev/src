@@ -2,15 +2,20 @@
 // identity: identity.toml is the single source of the product identity; this script checks and
 // rewrites every manifest that copies it (docs/ARCHITECTURE-ROOT.md invariant 5).
 //
-//   bun scripts/identity.ts check [--root DIR]   exit 1 on drift (gate in `just check`)
+//   bun scripts/identity.ts check [--root DIR]   exit 1 on drift (gate in `just check` and CI)
 //   bun scripts/identity.ts apply [--root DIR]   rewrite the derived fields from identity.toml
 //   bun scripts/identity.ts get <dotted.key>     print one value (recipes, CI)
 //
-// Derived fields: Cargo.toml [workspace.package] authors/repository/homepage; crates/ay package
-// name and [[bin]] name; root and packages/*/package.json names; `workspace:` dependency keys;
-// sub-products ([products.*]) package names. Values are compared parsed (comments, multi-line arrays).
+// Derived fields:
+// - Cargo.toml [workspace.package] authors/repository/homepage; crates/ay package and [[bin]] name;
+// - crates/*/Cargo.toml package names: `<dir>` or `<crate_prefix><dir>` (crates.io collisions,
+//   docs/NAMING.md), except [naming.crate_names]; renames follow every `package = "..."` key;
+// - npm: every bun workspace (root package.json `workspaces` globs) is named `<scope>/<dir>`
+//   (`<scope>/<binary>` for [products.*], `<scope>/monorepo` at the root), and every `workspace:`
+//   dependency must name one of them.
+// TOML values are compared parsed (comments, multi-line arrays); JSON is rewritten as objects.
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 
 export type Identity = {
   product: { name: string; display: string; repo: string };
@@ -18,8 +23,7 @@ export type Identity = {
   naming: {
     npm_scope: string;
     crate_prefix: string;
-    env_prefix: string;
-    symbol_prefix: string;
+    crate_names?: Record<string, string>;
   };
   orgs: { main: string; lab: string };
   domains: { root: string; home: string; git: string; contact: string };
@@ -52,51 +56,100 @@ type Edit = {
   apply: (s: string) => string;
 };
 
-/** Value of `[table] key` read by the TOML parser (multi-line arrays and comments included). */
+/** Split a TOML line into code and comment: `#` inside "basic" (with \ escapes) or 'literal' strings is code. */
+export function splitComment(line: string): [string, string] {
+  let quote: string | undefined;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i]!;
+    if (quote) {
+      if (quote === '"' && c === "\\") i++;
+      else if (c === quote) quote = undefined;
+    } else if (c === '"' || c === "'") quote = c;
+    else if (c === "#") return [line.slice(0, i), line.slice(i)];
+  }
+  return [line, ""];
+}
+
+/** Net `[` minus `]` outside strings and comments. */
+function bracketDepth(line: string): number {
+  let depth = 0;
+  let quote: string | undefined;
+  const [code] = splitComment(line);
+  for (let i = 0; i < code.length; i++) {
+    const c = code[i]!;
+    if (quote) {
+      if (quote === '"' && c === "\\") i++;
+      else if (c === quote) quote = undefined;
+    } else if (c === '"' || c === "'") quote = c;
+    else if (c === "[") depth++;
+    else if (c === "]") depth--;
+  }
+  return depth;
+}
+
+/** Value of `[table] key` read by the TOML parser. */
 function tomlGet(text: string, table: string, key: string): unknown {
   const doc = Bun.TOML.parse(text) as Record<string, any>;
-  const path = table.replace(/^\[+|\]+$/g, "").split(".");
   let t: any = doc;
-  for (const k of path) t = t?.[k];
+  for (const k of table.replace(/^\[+|\]+$/g, "").split(".")) t = t?.[k];
   return Array.isArray(t) ? t[0]?.[key] : t?.[key]; // [[bin]]: first entry
 }
 
-/** Rewrite `key = <value>` in `[table]`; the old value may span lines (arrays) and carry a comment. */
-function tomlSet(
+/** Rewrite `key = <value>` in `[table]` (header may carry a comment; value may span lines). */
+export function tomlSet(
   text: string,
   table: string,
   key: string,
   value: string,
 ): string {
   const lines = text.split("\n");
-  const start = lines.findIndex((l) => l.trim() === table);
+  const header = (l: string) => splitComment(l)[0].trim();
+  const start = lines.findIndex((l) => header(l) === table);
   if (start < 0) throw new Error(`${table} not found`);
-  for (let i = start + 1; i < lines.length && !/^\s*\[/.test(lines[i]!); i++) {
+  for (
+    let i = start + 1;
+    i < lines.length && !/^\s*\[/.test(header(lines[i]!));
+    i++
+  ) {
     if (!new RegExp(`^\\s*${key}\\s*=`).test(lines[i]!)) continue;
     let end = i;
-    const rest = lines[i]!.replace(/^[^=]*=\s*/, "");
-    if (rest.startsWith("[")) {
-      let depth = 0;
-      for (end = i; end < lines.length; end++) {
-        for (const c of lines[end]!.replace(/"[^"]*"/g, "").replace(/#.*$/, ""))
-          depth += c === "[" ? 1 : c === "]" ? -1 : 0;
-        if (depth <= 0) break;
-      }
-    }
-    const comment = lines[end]!.match(/\s+#[^"]*$/)?.[0] ?? "";
-    lines.splice(i, end - i + 1, `${key} = ${value}${comment}`);
+    let depth = bracketDepth(lines[i]!);
+    while (depth > 0 && end + 1 < lines.length)
+      depth += bracketDepth(lines[++end]!);
+    const comment = splitComment(lines[end]!)[1];
+    lines.splice(
+      i,
+      end - i + 1,
+      `${key} = ${value}${comment ? ` ${comment}` : ""}`,
+    );
     return lines.join("\n");
   }
   throw new Error(`${table} ${key} not found`);
 }
 
-const q = (s: string) => JSON.stringify(s);
 const DEP_FIELDS = [
   "dependencies",
   "devDependencies",
   "peerDependencies",
   "optionalDependencies",
 ];
+const reEscape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** Directories of the bun workspaces (root package.json `workspaces`, array or `{ packages }`). */
+function workspaceDirs(root: string): string[] {
+  const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+  const globs: string[] = Array.isArray(pkg.workspaces)
+    ? pkg.workspaces
+    : (pkg.workspaces?.packages ?? []);
+  const dirs = new Set<string>();
+  for (const g of globs)
+    for (const f of new Bun.Glob(`${g}/package.json`).scanSync({
+      cwd: root,
+      onlyFiles: true,
+    }))
+      dirs.add(dirname(f).replaceAll("\\", "/"));
+  return [...dirs].sort();
+}
 
 export function plan(root: string, id = loadIdentity(root)): Edit[] {
   const edits: Edit[] = [];
@@ -129,51 +182,86 @@ export function plan(root: string, id = loadIdentity(root)): Edit[] {
   tomlEdit("crates/ay/Cargo.toml", "[[bin]]", "name", id.cli.binary);
   tomlEdit("crates/ay/Cargo.toml", "[package]", "repository", repoUrl(id));
 
-  // npm: the expected name never depends on the current one: <scope>/monorepo at the root,
-  // <scope>/<binary> for a [products.*] entry, <scope>/<directory> otherwise.
+  // Crates: <dir> or <crate_prefix><dir>; a rename follows every `package = "..."` key.
+  const prefix = id.naming.crate_prefix;
+  const fixed = id.naming.crate_names ?? {};
+  const crateFiles = existsSync(join(root, "crates"))
+    ? readdirSync(join(root, "crates"))
+        .map((d) => `crates/${d}/Cargo.toml`)
+        .filter((f) => existsSync(join(root, f)))
+    : [];
+  const cargoFiles = ["Cargo.toml", ...crateFiles];
+  for (const file of crateFiles) {
+    const dir = basename(dirname(file));
+    const name = (Bun.TOML.parse(read(file)) as any).package?.name as
+      string | undefined;
+    if (!name || dir === "ay") continue;
+    const want = fixed[dir] ?? (name === dir ? dir : `${prefix}${dir}`);
+    if (name === want) continue;
+    tomlEdit(file, "[package]", "name", want);
+    const re = new RegExp(`(package\\s*=\\s*)"${reEscape(name)}"`, "g");
+    for (const other of cargoFiles)
+      if (read(other).match(re))
+        edits.push({
+          file: other,
+          what: `package = "${name}"`,
+          have: name,
+          want,
+          apply: (s) => s.replace(re, `$1"${want}"`),
+        });
+  }
+
+  // npm: expected names never depend on the current ones.
   const scope = id.naming.npm_scope;
   const products = Object.values(id.products ?? {});
   const pkgs = [
     "package.json",
-    ...readdirSync(join(root, "packages"))
-      .map((d) => `packages/${d}/package.json`)
-      .filter((f) => existsSync(join(root, f))),
+    ...workspaceDirs(root).map((d) => `${d}/package.json`),
   ];
-  const names = new Map<string, string>(); // current name -> expected name, for dependency keys
   const expected = pkgs.map((file) => {
     const pkg = JSON.parse(read(file));
     const product = products.find((p) => `${p.path}/package.json` === file);
-    const want = `${scope}/${file === "package.json" ? "monorepo" : product ? product.binary : file.split("/")[1]}`;
-    names.set(String(pkg.name), want);
+    const want = `${scope}/${file === "package.json" ? "monorepo" : product ? product.binary : basename(dirname(file))}`;
     return { file, pkg, want };
   });
+  const byName = new Map(expected.map((e) => [String(e.pkg.name), e.want]));
+  const valid = new Set(expected.map((e) => e.want));
   for (const { file, pkg, want } of expected) {
-    if (pkg.name !== want)
-      edits.push({
-        file,
-        what: "name",
-        have: pkg.name,
-        want,
-        apply: (s) => s.replace(`"name": ${q(pkg.name)}`, `"name": ${q(want)}`),
-      });
-    // Workspace dependencies must use the expected name of the package they point to.
+    const renames: [string, string, string][] = []; // [field, from, to]
     for (const field of DEP_FIELDS)
       for (const [dep, spec] of Object.entries<string>(pkg[field] ?? {})) {
         if (!String(spec).startsWith("workspace:")) continue;
-        const target =
-          names.get(dep) ??
-          (dep.startsWith(`${scope}/`)
-            ? dep
-            : `${scope}/${dep.split("/").pop()}`);
-        if (dep !== target)
+        const target = byName.get(dep) ?? dep;
+        if (!valid.has(target))
           edits.push({
             file,
-            what: `${field} key`,
+            what: `${field} ${dep}`,
             have: dep,
-            want: target,
-            apply: (s) => s.replace(`${q(dep)}:`, `${q(target)}:`),
+            want: "a workspace package",
+            apply: () => {
+              throw new Error(
+                `${file}: ${field} ${dep} names no workspace package`,
+              );
+            },
           });
+        else if (dep !== target) renames.push([field, dep, target]);
       }
+    if (pkg.name === want && !renames.length) continue;
+    edits.push({
+      file,
+      what: pkg.name === want ? "workspace dependency names" : "name",
+      have: [pkg.name, ...renames.map((r) => r[1])].join(", "),
+      want: [want, ...renames.map((r) => r[2])].join(", "),
+      apply: (s) => {
+        const o = JSON.parse(s);
+        o.name = want;
+        for (const [field, from, to] of renames)
+          o[field] = Object.fromEntries(
+            Object.entries(o[field]).map(([k, v]) => [k === from ? to : k, v]),
+          );
+        return `${JSON.stringify(o, null, 2)}\n`;
+      },
+    });
   }
   return edits;
 }
@@ -206,8 +294,7 @@ function main(argv: string[]) {
     return edits.length ? 1 : 0;
   }
   if (cmd === "apply") {
-    const byFile = Map.groupBy(edits, (e) => e.file);
-    for (const [file, es] of byFile) {
+    for (const [file, es] of Map.groupBy(edits, (e) => e.file)) {
       const p = join(root, file);
       writeFileSync(
         p,

@@ -12,7 +12,7 @@ Cible commune avec la session labs (référence : `labs/docs/ROOT-ARCHITECTURE.m
    - `origin` = fork `aphrody-labs`, `upstream` = projet amont ;
    - un fork tiers qui porte des commits devient un remote supplémentaire du même clone (exemple : `reactos` dans `third_party/LiberNT`), pas une seconde copie ;
    - les patchs vivent dans les forks, épinglés par commit, jamais dans une copie vendorisée.
-4. **Rien de régénérable n'est versionné.** `third_party/` (matérialisé depuis `src.lock.json`), `third_party/crates` (`cargo vendor` via `just vendor` : `Cargo.lock` et la source-replace de `.cargo/config.toml` restent versionnés, le build tourne hors ligne), `target/`, `node_modules/`, `var/`.
+4. **Rien de régénérable n'est versionné.** `third_party/` (matérialisé depuis `src.lock.json`, à l'exception de ses fichiers de pins suivis : `third_party/*.toml` comme `chrome-channels*.toml` et `ECOSYSTEM.toml`, `forks.txt`), `third_party/crates` (`cargo vendor` via `just vendor` : `Cargo.lock` et la source-replace de `.cargo/config.toml` restent versionnés, le build tourne hors ligne), `target/`, `node_modules/`, `var/`.
 5. **Identité unique.** `identity.toml` à la racine contient : produit et dépôt, CLI (binaire `ay`, package `aphrody`), scope npm, préfixes (`crate_prefix`, `env_prefix`, `symbol_prefix`), orgs (`aphrody-dev`, `aphrody-labs`), domaines, sous-produits.
    - `just identity apply` (`bun scripts/identity.ts apply`) réécrit les champs copiés : `[workspace.package]` (authors, repository, homepage), nom et `[[bin]]` de crates/ay, `package.json#name` et clés `@scope/` ;
    - `just identity check` garde `just check` et la CI (étape « Identity gate ») ;

@@ -78,7 +78,8 @@ pub unsafe extern "C" fn aphrody_adblock_eval(
         "important": res.important,
         "filter": res.filter,
         "exception": res.exception,
-        "cosmeticSelectors": engine.cosmetic_hide_selectors,
+        // Per-site selectors for the checked URL; generic rules need the page DOM (corelib::web::cosmetic).
+        "cosmeticSelectors": engine.hide_selectors_for(url),
     }))
     .unwrap_or_default();
     ffi_pack_buffer(0, &payload)

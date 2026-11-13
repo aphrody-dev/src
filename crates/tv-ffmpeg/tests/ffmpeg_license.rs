@@ -6,7 +6,8 @@
 fn ffmpeg_build_is_lgpl() {
     tv_ffmpeg::init().expect("FFmpeg libraries load");
     let config = tv_ffmpeg::ff::util::configuration();
-    for flag in ["--enable-gpl", "--enable-nonfree"] {
+    // LGPL-2.1 only: --enable-version3 turns the build into LGPL-3.0 (not admitted, §11).
+    for flag in ["--enable-gpl", "--enable-nonfree", "--enable-version3"] {
         assert!(!config.contains(flag), "FFmpeg built with {flag}: {config}");
     }
     let license = tv_ffmpeg::ff::util::license();

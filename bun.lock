@@ -9,7 +9,7 @@
       },
     },
     "infra/ffi-bridge": {
-      "name": "@aphrody/infra-ffi-bridge",
+      "name": "@aphrody/ffi-bridge",
       "version": "1.27.0",
     },
     "packages/ai-os": {
@@ -121,11 +121,11 @@
 
     "@aphrody/epic-games": ["@aphrody/epic-games@workspace:packages/epic-games"],
 
+    "@aphrody/ffi-bridge": ["@aphrody/ffi-bridge@workspace:infra/ffi-bridge"],
+
     "@aphrody/forge": ["@aphrody/forge@workspace:packages/forge"],
 
     "@aphrody/google-design": ["@aphrody/google-design@workspace:packages/google-design"],
-
-    "@aphrody/infra-ffi-bridge": ["@aphrody/infra-ffi-bridge@workspace:infra/ffi-bridge"],
 
     "@aphrody/machine": ["@aphrody/machine@workspace:packages/machine"],
 

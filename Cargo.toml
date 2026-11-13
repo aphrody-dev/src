@@ -38,6 +38,9 @@ agent-context = { version = "0.1.0", path = "crates/agent-context" }
 aphrody-core = { version = "0.2.0", path = "crates/core" }
 aphrody-core-capi = { version = "0.2.0", path = "crates/core-capi" }
 depot-re = { version = "0.2.0", path = "crates/depot-re" }
+# WSLg stack: Windows host crates and the portable Wayland wire (docs/ARCHITECTURE.md §6).
+dx12-winui-core = { version = "0.2.0", path = "crates/dx12-winui-core" }
+smithay-wayland-wire = { version = "0.2.0", path = "crates/smithay-wayland-wire" }
 depot-migrate = { version = "0.2.0", path = "crates/depot-migrate" }
 depot-forge = { version = "0.2.0", path = "crates/depot-forge" }
 depot-ingest = { version = "0.2.0", path = "crates/depot-ingest" }

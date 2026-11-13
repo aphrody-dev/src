@@ -243,21 +243,26 @@ pub fn run(root: &Path, check: bool) -> i32 {
             }
         }
     }
-    // Reverse drift: a locked first-party path must exist in the index, as a gitlink or as tracked files.
-    for path in lock
+    // Reverse drift: a first-party path pinned to a remote commit must be a gitlink (DEPS would
+    // otherwise check out a second copy over tracked files); a `local:` entry must be tracked.
+    for (path, repo) in lock
         .repositories
-        .keys()
-        .filter(|p| !p.starts_with("third_party/"))
+        .iter()
+        .filter(|(p, _)| !p.starts_with("third_party/"))
     {
-        let tracked = links.contains_key(path)
-            || listing.lines().any(|l| {
-                l.split_once('\t')
-                    .is_some_and(|(_, f)| f.starts_with(&format!("{path}/")))
-            });
-        if !tracked {
-            eprintln!(
-                "manifests: {path} is locked in src.lock.json but neither a gitlink nor tracked (run `ay lock`)"
-            );
+        let tracked = listing.lines().any(|l| {
+            l.split_once('\t')
+                .is_some_and(|(_, f)| f.starts_with(&format!("{path}/")))
+        });
+        let problem = if pinned(repo) && !links.contains_key(path) {
+            Some("is pinned to a remote commit but is not a gitlink (merged tree: run `ay lock`)")
+        } else if !pinned(repo) && !tracked && !links.contains_key(path) {
+            Some("is locked but neither a gitlink nor tracked (run `ay lock`)")
+        } else {
+            None
+        };
+        if let Some(why) = problem {
+            eprintln!("manifests: {path} {why}");
             drift += 1;
         }
     }
