@@ -2,7 +2,7 @@
 //   - relais natif : méthodes `<outil>` (ex. gemini_ask) et `tools/list` ;
 //   - MCP Streamable HTTP, double époque : 2025-11-25 (initialize) et 2026-07-28 (server/discover, sans état,
 //     _meta par requête, resultType, ttlMs/cacheScope) — spec modelcontextprotocol@2026-07-28 ;
-//   - A2A 1.0.1 (JSON-RPC, SendMessage, carte d'agent /.well-known/agent-card.json, supportedInterfaces).
+//   - A2A 1.0 : a2a.ts (mêmes outils, via call).
 import { validate } from "../llm/schema.ts";
 import type { JsonSchema } from "../llm/types.ts";
 import { hubCall, hubTools } from "./mcp-hub.ts";
@@ -10,25 +10,25 @@ import { TOOLS, toolByName } from "./tools.ts";
 
 export const VERSION = "0.1.0";
 export const MCP_VERSIONS = ["2026-07-28", "2025-11-25", "2025-06-18"];
-type Req = {
+export type Req = {
   jsonrpc: "2.0";
   id?: string | number | null;
   method: string;
   params?: any;
 };
-type Res = {
+export type Res = {
   jsonrpc: "2.0";
   id: string | number | null;
   result?: unknown;
   error?: { code: number; message: string; data?: unknown };
 };
 
-const ok = (id: Req["id"], result: unknown): Res => ({
+export const ok = (id: Req["id"], result: unknown): Res => ({
   jsonrpc: "2.0",
   id: id ?? null,
   result,
 });
-const fail = (
+export const fail = (
   id: Req["id"],
   code: number,
   message: string,
@@ -38,14 +38,14 @@ const fail = (
   id: id ?? null,
   error: { code, message, ...(data ? { data } : {}) },
 });
-const text = (v: unknown) =>
+export const text = (v: unknown) =>
   typeof v === "string"
     ? v
     : (v as any)?.text && Object.keys(v as any).length <= 4
       ? String((v as any).text)
       : JSON.stringify(v, null, 1);
 
-async function call(name: string, args: unknown) {
+export async function call(name: string, args: unknown) {
   if (typeof name !== "string")
     throw Object.assign(new Error("méthode absente"), { code: -32600 });
   const t = toolByName.get(name);
@@ -173,85 +173,6 @@ export async function mcpRpc(r: Req): Promise<Res | null> {
     }
   } catch (e: any) {
     return r.id === undefined ? null : fail(r.id, e.code ?? -32603, e.message);
-  }
-}
-
-/** Outils exposés comme skills A2A : la carte et SendMessage lisent la même liste. */
-export const A2A_SKILLS = [
-  "gemini_ask",
-  "claude_ask",
-  "agy_ask",
-  "gemini_review",
-  "agent_run",
-  "llm_ask",
-];
-
-export const agentCard = (url: string) => ({
-  name: "aphrody-relay",
-  description:
-    "Relais entre Claude Code et Gemini (gemini.google.com ou Gemini CLI), avec flotte VPS et gcloud en lecture.",
-  supportedInterfaces: [
-    { url: `${url}/a2a`, protocolBinding: "JSONRPC", protocolVersion: "1.0" },
-  ],
-  provider: { organization: "Aphrody", url: "https://aphrody.com" },
-  version: VERSION,
-  capabilities: {
-    streaming: false,
-    pushNotifications: false,
-    extendedAgentCard: false,
-  },
-  securitySchemes: { bearer: { httpAuthSecurityScheme: { scheme: "Bearer" } } },
-  securityRequirements: [{ schemes: { bearer: { list: [] } } }],
-  defaultInputModes: ["text/plain"],
-  defaultOutputModes: ["text/plain"],
-  skills: TOOLS.filter((t) => A2A_SKILLS.includes(t.name)).map((t) => ({
-    id: t.name,
-    name: t.name,
-    description: t.description,
-    tags: ["llm"],
-    inputModes: ["text/plain"],
-    outputModes: ["text/plain"],
-  })),
-});
-
-/** A2A 1.0.1 : SendMessage -> message agent (réponse directe). metadata.skill choisit l'outil (gemini_ask par défaut ;
- * agent_run = tâche complète de l'agent, llm_ask = modèle découvert, metadata.model = fournisseur/modèle). Seule surface A2A d'ai-os. */
-export async function a2aRpc(r: Req): Promise<Res | null> {
-  if (r.method !== "SendMessage")
-    return fail(r.id, -32601, `méthode A2A non prise en charge : ${r.method}`);
-  const m = r.params?.message;
-  if (!m?.messageId || !Array.isArray(m.parts))
-    return fail(r.id, -32602, "SendMessageRequest.message invalide");
-  const prompt = m.parts
-    .map((p: any) => p.text ?? (p.data ? JSON.stringify(p.data) : ""))
-    .join("\n");
-  const skill = String(
-    m.metadata?.skill ?? r.params?.metadata?.skill ?? "gemini_ask",
-  );
-  if (!A2A_SKILLS.includes(skill))
-    return fail(r.id, -32602, `skill inconnu : ${skill}`);
-  try {
-    const v: any = await call(
-      skill,
-      skill === "gemini_review"
-        ? { title: m.metadata?.title ?? "A2A", content: prompt }
-        : skill === "agent_run"
-          ? { task: prompt, model: m.metadata?.model }
-          : skill === "llm_ask"
-            ? { model: m.metadata?.model, prompt }
-            : { prompt, chat: m.metadata?.chat },
-    );
-    return ok(r.id, {
-      message: {
-        messageId: crypto.randomUUID(),
-        contextId: m.contextId ?? crypto.randomUUID(),
-        role: "ROLE_AGENT",
-        parts: [{ text: text(v) }],
-        metadata: { engine: v?.engine, chat: v?.chat, ms: v?.ms },
-      },
-    });
-  } catch (e: any) {
-    return fail(r.id, -32000, e.message);
   }
 }
 

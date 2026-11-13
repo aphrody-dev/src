@@ -3,13 +3,7 @@
 process.env.RELAY_HUB = "0";
 process.env.RELAY_BUILTIN_MCP = "0";
 import { expect, test } from "bun:test";
-import {
-  a2aRpc,
-  agentCard,
-  dispatch,
-  MCP_VERSIONS,
-  mcpRpc,
-} from "../../src/relay/protocols.ts";
+import { dispatch, MCP_VERSIONS, mcpRpc } from "../../src/relay/protocols.ts";
 
 test("MCP 2025-11-25 : initialize puis tools/list", async () => {
   const init: any = await mcpRpc({
@@ -73,27 +67,4 @@ test("MCP : outil inconnu et notification sans réponse", async () => {
       mcpRpc,
     ),
   ).toBeNull();
-});
-
-test("A2A 1.0 : carte d'agent et validation de SendMessage", async () => {
-  const c = agentCard("http://127.0.0.1:8790");
-  expect(c.supportedInterfaces[0]).toEqual({
-    url: "http://127.0.0.1:8790/a2a",
-    protocolBinding: "JSONRPC",
-    protocolVersion: "1.0",
-  });
-  const r: any = await a2aRpc({
-    jsonrpc: "2.0",
-    id: 1,
-    method: "SendMessage",
-    params: { message: { role: "ROLE_USER" } },
-  });
-  expect(r.error.code).toBe(-32602);
-  const m: any = await a2aRpc({
-    jsonrpc: "2.0",
-    id: 2,
-    method: "message/send",
-    params: {},
-  });
-  expect(m.error.code).toBe(-32601);
 });

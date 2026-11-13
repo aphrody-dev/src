@@ -1,6 +1,6 @@
 // Serveur du relais : un processus bun, toutes les liaisons sur 127.0.0.1 (ou RELAY_HOST), jeton porteur obligatoire
 // (sauf carte d'agent A2A) :
-//   HTTP   POST /rpc (relais natif)  POST /mcp (MCP Streamable HTTP)  POST /a2a (A2A 1.0)  GET /.well-known/agent-card.json
+//   HTTP   POST /rpc (relais natif)  POST /mcp (MCP Streamable HTTP)  POST /a2a (A2A 1.0, SSE : a2a.ts)  GET /.well-known/agent-card.json
 //   WS     /ws : JSON-RPC du relais natif, un message par trame
 //   WebMCP GET /webmcp?token=… : outils exposés à l agent du navigateur (document.modelContext)
 //   TCP    RELAY_TCP_PORT : JSON-RPC délimité par lignes (NDJSON) ; TLS sur RELAY_TLS_PORT si RELAY_TLS_CERT/KEY sont définis
@@ -8,14 +8,8 @@ import { existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { relayHome } from "./cdp.ts";
 import { webmcpPage } from "./webmcp.ts";
-import {
-  a2aRpc,
-  agentCard,
-  dispatch,
-  mcpRpc,
-  nativeRpc,
-  VERSION,
-} from "./protocols.ts";
+import { a2aHttp, agentCard } from "./a2a.ts";
+import { dispatch, mcpRpc, nativeRpc, VERSION } from "./protocols.ts";
 
 /** Jeton du relais (32 octets aléatoires, créé au premier lancement dans le dossier privé de l'utilisateur). */
 export async function relayToken(): Promise<string> {
@@ -66,7 +60,17 @@ export async function serve() {
     new Response("jeton requis (Authorization: Bearer)", { status: 401 });
   const rpc = (h: Parameters<typeof dispatch>[1]) => async (req: Request) => {
     if (!authed(req)) return deny();
-    const out = await dispatch(await req.json().catch(() => null), h);
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return Response.json({
+        jsonrpc: "2.0",
+        id: null,
+        error: { code: -32700, message: "Parse error" },
+      });
+    }
+    const out = await dispatch(body, h);
     return out === null
       ? new Response(null, { status: 202 })
       : Response.json(out);
@@ -86,7 +90,9 @@ export async function serve() {
         POST: rpc(mcpRpc),
         GET: () => new Response(null, { status: 405 }),
       },
-      "/a2a": { POST: rpc(a2aRpc) },
+      "/a2a": {
+        POST: (req: Request) => (authed(req) ? a2aHttp(req) : deny()),
+      },
       "/ws": (req: Request, srv: Bun.Server<{ open: number }>) =>
         !authed(req)
           ? deny()
