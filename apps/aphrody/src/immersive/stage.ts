@@ -15,6 +15,8 @@ export interface StageOptions {
   /** Called on focus change and activation (sound hooks). */
   onFocus?: (el: HTMLElement) => void;
   onActivate?: (el: HTMLElement) => void;
+  /** When it returns false the stage ignores keyboard and gamepad navigation (a window owns the input). */
+  active?: () => boolean;
 }
 
 export interface StageStats {
@@ -222,7 +224,7 @@ export async function startStage(o: StageOptions): Promise<StageHandle | null> {
     const map: Record<string, Dir> = { ArrowLeft: "left", ArrowRight: "right", ArrowUp: "up", ArrowDown: "down", a: "left", d: "right", w: "up", s: "down" };
     const dir = map[e.key];
     if (e.key === "Tab" || dir) setInput("kbd");
-    if (!dir || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!dir || e.ctrlKey || e.metaKey || e.altKey || o.active?.() === false) return;
     const t = e.target as HTMLElement;
     if (t.matches?.("input,textarea,select,[contenteditable]")) return;
     if (focusedIdx() < 0 && hoverIdx < 0) {
@@ -276,6 +278,7 @@ export async function startStage(o: StageOptions): Promise<StageHandle | null> {
   let padNext = 0;
   let aWas = false;
   const pollPad = (now: number) => {
+    if (o.active?.() === false) return;
     const gp = [...(navigator.getGamepads?.() ?? [])].find((g) => g?.connected);
     if (!gp) return;
     const ax = gp.axes;

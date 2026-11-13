@@ -30,6 +30,7 @@ import { minifyCss } from "./src/seo/page-css";
 import { render404 } from "./src/seo/html";
 import { PLAY_CSP, renderPlay } from "./src/play/page";
 import { buildImmersive } from "./src/immersive/build";
+import { buildOs } from "./src/os/build";
 import {
   holding404,
   HOME_LOCALES,
@@ -132,6 +133,8 @@ for (const f of ["game.js", "game_bg.wasm"]) {
 const gameAssets = join(ROOT, "..", "..", "crates", "game", "assets");
 if (existsSync(gameAssets))
   cpSync(gameAssets, join(DIST_DIR, "play", "assets"), { recursive: true });
+// 3c. /os: browser OS shell (apps/aphrody/src/os): pages in five locales, client, owner assets, pinned runtimes.
+for (const l of await buildOs(ROOT, DIST_DIR, emit)) console.log(`- ${l}`);
 console.log(
   `- /play: wasm build ${gameWasm ? "included" : "absent (message page only)"}`,
 );

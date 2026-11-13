@@ -75,7 +75,12 @@ export function loadWebContext(targetPath: string): WebFilesContext {
     const entries = readdirSync(dir, { withFileTypes: true });
     for (const entry of entries) {
       const fullPath = join(dir, entry.name);
-      if (entry.name === "node_modules" || entry.name === ".git") {
+      // vendor/: pinned third-party runtimes (SHA-256 in the app lock); the gate audits first-party output only.
+      if (
+        entry.name === "node_modules" ||
+        entry.name === ".git" ||
+        entry.name === "vendor"
+      ) {
         continue;
       }
 

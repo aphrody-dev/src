@@ -16,6 +16,7 @@ import { indexNowKey, indexNowPayload } from "./src/seo/documents";
 import { render404, renderSearchResults } from "./src/seo/html";
 import type { Locale } from "./src/seo/site";
 import { PLAY_CSP } from "./src/play/page";
+import { handleOs, isOs, osHeaders } from "./src/os/server";
 
 const PORT = Number(process.env.PORT) || 3000;
 
@@ -67,6 +68,7 @@ const PLAY_HEADERS: Record<string, string> = {
   "Permissions-Policy":
     "microphone=(), camera=(), geolocation=(), gamepad=(self)",
 };
+const OS_HEADERS = osHeaders(SECURITY_HEADERS);
 const isPlay = (pathname: string) =>
   pathname === "/play" || pathname.startsWith("/play/");
 
@@ -122,7 +124,9 @@ function clientId(
 
 function htmlHeaders(pathname: string): Record<string, string> {
   return {
-    ...(isPlay(pathname)
+    ...(isOs(pathname)
+      ? OS_HEADERS
+      : isPlay(pathname)
       ? PLAY_HEADERS
       : {
           Link: pathname === "/" || pathname === "/en" ? LINK_HOME : LINK_PAGE,
@@ -286,6 +290,12 @@ export const server = serve({
       });
     }
 
+    // 12b. /os: VM image proxy, console data, open package catalog
+    if (isOs(pathname)) {
+      const r = await handleOs(req, url, storeManager, jsonResponse);
+      if (r) return withSecurity(r);
+    }
+
     // 13. Static assets from memory (pre-compressed, strong ETag, 304)
     if (req.method !== "GET" && req.method !== "HEAD") {
       return new Response("Method Not Allowed", {
@@ -307,9 +317,11 @@ export const server = serve({
         asset,
         asset.ext === ".html"
           ? htmlHeaders(pathname)
-          : isPlay(pathname)
-            ? PLAY_HEADERS
-            : SECURITY_HEADERS,
+          : isOs(pathname)
+            ? OS_HEADERS
+            : isPlay(pathname)
+              ? PLAY_HEADERS
+              : SECURITY_HEADERS,
       );
     }
 
