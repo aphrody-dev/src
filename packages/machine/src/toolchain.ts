@@ -272,7 +272,9 @@ export async function toolchain({ check }: { check: boolean }): Promise<string[]
 
   // --- Gemini CLI : extension liée (la CLI enregistre le chemin, aucun lien de fichiers).
   if (m.gemini && Bun.which("gemini")) {
-    const list = run(["gemini", "extensions", "list"]).out;
+    // gemini 0.68 prints the extension list on stderr.
+    const ls = run(["gemini", "extensions", "list"]);
+    const list = ls.out + ls.err;
     for (const e of m.gemini.extensions) {
       const ok = list.includes("aphrody-skills");
       note(ok, `gemini extension ${e}`);
