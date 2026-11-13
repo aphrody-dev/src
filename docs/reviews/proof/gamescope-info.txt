@@ -1,0 +1,59 @@
+============================================================
+  GAMESCOPE-RS HARDWARE ADAPTER ENUMERATION
+============================================================
+Adapter #0
+  Name:             NVIDIA GeForce RTX 4070
+  Vendor:           0x10DE
+  Device:           0x2786
+  Device Type:      DiscreteGpu
+  Backend:          Vulkan
+  Driver:           NVIDIA
+  Driver Info:      621.14
+  Limits:
+    Max Texture 2D: 32768x32768
+    Max Compute Workgroup Size: [1024, 1024, 64]
+    Max Compute Invocations:    1024
+    Max Storage Buffer Binding: 2047 MB
+------------------------------------------------------------
+Adapter #1
+  Name:             NVIDIA GeForce RTX 4070
+  Vendor:           0x10DE
+  Device:           0x2786
+  Device Type:      DiscreteGpu
+  Backend:          Dx12
+  Driver:           32.0.16.2114
+  Driver Info:      
+  Limits:
+    Max Texture 2D: 16384x16384
+    Max Compute Workgroup Size: [1024, 1024, 64]
+    Max Compute Invocations:    1024
+    Max Storage Buffer Binding: 2047 MB
+------------------------------------------------------------
+Adapter #2
+  Name:             Microsoft Basic Render Driver
+  Vendor:           0x1414
+  Device:           0x008C
+  Device Type:      Cpu
+  Backend:          Dx12
+  Driver:           10.0.28000.3302
+  Driver Info:      
+  Limits:
+    Max Texture 2D: 16384x16384
+    Max Compute Workgroup Size: [1024, 1024, 64]
+    Max Compute Invocations:    1024
+    Max Storage Buffer Binding: 2047 MB
+------------------------------------------------------------
+Adapter #3
+  Name:             NVIDIA GeForce RTX 4070/PCIe/SSE2
+  Vendor:           0x10DE
+  Device:           0x0000
+  Device Type:      Other
+  Backend:          Gl
+  Driver:           
+  Driver Info:      4.6.0 NVIDIA 621.14
+  Limits:
+    Max Texture 2D: 32768x32768
+    Max Compute Workgroup Size: [1024, 1024, 64]
+    Max Compute Invocations:    1024
+    Max Storage Buffer Binding: 2047 MB
+------------------------------------------------------------

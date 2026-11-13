@@ -1,0 +1,24 @@
+
+=== SOVEREIGN TOOLCHAIN & 4-PILLAR VCS DOCTOR (xtk) ===
+TOOL           STATUS   VERSION / DETAILS
+------------------------------------------------------------------------
+rustc          OK       rustc 1.100.0-nightly (1edd55dcf 2026-09-09) (1ed...
+cargo          OK       cargo 1.100.0-nightly (3c0b53475 2026-09-04) (1ed...
+sccache        OK       sccache 0.19.0
+xwin           OK       xwin 0.10.0
+bun            OK       1.4.5
+jj             OK       jj 0.46.0-7d382314f9420b4b8d932245b49c99492c812b9f
+gix            OK       gix v0.61.0
+just           OK       just 1.59.0
+go             OK       go version go1.27.4 windows/amd64
+zig            OK       0.17.1
+dotnet         OK       11.0.100
+nvcc           OK       nvcc: NVIDIA (R) Cuda compiler driver
+cl.exe         MISSING  NOT FOUND
+ay             OK       ay 0.2.0
+claude         OK       2.1.323 (Claude Code)
+agy            OK       1.5.8
+wck            OK       wck v1.0.0 (Compile-Time Web Validator - oven-sh/...
+------------------------------------------------------------------------
+Some toolchains are missing or not in PATH.
+
