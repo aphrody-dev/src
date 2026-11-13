@@ -68,6 +68,16 @@ if (only.has("crates")) {
     const st = await exists(`https://crates.io/api/v1/crates/${p.name}`);
     const vs = st === 200 ? await exists(`https://crates.io/api/v1/crates/${p.name}/${p.version}`) : 404;
     const it: Item = { registry: "crates", name: p.name, version: p.version, isNew: st === 404, published: vs === 200 };
+    if (st === 200) {
+      // A crate of the same name owned by someone else is a name collision, not an update.
+      const r = await fetch(`https://crates.io/api/v1/crates/${p.name}/owners`, { headers: { "user-agent": "aphrody-release (github.com/aphrody-labs/src)" } });
+      const owners = ((await r.json()) as { users?: { login: string }[] }).users?.map((u) => u.login) ?? [];
+      if (!owners.some((o) => (cfg.crates.owners ?? ["aphrody-dev"]).includes(o))) {
+        it.dryRun = { ok: false, detail: `name taken on crates.io by ${owners.join(",") || "?"}: rename the crate` };
+        items.push(it);
+        continue;
+      }
+    }
     if (mode !== "plan" && !it.published) {
       const r = run(["cargo", "publish", "--dry-run", "--allow-dirty", "-p", p.name, ...(flag("--verify") ? [] : ["--no-verify"])], root, true);
       it.dryRun = { ok: r.ok, detail: tail(r.out, 3) };

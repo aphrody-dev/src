@@ -11,6 +11,8 @@ tag_prefix = "v"
 # Workspace crates, in dependency order. Empty = every crate whose `publish` is not false.
 select = []
 workflow = "crates-publish.yml"
+# crates.io accounts that own our crates; a same-name crate owned by anyone else is a collision.
+owners = ["aphrody-dev"]
 
 [npm]
 # Package directories; empty = every non-private packages/*/package.json.
