@@ -44,7 +44,7 @@ import {
   verticalPath,
 } from "./src/seo/site";
 import { UniversalStoreManager } from "./src/store/universal-manager";
-import { measure, renderHolding } from "./src/holding/page";
+import { holdingCss, measure, renderHolding } from "./src/holding/page";
 
 const ROOT = import.meta.dir;
 const DIST_DIR = join(ROOT, "dist");
@@ -162,6 +162,7 @@ if (existsSync(publicDir)) {
 }
 // Material Web (packages/design/src/components.ts), loaded as a module by the holding page.
 emit("md.js", await componentsBundle(join(ROOT, "..", "..")));
+emit("holding.css", minifyCss(holdingCss(join(ROOT, "..", ".."))));
 
 // 5. Pre-compress text assets (gzip + brotli) for in-memory serving.
 const COMPRESS = new Set([

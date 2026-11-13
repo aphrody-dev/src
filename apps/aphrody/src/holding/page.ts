@@ -30,7 +30,7 @@ export interface Metric {
 
 const T = {
   fr: {
-    title: "Aphrody",
+    title: "Aphrody, holding du monorepo",
     desc: "Aphrody, holding d'un monorepo : un noyau commun et des paris indépendants, chacun avec sa métrique.",
     letter: "Lettre du fondateur",
     core: "Noyau",
@@ -47,7 +47,7 @@ const T = {
     skip: "Aller au contenu",
   },
   en: {
-    title: "Aphrody",
+    title: "Aphrody, holding of the monorepo",
     desc: "Aphrody, holding of one monorepo: a shared core and independent bets, each with its metric.",
     letter: "Founder's letter",
     core: "Core",
@@ -135,8 +135,11 @@ export function measure(root: string): {
 
 const esc = (s: string) =>
   s.replace(
-    /[&<>"]/g,
-    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!,
+    /[&<>"']/g,
+    (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        c
+      ]!,
   );
 
 const CSS = `*{box-sizing:border-box}body{margin:0;background:var(--md-sys-color-surface);color:var(--md-sys-color-on-surface);${type("body-large")}}
@@ -168,7 +171,7 @@ function units(a: Alphabet, name: string, l: HoldingLocale): string {
       const href = path ? ` type="link" href="${TREE}${esc(path)}"` : "";
       return `<md-list-item${href}><div slot="headline">${esc(plain(r[0] ?? ""))}</div><div slot="supporting-text">${inline(r[2] ?? "")}<span class="metric">${T[l].metric} : ${inline(r[3] ?? "")}</span></div></md-list-item>`;
     })
-    .join("<md-divider></md-divider>")}</md-list>`;
+    .join("")}</md-list>`;
 }
 
 function prose(s: ReturnType<typeof section>): string {
@@ -196,7 +199,38 @@ export function renderHolding(
   const intro = a.intro[0] ?? "";
   const metrics = `<dl class="metrics">${m.metrics.map((x) => `<div><dt>${esc(x.label[l])}</dt><dd>${esc(x.value)}</dd><small>${esc(x.source)}</small></div>`).join("")}</dl><p>${t.measured} <a href="https://github.com/aphrody-labs/src/commit/${esc(m.commit)}"><code>${esc(m.commit.slice(0, 7))}</code></a> (${esc(m.date)}).</p>`;
   const self = l === "fr" ? "/" : "/en";
-  return `<!doctype html><html lang="${l}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${t.title}</title><meta name="description" content="${esc(t.desc)}"><meta name="color-scheme" content="light dark"><link rel="canonical" href="https://aphrody.com${self === "/" ? "/" : self}"><link rel="alternate" hreflang="fr" href="https://aphrody.com/"><link rel="alternate" hreflang="en" href="https://aphrody.com/en"><link rel="alternate" hreflang="x-default" href="https://aphrody.com/"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta property="og:title" content="Aphrody"><meta property="og:description" content="${esc(t.desc)}"><meta property="og:url" content="https://aphrody.com${self === "/" ? "/" : self}"><meta property="og:image" content="https://aphrody.com/og-image.jpg"><meta name="aphrody-commit" content="${esc(m.commit)}">${FONT_LINK}<style>${tokensCss(root)}${CSS}</style><script type="module" src="/md.js"></script><script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "Organization", name: "Aphrody", url: "https://aphrody.com/", email: "contact@aphrody.com", sameAs: ["https://github.com/aphrody-dev", "https://github.com/aphrody-labs"] })}</script></head><body><a class="skip" href="#main">${t.skip}</a><header>${brand.mark}<span>Aphrody</span><nav aria-label="Langue"><md-text-button href="${l === "fr" ? "/en" : "/"}" hreflang="${l === "fr" ? "en" : "fr"}">${l === "fr" ? "English" : "Français"}</md-text-button></nav></header><main id="main"><h1>Aphrody</h1><p class="lead">${inline(intro.replace(/^Décision du propriétaire, [0-9-]+ : /, "").split(/\s+(?=Ce document)/)[0]!)}</p>${
+  return `<!doctype html><html lang="${l}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${t.title}</title><meta name="description" content="${esc(t.desc)}"><meta name="color-scheme" content="light dark"><link rel="canonical" href="https://aphrody.com${self === "/" ? "/" : self}"><link rel="alternate" hreflang="fr" href="https://aphrody.com/"><link rel="alternate" hreflang="en" href="https://aphrody.com/en"><link rel="alternate" hreflang="x-default" href="https://aphrody.com/"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta property="og:title" content="Aphrody"><meta property="og:description" content="${esc(t.desc)}"><meta property="og:url" content="https://aphrody.com${self === "/" ? "/" : self}"><meta property="og:image" content="https://aphrody.com/og-image.jpg"><meta name="aphrody-commit" content="${esc(m.commit)}"><meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"><meta property="og:type" content="website">${FONT_LINK}<link rel="stylesheet" href="/holding.css"><script type="module" src="/md.js"></script><script type="application/ld+json">${JSON.stringify(
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://aphrody.com/#org",
+          name: "Aphrody",
+          url: "https://aphrody.com/",
+          email: "contact@aphrody.com",
+          sameAs: [
+            "https://github.com/aphrody-dev",
+            "https://github.com/aphrody-labs",
+          ],
+        },
+        {
+          "@type": "WebSite",
+          url: "https://aphrody.com/",
+          name: "Aphrody",
+          publisher: { "@id": "https://aphrody.com/#org" },
+          potentialAction: {
+            "@type": "SearchAction",
+            target: {
+              "@type": "EntryPoint",
+              urlTemplate: "https://aphrody.com/search?q={search_term_string}",
+            },
+            "query-input": "required name=search_term_string",
+          },
+        },
+      ],
+    },
+  )}</script></head><body><a class="skip" href="#main">${t.skip}</a><header>${brand.mark}<span>Aphrody</span><nav aria-label="Langue"><md-text-button href="${l === "fr" ? "/en" : "/"}" hreflang="${l === "fr" ? "en" : "fr"}">${l === "fr" ? "English" : "Français"}</md-text-button></nav></header><main id="main"><h1>Aphrody</h1><p class="lead">${inline(intro.replace(/^Décision du propriétaire, [0-9-]+ : /, "").split(/\s+(?=Ce document)/)[0]!)}</p>${
     isTodo(letter)
       ? "<!-- TODO(owner): lettre du fondateur (docs/ALPHABET.md, section « Lettre du fondateur »). -->"
       : `<section><h2>${t.letter}</h2>${prose(letter)}</section>`
@@ -205,4 +239,9 @@ export function renderHolding(
       ? "<!-- TODO(owner): relations investisseurs (docs/ALPHABET.md, section « Investisseurs et contact »). -->"
       : prose(investors)
   }<div class="actions"><md-filled-button href="mailto:contact@aphrody.com">contact@aphrody.com</md-filled-button><md-outlined-button href="https://github.com/aphrody-dev">github.com/aphrody-dev</md-outlined-button><md-outlined-button href="https://github.com/aphrody-labs">github.com/aphrody-labs</md-outlined-button></div><!-- TODO(owner): URL publiques Discord et X d'Aphrody. --></section></main><footer>Aphrody. <a href="https://github.com/aphrody-labs/src/blob/main/docs/ALPHABET.md">docs/ALPHABET.md</a>. <a href="/search">${l === "fr" ? "Recherche" : "Search"}</a></footer></body></html>`;
+}
+
+/** Stylesheet of the holding page (dist/holding.css): design tokens, then the page layout. */
+export function holdingCss(root: string): string {
+  return tokensCss(root) + CSS;
 }

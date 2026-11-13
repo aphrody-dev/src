@@ -71,7 +71,8 @@ describe("Aphrody build output", () => {
 
   it("homepage is the holding page generated from docs/ALPHABET.md", () => {
     const html = readFileSync(join(dist, "index.html"), "utf-8");
-    expect(html).toContain("<title>Aphrody</title>");
+    expect(html).toContain("<title>Aphrody, holding du monorepo</title>");
+    expect(html).toContain('href="/holding.css"');
     expect(html).not.toContain('id="root"');
     expect((html.match(/<h1[ >]/g) || []).length).toBe(1);
     for (const h of [

@@ -3,7 +3,7 @@
 // Web components from packages/design/src/components.ts (bundled by bun), Google Sans Flex, the brand mark.
 // No color, radius, duration or font value is written here: CSS only references `--md-sys-*` / `--md-ref-*`.
 import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 
 export interface Brand {
   name: string;
@@ -48,13 +48,24 @@ export const type = (role: string) =>
 export const FONT_LINK =
   '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..1000&display=swap">';
 
-/** Material Web bundle (packages/design/src/components.ts) for the browser, minified. */
+/** Material Web bundle for the browser, minified: the elements of src/client/md.ts, resolved from
+ * packages/design/node_modules (the one Material Web install of the monorepo). */
 export async function componentsBundle(root: string): Promise<string> {
+  const from = resolve(root, "packages", "design", "src");
   const r = await Bun.build({
-    entrypoints: [join(root, "packages", "design", "src", "components.ts")],
+    entrypoints: [join(import.meta.dir, "client", "md.ts")],
     target: "browser",
     format: "esm",
     minify: true,
+    plugins: [
+      <import("bun").BunPlugin>{
+        name: "aphrody-design",
+        setup: (b) =>
+          b.onResolve({ filter: /^@material\/web\// }, (a) => ({
+            path: Bun.resolveSync(a.path, from),
+          })),
+      },
+    ],
   });
   if (!r.success)
     throw new Error(`Material Web bundle: ${r.logs.map(String).join("\n")}`);
