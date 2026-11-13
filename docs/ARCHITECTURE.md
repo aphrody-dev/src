@@ -67,7 +67,7 @@ crates/ packages/ apps/ third_party/ infra/ tools/ docs/ scripts/ conformance/ l
 
 Rangés le 2026-11-13 : `deploy.toml` -> `infra/deploy.toml` (flotte, hébergement, auth) ; `cloudbuild.yaml` -> `infra/gcloud/` ; `.gitlab-ci.yml` -> `infra/gitlab/gitlab-ci.yml` (chemin à déclarer côté GitLab, infra/gitlab/README.md) ; `flake.nix` -> `infra/nix/` ; `install.ps1`/`install.sh` -> `scripts/` (amorce de dix lignes vers `ay up --bootstrap`) ; `deploy.ps1`/`deploy.sh` supprimés (doublons de `just deploy` = `ay deploy`) ; `.repo/` supprimé (manifeste `repo` jamais consommé). Dockerfile, compose.yaml et .dockerignore -> `infra/docker/` (Dockerfile.dockerignore, docker-bake.hcl ; agent conteneurs). Locaux et ignorés, jamais suivis : `.env`, `var/`, `graphify-out/`, `target/`, `node_modules/`. CI de référence : `.github/workflows` ; GitLab et Cloud Build sont des miroirs optionnels.
 
-`apps/` et `third_party/` sont exclus du workspace Cargo (`[workspace] exclude`). `apps/` = produits déployables, sous-modules épinglés par DEPS (rosegriffon, shenron, r2b, auto) ou arbres fusionnés (`apps/nt`, ex-`aphrody-labs/nt`, CI `.github/workflows/nt.yml`), avec leurs propres gates : checkdeps n'inspecte que leur unité racine, pas leur intérieur. `third_party/` = upstream, une copie par projet, verrouillée dans `src.lock.json`, sans patch local (seule exception : `third_party/patches/`, §11).
+`apps/` et `third_party/` sont exclus du workspace Cargo (`[workspace] exclude`). `apps/` = produits déployables, sous-modules épinglés par DEPS (rosegriffon, shenron, r2b, auto) ou arbres fusionnés (`apps/nt`, ex-`aphrody-labs/nt`, CI `.github/workflows/nt.yml`), avec leurs propres gates : checkdeps n'inspecte que leur unité racine, pas leur intérieur. `third_party/` = upstream, une copie par projet, verrouillée dans `src.lock.json`, sans patch local : un correctif vit dans un fork `aphrody-labs` épinglé par commit (§11).
 
 ## 5. Bibliothèque commune (core)
 
@@ -115,7 +115,7 @@ Grammaires : 13 avec extracteur dédié ; les autres découvertes par `crates/co
 
 ## Annexe A : architecture produit web (labs v0, ex-ROOT-ARCHITECTURE.md)
 
-Chemins d'origine : `crates/cli` est devenu `crates/aphrody-cli`, `infra/chromium-factory` `infra/chromium-factory`, `vendor/` `third_party/patches/`.
+Chemins d'origine : `crates/cli` de labs est devenu `ay conformance` (crates/conformance) ; `vendor/` est devenu des forks `aphrody-labs` épinglés par commit (§11).
 
 
 
@@ -404,12 +404,12 @@ candidates --(candidate parser)--> {variants[], utility, value, modifier, import
 - **Licence du projet** : MIT OR Apache-2.0.
 - **Licences de dépendances admises** : MIT, Apache-2.0 (y compris WITH LLVM-exception), BSD-2-Clause, BSD-3-Clause, ISC, Zlib, Unicode-3.0, CC0-1.0, Unlicense, et MPL-2.0 selon la règle suivante (liste exécutable : `deny.toml`).
 - **MPL-2.0** (lightningcss, stylo, selectors, cssparser, servo, adblock) : dépendances de registre utilisées sans modification. Aucun fichier MPL n'est copié, patché ni vendorisé ; un correctif part en amont et le pin monte. Une entrée `[patch]` visant une crate MPL est interdite.
-- **Patchs** : `third_party/` ne reçoit aucune modification locale. Seule exception, `third_party/patches/<crate>/` : crates de registre non MPL patchées via `[patch.crates-io]` (aujourd'hui quinn-proto, glob-match), chacune avec un README qui donne l'amont, le correctif et la condition de retrait. `docs/patches/series` n'indexe que des patchs suivis dans l'arbre.
+- **Patchs** : `third_party/` ne reçoit aucune modification locale et il n'y a plus de `third_party/patches/` (2026-11-13). Une crate de registre corrigée passe par un fork `aphrody-labs` épinglé par commit dans `[patch.crates-io]` (`git` + `rev`, imposé par `deny.toml` `required-git-spec = "rev"` ; aujourd'hui quinn-proto et glob-match). Jamais sur une crate MPL. `docs/patches/series` n'indexe que des patchs suivis dans l'arbre.
 - **Refusées** : GPL, LGPL, AGPL (toutes versions), SSPL, BUSL et autres licences non OSI, ainsi que tout code dont GitHub rapporte la licence NOASSERTION, sauf revue manuelle consignée ici.
 - **Exception revue (2026-11-13)** : `ffmpeg-next` / `ffmpeg-sys-next` (WTFPL, permissive) admises crate par crate dans `deny.toml` `[licenses] exceptions`. FFmpeg libav* (LGPL-2.1+) est lié dynamiquement depuis le système ou vcpkg, jamais vendorisé : `crates/tv-*` restent MIT OR Apache-2.0 (LGPL-2.1 §6). Le test `tv-ffmpeg` `ffmpeg_build_is_lgpl` (`cargo test -p tv-ffmpeg -- --ignored`, obligatoire avant toute distribution) échoue si la libavutil chargée annonce `--enable-gpl`, `--enable-nonfree` ou `--enable-version3` (LGPL-3.0), ou une licence autre que « LGPL version 2.1 ». Aucune crate `tv-*` n'est distribuée aujourd'hui (cargo-dist ne publie que `ay`, seul paquet `[package.metadata.dist] dist = true`) ; ce test devient une étape bloquante du job de release le jour où une crate `tv-*` y entre. Constat du 2026-11-13 : le FFmpeg d'Arch sur prd (2:9.0.2-2) est construit avec `--enable-gpl` ; un binaire `tv-*` lié à lui n'est pas distribuable sous MIT OR Apache-2.0, la distribution doit lier un FFmpeg LGPL (port vcpkg `ffmpeg` sans la feature `gpl`, triplets de `infra/vcpkg`). Seules les crates `tv-*` dépendent de `tv-ffmpeg` : `-crates/tv-ffmpeg` dans `/DEPS.rules` (donc crates, packages, plugins et apps), relevé par `+` dans `crates/tv-cli`.
 - **Étude seulement** : Bun (`oven-sh/bun`, licence GitHub NOASSERTION ; son `LICENSE.md` au commit `43850629` : Bun MIT mais JavaScriptCore/WebKit LGPL-2 liés statiquement). Lecture et description des idées permises ; copie, traduction ligne à ligne et vendorisation interdites. Idem Zed/GPUI (NOASSERTION).
 - **Suites de test comme oracles** : récupérées aux commits épinglés dans `conformance/upstream/` (ignoré) et exécutées là ; jamais commitées, leurs licences (Test262, WPT, Bun) n'entrent pas dans l'arbre.
-- **Application** : `cargo-deny` (`deny.toml`) avec `licenses`, `bans` (pas d'`openssl-sys` : TLS sur rustls) et `sources` (crates.io, forks git `aphrody-dev`, patchs `third_party/patches/`) en CI avant main.
+- **Application** : `cargo-deny` (`deny.toml`) avec `licenses`, `bans` (pas d'`openssl-sys` : TLS sur rustls) et `sources` (crates.io, forks git `aphrody-dev` et `aphrody-labs` épinglés par `rev`) en CI avant main.
 
 ### 12. Décisions transverses
 
