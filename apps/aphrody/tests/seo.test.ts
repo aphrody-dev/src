@@ -505,7 +505,7 @@ describe("Zero-copy static serving, hashing and progressive enhancement", () => 
     expect(existsSync(join(DIST, "art.svg"))).toBe(true);
     for (const f of ["play.png", "app.png", "nt.ico", "ay.png", "craft.png"])
       expect(existsSync(join(DIST, "icons", f))).toBe(true);
-    // The served favicon set is the generated brand monogram (assets/brand/gen/icons/aphrody-labs), byte for byte.
+    // The served favicon set is the generated owner mark (assets/brand/gen/owner), byte for byte.
     const gen = join(
       import.meta.dir,
       "..",
@@ -514,13 +514,13 @@ describe("Zero-copy static serving, hashing and progressive enhancement", () => 
       "assets",
       "brand",
       "gen",
-      "icons",
-      "aphrody-labs",
+      "owner",
     );
     for (const [from, to] of [
       ["favicon.ico", "favicon.ico"],
-      ["icon.svg", "favicon.svg"],
-      ["apple-touch-icon.png", "apple-touch-icon.png"],
+      ["mark-owner-draft.min.svg", "favicon.svg"],
+      ["mark-owner-draft.min.svg", "icon.svg"],
+      ["mark-180.png", "apple-touch-icon.png"],
     ] as const)
       expect(
         readFileSync(join(DIST, to)).equals(readFileSync(join(gen, from))),
