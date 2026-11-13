@@ -50,9 +50,9 @@ services:
     image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/aphrody:${SRC_TAG:-latest}
     ports: ["127.0.0.1:${APHRODY_HOST_PORT:-23000}:3000"]
 
-  yolo:
+  yolo: # image built from a full workstation checkout only (packages/google-design/upstream is not in git)
     <<: *svc
-    profiles: [core]
+    profiles: [yolo]
     image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/yolo:${SRC_TAG:-latest}
     ports: ["127.0.0.1:${YOLO_HOST_PORT:-23092}:3092"]
     read_only: false

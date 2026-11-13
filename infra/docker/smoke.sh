@@ -5,7 +5,7 @@ set -eu
 D=${DOCKER:-docker}
 REG=${SRC_REGISTRY:-ghcr.io/aphrody-dev}
 TAG=${SRC_TAG:-latest}
-[ $# -gt 0 ] || set -- ai-os ai-os-gateway aphrody yolo r2-site api-gateway loreserver r3d rust-stack
+[ $# -gt 0 ] || set -- ai-os ai-os-gateway aphrody r2-site api-gateway loreserver r3d rust-stack
 fail=0
 for img in "$@"; do
   name=smoke-$img-$$; extra=""; ref=$REG/$img:$TAG

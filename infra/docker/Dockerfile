@@ -134,12 +134,11 @@ RUN --mount=type=cache,id=bun-cache,target=/root/.bun/install/cache \
 FROM bun-deps AS bun-build
 COPY packages/ packages/
 COPY apps/aphrody/ apps/aphrody/
-COPY apps/yolo/ apps/yolo/
 COPY apps/r2-site/ apps/r2-site/
 COPY infra/fleet/workers/ infra/fleet/workers/
 # Each app: its own build step (static dist/), then the server bundled into one file next to dist/.
 RUN set -eu; mkdir -p /out; \
-    for app in aphrody yolo; do \
+    for app in aphrody; do \
       (cd "apps/$app" && bun run build.ts) && mkdir -p "/out/$app" && \
       bun build "apps/$app/server.ts" --target=bun --minify --outfile "/out/$app/server.js" && \
       cp -r "apps/$app/dist" "/out/$app/dist" && { [ ! -d "apps/$app/public" ] || cp -r "apps/$app/public" "/out/$app/public"; }; \
@@ -171,8 +170,14 @@ ENV PORT=3000 HEALTH_PATH=/ok APHRODY_DIST=/app/dist
 EXPOSE 3000
 CMD ["bun", "server.js"]
 
+# yolo: needs packages/google-design/upstream (local clones, not in git): build context = a full checkout.
+FROM bun-deps AS yolo-build
+COPY packages/ packages/
+COPY apps/yolo/ apps/yolo/
+RUN cd apps/yolo && bun run build.ts && mkdir -p /out/yolo && bun build server.ts --target=bun --minify --outfile /out/yolo/server.js && cp -r dist /out/yolo/dist
+
 FROM bun-runtime AS yolo
-COPY --from=bun-build --chown=bun:bun /out/yolo/ /app/
+COPY --from=yolo-build --chown=bun:bun /out/yolo/ /app/
 ENV PORT=3092 HEALTH_PATH=/ok
 EXPOSE 3092
 CMD ["bun", "server.js"]

@@ -12,8 +12,9 @@ variable "CARGO_PROFILE" { default = "release" }
 variable "PUSH_CACHE" { default = "false" }
 
 group "default" { targets = ["services", "runtime"] }
-group "services" { targets = ["ai-os", "aphrody", "yolo", "r2-site", "api-gateway", "loreserver", "r3d", "rust-stack"] }
-group "bun" { targets = ["ai-os", "aphrody", "yolo", "r2-site", "api-gateway"] }
+# yolo is not in the groups: it needs packages/google-design/upstream (local clones, not in git). Build it from a full workstation checkout.
+group "services" { targets = ["ai-os", "aphrody", "r2-site", "api-gateway", "loreserver", "r3d", "rust-stack"] }
+group "bun" { targets = ["ai-os", "aphrody", "r2-site", "api-gateway"] }
 group "rust" { targets = ["loreserver", "r3d", "rust-stack", "runtime"] }
 group "smoke" { targets = ["services"] }
 group "products" { targets = ["shenron"] }
