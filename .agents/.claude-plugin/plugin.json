@@ -1,0 +1,9 @@
+{
+  "name": "aphrody-skills",
+  "description": "Skills de src : .agents/skills (source unique, chargée sur place par Claude Code, copiée par Codex et agy). Manifeste : infra/agents/toolchain.toml.",
+  "author": {
+    "name": "aphrody-dev"
+  },
+  "repository": "https://github.com/aphrody-labs/src",
+  "license": "MIT"
+}

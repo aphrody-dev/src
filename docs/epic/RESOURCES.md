@@ -23,7 +23,7 @@ Source: unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show (2026-
 
 ## Unreal Engine 6 and Verse direction
 
-- UE 6 (official, unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show, 2026-06-17, read via Chrome): in development, Early Access targeted end of 2027. Three initiatives: gameplay programming model moves to Verse ("transactionalizes C++"); portable, interoperable content, code and economies through open standards; pipeline features such as MCP with integrations for Claude, Gemini and others. UE 5.8 is the last planned UE5 major release (5.9 kept as an option).
+- UE 6 (official, unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show, 2026-06-17, page text read on 2026-11-13): in development, Early Access targeted end of 2027. Three initiatives: gameplay programming model moves to Verse ("transactionalizes C++"); portable, interoperable content, code and economies through open standards; pipeline features such as MCP with integrations for Claude, Gemini and others. UE 5.8 is the last planned UE5 major release (5.9 kept as an option).
 - Same page: Lore is open source and free; EGS has 6,000+ games from 3,000+ partners and a full rebuild of the Launcher and storefront backend is under way; UE 5.8 MCP plugin is Experimental and model-agnostic.
 - Scene Graph: animation, itemization and gameplay abilities arrive as Verse-scriptable components (same page).
 - UEFN: v43.00 (2026-11-01) adds Verse material inheritance; Verse does not run on the client yet. v42.40 (2026-10-15): UEFN source assets licensable on Fab, `text_channel` API in `/Verse.org/Chat` (dev.epicgames.com/documentation/fortnite release notes).
@@ -77,7 +77,7 @@ Versions, licenses, push dates and releases: docs/epic/snapshot.json (`community
 - 3ddelano/epic-online-services-godot: EOS for Godot.
 - devphmd/eos: repo of the crates.io crates eos-sys and eos-rs; the only Rust EOS bindings returned by crates.io search q=eos on 2026-11-13.
 
-Launcher protocol references (unofficial, derrod/legendary @170964e7: `legendary/api/egs.py`, `legendary/models/manifest.py` header_magic `0x44BEC00C`, `legendary/lfs/egl.py`): OAuth at `account-public-service-prod03.ol.epicgames.com`, zlib manifest body (meta, chunk list, file list, custom fields), installs in `%PROGRAMDATA%\Epic\EpicGamesLauncher\Data\Manifests\*.item` (JSON). The launcher client credentials are Epic's; do not commit them (`docs/PUBLISH-AUDIT.md`).
+Launcher protocol references (unofficial, derrod/legendary @170964e7: `legendary/api/egs.py`, `legendary/models/manifest.py:69` header_magic `0x44BEC00C`, `legendary/lfs/egl.py`): OAuth at `account-public-service-prod03.ol.epicgames.com`, zlib manifest body (meta, chunk list, file list, custom fields), installs in `%PROGRAMDATA%\Epic\EpicGamesLauncher\Data\Manifests\*.item` (JSON). The launcher client credentials are Epic's; do not commit them (`docs/PUBLISH-AUDIT.md`).
 
 ## Continuous tracking
 

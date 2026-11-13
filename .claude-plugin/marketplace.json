@@ -1,0 +1,65 @@
+{
+  "name": "aphrody",
+  "owner": {
+    "name": "aphrody-dev"
+  },
+  "description": "Marketplace cross-agent du monorepo src (Claude Code, Codex, agy). Source de vérité : infra/agents/toolchain.toml ; généré et vérifié par packages/machine/src/agents.ts.",
+  "plugins": [
+    {
+      "name": "aphrody-skills",
+      "source": "./.agents",
+      "description": "Skills de src (.agents/skills, chargés sur place depuis le checkout)."
+    },
+    {
+      "name": "aphrody-nhitl",
+      "source": "./plugins/aphrody-nhitl",
+      "description": "No human in the loop hooks, status line and headless launcher (bun)."
+    },
+    {
+      "name": "unreal-engine-skills-for-claude-code",
+      "source": {
+        "source": "github",
+        "repo": "aphrody-labs/unreal-engine-skills-for-claude-code-plugin",
+        "sha": "0e27bde2b55c5d3f6948532f4296aaa3654d8f4b"
+      },
+      "description": "Epic Games official Unreal Editor MCP skills (unreal-mcp, create-toolset, unreal-skill), MIT, fork of EpicGames/unreal-engine-skills-for-claude-code-plugin."
+    },
+    {
+      "name": "chrome-devtools-mcp",
+      "source": {
+        "source": "github",
+        "repo": "ChromeDevTools/chrome-devtools-mcp",
+        "sha": "1417f93ee3f83b87270c910b0c0337de475f6f17"
+      },
+      "strict": true,
+      "description": "ChromeDevTools/chrome-devtools-mcp (Google), MCP lancé via bun x au lieu de npx ; skills upstream.",
+      "mcpServers": {
+        "chrome-devtools": {
+          "command": "bun",
+          "args": [
+            "x",
+            "chrome-devtools-mcp@1.13.0"
+          ]
+        }
+      }
+    },
+    {
+      "name": "vercel-agent-skills",
+      "source": {
+        "source": "github",
+        "repo": "aphrody-labs/agent-skills",
+        "sha": "1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62"
+      },
+      "description": "vercel-labs/agent-skills (fork aphrody-labs) : React/Next best practices, composition, view transitions, web design guidelines, vercel-optimize."
+    },
+    {
+      "name": "web-quality-skills",
+      "source": {
+        "source": "github",
+        "repo": "aphrody-labs/web-quality-skills",
+        "sha": "afa8da942115f2961fdbfa80807ea0b232ff6c00"
+      },
+      "description": "addyosmani/web-quality-skills (fork aphrody-labs) : Lighthouse, Core Web Vitals, performance, accessibilité, SEO."
+    }
+  ]
+}

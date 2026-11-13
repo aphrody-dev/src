@@ -1,0 +1,5 @@
+{
+  "name": "aphrody-skills",
+  "version": "0.1.0",
+  "description": "Skills de src (.agents/skills). Lié par `gemini extensions link` depuis packages/machine/src/agents.ts."
+}
