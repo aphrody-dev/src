@@ -170,7 +170,8 @@ mod bevy_load {
         app.add_plugins(
             DefaultPlugins
                 .set(AssetPlugin {
-                    file_path: lib.to_string_lossy().into_owned(),
+                    // Bevy resolves a relative file_path against the executable directory: pass an absolute path.
+                    file_path: std::fs::canonicalize(lib).unwrap_or_else(|_| lib.to_path_buf()).to_string_lossy().into_owned(),
                     meta_check: AssetMetaCheck::Never,
                     ..default()
                 })
