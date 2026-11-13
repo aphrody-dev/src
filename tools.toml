@@ -1200,7 +1200,7 @@ package = "webp"
 hosts = ["fr1"]
 why = "cwebp (ay brand build)"
 
-[toolchain."ffmpeg"]
+[toolchain."ffmpeg-cli"]
 version = "8.1"
 source = "distro"
 package = "ffmpeg"
