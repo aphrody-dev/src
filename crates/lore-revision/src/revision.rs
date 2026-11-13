@@ -1531,7 +1531,7 @@ impl DirectoryRenames {
         spelling: Spelling,
     ) -> Option<usize> {
         let spelled = path.as_str();
-        let mut names: SmallVec<(usize, usize, &str), 4> = SmallVec::new();
+        let mut names: SmallVec<[(usize, usize, &str); 4]> = SmallVec::new();
         if !self.is_empty() {
             for (start, end, name) in self.names(sources, target_moves, path, spelling) {
                 let name = name.ok()?;

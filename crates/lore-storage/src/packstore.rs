@@ -227,7 +227,7 @@ pub struct PackStore {
     /// reserved in them, until they are loaded again. [`Self::unsettled_sizes`] reports them while
     /// they are closed, and a load marks them dirty and not settled, so that closing a packfile
     /// loses neither the size a bucket file records for it nor the sync a later flush owes it.
-    released: parking_lot::Mutex<smallvec::SmallVec<PackfileSize, 2>>,
+    released: parking_lot::Mutex<smallvec::SmallVec<[PackfileSize; 2]>>,
 }
 
 impl PackStore {

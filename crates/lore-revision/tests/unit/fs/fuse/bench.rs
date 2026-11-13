@@ -72,7 +72,7 @@ struct MutexEntry {
 #[derive(Default)]
 struct MutexInner {
     by_ino: HashMap<u64, MutexEntry>,
-    children: HashMap<(u64, u64), SmallVec<u64, 1>>,
+    children: HashMap<(u64, u64), SmallVec<[u64; 1]>>,
 }
 
 /// The alternative under test: both maps behind one lock, with the same lookup and FORGET

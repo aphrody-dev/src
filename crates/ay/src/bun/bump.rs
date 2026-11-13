@@ -1,9 +1,8 @@
 //! `ay bun bump`: the Bun version pins of the monorepo, and the edits that move them to a
 //! release. Proposed by default; `--write` applies them line by line.
 //!
-//! Pins: src.lock.json `toolchains.bun`, tools.toml `[[tool]] name = "bun"`,
-//! packages/machine/toolchains.lock.toml `[toolchain."bun"]` (URLs and sha256 from the
-//! release's GitHub digests), package.json `engines.bun` / `packageManager`, `.bun-version`,
+//! Pins: src.lock.json `toolchains.bun`, tools.toml `[[tool]] name = "bun"` and its generated
+//! `[toolchain."bun"]` block (URLs and sha256 from the release's GitHub digests), package.json `engines.bun` / `packageManager`, `.bun-version`,
 //! workflow `bun-version:`, infra/docker `BUN_VERSION`, `.env.example`.
 
 use super::watch::Gh;
@@ -16,7 +15,6 @@ use std::process::{Command, Stdio};
 const FIXED: &[&str] = &[
     "src.lock.json",
     "tools.toml",
-    "packages/machine/toolchains.lock.toml",
     "infra/docker/Dockerfile",
     "infra/docker/docker-bake.hcl",
     ".env.example",
@@ -65,32 +63,28 @@ fn marker_for(file: &str) -> &'static [&'static str] {
     }
 }
 
-/// Edits for one file's text. `sums` gives the new sha256 per asset for toolchains.lock.toml.
+/// Edits for one file's text. `sums` gives the new sha256 per asset for the `[toolchain."bun"]`
+/// block of tools.toml.
 pub fn edits_for(file: &str, text: &str, to: &str, sums: &BTreeMap<String, String>, warnings: &mut Vec<String>) -> Vec<Edit> {
     let mut out = vec![];
-    let mut block = false;
+    // tools.toml: the `[[tool]] name = "bun"` declaration, then the generated `[toolchain."bun"]`.
+    let (mut tool, mut lock) = (false, false);
     for (i, line) in text.lines().enumerate() {
         let after = match file {
             "tools.toml" => {
                 let t = line.trim();
-                if t == "[[tool]]" {
-                    block = false;
-                } else if t == "name = \"bun\"" {
-                    block = true;
-                }
-                if block { bump_after(line, "version = \"", to) } else { None }
-            }
-            "packages/machine/toolchains.lock.toml" => {
-                let t = line.trim();
                 if t.starts_with('[') {
-                    block = t == "[toolchain.\"bun\"]";
+                    tool = false;
+                    lock = t == "[toolchain.\"bun\"]";
+                } else if t == "name = \"bun\"" {
+                    tool = true;
                 }
-                if !block {
-                    None
-                } else if let Some(v) = bump_after(line, "version = \"", to) {
-                    Some(v)
+                if tool {
+                    bump_after(line, "version = \"", to)
+                } else if lock {
+                    bump_after(line, "version = \"", to).or_else(|| lock_url_line(line, to, sums, warnings))
                 } else {
-                    lock_url_line(line, to, sums, warnings)
+                    None
                 }
             }
             _ => marker_for(file).iter().find_map(|m| if m.is_empty() && i > 0 { None } else { bump_after(line, m, to) }),
@@ -114,7 +108,7 @@ fn lock_url_line(line: &str, to: &str, sums: &BTreeMap<String, String>, warnings
     let asset_start = at + len + 1;
     let asset = line[asset_start..].split('"').next()?;
     let Some(sum) = sums.get(asset) else {
-        warnings.push(format!("toolchains.lock.toml: no GitHub digest for {asset} in bun-v{to}; line left as is"));
+        warnings.push(format!("tools.toml [toolchain.\"bun\"]: no GitHub digest for {asset} in bun-v{to}; line left as is"));
         return None;
     };
     let moved = line.replacen(&format!("bun-v{old}/"), &format!("bun-v{to}/"), 1);
@@ -146,7 +140,7 @@ pub fn proposals(root: &Path, to: &str, release: Option<&Value>) -> (Vec<Edit>, 
     let sums = release.map(digests).unwrap_or_default();
     let mut warnings = vec![];
     if release.is_none() {
-        warnings.push("no release data: toolchains.lock.toml hashes not proposed".into());
+        warnings.push("no release data: tools.toml [toolchain.\"bun\"] hashes not proposed".into());
     }
     let mut edits = vec![];
     for f in tracked(root) {
@@ -296,7 +290,7 @@ mod tests {
         let text = "[toolchain.\"protoc\"]\nversion = \"36.2\"\n\n[toolchain.\"bun\"]\nversion = \"1.4.4\"\nwindows-x86_64 = { url = \"https://github.com/oven-sh/bun/releases/download/bun-v1.4.4/bun-windows-x64.zip\", sha256 = \"cd2c\" }\nlinux-aarch64 = { url = \"https://github.com/oven-sh/bun/releases/download/bun-v1.4.4/bun-linux-aarch64.zip\", sha256 = \"baa6\" }\n\n[toolchain.\"just\"]\nversion = \"1.0.0\"\n";
         let release = json!({"assets": [{"name": "bun-windows-x64.zip", "digest": "sha256:ffff"}]});
         let mut warnings = vec![];
-        let e = edits_for("packages/machine/toolchains.lock.toml", text, "1.4.5", &digests(&release), &mut warnings);
+        let e = edits_for("tools.toml", text, "1.4.5", &digests(&release), &mut warnings);
         assert_eq!(e.len(), 2);
         assert_eq!(e[0].after, "version = \"1.4.5\"");
         assert_eq!(e[1].after, "windows-x86_64 = { url = \"https://github.com/oven-sh/bun/releases/download/bun-v1.4.5/bun-windows-x64.zip\", sha256 = \"ffff\" }");

@@ -6,6 +6,7 @@ Mesures prises sur `Cargo.lock`, toutes cibles confondues, avec `ay doctor --dep
 |---|---|---|---|---|
 | avant (main 8c3c113) | 1352 | 114 | 127 | 67 |
 | après (`ay lock --deps --hoist --breaking --dedupe`) | 1352 | 110 | 123 | 65 |
+| smallvec 1.16 et dashmap 6.2 stables, aphrody-design-emit retiré par son agent | 1347 | 105 | 118 | n. m. |
 
 ## Ce qui a été fait
 
@@ -16,6 +17,7 @@ Mesures prises sur `Cargo.lock`, toutes cibles confondues, avec `ay doctor --dep
   - `zerocopy` et `zerocopy-derive` 0.9.0-alpha.0 : `bench` et `ring3-agent` passent à la 0.8 du workspace ;
   - `sha2` 0.10 : `next` passe à la 0.11 du workspace ;
   - `zip` 8 : `steam-depot` passe à la 9 du workspace.
+- smallvec 2.0.0-beta.4 vers 1.16 (35 types `SmallVec<T, N>` réécrits en `SmallVec<[T; N]>`, `from_slice_copy` remplacé par `from_slice`) et dashmap 7.0.0-rc2 vers 6.2 : plus aucune préversion dans lore. Vérifié sur fr1 par `cargo check --workspace --all-targets`.
 - `cargo update` monte les versions dans les bornes. `--breaking` monte `oxc_*` de 0.155 à 0.158 : c'étaient les seules majeures en retard parmi les dépendances directes.
 - `--dedupe` ramène `glam` de 0.34.3 à 0.33.12 (bitcode s'aligne sur bevy) et `libloading` de 0.9.0 à 0.8.9.
 
@@ -28,7 +30,6 @@ Mesures prises sur `Cargo.lock`, toutes cibles confondues, avec `ay doctor --dep
 | `windows*` | 0.61/0.62 | gpu-allocator, sysinfo, wgpu-hal sur 0.62 ; d'autres crates encore sur 0.61 | aligner le fork `windows-rs` quand les dépendants publient |
 | `syn` | 1/2/3 | `lore-macro` et `lore-error-set-macro` sur syn 3 ; l'écosystème encore sur 2 ; quelques crates sur 1 | aucune |
 | `hashbrown`, `foldhash` | 0.14 à 0.17, 0.1/0.2 | versions figées par indexmap, dashmap et les crates gpu | aucune |
-| `smallvec` 2.0.0-beta.4, `dashmap` 7.0.0-rc2 | préversions | choix de lore ; repasser en 1.x et 6.x touche 93 et 203 sites | portage dédié (`CARGO-PRERELEASE`) |
 | `parking_lot` 0.13, `quick-xml` 0.42, `tower-http` 0.7 | nouvelles majeures | les membres sont à jour, les dépendances externes encore sur l'ancienne | attendre l'amont |
 | `thiserror`, `toml`, `winnow`, `itertools`, `phf` | 1/2, 0.9/1, … | dépendances externes en retard | attendre l'amont |
 

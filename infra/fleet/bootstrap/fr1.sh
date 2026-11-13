@@ -3,7 +3,7 @@
 # (docker buildx bake, `just docker-smoke`), CI runner, training, heavy agents. prd and fr2 never compile.
 # Chromium/LLVM keep priority: BuildKit is capped (BUILDKIT_CPUS/BUILDKIT_MEM) and heavy jobs go through aphrody-heavy.
 #   sh infra/fleet/bootstrap/fr1.sh        (just fleet-bootstrap fr1)
-LOCK=${LOCK:-$(cd "$(dirname "$0")/../../.." && pwd)/packages/machine/toolchains.lock.toml}
+LOCK=${LOCK:-$(cd "$(dirname "$0")/../../.." && pwd)/tools.toml}
 . "$(dirname "$0")/common.sh"
 
 llvm_major=$(lock_get llvm version | cut -d. -f1)

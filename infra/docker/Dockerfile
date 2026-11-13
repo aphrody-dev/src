@@ -3,7 +3,7 @@
 #   docker buildx bake -f infra/docker/docker-bake.hcl            (all images, see `just docker-build`)
 #   docker buildx build -f infra/docker/Dockerfile --target ai-os .
 # No Debian anywhere (repo policy): Alpine runtimes, Arch for the heavy dev image.
-# Pins: build args below = packages/machine/toolchains.lock.toml (scripts/toolchains-lock.ts); bake passes them.
+# Pins: build args below = tools.toml (scripts/toolchains-lock.ts); bake passes them.
 # Rust: cargo-chef dependency layer + cargo-zigbuild cross-compile on $BUILDPLATFORM to static musl
 # (amd64 and arm64 from one native builder, no qemu). Bun: frozen lockfile, bundled server per app.
 # Runtime images run as non-root, carry a HEALTHCHECK, never contain secrets (env at run time only).
@@ -127,7 +127,7 @@ ENTRYPOINT ["rust-stack", "serve", "--host", "0.0.0.0", "--port", "4100", "--db"
 FROM bun-alpine AS bun-deps
 WORKDIR /src
 COPY package.json bun.lock ./
-COPY --parents packages/*/package.json infra/ffi-bridge/package.json ./
+COPY --parents packages/*/package.json ./
 RUN --mount=type=cache,id=bun-cache,target=/root/.bun/install/cache \
     bun install --frozen-lockfile --production --ignore-scripts
 

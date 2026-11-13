@@ -80,7 +80,7 @@ impl State {
         let mut failed = None;
         // The chains still to mark, each from its head, and whether their nodes count.
         // Ten inline, as the flag widens each to 12 bytes and the vector lives across awaits.
-        let mut chains: SmallVec<(NodeID, NodeID, bool), 10> = SmallVec::new();
+        let mut chains: SmallVec<[(NodeID, NodeID, bool); 10]> = SmallVec::new();
         chains.push((root, head, true));
         while let Some((directory, head, counting)) = chains.pop() {
             let mut cycle = SiblingCycleGuard::new(directory);
@@ -175,8 +175,8 @@ impl State {
         }
         let mut collected = Vec::with_capacity(popped.roots.len());
         // Every block the walk read, by index, kept until the frees are done.
-        let mut blocks: SmallVec<(usize, Arc<NodeBlock>), 4> = SmallVec::new();
-        let mut chains: SmallVec<(NodeID, NodeID), 16> = SmallVec::new();
+        let mut blocks: SmallVec<[(usize, Arc<NodeBlock>); 4]> = SmallVec::new();
+        let mut chains: SmallVec<[(NodeID, NodeID); 16]> = SmallVec::new();
         for &root in &popped.roots {
             chains.push((INVALID_NODE, root));
             while let Some((directory, head)) = chains.pop() {

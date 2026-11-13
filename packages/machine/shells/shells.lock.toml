@@ -2,7 +2,7 @@
 # `bun packages/machine/src/shells.ts --check` (chemin, `--version`, b3sum du binaire installé).
 # sha256.* = digest de l'asset amont (gh api releases, 2026-11-13) ; b3sum.* = binaire installé tel quel.
 # L'installation reste celle de l'outil indiqué par `install` (tools.toml / winget DSC / pacman) :
-# ce lock fige et vérifie, il ne réimplémente pas d'installeur. Même schéma que toolchains.lock.toml.
+# ce lock fige et vérifie, il ne réimplémente pas d'installeur. Même schéma que tools.toml.
 # hosts : pc (Windows 11), prd (Arch), fr2 = cdn (Ubuntu 26.10), fr1 = vps (Ubuntu 26.10).
 
 [shell.niubash]

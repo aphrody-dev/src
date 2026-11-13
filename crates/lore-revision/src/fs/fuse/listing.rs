@@ -85,7 +85,7 @@ const _: () = assert!(std::mem::size_of::<ListingEntry>() == 80);
 /// the node id and node read from `State`, its name copied off the
 /// `NodeNameLock`, its packed view `filter_state` with the line that decided
 /// it, its `VIEW_EXCLUDED` bit, and its position in the walk.
-type CollectedChild = (NodeID, Node, SmallVec<u8, 256>, (u8, u16), bool, u32);
+type CollectedChild = (NodeID, Node, SmallVec<[u8; 256]>, (u8, u16), bool, u32);
 
 /// A directory's children as its chain held them when its chain log stood at `log_seq`.
 ///
@@ -570,7 +570,7 @@ impl Listing {
             let view_excluded = view_excluded && !holds_local(&node);
             let packed_filter_state = (filter_states_to_u8(child_state), view_line(child_state));
 
-            let name: SmallVec<u8, 256> = SmallVec::from_slice_copy(name_lock.as_bytes());
+            let name: SmallVec<[u8; 256]> = SmallVec::from_slice(name_lock.as_bytes());
             drop(name_lock);
 
             if !is_representable(&name) {

@@ -1194,7 +1194,7 @@ impl Resolved {
     fn nothing(name: &str) -> Self {
         Self {
             found: Found::Nothing,
-            spelled: Name::from_slice_copy(name.as_bytes()),
+            spelled: Name::from_slice(name.as_bytes()),
             node: None,
             absent: None,
         }
@@ -1221,7 +1221,7 @@ fn resolved_from_block(
             }
             Ok(Some(Resolved {
                 found: Found::of_entry(&Listing::entry_of(node, 0)),
-                spelled: Name::from_slice_copy(held.as_bytes()),
+                spelled: Name::from_slice(held.as_bytes()),
                 node: Some(node_id),
                 absent: None,
             }))
@@ -1866,7 +1866,7 @@ impl FuseFilesystem {
         let resolved = match hit {
             Hit::Listed(index, entry) => Some(Resolved {
                 found: Found::of_entry(&entry),
-                spelled: Name::from_slice_copy(listing.name(index)),
+                spelled: Name::from_slice(listing.name(index)),
                 node: Some(listing.node_ids[index]),
                 absent: None,
             }),
@@ -3488,7 +3488,7 @@ impl FuseFilesystem {
                 self.emptiness_step(head).await;
             }
             while let Some((_, child, lock)) = children.next().await.map_err(failed)? {
-                let name = Name::from_slice_copy(lock.as_bytes());
+                let name = Name::from_slice(lock.as_bytes());
                 drop(lock);
                 if child.is_staged_delete() {
                     continue;
@@ -3549,7 +3549,7 @@ impl FuseFilesystem {
                 return Err(ReadFault::WouldFetch);
             }
             next = child.sibling();
-            let name = name.map(|lock| Name::from_slice_copy(lock.as_bytes())).ok();
+            let name = name.map(|lock| Name::from_slice(lock.as_bytes())).ok();
             if child.is_discarded() || child.is_staged_delete() {
                 continue;
             }
@@ -3661,7 +3661,7 @@ impl FuseFilesystem {
         let Some(queue) = self.notifications() else {
             return;
         };
-        let stale: SmallVec<Name, 2> = taken
+        let stale: SmallVec<[Name; 2]> = taken
             .seen
             .into_iter()
             .filter(|seen| seen.as_slice() != name)
@@ -3701,7 +3701,7 @@ impl FuseFilesystem {
     fn ensure_host_dirs(&self, dir: u64) -> Result<usize, Errno> {
         let local = self.writable()?;
         let mut made = 0;
-        let mut chain: SmallVec<u64, 16> = SmallVec::new();
+        let mut chain: SmallVec<[u64; 16]> = SmallVec::new();
         let mut ino = dir;
         while ino != ROOT_INO {
             if chain.len() >= MAX_DEPTH {

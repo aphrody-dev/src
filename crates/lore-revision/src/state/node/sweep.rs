@@ -241,7 +241,7 @@ impl State {
         let node = held.blocks[slot].1.node(Node::index(root));
         members.push(root);
         // The chains still to walk, each with its directory.
-        let mut chains: SmallVec<(NodeID, NodeID), 8> = SmallVec::new();
+        let mut chains: SmallVec<[(NodeID, NodeID); 8]> = SmallVec::new();
         if node.is_directory() && node.child.is_valid_node_id() {
             chains.push((root, node.child));
         }

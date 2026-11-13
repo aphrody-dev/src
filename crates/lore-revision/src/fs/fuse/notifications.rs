@@ -44,7 +44,7 @@ impl Invalidations {
 enum Message {
     Send(Invalidations, oneshot::Sender<Invalidations>),
     Post(Invalidations),
-    Entries(u64, SmallVec<Name, 2>),
+    Entries(u64, SmallVec<[Name; 2]>),
     Stop,
 }
 
@@ -111,7 +111,7 @@ impl NotificationQueue {
     }
 
     /// Queues the entries `names` in directory `parent`, without waiting for them.
-    pub fn post_entries(&self, parent: u64, names: SmallVec<Name, 2>) {
+    pub fn post_entries(&self, parent: u64, names: SmallVec<[Name; 2]>) {
         if !names.is_empty() {
             let _ = self.sender.send(Message::Entries(parent, names));
         }

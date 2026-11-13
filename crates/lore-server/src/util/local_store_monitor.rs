@@ -150,7 +150,7 @@ pub fn is_temporary_path(path: &Path) -> bool {
 struct Volume<'a> {
     mount_point: &'a Path,
     available_bytes: u64,
-    stores: SmallVec<&'a Path, STORES_PER_CHECK>,
+    stores: SmallVec<[&'a Path; STORES_PER_CHECK]>,
 }
 
 /// Local store paths a server configures, past which the check spills onto the
@@ -159,7 +159,7 @@ const STORES_PER_CHECK: usize = 4;
 
 /// The volumes one check found, and the stores on each.
 #[lore_macro::test_pub]
-type Volumes<'a> = SmallVec<Volume<'a>, STORES_PER_CHECK>;
+type Volumes<'a> = SmallVec<[Volume<'a>; STORES_PER_CHECK]>;
 
 /// Comma-separated paths, formatted only where the message is emitted.
 #[lore_macro::test_pub]

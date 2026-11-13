@@ -6,7 +6,7 @@ Règle maison : assembler les meilleures briques upstream, aucun moteur maison. 
 injoignables (ENOTFOUND). « commit » = commit pointé par le tag de la release citée (12 caractères), pas la tête de branche.
 Critère de rétention : release ou commit de moins de 6 mois, dépôt non archivé, licence OSI permissive ou copyleft faible
 (MPL-2.0) ; AGPL et BUSL écartées. La colonne « outil » donne la release upstream de référence ; l'épingle réellement
-déployée est celle de `packages/machine/toolchains.lock.toml` (écarts listés au §3).
+déployée est celle de `tools.toml` (écarts listés au §3).
 
 Rôles de la flotte (décision du 2026-11-13) : **fr1** (`ssh vps`) = usine (builds, CI, training, agents lourds) ;
 **prd** (`ssh prd`, USA) = backends de prod uniquement, sans compilateur ; **fr2** (`ssh cdn`) = edge uniquement.
@@ -51,7 +51,7 @@ un fork n'est créé (skill gh-fork, `third_party/forks.txt`) que si un patch de
   rejoignent la purge « backends only » du chantier résilience/NHITL (commit 17a8f11 : workers REAPI, BuildKit,
   rustup, paquets de build, caches ; différée si un `cargo` ou un `buildx` tourne).
   `common.sh` : repli IPv4 dans `fetch` (fr1 reçoit un 404 de dl.google.com en IPv6).
-- `scripts/toolchains-lock.ts` / `packages/machine/toolchains.lock.toml` : `hosts` alignés sur les rôles (prd n'a plus
+- `scripts/toolchains-lock.ts` / `tools.toml` : `hosts` alignés sur les rôles (prd n'a plus
   rust, llvm, cmake, ninja, sccache, nextest, ffmpeg, go, zig, .NET, protoc, cbindgen, wrangler, cf).
 
 ## 3. Propositions aux autres chantiers (non appliquées)

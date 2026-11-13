@@ -41,7 +41,7 @@ pub struct Message {
     pub header: CommandHeader,
     inline: [u8; INLINE_CAPACITY],
     inline_len: usize,
-    payloads: SmallVec<Bytes, 2>,
+    payloads: SmallVec<[Bytes; 2]>,
 }
 
 impl Message {
@@ -152,7 +152,7 @@ impl Pending {
                 return Ok(true);
             }
             let attempt = {
-                let slices: SmallVec<IoSlice<'_>, WRITE_SLICES> = self
+                let slices: SmallVec<[IoSlice<'_>; WRITE_SLICES]> = self
                     .queue
                     .iter()
                     .take(WRITE_SLICES)

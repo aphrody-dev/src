@@ -27,7 +27,7 @@ use crate::node::ROOT_NODE;
 pub const ROOT_INO: u64 = 1;
 
 /// A name's bytes, inline up to the length most names have so recording one does not allocate.
-pub type Name = SmallVec<u8, 24>;
+pub type Name = SmallVec<[u8; 24]>;
 
 pub enum InodeKind {
     Dir {
@@ -162,7 +162,7 @@ const FORGOTTEN_WRITE_SLOTS: usize = 4096;
 #[lore_macro::test_pub]
 pub struct InodeTable {
     by_ino: DashMap<u64, InodeEntry>,
-    children: DashMap<(u64, u64), SmallVec<u64, 1>>,
+    children: DashMap<(u64, u64), SmallVec<[u64; 1]>>,
     /// The count incarnations ([`InodeEntry::incarnation`]) and written forgets draw from.
     incarnations: AtomicU64,
     /// By node modulo the slot count, the count drawn by the latest FORGET of a written local
@@ -438,7 +438,7 @@ impl InodeTable {
             ino: n,
             parent,
             name_hash,
-            name: Name::from_slice_copy(name.as_bytes()),
+            name: Name::from_slice(name.as_bytes()),
             kind,
             nlookup: 1,
             mtime,
@@ -503,7 +503,7 @@ impl InodeTable {
             self.unindex_child(entry.parent, entry.name_hash, ino);
             entry.parent = parent;
             entry.name_hash = name_hash;
-            entry.name = Name::from_slice_copy(name.as_bytes());
+            entry.name = Name::from_slice(name.as_bytes());
             // Inner lock of the `by_ino` -> `children` order.
             #[allow(clippy::disallowed_methods)]
             let mut inos = self.children.entry((parent, name_hash)).or_default();
@@ -611,7 +611,7 @@ impl InodeTable {
 
     /// Copies the key's inode numbers out so no `children` ref is held while
     /// `by_ino` is consulted.
-    fn candidates(&self, parent: u64, name_hash: u64) -> SmallVec<u64, 4> {
+    fn candidates(&self, parent: u64, name_hash: u64) -> SmallVec<[u64; 4]> {
         self.children
             .get(&(parent, name_hash))
             .map(|inos| inos.iter().copied().collect())

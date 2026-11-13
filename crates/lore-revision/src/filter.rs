@@ -1089,7 +1089,7 @@ struct PrefixNode {
     /// Lines whose leading literal components, at most
     /// [`MAX_PREFIX_COMPONENTS`] of them, lead to this node, ascending. The root
     /// holds the lines with none, name rules among them.
-    lines: SmallVec<u32, 4>,
+    lines: SmallVec<[u32; 4]>,
 }
 
 /// An edge from a [`PrefixNode`]: the range of [`LinePrefixes::text`] its

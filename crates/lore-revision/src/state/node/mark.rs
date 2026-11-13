@@ -40,7 +40,7 @@ const SERVED_MARK_LEVELS: usize = 4;
 const SERVED_MARK_DEPTH: usize = 1 << 16;
 
 /// The nodes a served mark's pass marks, from the target up, each with its block.
-type ServedPath = SmallVec<(NodeID, Arc<NodeBlock>), SERVED_MARK_LEVELS>;
+type ServedPath = SmallVec<[(NodeID, Arc<NodeBlock>); SERVED_MARK_LEVELS]>;
 
 /// How one pass of a served mark ended.
 enum Pass {

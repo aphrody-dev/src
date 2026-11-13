@@ -39,7 +39,7 @@ pub fn create_operation_context_attribute(context: impl Into<Cow<'static, str>>)
     KeyValue::new(METRICS_OPERATION_CONTEXT_ATTRIBUTE_NAME, context.into())
 }
 
-pub type LabelArray = SmallVec<KeyValue, 8>;
+pub type LabelArray = SmallVec<[KeyValue; 8]>;
 
 /// Maps a given numeric value to its associated bucket
 pub fn bucket(value: usize, bucket_size: usize) -> Result<usize, TelemetryError> {

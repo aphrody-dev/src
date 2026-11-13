@@ -1,54 +1,62 @@
-#!/bin/sh
-# prd (USA, Arch Linux, root): production backends ONLY (owner decision 2026-11-13). No compiler is installed
-# here: images are built in CI (images.yml) or on fr1 (`just docker-smoke`) and pulled from ghcr.io/aphrody-labs.
-# Idempotent; never restarts running app containers.
-#   LOCK=/root/src/packages/machine/toolchains.lock.toml sh infra/fleet/bootstrap/prd.sh
-# Run from the PC: just fleet-bootstrap prd
-LOCK=${LOCK:-$(cd "$(dirname "$0")/../../.." && pwd)/packages/machine/toolchains.lock.toml}
-. "$(dirname "$0")/common.sh"
+# Naming
 
-# Runtime packages only (pacman -S --needed: no -Syu, a full upgrade of prd is a separate, planned operation).
-pkgs="docker docker-compose docker-buildx nginx wireguard-tools git git-lfs curl openssl zstd"
-missing=$(for p in $pkgs; do pacman -Qq "$p" >/dev/null 2>&1 || echo "$p"; done)
-[ -z "$missing" ] || { log "pacman: $missing"; pacman -S --needed --noconfirm $missing >/dev/null; }
+One identity, short tools. Decided by the owner on 2026-11-12.
 
-bun_pinned
-has_version "$(lock_get cloudflared version)" cloudflared --version || install_archive_bin cloudflared cloudflared-linux-amd64 cloudflared
-docker_runtime
+## Identity
 
-log "prd versions:"
-report bun docker nginx cloudflared git
-docker compose version
+| Surface | Name |
+|---|---|
+| Brand, domains | Aphrody (`aphrody.com`, `aphrody.app`, `labs.aphrody.com`) |
+| npm | scope `@aphrody/*` (owned), package names short: `@aphrody/<tool>` |
+| crates.io | `aphrody` for the CLI crate, `aphrody-<area>` for published libraries (no scopes on crates.io). About 190 older `aphrody-*` crates exist: check a name before adding one |
+| GitHub | `aphrody-dev` |
 
-# --- Backends only (owner decision 2026-11-13). Build workers, BuildKit, caches and toolchains go (fr1 owns them);
-# llama-server inference (shenron-chat) stays. Skipped while a build runs.
-# Rollback: git revert + just fleet-bootstrap fr1 (builds) ; prd services are untouched by this block.
-role_mark prd
-if ! pgrep -x cargo >/dev/null 2>&1 && ! pgrep -f 'buildx (bake|build)' >/dev/null 2>&1; then
-  for u in nativelink-worker.service fleet-tunnel-nativelink.service; do
-    systemctl cat "$u" >/dev/null 2>&1 || continue
-    systemctl disable --now "$u" >/dev/null 2>&1 || true
-    rm -rf "/etc/systemd/system/$u" "/etc/systemd/system/$u.d"; log "purged $u (REAPI workers on fr1)"
-  done
-  rm -rf /etc/nativelink /var/lib/private/nativelink /usr/local/bin/nativelink; systemctl daemon-reload
-  docker ps -aq --filter name=buildx_buildkit | xargs -r docker rm -f >/dev/null
-  docker ps -aq --filter status=paused --filter status=exited --filter status=created | xargs -r docker rm -f >/dev/null
-  docker builder prune -af >/dev/null 2>&1 || true
-  # Unused images older than 7 days (recent tags stay for rollbacks), dangling volumes.
-  docker image prune -af --filter until=168h >/dev/null; docker volume prune -f >/dev/null
-  # Toolchains and caches (bun stays: services run on it; uv/python stay for litellm).
-  for d in /root/.rustup /root/.cargo /home/*/.rustup /home/*/.cargo/registry /root/.cache/zig /root/.cache/cargo-xwin \
-    /root/.cache/ms-playwright /root/.cache/node-gyp /root/.cache/sccache /root/.bun/install/cache /srv/build /srv/bunlfs /opt/ghidra \
-    /usr/local/go /opt/dotnet /opt/zig-* /etc/profile.d/dotnet.sh; do
-    [ -e "$d" ] && rm -rf "$d" && log "purged $d"
-  done
-  for f in sccache cargo-zigbuild cargo-nextest cbindgen b3sum protoc go gofmt zig dotnet; do if [ -e "$BIN/$f" ] || [ -L "$BIN/$f" ]; then rm -f "$BIN/$f"; fi; done
-  build_pkgs=$(for p in base-devel clang llvm lld cmake ninja meson protobuf android-tools nasm rustup sccache \
-    cargo-audit cargo-deny cargo-edit cargo-nextest cargo-watch rust-analyzer; do pacman -Qq "$p" 2>/dev/null; done)
-  [ -z "$build_pkgs" ] || pacman -Rns --noconfirm $build_pkgs >/dev/null 2>&1 || pacman -Rn --noconfirm $build_pkgs >/dev/null 2>&1 || log "pacman: some build packages kept (required by a runtime package)"
-  orphans=$(pacman -Qdtq 2>/dev/null || true); [ -z "$orphans" ] || pacman -Rns --noconfirm $orphans >/dev/null 2>&1 || true
-  paccache -rk1 >/dev/null 2>&1 || rm -f /var/cache/pacman/pkg/*.pkg.tar.* 2>/dev/null || true
-fi
-agents_cli
-resilience
-sysctl_serve
+## The CLI: `ay`
+
+One multicall binary, like `bun`, `cargo` or `busybox`: `ay <command> [subcommand]`. Package `aphrody`
+(crate), binary `ay`. Every former standalone tool becomes a subcommand; no per-tool binaries, no
+aliases.
+
+| Command | Replaces | Area |
+|---|---|---|
+| `ay build [--target <preset>]` | ad hoc cargo/bun invocations | cross-compilation presets (windows-msvc, linux-gnu, linux-musl, macos, wasm32) |
+| `ay test` | `just verify-all` pieces | runs cargo, bun and go suites |
+| `ay arch check` / `ay arch graph` | `archguard` | architecture gate ARCH-001..017 |
+| `ay lock` / `ay doctor` | `xtk lock`, `xtk doctor` | src.lock.json, DEPS, .repo manifest, MAINTAINERS |
+| `ay git ...` | `depot` (git shims, slim) | VCS tooling |
+| `ay ingest` | `gitingest` | repository digest |
+| `ay graph <path>` | `graphify`, `depot-graph` | tree-sitter code graph |
+| `ay deploy <sub>` | `src-deploy` (Go engine, removed 2026-11-13) | `just docker-<sub>`: docker buildx bake + compose (docs/infra/UPSTREAM-STACK.md) |
+| `ay bench` | `stack-bench` | benchmarks |
+| `ay ai ls/install/service/pull/config/check/auth/push/up` | ad hoc Ollama, llama.cpp, LM Studio, vLLM, mistral.rs and LiteLLM setup | inference providers discovered from the models.dev registry plus `infra/ai/ai.toml`, behind one LiteLLM proxy (fork aphrody-labs/litellm), Task Scheduler or systemd services |
+| `ay bun watch [--json] [--apply] [--dry-run] [--install-schedule [--every <h>]] [--remove-schedule]`, `ay bun bump [--to <v>] [--write]`, `ay bun install --fork [--run <id>] [--activate]` | ad hoc `gh api`, npm and crates.io polling of oven-sh/bun | upstream watch for the aphrody-labs/bun fork (a group of its own: `ay rt` manages installed runtimes, `ay bun` follows the upstream): main commits, pull requests, `windows` issues, CONTRIBUTING and Windows build docs by blob hash, stable and canary releases with per-asset digests and stale SHASUMS256.txt, bun.com blog, npm `bun` and `@oven/*`, crates.io; fork commits (`upstream/main..origin/main`) crossed with upstream commits, PRs and issues on the same files; state and last report in `~/.local/share/ay/bun-watch/`; Task Scheduler (schtasks /XML) or systemd user timer; Bun pin bumps (src.lock.json, tools.toml, tools.toml, package.json, workflows, Docker); install of the fork build (`aphrody windows` CI artifact, sha256 of the build job) as `bun@fork`, `--activate` into `~/.bun/bin` |
+| `ay upstream status/sync/check/pr/mark/gc/export` | hand rebases of the forks, Electron `git-export-patches`, ad hoc PR branches | patch stacks of aphrody-labs/bun and the Chromium series (`infra/upstream/stacks.toml`, statuses in `infra/upstream/status/`), replay on upstream with drop of merged patches, ephemeral `up/*` PR heads, upstream contribution rules; run by bun from `packages/upstream` (docs/upstream/STRATEGY.md). `ay bun watch` reports what upstream did; `ay upstream` keeps our patches on top of it |
+| `ay sys` | (new) | OS, firmware, hardware and software profile |
+| `ay auth status/repair/gh-secrets/tunnels/rotate`, `ay secret` | ad hoc `gh auth`, `gcloud auth`, `gh secret set`, token files | every authentication of the fleet and the OS secret store (DPAPI, systemd-creds), run by bun from `packages/env-kit` (docs/infra/AUTH.md) |
+| `ay ssh exec/cp/hosts/check` | `ssh`, `scp` (OpenSSH client) | pure-Rust SSH (crate `aphrody-remote`, russh): exec on `usa`/`fr1`/`fr2` or `all`, SFTP copy, fleet health |
+| `ay docs sync/bun/show/stats/schedule` | grepping `third_party/bun/docs`, fetching bun.com/llms.txt by hand | Bun's docs in ay: fork md/mdx, bun.com `llms-full.txt` and the `bun*` skills in one SQLite FTS5 index (`var/index/docs.db`), `--json` for agents, refreshed by schedule and by `ay bun watch` (docs/ay/MIGRATION.md) |
+| `ay flat list/sync/check`, `ay hash`, `ay time` | `b3sum` for change detection, `hyperfine` for quick timings | Rust crates of the bun fork flattened into `crates/bun-flat` (wyhash, HdrHistogram, sort by number) with their resync, and the commands they back |
+| `ay chromium status/sync/gn/build/autoninja/toolchain` | `ssh vps` + depot_tools by hand, `chromium-factory.sh` steps | Chromium build chain of the fr1 checkout (factory.toml), run locally on fr1 and delegated over `ay ssh` elsewhere; `--dry-run`, `--detach` |
+| `ay engines list/matrix/js/path/install/launch/build` | `bun packages/chromium-bun/src/cli.ts engines` | engines facade (V8, JavaScriptCore, Dawn, wgpu, browsers); `js` = JS engines and WebGPU rows, `build v8\|dawn` = `ay chromium build d8\|dawn_end2end_tests` |
+| `ay web check` | `wck` | web quality gate |
+| `ay design` | `gds` | design system |
+| `ay forge` | `frg` | forge |
+| `ay wl` | `wslg-rs`, `wslg-cosmic-hypr` | Wayland compositor (Linux, Windows, web) |
+| `ay scope` | `gamescope-rs` | gamescope mode |
+| `ay steam root/libraries/apps/vdf/compat/host/env` | `plugins/steam/lib/steam.ts` parsers, `steam-inspect.ts` | Steam data of the host as JSON from `crates/steam-depot` (one VDF/ACF/appinfo parser) |
+| `ay gaming status/apps/proton/layers/dx/forks/steamcmd/run/skills` | (new) | gaming stack, run by bun from `packages/gaming`: Proton, Vulkan layers, DirectX, official steamcmd and Proton wrappers (docs/gaming/OWNERSHIP.md) |
+| `ay lfs` | `just lfs-<sub>` (third_party/lfs/bun, GitHub CI) | bun-LFS build, logs, WSL import |
+| `ay wsl`, `ay userland` | `unix-distro`, `omarchy-wsl` | WSL distribution, Rust userland |
+
+Bun-based tools (`wck`, `gds`, `frg`) keep their TypeScript implementation; `ay` dispatches to their
+AOT-compiled binaries until they are ported.
+
+## Conventions
+
+- Commands are lowercase single words; subcommands are verbs (`check`, `build`, `sync`), as in
+  `cargo` and `bun`. Flags follow GNU style (`--long`, `-s`), parsed with clap.
+- Crate directories: `crates/<area>` (flat, one level), package name `aphrody-<area>` when published,
+  plain `<area>` when `publish = false`. Rust library names use `snake_case`.
+- Exit codes follow Unix: 0 success, 1 failure, 2 usage error.
+- Config lives in the repo root (`ay.toml` when needed), environment overrides use the `AY_` prefix,
+  and `SRC_ROOT` stays the repo root override.

@@ -306,7 +306,7 @@ impl StoreInternal {
 #[derive(Default)]
 #[lore_macro::test_pub]
 pub(crate) struct SessionReuse {
-    sessions: SmallVec<(Partition, Arc<StorageSession>), 1>,
+    sessions: SmallVec<[(Partition, Arc<StorageSession>); 1]>,
 }
 
 impl SessionReuse {

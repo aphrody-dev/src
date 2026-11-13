@@ -962,7 +962,7 @@ impl Walk<'_> {
         root: Hash,
         whole: &Span,
         out: &mut [u8],
-        jobs: &mut SmallVec<Job, 4>,
+        jobs: &mut SmallVec<[Job; 4]>,
     ) -> Result<bool, StorageError> {
         let guard = epoch::pin();
         let Some(root_list) = self
@@ -994,7 +994,7 @@ impl Walk<'_> {
         span: &Span,
         offset: u64,
         out: &mut [u8],
-        jobs: &mut SmallVec<Job, 4>,
+        jobs: &mut SmallVec<[Job; 4]>,
         guard: &epoch::Guard,
     ) -> Result<(), StorageError> {
         let mut pos = span.from;
@@ -1104,10 +1104,10 @@ impl Walk<'_> {
         whole: Span,
         root_served: bool,
         out: &mut [u8],
-        mut jobs: SmallVec<Job, 4>,
+        mut jobs: SmallVec<[Job; 4]>,
     ) -> Result<(), StorageError> {
         let offset = whole.from;
-        let mut pending: SmallVec<(Span, Bytes), 2> = SmallVec::new();
+        let mut pending: SmallVec<[(Span, Bytes); 2]> = SmallVec::new();
         if !root_served {
             pending.push((whole, self.load_root(ino, slot, root, &whole).await?));
         }
@@ -1162,7 +1162,7 @@ impl Walk<'_> {
     async fn fetch_all<'j>(
         &self,
         jobs: &'j [Job],
-    ) -> Result<SmallVec<(&'j Job, Fetched), 4>, StorageError> {
+    ) -> Result<SmallVec<[(&'j Job, Fetched); 4]>, StorageError> {
         let mut results = SmallVec::new();
         #[cfg(feature = "test-util")]
         self.count_loads(jobs.len());

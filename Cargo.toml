@@ -177,7 +177,7 @@ dtor = "1.0.6"
 crossbeam-epoch = "0.9.21"
 crossbeam-queue = "0.3.14"
 crossbeam-utils = "0.8.23"
-dashmap = "=7.0.0-rc2"
+dashmap = "6.2.1"
 diffy = "0.5.2"
 directories = "6.0.0"
 enum_dispatch = "0.3.13"
@@ -247,7 +247,7 @@ rustls = { version = "0.23.46", default-features = false, features = [
 ] }
 rustls-pki-types = "1.16.0"
 rustls-native-certs = "0.8.5"
-smallvec = "=2.0.0-beta.4"
+smallvec = { version = "1.16.5", features = ["const_generics", "union", "write"] }
 serde_bytes = "0.11.19"
 serde_with = { version = "3.24.0", default-features = false, features = ["alloc", "macros"] }
 saphyr-parser = "0.3.4"

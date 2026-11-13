@@ -513,7 +513,7 @@ fn file_info_of(entry: &ListingEntry, mtime: u64) -> FileInfo {
 /// gives back when it ends, as the kernel forgets what it looked up.
 struct Looked<'a> {
     fs: &'a FuseFilesystem,
-    inos: SmallVec<u64, 8>,
+    inos: SmallVec<[u64; 8]>,
 }
 
 impl<'a> Looked<'a> {
@@ -1097,7 +1097,7 @@ impl FuseOperation {
 /// of it and the directory's listing. An entry invalidation of a name the kernel never looked up
 /// leaves a cached listing as it was.
 fn entry_changed(changed: &mut Invalidations, parent: u64, name: &[u8]) {
-    changed.entries.push((parent, Name::from_slice_copy(name)));
+    changed.entries.push((parent, Name::from_slice(name)));
     changed.inodes.push(parent);
 }
 

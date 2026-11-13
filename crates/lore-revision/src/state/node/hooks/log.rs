@@ -797,11 +797,11 @@ fn read(state: &StateHooks, (node, what): (NodeID, &str), effect: impl FnOnce() 
 /// A name as a record carries it: inline up to 64 bytes, so a record made inside a section
 /// allocates nothing for the names a scenario uses.
 #[derive(Clone, Default, PartialEq, Eq)]
-pub struct Name(SmallVec<u8, 64>);
+pub struct Name(SmallVec<[u8; 64]>);
 
 impl Name {
     pub fn new(bytes: &[u8]) -> Self {
-        Self(SmallVec::from_slice_copy(bytes))
+        Self(SmallVec::from_slice(bytes))
     }
 
     pub fn as_bytes(&self) -> &[u8] {

@@ -25,7 +25,7 @@ pub const NEGATIVE_TIMEOUTS: Timeouts = Timeouts {
 
 #[derive(Default)]
 pub struct Spellings {
-    pub seen: SmallVec<Name, 2>,
+    pub seen: SmallVec<[Name; 2]>,
     pub negative: bool,
     pub overflowed: bool,
 }
@@ -56,7 +56,7 @@ impl SpellingRecord {
         spellings.negative |= !positive;
         if !spellings.overflowed && !spellings.seen.iter().any(|seen| **seen == *name) {
             if spellings.seen.len() < SPELLING_BOUND {
-                spellings.seen.push(Name::from_slice_copy(name));
+                spellings.seen.push(Name::from_slice(name));
             } else {
                 spellings.overflowed = true;
             }

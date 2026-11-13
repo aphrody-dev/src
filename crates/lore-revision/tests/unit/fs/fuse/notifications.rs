@@ -67,7 +67,7 @@ fn batch(entries: &[(u64, &str)], inodes: &[u64]) -> Invalidations {
     Invalidations {
         entries: entries
             .iter()
-            .map(|(parent, name)| (*parent, Name::from_slice_copy(name.as_bytes())))
+            .map(|(parent, name)| (*parent, Name::from_slice(name.as_bytes())))
             .collect(),
         inodes: inodes.to_vec(),
     }
@@ -131,7 +131,7 @@ async fn posted_batches_and_entries_go_out_in_queue_order() {
     queue.post(batch(&[(1, "posted")], &[1]));
     queue.post_entries(
         2,
-        smallvec::smallvec![Name::from_slice_copy(b"x"), Name::from_slice_copy(b"y")],
+        smallvec::smallvec![Name::from_slice(b"x"), Name::from_slice(b"y")],
     );
     queue.send(batch(&[(3, "sent")], &[])).await;
     assert_eq!(

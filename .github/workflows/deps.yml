@@ -1,0 +1,84 @@
+# Supply chain (docs/deps/POLICY.md §4): weekly `ay lock --deps --bump --dedupe`, verified by
+# `cargo check --workspace --all-targets --locked` and `ay doctor --deps`, then committed on main.
+# workflow_dispatch also builds ay.exe for Windows (artifact) so `ay lock` runs on the PC without
+# compiling there. GitHub-hosted runners only (fr1 is Chromium/LLVM, prd is production).
+name: deps
+on:
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "run the bump job (otherwise: check and Windows build only)"
+        type: boolean
+        default: false
+concurrency:
+  group: deps
+  cancel-in-progress: false
+permissions: { contents: read }
+env:
+  RUSTC_WRAPPER: ""
+  CARGO_TERM_COLOR: never
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions: { contents: write }
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: false
+      - uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: deps-${{ runner.os }}-${{ hashFiles('rust-toolchain.toml', 'Cargo.lock') }}
+          restore-keys: deps-${{ runner.os }}-
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+      - uses: astral-sh/setup-uv@v10
+      - name: Build ay
+        run: cargo build -p aphrody
+      - name: Bump locks
+        if: github.event_name == 'schedule' || inputs.bump
+        run: target/debug/ay lock --deps --bump --dedupe
+      - name: Workspace check (Linux)
+        run: cargo check --workspace --all-targets --locked --keep-going
+      - name: Policy gate
+        run: target/debug/ay doctor --deps --dups
+      - name: Commit locks
+        if: github.event_name == 'schedule' || inputs.bump
+        run: |
+          git config user.name aphrody-dev
+          git config user.email contact@aphrody.com
+          git add Cargo.lock bun.lock uv.lock
+          git diff --cached --quiet && exit 0
+          git commit -m "deps : ay lock --deps --bump --dedupe (hebdomadaire, cargo check --workspace vert)"
+          git pull --rebase
+          git push
+  ay-windows:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: false
+      - uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: deps-${{ runner.os }}-${{ hashFiles('rust-toolchain.toml', 'Cargo.lock') }}
+          restore-keys: deps-${{ runner.os }}-
+      - name: Build ay.exe
+        run: cargo build -p aphrody --locked
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ay-windows-x86_64
+          path: target/debug/ay.exe
+          retention-days: 7

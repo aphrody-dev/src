@@ -2,7 +2,7 @@
 # fr2 (Ubuntu, user ubuntu + sudo): edge runtime ONLY (nginx vhosts/CDN, cloudflared, docker compose for
 # self-hosted images pulled from GHCR). No compilers are added here; existing ones are left alone.
 #   sh infra/fleet/bootstrap/fr2.sh        (just fleet-bootstrap fr2)
-LOCK=${LOCK:-$(cd "$(dirname "$0")/../../.." && pwd)/packages/machine/toolchains.lock.toml}
+LOCK=${LOCK:-$(cd "$(dirname "$0")/../../.." && pwd)/tools.toml}
 . "$(dirname "$0")/common.sh"
 
 pkgs="docker.io docker-buildx docker-compose-v2 nginx wireguard-tools curl"

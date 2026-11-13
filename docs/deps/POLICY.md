@@ -30,7 +30,7 @@ les tranche. Seul écart : les images `distroless/*-debian13` citées dans `RECO
 5. **Chaîne d'approvisionnement.**
    - `deny.toml` (cargo-deny) n'autorise que crates.io et les forks git listés dans `allow-git`.
    - Pas de script `preinstall`/`postinstall`, pas de registre tiers, pas de version flottante (`latest`, `*`).
-   - Les binaires précompilés sont vérifiés par sha256 ou par signature. `source = "ubi"` reste toléré en avertissement, le temps de passer chaque outil à `source = "github"` avec `checksum`.
+   - Les binaires précompilés sont vérifiés par sha256 ou par signature. Aucun outil n’est en `source = "ubi"` : sha256 par plateforme dans `tools.toml`.
 6. **Toolchain Rust épinglée** : `rust-toolchain.toml` contient une nightly datée (`nightly-YYYY-MM-DD`). La date correspond au commit rustc de `src.lock.json`. Le correspondant se vérifie dans `static.rust-lang.org/dist/<date>/channel-rust-nightly-git-commit-hash.txt`.
 7. **node vers bun.** Aucun script ne lance node, npx, npm, pnpm, yarn, tsc, prettier, eslint, jest, vitest ou esbuild : bun les remplace (`bun test`, `bun fmt`, `bun check`, `bun build`, `bun x`). Un amont Node que l'on absorbe devient un fork `aphrody-labs` porté sur bun (lock `bun.lock`, scripts bun). C'est déjà fait pour openclaw : migration pnpm vers bun.
 8. **third_party à la Chromium.**
@@ -54,7 +54,7 @@ les tranche. Seul écart : les images `distroless/*-debian13` citées dans `RECO
 | paquets JS | `package.json` (catalogue racine) + `bun.lock` | bun natif ; zéro dépendance externe aujourd'hui (seulement `@types/bun`) |
 | CLI JS (wrangler, MCP) | `source = "bun"` dans `tools.toml`, version exacte | installés par bun, sans npm |
 | Python (projets src) | workspace uv racine (`pyproject.toml`, `uv.lock`) | un seul résolveur et un seul lock ; CPython géré par uv |
-| uv | release GitHub `astral-sh/uv` (passer de `ubi` à `github` + `.sha256`) | uv publie une somme sha256 par archive |
+| uv | release GitHub `astral-sh/uv` + `.sha256` | uv publie une somme sha256 par archive |
 | Go (infra) | `infra/go.mod` + `go.sum`, `go 1.27.0` | MVS + sum.golang.org |
 | zig | archive ziglang.org (`tools.toml`, `source = "url"`) ; signature minisign à ajouter | pas de paquet système à jour |
 | clang, lld, llvm-* | `third_party/llvm-project` construit sur fr1, partagé avec Chromium | LTO inter-langages, une seule LLVM |
@@ -63,7 +63,7 @@ les tranche. Seul écart : les images `distroless/*-debian13` citées dans `RECO
 | .NET 11 / 10 | archives officielles Microsoft (dotnet-install) ; NuGet + `packages.lock.json` | NativeAOT ; pas de Mono ni de VSTest |
 | MSVC, Windows SDK | Windows : winget (Build Tools) ; Linux : `xwin` (`tools.toml`) | seul canal Microsoft redistribuable |
 | outils système Windows (Docker Desktop, pilotes) | winget, déclaré en DSC (`packages/machine/*.dsc.winget`) | modèle `.config/configuration.winget` d'intelligent-terminal |
-| CLI génériques (rg, fd, bat, just, gh…) | release GitHub (`tools.toml`) ; `ubi` toléré, à passer en `github` + checksum | binaire statique, même version sur Windows et Linux |
+| CLI génériques (rg, fd, bat, just, gh…) | release GitHub (`tools.toml`), sha256 par plateforme | binaire statique, même version sur Windows et Linux |
 | images OCI | Alpine (léger), Arch (lourd), `cgr.dev/chainguard/static` (Rust musl), épinglées par digest | jamais Debian/Ubuntu |
 | hôtes Linux | Arch/CachyOS (prd) : pacman ; nix (`flake.nix`) hors conteneur | pas d'apt dans la chaîne src |
 | applications de bureau Linux | flatpak/Flathub | isolées, hors build |
@@ -88,7 +88,7 @@ Règles vérifiées :
 - Rust : `CARGO-INLINE`, `CARGO-PATH`, `CARGO-GIT`, `CARGO-REGISTRY`, `CARGO-WILDCARD`, `CARGO-PRERELEASE` (avertissement), `CARGO-DUP` (avertissement), `CARGO-DENY`, `RUST-PIN` ;
 - bun : `JS-CATALOG`, `JS-CATALOG-PIN`, `JS-FLOAT`, `JS-NODE`, `JS-INSTALL-SCRIPT`, `JS-ABS-PATH`, `JS-LOCK` ;
 - Python : `PY-WORKSPACE`, `PY-LOCK`, `PY-MANIFEST` ;
-- conteneurs et outils : `OCI-DISTRO`, `TOOLS-PIN`, `TOOLS-UNVERIFIED` (avertissement) ;
+- conteneurs et outils : `OCI-DISTRO`, `TOOLS-PIN`, `TOOLS-UNVERIFIED` ;
 - `src.lock.json` : `LOCK-ABS`, `LOCK-UNPINNED`, `LOCK-MISSING` (avertissement).
 
 ## 4. Mise à jour automatique
@@ -97,9 +97,9 @@ La CI, sur fr1 ou prd, exécute chaque semaine `ay lock --deps --bump --dedupe`,
 
 Les montées majeures (`--breaking`) et la date de la nightly se changent à la main, dans un commit dédié. Le doublon restant de chaque montée est relevé dans `docs/deps/DEDUP.md`.
 
-## 5. Deux manifestes d’outils
+## 5. Une seule source d'outils
 
-`tools.toml` déclare les CLI installées par `ay up` dans `~/.local/bin`. `packages/machine/toolchains.lock.toml`, généré par `scripts/toolchains-lock.ts`, épingle les toolchains par hôte et sert aux images et aux bootstraps. Les deux se recouvrent (rustup, bun, LLVM) : la cible est une seule source. `tools.toml` reste la déclaration, et `toolchains.lock.toml` en devient la résolution, avec sha256 par plateforme.
+`tools.toml` déclare les CLI installées par `ay up` (`[[tool]]`, toutes épinglées et vérifiées par sha256 : digests de release GitHub, ou somme mesurée quand la release n'en publie pas). Il porte aussi, en fin de fichier, le bloc `[toolchain."<nom>"]` généré par `scripts/toolchains-lock.ts` (`just toolchains-lock`) : toolchains par hôte avec `{ url, sha256 | sha512 }` par plateforme. Ce bloc est lu par `infra/fleet/bootstrap`, `infra/docker` et `ay bun bump`. `packages/machine/toolchains.lock.toml` est supprimé.
 
 Compléments :
 - `docs/DEPS-MINIMIZE.md` : aucun code tiers versionné, sources git Cargo épinglées par `rev` ;

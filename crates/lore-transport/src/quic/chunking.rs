@@ -555,7 +555,7 @@ impl ThresholdSerialChunking {
 
 /// An assembled command header. A header is never wider than this, so framing one never
 /// allocates.
-type AssembledHeader = SmallVec<u8, COMMAND_HEADER_SIZE_V4>;
+type AssembledHeader = SmallVec<[u8; COMMAND_HEADER_SIZE_V4]>;
 
 /// One message's region of the stream: its header, and the payload that follows.
 ///

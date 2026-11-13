@@ -31,7 +31,7 @@ fn entry(kind: InodeKind, mtime: u64, orphaned: bool) -> InodeEntry {
         ino: 42,
         parent: 1,
         name_hash: 0,
-        name: lore_revision::fs::fuse::inode::Name::from_slice_copy(b"x"),
+        name: lore_revision::fs::fuse::inode::Name::from_slice(b"x"),
         kind,
         nlookup: 1,
         mtime,

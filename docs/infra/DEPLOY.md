@@ -3,7 +3,7 @@
 Source unique : `infra/deploy.toml` (`[services.*]` placement et ports blue/green, `[hosting.*]` cible cf | vercel | vps,
 `[containers]` images). Rendu par cible : `bun scripts/deploy-target.ts <app> <cf|vercel|vps>`. Images :
 `infra/docker/` (Dockerfile, `docker-bake.hcl`, `compose.yaml`, `smoke.sh`), CI `.github/workflows/images.yml`.
-Versions des outils : `packages/machine/toolchains.lock.toml` (généré par `scripts/toolchains-lock.ts`). Outils upstream
+Versions des outils : `tools.toml` (généré par `scripts/toolchains-lock.ts`). Outils upstream
 retenus par brique (versions, commits sources) : [UPSTREAM-STACK.md](UPSTREAM-STACK.md). Aucun moteur maison : `ay deploy <sub>`
 = `just docker-<sub>`.
 
@@ -15,13 +15,6 @@ retenus par brique (versions, commits sources) : [UPSTREAM-STACK.md](UPSTREAM-ST
 | prd (USA, Arch) | backends de prod uniquement, aucun compilateur | `just fleet-bootstrap prd` (purge go, zig, .NET, cargo-zigbuild, cbindgen, nextest, builder buildx) | Docker 29.9 + compose, images tirées de GHCR |
 | fr1 (Ubuntu) | usine : Chromium/LLVM, builds d'images, CI (runner `fr1`), training, agents lourds | `just fleet-bootstrap fr1` | Docker 29.7, buildx `aphrody` (docker-container, 4 CPU / 12 Gio, amd64+arm64 via binfmt) |
 | fr2 (Ubuntu) | edge : nginx, CDN, cloudflared | `just fleet-bootstrap fr2` | Docker (`ip-forward-no-drop`, `live-restore`), profil `edge` |
-
-Agents et jobs lourds (décision 2026-11-13) : sur les trois hôtes les agents tournent sous l'utilisateur `agent`
-(`sudo NOPASSWD: ALL` par `/etc/sudoers.d/aphrody-agent`, groupe `docker`, linger, runner `infra/agents`), posé par
-`just fleet-bootstrap <rôle>` ou `just agents-install <hôte>`. `aphrody-heavy` n'exécute un job que sur fr1
-(`/etc/aphrody/role`) et sort en 64 ailleurs : depuis le PC ou un autre hôte, `ssh vps aphrody-heavy <cmd>`.
-prd n'a plus ni rustup, ni clang/llvm, ni cmake, ni sccache, ni worker NativeLink, ni BuildKit ; fr2 n'a plus de
-worker NativeLink. Survie au reboot : [RESILIENCE.md](RESILIENCE.md) (`just fleet-resilience-proof <hôte>`).
 
 ## Matrice par service
 
@@ -70,7 +63,7 @@ aucune production n'y est placée.
 
 ## État vérifié (2026-11-13)
 
-- Outils : `toolchains.lock.toml` résolu sans erreur (30 entrées, sommes amont). PC : nightly-2026-11-12
+- Outils : `tools.toml` résolu sans erreur (30 entrées, sommes amont). PC : nightly-2026-11-12
   (rustc 3ef0c22cd, LLVM 23.1.5 = clang 23.1.5), .NET SDK 11.0.100, git-lfs 3.8.0, cbindgen 0.29.4, CMake 4.4.5,
   FFmpeg 9.0.2 shared (`FFMPEG_DIR`), contexte Docker `prd` par défaut. prd : go 1.27.4, zig 0.17.1, dotnet 11.0.100,
   cargo-zigbuild 0.24.1, builder buildx `aphrody` (amd64 + arm64). fr1 : sccache 0.19.0, just 1.59.0, nightly épinglée.

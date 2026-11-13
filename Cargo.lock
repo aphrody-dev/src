@@ -312,6 +312,7 @@ dependencies = [
  "serde",
  "serde_json",
  "stack-bench",
+ "steam-depot",
  "toml 1.2.1+spec-1.1.0",
  "ureq",
  "uuid",
@@ -539,7 +540,7 @@ dependencies = [
  "bytes",
  "chrono",
  "ctor",
- "dashmap 7.0.0-rc2",
+ "dashmap",
  "futures",
  "libc",
  "parking_lot 0.13.0",
@@ -548,7 +549,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serial_test",
- "smallvec 2.0.0-beta.4",
+ "smallvec",
  "thiserror 2.0.21",
  "tokio",
  "toml 1.2.1+spec-1.1.0",
@@ -578,7 +579,7 @@ dependencies = [
  "aws-types",
  "bytes",
  "chrono",
- "dashmap 7.0.0-rc2",
+ "dashmap",
  "hex",
  "mockall",
  "opentelemetry",
@@ -589,7 +590,7 @@ dependencies = [
  "serde_bytes",
  "serde_dynamo",
  "serial_test",
- "smallvec 2.0.0-beta.4",
+ "smallvec",
  "temp-env",
  "thiserror 2.0.21",
  "tokio",
@@ -738,7 +739,7 @@ dependencies = [
  "aphrody-lore-base",
  "aphrody-lore-fuse",
  "aphrody-lore-macro",
- "dashmap 7.0.0-rc2",
+ "dashmap",
  "libc",
  "parking_lot 0.13.0",
  "thiserror 2.0.21",
@@ -889,7 +890,7 @@ dependencies = [
  "crossbeam-queue",
  "crossbeam-utils",
  "ctor",
- "dashmap 7.0.0-rc2",
+ "dashmap",
  "diffy",
  "dtor",
  "fastcdc",
@@ -915,7 +916,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_with",
- "smallvec 2.0.0-beta.4",
+ "smallvec",
  "thiserror 2.0.21",
  "tokio",
  "tokio-stream",
@@ -960,7 +961,7 @@ dependencies = [
  "clap",
  "config",
  "ctor",
- "dashmap 7.0.0-rc2",
+ "dashmap",
  "enum_dispatch",
  "futures",
  "hex",
@@ -991,7 +992,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_with",
- "smallvec 2.0.0-beta.4",
+ "smallvec",
  "socket2",
  "sysinfo",
  "temp-env",
@@ -1033,7 +1034,7 @@ dependencies = [
  "blake3",
  "bytes",
  "crossbeam-queue",
- "dashmap 7.0.0-rc2",
+ "dashmap",
  "fastcdc",
  "futures",
  "hex",
@@ -1044,7 +1045,7 @@ dependencies = [
  "pin-project",
  "rand 0.10.3",
  "serde",
- "smallvec 2.0.0-beta.4",
+ "smallvec",
  "thiserror 2.0.21",
  "tokio",
  "tokio-stream",
@@ -1072,7 +1073,7 @@ dependencies = [
  "rand 0.10.3",
  "regex",
  "serde",
- "smallvec 2.0.0-beta.4",
+ "smallvec",
  "thiserror 2.0.21",
  "tokio",
  "tonic",
@@ -1100,7 +1101,7 @@ dependencies = [
  "crossbeam-queue",
  "crossbeam-utils",
  "ctor",
- "dashmap 7.0.0-rc2",
+ "dashmap",
  "dtor",
  "futures",
  "http",
@@ -1117,7 +1118,7 @@ dependencies = [
  "rustls-native-certs",
  "serde",
  "serde_json",
- "smallvec 2.0.0-beta.4",
+ "smallvec",
  "socket2",
  "thiserror 2.0.21",
  "tokio",
@@ -2362,7 +2363,7 @@ dependencies = [
  "derive_more",
  "downcast-rs 2.0.2",
  "serde",
- "smallvec 1.16.5",
+ "smallvec",
  "thiserror 2.0.21",
  "wgpu-types",
 ]
@@ -2495,7 +2496,7 @@ dependencies = [
  "nonmax",
  "serde",
  "slotmap",
- "smallvec 1.16.5",
+ "smallvec",
  "thiserror 2.0.21",
  "variadics_please",
 ]
@@ -2722,7 +2723,7 @@ dependencies = [
  "bevy_transform",
  "bevy_utils",
  "half",
- "smallvec 1.16.5",
+ "smallvec",
  "tracing",
  "wgpu-types",
 ]
@@ -2773,7 +2774,7 @@ dependencies = [
  "bevy_shader",
  "bevy_utils",
  "encase",
- "smallvec 1.16.5",
+ "smallvec",
  "thiserror 2.0.21",
  "tracing",
  "variadics_please",
@@ -2884,7 +2885,7 @@ dependencies = [
  "indexmap",
  "inventory",
  "serde",
- "smallvec 1.16.5",
+ "smallvec",
  "smol_str 0.2.2",
  "thiserror 2.0.21",
  "uuid",
@@ -2952,7 +2953,7 @@ dependencies = [
  "nonmax",
  "offset-allocator",
  "send_wrapper",
- "smallvec 1.16.5",
+ "smallvec",
  "static_assertions",
  "thiserror 2.0.21",
  "tracing",
@@ -3067,7 +3068,7 @@ dependencies = [
  "derive_more",
  "fixedbitset",
  "nonmax",
- "smallvec 1.16.5",
+ "smallvec",
  "static_assertions",
  "tracing",
 ]
@@ -3136,7 +3137,7 @@ dependencies = [
  "bevy_utils",
  "parley",
  "serde",
- "smallvec 1.16.5",
+ "smallvec",
  "smol_str 0.2.2",
  "swash",
  "sys-locale",
@@ -3206,7 +3207,7 @@ dependencies = [
  "bevy_window",
  "derive_more",
  "parley",
- "smallvec 1.16.5",
+ "smallvec",
  "swash",
  "taffy 0.14.0",
  "thiserror 2.0.21",
@@ -3257,7 +3258,7 @@ dependencies = [
  "regex",
  "rustc-hash 2.1.3",
  "shlex",
- "syn 3.0.10",
+ "syn 2.0.119",
 ]
 
 [[package]]
@@ -4289,7 +4290,7 @@ dependencies = [
  "dtoa-short",
  "itoa",
  "phf 0.13.1",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -4308,7 +4309,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d045de693cb712d0b22c6a64be5b953f67b3ce00ab5ad3dd5d8b441886ab8e1a"
 dependencies = [
  "quote",
- "syn 3.0.10",
+ "syn 2.0.119",
 ]
 
 [[package]]
@@ -4446,20 +4447,6 @@ dependencies = [
  "hashbrown 0.14.5",
  "lock_api 0.4.14",
  "once_cell",
- "parking_lot_core 0.9.12",
-]
-
-[[package]]
-name = "dashmap"
-version = "7.0.0-rc2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e4a1e35a65fe0538a60167f0ada6e195ad5d477f6ddae273943596d4a1a5730b"
-dependencies = [
- "cfg-if",
- "crossbeam-utils",
- "equivalent",
- "hashbrown 0.15.5",
- "lock_api 0.4.14",
  "parking_lot_core 0.9.12",
 ]
 
@@ -5083,7 +5070,7 @@ dependencies = [
  "log",
  "nohash-hasher",
  "profiling",
- "smallvec 1.16.5",
+ "smallvec",
  "unicode-segmentation",
 ]
 
@@ -5245,7 +5232,7 @@ dependencies = [
  "profiling",
  "self_cell",
  "skrifa",
- "smallvec 1.16.5",
+ "smallvec",
  "unicode-general-category",
  "unicode-properties",
  "unicode-segmentation",
@@ -5527,7 +5514,7 @@ dependencies = [
  "intl_pluralrules",
  "rustc-hash 2.1.3",
  "self_cell",
- "smallvec 1.16.5",
+ "smallvec",
  "unic-langid",
 ]
 
@@ -5629,7 +5616,7 @@ dependencies = [
  "memmap2",
  "parlance",
  "read-fonts",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -5849,7 +5836,7 @@ dependencies = [
  "get-size-derive2",
  "hashbrown 0.17.1",
  "ordermap",
- "smallvec 1.16.5",
+ "smallvec",
  "thin-vec",
 ]
 
@@ -5990,7 +5977,7 @@ dependencies = [
  "parking_lot 0.12.5",
  "regex",
  "signal-hook",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -6030,7 +6017,7 @@ dependencies = [
  "gix-path",
  "gix-quote",
  "gix-trace",
- "smallvec 1.16.5",
+ "smallvec",
  "unicode-bom",
 ]
 
@@ -6059,7 +6046,7 @@ dependencies = [
  "gix-trace",
  "gix-traverse",
  "gix-worktree",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -6114,7 +6101,7 @@ dependencies = [
  "gix-sec",
  "gix-trace",
  "gix-utils",
- "smallvec 1.16.5",
+ "smallvec",
  "unicode-bom",
 ]
 
@@ -6250,7 +6237,7 @@ dependencies = [
  "gix-quote",
  "gix-trace",
  "gix-utils",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -6354,7 +6341,7 @@ dependencies = [
  "libc",
  "memmap2",
  "rustix",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -6462,7 +6449,7 @@ dependencies = [
  "gix-utils",
  "gix-validate",
  "itoa",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -6512,7 +6499,7 @@ dependencies = [
  "gix-zlib",
  "memmap2",
  "parking_lot 0.12.5",
- "smallvec 1.16.5",
+ "smallvec",
  "uluru",
 ]
 
@@ -6646,7 +6633,7 @@ dependencies = [
  "gix-error",
  "gix-hash",
  "gix-validate",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -6680,7 +6667,7 @@ dependencies = [
  "gix-hash",
  "gix-hashtable",
  "gix-object",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -6755,7 +6742,7 @@ version = "26.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b8fdb135a043d6106b59bc58d59a326b277e495ec26fb9e02a1e2b6354bf4b5a"
 dependencies = [
- "dashmap 6.2.1",
+ "dashmap",
  "gix-fs",
  "libc",
  "parking_lot 0.12.5",
@@ -6807,7 +6794,7 @@ dependencies = [
  "gix-hashtable",
  "gix-object",
  "gix-revwalk",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -6958,7 +6945,7 @@ dependencies = [
  "log",
  "peniko",
  "skrifa",
- "smallvec 1.16.5",
+ "smallvec",
  "vello_common",
 ]
 
@@ -7044,7 +7031,7 @@ dependencies = [
  "nonzero_ext",
  "parking_lot 0.12.5",
  "portable-atomic",
- "smallvec 1.16.5",
+ "smallvec",
  "spinning_top",
  "web-time",
 ]
@@ -7163,7 +7150,7 @@ dependencies = [
  "bitflags 2.13.2",
  "bytemuck",
  "read-fonts",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -7345,7 +7332,7 @@ dependencies = [
  "parking_lot 0.12.5",
  "rand 0.10.3",
  "rustls",
- "smallvec 1.16.5",
+ "smallvec",
  "thiserror 2.0.21",
  "tokio",
  "tokio-rustls",
@@ -7480,7 +7467,7 @@ dependencies = [
  "httpdate",
  "itoa",
  "pin-project-lite",
- "smallvec 1.16.5",
+ "smallvec",
  "tokio",
  "want",
 ]
@@ -7649,7 +7636,7 @@ dependencies = [
  "icu_normalizer_data",
  "icu_properties",
  "icu_provider",
- "smallvec 1.16.5",
+ "smallvec",
  "zerovec",
 ]
 
@@ -7708,7 +7695,7 @@ dependencies = [
  "icu_provider",
  "icu_segmenter_data",
  "potential_utf",
- "smallvec 1.16.5",
+ "smallvec",
  "utf8_iter",
  "zerotrie",
  "zerovec",
@@ -7733,7 +7720,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3b0875f23caa03898994f6ddc501886a45c7d3d62d04d2d90788d47be1b1e4de"
 dependencies = [
  "idna_adapter",
- "smallvec 1.16.5",
+ "smallvec",
  "utf8_iter",
 ]
 
@@ -8208,7 +8195,7 @@ dependencies = [
  "arrayvec",
  "euclid",
  "polycool",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -8389,7 +8376,7 @@ dependencies = [
  "parcel_selectors",
  "pastey",
  "pathdiff",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -8809,7 +8796,7 @@ dependencies = [
  "equivalent",
  "parking_lot 0.12.5",
  "portable-atomic",
- "smallvec 1.16.5",
+ "smallvec",
  "tagptr",
  "uuid",
 ]
@@ -9052,7 +9039,7 @@ dependencies = [
  "num-iter",
  "num-traits",
  "rand 0.8.8",
- "smallvec 1.16.5",
+ "smallvec",
  "zeroize",
 ]
 
@@ -9535,7 +9522,7 @@ dependencies = [
  "memchr",
  "oxc_span",
  "percent-encoding",
- "smallvec 1.16.5",
+ "smallvec",
  "textwrap",
  "unicode-segmentation",
  "unicode-width 0.2.3",
@@ -9759,7 +9746,7 @@ dependencies = [
  "phf_codegen",
  "precomputed-hash",
  "rustc-hash 2.1.3",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -9797,7 +9784,7 @@ dependencies = [
  "cfg-if",
  "libc",
  "redox_syscall 0.5.18",
- "smallvec 1.16.5",
+ "smallvec",
  "windows-link 0.2.1",
 ]
 
@@ -9809,7 +9796,7 @@ checksum = "9cfff060068cc18aa7815010fcaf80c68c7fb9e85fc7f5c0f9bf142c21d19826"
 dependencies = [
  "libc",
  "redox_syscall 0.9.5",
- "smallvec 1.16.5",
+ "smallvec",
  "windows-link 0.2.1",
 ]
 
@@ -9926,7 +9913,7 @@ dependencies = [
  "color",
  "kurbo",
  "linebender_resource_handle",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -10453,7 +10440,7 @@ checksum = "eeaf08a13de400bc215877b5bdc088f241b12eb42f0a548d3390dc1c56bb7071"
 dependencies = [
  "proc-macro2",
  "quote",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -11363,7 +11350,7 @@ dependencies = [
  "fallible-streaming-iterator",
  "hashlink",
  "libsqlite3-sys",
- "smallvec 1.16.5",
+ "smallvec",
  "sqlite-wasm-rs",
 ]
 
@@ -11458,7 +11445,7 @@ dependencies = [
  "bitflags 2.13.2",
  "bytes",
  "chrono",
- "dashmap 6.2.1",
+ "dashmap",
  "gloo-timers",
  "log",
  "serde",
@@ -12361,21 +12348,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "smallvec"
-version = "2.0.0-beta.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d1a521aaffa9ff9b9f5c7f50a8eb60aebd11d6467d43684128d5552f6ce02003"
-dependencies = [
- "smallvec-macro",
-]
-
-[[package]]
-name = "smallvec-macro"
-version = "0.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8aa3a1ebad7c7d912534fac818e45203fe094907e97806786285f8f440222e5a"
-
-[[package]]
 name = "smart-default"
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -12938,7 +12910,7 @@ dependencies = [
  "arrayvec",
  "serde",
  "slotmap",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -12949,7 +12921,7 @@ checksum = "31f7bd2d97198df05186f93a3a3c306845f40e8b3c22bf9279cdd7e5cf5fea7d"
 dependencies = [
  "serde",
  "slotmap",
- "smallvec 1.16.5",
+ "smallvec",
 ]
 
 [[package]]
@@ -13574,7 +13546,7 @@ checksum = "0a904802a1b902f43638b677ff2a650847e3b4404101b6c586d648e8c1e3e8fe"
 dependencies = [
  "js-sys",
  "opentelemetry",
- "smallvec 1.16.5",
+ "smallvec",
  "tracing",
  "tracing-core",
  "tracing-log",
@@ -13617,7 +13589,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sharded-slab",
- "smallvec 1.16.5",
+ "smallvec",
  "thread_local",
  "tracing",
  "tracing-core",
@@ -14168,6 +14140,7 @@ dependencies = [
  "raw-cpuid",
  "serde",
  "serde_json",
+ "steam-depot",
  "thiserror 2.0.21",
 ]
 
@@ -14343,7 +14316,7 @@ dependencies = [
  "guillotiere",
  "log",
  "peniko",
- "smallvec 1.16.5",
+ "smallvec",
  "thiserror 2.0.21",
 ]
 
@@ -14470,7 +14443,7 @@ dependencies = [
  "downcast-rs 1.2.1",
  "rustix",
  "scoped-tls",
- "smallvec 1.16.5",
+ "smallvec",
  "wayland-sys",
 ]
 
@@ -14715,7 +14688,7 @@ dependencies = [
  "portable-atomic",
  "profiling",
  "raw-window-handle",
- "smallvec 1.16.5",
+ "smallvec",
  "static_assertions",
  "wasm-bindgen",
  "wasm-bindgen-futures",
@@ -14749,7 +14722,7 @@ dependencies = [
  "profiling",
  "raw-window-handle",
  "rustc-hash 1.1.0",
- "smallvec 1.16.5",
+ "smallvec",
  "thiserror 2.0.21",
  "wgpu-core-deps-apple",
  "wgpu-core-deps-emscripten",
@@ -14829,7 +14802,7 @@ dependencies = [
  "raw-window-handle",
  "raw-window-metal",
  "renderdoc-sys",
- "smallvec 1.16.5",
+ "smallvec",
  "static_assertions",
  "thiserror 2.0.21",
  "wasm-bindgen",

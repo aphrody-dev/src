@@ -19,5 +19,5 @@ compilateur ; fr2 (`ssh cdn`) = edge. Procédure de déploiement et retour arri�
 just docker-build            # images amd64+arm64 -> ghcr.io/aphrody-labs (CI images.yml)
 just docker-smoke            # build + healthcheck de chaque image (CI)
 just deploy core prd         # compose pull + up --wait ; retour : SRC_TAG=<sha> just docker-up core prd
-just fleet-bootstrap fr1     # toolchains épinglées (packages/machine/toolchains.lock.toml)
+just fleet-bootstrap fr1     # toolchains épinglées (tools.toml)
 ```

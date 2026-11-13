@@ -408,7 +408,7 @@ fn free_below(
             };
             // The run's directories and their chain heads, spawned once its lock is released;
             // made here, as no await falls between, so the future holds none.
-            let mut directories: SmallVec<(NodeID, Option<NodeID>), 8> = SmallVec::new();
+            let mut directories: SmallVec<[(NodeID, Option<NodeID>); 8]> = SmallVec::new();
             let dirtied = {
                 // Its directories marked, its files freed: the marks are the run's writes.
                 #[cfg(feature = "state-hooks")]

@@ -665,7 +665,7 @@ fn check_tools(root: &Path, out: &mut Vec<Finding>) {
         }
     }
     if !unverified.is_empty() {
-        push(out, Level::Warn, "TOOLS-UNVERIFIED", "tools.toml", format!("{} tools without checksum: {}", unverified.len(), unverified.join(" ")));
+        push(out, Level::Error, "TOOLS-UNVERIFIED", "tools.toml", format!("{} tools without checksum: {}", unverified.len(), unverified.join(" ")));
     }
 }
 
