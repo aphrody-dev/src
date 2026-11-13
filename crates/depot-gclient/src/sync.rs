@@ -581,6 +581,17 @@ fn checkout(repo: &gix::Repository, id: gix::ObjectId, fresh: bool) -> Result<()
     )
     .map_err(gerr)?;
     index.write(Default::default()).map_err(gerr)?;
+    // The HEAD reflog needs a committer; hosts and CI runners without user.name/user.email get a fallback
+    // (gitoxide.committer.*Fallback only applies when nothing is configured).
+    let mut repo = repo.clone();
+    {
+        use gix::config::tree::gitoxide::Committer;
+        let mut cfg = repo.config_snapshot_mut();
+        cfg.set_value(&Committer::NAME_FALLBACK, "ay gclient")
+            .map_err(gerr)?;
+        cfg.set_value(&Committer::EMAIL_FALLBACK, "ay-gclient@localhost")
+            .map_err(gerr)?;
+    }
     repo.edit_reference(RefEdit {
         change: Change::Update {
             log: LogChange {
@@ -662,7 +673,13 @@ mod tests {
             .write_object(&gix::objs::Tree { entries })
             .unwrap()
             .detach();
-        repo.commit("refs/heads/main", "c", tree, parents)
+        // Explicit identity: CI runners have no git user.name/user.email.
+        let sig = gix::actor::SignatureRef {
+            name: "test".into(),
+            email: "test@example.invalid".into(),
+            time: "0 +0000",
+        };
+        repo.commit_as(sig, sig, "refs/heads/main", "c", tree, parents)
             .unwrap()
             .detach()
     }
