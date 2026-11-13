@@ -39,6 +39,7 @@ export function renderPlay(locale: PlayLocale = "en"): string {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Aphrody Play</title>
+<meta name="description" content="${t("play.sub")}">
 <meta name="robots" content="noindex">
 <link rel="canonical" href="https://aphrody.com${playPath(locale)}">${alt}
 <meta name="color-scheme" content="dark">
