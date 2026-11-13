@@ -128,7 +128,7 @@ ENTRYPOINT ["rust-stack", "serve", "--host", "0.0.0.0", "--port", "4100", "--db"
 # Bun: workspace install (frozen lockfile), then per-app bundles.
 FROM bun-alpine AS bun-deps
 WORKDIR /src
-COPY package.json bun.lock ./
+COPY package.json bun.lock bunfig.toml ./
 COPY --parents packages/*/package.json ./
 RUN --mount=type=cache,id=bun-cache,target=/root/.bun/install/cache \
     bun install --frozen-lockfile --production --ignore-scripts
@@ -141,6 +141,8 @@ COPY docs/ALPHABET.md docs/ALPHABET.md
 COPY docs/reviews/ docs/reviews/
 COPY third_party/forks.txt third_party/forks.txt
 COPY assets/brand/gen/ assets/brand/gen/
+# apps/aphrody/src/os/client/gamescope.ts imports the WGSL shaders of the crate as text.
+COPY crates/gamescope-wgsl/src/shaders/ crates/gamescope-wgsl/src/shaders/
 COPY --parents crates/*/Cargo.toml ./
 COPY apps/r2-site/ apps/r2-site/
 COPY infra/cloudflare/workers/api-gateway/ infra/cloudflare/workers/api-gateway/

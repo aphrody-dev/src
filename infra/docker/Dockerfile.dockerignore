@@ -8,6 +8,7 @@
 !crates/
 !package.json
 !bun.lock
+!bunfig.toml
 !packages/
 !infra/cloudflare/workers/api-gateway/
 !apps/aphrody/
