@@ -9,14 +9,13 @@ on:
   schedule:
     - cron: "0 3 * * *"
   workflow_dispatch:
-concurrency:
-  group: canary
-  cancel-in-progress: true
 permissions: { contents: write }
 jobs:
   canary:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: [self-hosted, fr1]
+    # Job level: a skipped run (red ci) never takes the group, so it cannot cancel a running canary.
+    concurrency: { group: canary, cancel-in-progress: false }
     timeout-minutes: 90
     env:
       RUSTC_WRAPPER: ""
