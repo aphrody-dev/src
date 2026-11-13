@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "allowImportingTsExtensions": true,
     "noEmit": true,
-    "types": ["bun"]
+    "types": ["bun", "@webgpu/types"]
   },
   "include": ["src", "server.ts", "build.ts", "tests", "edge"]
 }

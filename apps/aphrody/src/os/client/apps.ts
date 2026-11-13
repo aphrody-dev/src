@@ -528,7 +528,7 @@ export function flash(file?: string): Win {
       win.RufflePlayer = {
         ...(win.RufflePlayer as object),
         config: { publicPath: "/os/vendor/ruffle/", autoplay: "auto" },
-      } as never;
+      } as typeof win.RufflePlayer;
       if (!document.querySelector("script[data-ruffle]")) {
         await loadScript("/os/vendor/ruffle/ruffle.js");
         document

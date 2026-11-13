@@ -110,6 +110,7 @@ export async function startGamescope(
   const adapter = await navigator.gpu.requestAdapter();
   const device = await adapter?.requestDevice();
   if (!device) return null;
+  const gpuDevice: GPUDevice = device;
   device.addEventListener("uncapturederror", (e) =>
     console.error("gamescope:", (e as GPUUncapturedErrorEvent).error.message),
   );
@@ -340,7 +341,7 @@ export async function startGamescope(
     cancelAnimationFrame(raf);
     video.srcObject = null;
     overlay.remove();
-    device.destroy();
+    gpuDevice.destroy();
   }
   raf = requestAnimationFrame(frame);
   return handle;

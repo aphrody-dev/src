@@ -126,7 +126,7 @@ const padLoop = (now: number) => {
   }
 };
 requestAnimationFrame(padLoop);
-addEventListener("keydown", (e) => {
+window.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && anyOpen()) topWindow()?.close();
 });
 
