@@ -28,7 +28,7 @@ import { hostname } from "node:os";
 import { join, resolve } from "node:path";
 
 type Role = { timeout_s: number; budget_usd: number };
-type Host = { roles: string[]; src: string };
+type Host = { roles: string[]; src: string; ssh?: string[] };
 type Fleet = {
   roles: Record<string, Role>;
   hosts: Record<string, Host>;
@@ -699,6 +699,19 @@ function probe(): Record<string, string> {
   return res;
 }
 
+// ssh to a fleet host: try its targets in order (PC aliases, WireGuard mesh, public IP).
+function sshRun(host: string, remote: string, stdin: string) {
+  let r = { exit: 1, out: "", err: `no ssh target for ${host}` };
+  for (const target of FLEET.hosts[host]?.ssh ?? [host]) {
+    r = sh(
+      ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=10", target, remote],
+      { stdin, timeoutMs: 60_000 },
+    );
+    if (r.exit === 0) return r;
+  }
+  return r;
+}
+
 // Ship new log lines to the ship host (offset kept in state/ship-offset).
 function ship() {
   if (!existsSync(LOG)) return;
@@ -708,23 +721,11 @@ function ship() {
   if (buf.length <= off) return;
   const chunk = buf.subarray(off);
   const target = `${FLEET.ship.dir}/${HOST}.jsonl`;
+  const remote = `mkdir -p '${FLEET.ship.dir}' && cat >> '${target}'`;
   const r =
     HOST === FLEET.ship.host
-      ? sh(["sh", "-c", `mkdir -p '${FLEET.ship.dir}' && cat >> '${target}'`], {
-          stdin: chunk.toString(),
-        })
-      : sh(
-          [
-            "ssh",
-            "-o",
-            "BatchMode=yes",
-            "-o",
-            "ConnectTimeout=10",
-            FLEET.ship.host,
-            `mkdir -p '${FLEET.ship.dir}' && cat >> '${target}'`,
-          ],
-          { stdin: chunk.toString(), timeoutMs: 60_000 },
-        );
+      ? sh(["sh", "-c", remote], { stdin: chunk.toString() })
+      : sshRun(FLEET.ship.host, remote, chunk.toString());
   if (r.exit === 0) writeFileSync(offF, String(buf.length));
 }
 
@@ -833,17 +834,10 @@ function enqueue() {
     const h = FLEET.hosts[host];
     if (!h) throw new Error(`unknown host ${host}`);
     const qd = `${h.src}/var/agents/queue`;
-    const r = sh(
-      [
-        "ssh",
-        "-o",
-        "BatchMode=yes",
-        "-o",
-        "ConnectTimeout=10",
-        host,
-        `mkdir -p '${qd}/tmp' '${qd}/new' && cat > '${qd}/tmp/${t.id}.json' && mv '${qd}/tmp/${t.id}.json' '${qd}/new/${t.id}.json'`,
-      ],
-      { stdin: JSON.stringify(t, null, 2), timeoutMs: 60_000 },
+    const r = sshRun(
+      host,
+      `mkdir -p '${qd}/tmp' '${qd}/new' && cat > '${qd}/tmp/${t.id}.json' && mv '${qd}/tmp/${t.id}.json' '${qd}/new/${t.id}.json'`,
+      JSON.stringify(t, null, 2),
     );
     if (r.exit) throw new Error(`enqueue on ${host} failed: ${r.err}`);
   }
