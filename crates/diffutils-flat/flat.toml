@@ -1,0 +1,13 @@
+# Leaf modules of the aphrody-labs/diffutils fork (uutils diffutils, MIT OR Apache-2.0), flattened into
+# `aphrody-diffutils-flat`. `ay flat sync --fork third_party/diffutils` regenerates src/ from the fork and records
+# the commit here; `ay flat check --fork third_party/diffutils` fails when the copy and the fork disagree.
+# Never edit the generated files: change the fork, then resync. Licenses are SPDX and must be on the deny.toml allow-list.
+
+fork = "aphrody-labs/diffutils"
+commit = "91616e9d021c86454f305c6ef80bbd6b898b96bb"
+
+[[module]]
+name = "bre"
+crate = "diffutils"
+files = ["src/bre.rs"]
+license = "MIT OR Apache-2.0"

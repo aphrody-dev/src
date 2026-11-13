@@ -429,6 +429,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "aphrody-diffutils-flat"
+version = "0.3.0"
+dependencies = [
+ "regex",
+]
+
+[[package]]
 name = "aphrody-docs"
 version = "0.3.0"
 dependencies = [

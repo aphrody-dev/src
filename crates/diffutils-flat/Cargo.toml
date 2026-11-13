@@ -1,0 +1,21 @@
+[package]
+publish = false
+name = "aphrody-diffutils-flat"
+version.workspace = true
+edition.workspace = true
+license = "MIT OR Apache-2.0"
+authors.workspace = true
+description = "POSIX basic regular expression translation from the aphrody-labs/diffutils fork (uutils), flattened by `ay flat sync --fork third_party/diffutils`"
+repository.workspace = true
+
+[lib]
+name = "diffutils_flat"
+# The upstream unit tests need pretty_assertions and run in the fork.
+test = false
+doctest = false
+
+[dependencies]
+regex.workspace = true
+
+# Verbatim upstream code: the fork's lints apply upstream, not the workspace's.
+[lints]

@@ -7,7 +7,7 @@
 
 /// `bun_wyhash` (src/wyhash/lib.rs), MIT.
 pub mod wyhash;
-/// `bun_histogram` (src/histogram/lib.rs), MIT (HdrHistogram layout: CC0 1.0 or BSD-2-Clause).
+/// `bun_histogram` (src/histogram/lib.rs), MIT.
 pub mod histogram;
 /// `bun_sort_by_number` (src/sort_by_number/lib.rs), MIT.
 pub mod sort_by_number;

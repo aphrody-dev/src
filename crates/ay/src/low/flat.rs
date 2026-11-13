@@ -10,7 +10,7 @@ use std::process::{Command, Stdio};
 use std::time::Instant;
 
 #[derive(clap::Args, Debug, PartialEq)]
-#[command(after_help = "Examples:\n  ay flat list\n  ay flat check            fails when crates/bun-flat and the fork disagree\n  ay flat sync             regenerate from third_party/bun at HEAD, record the commit")]
+#[command(after_help = "Examples:\n  ay flat list\n  ay flat check            fails when crates/bun-flat and the fork disagree\n  ay flat sync             regenerate from third_party/bun at HEAD, record the commit\n  ay flat check --fork third_party/diffutils     manifest crates/diffutils-flat/flat.toml\n  ay flat list --fork third_party/x --manifest path/to/flat.toml")]
 pub struct FlatArgs {
     /// Monorepo root (default: $SRC_ROOT, else the enclosing checkout)
     #[arg(long, global = true)]
@@ -18,6 +18,9 @@ pub struct FlatArgs {
     /// Fork checkout (default: <root>/third_party/bun)
     #[arg(long, global = true)]
     pub fork: Option<PathBuf>,
+    /// flat.toml of the fork (default: <root>/crates/<fork directory>-flat/flat.toml)
+    #[arg(long, global = true)]
+    pub manifest: Option<PathBuf>,
     #[command(subcommand)]
     pub cmd: FlatCmd,
 }
@@ -43,15 +46,38 @@ pub enum FlatCmd {
     },
 }
 
-fn dirs(root: Option<PathBuf>, fork: Option<PathBuf>) -> (PathBuf, PathBuf) {
+/// (flat crate directory, flat.toml, fork checkout). A relative `--fork` / `--manifest` is taken from the root.
+fn dirs(root: Option<PathBuf>, fork: Option<PathBuf>, manifest: Option<PathBuf>) -> (PathBuf, PathBuf, PathBuf) {
     let root = root.unwrap_or_else(crate::repo_root);
-    let fork = fork.unwrap_or_else(|| root.join("third_party").join("bun"));
-    (root.join("crates").join("bun-flat"), fork)
+    let fork = root.join(fork.unwrap_or_else(|| PathBuf::from("third_party").join("bun")));
+    let manifest = match manifest {
+        Some(m) => root.join(m),
+        None => {
+            let name = fork.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
+            root.join("crates").join(format!("{name}-flat")).join(sync::MANIFEST)
+        }
+    };
+    let crate_dir = manifest.parent().map(Path::to_path_buf).unwrap_or_default();
+    (crate_dir, manifest, fork)
+}
+
+/// Load the manifest and refuse it when a license is missing, NOASSERTION or off the deny.toml
+/// allow-list, or when the fork has no license file (a fork that is not checked out is left to `check`).
+fn load(root: &Path, manifest_path: &Path, fork: &Path) -> Result<Manifest, String> {
+    let m = Manifest::load_file(manifest_path)?;
+    let deny = root.join("deny.toml");
+    let text = std::fs::read_to_string(&deny).map_err(|e| format!("{}: {e}", deny.display()))?;
+    m.check_licenses(&sync::allow_list(&text)?)?;
+    if fork.join(".git").exists() {
+        sync::fork_license_file(fork)?;
+    }
+    Ok(m)
 }
 
 pub fn run_flat(a: FlatArgs) -> i32 {
-    let (crate_dir, fork) = dirs(a.root, a.fork);
-    let manifest = match Manifest::load(&crate_dir) {
+    let root = a.root.clone().unwrap_or_else(crate::repo_root);
+    let (crate_dir, manifest_path, fork) = dirs(Some(root.clone()), a.fork, a.manifest);
+    let manifest = match load(&root, &manifest_path, &fork) {
         Ok(m) => m,
         Err(e) => {
             eprintln!("ay flat: {e}");
@@ -138,7 +164,7 @@ fn check(m: &Manifest, crate_dir: &Path, fork: &Path, strict: bool) -> i32 {
         println!("changed in the fork since {}: {p} (run `ay flat sync`)", &m.commit[..m.commit.len().min(10)]);
     }
     if diff.is_empty() && moved.is_empty() {
-        println!("crates/bun-flat matches {}@{}", m.fork, m.commit);
+        println!("{} matches {}@{}", crate_dir.display(), m.fork, m.commit);
     }
     if diff.is_empty() { 0 } else { 1 }
 }
@@ -294,5 +320,29 @@ mod tests {
         let m = Manifest::load(&crate_dir).unwrap();
         assert!(m.modules.iter().any(|x| x.name == "wyhash"));
         assert_eq!(m.commit.len(), 40);
+    }
+
+    #[test]
+    fn manifest_path_follows_the_fork_directory() {
+        let root = PathBuf::from("/r");
+        let (dir, manifest, fork) = dirs(Some(root.clone()), None, None);
+        assert_eq!((dir, manifest, fork), (root.join("crates/bun-flat"), root.join("crates/bun-flat/flat.toml"), root.join("third_party/bun")));
+        let (dir, manifest, fork) = dirs(Some(root.clone()), Some("third_party/diffutils".into()), None);
+        assert_eq!((dir, manifest, fork), (root.join("crates/diffutils-flat"), root.join("crates/diffutils-flat/flat.toml"), root.join("third_party/diffutils")));
+        let (dir, manifest, _) = dirs(Some(root.clone()), Some("third_party/x".into()), Some("m/flat.toml".into()));
+        assert_eq!((dir, manifest), (root.join("m"), root.join("m/flat.toml")));
+    }
+
+    /// Every flat manifest of the checkout passes the license gate against the root deny.toml.
+    #[test]
+    fn manifests_of_the_checkout_pass_the_license_gate() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let allow = sync::allow_list(&std::fs::read_to_string(root.join("deny.toml")).unwrap()).unwrap();
+        for entry in std::fs::read_dir(root.join("crates")).unwrap().flatten() {
+            let path = entry.path().join(sync::MANIFEST);
+            if path.is_file() {
+                Manifest::load_file(&path).unwrap().check_licenses(&allow).unwrap_or_else(|e| panic!("{}: {e}", path.display()));
+            }
+        }
     }
 }
