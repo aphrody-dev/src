@@ -151,10 +151,8 @@ emit(
     "",
   ].join("\n"),
 );
-emit(
-  "favicon.svg",
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="10" fill="#17202A"/><path d="M32 14L49 48H40.6L37.1 40.4H26.9L23.4 48H15L32 14ZM29.6 34H34.4L32 28.2L29.6 34Z" fill="#F2F4F1"/><rect x="42" y="10" width="12" height="12" rx="2" fill="#3FC1B9"/></svg>',
-);
+// favicon.*, apple-touch-icon.png, icon-*.png, site.webmanifest and og-image.png come from
+// public/, written by `ay brand build --deploy` (assets/brand).
 const publicDir = join(ROOT, "public");
 if (existsSync(publicDir)) {
   for (const f of readdirSync(publicDir))

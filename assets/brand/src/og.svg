@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!-- Aphrody social card 1200 x 630, original artwork (MIT OR Apache-2.0). The three speed bands
+       echo the bolt of the monogram; text is outlined by `ay brand build`.
+       Placeholders: {bg} {band} {accent} {mark} {font} {ink} {muted} {link} {title} {tagline} {url}. -->
+  <rect width="1200" height="630" fill="{bg}"/>
+  <path d="M900 630L1110 0H1180L970 630Z" fill="{band}"/>
+  <path d="M1010 630L1200 60V170L1050 630Z" fill="{accent}"/>
+  <path d="M1110 630L1200 360V450L1140 630Z" fill="{band}" opacity="0.55"/>
+  <g transform="translate(96 96) scale(3)">{mark}</g>
+  <text x="96" y="372" font-family="{font}" font-size="88" font-weight="700" letter-spacing="-1.5" fill="{ink}">{title}</text>
+  <text x="96" y="436" font-family="{font}" font-size="32" font-weight="400" fill="{muted}">{tagline}</text>
+  <text x="96" y="542" font-family="{font}" font-size="26" font-weight="550" fill="{link}">{url}</text>
+</svg>

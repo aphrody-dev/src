@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <!-- Aphrody product tile, original artwork (MIT OR Apache-2.0). Same 48 dp tile and radius as the
+       monogram; the glyph is a Material Symbols Rounded path (Apache-2.0) in a 28 dp live area,
+       and the bolt notch in the top-right corner ties every product to the brand; the notch is dropped below 48 px.
+       Placeholders: {container} {glyph} {bolt} {symbol} (path data on the 0 -960 960 960 grid). -->
+  <rect width="48" height="48" rx="12" fill="{container}"/>
+  <g transform="translate(10 10) scale(0.0291667)" fill="{glyph}"><g transform="translate(0 960)"><path d="{symbol}"/></g></g>
+  <path class="notch" fill="{bolt}" d="M41 3L37 8.5H39.5L38 13L43.5 6.8H41L42.8 3Z"/>
+</svg>

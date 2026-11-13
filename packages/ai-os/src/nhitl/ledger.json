@@ -309,6 +309,24 @@
       "reason": "2026-11-13 04:50 : constaté dans var/agents/results/*/result.json sur prd"
     },
     {
+      "location": "github:aphrody-labs/.github, aphrody-dev/aphrody-dev",
+      "category": "held_effect",
+      "severity": "medium",
+      "status": "open",
+      "excerpt": "README de profil prêts dans docs/profile/github ; dépôts de profil publics absents, publication non autorisée (.agents/owner-rules.json absent)",
+      "fix": "owner-rules.json autorisant la publication, puis créer les dépôts de profil et y pousser docs/profile/github/*",
+      "reason": "2026-11-13 : effet externe public retenu par contrat"
+    },
+    {
+      "location": "docs/profile (CV.md, README de profil)",
+      "category": "owner_todo",
+      "severity": "low",
+      "status": "open",
+      "excerpt": "Discord, X, expérience et formation publiques non vérifiables dans les dépôts : champs TODO(owner)",
+      "fix": "renseigner les liens publics Discord et X d Aphrody, puis bun docs/profile/cv.ts --pdf sur fr1",
+      "reason": "2026-11-13 : aucune source vérifiable dans les dépôts"
+    },
+    {
       "location": "apps/rosegriffon/plugins/steam + packages/gaming",
       "category": "coordination",
       "severity": "info",

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="64" viewBox="0 0 {width} 64">
+  <!-- Aphrody wordmark, original artwork (MIT OR Apache-2.0): 48 dp monogram, 14 dp gap, name in
+       Google Sans Flex 650 with -0.5 tracking, suffix in 420 and the scheme primary. Text is
+       outlined to paths by `ay brand build`, so the output needs no font.
+       Placeholders: {width} {mark} {font} {ink} {suffix_color} {name} {suffix}. -->
+  <g transform="translate(8 8)">{mark}</g>
+  <text x="70" y="44" font-family="{font}" font-size="34" font-weight="650" letter-spacing="-0.5" fill="{ink}">{name}<tspan dx="9" font-weight="420" fill="{suffix_color}">{suffix}</tspan></text>
+</svg>

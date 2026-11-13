@@ -89,14 +89,20 @@ pub fn manifest_webmanifest() -> String {
         "display": "standalone",
         "background_color": "#0F0F0F",
         "theme_color": "#0F0F0F",
-        "icons": [{"src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}],
+        "icons": [
+            {"src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"},
+            {"src": "/icon-192.png", "sizes": "192x192", "type": "image/png"},
+            {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png"},
+            {"src": "/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+        ],
     }))
     .unwrap()
         + "\n"
 }
 
+/// Brand icon of aphrody.app, written to web/ by `ay brand build --deploy` (assets/brand).
 pub fn icon_svg() -> &'static str {
-    "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\" width=\"64\" height=\"64\"><rect width=\"64\" height=\"64\" rx=\"12\" fill=\"#0F0F0F\"/><rect x=\"8\" y=\"8\" width=\"24\" height=\"48\" rx=\"5\" fill=\"#1C1C1C\" stroke=\"#0078D4\" stroke-width=\"2\"/><rect x=\"36\" y=\"8\" width=\"20\" height=\"22\" rx=\"5\" fill=\"#1C1C1C\" stroke=\"#60CDFF\" stroke-width=\"2\"/><rect x=\"36\" y=\"34\" width=\"20\" height=\"22\" rx=\"5\" fill=\"#1C1C1C\" stroke=\"#0078D4\" stroke-width=\"2\"/></svg>\n"
+    include_str!("../../../web/favicon.svg")
 }
 
 pub fn headers_file() -> String {
@@ -174,6 +180,12 @@ pub fn build(o: &Opts) -> Result<Vec<(String, usize)>, String> {
         (".well-known/webmcp.json", webmcp.into_bytes()),
         ("manifest.webmanifest", manifest_webmanifest().into_bytes()),
         ("icon.svg", icon_svg().as_bytes().to_vec()),
+        ("favicon.ico", include_bytes!("../../../web/favicon.ico").to_vec()),
+        ("apple-touch-icon.png", include_bytes!("../../../web/apple-touch-icon.png").to_vec()),
+        ("icon-192.png", include_bytes!("../../../web/icon-192.png").to_vec()),
+        ("icon-512.png", include_bytes!("../../../web/icon-512.png").to_vec()),
+        ("maskable-512.png", include_bytes!("../../../web/maskable-512.png").to_vec()),
+        ("og-image.png", include_bytes!("../../../web/og-image.png").to_vec()),
         ("_headers", headers_file().into_bytes()),
     ];
     let mut report = Vec::new();

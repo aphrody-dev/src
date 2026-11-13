@@ -1,3 +1,12 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/brand/gen/logo/aphrody-labs-wordmark-dark.svg">
+  <img alt="Aphrody Labs" src="assets/brand/gen/logo/aphrody-labs-wordmark-light.svg" height="56">
+</picture>
+
+<img alt="license: MIT OR Apache-2.0" src="assets/brand/gen/badges/license.svg"> <img alt="rust toolchain" src="assets/brand/gen/badges/rust.svg"> <img alt="runtime: bun" src="assets/brand/gen/badges/bun.svg"> <img alt="workflow: main only" src="assets/brand/gen/badges/main-only.svg">
+
+Brand, tokens and icons: [assets/brand](assets/brand) (`ay brand build`, design system in [packages/design](packages/design/DESIGN.md)).
+
 # Sovereign Monorepo (`C:\src`) — Architecture & Operating Topology (Late 2026)
 
 Engineered around the foundational standards of **Linus Torvalds** (`Linux`, `Git`, POSIX/GNU clean flat hierarchy, sacred `C:\Windows\System32` userspace integrity, strict C-ABI boundaries), **Jarred Sumner** (`oven-sh/bun` v1.4.4 100% Full-Rust runtime, `bun fmt`, `bun check`, `bun:sqlite`, `bun:ffi`, AOT `--compile`), **Chromium `depot_tools`** (strict `third_party/` vendor isolation + `src.lock.json`), and **Larry Page** (instant sub-100ms `www.google.com` visual clarity, autonomous NHITL execution, and Vercel-style 1-click self-hosted + multi-cloud deployment).

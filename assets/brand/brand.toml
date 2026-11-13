@@ -1,0 +1,145 @@
+# Aphrody brand: single source of truth for every logo, icon, token, banner, badge and social image
+# of the monorepo. `ay brand build` (crates/aphrody-brand) reads this file and writes assets/brand/gen/.
+# All artwork is original (see LICENSE). No third-party character, logo or game asset is used.
+
+[brand]
+name = "Aphrody"
+# CDN path version: https://cdn.aphrody.com/brand/v<version>/... (immutable; bump on any visual change).
+version = 1
+# Material 3 dynamic scheme seed (electric indigo) and variant.
+seed = "#3355FF"
+variant = "vibrant"
+# The bolt accent (amber), an M3 custom color harmonized nowhere: it stays the same hue in every theme.
+accent = "#FFB300"
+# Typeface: Google Sans Flex (SIL OFL 1.1, no Reserved Font Name; google/fonts ofl/googlesansflex).
+# Trademark terms (TRADEMARKS.md upstream): the font name must not be used as or within a product name.
+font = "Google Sans Flex"
+font_fallback = ["Roboto Flex", "Inter", "system-ui", "sans-serif"]
+# Variable font file, fetched by assets/brand/fetch.ts (pinned git blob, verified) into gen-cache/.
+font_file = "gen-cache/GoogleSansFlex.ttf"
+
+# The two organisations. `container` is the tile behind the monogram.
+[[org]]
+id = "aphrody-labs"
+name = "Aphrody"
+suffix = "Labs"
+tagline = "Systems, runtimes and desktops in Rust and Bun"
+container = "primary"
+url = "https://github.com/aphrody-labs"
+
+[[org]]
+id = "aphrody-dev"
+name = "Aphrody"
+suffix = "Dev"
+tagline = "Upstream work on Bun, Rust and the Windows platform"
+container = "ink"
+url = "https://github.com/aphrody-dev"
+
+# One icon per product: an M3 rounded tile in the product hue (HCT, chroma 56, tone 40) and a
+# Material Symbols Rounded glyph (Apache-2.0, assets/brand/symbols/NOTICE).
+# `deploy` lists the directories that receive the web icon set (favicon.ico, icon.svg, PNGs,
+# apple-touch-icon.png, site.webmanifest). `ico` lists the Windows .ico copies for binaries.
+[[product]]
+id = "ay"
+name = "ay"
+symbol = "terminal"
+hue = 268
+tagline = "One multicall CLI for the monorepo"
+path = "crates/ay"
+ico = ["crates/ay/ay.ico"]
+
+[[product]]
+id = "nt"
+name = "nt"
+symbol = "desktop_windows"
+hue = 236
+tagline = "This machine's Windows NT, rendered entirely by the GPU"
+path = "apps/nt"
+
+[[product]]
+id = "ai-os"
+name = "ai-os"
+symbol = "neurology"
+hue = 322
+tagline = "Agent core, model bridge, relay and TUI in one Bun package"
+path = "packages/ai-os"
+
+[[product]]
+id = "relay"
+name = "relay"
+symbol = "hub"
+hue = 190
+tagline = "MCP, A2A and ACP relay of ai-os"
+path = "packages/ai-os/src/relay"
+
+[[product]]
+id = "unixwin"
+name = "unixwin"
+symbol = "conversion_path"
+hue = 150
+tagline = "Native Windows bash and coreutils in Rust"
+path = "apps/unixwin"
+
+[[product]]
+id = "aphrody"
+name = "aphrody.com"
+symbol = "bolt"
+hue = 290
+tagline = "Brand homepage"
+path = "apps/aphrody"
+deploy = ["apps/aphrody/public"]
+
+[[product]]
+id = "aphrody-app"
+name = "aphrody.app"
+symbol = "view_quilt"
+hue = 214
+tagline = "Rust WebGPU tiling desktop shell"
+path = "apps/aphrody-app"
+deploy = ["apps/aphrody-app/web"]
+
+[[product]]
+id = "yolo"
+name = "yolo"
+symbol = "rocket_launch"
+hue = 75
+tagline = "Bun fullstack framework with a Material 3 stack"
+path = "apps/yolo"
+
+[[product]]
+id = "shenron"
+name = "Shenron"
+symbol = "local_fire_department"
+hue = 40
+tagline = "dragonballfr.com: site, Discord bot, translation pipeline"
+path = "apps/shenron"
+
+[[product]]
+id = "rosegriffon"
+name = "Rose Griffon"
+symbol = "sports_soccer"
+hue = 12
+tagline = "rosegriffon.fr: website, Discord bots, unified API"
+path = "apps/rosegriffon"
+
+# Static README badges (no badge service). `value = "@rust-toolchain"` is read from
+# rust-toolchain.toml at build time so a badge never states an unverified version.
+[[badge]]
+id = "license"
+label = "license"
+value = "MIT OR Apache-2.0"
+
+[[badge]]
+id = "rust"
+label = "rust"
+value = "@rust-toolchain"
+
+[[badge]]
+id = "bun"
+label = "runtime"
+value = "bun"
+
+[[badge]]
+id = "main-only"
+label = "workflow"
+value = "main only"

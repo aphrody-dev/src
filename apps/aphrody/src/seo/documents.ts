@@ -81,7 +81,7 @@ export function buildSitemaps(buildDate: string): Record<string, string> {
   ).join("\n");
 
   const imageUrl = (path: string, l: Locale) =>
-    `<url><loc>${SITE_URL}${localizedPath(path, l)}</loc><image:image><image:loc>${SITE_URL}/og-image.jpg</image:loc></image:image></url>`;
+    `<url><loc>${SITE_URL}${localizedPath(path, l)}</loc><image:image><image:loc>${SITE_URL}/og-image.png</image:loc></image:image></url>`;
   const imagePaths = [...g.core, ...g.verticals];
   const images = imagePaths
     .flatMap((p) => LOCALES.map((l) => imageUrl(p, l)))

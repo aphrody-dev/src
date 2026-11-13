@@ -1,0 +1,193 @@
+{
+  "generated": "2026-11-13",
+  "source": "GitHub REST API",
+  "accounts": [
+    {
+      "id": "aphrody-labs",
+      "title": "aphrody-labs",
+      "rows": [
+        [
+          "Active public source repositories",
+          "44"
+        ],
+        [
+          "Public forks",
+          "623"
+        ],
+        [
+          "Monorepo",
+          "aphrody-labs/src"
+        ]
+      ],
+      "languages": [
+        [
+          "Rust",
+          38564918
+        ],
+        [
+          "Python",
+          3796389
+        ],
+        [
+          "TypeScript",
+          3021873
+        ],
+        [
+          "C",
+          763564
+        ],
+        [
+          "JavaScript",
+          650218
+        ],
+        [
+          "Shell",
+          326356
+        ],
+        [
+          "PowerShell",
+          66554
+        ],
+        [
+          "HCL",
+          49513
+        ],
+        [
+          "CSS",
+          45039
+        ],
+        [
+          "C#",
+          43543
+        ],
+        [
+          "Just",
+          32368
+        ],
+        [
+          "WGSL",
+          31058
+        ],
+        [
+          "HTML",
+          28043
+        ],
+        [
+          "Nushell",
+          26817
+        ],
+        [
+          "C++",
+          23472
+        ],
+        [
+          "Go Template",
+          16672
+        ],
+        [
+          "Fluent",
+          15915
+        ],
+        [
+          "Dockerfile",
+          15331
+        ],
+        [
+          "BitBake",
+          12420
+        ],
+        [
+          "Go",
+          9052
+        ],
+        [
+          "CMake",
+          8270
+        ],
+        [
+          "Lua",
+          6666
+        ],
+        [
+          "Cuda",
+          6186
+        ],
+        [
+          "Nix",
+          4620
+        ],
+        [
+          "Ruby",
+          3300
+        ],
+        [
+          "Nu",
+          1548
+        ],
+        [
+          "Batchfile",
+          940
+        ],
+        [
+          "DIGITAL Command Language",
+          880
+        ],
+        [
+          "Handlebars",
+          403
+        ]
+      ]
+    },
+    {
+      "id": "aphrody-dev",
+      "title": "aphrody-dev upstream work",
+      "rows": [
+        [
+          "Pull requests to upstream projects",
+          "5"
+        ],
+        [
+          "Merged upstream",
+          "0"
+        ],
+        [
+          "Upstream repositories",
+          "3"
+        ]
+      ],
+      "languages": []
+    }
+  ],
+  "pulls": [
+    {
+      "repo": "oven-sh/bun",
+      "state": "open",
+      "title": "build: pass the .bind.ts schema list to the codegen scripts in a file",
+      "url": "https://github.com/oven-sh/bun/pull/48787"
+    },
+    {
+      "repo": "oven-sh/bun",
+      "state": "open",
+      "title": "docs: sizes Bun.gzipSync and Bun.deflateSync give for the utils examples",
+      "url": "https://github.com/oven-sh/bun/pull/48786"
+    },
+    {
+      "repo": "oven-sh/bun",
+      "state": "open",
+      "title": "build: xwin 0.10.0, which reads the current Visual Studio manifest",
+      "url": "https://github.com/oven-sh/bun/pull/48784"
+    },
+    {
+      "repo": "agentclientprotocol/agent-client-protocol",
+      "state": "open",
+      "title": "docs(protocol): mark availableCommands as required in slash commands page",
+      "url": "https://github.com/agentclientprotocol/agent-client-protocol/pull/2804"
+    },
+    {
+      "repo": "a2aproject/A2A",
+      "state": "open",
+      "title": "docs(spec): add required messageId to Message examples",
+      "url": "https://github.com/a2aproject/A2A/pull/2452"
+    }
+  ]
+}

@@ -55,3 +55,7 @@ axoupdater = { workspace = true, features = ["blocking"] }
 # The benchmark suite measures Win32 APIs; `ay bench` reports unsupported elsewhere.
 [target.'cfg(windows)'.dependencies]
 stack-bench.workspace = true
+
+# Brand icon and version resource of ay.exe (build.rs, ay.ico from assets/brand).
+[build-dependencies]
+winresource = "0.1.34"

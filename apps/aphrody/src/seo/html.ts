@@ -168,11 +168,14 @@ export function renderDocument(p: PageSpec): string {
       `<meta property="og:url" content="${canonical}">`,
       `<meta property="og:type" content="${p.ogType || "website"}">`,
       '<meta property="og:site_name" content="Aphrody">',
-      `<meta property="og:image" content="${SITE_URL}/og-image.jpg">`,
+      `<meta property="og:image" content="${SITE_URL}/og-image.png">`,
     );
   }
   head.push(
+    '<link rel="icon" href="/favicon.ico" sizes="32x32">',
     '<link rel="icon" href="/favicon.svg" type="image/svg+xml">',
+    '<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
+    '<link rel="manifest" href="/site.webmanifest">',
     '<link rel="stylesheet" href="/style.css">',
     `<script type="speculationrules">${SPECULATION_RULES}</script>`,
   );
@@ -379,7 +382,7 @@ export function renderNews(
     headline: c.title,
     datePublished: a.date,
     inLanguage: HREFLANG[locale],
-    image: [`${SITE_URL}/og-image.jpg`],
+    image: [`${SITE_URL}/og-image.png`],
     author: { "@id": `${SITE_URL}/#organization` },
     publisher: { "@id": `${SITE_URL}/#organization` },
     mainEntityOfPage: url,

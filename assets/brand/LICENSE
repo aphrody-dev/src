@@ -1,0 +1,17 @@
+Aphrody brand artwork (assets/brand/src, assets/brand/gen)
+Copyright (c) 2026 aphrody-dev
+
+Original artwork, licensed under either of the MIT License or the Apache License, Version 2.0, at
+your option (LICENSE-MIT and LICENSE-APACHE at the repository root). The monogram, tiles, wordmark
+layout, social cards and badges are drawn from scratch on the Material 3 48 dp grid. No character,
+logo, screenshot or other asset of a third-party game, film or publisher is traced, embedded or
+derived, and none may be added to this directory.
+
+Third-party inputs, used under their own licenses and unmodified:
+- Material Symbols Rounded glyphs (Apache-2.0, Google LLC): symbols/, see symbols/NOTICE.
+- Google Sans Flex (SIL OFL 1.1, no Reserved Font Name): outlined into the generated SVG and PNG
+  files; the font itself is not redistributed here. "Google", "Google Sans" and "Google Sans Flex"
+  are trademarks of Google LLC and are not part of any Aphrody name or mark.
+
+The names "Aphrody", "Aphrody Labs" and "Aphrody Dev" and the monogram identify the owner's
+projects; the code licenses do not grant trademark rights.
