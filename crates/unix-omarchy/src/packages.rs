@@ -3,6 +3,10 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use thiserror::Error;
 
+const KERNEL_FRAGMENT: &str = include_str!("../../../infra/wsl-distro/kernel/wsl2-cachyos-omarchy-7.4.config");
+const KERNEL_BUILD_SCRIPT: &str = include_str!("../../../infra/wsl-distro/kernel/build-kernel.sh");
+const WSLCONFIG_TEMPLATE: &str = include_str!("../../../infra/wsl-distro/.wslconfig");
+
 #[derive(Error, Debug)]
 pub enum PackageEngineError {
     #[error("Package engine I/O error: {0}")]
@@ -69,12 +73,14 @@ impl Default for SovereignPackageEngine {
 
 impl SovereignPackageEngine {
     pub fn new() -> Self {
+        // Repo-relative (works on Windows and Linux checkouts alike).
+        let third_party = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../third_party");
         Self {
-            cachyos_patches_root: PathBuf::from(r"C:\src\third_party\kernel-patches"),
-            cachyos_pkgbuilds_root: PathBuf::from(r"C:\src\third_party\CachyOS-PKGBUILDS"),
-            omarchy_pkgbuilds_root: PathBuf::from(r"C:\src\third_party\omarchy-pkgs\pkgbuilds"),
-            archlinux_root: PathBuf::from(r"C:\src\third_party\archlinux"),
-            linux_tree_root: PathBuf::from(r"C:\src\third_party\linux"),
+            cachyos_patches_root: third_party.join("kernel-patches"),
+            cachyos_pkgbuilds_root: third_party.join("CachyOS-PKGBUILDS"),
+            omarchy_pkgbuilds_root: third_party.join("omarchy-pkgs").join("pkgbuilds"),
+            archlinux_root: third_party.join("archlinux"),
+            linux_tree_root: third_party.join("linux"),
         }
     }
 
@@ -139,46 +145,22 @@ impl SovereignPackageEngine {
         ]
     }
 
+    /// CachyOS patches applied on top of the CachyOS/linux release tree by
+    /// infra/wsl-distro/kernel/build-kernel.sh (the tree already carries the base CachyOS patches; BORE and
+    /// Project C are alternatives, NVIDIA patches target the out-of-tree module, not the kernel).
     pub fn list_kernel_patches(&self, kernel_series: &str) -> Vec<KernelPatchDescriptor> {
         let series_dir = self.cachyos_patches_root.join(kernel_series);
-        let canonical_patches = [
-            (
-                "sched/0001-bore-cachy.patch",
-                "sched",
-                "Burst-Oriented Response Enhancer (BORE) interactive CPU scheduler for sub-ms frame pacing",
-            ),
-            (
-                "sched/0001-prjc-cachy.patch",
-                "sched",
-                "Project C /BMQ alternative low-latency scheduler queue integration for Linux 7.4",
-            ),
-            (
-                "misc/dkms-clang.patch",
-                "kbuild",
-                "Out-of-tree DKMS module compilation compatibility under Clang/LLVM ThinLTO",
-            ),
-            (
-                "misc/nvidia/0005-Fix-build-on-Linux-7.4.patch",
-                "gpu-nvidia",
-                "NVIDIA open/proprietary kernel module ABI compatibility fix for Linux 7.4",
-            ),
-            (
-                "misc/0001-aufs-7.4-merge-v20260914.patch",
-                "fs",
-                "AUFS multi-layered union filesystem merge for Linux 7.4 container/live roots",
-            ),
-            (
-                "misc/0001-acpi-call.patch",
-                "acpi",
-                "ACPI method call interface for hybrid GPU power control",
-            ),
-        ];
+        let canonical_patches = [(
+            "sched/0001-bore-cachy.patch",
+            "sched",
+            "Burst-Oriented Response Enhancer (BORE) interactive CPU scheduler",
+        )];
 
         canonical_patches
             .iter()
             .enumerate()
             .map(|(idx, (rel, subsys, summary))| {
-                let full_path = series_dir.join(rel.replace('/', "\\"));
+                let full_path = rel.split('/').fold(series_dir.clone(), |p, c| p.join(c));
                 let meta = fs::metadata(&full_path).ok();
                 KernelPatchDescriptor {
                     order: idx + 1,
@@ -193,35 +175,9 @@ impl SovereignPackageEngine {
             .collect()
     }
 
+    /// Kernel config fragment merged over Microsoft's config-wsl (single source: infra/wsl-distro/kernel).
     pub fn generate_wsl2_kernel_config_fragment(&self) -> String {
-        let base_cfg_path = self
-            .linux_tree_root
-            .join(r"arch\x86\configs\cachyos_sm89_wsl2_baremetal.config");
-        let base_content = fs::read_to_string(&base_cfg_path).unwrap_or_else(|_| {
-            "# Base CachyOS sm_89 WSL2 fragment\nCONFIG_RUST=y\nCONFIG_SCHED_CLASS_EXT=y\nCONFIG_SCHED_BORE=y\nCONFIG_NTSYNC=y\nCONFIG_DXGKRNL=y\n".to_string()
-        });
-
-        format!(
-            "{base}\n\
-             # --- Aphrody Omarchy + WSL2 Native Zero-Overhead Extensions (Linux 7.4) ---\n\
-             CONFIG_HYPERV_VSOCKETS=y\n\
-             CONFIG_VSOCKETS=y\n\
-             CONFIG_VIRTIO=y\n\
-             CONFIG_VIRTIO_PCI=y\n\
-             CONFIG_VIRTIO_FS=y\n\
-             CONFIG_FUSE_FS=y\n\
-             CONFIG_FUSE_PASSTHROUGH=y\n\
-             CONFIG_PLAN9CAPS=y\n\
-             CONFIG_NET_9P=y\n\
-             CONFIG_NET_9P_VIRTIO=y\n\
-             CONFIG_UDMABUF=y\n\
-             CONFIG_DMABUF_HEAPS=y\n\
-             CONFIG_DMABUF_HEAPS_SYSTEM=y\n\
-             CONFIG_SYNC_FILE=y\n\
-             CONFIG_BPF_SYSCALL=y\n\
-             CONFIG_BPF_JIT=y\n",
-            base = base_content.trim_end()
-        )
+        KERNEL_FRAGMENT.to_string()
     }
 
     pub fn generate_patch_series_bundle(
@@ -232,72 +188,23 @@ impl SovereignPackageEngine {
         fs::create_dir_all(out_dir)?;
         let patches = self.list_kernel_patches(kernel_series);
 
-        let mut series_txt = String::new();
-        series_txt.push_str(&format!(
-            "# Linux {kernel_series} CachyOS + Omarchy + WSL2 Quilt/Git Patch Series\n"
-        ));
+        let mut series_txt = format!("# Linux {kernel_series} CachyOS patches for the aphrody WSL 2 kernel\n");
         for p in &patches {
             series_txt.push_str(&format!("{}\n", p.relative_path));
         }
         let series_path = out_dir.join("series");
         fs::write(&series_path, &series_txt)?;
 
-        let mut apply_sh = String::from(
-            "#!/usr/bin/env bash\n\
-             set -euo pipefail\n\
-             KERNEL_SRC=\"${1:-/usr/src/linux-7.4}\"\n\
-             PATCH_ROOT=\"${2:-/usr/src/cachyos-kernel-patches/7.4}\"\n\
-             echo \"[aphrody-omarchy] Applying CachyOS + WSL2 patch series onto ${KERNEL_SRC}\"\n\
-             cd \"${KERNEL_SRC}\"\n",
-        );
-        for p in &patches {
-            apply_sh.push_str(&format!(
-                "patch -Np1 -i \"${{PATCH_ROOT}}/{}\"\n",
-                p.relative_path
-            ));
-        }
-        apply_sh.push_str(
-            "scripts/kconfig/merge_config.sh -m .config \"$(dirname \"$0\")/wsl2-cachyos-omarchy-7.4.config\"\n\
-             make LLVM=1 -j\"$(nproc)\" bzImage modules\n",
-        );
-        let apply_path = out_dir.join("apply-cachyos-7.4-wsl2.sh");
-        fs::write(&apply_path, &apply_sh)?;
+        let build_path = out_dir.join("build-kernel.sh");
+        fs::write(&build_path, KERNEL_BUILD_SCRIPT)?;
 
         let kconfig_path = out_dir.join("wsl2-cachyos-omarchy-7.4.config");
         fs::write(&kconfig_path, self.generate_wsl2_kernel_config_fragment())?;
 
-        let pkgbuild_path = out_dir.join("PKGBUILD.linux-cachyos-omarchy-wsl2");
-        fs::write(&pkgbuild_path, self.synthesize_kernel_pkgbuild(kernel_series))?;
+        let wslconfig_path = out_dir.join(".wslconfig");
+        fs::write(&wslconfig_path, WSLCONFIG_TEMPLATE)?;
 
-        Ok(vec![series_path, apply_path, kconfig_path, pkgbuild_path])
-    }
-
-    pub fn synthesize_kernel_pkgbuild(&self, kernel_series: &str) -> String {
-        format!(
-            "# Maintainer: Aphrody Sovereign OS\n\
-             pkgbase=linux-cachyos-omarchy-wsl2\n\
-             pkgname=(\"${{pkgbase}}\" \"${{pkgbase}}-headers\")\n\
-             pkgver={kernel_series}.0.rc2\n\
-             pkgrel=1\n\
-             pkgdesc='Linux {kernel_series} kernel with CachyOS BORE/sched-ext, NVIDIA sm_89, /dev/ntsync, and WSL2 /dev/dxg Direct3D 12 zero-copy bridge'\n\
-             arch=(x86_64_v3 x86_64)\n\
-             url='https://gitlab.archlinux.org/archlinux/packaging/packages/linux'\n\
-             license=(GPL-2.0-only)\n\
-             makedepends=(bc cpio gettext libelf pahole perl python rust rust-bindgen rust-src tar xz zstd clang llvm lld)\n\
-             options=(!debug !strip)\n\
-             source=(\n\
-             \x20 '0001-bore-cachy.patch'\n\
-             \x20 'dkms-clang.patch'\n\
-             \x20 '0005-Fix-build-on-Linux-7.4.patch'\n\
-             \x20 'wsl2-cachyos-omarchy-7.4.config'\n\
-             )\n\
-             sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')\n\
-             \n\
-             build() {{\n\
-             \x20 make LLVM=1 -C \"${{srcdir}}/linux\" -j\"$(nproc)\" bzImage modules\n\
-             }}\n",
-            kernel_series = kernel_series
-        )
+        Ok(vec![series_path, build_path, kconfig_path, wslconfig_path])
     }
 
     pub fn count_dir_entries(dir: &Path) -> usize {

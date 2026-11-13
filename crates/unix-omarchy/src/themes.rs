@@ -567,7 +567,7 @@ impl Default for AetherThemeRegistry {
 
 impl AetherThemeRegistry {
     pub const DEFAULT_UPSTREAM_THEMES_DIR: &'static str =
-        r"C:\src\third_party\omarchy\themes";
+        concat!(env!("CARGO_MANIFEST_DIR"), "/../../third_party/omarchy/themes");
 
     pub fn new() -> Self {
         Self::with_upstream_dir(Path::new(Self::DEFAULT_UPSTREAM_THEMES_DIR))

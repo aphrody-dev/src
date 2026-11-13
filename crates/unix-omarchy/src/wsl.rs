@@ -7,6 +7,37 @@ use std::process::Command;
 use thiserror::Error;
 use unix_cachyos::{CachyOsConfigGenerator, SystemHardwareProfile};
 
+// Single source of truth: infra/wsl-distro. The builder re-emits these files (optionally re-parameterized).
+const WSLCONFIG: &str = include_str!("../../../infra/wsl-distro/.wslconfig");
+const WSLC_SETTINGS: &str = include_str!("../../../infra/wsl-distro/wslc-settings.yaml");
+const WSL_CONF: &str = include_str!("../../../infra/wsl-distro/rootfs/etc/wsl.conf");
+const WSL_DISTRIBUTION_CONF: &str =
+    include_str!("../../../infra/wsl-distro/rootfs/etc/wsl-distribution.conf");
+const LOCALE_CONF: &str = include_str!("../../../infra/wsl-distro/rootfs/etc/locale.conf");
+const ZRAM_CONF: &str = include_str!("../../../infra/wsl-distro/rootfs/etc/systemd/zram-generator.conf");
+const MASKED_UNITS: &str =
+    include_str!("../../../infra/wsl-distro/rootfs/etc/systemd/masked-wsl-units.list");
+const FIRST_SETUP: &str =
+    include_str!("../../../infra/wsl-distro/rootfs/usr/lib/wsl/first-setup-aphrody-omarchy.sh");
+const BUILD_IMAGE: &str = include_str!("../../../infra/wsl-distro/scripts/build-image.sh");
+const BUILD_ON_FR1: &str = include_str!("../../../infra/wsl-distro/scripts/build-on-fr1.sh");
+const TAR_EXCLUDE: &str = include_str!("../../../infra/wsl-distro/scripts/exclude");
+const BUILD_KERNEL: &str = include_str!("../../../infra/wsl-distro/kernel/build-kernel.sh");
+
+fn replace_line(text: &str, prefix: &str, value: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    for line in text.lines() {
+        if line.starts_with(prefix) {
+            out.push_str(prefix);
+            out.push_str(value);
+        } else {
+            out.push_str(line);
+        }
+        out.push('\n');
+    }
+    out
+}
+
 #[derive(Error, Debug)]
 pub enum WslDistroError {
     #[error("WSL bundle I/O error: {0}")]
@@ -60,84 +91,37 @@ impl SovereignWslBuilder {
             distro_name: "aphrody-omarchy".to_string(),
             default_user: "aphrody".to_string(),
             default_theme: "tokyo-night".to_string(),
-            kernel_win_path: r"C:\\src\\crates\\unix\\wsl\\bzImage-7.4-cachyos-omarchy"
-                .to_string(),
+            kernel_win_path: r"C:\\src\\target\\wsl\\bzImage-aphrody-cachyos".to_string(),
             memory_gb: 24,
             processors: 24,
         }
     }
 
+    /// %USERPROFILE%\.wslconfig from infra/wsl-distro/.wslconfig with this builder's kernel, memory and CPUs.
     pub fn generate_wslconfig(&self) -> String {
-        format!(
-            "# %USERPROFILE%\\.wslconfig - Sovereign Native WSL2 Zero-Overhead Profile\n\
-             # Replaces QEMU/WHPX TryOmarchy.exe with direct Hyper-V VMBus + /dev/dxg D3D12 GPU-PV\n\
-             [wsl2]\n\
-             kernel={kernel}\n\
-             memory={mem}GB\n\
-             processors={procs}\n\
-             networkingMode=mirrored\n\
-             dnsTunneling=true\n\
-             autoProxy=true\n\
-             firewall=true\n\
-             guiApplications=true\n\
-             nestedVirtualization=true\n\
-             pageReporting=true\n\
-             kernelCommandLine=cgroup_no_v1=all systemd.unified_cgroup_hierarchy=1 mitigations=off nowatchdog\n\
-             \n\
-             [experimental]\n\
-             autoMemoryReclaim=gradual\n\
-             sparseVhd=true\n\
-             hostAddressLoopback=true\n",
-            kernel = self.kernel_win_path,
-            mem = self.memory_gb,
-            procs = self.processors,
-        )
+        let mut out = String::with_capacity(WSLCONFIG.len());
+        for line in WSLCONFIG.lines() {
+            let line = if line.starts_with("kernel=") {
+                format!("kernel={}", self.kernel_win_path)
+            } else if line.starts_with("memory=") {
+                format!("memory={}GB", self.memory_gb)
+            } else if line.starts_with("processors=") {
+                format!("processors={}", self.processors)
+            } else {
+                line.to_string()
+            };
+            out.push_str(&line);
+            out.push('\n');
+        }
+        out
     }
 
     pub fn generate_rootfs_wsl_conf(&self) -> String {
-        format!(
-            "# /etc/wsl.conf - Sovereign Omarchy + CachyOS + Arch WSL2 Guest Configuration\n\
-             [boot]\n\
-             systemd=true\n\
-             command=\"/usr/bin/mkdir -p /run/wslg /tmp/.X11-unix\"\n\
-             \n\
-             [automount]\n\
-             enabled=true\n\
-             root=/mnt/\n\
-             options=\"metadata,umask=22,fmask=11\"\n\
-             mountFsTab=true\n\
-             \n\
-             [interop]\n\
-             enabled=true\n\
-             appendWindowsPath=true\n\
-             \n\
-             [network]\n\
-             generateHosts=true\n\
-             generateResolvConf=true\n\
-             hostname={distro}\n\
-             \n\
-             [user]\n\
-             default={user}\n",
-            distro = self.distro_name,
-            user = self.default_user,
-        )
+        WSL_CONF.to_string()
     }
 
     pub fn generate_wsl_distribution_conf(&self) -> String {
-        format!(
-            "[oobe]\n\
-             command = /usr/lib/wsl/first-setup-aphrody-omarchy.sh\n\
-             defaultUid = 1000\n\
-             defaultName = {distro}\n\
-             \n\
-             [shortcut]\n\
-             enabled = true\n\
-             icon = /usr/lib/wsl/aphrody-omarchy.ico\n\
-             \n\
-             [windowsterminal]\n\
-             enabled = true\n",
-            distro = self.distro_name,
-        )
+        replace_line(WSL_DISTRIBUTION_CONF, "defaultName = ", &self.distro_name)
     }
 
     pub fn generate_unified_pacman_conf(&self, profile: &SystemHardwareProfile) -> String {
@@ -190,126 +174,22 @@ impl SovereignWslBuilder {
     }
 
     pub fn generate_zram_generator_conf() -> &'static str {
-        "# /etc/systemd/zram-generator.conf\n\
-         # Overrides cachyos-settings zram rules inside WSL2: Hyper-V / WSL2 manages host-backed swap directly.\n"
+        ZRAM_CONF
     }
 
     pub fn generate_systemd_mask_manifest() -> &'static str {
-        "# Systemd unit masks required for clean Hyper-V / WSL2 boot without TTY contention\n\
-         # Ref: CachyOS/cachyos-wsl & microsoft/WSL#13595\n\
-         console-getty.service\n\
-         getty@.service\n\
-         serial-getty@.service\n\
-         systemd-firstboot.service\n\
-         systemd-networkd.service\n\
-         systemd-networkd-wait-online.service\n\
-         systemd-resolved.service\n\
-         systemd-tmpfiles-clean.service\n\
-         systemd-tmpfiles-setup.service\n\
-         systemd-tmpfiles-setup-dev.service\n\
-         systemd-tmpfiles-setup-dev-early.service\n\
-         tmp.mount\n"
+        MASKED_UNITS
     }
 
     pub fn generate_first_setup_script(&self) -> String {
-        format!(
-            "#!/usr/bin/env bash\n\
-             # /usr/lib/wsl/first-setup-aphrody-omarchy.sh\n\
-             set -euo pipefail\n\
-             \n\
-             declare -r DEFAULT_UID=1000\n\
-             declare -r DEFAULT_USER=\"{user}\"\n\
-             declare -r DEFAULT_GROUPS=\"wheel,video,render\"\n\
-             \n\
-             echo \"Initializing Sovereign Omarchy + CachyOS + Arch WSL2 Distribution...\"\n\
-             pacman-key --init >/dev/null 2>&1 || true\n\
-             pacman-key --populate archlinux cachyos >/dev/null 2>&1 || true\n\
-             \n\
-             if [ -x /usr/lib/wsl/optimize-repos ]; then\n\
-             \x20   /usr/lib/wsl/optimize-repos || true\n\
-             fi\n\
-             \n\
-             if ! id -u \"${{DEFAULT_USER}}\" >/dev/null 2>&1; then\n\
-             \x20   useradd --create-home --uid \"${{DEFAULT_UID}}\" --groups \"${{DEFAULT_GROUPS}}\" --shell /usr/bin/fish \"${{DEFAULT_USER}}\"\n\
-             \x20   passwd -d \"${{DEFAULT_USER}}\" >/dev/null 2>&1 || true\n\
-             fi\n\
-             \n\
-             install -d -m 0700 -o \"${{DEFAULT_UID}}\" -g \"${{DEFAULT_UID}}\" \"/home/${{DEFAULT_USER}}/.config/hypr\"\n\
-             install -d -m 0700 -o \"${{DEFAULT_UID}}\" -g \"${{DEFAULT_UID}}\" \"/home/${{DEFAULT_USER}}/.config/cosmic\"\n\
-             install -d -m 0700 -o \"${{DEFAULT_UID}}\" -g \"${{DEFAULT_UID}}\" \"/home/${{DEFAULT_USER}}/.config/omarchy/current\"\n\
-             \n\
-             echo \"D3D12 /dev/dxg + Rust WSLg (Hyprland + COSMIC + Omarchy {theme}) ready.\"\n",
-            user = self.default_user,
-            theme = self.default_theme,
+        FIRST_SETUP.replace(
+            "DEFAULT_USER=\"aphrody\"",
+            &format!("DEFAULT_USER=\"{}\"", self.default_user),
         )
     }
 
     pub fn generate_build_image_script(&self) -> String {
-        format!(
-            "#!/usr/bin/env bash\n\
-             # build-aphrody-omarchy-wsl.sh - Reproducible RootFS & .wsl Builder\n\
-             # Fuses CachyOS/cachyos-wsl + omacom/omarchy + gitlab.archlinux.org\n\
-             set -euo pipefail\n\
-             \n\
-             export TZ=UTC\n\
-             declare -r WORKDIR=\"${{1:-./work}}\"\n\
-             declare -r IMAGE_VERSION=\"${{2:-2026.11.11}}\"\n\
-             declare -r BUILDDIR=\"${{WORKDIR}}/build\"\n\
-             declare -r OUTPUTDIR=\"${{WORKDIR}}/output\"\n\
-             SOURCE_DATE_EPOCH=$(date -u -d \"$(awk -F. '{{print $1\"-\"$2\"-\"$3}}' <<< \"${{IMAGE_VERSION}}\")\" +\"%s\")\n\
-             export SOURCE_DATE_EPOCH\n\
-             \n\
-             declare -ra PACKAGES=(\n\
-             \x20   base\n\
-             \x20   sudo\n\
-             \x20   fish\n\
-             \x20   cachyos-keyring\n\
-             \x20   cachyos-mirrorlist\n\
-             \x20   cachyos-v3-mirrorlist\n\
-             \x20   cachyos-settings\n\
-             \x20   cachyos-fish-config\n\
-             \x20   ananicy-cpp\n\
-             \x20   cachyos-ananicy-rules\n\
-             \x20   mesa\n\
-             \x20   vulkan-dzn\n\
-             \x20   wayland\n\
-             \x20   wayland-protocols\n\
-             \x20   hyprland\n\
-             \x20   cosmic-session\n\
-             \x20   quickshell\n\
-             \x20   ghostty\n\
-             \x20   alacritty\n\
-             \x20   neovim\n\
-             )\n\
-             \n\
-             mkdir -vp \"${{BUILDDIR}}/var/lib/pacman\" \"${{OUTPUTDIR}}\"\n\
-             cp -a rootfs/* \"${{BUILDDIR}}/\"\n\
-             ln -sf /usr/lib/os-release \"${{BUILDDIR}}/etc/os-release\"\n\
-             \n\
-             fakechroot -- fakeroot -- pacman -Sy --disable-sandbox-filesystem \\\n\
-             \x20   -r \"${{BUILDDIR}}\" --noconfirm --dbpath \"${{BUILDDIR}}/var/lib/pacman\" \\\n\
-             \x20   --config rootfs/etc/pacman.conf --noscriptlet \"${{PACKAGES[@]}}\"\n\
-             \n\
-             # Mask Hyper-V conflicting TTY & network units (microsoft/WSL#13595)\n\
-             ln -sf /dev/null \"${{BUILDDIR}}/etc/systemd/system/getty@.service\"\n\
-             ln -sf /dev/null \"${{BUILDDIR}}/etc/systemd/system/serial-getty@.service\"\n\
-             for unit in console-getty systemd-firstboot systemd-networkd systemd-resolved tmp.mount; do\n\
-             \x20   ln -sf /dev/null \"${{BUILDDIR}}/etc/systemd/system/${{unit}}.service\" || true\n\
-             done\n\
-             \n\
-             chmod 0755 \"${{BUILDDIR}}/usr/lib/wsl/first-setup-aphrody-omarchy.sh\"\n\
-             chmod 0440 \"${{BUILDDIR}}/etc/sudoers.d/10-wheel\"\n\
-             rm -rf \"${{BUILDDIR}}/etc/pacman.d/gnupg/\"*\n\
-             \n\
-             fakeroot -- tar --numeric-owner --xattrs --acls \\\n\
-             \x20   --mtime=\"@${{SOURCE_DATE_EPOCH}}\" --clamp-mtime --sort=name \\\n\
-             \x20   -C \"${{BUILDDIR}}\" -cf \"${{OUTPUTDIR}}/{distro}-${{IMAGE_VERSION}}.tar\" .\n\
-             \n\
-             xz -T0 -9 \"${{OUTPUTDIR}}/{distro}-${{IMAGE_VERSION}}.tar\"\n\
-             mv -v \"${{OUTPUTDIR}}/{distro}-${{IMAGE_VERSION}}.tar.xz\" \"${{OUTPUTDIR}}/{distro}-${{IMAGE_VERSION}}.wsl\"\n\
-             sha256sum \"${{OUTPUTDIR}}/{distro}-${{IMAGE_VERSION}}.wsl\" > \"${{OUTPUTDIR}}/{distro}-${{IMAGE_VERSION}}.wsl.SHA256\"\n",
-            distro = self.distro_name,
-        )
+        BUILD_IMAGE.to_string()
     }
 
     pub fn generate_hyprland_wslg_conf(&self) -> String {
@@ -437,13 +317,14 @@ impl SovereignWslBuilder {
                 self.generate_first_setup_script(),
             ),
             (
-                scripts_dir.join("build-aphrody-omarchy-wsl.sh"),
-                self.generate_build_image_script(),
-            ),
-            (
                 scripts_dir.join("build-image.sh"),
                 self.generate_build_image_script(),
             ),
+            (scripts_dir.join("build-on-fr1.sh"), BUILD_ON_FR1.to_string()),
+            (scripts_dir.join("exclude"), TAR_EXCLUDE.to_string()),
+            (rootfs_etc.join("locale.conf"), LOCALE_CONF.to_string()),
+            (out_dir.join("wslc-settings.yaml"), WSLC_SETTINGS.to_string()),
+            (kernel_dir.join("build-kernel.sh"), BUILD_KERNEL.to_string()),
             (
                 hypr_dir.join("hyprland.conf"),
                 self.generate_hyprland_wslg_conf(),

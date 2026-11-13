@@ -57,9 +57,9 @@ impl Default for OmarchyPluginEngine {
 
 impl OmarchyPluginEngine {
     pub const DEFAULT_BUILTIN_DIR: &'static str =
-        r"C:\src\third_party\omarchy\shell\plugins";
+        concat!(env!("CARGO_MANIFEST_DIR"), "/../../third_party/omarchy/shell/plugins");
     pub const DEFAULT_REGISTRY_JSON: &'static str =
-        r"C:\src\third_party\omarchy-plugin-marketplace\registry.json";
+        concat!(env!("CARGO_MANIFEST_DIR"), "/../../third_party/omarchy-plugin-marketplace/registry.json");
 
     pub fn new() -> Self {
         Self {

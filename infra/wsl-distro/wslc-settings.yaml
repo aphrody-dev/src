@@ -1,0 +1,11 @@
+# %LOCALAPPDATA%\wslc\settings.yaml template for WSL containers (wslc.exe); copy by hand or `wslc settings`.
+# Keys: learn.microsoft.com/windows/wsl/wsl-container-settings (MicrosoftDocs/WSL@50342fc5). .wslconfig does not apply here.
+# Same budget as the distro VM (.wslconfig memory=24GB, processors=24); published ports stay on loopback.
+session:
+  cpuCount: 24
+  memorySize: 24GB
+  maxStorageSize: 256GB
+  defaultBindingAddress: 127.0.0.1
+  hostLoopback: host.wslc.internal
+  idleTimeout: 60
+credentialStore: wincred

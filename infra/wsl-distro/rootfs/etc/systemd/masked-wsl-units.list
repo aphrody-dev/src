@@ -1,5 +1,6 @@
-# Systemd unit masks required for clean Hyper-V / WSL2 boot without TTY contention
-# Ref: CachyOS/cachyos-wsl & microsoft/WSL#13595
+# Units masked in the image (system and user scope), read by scripts/build-image.sh.
+# Sources: learn.microsoft.com/windows/wsl/build-custom-distro "Systemd recommendations" (MicrosoftDocs/WSL@7b28cc1e),
+# CachyOS/cachyos-wsl@2cedd88a scripts/build-image.sh, getty templates: microsoft/WSL#13595.
 console-getty.service
 getty@.service
 serial-getty@.service
@@ -7,7 +8,9 @@ systemd-firstboot.service
 systemd-networkd.service
 systemd-networkd-wait-online.service
 systemd-resolved.service
+NetworkManager.service
 systemd-tmpfiles-clean.service
+systemd-tmpfiles-clean.timer
 systemd-tmpfiles-setup.service
 systemd-tmpfiles-setup-dev.service
 systemd-tmpfiles-setup-dev-early.service

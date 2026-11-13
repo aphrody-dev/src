@@ -1,7 +1,10 @@
-# %USERPROFILE%\.wslconfig - Sovereign Native WSL2 Zero-Overhead Profile
-# Replaces QEMU/WHPX TryOmarchy.exe with direct Hyper-V VMBus + /dev/dxg D3D12 GPU-PV
+# %USERPROFILE%\.wslconfig template for the aphrody CachyOS WSL 2 kernel (copy by hand; the repo never edits the PC).
+# Keys: learn.microsoft.com/windows/wsl/wsl-config (MicrosoftDocs/WSL@50342fc5). Kernel and modules VHD come from
+# infra/wsl-distro/kernel/build-kernel.sh on fr1, copied to C:\src\target\wsl\ (gitignored).
+# wslc.exe containers ignore this file: see infra/wsl-distro/wslc-settings.yaml.
 [wsl2]
-kernel=C:\\src\\crates\\unix\\wsl\\bzImage-7.4-cachyos-omarchy
+kernel=C:\\src\\target\\wsl\\bzImage-aphrody-cachyos
+kernelModules=C:\\src\\target\\wsl\\modules-aphrody-cachyos.vhdx
 memory=24GB
 processors=24
 networkingMode=mirrored
@@ -9,9 +12,9 @@ dnsTunneling=true
 autoProxy=true
 firewall=true
 guiApplications=true
+gpuSupport=true
 nestedVirtualization=true
-pageReporting=true
-kernelCommandLine=cgroup_no_v1=all systemd.unified_cgroup_hierarchy=1 mitigations=off nowatchdog
+kernelCommandLine=mitigations=off nowatchdog
 
 [experimental]
 autoMemoryReclaim=gradual

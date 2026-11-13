@@ -57,7 +57,7 @@ impl OmarchyDoctorReport {
         let oma_pkgs = SovereignPackageEngine::count_dir_entries(&pkg_engine.omarchy_pkgbuilds_root);
 
         let arch_present = pkg_engine.archlinux_root.is_dir();
-        let linux_present = Path::new(r"C:\src\third_party\linux\Makefile").is_file();
+        let linux_present = pkg_engine.linux_tree_root.join("Makefile").is_file();
 
         let healthy = theme_reg.len() >= 25 && search_summary.builtin_count == 16;
 
@@ -193,11 +193,8 @@ mod tests {
     fn test_linux_7_4_cachyos_patch_series_and_gitlab_manifest() {
         let pkg_engine = SovereignPackageEngine::new();
         let patches = pkg_engine.list_kernel_patches("7.4");
-        assert_eq!(patches.len(), 6);
+        assert_eq!(patches.len(), 1);
         assert_eq!(patches[0].relative_path, "sched/0001-bore-cachy.patch");
-        assert!(patches
-            .iter()
-            .any(|p| p.relative_path == "misc/nvidia/0005-Fix-build-on-Linux-7.4.patch"));
 
         if pkg_engine.cachyos_patches_root.join("7.4").is_dir() {
             for p in &patches {
@@ -248,10 +245,10 @@ mod tests {
         let manifest = builder.emit_bundle(&out_dir).unwrap();
         assert_eq!(manifest.distro_name, "aphrody-omarchy");
         assert_eq!(manifest.default_user, "aphrody");
-        assert_eq!(manifest.generated_files.len(), 15);
+        assert_eq!(manifest.generated_files.len(), 19);
 
         let wslcfg = fs::read_to_string(out_dir.join(".wslconfig")).unwrap();
-        assert!(wslcfg.contains("bzImage-7.4-cachyos-omarchy"));
+        assert!(wslcfg.contains("bzImage-aphrody-cachyos"));
         assert!(wslcfg.contains("memory=24GB"));
         assert!(wslcfg.contains("processors=24"));
         assert!(wslcfg.contains("networkingMode=mirrored"));
