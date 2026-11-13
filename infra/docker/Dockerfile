@@ -21,7 +21,7 @@ ARG CARGO_CHEF_VERSION=0.1.77
 ARG CARGO_ZIGBUILD_VERSION=0.24.1
 # release = fat LTO (production). iteration = no LTO, for quick smoke builds.
 ARG CARGO_PROFILE=release
-ARG RUST_PACKAGES="-p aphrody -p lore-server -p ring3-agent -p rust-stack"
+ARG RUST_PACKAGES="-p aphrody -p aphrody-lore-server -p ring3-agent -p rust-stack"
 # Parallel rustc jobs (each runs -Zthreads=16 from .cargo/config.toml): keep low on a shared host (prd: 2).
 ARG CARGO_BUILD_JOBS=4
 
