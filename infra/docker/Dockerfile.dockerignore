@@ -20,6 +20,8 @@
 !assets/brand/brand.toml
 !assets/brand/src/
 !assets/brand/gen/
+!assets/library/icons/vendors/
+!assets/generated/wallpapers/thumbs/
 **/target/
 **/node_modules/
 **/dist/

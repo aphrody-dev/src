@@ -141,6 +141,10 @@ COPY docs/ALPHABET.md docs/ALPHABET.md
 COPY docs/reviews/ docs/reviews/
 COPY third_party/forks.txt third_party/forks.txt
 COPY assets/brand/gen/ assets/brand/gen/
+# apps/aphrody/src/os/build.ts: vendor icons and wallpaper thumbnails (committed outputs of `ay assets`); crates/game/assets feeds /play.
+COPY assets/library/icons/vendors/ assets/library/icons/vendors/
+COPY assets/generated/wallpapers/thumbs/ assets/generated/wallpapers/thumbs/
+COPY crates/game/assets/ crates/game/assets/
 # apps/aphrody/src/os/client/gamescope.ts imports the WGSL shaders of the crate as text.
 COPY crates/gamescope-wgsl/src/shaders/ crates/gamescope-wgsl/src/shaders/
 COPY --parents crates/*/Cargo.toml ./
