@@ -7,8 +7,8 @@ license.workspace = true
 description = "Sovereign Unix Distribution & Omarchy/CachyOS/Arch WSL2 management CLI"
 
 [dependencies]
-unix-cachyos = { version = "0.3.0", path = "../unix-cachyos" }
-aphrody-omarchy = { version = "0.3.0", path = "../unix-omarchy" }
+unix-cachyos = { version = "0.4.0", path = "../unix-cachyos" }
+aphrody-omarchy = { version = "0.4.0", path = "../unix-omarchy" }
 serde.workspace = true
 serde_json.workspace = true
 clap.workspace = true

@@ -11,7 +11,7 @@ name = "rt"
 
 [dependencies]
 clap.workspace = true
-up = { version = "0.3.0", package = "aphrody-up", path = "../up" }
+up = { version = "0.4.0", package = "aphrody-up", path = "../up" }
 # V8 and Dawn of each Chrome channel (chromiumdash + Chromium DEPS) for `ay rt matrix`.
-aphrody-conformance = { version = "0.3.0", path = "../conformance" }
+aphrody-conformance = { version = "0.4.0", path = "../conformance" }
 serde_json.workspace = true

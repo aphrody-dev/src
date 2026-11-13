@@ -16,8 +16,8 @@ name = "wslg-cosmic-hypr"
 path = "src/bin/wslg_cosmic_hypr.rs"
 
 [dependencies]
-hypr-tiler = { version = "0.3.0", path = "../hypr-tiler" }
-cosmic-compat = { version = "0.3.0", path = "../cosmic-compat" }
+hypr-tiler = { version = "0.4.0", path = "../hypr-tiler" }
+cosmic-compat = { version = "0.4.0", path = "../cosmic-compat" }
 clap.workspace = true
 serde.workspace = true
 serde_json.workspace = true

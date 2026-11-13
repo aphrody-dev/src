@@ -9,7 +9,7 @@ license.workspace = true
 
 [dependencies]
 smithay-wayland-wire.workspace = true
-hypr-tiler = { version = "0.3.0", path = "../hypr-tiler" }
+hypr-tiler = { version = "0.4.0", path = "../hypr-tiler" }
 tracing.workspace = true
 thiserror.workspace = true
 serde.workspace = true

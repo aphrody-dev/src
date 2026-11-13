@@ -15,7 +15,7 @@ members = [
 exclude = ["third_party", "apps", "packages", "infra"]
 
 [workspace.package]
-version = "0.3.0"
+version = "0.4.0"
 edition = "2024"
 rust-version = "1.85"
 license = "MIT OR Apache-2.0"
@@ -27,22 +27,22 @@ homepage = "https://labs.aphrody.com"
 # First-party crates
 archguard = { version = "0.1.0", path = "crates/archguard" }
 aphrody-design-shared = { version = "0.3.0", path = "crates/aphrody-design-shared" }
-corelib = { version = "0.3.0", package = "aphrody-corelib", path = "crates/corelib", default-features = false }
-depot-cli = { version = "0.3.0", path = "crates/depot-cli" }
-depot-core = { version = "0.3.0", path = "crates/depot-core" }
-depot-cas = { version = "0.3.0", path = "crates/depot-cas" }
-depot-cipd = { version = "0.3.0", path = "crates/depot-cipd" }
+corelib = { version = "0.4.0", package = "aphrody-corelib", path = "crates/corelib", default-features = false }
+depot-cli = { version = "0.4.0", path = "crates/depot-cli" }
+depot-core = { version = "0.4.0", path = "crates/depot-core" }
+depot-cas = { version = "0.4.0", path = "crates/depot-cas" }
+depot-cipd = { version = "0.4.0", path = "crates/depot-cipd" }
 agent-context = { version = "0.1.0", path = "crates/agent-context" }
-aphrody-core = { version = "0.3.0", path = "crates/core" }
-aphrody-core-capi = { version = "0.3.0", path = "crates/core-capi" }
-depot-re = { version = "0.3.0", path = "crates/depot-re" }
+aphrody-core = { version = "0.4.0", path = "crates/core" }
+aphrody-core-capi = { version = "0.4.0", path = "crates/core-capi" }
+depot-re = { version = "0.4.0", path = "crates/depot-re" }
 # WSLg stack: Windows host crates and the portable Wayland wire (docs/ARCHITECTURE.md §6).
-dx12-hal = { version = "0.3.0", path = "crates/dx12-hal" }
-smithay-wayland-wire = { version = "0.3.0", path = "crates/smithay-wayland-wire" }
-depot-migrate = { version = "0.3.0", path = "crates/depot-migrate" }
-depot-forge = { version = "0.3.0", path = "crates/depot-forge" }
-depot-ingest = { version = "0.3.0", path = "crates/depot-ingest" }
-depot-graph = { version = "0.3.0", path = "crates/depot-graph" }
+dx12-hal = { version = "0.4.0", path = "crates/dx12-hal" }
+smithay-wayland-wire = { version = "0.4.0", path = "crates/smithay-wayland-wire" }
+depot-migrate = { version = "0.4.0", path = "crates/depot-migrate" }
+depot-forge = { version = "0.4.0", path = "crates/depot-forge" }
+depot-ingest = { version = "0.4.0", path = "crates/depot-ingest" }
+depot-graph = { version = "0.4.0", path = "crates/depot-graph" }
 gamescope-core = { version = "0.1.0", path = "crates/gamescope-core" }
 gamescope-wgsl = { version = "0.1.0", path = "crates/gamescope-wgsl" }
 stack-bench = { version = "0.1.0", path = "crates/bench" }
@@ -65,9 +65,9 @@ lore-storage = { version = "0.13.1-nightly", path = "crates/lore-storage", packa
 lore-telemetry = { version = "0.13.1-nightly", path = "crates/lore-telemetry", package = "aphrody-lore-telemetry" }
 lore-transport = { version = "0.13.1-nightly", path = "crates/lore-transport", package = "aphrody-lore-transport" }
 # Media (merged from C:\Users\aphro\tv)
-tv-core = { version = "0.3.0", path = "crates/tv-core" }
-tv-ffmpeg = { version = "0.3.0", path = "crates/tv-ffmpeg" }
-tv-i18n = { version = "0.3.0", path = "crates/tv-i18n" }
+tv-core = { version = "0.4.0", path = "crates/tv-core" }
+tv-ffmpeg = { version = "0.4.0", path = "crates/tv-ffmpeg" }
+tv-i18n = { version = "0.4.0", path = "crates/tv-i18n" }
 
 # crates.io. Keys shared by src and labs: labs exact pin (same or newer version), union of features.
 anyhow = "1.0.104"

@@ -453,7 +453,7 @@ checksum = "330a5ed07fa54e4702c9d6c4174f74427fc0ef6e214bbd677ae50a5099946470"
 
 [[package]]
 name = "aphrody"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "aphrody-bun-flat",
  "aphrody-conformance",
@@ -485,7 +485,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-adblock-capi"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "aphrody-corelib",
  "serde_json",
@@ -493,7 +493,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-apm"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -505,11 +505,11 @@ dependencies = [
 
 [[package]]
 name = "aphrody-brand-gpu"
-version = "0.3.0"
+version = "0.4.0"
 
 [[package]]
 name = "aphrody-bun-flat"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "blake3",
  "bstr",
@@ -519,7 +519,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-conformance"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "base64 0.23.1",
  "futures",
@@ -534,7 +534,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-core"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "blake3",
  "cc",
@@ -563,7 +563,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-core-capi"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "aphrody-core",
  "serde_json",
@@ -571,7 +571,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-corelib"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "adblock",
  "bytemuck",
@@ -593,7 +593,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-diffutils-flat"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "pretty_assertions",
  "regex",
@@ -601,7 +601,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-docs"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "aphrody-bun-flat",
  "rusqlite",
@@ -616,7 +616,7 @@ version = "0.1.0"
 
 [[package]]
 name = "aphrody-factory"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "aphrody-conformance",
  "blake3",
@@ -630,7 +630,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-ffi"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "aphrody-core",
  "aphrody-corelib",
@@ -646,7 +646,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-i18n"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "serde_json",
 ]
@@ -1264,7 +1264,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-net"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "bytes",
  "h2",
@@ -1284,7 +1284,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-omarchy"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -1294,7 +1294,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-remote"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "anyhow",
  "base64 0.23.1",
@@ -1310,7 +1310,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-rt"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "aphrody-conformance",
  "aphrody-up",
@@ -1320,7 +1320,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-sys"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "if-addrs",
  "rustix 1.1.6",
@@ -1332,7 +1332,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-ui"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "aphrody-brand-gpu",
  "base64 0.23.1",
@@ -1356,7 +1356,7 @@ dependencies = [
 
 [[package]]
 name = "aphrody-up"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "clap",
  "dotenvy",
@@ -1584,7 +1584,7 @@ dependencies = [
 
 [[package]]
 name = "asset-test"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "bevy",
  "craft-exr",
@@ -4934,7 +4934,7 @@ dependencies = [
 
 [[package]]
 name = "cosmic-compat"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "bitflags 2.13.2",
  "hypr-tiler",
@@ -5018,7 +5018,7 @@ dependencies = [
 
 [[package]]
 name = "craft-formats"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "craft-exr",
  "craft-heif",
@@ -5505,7 +5505,7 @@ dependencies = [
 
 [[package]]
 name = "depot-cas"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "blake3",
  "fastcdc",
@@ -5516,7 +5516,7 @@ dependencies = [
 
 [[package]]
 name = "depot-cipd"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "base64 0.23.1",
  "depot-cas",
@@ -5530,7 +5530,7 @@ dependencies = [
 
 [[package]]
 name = "depot-cli"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "aphrody-core",
  "argh",
@@ -5548,7 +5548,7 @@ dependencies = [
 
 [[package]]
 name = "depot-core"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "blake3",
  "gix",
@@ -5564,7 +5564,7 @@ dependencies = [
 
 [[package]]
 name = "depot-forge"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "depot-core",
  "serde",
@@ -5574,7 +5574,7 @@ dependencies = [
 
 [[package]]
 name = "depot-gclient"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "clap",
  "depot-cas",
@@ -5595,7 +5595,7 @@ dependencies = [
 
 [[package]]
 name = "depot-graph"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "aphrody-core",
  "depot-core",
@@ -5607,7 +5607,7 @@ dependencies = [
 
 [[package]]
 name = "depot-ingest"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "aphrody-core",
  "depot-core",
@@ -5620,7 +5620,7 @@ dependencies = [
 
 [[package]]
 name = "depot-migrate"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "aphrody-core",
  "ignore",
@@ -5631,7 +5631,7 @@ dependencies = [
 
 [[package]]
 name = "depot-re"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "goblin",
  "iced-x86",
@@ -5640,7 +5640,7 @@ dependencies = [
 
 [[package]]
 name = "depot-vpython"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "depot-core",
  "toml 1.2.1+spec-1.1.0",
@@ -5934,7 +5934,7 @@ checksum = "92773504d58c093f6de2459af4af33faa518c13451eb8f2b5698ed3d36e7c813"
 
 [[package]]
 name = "dx12-hal"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "serde_json",
  "thiserror 2.0.21",
@@ -8769,7 +8769,7 @@ dependencies = [
 
 [[package]]
 name = "hypr-tiler"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "serde",
 ]
@@ -14211,7 +14211,7 @@ dependencies = [
 
 [[package]]
 name = "smithay-wayland-wire"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "byteorder",
  "dx12-hal",
@@ -15704,7 +15704,7 @@ dependencies = [
 
 [[package]]
 name = "tv-cli"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "clap",
  "serde_json",
@@ -15715,7 +15715,7 @@ dependencies = [
 
 [[package]]
 name = "tv-core"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -15724,7 +15724,7 @@ dependencies = [
 
 [[package]]
 name = "tv-ffmpeg"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "ffmpeg-next",
  "tv-core",
@@ -15732,7 +15732,7 @@ dependencies = [
 
 [[package]]
 name = "tv-i18n"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "fluent-templates",
  "sys-locale",
@@ -16021,7 +16021,7 @@ dependencies = [
 
 [[package]]
 name = "unix-cachyos"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "raw-cpuid",
  "serde",
@@ -16032,7 +16032,7 @@ dependencies = [
 
 [[package]]
 name = "unix-distro"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "anyhow",
  "aphrody-omarchy",
@@ -16044,7 +16044,7 @@ dependencies = [
 
 [[package]]
 name = "unix-uutils"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "serde",
  "thiserror 2.0.21",
@@ -17288,7 +17288,7 @@ checksum = "3ad82d2a33cdc9674dc7465672f271e096168fcdbe0f799d9e6db8c5892679dc"
 
 [[package]]
 name = "wslg-cli"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "clap",
  "cosmic-compat",

@@ -24,14 +24,14 @@ doctest = false
 
 [dependencies]
 archguard.workspace = true
-aphrody-conformance = { version = "0.3.0", path = "../conformance" }
+aphrody-conformance = { version = "0.4.0", path = "../conformance" }
 clap.workspace = true
 depot-cli.workspace = true
 depot-cipd.workspace = true
 depot-core.workspace = true
-depot-gclient = { version = "0.3.0", path = "../depot-gclient" }
-depot-vpython = { version = "0.3.0", path = "../depot-vpython" }
-remote = { version = "0.3.0", package = "aphrody-remote", path = "../remote" }
+depot-gclient = { version = "0.4.0", path = "../depot-gclient" }
+depot-vpython = { version = "0.4.0", path = "../depot-vpython" }
+remote = { version = "0.4.0", package = "aphrody-remote", path = "../remote" }
 serde_json.workspace = true
 # `ay ai`: ai.toml, provider HTTP checks, secrets from `.env`.
 serde.workspace = true
@@ -40,13 +40,13 @@ ureq.workspace = true
 regex.workspace = true
 uuid.workspace = true
 dotenvy = { workspace = true }
-sys = { version = "0.3.0", path = "../sys", package = "aphrody-sys" }
+sys = { version = "0.4.0", path = "../sys", package = "aphrody-sys" }
 xtk.workspace = true
-up = { version = "0.3.0", package = "aphrody-up", path = "../up" }
-rt = { version = "0.3.0", package = "aphrody-rt", path = "../rt" }
+up = { version = "0.4.0", package = "aphrody-up", path = "../up" }
+rt = { version = "0.4.0", package = "aphrody-rt", path = "../rt" }
 # `ay docs` (Bun docs index) and `ay flat` / `ay hash` / `ay time` (bun fork crates, flattened).
-aphrody-docs = { version = "0.3.0", path = "../docs" }
-bun-flat = { version = "0.3.0", package = "aphrody-bun-flat", path = "../bun-flat" }
+aphrody-docs = { version = "0.4.0", path = "../docs" }
+bun-flat = { version = "0.4.0", package = "aphrody-bun-flat", path = "../bun-flat" }
 # `ay steam`: Steam data as JSON (VDF, appinfo, manifests, compat tools, Proton env).
 bun-steam = { version = "1.4.8", package = "steam-depot", path = "../steam-depot" }
 # `ay self-update` against the dist releases (blocking API, no async runtime in ay itself).

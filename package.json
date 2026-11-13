@@ -1,6 +1,6 @@
 {
   "name": "@aphrody/monorepo",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "description": "Aphrody Sovereign Monorepo Root - Linux/Git/Chromium/depot_tools/Bun-v1.4.4 Workspace Architecture",
   "workspaces": {
