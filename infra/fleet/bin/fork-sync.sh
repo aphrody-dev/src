@@ -11,7 +11,7 @@ if [ -z "$list" ]; then
   gh api repos/aphrody-labs/src/contents/third_party/forks.txt --jq .content | base64 -d > "$tmp/forks.txt"
   list="$tmp/forks.txt"
 fi
-grep -E '^(EpicGames|bevyengine|trumank|FabianFG|UE4SS-RE|legendary-gl|3ddelano)/' "$list" | cut -d' ' -f1 | sort -u > "$tmp/up"
+grep -E '^(EpicGames|bevyengine|trumank|FabianFG|UE4SS-RE|legendary-gl|3ddelano|storytold)/' "$list" | cut -d' ' -f1 | sort -u > "$tmp/up"
 ok=0
 fail=0
 while read -r up; do
