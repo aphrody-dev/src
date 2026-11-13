@@ -11,7 +11,8 @@
     "./components": "./src/components.ts",
     "./symbols.css": "./src/symbols.css",
     "./bun-plugin": "./src/bun-plugin.ts",
-    "./runtime": "./src/runtime.ts"
+    "./runtime": "./src/runtime.ts",
+    "./web": "./src/web.ts"
   },
   "scripts": {
     "build": "bun run src/build.ts",
