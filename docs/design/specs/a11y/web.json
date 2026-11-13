@@ -1,0 +1,466 @@
+{
+  "spec": "web.a11y",
+  "domain": "a11y",
+  "verified": "2026-11-13",
+  "sources": [
+    {
+      "url": "https://www.w3.org/TR/WCAG22/",
+      "license": "W3C Document License (référence normative, citée par numéro de critère, non recopiée)"
+    },
+    {
+      "url": "https://web.dev/learn/accessibility/structure",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/learn/accessibility/structure.md"
+    },
+    {
+      "url": "https://web.dev/learn/accessibility/aria-html",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/learn/accessibility/aria-html.md"
+    },
+    {
+      "url": "https://web.dev/learn/accessibility/focus",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/learn/accessibility/focus.md"
+    },
+    {
+      "url": "https://web.dev/learn/accessibility/javascript",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/learn/accessibility/javascript.md"
+    },
+    {
+      "url": "https://web.dev/learn/accessibility/color-contrast",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/learn/accessibility/color-contrast.md"
+    },
+    {
+      "url": "https://web.dev/learn/accessibility/typography",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/learn/accessibility/typography.md"
+    },
+    {
+      "url": "https://web.dev/learn/accessibility/forms",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/learn/accessibility/forms.md"
+    },
+    {
+      "url": "https://web.dev/learn/accessibility/images",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/learn/accessibility/images.md"
+    },
+    {
+      "url": "https://web.dev/learn/accessibility/video-audio",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/learn/accessibility/video-audio.md"
+    },
+    {
+      "url": "https://web.dev/learn/accessibility/motion",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/learn/accessibility/motion.md"
+    },
+    {
+      "url": "https://web.dev/learn/accessibility/design-ux",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/learn/accessibility/design-ux.md"
+    },
+    {
+      "url": "https://web.dev/learn/accessibility/test-automated",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/learn/accessibility/test-automated.md"
+    },
+    {
+      "url": "https://web.dev/learn/accessibility/test-manual",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/learn/accessibility/test-manual.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/scoring",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/accessibility/scoring.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/focus-traps",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/accessibility/focus-traps.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/logical-tab-order",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/accessibility/logical-tab-order.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/managed-focus",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/accessibility/managed-focus.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/use-landmarks",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/accessibility/use-landmarks.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/custom-controls-labels",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/accessibility/custom-controls-labels.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/visual-order-follows-dom",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/accessibility/visual-order-follows-dom.md"
+    }
+  ],
+  "rules": [
+    {
+      "id": "web.a11y.conformance-target",
+      "level": "MUST",
+      "rule": "Cible de conformité : WCAG 2.2 niveau AA (Recommandation W3C du 12 décembre 2024) ; les critères AAA cités ici sont des SHOULD.",
+      "value": {
+        "standard": "WCAG 2.2",
+        "level": "AA"
+      },
+      "source": "https://www.w3.org/TR/WCAG22/"
+    },
+    {
+      "id": "web.a11y.semantic-html-first",
+      "level": "MUST",
+      "rule": "Utiliser l'élément HTML natif qui porte déjà le rôle (button, a, nav, dialog…) ; ARIA seulement quand aucun élément natif ne convient, et jamais d'ARIA redondant sur un élément natif. WCAG 1.3.1, 4.1.2.",
+      "value": {
+        "wcag": [
+          "1.3.1",
+          "4.1.2"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/aria-html"
+    },
+    {
+      "id": "web.a11y.landmarks",
+      "level": "MUST",
+      "rule": "Structurer la page en régions (header, nav, main, aside, footer ; section seulement si nommée) et fournir un lien d'évitement vers le contenu principal. WCAG 1.3.1, 2.4.1.",
+      "value": {
+        "wcag": [
+          "1.3.1",
+          "2.4.1"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/structure"
+    },
+    {
+      "id": "web.a11y.headings",
+      "level": "MUST",
+      "rule": "Titres h1–h6 hiérarchiques sans saut de niveau, jamais simulés par du seul style ; titres et libellés descriptifs. WCAG 1.3.1, 2.4.6.",
+      "value": {
+        "wcag": [
+          "1.3.1",
+          "2.4.6"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/structure"
+    },
+    {
+      "id": "web.a11y.layout-tables",
+      "level": "MUST-NOT",
+      "rule": "Ne pas utiliser de tableau pour la mise en page ; si inévitable, le masquer sémantiquement avec role=\"presentation\". Tableaux de données avec en-têtes et légende.",
+      "source": "https://web.dev/learn/accessibility/structure"
+    },
+    {
+      "id": "web.a11y.page-title-lang",
+      "level": "MUST",
+      "rule": "Chaque vue (y compris chaque route de SPA) a un title unique et la page déclare lang. WCAG 2.4.2, 3.1.1.",
+      "value": {
+        "wcag": [
+          "2.4.2",
+          "3.1.1"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/javascript"
+    },
+    {
+      "id": "web.a11y.accessible-name",
+      "level": "MUST",
+      "rule": "Tout élément interactif a un nom accessible ; le libellé visible est contenu dans le nom accessible. WCAG 2.5.3, 4.1.2.",
+      "value": {
+        "wcag": [
+          "2.5.3",
+          "4.1.2"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/aria-html"
+    },
+    {
+      "id": "web.a11y.keyboard",
+      "level": "MUST",
+      "rule": "Toute fonctionnalité est utilisable au clavier ; un contrôle personnalisé reçoit tabindex=\"0\" et réagit à Entrée et Espace ; aucun piège clavier. WCAG 2.1.1, 2.1.2.",
+      "value": {
+        "wcag": [
+          "2.1.1",
+          "2.1.2"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/javascript"
+    },
+    {
+      "id": "web.a11y.no-positive-tabindex",
+      "level": "MUST-NOT",
+      "rule": "Aucun tabindex positif ; tabindex=\"-1\" seulement pour retirer de l'ordre de tabulation un élément qui recevra le focus par script.",
+      "source": "https://web.dev/learn/accessibility/focus"
+    },
+    {
+      "id": "web.a11y.no-hidden-focusable",
+      "level": "MUST-NOT",
+      "rule": "Ne pas masquer aux technologies d'assistance (aria-hidden) un élément focusable ni un parent de focusable.",
+      "source": "https://web.dev/learn/accessibility/aria-html"
+    },
+    {
+      "id": "web.a11y.focus-order",
+      "level": "MUST",
+      "rule": "L'ordre de focus suit l'ordre visuel et l'ordre du DOM. WCAG 2.4.3.",
+      "value": {
+        "wcag": [
+          "2.4.3"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/focus"
+    },
+    {
+      "id": "web.a11y.focus-visible",
+      "level": "MUST",
+      "rule": "Indicateur de focus toujours visible (jamais outline: none sans remplacement), contrasté contre le fond, et jamais entièrement masqué par un contenu fixe. WCAG 2.4.7, 2.4.11 ; 2.4.13 (AAA) en SHOULD.",
+      "value": {
+        "wcag": [
+          "2.4.7",
+          "2.4.11"
+        ],
+        "wcag_should": [
+          "2.4.13"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/focus"
+    },
+    {
+      "id": "web.a11y.focus-management",
+      "level": "MUST",
+      "rule": "Une modale confine le focus jusqu'à sa fermeture explicite puis le rend au déclencheur ; au changement de route, déplacer le focus vers le nouveau contenu ; un contenu ajouté dynamiquement reçoit le focus ou est annoncé.",
+      "source": "https://web.dev/learn/accessibility/javascript"
+    },
+    {
+      "id": "web.a11y.status-messages",
+      "level": "MUST",
+      "rule": "Les messages d'état (succès, erreurs, chargement) sont annoncés via une région live sans déplacer le focus. WCAG 4.1.3.",
+      "value": {
+        "wcag": [
+          "4.1.3"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/javascript"
+    },
+    {
+      "id": "web.a11y.contrast-text",
+      "level": "MUST",
+      "rule": "Contraste du texte normal, images de texte comprises, d'au moins 4,5:1. WCAG 1.4.3.",
+      "value": {
+        "ratio": 4.5,
+        "wcag": [
+          "1.4.3"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/color-contrast"
+    },
+    {
+      "id": "web.a11y.contrast-large-icons",
+      "level": "MUST",
+      "rule": "Contraste d'au moins 3:1 pour le grand texte (≥ 18 pt, ou ≥ 14 pt gras), les icônes essentielles et les composants d'interface ; logos et décor exemptés. WCAG 1.4.3, 1.4.11.",
+      "value": {
+        "ratio": 3,
+        "large_text_pt": 18,
+        "large_bold_text_pt": 14,
+        "wcag": [
+          "1.4.3",
+          "1.4.11"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/color-contrast"
+    },
+    {
+      "id": "web.a11y.color-not-only",
+      "level": "MUST",
+      "rule": "La couleur n'est jamais le seul vecteur d'information ; un lien dans du texte se distingue autrement que par sa couleur ou atteint 3:1 contre le texte voisin. WCAG 1.4.1.",
+      "value": {
+        "link_vs_text_ratio": 3,
+        "wcag": [
+          "1.4.1"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/test-manual"
+    },
+    {
+      "id": "web.a11y.user-preferences",
+      "level": "SHOULD",
+      "rule": "Respecter prefers-color-scheme et prefers-contrast, et laisser l'utilisateur choisir dans l'interface.",
+      "source": "https://web.dev/learn/accessibility/color-contrast"
+    },
+    {
+      "id": "web.a11y.text-resize-reflow",
+      "level": "MUST",
+      "rule": "Le texte reste lisible agrandi, la page se réorganise sans défilement bidirectionnel, l'espacement du texte peut être augmenté sans perte. WCAG 1.4.4, 1.4.10, 1.4.12.",
+      "value": {
+        "wcag": [
+          "1.4.4",
+          "1.4.10",
+          "1.4.12"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/typography"
+    },
+    {
+      "id": "web.a11y.target-size",
+      "level": "MUST",
+      "rule": "Cibles de pointeur d'au moins 24 × 24 px CSS (ou espacement équivalent). WCAG 2.5.8. Plus strict côté SEO mobile : l'audit Lighthouse tap-targets vise 48 × 48 px (voir seo.web).",
+      "value": {
+        "min_css_px": 24,
+        "wcag": [
+          "2.5.8"
+        ]
+      },
+      "source": "https://www.w3.org/TR/WCAG22/"
+    },
+    {
+      "id": "web.a11y.dragging",
+      "level": "MUST",
+      "rule": "Toute action par glisser a une alternative à pointeur simple. WCAG 2.5.7.",
+      "value": {
+        "wcag": [
+          "2.5.7"
+        ]
+      },
+      "source": "https://www.w3.org/TR/WCAG22/"
+    },
+    {
+      "id": "web.a11y.form-labels",
+      "level": "MUST",
+      "rule": "Chaque champ a un label visible en permanence (le placeholder n'en tient pas lieu), les consignes et formats sont donnés avant saisie, autocomplete est renseigné. WCAG 1.3.5, 3.3.2.",
+      "value": {
+        "wcag": [
+          "1.3.5",
+          "3.3.2"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/forms"
+    },
+    {
+      "id": "web.a11y.form-errors",
+      "level": "MUST",
+      "rule": "Le champ en erreur est identifié et l'erreur décrite en texte, avec suggestion de correction. WCAG 3.3.1, 3.3.3.",
+      "value": {
+        "wcag": [
+          "3.3.1",
+          "3.3.3"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/forms"
+    },
+    {
+      "id": "web.a11y.forms-wcag22",
+      "level": "MUST",
+      "rule": "Appliquer les critères WCAG 2.2 liés aux formulaires : aide cohérente (3.2.6), pas de ressaisie (3.3.7), authentification accessible sans test cognitif (3.3.8), taille de cible (2.5.8).",
+      "value": {
+        "wcag": [
+          "3.2.6",
+          "3.3.7",
+          "3.3.8",
+          "2.5.8"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/forms"
+    },
+    {
+      "id": "web.a11y.images-alt",
+      "level": "MUST",
+      "rule": "Image informative ou fonctionnelle : alternative textuelle décrivant le contenu ou l'action ; image décorative : alt vide ou masquée programmatiquement ; svg nommé par title/aria-label ou role=\"img\" ; image complexe : description longue liée. WCAG 1.1.1.",
+      "value": {
+        "wcag": [
+          "1.1.1"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/images"
+    },
+    {
+      "id": "web.a11y.media",
+      "level": "MUST",
+      "rule": "Vidéo préenregistrée : sous-titres et audiodescription ; audio : transcription ; tout son lancé automatiquement plus de 3 secondes peut être mis en pause ou baissé. WCAG 1.2.2, 1.2.5, 1.4.2.",
+      "value": {
+        "autoplay_audio_max_s": 3,
+        "wcag": [
+          "1.2.2",
+          "1.2.5",
+          "1.4.2"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/video-audio"
+    },
+    {
+      "id": "web.a11y.no-flashing",
+      "level": "MUST-NOT",
+      "rule": "Aucun contenu ne flashe plus de trois fois par seconde au-dessus des seuils de flash ; tester les mouvements extrêmes avec PEAT. WCAG 2.3.1.",
+      "value": {
+        "max_flashes_per_second": 3,
+        "wcag": [
+          "2.3.1"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/motion"
+    },
+    {
+      "id": "web.a11y.pause-motion",
+      "level": "MUST",
+      "rule": "Tout mouvement démarré automatiquement, durant plus de 5 secondes et présenté avec d'autres contenus, peut être mis en pause, arrêté ou masqué. WCAG 2.2.2.",
+      "value": {
+        "min_duration_s": 5,
+        "wcag": [
+          "2.2.2"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/motion"
+    },
+    {
+      "id": "web.a11y.reduced-motion",
+      "level": "MUST",
+      "rule": "Animations décoratives en amélioration progressive : activées seulement sous prefers-reduced-motion: no-preference, réduites sinon. WCAG 2.3.3 (AAA) appliqué comme règle maison.",
+      "value": {
+        "wcag_aaa": [
+          "2.3.3"
+        ]
+      },
+      "source": "https://web.dev/learn/accessibility/motion"
+    },
+    {
+      "id": "web.a11y.test-automated",
+      "level": "MUST",
+      "rule": "Exécuter axe-core et l'audit Accessibilité de Lighthouse en CI ; l'automatique ne couvre pas tous les critères et produit des faux positifs.",
+      "source": "https://web.dev/learn/accessibility/test-automated"
+    },
+    {
+      "id": "web.a11y.lighthouse-scoring",
+      "level": "MUST",
+      "rule": "Lire le score Lighthouse comme une moyenne pondérée d'audits axe binaires (poids 10 pour les erreurs ARIA et noms de boutons, 7 pour contraste, bypass, etc.) : un seul élément fautif annule l'audit ; viser 100 et zéro échec, sans en déduire la conformité WCAG.",
+      "value": {
+        "weights_observed": [
+          10,
+          7
+        ],
+        "pass_fail": true
+      },
+      "source": "https://developer.chrome.com/docs/lighthouse/accessibility/scoring"
+    },
+    {
+      "id": "web.a11y.test-manual",
+      "level": "MUST",
+      "rule": "Compléter par les audits manuels Lighthouse : pas de piège de focus, ordre de tabulation logique, focus dirigé vers le nouveau contenu, régions de repère, contrôles personnalisés nommés et rôlés, ordre visuel = ordre DOM ; puis tests clavier, visuels, contenu et lecteurs d'écran.",
+      "source": "https://developer.chrome.com/docs/lighthouse/accessibility/managed-focus"
+    },
+    {
+      "id": "web.a11y.inclusive-design",
+      "level": "SHOULD",
+      "rule": "Intégrer le handicap aux personas, annoter les maquettes (ordre de focus, repères, noms accessibles) et vérifier les heuristiques d'accessibilité avant implémentation.",
+      "source": "https://web.dev/learn/accessibility/design-ux"
+    }
+  ]
+}

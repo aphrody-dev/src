@@ -1,0 +1,86 @@
+# WebGPU, WebAssembly et Workers
+
+Spec `web.webgpu-wasm` · domaine `gpu-wasm` · sources lues le 2026-11-13 · JSON : [`webgpu-wasm.json`](./webgpu-wasm.json) (schéma `../spec.schema.json`).
+
+Règles pour le rendu GPU et le calcul natif dans le navigateur : disponibilité de WebGPU dans Chrome, adaptateur et device, limites et fonctionnalités, WGSL, perf ; WebAssembly (chargement streaming, cohortes de fonctionnalités, threads, mémoire, débogage) ; Workers et OffscreenCanvas. Cadre UI : docs/ui/STACK.md (rendu GPU natif via GPUI/wgpu, nt en D3D12) ; cette spec couvre la cible navigateur.
+
+Synthèse normative réécrite ; aucun passage recopié. Textes sources sous CC BY 4.0 (code Apache 2.0), © Google LLC et auteurs cités, sauf WCAG 2.2 (W3C Document License, cité par numéro).
+
+Niveaux : MUST, MUST-NOT, SHOULD, SHOULD-NOT, MAY au sens de la RFC 2119.
+
+## WebGPU
+
+| id | niveau | règle | valeur | source |
+|---|---|---|---|---|
+| `web.webgpu.availability` | MUST | Considérer WebGPU disponible par défaut dans Chrome : depuis 113 sur Windows (Direct3D 12), macOS et ChromeOS (Vulkan) ; Android 12+ (GPU Qualcomm et ARM) depuis 121 ; Linux à partir de 144 (Intel Gen12+, Vulkan pour WebGPU, OpenGL pour le reste de Chromium) puis 147-148 (NVIDIA récents sous Wayland), en déploiement progressif. Hors Chrome : Firefox 141 sur Windows, Safari 26. | `{"chrome":{"windows_d3d12":113,"macos":113,"chromeos_vulkan":113,"android_12_plus":121,"linux_intel_gen12":144,"linux_nvidia_wayland":"147-148"},"firefox_windows":141,"safari":26}` | [lien](https://developer.chrome.com/docs/web-platform/webgpu/news) |
+| `web.webgpu.feature-detect` | MUST | Détecter navigator.gpu puis traiter un adaptateur null (accélération désactivée, plateforme non prise en charge, liste de blocage, options sans correspondance, absence de GPU, crashs répétés du processus GPU) avec un repli fonctionnel (WebGL ou rendu DOM). |  | [lien](https://developer.chrome.com/docs/web-platform/webgpu/troubleshooting-tips) |
+| `web.webgpu.compat-mode` | SHOULD | Pour couvrir le matériel ancien, demander l'adaptateur avec featureLevel: "compatibility" (Chrome 146, OpenGL ES 3.1) et rester dans ses limites, sauf activation explicite de core-features-and-limits. | `{"chrome":146}` | [lien](https://developer.chrome.com/blog/new-in-webgpu-146) |
+| `web.webgpu.limits-explicit` | MUST | Ne jamais supposer les limites du matériel : requestDevice() renvoie par défaut des limites de plus petit dénominateur commun ; demander explicitement requiredLimits et requiredFeatures après lecture de adapter.limits et adapter.features, et prévoir un chemin sans la fonctionnalité. |  | [lien](https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu) |
+| `web.webgpu.windows-adapter` | MUST | Sous Windows, ne pas compter sur powerPreference : Chrome utilise l'adaptateur déjà alloué à ses autres charges (souvent l'iGPU sur portable) et ne gère pas plusieurs adaptateurs simultanés. |  | [lien](https://developer.chrome.com/docs/web-platform/webgpu/troubleshooting-tips) |
+| `web.webgpu.device-lost` | MUST | Prévoir la perte du device (crashs répétés du processus GPU) et la recréation complète adaptateur, device et ressources, selon les bonnes pratiques de perte de device référencées par Chrome. |  | [lien](https://developer.chrome.com/docs/web-platform/webgpu/troubleshooting-tips) |
+| `web.webgpu.async-errors` | MUST | Concevoir pour le modèle d’erreur entièrement asynchrone : une création peut sembler réussir et n’échouer qu’ensuite ; ne jamais attendre de réponse synchrone du processus GPU ; nommer chaque objet avec label pour des messages et outils exploitables. |  | [lien](https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu) |
+| `web.webgpu.pipelines` | SHOULD | Créer les pipelines immuables à l'avance et les réutiliser ; ne pas transposer littéralement des concepts WebGL (état global, attente synchrone). |  | [lien](https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu) |
+| `web.webgpu.canvas` | SHOULD | Gérer soi-même le canvas (multisample puis resolve pour l'anticrénelage) ; un seul GPUDevice peut servir plusieurs canvas, sans limite de nombre, contrairement à WebGL (16 canvas dans Chrome et Safari). | `{"webgl_canvas_limit_chrome_safari":16,"webgpu_canvas_limit":"aucune"}` | [lien](https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu) |
+| `web.webgpu.compute` | MAY | Déporter calculs lourds (mise en page massive, filtres, ML) en compute shaders, absents de WebGL. |  | [lien](https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu) |
+| `web.webgpu.wgsl-extensions` | SHOULD | N’utiliser une extension de langage WGSL récente (linear_indexing 147-148, buffer_view et swizzle_assignment 153-154, fragment_depth 155-156) qu’après test de navigator.gpu.wgslLanguageFeatures, avec directive requires en tête du shader et shader de repli. | `{"linear_indexing":"147-148","buffer_view":"153-154","swizzle_assignment":"153-154","fragment_depth":"155-156"}` | [lien](https://developer.chrome.com/docs/web-platform/webgpu/news) |
+| `web.webgpu.check-hw` | MUST | Avant tout diagnostic de lenteur, vérifier dans chrome://gpu « WebGPU: Hardware accelerated » ; un mode logiciel invalide les mesures. |  | [lien](https://developer.chrome.com/docs/web-platform/webgpu/troubleshooting-tips) |
+| `web.webgpu.native-dawn` | MAY | Partager le code de rendu natif et web via Dawn (C++, webgpu.h) compilé en WebAssembly avec Emscripten. |  | [lien](https://developer.chrome.com/docs/web-platform/webgpu/build-app) |
+| `web.webgpu.ui-a11y` | MUST | Une UI rendue au GPU garde un arbre DOM accessible (rôles, noms, focus) synchronisé, et respecte les specs a11y et perf : le canvas seul n'est pas accessible. Règle maison. | `{"see":["web.a11y","web.core-web-vitals"]}` | règle maison |
+
+## WebAssembly
+
+| id | niveau | règle | valeur | source |
+|---|---|---|---|---|
+| `web.wasm.streaming` | MUST | Charger les modules avec WebAssembly.compileStreaming ou instantiateStreaming sur la réponse fetch, servie en Content-Type: application/wasm. | `{"content_type":"application/wasm"}` | [lien](https://web.dev/articles/loading-wasm) |
+| `web.wasm.compile-once` | SHOULD | Exécuter le wasm lourd dans un Worker ; compiler le module une seule fois (compileStreaming) puis l'instancier dans le worker, sans course entre chargement et messages. |  | [lien](https://web.dev/articles/webassembly-performance-patterns-for-web-apps) |
+| `web.wasm.feature-cohorts` | MUST | Construire un binaire par cohorte de fonctionnalités (SIMD, threads, exceptions…) plus un binaire de base, et choisir à l'exécution avec wasm-feature-detect. |  | [lien](https://web.dev/articles/webassembly-feature-detection) |
+| `web.wasm.threads-coi` | MUST | Les threads wasm exigent SharedArrayBuffer donc l'isolation cross-origin : en-têtes Cross-Origin-Embedder-Policy: require-corp et Cross-Origin-Opener-Policy: same-origin ; fournir une variante sans threads. | `{"COEP":"require-corp","COOP":"same-origin"}` | [lien](https://web.dev/articles/webassembly-threads) |
+| `web.wasm.same-origin-modules` | MUST | Ne transmettre un WebAssembly.Module par postMessage qu’entre contextes de même origine (Chrome 95+) ; SharedArrayBuffer et WebAssembly.Memory ne passent plus non plus vers une page même site mais d’une autre origine (Chrome 92+). | `{"module_chrome":95,"sab_memory_chrome":92}` | [lien](https://developer.chrome.com/blog/wasm-module-sharing-restricted-to-same-origin) |
+| `web.wasm.memory-views` | MUST-NOT | Ne pas conserver une vue mémoire adossée au wasm au-delà d’un appel (memory.grow invalide l’ArrayBuffer et toutes ses vues) : copier côté JS ; ne pas exposer d’objets non gérés au JS ; pas d’état mutable global. |  | [lien](https://web.dev/articles/webassembly-memory-debugging) |
+| `web.wasm.sanitizers` | SHOULD | Exécuter les builds de développement sous sanitizers ; préférer un langage sûr ou des enveloppes typées aux pointeurs bruts. |  | [lien](https://web.dev/articles/webassembly-memory-debugging) |
+| `web.wasm.debug-dwarf` | SHOULD | Déboguer avec DWARF 5 séparé (-g -gsplit-dwarf -gdwarf-5, fichiers .dwo) et retirer la section name pour réduire build et chargement du débogueur. |  | [lien](https://developer.chrome.com/blog/faster-wasm-debugging) |
+| `web.wasm.gc` | MAY | Pour les langages à ramasse-miettes (Kotlin, Dart), cibler WasmGC : Chrome 119, Firefox 120, Safari 18.2. | `{"chrome":119,"firefox":120,"safari":"18.2"}` | [lien](https://developer.chrome.com/blog/wasmgc) |
+
+## Workers et OffscreenCanvas
+
+| id | niveau | règle | valeur | source |
+|---|---|---|---|---|
+| `web.workers.offscreen-canvas` | SHOULD | Déplacer le rendu canvas/WebGPU dans un Worker via OffscreenCanvas transféré (second argument de postMessage) et cadencer avec requestAnimationFrame du worker, pas commit(). | `{"support":{"chrome":69,"firefox":105,"safari":"16.4"}}` | [lien](https://web.dev/articles/offscreen-canvas) |
+| `web.workers.module` | SHOULD | Utiliser des module workers (new Worker(url, { type: "module" })) et les précharger avec modulepreload. |  | [lien](https://web.dev/articles/module-workers) |
+| `web.workers.main-thread-budget` | MUST | Le thread principal ne garde que l'entrée et la présentation : aucune tâche de plus de 50 ms ; le reste (wasm, décodage, préparation GPU) en worker ou découpé avec scheduler.yield. | `{"long_task_ms":50}` | [lien](https://web.dev/articles/optimize-long-tasks) |
+
+## Conflits et réserves relevés
+
+- webgpu/overview (mise à jour le 2025-08-11) dit encore « Linux bientôt » ; webgpu/news et new-in-webgpu-144 annoncent Linux depuis Chrome 144 (Intel Gen12+), étendu en 147-148 (NVIDIA, Wayland). On retient news.
+- blog/webgpu-release (Chrome 113 « en bêta ») est historique ; la disponibilité stable vient de overview et news.
+- web.dev/articles/webassembly-feature-detection (non daté) range Safari sans SIMD ni exceptions et Firefox sans exceptions : état probablement périmé, non repris comme règle ; la détection à l'exécution (wasm-feature-detect) est la seule règle.
+- web.dev/articles/webassembly-threads dit SharedArrayBuffer et atomics « pas encore partout » : idem, on impose la variante sans threads plutôt qu'une matrice de support.
+- next-for-webgpu (2024-11-21) annonce la marche vers la Candidate Recommendation W3C ; aucun statut plus récent lu dans cette session.
+
+## Sources
+
+- <https://developer.chrome.com/docs/web-platform/webgpu/overview> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://developer.chrome.com/docs/web-platform/webgpu/news> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://developer.chrome.com/blog/webgpu-release> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://developer.chrome.com/blog/new-in-webgpu-121> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://developer.chrome.com/blog/new-in-webgpu-144> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://developer.chrome.com/blog/new-in-webgpu-146> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://developer.chrome.com/blog/new-in-webgpu-147-148> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://developer.chrome.com/blog/new-in-webgpu-153-154> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://developer.chrome.com/blog/new-in-webgpu-155-156> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://developer.chrome.com/blog/next-for-webgpu> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://developer.chrome.com/docs/web-platform/webgpu/troubleshooting-tips> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://developer.chrome.com/docs/web-platform/webgpu/build-app> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://developer.chrome.com/docs/web-platform/webgpu/developer-features> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://web.dev/articles/webassembly-feature-detection> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://web.dev/articles/loading-wasm> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://web.dev/articles/webassembly-threads> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://web.dev/articles/webassembly-performance-patterns-for-web-apps> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://web.dev/articles/webassembly-memory-debugging> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://developer.chrome.com/blog/faster-wasm-debugging> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://developer.chrome.com/blog/wasm-module-sharing-restricted-to-same-origin> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://developer.chrome.com/blog/wasmgc> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://web.dev/articles/offscreen-canvas> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://web.dev/articles/module-workers> — CC-BY-4.0 (texte), Apache-2.0 (code)
+- <https://web.dev/articles/optimize-long-tasks> — CC-BY-4.0 (texte), Apache-2.0 (code)

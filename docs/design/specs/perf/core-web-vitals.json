@@ -1,0 +1,449 @@
+{
+  "spec": "web.core-web-vitals",
+  "domain": "perf",
+  "verified": "2026-11-13",
+  "sources": [
+    {
+      "url": "https://web.dev/articles/vitals",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/vitals.md"
+    },
+    {
+      "url": "https://web.dev/articles/defining-core-web-vitals-thresholds",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/defining-core-web-vitals-thresholds.md"
+    },
+    {
+      "url": "https://web.dev/articles/lcp",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/lcp.md"
+    },
+    {
+      "url": "https://web.dev/articles/inp",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/inp.md"
+    },
+    {
+      "url": "https://web.dev/articles/cls",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/cls.md"
+    },
+    {
+      "url": "https://web.dev/articles/fcp",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/fcp.md"
+    },
+    {
+      "url": "https://web.dev/articles/ttfb",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/ttfb.md"
+    },
+    {
+      "url": "https://web.dev/articles/optimize-lcp",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/optimize-lcp.md"
+    },
+    {
+      "url": "https://web.dev/articles/optimize-inp",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/optimize-inp.md"
+    },
+    {
+      "url": "https://web.dev/articles/optimize-cls",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/optimize-cls.md"
+    },
+    {
+      "url": "https://web.dev/articles/optimize-ttfb",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/optimize-ttfb.md"
+    },
+    {
+      "url": "https://web.dev/articles/optimize-long-tasks",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/optimize-long-tasks.md"
+    },
+    {
+      "url": "https://web.dev/articles/fetch-priority",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/fetch-priority.md"
+    },
+    {
+      "url": "https://web.dev/articles/lcp-lazy-loading",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/lcp-lazy-loading.md"
+    },
+    {
+      "url": "https://web.dev/articles/browser-level-image-lazy-loading",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/browser-level-image-lazy-loading.md"
+    },
+    {
+      "url": "https://web.dev/learn/performance/optimize-web-fonts",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/learn/performance/optimize-web-fonts.md"
+    },
+    {
+      "url": "https://web.dev/articles/bfcache",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/bfcache.md"
+    },
+    {
+      "url": "https://web.dev/articles/content-visibility",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/content-visibility.md"
+    },
+    {
+      "url": "https://web.dev/articles/crux-and-rum-differences",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/crux-and-rum-differences.md"
+    },
+    {
+      "url": "https://web.dev/articles/vitals-field-measurement-best-practices",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/vitals-field-measurement-best-practices.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/long-animation-frames",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/web-platform/long-animation-frames.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/prerender-pages",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/web-platform/prerender-pages.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/bfcache-notrestoredreasons",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/web-platform/bfcache-notrestoredreasons.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/methodology/metrics",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/crux/methodology/metrics.md"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/lighthouse-13-0",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)"
+    }
+  ],
+  "rules": [
+    {
+      "id": "web.cwv.p75",
+      "level": "MUST",
+      "rule": "Évaluer chaque métrique au 75e centile des chargements de page mesurés sur le terrain, séparément pour mobile et desktop.",
+      "value": {
+        "percentile": 75,
+        "segments": [
+          "mobile",
+          "desktop"
+        ]
+      },
+      "source": "https://web.dev/articles/vitals"
+    },
+    {
+      "id": "web.cwv.pass-all-three",
+      "level": "MUST",
+      "rule": "Une page n'est conforme que si LCP, INP et CLS sont tous trois dans la zone « bonne » au p75 ; la page est « mauvaise » pour une métrique dès que 25 % des vues franchissent le seuil mauvais.",
+      "value": {
+        "poor_share_trigger": 0.25
+      },
+      "source": "https://web.dev/articles/defining-core-web-vitals-thresholds"
+    },
+    {
+      "id": "web.cwv.lcp-threshold",
+      "level": "MUST",
+      "rule": "LCP au p75 inférieur ou égal à 2500 ms ; au-delà de 4000 ms la page est mauvaise.",
+      "value": {
+        "good_ms": 2500,
+        "poor_above_ms": 4000
+      },
+      "source": "https://web.dev/articles/defining-core-web-vitals-thresholds"
+    },
+    {
+      "id": "web.cwv.inp-threshold",
+      "level": "MUST",
+      "rule": "INP au p75 inférieur ou égal à 200 ms ; entre 200 et 500 ms à améliorer ; au-delà de 500 ms mauvais.",
+      "value": {
+        "good_ms": 200,
+        "poor_above_ms": 500
+      },
+      "source": "https://web.dev/articles/inp"
+    },
+    {
+      "id": "web.cwv.cls-threshold",
+      "level": "MUST",
+      "rule": "CLS au p75 inférieur ou égal à 0,1 ; au-delà de 0,25 mauvais.",
+      "value": {
+        "good": 0.1,
+        "poor_above": 0.25
+      },
+      "source": "https://web.dev/articles/defining-core-web-vitals-thresholds"
+    },
+    {
+      "id": "web.cwv.fcp-threshold",
+      "level": "SHOULD",
+      "rule": "FCP au p75 inférieur ou égal à 1800 ms ; au-delà de 3000 ms mauvais. Métrique de diagnostic, hors Core Web Vitals.",
+      "value": {
+        "good_ms": 1800,
+        "poor_above_ms": 3000
+      },
+      "source": "https://web.dev/articles/fcp"
+    },
+    {
+      "id": "web.cwv.ttfb-threshold",
+      "level": "SHOULD",
+      "rule": "TTFB au p75 inférieur ou égal à 800 ms ; au-delà de 1800 ms mauvais. Diagnostic : l'objectif réel est de laisser FCP et LCP dans le vert.",
+      "value": {
+        "good_ms": 800,
+        "poor_above_ms": 1800
+      },
+      "source": "https://web.dev/articles/ttfb"
+    },
+    {
+      "id": "web.cwv.no-fid",
+      "level": "MUST-NOT",
+      "rule": "Ne plus viser ni rapporter FID comme métrique de réactivité : INP l'a remplacé parmi les métriques stables.",
+      "source": "https://web.dev/articles/vitals"
+    },
+    {
+      "id": "web.cwv.inp-computation",
+      "level": "SHOULD",
+      "rule": "Calculer INP avec la bibliothèque web-vitals plutôt qu'à la main ; l'algorithme écarte la pire interaction par tranche de 50 et l'API Event Timing ne remonte par défaut que les événements de plus de 104 ms (minimum réglable 16 ms).",
+      "value": {
+        "ignore_one_per_interactions": 50,
+        "event_timing_default_threshold_ms": 104,
+        "event_timing_min_threshold_ms": 16
+      },
+      "source": "https://web.dev/articles/inp"
+    },
+    {
+      "id": "web.cwv.cls-session-window",
+      "level": "MUST",
+      "rule": "Interpréter CLS comme la pire rafale de décalages : écarts de moins de 1 s, fenêtre de 5 s au plus ; les décalages survenant dans les 500 ms suivant une saisie utilisateur sont exclus.",
+      "value": {
+        "gap_ms": 1000,
+        "window_max_ms": 5000,
+        "recent_input_ms": 500
+      },
+      "source": "https://web.dev/articles/cls"
+    },
+    {
+      "id": "web.cwv.lcp-breakdown",
+      "level": "SHOULD",
+      "rule": "Répartir le LCP en quatre sous-parties et viser environ 40 % TTFB, moins de 10 % de délai avant chargement, environ 40 % de chargement de la ressource, moins de 10 % de délai de rendu ; ce sont des repères, pas des seuils.",
+      "value": {
+        "ttfb_pct": 40,
+        "resource_load_delay_pct_max": 10,
+        "resource_load_duration_pct": 40,
+        "element_render_delay_pct_max": 10
+      },
+      "source": "https://web.dev/articles/optimize-lcp"
+    },
+    {
+      "id": "web.cwv.lcp-discoverable",
+      "level": "MUST",
+      "rule": "La ressource LCP doit être découvrable dans le HTML initial (img/srcset ou preload) et commencer à charger dès que possible, sans dépendre d'un script.",
+      "source": "https://web.dev/articles/optimize-lcp"
+    },
+    {
+      "id": "web.cwv.lcp-fetchpriority",
+      "level": "SHOULD",
+      "rule": "Marquer l'image LCP avec fetchpriority=\"high\" ; abaisser au besoin la priorité des scripts de fin de body.",
+      "source": "https://web.dev/articles/fetch-priority"
+    },
+    {
+      "id": "web.cwv.lcp-not-lazy",
+      "level": "MUST-NOT",
+      "rule": "Ne pas appliquer loading=\"lazy\" à l'image LCP ni aux images du premier écran ; le lazy-loading natif reste recommandé pour le reste.",
+      "source": "https://web.dev/articles/lcp-lazy-loading"
+    },
+    {
+      "id": "web.cwv.lcp-same-origin",
+      "level": "SHOULD",
+      "rule": "Servir la ressource LCP depuis l'origine du document ; sinon preconnect vers l'origine tierce (CDN d'images compris).",
+      "source": "https://web.dev/articles/optimize-lcp"
+    },
+    {
+      "id": "web.cwv.preload-order",
+      "level": "SHOULD",
+      "rule": "Ordonner les preloads : un preload en en-tête HTTP passe avant tout ; preloads de polices en fin de head ; preloads d'images (priorité basse ou moyenne par défaut) placés par rapport aux scripts async.",
+      "source": "https://web.dev/articles/fetch-priority"
+    },
+    {
+      "id": "web.cwv.ttfb-remedies",
+      "level": "SHOULD",
+      "rule": "Réduire TTFB : hébergement adapté, CDN, contenu mis en cache, aucune chaîne de redirections, HTML streamé, service worker, 103 Early Hints pour les ressources critiques ; instrumenter avec Server-Timing.",
+      "source": "https://web.dev/articles/optimize-ttfb"
+    },
+    {
+      "id": "web.cwv.img-dimensions",
+      "level": "MUST",
+      "rule": "Donner width et height (ou aspect-ratio) à chaque image et vidéo pour réserver la place avant chargement.",
+      "source": "https://web.dev/articles/optimize-cls"
+    },
+    {
+      "id": "web.cwv.reserve-late-content",
+      "level": "MUST",
+      "rule": "Réserver l'espace des publicités, embeds et contenus tardifs ; charger le contenu nouveau sur action explicite (« Charger plus ») ; si le contenu met plus de 500 ms, réserver la place dans ce délai.",
+      "value": {
+        "reserve_within_ms": 500
+      },
+      "source": "https://web.dev/articles/optimize-cls"
+    },
+    {
+      "id": "web.cwv.composited-animations",
+      "level": "MUST-NOT",
+      "rule": "Ne pas animer top, left ni les propriétés qui relancent la mise en page ; animer transform/translate, qui ne compte pas dans CLS.",
+      "source": "https://web.dev/articles/optimize-cls"
+    },
+    {
+      "id": "web.cwv.font-format",
+      "level": "MUST",
+      "rule": "Polices en WOFF2 uniquement, auto-hébergées et sous-ensemblées ; ne jamais incorporer le fichier de police en base64 dans le CSS.",
+      "source": "https://web.dev/learn/performance/optimize-web-fonts"
+    },
+    {
+      "id": "web.cwv.font-display",
+      "level": "SHOULD",
+      "rule": "Utiliser font-display: optional (police utilisée seulement si elle arrive en 100 ms) pour supprimer le décalage, ou swap avec une pile de repli explicite et size-adjust/ascent-override/descent-override/line-gap-override ; précharger les polices critiques.",
+      "value": {
+        "optional_block_ms": 100
+      },
+      "source": "https://web.dev/articles/optimize-cls"
+    },
+    {
+      "id": "web.cwv.long-task",
+      "level": "MUST",
+      "rule": "Aucune tâche du thread principal ne doit dépasser 50 ms ; au-delà, la portion excédentaire est du temps bloquant.",
+      "value": {
+        "long_task_ms": 50
+      },
+      "source": "https://web.dev/articles/optimize-long-tasks"
+    },
+    {
+      "id": "web.cwv.yield",
+      "level": "SHOULD",
+      "rule": "Céder la main avec await scheduler.yield() (continuation prioritaire), avec repli setTimeout(0) détecté par globalThis.scheduler?.yield ; dans les boucles, céder environ toutes les 50 ms plutôt qu'à chaque itération.",
+      "value": {
+        "yield_deadline_ms": 50,
+        "support": {
+          "chrome": 129,
+          "firefox": 142,
+          "safari": "non"
+        }
+      },
+      "source": "https://web.dev/articles/optimize-long-tasks"
+    },
+    {
+      "id": "web.cwv.no-isinputpending",
+      "level": "MUST-NOT",
+      "rule": "Ne pas utiliser navigator.scheduling.isInputPending() pour décider quand céder.",
+      "source": "https://web.dev/articles/optimize-long-tasks"
+    },
+    {
+      "id": "web.cwv.inp-phases",
+      "level": "SHOULD",
+      "rule": "Traiter les trois phases d'une interaction : délai d'entrée (pas de tâche longue concurrente), callbacks d'événement (travail critique d'abord, le reste différé), délai de présentation (DOM réduit, rendu minimal) ; chaque iframe a son propre thread principal.",
+      "source": "https://web.dev/articles/optimize-inp"
+    },
+    {
+      "id": "web.cwv.loaf",
+      "level": "SHOULD",
+      "rule": "En RUM, attribuer les interactions lentes avec les entrées long-animation-frame (Chrome 123+, détection de fonctionnalité obligatoire) ; blockingDuration somme les tâches de plus de 50 ms, l'attribution par script couvre les scripts de plus de 5 ms.",
+      "value": {
+        "chrome": 123,
+        "blocking_task_ms": 50,
+        "script_attribution_min_ms": 5
+      },
+      "source": "https://developer.chrome.com/docs/web-platform/long-animation-frames"
+    },
+    {
+      "id": "web.cwv.content-visibility",
+      "level": "SHOULD",
+      "rule": "Appliquer content-visibility: auto avec contain-intrinsic-size aux sections hors écran longues ; ne pas appeler d'API DOM qui force le rendu de ces sections ; bénéfice direct sur INP au démarrage.",
+      "value": {
+        "support": {
+          "chrome": 85,
+          "firefox": 125,
+          "safari": 18
+        }
+      },
+      "source": "https://web.dev/articles/content-visibility"
+    },
+    {
+      "id": "web.cwv.bfcache-no-unload",
+      "level": "MUST-NOT",
+      "rule": "Ne jamais enregistrer d'écouteur unload ; utiliser pagehide/visibilitychange.",
+      "source": "https://web.dev/articles/bfcache"
+    },
+    {
+      "id": "web.cwv.bfcache-no-store",
+      "level": "SHOULD-NOT",
+      "rule": "Éviter Cache-Control: no-store sur le document principal hors pages réellement sensibles ; fermer les connexions ouvertes au pagehide, éviter window.opener, rafraîchir les données périmées au pageshow persisté.",
+      "source": "https://web.dev/articles/bfcache"
+    },
+    {
+      "id": "web.cwv.bfcache-measure",
+      "level": "SHOULD",
+      "rule": "Mesurer le taux de restauration bfcache et diagnostiquer les refus avec PerformanceNavigationTiming.notRestoredReasons (Chrome 123+), sans dépendre du texte des raisons ; compter chaque restauration comme une visite distincte (LCP = delta pageshow → frame suivante, INP remis à 0).",
+      "value": {
+        "notrestoredreasons_chrome": 123
+      },
+      "source": "https://developer.chrome.com/docs/web-platform/bfcache-notrestoredreasons"
+    },
+    {
+      "id": "web.cwv.speculation-rules",
+      "level": "SHOULD",
+      "rule": "Précharger ou prérendre les navigations probables via des règles de spéculation document avec eagerness moderate (survol 200 ms desktop ou pointerdown) ; réserver immediate aux listes courtes ; tenir compte du coût réseau, mémoire et CPU.",
+      "value": {
+        "moderate_hover_ms": 200,
+        "eager_hover_ms_desktop": 10
+      },
+      "source": "https://developer.chrome.com/docs/web-platform/prerender-pages"
+    },
+    {
+      "id": "web.cwv.speculation-limits",
+      "level": "MUST",
+      "rule": "Respecter les plafonds Chrome : immediate 50 prefetch / 10 prerender ; eager et moderate 2/2 sur desktop, 6/2 sur mobile ; conservative 2/2 (FIFO). Chrome n'exécute aucune spéculation avec Save-Data, économiseur d'énergie sur batterie faible, contrainte mémoire, réglage désactivé ou onglet en arrière-plan.",
+      "value": {
+        "immediate": {
+          "prefetch": 50,
+          "prerender": 10
+        },
+        "eager_moderate_desktop": {
+          "prefetch": 2,
+          "prerender": 2
+        },
+        "eager_moderate_mobile": {
+          "prefetch": 6,
+          "prerender": 2
+        },
+        "conservative": {
+          "prefetch": 2,
+          "prerender": 2
+        }
+      },
+      "source": "https://developer.chrome.com/docs/web-platform/prerender-pages"
+    },
+    {
+      "id": "web.cwv.crux-plus-rum",
+      "level": "SHOULD",
+      "rule": "Compléter CrUX (Chrome seul, utilisateurs consentants, sans iOS) par une mesure RUM propre ; ne pas s'attendre à des chiffres identiques.",
+      "source": "https://web.dev/articles/crux-and-rum-differences"
+    },
+    {
+      "id": "web.cwv.rum-hygiene",
+      "level": "MUST",
+      "rule": "La mesure RUM rapporte des distributions (jamais des moyennes), envoie au bon moment, ne crée aucune tâche longue et utilise des API non bloquantes ; versionner les changements pour corréler.",
+      "source": "https://web.dev/articles/vitals-field-measurement-best-practices"
+    },
+    {
+      "id": "web.cwv.lab-insights",
+      "level": "SHOULD",
+      "rule": "En labo, lire les insights Lighthouse 13 / DevTools (lcp-discovery-insight, lcp-phases-insight, interaction-to-next-paint-insight, cls-culprits-insight, document-latency-insight, render-blocking-insight, image-delivery-insight, font-display-insight) ; le labo ne remplace pas le p75 terrain.",
+      "source": "https://developer.chrome.com/blog/lighthouse-13-0"
+    }
+  ]
+}

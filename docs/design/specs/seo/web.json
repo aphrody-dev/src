@@ -1,0 +1,187 @@
+{
+  "spec": "web.seo",
+  "domain": "seo",
+  "verified": "2026-11-13",
+  "sources": [
+    {
+      "url": "https://web.dev/articles/pass-lighthouse-seo-audit",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/articles/pass-lighthouse-seo-audit.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/meta-description",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/seo/meta-description.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/canonical",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/seo/canonical.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/is-crawlable",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/seo/is-crawlable.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/invalid-robots-txt",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/seo/invalid-robots-txt.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/http-status-code",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/seo/http-status-code.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/hreflang",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/seo/hreflang.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/link-text",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/seo/link-text.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/structured-data",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/seo/structured-data.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/plugins",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/seo/plugins.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/tap-targets",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/seo/tap-targets.md"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/font-size",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/developer.chrome.com/docs/lighthouse/seo/font-size.md"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/lighthouse-13-0",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)"
+    },
+    {
+      "url": "https://web.dev/learn/accessibility/javascript",
+      "license": "CC-BY-4.0 (texte), Apache-2.0 (code)",
+      "mirror": "third_party/design-mirror/web.dev/learn/accessibility/javascript.md"
+    }
+  ],
+  "rules": [
+    {
+      "id": "web.seo.lighthouse-gate",
+      "level": "MUST",
+      "rule": "Chaque page publique passe la catégorie SEO de Lighthouse en CI sans échec ; tous les audits automatiques pèsent le même poids, l'audit données structurées est manuel et hors score.",
+      "source": "https://developer.chrome.com/docs/lighthouse/seo/hreflang"
+    },
+    {
+      "id": "web.seo.http-status",
+      "level": "MUST",
+      "rule": "Les pages à indexer répondent en 2xx ; pages d'erreur et 404 servies avec leur vrai code 4xx/5xx et exclues de l'index.",
+      "source": "https://developer.chrome.com/docs/lighthouse/seo/http-status-code"
+    },
+    {
+      "id": "web.seo.title",
+      "level": "MUST",
+      "rule": "Un title unique et descriptif par page et par route de SPA.",
+      "source": "https://web.dev/learn/accessibility/javascript"
+    },
+    {
+      "id": "web.seo.meta-description",
+      "level": "MUST",
+      "rule": "Un <meta name=\"description\"> non vide, unique et propre à la page dans le head ; Lighthouse ne vérifie que la présence, la qualité reste à notre charge.",
+      "source": "https://developer.chrome.com/docs/lighthouse/seo/meta-description"
+    },
+    {
+      "id": "web.seo.canonical",
+      "level": "MUST",
+      "rule": "Au plus un lien canonical, URL absolue valide, même domaine, même langue et région, et pas la racine du site pour une page profonde.",
+      "value": {
+        "max_canonical_links": 1
+      },
+      "source": "https://developer.chrome.com/docs/lighthouse/seo/canonical"
+    },
+    {
+      "id": "web.seo.indexable",
+      "level": "MUST",
+      "rule": "Aucun noindex (meta robots ou en-tête X-Robots-Tag) sur une page destinée à l'index ; noindex seulement pour les contenus volontairement exclus.",
+      "source": "https://developer.chrome.com/docs/lighthouse/seo/is-crawlable"
+    },
+    {
+      "id": "web.seo.robots-txt",
+      "level": "MUST",
+      "rule": "robots.txt valide (user-agent déclaré, motifs vides ou commençant par / ou *, directives connues), servi sans 5xx, inférieur à 500 KiB ; il s'applique à tout l'hôte.",
+      "value": {
+        "max_kib": 500
+      },
+      "source": "https://developer.chrome.com/docs/lighthouse/seo/invalid-robots-txt"
+    },
+    {
+      "id": "web.seo.sitemap",
+      "level": "MUST",
+      "rule": "Publier un sitemap et le déclarer dans robots.txt par une URL absolue.",
+      "source": "https://developer.chrome.com/docs/lighthouse/seo/invalid-robots-txt"
+    },
+    {
+      "id": "web.seo.hreflang",
+      "level": "MUST",
+      "rule": "Pour chaque variante linguistique, déclarer toutes les versions via link rel=alternate hreflang (head, en-tête HTTP ou sitemap) avec des codes de langue valides, URL absolues, et x-default pour le sélecteur de langue ; Lighthouse ne contrôle ni les régions ni le sitemap.",
+      "source": "https://developer.chrome.com/docs/lighthouse/seo/hreflang"
+    },
+    {
+      "id": "web.seo.link-text",
+      "level": "MUST",
+      "rule": "Texte de lien descriptif de la cible ; Lighthouse refuse les libellés génériques (click here, click this, go, here, this, start, right here, more, learn more) et leurs équivalents français sont proscrits chez nous.",
+      "source": "https://developer.chrome.com/docs/lighthouse/seo/link-text"
+    },
+    {
+      "id": "web.seo.crawlable-links",
+      "level": "MUST",
+      "rule": "Règle maison, sans page source : la page d’audit Lighthouse crawlable-anchors répond 404 sur developer.chrome.com le 2026-11-13. La navigation passe par de vrais éléments <a href> vers des URL résolubles, jamais par du JavaScript seul sur des éléments non liens."
+    },
+    {
+      "id": "web.seo.structured-data",
+      "level": "SHOULD",
+      "rule": "Baliser le type de contenu (article, produit, FAQ…) en données structurées selon la référence du moteur, sur chaque page concernée, puis valider ; audit manuel.",
+      "source": "https://developer.chrome.com/docs/lighthouse/seo/structured-data"
+    },
+    {
+      "id": "web.seo.no-plugins",
+      "level": "MUST-NOT",
+      "rule": "Pas de contenu dépendant de plugins (embed, object, applet avec types Java, Flash…) : il n'est pas indexé.",
+      "source": "https://developer.chrome.com/docs/lighthouse/seo/plugins"
+    },
+    {
+      "id": "web.seo.tap-targets",
+      "level": "SHOULD",
+      "rule": "Cibles tactiles d'au moins 48 × 48 px sans chevauchement de plus de 25 % dans un rayon de 48 px ; le minimum normatif d'accessibilité reste 24 px (web.a11y.target-size).",
+      "value": {
+        "min_px": 48,
+        "max_overlap": 0.25
+      },
+      "source": "https://developer.chrome.com/docs/lighthouse/seo/tap-targets"
+    },
+    {
+      "id": "web.seo.font-size-legibility",
+      "level": "SHOULD",
+      "rule": "Garder le texte de lecture à 12 px ou plus sur mobile pour la lisibilité ; l'audit font-size a été retiré de Lighthouse 13, ce n'est plus un signal SEO.",
+      "value": {
+        "min_px": 12,
+        "lighthouse": "retiré en v13"
+      },
+      "source": "https://developer.chrome.com/blog/lighthouse-13-0"
+    },
+    {
+      "id": "web.seo.beyond-lighthouse",
+      "level": "SHOULD",
+      "rule": "Lighthouse ne couvre pas tout le référencement : vérifier aussi les consignes de chaque moteur visé (Google Search, Bing, Yandex) et tenir les Core Web Vitals de perf.core-web-vitals.",
+      "source": "https://web.dev/articles/pass-lighthouse-seo-audit"
+    }
+  ]
+}
