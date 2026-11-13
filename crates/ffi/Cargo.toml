@@ -4,7 +4,7 @@ name = "aphrody-ffi"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "Stable C ABI over the depot and corelib web libraries (aphrody_ffi shared library)"
+description = "Stable C ABI over the depot library and the corelib Boq parser (aphrody_ffi shared library)"
 
 [lib]
 name = "aphrody_ffi"

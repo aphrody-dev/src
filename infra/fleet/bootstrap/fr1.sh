@@ -23,7 +23,17 @@ has_version "$(lock_get just version)" just --version || install_archive_bin jus
 has_version "$(lock_get cargo-zigbuild version)" cargo-zigbuild --version || install_archive_bin cargo-zigbuild cargo-zigbuild
 has_version "$(lock_get cargo-nextest version)" cargo-nextest nextest --version || install_archive_bin cargo-nextest cargo-nextest
 has_version "$(lock_get b3sum version)" b3sum --version || install_archive_bin b3sum b3sum_linux_x64_bin b3sum
-has_version "$(lock_get protoc version)" protoc --version || install_archive_bin protoc protoc
+# protoc + its well-known types (google/protobuf/*.proto) from the same release zip: protoc resolves
+# <exe>/../include, so /usr/local/bin/protoc reads /usr/local/include (without it, imports of
+# google/protobuf/timestamp.proto failed on fr1, 2026-11-13).
+if ! has_version "$(lock_get protoc version)" protoc --version || [ ! -f /usr/local/include/google/protobuf/timestamp.proto ]; then
+  tmp=$(mktemp -d); fetch protoc "$tmp/p.zip"
+  python3 -c 'import sys,zipfile; zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])' "$tmp/p.zip" "$tmp/x"
+  $SUDO install -m 0755 "$tmp/x/bin/protoc" "$BIN/protoc"
+  $SUDO rm -rf /usr/local/include/google/protobuf; $SUDO install -d /usr/local/include/google
+  $SUDO cp -r "$tmp/x/include/google/protobuf" /usr/local/include/google/; $SUDO chmod -R a+rX /usr/local/include/google
+  rm -rf "$tmp"; log "protoc -> $BIN/protoc + /usr/local/include/google/protobuf"
+fi
 has_version "$(lock_get cbindgen version)" cbindgen --version || RUSTC_WRAPPER= CARGO_BUILD_JOBS=2 nice -n 19 ionice -c3 cargo install --locked cbindgen --version "$(lock_get cbindgen version)" >/dev/null
 bun_pinned
 go_pinned

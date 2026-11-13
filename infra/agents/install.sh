@@ -31,13 +31,30 @@ install -m 0755 "$SRC/infra/agents/pre-push" "$SRC/.git/hooks/pre-push"
 
 # 2. Agent CLIs (upstream packages, global bun installs). Claude Code uses its own native installer.
 claude --version >/dev/null 2>&1 || curl -fsSL https://claude.ai/install.sh | bash
-for spec in codex:@openai/codex opencode:opencode-ai pi:@earendil-works/pi-coding-agent; do
+for spec in codex:@openai/codex gemini:@google/gemini-cli opencode:opencode-ai pi:@earendil-works/pi-coding-agent; do
   bin=${spec%%:*}; pkg=${spec#*:}
   # Check the bun global bin itself: a same-named wrapper elsewhere on PATH does not count.
   if [ ! -x "$HOME/.bun/bin/$bin" ] || [ "${AGENTS_UPDATE:-0}" = 1 ]; then bun add -g "$pkg@latest" >/dev/null 2>&1; fi
 done
 # npm CLIs with a `#!/usr/bin/env node` shebang run on bun's node mode when node is absent.
 need node || ln -sf "$(command -v bun)" "$HOME/.bun/bin/node"
+# gemini-cli 0.68 ignores defaultApprovalMode=yolo in settings: the wrapper (first on PATH) adds the flag
+# unless the caller already chose a mode.
+mkdir -p "$HOME/.local/bin"
+cat > "$HOME/.local/bin/gemini" <<'EOF'
+#!/bin/sh
+# infra/agents/install.sh: gemini-cli in full-access mode (settings yolo ignored in 0.68).
+case " $* " in *" --approval-mode"*|*" -y "*|*" --yolo "*) exec "$HOME/.bun/bin/gemini" "$@" ;; esac
+exec "$HOME/.bun/bin/gemini" --approval-mode yolo "$@"
+EOF
+chmod 0755 "$HOME/.local/bin/gemini"
+# Every shell of the user (login, interactive, `ssh host codex`) finds the CLIs: before 2026-11-13,
+# prd's agent had no ~/.profile and `codex` was "command not found" outside the runner.
+for rc in "$HOME/.profile" "$HOME/.bashrc"; do
+  touch "$rc"
+  # Prepended: Ubuntu's .bashrc returns early for non-interactive shells.
+  grep -q '# aphrody-agents PATH' "$rc" || { printf '%s\n' 'case ":$PATH:" in *":$HOME/.bun/bin:"*) ;; *) PATH="$HOME/.local/bin:$HOME/.bun/bin:$PATH"; export PATH ;; esac # aphrody-agents PATH'; cat "$rc"; } > "$rc.new" && mv "$rc.new" "$rc"
+done
 
 # Trust the runner checkout for Claude Code (headless runs cannot answer the trust dialog).
 bun -e 'const f=process.env.HOME+"/.claude.json";const fs=require("fs");const j=fs.existsSync(f)?JSON.parse(fs.readFileSync(f,"utf8")):{};j.projects??={};j.projects[process.argv[1]]={...(j.projects[process.argv[1]]??{}),hasTrustDialogAccepted:true};fs.writeFileSync(f,JSON.stringify(j,null,2))' "$SRC"
@@ -56,5 +73,5 @@ systemctl --user enable --now aphrody-agents.service aphrody-agents-health.timer
 "$BUN" "$SRC/infra/agents/runner.ts" health
 
 echo "install: ok host=$(hostname) src=$SRC"
-for c in claude codex opencode pi; do printf '  %s: ' "$c"; "$c" --version 2>&1 | head -1 || echo missing; done
+for c in claude codex gemini opencode pi; do printf '  %s: ' "$c"; "$c" --version 2>&1 | head -1 || echo missing; done
 tmux list-windows -t agents -F '  tmux #{window_index} #{window_name}' 2>/dev/null || true

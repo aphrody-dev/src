@@ -5,12 +5,13 @@
 //! - feature `depot` (default): `depot_*`, read by `bun:ffi` in `packages/forge`
 //!   (`src/depot_ffi.ts`, `src/depot-bridge.ts`). Strings are NUL-terminated and released
 //!   with `depot_free_string`; `depot_abi_version` returns [`depot::DEPOT_ABI_VERSION`].
-//! - feature `web` (default): `aphrody_*` from `corelib::web` (Boq parser, adblock engine),
+//! - feature `web` (default): `aphrody_*` from `corelib::web` (Boq parser; the adblock engine is
+//!   `crates/adblock-capi`),
 //!   framed buffers released with `aphrody_chromium_buf_free`.
 //!
 //! A consumer that needs one surface builds a smaller library with
 //! `--no-default-features --features <surface>`.
-//! `rust_stack_ffi` (`rs_*`, used by Go `src-deploy` and `infra/ffi-bridge`) stays in
+//! `rust_stack_ffi` (`rs_*`, used by Go `src-deploy` and `packages/ffi-bridge`) stays in
 //! `crates/rust-stack`.
 
 #[cfg(feature = "depot")]

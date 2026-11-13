@@ -1,4 +1,5 @@
-//! Browser helpers from `corelib::web` over the C ABI (`aphrody_*` symbols).
+//! Boq wire format from `corelib::web` over the C ABI (`aphrody_*` symbols). The adblock engine
+//! has its own library, `crates/adblock-capi` (`aphrody_adblock_*`).
 //!
 //! Every function returns a framed buffer that the caller releases with
 //! `aphrody_chromium_buf_free`:
@@ -6,8 +7,7 @@
 //! [u64 payload length, little endian][u8 status: 0 ok, 1 error][UTF-8 payload]
 //! ```
 
-use corelib::{SovereignAdblockEngine, boq_parse_envelopes};
-use serde_json::json;
+use corelib::boq_parse_envelopes;
 
 const FFI_HEADER_LEN: usize = 9;
 
@@ -56,36 +56,6 @@ pub unsafe extern "C" fn aphrody_boq_parse(raw_ptr: *const u8, raw_len: usize) -
     ffi_pack_buffer(0, &serialized)
 }
 
-/// Evaluate a URL against newline-delimited Adblock rules over C-ABI.
-#[unsafe(no_mangle)]
-pub unsafe extern "C" fn aphrody_adblock_eval(
-    rules_ptr: *const u8,
-    rules_len: usize,
-    url_ptr: *const u8,
-    url_len: usize,
-) -> *mut u8 {
-    let Ok(rules) = std::str::from_utf8(unsafe { ffi_slice(rules_ptr, rules_len) }) else {
-        return ffi_pack_buffer(1, b"rules must be UTF-8");
-    };
-    let Ok(url) = std::str::from_utf8(unsafe { ffi_slice(url_ptr, url_len) }) else {
-        return ffi_pack_buffer(1, b"url must be UTF-8");
-    };
-    let engine = SovereignAdblockEngine::from_rules(rules);
-    let res = engine.check_network_url(url);
-    let payload = serde_json::to_vec(&json!({
-        "matched": res.matched,
-        "blocked": res.blocked,
-        "important": res.important,
-        "filter": res.filter,
-        "exception": res.exception,
-        // Per-site selectors for the checked URL; generic rules need the page DOM (corelib::web::cosmetic).
-        "cosmeticSelectors": engine.hide_selectors_for(url),
-    }))
-    .unwrap_or_default();
-    ffi_pack_buffer(0, &payload)
-}
-
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -103,16 +73,6 @@ mod tests {
             aphrody_chromium_buf_free(ptr);
             (status, text)
         }
-    }
-
-    #[test]
-    fn adblock_eval_blocks_a_matching_url() {
-        let rules = b"||ads.google.com^\n";
-        let url = b"https://ads.google.com/banner.js";
-        let (status, json) =
-            take(unsafe { aphrody_adblock_eval(rules.as_ptr(), rules.len(), url.as_ptr(), url.len()) });
-        assert_eq!(status, 0);
-        assert!(json.contains("\"blocked\":true"), "{json}");
     }
 
     #[test]

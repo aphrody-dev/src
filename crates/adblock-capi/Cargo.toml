@@ -1,0 +1,19 @@
+[package]
+repository.workspace = true
+name = "aphrody-adblock-capi"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "C ABI over the adblock engine glue of aphrody-corelib (aphrody_adblock_* symbols, Brave adblock crate)"
+publish = false
+
+[lib]
+name = "aphrody_adblock"
+crate-type = ["cdylib"]
+
+[dependencies]
+corelib.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true
