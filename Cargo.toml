@@ -27,7 +27,6 @@ homepage = "https://labs.aphrody.com"
 [workspace.dependencies]
 # First-party crates
 archguard = { version = "0.1.0", path = "crates/archguard" }
-aphrody-design-shared = { version = "0.3.0", path = "crates/aphrody-design-shared" }
 corelib = { version = "0.3.0", package = "aphrody-corelib", path = "crates/corelib", default-features = false }
 depot-cli = { version = "0.3.0", path = "crates/depot-cli" }
 depot-core = { version = "0.3.0", path = "crates/depot-core" }

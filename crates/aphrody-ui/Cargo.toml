@@ -1,0 +1,53 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "aphrody-ui"
+publish = false
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "Rust core of the Aphrody design system: Material 3 color (HCT, schemes, contrast), tokens, component contracts, layout, theme presets, React/Next front ends and the brand renderer."
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "warn"
+
+[[bin]]
+name = "aphrody-brand"
+path = "src/bin/aphrody-brand.rs"
+
+[features]
+default = ["std", "serde"]
+# Allocating helpers (CSS export, presets) of the color module.
+std = []
+# PNG/JPEG decode for `color::image`.
+image = ["dep:image"]
+serde = []
+embedded-fonts = []
+bevy = ["dep:bevy"]
+egui = ["dep:egui"]
+
+[dependencies]
+base64 = { workspace = true }
+image = { workspace = true, optional = true, features = ["png", "jpeg"] }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+lightningcss = { workspace = true }
+taffy = { workspace = true, features = ["std", "taffy_tree", "flexbox", "grid", "block_layout", "content_size"] }
+bevy = { workspace = true, optional = true, features = ["std", "bevy_ui"] }
+egui = { workspace = true, optional = true }
+oxc_allocator = { workspace = true }
+oxc_ast = { workspace = true }
+oxc_parser = { workspace = true }
+oxc_span = { workspace = true }
+sha2 = { workspace = true }
+toml = { workspace = true }
+walkdir = { workspace = true }
+resvg = { version = "0.50.0", default-features = false, features = ["text"] }
+
+[dev-dependencies]
+serde_json = { workspace = true, features = ["float_roundtrip"] }
