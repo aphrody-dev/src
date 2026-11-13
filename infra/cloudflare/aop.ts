@@ -5,12 +5,14 @@
 // (upload over the API), never to disk outside a private temp dir removed at exit; the CA key goes to the vault
 // (AOP_CA_KEY); fr2 receives the CA certificate only.
 //   just cf-aop [host]   (rotate: new CA + client certificate, bundle on fr2)   then   just cf-aop-prune
-// Needs the SSL scope of the cf OAuth login (CF_AUTH=oauth): the vault account token has no origin_tls_client_auth right.
+// Auth: CF_AOP_TOKEN from the vault (token aop-rotate), no human login.
 import { chmodSync, mkdtempSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { api } from "./lib";
 
+// Dedicated token aop-rotate (SSL and Certificates Write + Zone Read on aphrody.com only, vault CF_AOP_TOKEN): no OAuth.
+if (Bun.env.CF_AOP_TOKEN) process.env.CLOUDFLARE_API_TOKEN = Bun.env.CF_AOP_TOKEN;
 const prune = Bun.argv.includes("--prune");
 const hosts = Bun.argv.slice(2).filter((x) => !x.startsWith("--")).length ? Bun.argv.slice(2).filter((x) => !x.startsWith("--")) : ["dbfr.aphrody.com"];
 const zoneOf = async (h: string) => {

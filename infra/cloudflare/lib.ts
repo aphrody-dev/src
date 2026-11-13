@@ -39,7 +39,8 @@ async function auth(): Promise<string> {
   if (token) return token;
   const env = Bun.env.CF_AUTH === "oauth" ? "" : (Bun.env.CLOUDFLARE_API_TOKEN ?? "");
   if (env) {
-    const r = await fetch(`https://api.cloudflare.com/client/v4/accounts/${cfg.account}`, { headers: { authorization: `Bearer ${env}` } });
+    // tokens/verify works for every account token, even one scoped to a single zone (aop-rotate, proof-ssl-read).
+    const r = await fetch(`https://api.cloudflare.com/client/v4/accounts/${cfg.account}/tokens/verify`, { headers: { authorization: `Bearer ${env}` } });
     if (r.ok) return (token = env);
     throw new Error(`CLOUDFLARE_API_TOKEN rejected (HTTP ${r.status}): fix the secret (env-kit secret set) or run with CF_AUTH=oauth`);
   }
