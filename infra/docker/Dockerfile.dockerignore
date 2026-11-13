@@ -22,6 +22,10 @@
 !assets/brand/gen/
 !assets/library/icons/vendors/
 !assets/generated/wallpapers/thumbs/
+!assets/library/textures/polyhaven/aerial_grass_rock/
+!assets/library/textures/polyhaven/aerial_rocks_02/
+!assets/library/audio/ui/
+!assets/brand/pet/
 **/target/
 **/node_modules/
 **/dist/
