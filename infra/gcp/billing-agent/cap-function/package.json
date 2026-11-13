@@ -1,0 +1,6 @@
+{
+  "name": "billing-cap",
+  "private": true,
+  "main": "index.js",
+  "engines": { "node": ">=24" }
+}

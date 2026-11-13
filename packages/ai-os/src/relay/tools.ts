@@ -386,6 +386,36 @@ export const TOOLS: Tool[] = [
       };
     },
   },
+  {
+    name: "billing_status",
+    description:
+      "Read-only Google Cloud billing status via billing-agent (keyless impersonation): billing accounts, linked projects, budgets and spend caps, last notified spend (docs/infra/GCP-BILLING.md).",
+    inputSchema: obj({}),
+    readOnly: true,
+    run: async () => {
+      const cli = join(
+        Bun.env.SRC_ROOT ?? "C:/src",
+        "packages",
+        "env-kit",
+        "src",
+        "cli.ts",
+      );
+      const p = Bun.spawn(
+        [process.execPath, "run", cli, "billing", "status", "--json"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+        },
+      );
+      const [out, err] = [
+        await new Response(p.stdout).text(),
+        await new Response(p.stderr).text(),
+      ];
+      if ((await p.exited) !== 0)
+        return { error: err.trim().split("\n").pop() };
+      return JSON.parse(out);
+    },
+  },
 ];
 
 TOOLS.push(...AGENT_TOOLS, ...ORCH_TOOLS);
