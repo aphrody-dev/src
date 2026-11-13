@@ -29,6 +29,7 @@ const ROOTS = [
   "/var/tmp",
   "c:/windows/temp",
   `${HOME}/appdata/local/temp`,
+  `${HOME}/.claude/projects/c--users-aphro-nt/memory`,
 ].map((r) => r.toLowerCase().replace(/\/+$/, ""));
 
 // ---------- secrets ----------
