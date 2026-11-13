@@ -116,6 +116,8 @@ const REAL_ICON: Record<string, string> = {
   game: "/os/aphrody.svg",
   linux: "/os/ico/alpine.svg",
   flash: "/os/ico/ruffle.png",
+  emulator: "/os/ico/emulatorjs.svg",
+  console: "/os/ico/github.svg",
 };
 
 export function renderOs(root: string, locale: OsLocale, pet: string): string {
