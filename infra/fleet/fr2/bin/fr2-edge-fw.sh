@@ -1,9 +1,11 @@
 #!/bin/bash
-# fr2 origin lock-down: TCP 80/443 accepted only from Cloudflare (proxied hostnames), the fleet (fleet-health
+# fr2 origin lock-down: TCP+UDP (QUIC) 80/443 accepted only from Cloudflare (proxied hostnames), the fleet (fleet-health
 # --resolve checks from fr1/prd, self-host fallback) and the WireGuard mesh. Everything else on 80/443 is dropped.
+# Family inet: the final drop applies to IPv4 and IPv6 alike (no v6 bypass).
+# ssh 22 must NEVER be added to the Cloudflare sets (Workers sockets/WARP egress from CF IPs); cloudflared reaches sshd on 127.0.0.1.
 # Untouched: ssh 22 (break-glass until Access SSH is proven), WireGuard UDP, FORWARD (wg forwarding, docker).
 # Cloudflare ranges: https://api.cloudflare.com/client/v4/ips (refreshed by fr2-edge-fw.timer, last good copy kept).
-# Rollback (one line): systemctl disable --now fr2-edge-fw.timer; nft delete table inet fr2_edge
+# Rollback (one line): systemctl disable --now fr2-edge-fw.timer fr2-edge-fw.service; nft delete table inet fr2_edge
 set -euo pipefail
 out=/etc/nftables.d/fr2-edge.nft; cache=/var/lib/fr2-edge-fw/ips.json
 mkdir -p "${out%/*}" "${cache%/*}"
@@ -25,8 +27,10 @@ table inet fr2_edge {
   set fleet6 { type ipv6_addr; elements = { $fleet6 } }
   chain input {
     type filter hook input priority -5; policy accept;
-    tcp dport != { 80, 443 } accept
     ct state established,related accept
+    meta l4proto { tcp, udp } th dport { 80, 443 } jump web
+  }
+  chain web {
     iifname { "lo", "wg1" } accept
     ip saddr @cf4 accept
     ip6 saddr @cf6 accept

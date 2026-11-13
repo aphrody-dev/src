@@ -2,6 +2,7 @@
 Description=Refresh Cloudflare ranges in the fr2 origin firewall
 
 [Timer]
+OnBootSec=2min
 OnCalendar=daily
 RandomizedDelaySec=1h
 Persistent=true

@@ -4,6 +4,7 @@
 Description=fr2 origin firewall (Cloudflare + fleet only on 80/443)
 After=network-online.target
 Wants=network-online.target
+Before=nginx.service
 
 [Service]
 Type=oneshot

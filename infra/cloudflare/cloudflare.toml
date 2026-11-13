@@ -17,10 +17,12 @@ account = "ca22c1a51a145f919b54afa18d936516"
 id = "72153924-6650-4dd4-bced-f8b6731edcd8"
 host = "prd"
 ingress = [
-  { hostname = "mig-test.aphrody.com", service = "http://127.0.0.1:8780" },
-  { hostname = "mig-downloads.aphrody.com", service = "http://127.0.0.1:8797" },
-  { hostname = "mig-depot.aphrody.com", service = "http://10.200.77.5:8182" },
-  { hostname = "mig-commons.aphrody.com", service = "http://10.200.77.5:8766" },
+  # Cluster LB ports (HAProxy on fr1/fr2/prd, infra/cluster, docs/infra/CLUSTER.md): same answer on every host, so
+  # mig-prd connector replicas can run anywhere. Rollback: the old origins 127.0.0.1:8780 / :8797, 10.200.77.5:8182 / :8766.
+  { hostname = "mig-test.aphrody.com", service = "http://127.0.0.1:19780" },
+  { hostname = "mig-downloads.aphrody.com", service = "http://127.0.0.1:19797" },
+  { hostname = "mig-depot.aphrody.com", service = "http://127.0.0.1:19182" },
+  { hostname = "mig-commons.aphrody.com", service = "http://127.0.0.1:19766" },
   { hostname = "ssh-prd.aphrody.com", service = "ssh://127.0.0.1:22" },
   # aphrody service (deploy.toml services.aphrody green_port, container aphrody-src-aphrody-1).
   { hostname = "aphrody.com", service = "http://127.0.0.1:23000" },
@@ -139,4 +141,8 @@ service_token = "fleet-agents"                         # secret written to /etc/
 apps = [
   { name = "fr2-ssh", type = "ssh", domain = "ssh-fr2.aphrody.com" },
   { name = "prd-ssh", type = "ssh", domain = "ssh-prd.aphrody.com" },
+  # 502 before the migration, now served by prd: owner-only until the app has its own auth.
+  { name = "aphrody-admin", type = "self_hosted", domain = "admin.aphrody.com" },
+  { name = "aphrody-control", type = "self_hosted", domain = "control.aphrody.com" },
+  { name = "aphrody-console", type = "self_hosted", domain = "console.aphrody.com" },
 ]

@@ -72,7 +72,7 @@ for (const [name, t] of Object.entries(cfg.tunnels)) {
 }
 
 // 4. Access: protected apps redirect to the Access login.
-for (const h of ["ssh-fr2.aphrody.com", "ssh-prd.aphrody.com", "mig-depot.aphrody.com", "mig-commons.aphrody.com"]) {
+for (const h of ["ssh-fr2.aphrody.com", "ssh-prd.aphrody.com", "mig-depot.aphrody.com", "mig-commons.aphrody.com", "admin.aphrody.com", "control.aphrody.com"]) {
   const { status, h: hd } = await head(`https://${h}/`);
   add("access", h, status === 302 && (hd.get("location") ?? "").includes("cloudflareaccess.com"), `${status} -> ${(hd.get("location") ?? "").split("?")[0]}`);
 }
@@ -83,6 +83,9 @@ for (const p of [80, 443]) {
   add("origin-closed", `fr2 ${FR2[0]}:${p} from internet`, !open, open ? "OPEN" : "filtered (timeout)");
 }
 add("origin-ssh", `fr2 ${FR2[0]}:22 from internet`, await tcpOpen(FR2[0], 22), "open (break-glass, keys only)");
+// IPv6: no non-fleet v6 vantage here; check the live ruleset instead (family inet, tcp+udp 80/443, final drop).
+const rs = sh("fr2", "sudo nft list table inet fr2_edge");
+add("origin-v6", "fr2 nft inet fr2_edge (v4+v6, tcp+udp)", /l4proto \{ tcp, udp \} th dport \{ 80, 443 \} jump web/.test(rs) && /ip6 saddr @cf6 accept/.test(rs) && /counter packets \d+ bytes \d+ drop/.test(rs), (rs.match(/counter packets \d+/)?.[0] ?? "ruleset missing") + " dropped");
 const fleet = sh("prd", "curl -s -o /dev/null -w '%{http_code}' --resolve api.aphrody.com:443:51.255.162.6 https://api.aphrody.com/v1/health");
 add("origin-fleet", "prd -> fr2:443 (fleet-health)", fleet === "200", `HTTP ${fleet}`);
 const wg = sh("fr2", "sudo wg show wg1 latest-handshakes | awk '{print $2}' | sort -n | tail -1");
