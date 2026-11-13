@@ -7,7 +7,7 @@
 //   bun scripts/unixwin/unixwin.ts build [triple]             build sur prd, binaire rapatrié dans var/unixwin/prd/<triple>
 //   bun scripts/unixwin/unixwin.ts fetch-ci [triple]          artefact CI du fork au commit épinglé -> var/unixwin/ci/<triple>
 //   bun scripts/unixwin/unixwin.ts install [prd|ci] [triple]  remplace niu.exe (et ses copies bash.exe/sh.exe) du poste
-//   bun scripts/unixwin/unixwin.ts test-prd [filtre]          cargo test de rubash sur prd au commit épinglé
+//   bun scripts/unixwin/unixwin.ts test-prd <filtre>          cargo test ciblé de rubash sur prd (suite complète : CI du fork)
 import { createHash } from "node:crypto";
 import {
   existsSync,
@@ -268,7 +268,7 @@ async function testPrd(filter: string) {
       "exec",
       "prd",
       "--",
-      `JOBS=4 sh unixwin-prd-test.sh ${rub} ${filter}`,
+      `sh unixwin-prd-test.sh ${rub} ${filter}`,
     ],
     { stdin: "ignore", stdout: "inherit", stderr: "inherit" },
   );
@@ -357,7 +357,8 @@ switch (cmd) {
   case "test-prd":
     if (a1 && !/^[\w:-]+$/.test(a1))
       throw new Error("filtre : identifiant de test cargo");
-    await testPrd(a1 ?? "");
+    if (!a1) throw new Error("filtre obligatoire : la suite complète tourne dans la CI du fork (aphrody tests)");
+    await testPrd(a1);
     break;
   case "install":
     if (a1 && a1 !== "prd" && a1 !== "ci") throw new Error("source : prd | ci");
