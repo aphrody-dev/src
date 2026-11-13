@@ -4,7 +4,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 type Check = { path: string; host: string; expect: string };
-type Svc = { mode?: "http" | "tcp"; pinned?: boolean; lb_port: number; targets: Record<string, string>; check?: Check; cache?: "micro" | "honor" | "off" };
+type Svc = { mode?: "http" | "tcp"; pinned?: boolean; lb_port: number; targets: Record<string, string | string[]>; bluegreen?: { service: string; active?: "blue" | "green" }; check?: Check; cache?: "micro" | "honor" | "off" };
 type Member = { node: string; ssh: string; weight: number; slice?: Record<string, string> };
 type Cluster = {
   domain: string; mesh_port: number; stats_port: number; check_inter_ms: number; check_fall: number; check_rise: number;
@@ -21,6 +21,22 @@ const shardPort = (s: Svc) => s.lb_port + 10000;
 const cached = (s: Svc) => (s.mode ?? "http") === "http" && (s.cache ?? "off") !== "off";
 const sni = (svc: string, m: string) => `${svc}.${m}.${c.domain}`;
 const TLS = "/etc/aphrody-cluster/tls";
+// Origins of a service on a member, primary first. bluegreen: targets[m] is the host, ports come from
+// deploy.toml [services.<service>] green_port/blue_port; the active colour is primary, the other one backup.
+function addrs(s: Svc, m: string): string[] {
+  const t = s.targets[m];
+  if (!t) return [];
+  if (s.bluegreen) {
+    const app = deploy.services[s.bluegreen.service];
+    const act = s.bluegreen.active ?? "green";
+    const ports = act === "green" ? [app.green_port, app.blue_port] : [app.blue_port, app.green_port];
+    return ports.map((p: number) => `${t}:${p}`);
+  }
+  return Array.isArray(t) ? t : [t];
+}
+// HAProxy server lines for local origins: first primary, the rest backup, all health-checked.
+const originServers = (name: string, base: number, w: number | null, list: string[]) =>
+  list.map((a, i) => `    server ${i ? `${name}-b${i}` : name} ${a}${base ? ` id ${base + 100 * i}` : ""}${w ? ` weight ${w}` : ""}${i ? " backup" : ""} check`);
 
 function haproxy(self: string): string {
   const out: string[] = [
@@ -65,8 +81,8 @@ function haproxy(self: string): string {
   for (const [n] of local) out.push(`    use_backend in_${n} if { ssl_fc_sni -i ${sni(n, self)} }`);
   out.push("");
   for (const [n, s] of local) {
-    const dst = cached(s) ? `127.0.0.1:${shardPort(s)}` : s.targets[self];
-    out.push(`backend in_${n}`, "    mode tcp", `    server local ${dst}`, "");
+    out.push(`backend in_${n}`, "    mode tcp",
+      ...(cached(s) ? [`    server local 127.0.0.1:${shardPort(s)}`] : originServers("local", 0, null, addrs(s, self))), "");
   }
   for (const [n, s] of Object.entries(c.services).filter(([, s]) => !s.pinned)) {
     const tcp = s.mode === "tcp";
@@ -89,8 +105,8 @@ function haproxy(self: string): string {
     for (const m of names.filter((m) => s.targets[m])) {
       const w = c.members[m].weight;
       if (m === self) {
-        const dst = cached(s) ? `127.0.0.1:${shardPort(s)}` : s.targets[m];
-        out.push(`    server ${m} ${dst} id ${id(m)} weight ${w} check`);
+        if (cached(s)) out.push(`    server ${m} 127.0.0.1:${shardPort(s)} id ${id(m)} weight ${w} check`);
+        else out.push(...originServers(m, id(m), w, addrs(s, m)));
       } else {
         const h = sni(n, m);
         out.push(
@@ -120,7 +136,7 @@ function nginx(self: string): string {
   ];
   for (const [n, s] of shards) {
     const micro = s.cache === "micro" ? "        proxy_cache_valid 200 301 302 404 1s;\n" : "";
-    out.push(`upstream acl_${n} { server ${s.targets[self]}; keepalive 16; }`);
+    out.push(`upstream acl_${n} { ${addrs(s, self).map((a, i) => `server ${a}${i ? " backup" : " max_fails=1 fail_timeout=3s"};`).join(" ")} keepalive 16; }`);
     out.push(`server {
     listen 127.0.0.1:${shardPort(s)};
     access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
@@ -133,6 +149,7 @@ function nginx(self: string): string {
         error_page 418 = @idem;
         if ($acl_idem) { return 418; }
         proxy_pass http://acl_${n};
+        proxy_next_upstream error timeout http_502 http_503 http_504;
         proxy_cache acl_cache;
         proxy_cache_key "${n}|$host$request_uri";
         proxy_cache_lock on;

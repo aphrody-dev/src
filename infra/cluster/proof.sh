@@ -77,3 +77,22 @@ for a in "${members[@]}"; do for b in "${members[@]}"; do
   r=$(timeout 40 ssh -o ConnectTimeout=10 "$a" "s=\$(date +%s%N); ssh -o BatchMode=yes ${su[$b]}@$b-mesh true 2>/dev/null; e=\$?; echo \$e \$(( (\$(date +%s%N)-s)/1000000 ))")
   echo "{\"from\":\"$a\",\"to\":\"$b\",\"exit\":${r% *},\"ms\":${r#* }}"
 done; done
+
+echo "## blue/green (aphrody: stop the active colour, the service keeps answering through the backup colour)"
+# Temporary blue = same image and env as green on 127.0.0.1:13000, private tmpfs /app/var; removed at the end.
+if [ "${SKIP_BLUEGREEN:-0}" != 1 ]; then
+TMO=200 on prd '
+  set -e; g=aphrody-src-aphrody-1; img=$(docker inspect -f "{{.Config.Image}}" $g); env=$(mktemp); chmod 600 $env
+  docker inspect -f "{{range .Config.Env}}{{println .}}{{end}}" $g | grep -v "^PATH=" > $env
+  docker rm -f aphrody-bg-proof >/dev/null 2>&1 || true
+  docker run -d --name aphrody-bg-proof --env-file $env -p 127.0.0.1:13000:3000 --tmpfs /app/var:rw,mode=1777 --memory 1g "$img" >/dev/null; rm -f $env
+  for i in $(seq 60); do c=$(curl -s -m3 -o /dev/null -w "%{http_code}" -H "Host: aphrody.com" http://127.0.0.1:13000/ || true); case $c in 2*|3*) break;; esac; sleep 1; done
+  echo "{\"blue_ready\":\"$c\"}"; case $c in 2*|3*) ;; *) docker rm -f aphrody-bg-proof >/dev/null; exit 1;; esac' || { echo "{\"bluegreen\":\"aborted: blue not ready, green untouched\"}"; SKIP_BG_RUN=1; }
+[ "${SKIP_BG_RUN:-0}" = 1 ] || { TMO=120 on fr2 "n=0; e=0; end=\$((SECONDS+30)); while [ \$SECONDS -lt \$end ]; do c=\$(curl -s -m5 -o /dev/null -w '%{http_code}' -H 'Host: aphrody.com' http://127.0.0.1:19300/); n=\$((n+1)); case \$c in 2*|3*) ;; *) e=\$((e+1));; esac; sleep 0.2; done; echo \"{\\\"entry\\\":\\\"fr2\\\",\\\"requests\\\":\$n,\\\"errors\\\":\$e}\"" &
+loop=$!
+sleep 5; on prd "docker stop -t 5 aphrody-src-aphrody-1 >/dev/null; echo '{\"green\":\"stopped\"}'"
+sleep 12; on prd "docker start aphrody-src-aphrody-1 >/dev/null; echo '{\"green\":\"started\"}'"
+wait $loop
+TMO=120 on prd 'for i in $(seq 60); do c=$(curl -s -m3 -o /dev/null -w "%{http_code}" -H "Host: aphrody.com" http://127.0.0.1:23000/ || true); case $c in 2*|3*) break;; esac; sleep 1; done; docker rm -f aphrody-bg-proof >/dev/null; echo "{\"green_back\":\"$c\",\"blue\":\"removed\"}"'
+}
+fi

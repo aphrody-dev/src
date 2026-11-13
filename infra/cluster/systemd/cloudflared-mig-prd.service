@@ -1,0 +1,18 @@
+# Replica connector of Tunnel mig-prd (ingress owned by infra/cloudflare; every target is a cluster lb_port that
+# answers on every member). Token: systemd-creds credential /etc/credstore.encrypted/cloudflared-mig-prd (host-bound,
+# re-encrypted from prd's credential, never in clear on disk nor in git).
+# Rollback: systemctl disable --now cloudflared-mig-prd
+[Unit]
+Description=cloudflared mig-prd replica (cluster member)
+After=network-online.target aphrody-cluster-haproxy.service
+Wants=network-online.target
+
+[Service]
+Slice=aphrody-cluster.slice
+LoadCredentialEncrypted=cloudflared-mig-prd:/etc/credstore.encrypted/cloudflared-mig-prd
+ExecStart=/usr/local/bin/cloudflared tunnel --no-autoupdate --metrics 127.0.0.1:20244 --protocol auto run --token-file %d/cloudflared-mig-prd
+Restart=always
+RestartSec=2s
+
+[Install]
+WantedBy=multi-user.target
