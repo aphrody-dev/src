@@ -8,6 +8,10 @@ Inputs: `recon.md`, `features.csv` (commit 765af380), the code already in the tr
 - `apps/aphrody-app` (aphrody.app) is the home of the launcher: full-Rust apps suite plus the fullscreen shell, shipped native (Windows 11 DX12, Linux Vulkan), as the Chromium WebGPU wasm build served at aphrody.app, and with a mobile layout (Android and iOS from the same Rust core).
 - One shell, three layout variants driven by tokens: `Ps` (tab bar, scale-up rows), `Switch` (status bar, tile row, round menu row, hints) and `Tv` (Android TV language, new).
 
+## License posture
+
+`docs/legal/LICENSE-QUEUE.md` (commit b6aea61a) records an owner decision that all licenses are accepted and reference assets may be taken verbatim. `AGENTS.md` section 4 ("Limits that stay": no unlicensed or non-OSI code and no proprietary assets copied into the repository, no Unreal, Oodle or MSVC SDK) is the checked-in contract and an agent relay cannot amend it. This document therefore keeps the clean-room default for Sony, Nintendo and Google marks and art: layouts, states and metrics are implemented, shipped art is original or openly licensed, and the Android TV kit is consumed as numbers read from developer.android.com. Switching to verbatim assets is a one-line change per asset class once `AGENTS.md` section 4 is amended by the owner in the repository; every asset class is already listed in the queue file with its status. No work is blocked either way.
+
 ## What exists (read in the tree, not assumed)
 
 | item | state |
