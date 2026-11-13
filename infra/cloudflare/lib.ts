@@ -14,6 +14,8 @@ export type Cfg = {
   tunnels: Record<string, Tunnel>;
   dns: Record<string, Record<string, Rec>>;
   rules: Rule[];
+  email_routing?: Record<string, { enabled: boolean; destination_env: string; addresses: string[] }>;
+  mail?: Record<string, { type: string; name: string; content: string }[]>;
   access: {
     owner_policy: string;
     service_tokens: { name: string; host: string }[];

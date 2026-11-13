@@ -40,3 +40,15 @@ binary = "ai-os"
 path = "packages/ai-os"
 home_env = "AGENT_HOME"
 home_default = "~/.agent"
+
+# Public channels of the anonymous identity (docs/IDENTITY.md): nothing personal (name, private mailbox, phone, photo).
+# Private mailboxes are vault keys only (APHRODY_OWNER_GOOGLE_ACCOUNT, APHRODY_AI_GOOGLE_ACCOUNT).
+[contact]
+email = "contact@aphrody.com"
+security = "security@aphrody.com"
+noreply = "noreply@aphrody.com"
+page = "https://aphrody.com/#contact"
+github = ["aphrody-dev", "aphrody-labs"]
+git_email = "324927936+aphrody-dev@users.noreply.github.com" # commit identity on the PC and the fleet
+x = ""        # handle not claimed yet (draft: var/agents/publish/x-profile.md)
+discord = ""  # invite not created yet (draft: var/agents/publish/discord-profile.md)

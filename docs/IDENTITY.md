@@ -40,6 +40,20 @@ Created: forks `aphrody-labs/lore`, `aphrody-labs/UnrealEngine` (private). Nothi
 | npm | `@aphrody/cli` and per-platform packages | scope already owned; publish with the first binary release |
 | DNS | `labs.aphrody.com` records | homepage and conformance dashboard |
 
+## Anonymous public identity
+
+`aphrody-dev` is an anonymous public identity. Public channels only: mail on `aphrody.com` (`contact@`,
+`security@`, `noreply@`), GitHub `aphrody-dev` and `aphrody-labs`, Discord, X, Cloudflare, Resend, the Aphrody
+OAuth app and the contact section of `aphrody.com` (`identity.toml` `[contact]`).
+
+- Never in the repository, logs or reports: real name, personal mailbox, phone, postal address, photo. Personal
+  Google accounts are vault keys (`APHRODY_OWNER_GOOGLE_ACCOUNT`, `APHRODY_AI_GOOGLE_ACCOUNT`), read by
+  `personalAccount()` (packages/env-kit/src/accounts.ts); gcloud configurations are `owner` and `ai-agent`.
+- Commits: `aphrody-dev <324927936+aphrody-dev@users.noreply.github.com>` on the PC and on every fleet user.
+- Inbound mail: OVH MX today; Cloudflare Email Routing rules for the three addresses are declared in
+  `infra/cloudflare/cloudflare.toml` (`[email_routing]`, `bun infra/cloudflare/cf.ts plan email`).
+- History is not rewritten: older commits still carry personal data (audit 2026-11-13, docs/reviews/INDEX.md).
+
 ## Rules
 
 - Upstream code enters only through `third_party/` (vendored fork, pinned in `vendor.lock`, license kept). Unreal Engine code never goes to a public repository.

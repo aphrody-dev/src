@@ -83,6 +83,8 @@ ingress = [
 "dbfr.aphrody.com" = { type = "A", content = "51.255.162.6", rollback = "A 51.255.162.6 proxied=false" }
 
 [dns."aphrody.app"]
+# Previews <project>-<sha7>.aphrody.app and project domains: Worker aphrody-deploy on route *.aphrody.app/* (explicit records win).
+"*.aphrody.app" = { type = "AAAA", content = "100::", proxied = true, rollback = "delete" }
 "api.aphrody.app" = { type = "CNAME", content = "tunnel:mig-prd", rollback = "A 51.255.162.6" }
 "auth.aphrody.app" = { type = "CNAME", content = "tunnel:mig-prd", rollback = "A 51.255.162.6" }
 "craft.aphrody.app" = { type = "CNAME", content = "tunnel:mig-prd", rollback = "A 51.255.162.6" }
@@ -150,4 +152,39 @@ apps = [
   { name = "aphrody-admin", type = "self_hosted", domain = "admin.aphrody.com" },
   { name = "aphrody-control", type = "self_hosted", domain = "control.aphrody.com" },
   { name = "aphrody-console", type = "self_hosted", domain = "console.aphrody.com" },
+  # aphrody.app dashboard (packages/deploy): owner only, the Worker re-verifies the JWT (ACCESS_AUD in its wrangler.toml).
+  { name = "aphrody-app-dashboard", type = "self_hosted", domain = "aphrody.app/dashboard" },
 ]
+
+# Mail of aphrody.com. Inbound today: OVH MX Plan (mailbox contact@aphrody.com). Email Routing forwards the public
+# addresses to the owner's private mailbox, named only by an env/vault key (never written here: anonymous identity,
+# docs/IDENTITY.md). `enabled = false`: rules are kept in place but Cloudflare MX are not installed, OVH keeps
+# receiving; flipping it to true replaces the OVH MX with Cloudflare's (owner decision, destination verified first).
+#   bun infra/cloudflare/cf.ts plan email | apply email
+[email_routing."aphrody.com"]
+enabled = false
+destination_env = "APHRODY_OWNER_GOOGLE_ACCOUNT"
+addresses = ["contact", "security", "noreply"]
+
+# Outbound: Resend (DKIM resend._domainkey, return path send.*) and OVH (DKIM ovhmo-selector-*). Read-only check
+# (plan and apply report a missing or changed record, never write it: keys come from the provider). Content = prefix.
+[[mail."aphrody.com"]]
+type = "TXT"
+name = "aphrody.com"
+content = "v=spf1 include:mx.ovh.com include:_spf.google.com include:resend.com"
+[[mail."aphrody.com"]]
+type = "TXT"
+name = "_dmarc.aphrody.com"
+content = "v=DMARC1; p=quarantine; rua=mailto:dmarc-reports@aphrody.com"
+[[mail."aphrody.com"]]
+type = "TXT"
+name = "resend._domainkey.aphrody.com"
+content = "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDYpYTrAwdzYxp"
+[[mail."aphrody.com"]]
+type = "CNAME"
+name = "send.aphrody.com"
+content = "send.forge.rmta.net"
+[[mail."aphrody.com"]]
+type = "CNAME"
+name = "ovhmo-selector-1._domainkey.aphrody.com"
+content = "ovhmo-selector-1._domainkey.4861041.dp.dkim.mail.ovh.net"

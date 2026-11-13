@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // Declarative Cloudflare edge: plan (default, read-only diff) or apply one section of cloudflare.toml.
-//   bun infra/cloudflare/cf.ts plan [dns|tunnels|rules|access]
-//   bun infra/cloudflare/cf.ts apply <dns|tunnels|rules|access> [--only <name>]
+//   bun infra/cloudflare/cf.ts plan [dns|tunnels|rules|access|email]
+//   bun infra/cloudflare/cf.ts apply <dns|tunnels|rules|access|email> [--only <name>]
 // --only restricts dns/tunnels to one record or tunnel (service-by-service migration).
 import { api, cfg, expand, tunnelId, type Rec } from "./lib.ts";
 
@@ -10,7 +10,7 @@ const oi = rest.indexOf("--only");
 const only = oi >= 0 ? (rest[oi + 1] ?? "") : "";
 const apply = cmd === "apply";
 if (!["plan", "apply"].includes(cmd) || (apply && !section)) {
-  console.error("usage: cf.ts plan [section] | apply <dns|tunnels|rules|access> [--only name]");
+  console.error("usage: cf.ts plan [section] | apply <dns|tunnels|rules|access|email> [--only name]");
   process.exit(2);
 }
 let changes = 0;
@@ -100,6 +100,46 @@ if (want("rules")) {
     if (!ep) await api("PUT", `/zones/${zid}/rulesets/phases/${r.phase}/entrypoint`, { rules: [rule] });
     else if (cur) await api("PATCH", `/zones/${zid}/rulesets/${ep.id}/rules/${cur.id}`, rule);
     else await api("POST", `/zones/${zid}/rulesets/${ep.id}/rules`, rule);
+  }
+}
+
+// ---------------------------------------------------------------- email (routing rules + mail auth records, read-only)
+// The destination mailbox is private: read from the env key named in the file, shown masked, never logged in clear.
+if (want("email")) {
+  const hide = (s: string) => s.replace(/^[^@]*@/, "…@");
+  for (const [zone, e] of Object.entries(cfg.email_routing ?? {})) {
+    const zid = cfg.zones[zone];
+    const dest = (Bun.env[e.destination_env] ?? "").trim().toLowerCase();
+    const addrs = await api<any[]>("GET", `/accounts/${cfg.account}/email/routing/addresses`);
+    const d = addrs.find((a) => a.email.toLowerCase() === dest);
+    if (!dest) console.error(`  email ${zone}: ${e.destination_env} unset (env-kit secret exec ${e.destination_env} -- ...)`);
+    else if (!d) {
+      say("create", `destination ${hide(dest)} (verification mail sent to the owner)`);
+      if (apply) await api("POST", `/accounts/${cfg.account}/email/routing/addresses`, { email: dest });
+    } else if (d.status !== "verified") console.error(`  email ${zone}: destination ${hide(dest)} not verified yet (owner click)`);
+    const rules = await api<any[]>("GET", `/zones/${zid}/email/routing/rules?per_page=50`);
+    for (const local of e.addresses) {
+      const to = `${local}@${zone}`;
+      if (only && only !== to) continue;
+      const cur = rules.find((x) => x.matchers?.some((m: any) => m.type === "literal" && m.value === to));
+      const ok = cur?.enabled && cur.actions?.[0]?.type === "forward" && cur.actions[0].value?.[0]?.toLowerCase() === dest;
+      if (ok || !dest) continue;
+      say(cur ? "update" : "create", `route ${to} -> ${hide(dest)}`);
+      const body = { name: `managed: ${to}`, enabled: true, matchers: [{ type: "literal", field: "to", value: to }], actions: [{ type: "forward", value: [dest] }] };
+      if (apply) await api(cur ? "PUT" : "POST", `/zones/${zid}/email/routing/rules${cur ? `/${cur.id}` : ""}`, body);
+    }
+    const st = await api<any>("GET", `/zones/${zid}/email/routing`);
+    if (st.enabled !== e.enabled) {
+      say(e.enabled ? "enable" : "disable", `email routing ${zone} (${e.enabled ? "Cloudflare MX replace the current MX" : "MX left to the current provider"})`);
+      if (apply) await api("POST", `/zones/${zid}/email/routing/${e.enabled ? "enable" : "disable"}`, {});
+    }
+  }
+  for (const [zone, recs] of Object.entries(cfg.mail ?? {})) {
+    const live = await api<any[]>("GET", `/zones/${cfg.zones[zone]}/dns_records?per_page=5000`);
+    for (const r of recs) {
+      const hit = live.some((x) => x.type === r.type && x.name === r.name && String(x.content).replace(/^"|"$/g, "").startsWith(r.content));
+      if (!hit) console.error(`  MISSING ${r.type} ${r.name} ${r.content.slice(0, 40)}… (provider record, add it by hand)`);
+    }
   }
 }
 
