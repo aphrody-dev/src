@@ -26,6 +26,10 @@ jobs:
           cargo test -p aphrody -p depot-gclient -p depot-cas -p depot-cipd -p aphrody-up -p aphrody-rt -p archguard -p agent-context
       - name: Layered dependency gate (checkdeps)
         run: bun scripts/checkdeps.ts
+      - name: Supply-chain gate (cargo-deny, bun workspace deps)
+        run: |
+          cargo deny --locked check
+          bun scripts/js-deps-check.ts
       - name: Identity gate (identity.toml vs manifests)
         run: bun scripts/identity.ts check
       - name: Architecture gate

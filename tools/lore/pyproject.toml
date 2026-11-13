@@ -19,7 +19,8 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["ruff>=0.9.6", "pyright>=1.1.396"]
+# ty (Astral, Rust) instead of pyright: the pyright wheel downloads Node through nodeenv.
+dev = ["ruff>=0.9.6", "ty>=0.0.102"]
 
 [tool.ruff]
 target-version = "py313"

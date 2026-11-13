@@ -216,6 +216,7 @@ deps = {
   'third_party/object': 'https://github.com/aphrody-labs/object.git@119f48ace38d1cab8e5653489acde1452da8384b',
   'third_party/obscura': 'https://github.com/h4ckf0r0day/obscura.git@3bae60909615ed5a2ca263a12c300a4a545ed3ce',
   'third_party/obscura-benchmark': 'https://github.com/h4ckf0r0day/obscura-benchmark.git@2d7bc304fbb7ebefc44f770938192e3cede87dbd',
+  'third_party/oils': 'https://github.com/aphrody-labs/oils.git@afe7c4ceeb070cfefe99994e15fed2128f3456c6',
   'third_party/ollama': 'https://github.com/ollama/ollama.git@6140670fd1952941041dce5fb3f8932091bc22e4',
   'third_party/omarchy': 'https://github.com/omacom/omarchy.git@7a9a1e930921f8d18db98e189a6280e6b1c0cc32',
   'third_party/omarchy-pkgs': 'https://github.com/omacom/omarchy-pkgs.git@94a574face9bd86c481f9b259f038e8901134c1c',

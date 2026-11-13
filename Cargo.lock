@@ -37,6 +37,39 @@ dependencies = [
 ]
 
 [[package]]
+name = "adblock"
+version = "0.13.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7a4c8558f27608dec74695c866f9a8ef897ec7a77cb826f8a5baf0b8ba461d2a"
+dependencies = [
+ "addr",
+ "arrayvec",
+ "base64 0.22.1",
+ "bitflags 2.13.2",
+ "flatbuffers",
+ "idna",
+ "itertools 0.14.0",
+ "memchr",
+ "percent-encoding",
+ "regex",
+ "rustc-hash 2.1.3",
+ "seahash",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "addr"
+version = "0.15.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a93b8a41dbe230ad5087cc721f8d41611de654542180586b315d9f4cf6b72bef"
+dependencies = [
+ "psl",
+ "psl-types",
+]
+
+[[package]]
 name = "addr2line"
 version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -259,6 +292,7 @@ checksum = "330a5ed07fa54e4702c9d6c4174f74427fc0ef6e214bbd677ae50a5099946470"
 name = "aphrody"
 version = "0.2.0"
 dependencies = [
+ "aphrody-conformance",
  "aphrody-remote",
  "aphrody-rt",
  "aphrody-sys",
@@ -344,6 +378,28 @@ version = "0.2.0"
 dependencies = [
  "aphrody-core",
  "serde_json",
+]
+
+[[package]]
+name = "aphrody-corelib"
+version = "0.2.0"
+dependencies = [
+ "adblock",
+ "bytemuck",
+ "byteorder",
+ "js-sys",
+ "log",
+ "memmap2",
+ "pollster",
+ "serde",
+ "serde-wasm-bindgen",
+ "serde_json",
+ "sha2 0.11.1",
+ "tempfile",
+ "thiserror 2.0.21",
+ "wasm-bindgen",
+ "web-sys",
+ "wgpu",
 ]
 
 [[package]]
@@ -444,6 +500,7 @@ name = "aphrody-ffi"
 version = "0.2.0"
 dependencies = [
  "aphrody-core",
+ "aphrody-corelib",
  "depot-core",
  "depot-forge",
  "depot-graph",
@@ -452,7 +509,6 @@ dependencies = [
  "depot-re",
  "serde",
  "serde_json",
- "sovereign-corelib",
 ]
 
 [[package]]
@@ -5430,6 +5486,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5905ec755cc8386d7928353e4d356d2be3e89e81e5ca01fe630a1ca4d08dc175"
 
 [[package]]
+name = "flatbuffers"
+version = "25.12.19"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "35f6839d7b3b98adde531effaf34f0c2badc6f4735d26fe74709d8e513a96ef3"
+dependencies = [
+ "bitflags 2.13.2",
+ "rustc_version",
+]
+
+[[package]]
 name = "flate2"
 version = "1.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6902,6 +6968,7 @@ checksum = "e4eba85ea1d0a966a983acd07deee566e67395d2d96b6fb39e62b5a833f1eb0b"
 [[package]]
 name = "glob-match"
 version = "0.2.1"
+source = "git+https://github.com/aphrody-labs/glob-match?rev=2307a20a449d9419947be65b5d904fc0a880feb0#2307a20a449d9419947be65b5d904fc0a880feb0"
 
 [[package]]
 name = "globset"
@@ -9675,7 +9742,7 @@ dependencies = [
 [[package]]
 name = "pageant"
 version = "0.2.5"
-source = "git+https://github.com/aphrody-dev/russh?branch=aphrody%2Fsntrup761#a9f644259fa57ddb2da0f980e6ae813b829f7ad4"
+source = "git+https://github.com/aphrody-dev/russh?rev=a9f644259fa57ddb2da0f980e6ae813b829f7ad4#a9f644259fa57ddb2da0f980e6ae813b829f7ad4"
 dependencies = [
  "base16ct 1.0.0",
  "byteorder",
@@ -10520,6 +10587,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "psl"
+version = "2.1.252"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "efefe9aafbc2e8fd9157db7eb16c61a86cbf0ead714adf510a7ae662470fe369"
+dependencies = [
+ "psl-types",
+]
+
+[[package]]
+name = "psl-types"
+version = "2.0.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "33cb294fe86a74cbcf50d4445b37da762029549ebeea341421c7c70370f86cac"
+
+[[package]]
 name = "psm"
 version = "0.1.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -10666,6 +10748,7 @@ dependencies = [
 [[package]]
 name = "quinn-proto"
 version = "0.11.19"
+source = "git+https://github.com/aphrody-labs/quinn?rev=6e76339be91de7b5784cca640307329d1cf372a2#6e76339be91de7b5784cca640307329d1cf372a2"
 dependencies = [
  "aws-lc-rs",
  "bytes",
@@ -11308,7 +11391,7 @@ dependencies = [
 [[package]]
 name = "russh"
 version = "0.65.1"
-source = "git+https://github.com/aphrody-dev/russh?branch=aphrody%2Fsntrup761#a9f644259fa57ddb2da0f980e6ae813b829f7ad4"
+source = "git+https://github.com/aphrody-dev/russh?rev=a9f644259fa57ddb2da0f980e6ae813b829f7ad4#a9f644259fa57ddb2da0f980e6ae813b829f7ad4"
 dependencies = [
  "aes 0.9.4",
  "bitflags 2.13.2",
@@ -11379,7 +11462,7 @@ dependencies = [
 [[package]]
 name = "russh-cryptovec"
 version = "0.62.0"
-source = "git+https://github.com/aphrody-dev/russh?branch=aphrody%2Fsntrup761#a9f644259fa57ddb2da0f980e6ae813b829f7ad4"
+source = "git+https://github.com/aphrody-dev/russh?rev=a9f644259fa57ddb2da0f980e6ae813b829f7ad4#a9f644259fa57ddb2da0f980e6ae813b829f7ad4"
 dependencies = [
  "log",
  "nix 0.31.3",
@@ -11410,7 +11493,7 @@ dependencies = [
 [[package]]
 name = "russh-util"
 version = "0.52.0"
-source = "git+https://github.com/aphrody-dev/russh?branch=aphrody%2Fsntrup761#a9f644259fa57ddb2da0f980e6ae813b829f7ad4"
+source = "git+https://github.com/aphrody-dev/russh?rev=a9f644259fa57ddb2da0f980e6ae813b829f7ad4#a9f644259fa57ddb2da0f980e6ae813b829f7ad4"
 dependencies = [
  "chrono",
  "tokio",
@@ -11437,6 +11520,7 @@ dependencies = [
 name = "rust-stack"
 version = "0.1.0"
 dependencies = [
+ "aphrody-corelib",
  "argon2",
  "axum",
  "base64 0.23.1",
@@ -11451,7 +11535,6 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2 0.11.1",
- "sovereign-corelib",
  "tokio",
  "ureq",
 ]
@@ -11798,6 +11881,12 @@ dependencies = [
  "smithay-client-toolkit",
  "tiny-skia",
 ]
+
+[[package]]
+name = "seahash"
+version = "4.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1c107b6f4780854c8b126e228ea8869f4d7b71260f962fefb57b996b8959ba6b"
 
 [[package]]
 name = "sec1"
@@ -12382,7 +12471,7 @@ dependencies = [
 [[package]]
 name = "sntrup761"
 version = "0.4.0"
-source = "git+https://github.com/aphrody-dev/sntrup761?branch=aphrody%2Fpure-rust#54e3a99495e974586085df0c86583eb7c606854e"
+source = "git+https://github.com/aphrody-dev/sntrup761?rev=54e3a99495e974586085df0c86583eb7c606854e#54e3a99495e974586085df0c86583eb7c606854e"
 dependencies = [
  "rand 0.10.3",
  "rand_chacha 0.10.0",
@@ -12400,27 +12489,6 @@ checksum = "c3d1e2c7f27f8d4cb10542a02c49005dbd6e93095799d6f3be745fae9f8fedd4"
 dependencies = [
  "libc 0.2.191",
  "windows-sys 0.61.2",
-]
-
-[[package]]
-name = "sovereign-corelib"
-version = "0.1.0"
-dependencies = [
- "bytemuck",
- "byteorder",
- "js-sys",
- "log",
- "memmap2",
- "pollster",
- "serde",
- "serde-wasm-bindgen",
- "serde_json",
- "sha2 0.11.1",
- "tempfile",
- "thiserror 2.0.21",
- "wasm-bindgen",
- "web-sys",
- "wgpu",
 ]
 
 [[package]]
@@ -12635,7 +12703,7 @@ dependencies = [
 [[package]]
 name = "steamroom"
 version = "0.2.0"
-source = "git+https://github.com/aphrody-dev/steamroom?tag=v0.2.0#2bc5b67f2c703dff675711de7f565117bdfa6671"
+source = "git+https://github.com/aphrody-dev/steamroom?rev=2bc5b67f2c703dff675711de7f565117bdfa6671#2bc5b67f2c703dff675711de7f565117bdfa6671"
 dependencies = [
  "adler",
  "aes 0.9.4",
@@ -12674,7 +12742,7 @@ dependencies = [
 [[package]]
 name = "steamroom-client"
 version = "0.2.0"
-source = "git+https://github.com/aphrody-dev/steamroom?tag=v0.2.0#2bc5b67f2c703dff675711de7f565117bdfa6671"
+source = "git+https://github.com/aphrody-dev/steamroom?rev=2bc5b67f2c703dff675711de7f565117bdfa6671#2bc5b67f2c703dff675711de7f565117bdfa6671"
 dependencies = [
  "base64 0.22.1",
  "bytes",

@@ -1,6 +1,0 @@
-# alternative main, for different interpreters
-bin/osh_parse.py
-bin/osh_eval.py
-
-# flag problems
-# ./oil_lang/builtin_oil.py

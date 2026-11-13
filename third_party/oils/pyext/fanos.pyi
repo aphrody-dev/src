@@ -1,6 +1,0 @@
-from typing import List, Optional
-
-# returns a blob, or None on EOF
-def recv(fd: int, fd_out: List[int]) -> Optional[str]: ...
-
-def send(fd: int, msg: str, fd0: int = -1, fd1: int = -1, fd2: int = -1) -> None: ...

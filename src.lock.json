@@ -3419,6 +3419,20 @@
             },
             "sparse_paths": null
         },
+        "third_party/oils": {
+            "path": "C:\\src\\third_party\\oils",
+            "url": "https://github.com/aphrody-labs/oils.git",
+            "upstream_url": "https://github.com/oils-for-unix/oils.git",
+            "commit": "afe7c4ceeb070cfefe99994e15fed2128f3456c6",
+            "branch": "windows-native",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/oils.git",
+                "upstream": "https://github.com/oils-for-unix/oils.git"
+            },
+            "sparse_paths": null
+        },
         "third_party/ollama": {
             "path": "C:\\src\\third_party\\ollama",
             "url": "https://github.com/ollama/ollama.git",

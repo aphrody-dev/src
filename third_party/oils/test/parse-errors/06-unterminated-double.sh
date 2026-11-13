@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-echo A
-echo B
-# double quote close to the left
-echo "0123456789 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789
-echo D
-echo E

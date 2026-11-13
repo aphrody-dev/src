@@ -1,5 +1,0 @@
-eval_input: expr NEWLINE* ENDMARKER
-
-expr: ['if'] atom (('+'|'-') atom)*
-
-atom: NAME | NUMBER

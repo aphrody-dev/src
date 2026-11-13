@@ -1,1 +1,0 @@
-build/testdata/hello-data.txt hello-data.txt

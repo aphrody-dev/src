@@ -425,8 +425,11 @@ opt-level = 1
 
 [patch.crates-io]
 # aphrody-dev forks: russh with sntrup761x25519-sha512 (OpenSSH hybrid PQ kex), pure-Rust sntrup761.
-russh = { git = "https://github.com/aphrody-dev/russh", branch = "aphrody/sntrup761" }
-sntrup761 = { git = "https://github.com/aphrody-dev/sntrup761", branch = "aphrody/pure-rust" }
-# Labs patches (third_party/patches, see docs/labs-legacy and third_party/patches/*/README).
-quinn-proto = { path = "third_party/patches/quinn-proto" }
-glob-match = { path = "third_party/patches/glob-match" }
+# Every git source is pinned by rev (branch noted for `ay lock --deps --bump`); deny.toml allows only these repos.
+russh = { git = "https://github.com/aphrody-dev/russh", rev = "a9f644259fa57ddb2da0f980e6ae813b829f7ad4" } # aphrody/sntrup761
+sntrup761 = { git = "https://github.com/aphrody-dev/sntrup761", rev = "54e3a99495e974586085df0c86583eb7c606854e" } # aphrody/pure-rust
+# Lore patches (sites marked `LORE:`), formerly vendored in third_party/patches.
+# quinn-proto 0.11.19 + max_rtt, is_crypto, windowed BBR min_rtt, bounded BBR window.
+quinn-proto = { git = "https://github.com/aphrody-labs/quinn", rev = "6e76339be91de7b5784cca640307329d1cf372a2" } # aphrody/lore
+# glob-match 0.2.1 (upstream idle since 2024-08) + `**` backtracking fix, gitignore component semantics.
+glob-match = { git = "https://github.com/aphrody-labs/glob-match", rev = "2307a20a449d9419947be65b5d904fc0a880feb0" } # aphrody/lore

@@ -1,5 +1,0 @@
-
-
-echo 'runtime-error before'
-false
-echo 'runtime-error after'

@@ -1,6 +1,0 @@
-
-# no 'provide'
-
-proc p {
-  echo hi
-}

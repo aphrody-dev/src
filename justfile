@@ -381,12 +381,21 @@ test-affected ref="origin/main":
     pyp=$(printf '%s\n' "$out" | awk -F'\t' '$1=="uv" {printf "%s/%s ", "{{root}}", $3}')
     [ -z "$pyp" ] || uv run pytest $pyp
 
+# Supply-chain gates (docs/DEPS-MINIMIZE.md): cargo-deny (licenses, advisories, bans, sources pinned by rev) and the bun workspace check
+deny *flags:
+    cargo deny --locked check {{flags}}
+
+js-deps *flags:
+    bun "{{root}}/scripts/js-deps-check.ts" --root "{{root}}" {{flags}}
+
 # Pre-push gate: format, layered deps, architecture rules
 check:
     bun fmt --check
     cargo fmt --all --check
     bun check -b
     just checkdeps
+    just js-deps
+    just deny
     just identity check
     ay arch check --root "{{root}}"
 

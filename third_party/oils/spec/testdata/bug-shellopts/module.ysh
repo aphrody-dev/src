@@ -1,6 +1,0 @@
-echo a
-set -o errexit
-echo b
-. ./common.sh
-const __provide__ = :| |
-var tst = 'module string'

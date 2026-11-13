@@ -1,6 +1,0 @@
-
-const __provide__ = :| foo |
-
-proc foo {
-  echo )
-}
