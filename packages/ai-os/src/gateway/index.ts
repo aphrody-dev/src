@@ -6,6 +6,8 @@
 // Sessions keep per-id history (multi-turn) and every turn goes through core run() (Context-selected memory/skills).
 import { timingSafeEqual } from "node:crypto";
 import { run } from "../core/agent";
+import { layout } from "../core/home";
+import { Memory } from "../core/memory";
 import type { LanguageModel, Message } from "../llm/types";
 
 export type Inbound = {
@@ -51,10 +53,32 @@ export type GatewayOptions = {
   channels?: Channel[];
   name?: string;
   allowShell?: boolean;
+  /** Idle sessions are dropped after this many ms (default 1 h). */
+  sessionTtlMs?: number;
+  /** At most this many sessions are kept; the least recently used goes first (default 1000). */
+  maxSessions?: number;
+  /** Messages kept per session history (default 200). */
+  maxHistory?: number;
 };
 
 export function createGateway(o: GatewayOptions) {
   const sessions = new Map<string, Message[]>();
+  const seen = new Map<string, number>(); // session -> last use (insertion order = LRU order)
+  const ttl = o.sessionTtlMs ?? 3_600_000;
+  const maxSessions = o.maxSessions ?? 1000;
+  const maxHistory = o.maxHistory ?? 200;
+  const evict = (now = Date.now()) => {
+    for (const [id, at] of seen) {
+      if (now - at <= ttl && seen.size <= maxSessions) break;
+      if (queue.has(id)) continue; // never drop a session with a turn in flight
+      seen.delete(id);
+      sessions.delete(id);
+    }
+  };
+  // Keep one memory store open for the gateway's lifetime (shared with every turn).
+  const memory = Memory.acquire(layout(o.home).memoryDb);
+  const sweep = setInterval(evict, Math.min(ttl, 60_000));
+  sweep.unref?.();
   const channels = new Map(
     (o.channels ?? [webhookChannel()]).map((c) => [c.id, c]),
   );
@@ -62,6 +86,9 @@ export function createGateway(o: GatewayOptions) {
   const turn = (session: string, text: string) => {
     const prev = queue.get(session) ?? Promise.resolve();
     const next = prev.then(async () => {
+      seen.delete(session);
+      seen.set(session, Date.now());
+      evict();
       const history = sessions.get(session) ?? [];
       sessions.set(session, history);
       const r = await run({
@@ -72,6 +99,8 @@ export function createGateway(o: GatewayOptions) {
         history,
         allowShell: o.allowShell,
       });
+      if (history.length > maxHistory)
+        history.splice(0, history.length - maxHistory);
       return r.text;
     });
     const settled = next
@@ -191,5 +220,15 @@ export function createGateway(o: GatewayOptions) {
       },
     },
   });
-  return { server, url: server.url, sessions, stop: () => server.stop(true) };
+  return {
+    server,
+    url: server.url,
+    sessions,
+    evict,
+    stop: () => {
+      clearInterval(sweep);
+      Memory.release(memory);
+      return server.stop(true);
+    },
+  };
 }

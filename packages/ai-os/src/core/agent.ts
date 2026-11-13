@@ -34,7 +34,7 @@ export async function run(o: RunOptions) {
   const L = layout(o.home);
   mkdirSync(o.home, { recursive: true });
   const cfg = await loadConfig(o.home);
-  const memory = new Memory(L.memoryDb);
+  const memory = Memory.acquire(L.memoryDb);
   const skills = new Skills(L.skills, memory.ctx);
   try {
     await skills.sync();
@@ -80,6 +80,6 @@ export async function run(o: RunOptions) {
       context: selected.map((s) => ({ id: s.id, score: s.score })),
     };
   } finally {
-    memory.close();
+    Memory.release(memory);
   }
 }

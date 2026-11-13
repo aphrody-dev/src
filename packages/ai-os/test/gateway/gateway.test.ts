@@ -72,3 +72,28 @@ test("gateway: channel webhooks require the gateway token unless the channel ver
     g.stop();
   }
 });
+
+test("gateway: idle sessions expire, LRU cap, bounded history", async () => {
+  const h = mkdtempSync(join(tmpdir(), "agent-gw-ttl-"));
+  const g = createGateway({
+    home: h,
+    model: await resolveModel("echo/gw"),
+    sessionTtlMs: 50,
+    maxSessions: 2,
+    maxHistory: 4,
+  });
+  const say = (session: string, text: string) =>
+    fetch(new URL("/channels/webhook", g.url).href, {
+      method: "POST",
+      body: JSON.stringify({ session, text }),
+    }).then((r) => r.json());
+  for (let i = 0; i < 3; i++) await say("a", `t${i}`);
+  expect(g.sessions.get("webhook:a")?.length).toBe(4);
+  await say("b", "x");
+  await say("c", "y");
+  expect([...g.sessions.keys()].sort()).toEqual(["webhook:b", "webhook:c"]);
+  await Bun.sleep(80);
+  g.evict();
+  expect(g.sessions.size).toBe(0);
+  g.stop();
+});

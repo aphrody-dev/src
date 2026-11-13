@@ -3,7 +3,24 @@
 import { Context, type Embedder } from "./context";
 import { resolveEmbedder } from "./model";
 
+const shared = new Map<string, { m: Memory; refs: number }>();
+
 export class Memory {
+  /** One open store per path, shared by concurrent users (gateway sessions, agent turns); closed when the last one releases. */
+  static acquire(path: string): Memory {
+    const e = shared.get(path) ?? { m: new Memory(path), refs: 0 };
+    e.refs++;
+    shared.set(path, e);
+    return e.m;
+  }
+  static release(m: Memory) {
+    for (const [path, e] of shared)
+      if (e.m === m && --e.refs <= 0) {
+        shared.delete(path);
+        m.close();
+      }
+  }
+
   readonly ctx: Context;
   constructor(
     path: string,
