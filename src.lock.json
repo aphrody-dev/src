@@ -1581,11 +1581,11 @@
             "sparse_paths": null
         },
         "third_party/bun": {
-            "path": "C:\\src\\third_party\\bun",
+            "path": "third_party/bun",
             "url": "https://github.com/aphrody-labs/bun.git",
             "upstream_url": "https://github.com/oven-sh/bun.git",
-            "commit": "3d03a0a9e0ea3a9f0be91f79ad2dfa4c57f76ddf",
-            "branch": "feat/linux-kernel-7.4",
+            "commit": "551034319f54b1f93e4045fb67851a835b787f36",
+            "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
