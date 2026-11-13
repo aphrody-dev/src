@@ -2,7 +2,7 @@
 // supplémentaires pour les forks tiers d'un même réseau (un projet = un clone, voir docs/ARCHITECTURE-ROOT.md).
 // Idempotent. Le dossier existant est retrouvé dans src.lock.json par son URL (origin ou upstream), sinon le clone
 // est créé à plat : third_party/<nom> (blobless + Scalar via `ay git clone`).
-// Usage (racine du dépôt) : bun packages/machine/src/forks.ts [--check]   puis : ay lock --lock-only
+// Usage (racine du dépôt) : bun packages/machine/src/forks.ts [--check] [nom...]   puis : ay lock --lock-only
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
@@ -11,6 +11,8 @@ type Fork = {
   upstream: string;
   remotes?: Record<string, string>;
   sparse?: string[];
+  fork?: string; // nom du fork aphrody-labs quand il diffère (collision, nom générique)
+  dir?: string; // chemin relatif hors third_party/ (apps/<x>/upstream/<nom> : site, GUI)
 };
 const gh = (r: string) => `https://github.com/${r}.git`;
 const FORKS: Fork[] = [
@@ -32,10 +34,6 @@ const FORKS: Fork[] = [
   }, // fork du miroir GitHub non officiel
   // Shell et outils (remplacement de Git Bash, MSYS2, pwsh, WSL)
   ...[
-    "unixwin/niubash",
-    "unixwin/rubash",
-    "unixwin/WinuxCmd",
-    "unixwin/niu-git",
     "microsoft/git",
     "microsoft/coreutils",
     "uutils/findutils",
@@ -202,10 +200,41 @@ const FORKS: Fork[] = [
       "Source/cmake",
     ],
   },
+  // Écosystème unixwin (2026-11-13) : tous les dépôts de l'org, décisions dans docs/unixwin/DEDUP.md. Code et
+  // données dans third_party/<nom> ; site et GUI dans apps/unixwin/upstream/<nom> ; build et installation par
+  // scripts/unixwin (just unixwin-*). unixwin/codex n'est pas un clone : remote `unixwin` de third_party/codex.
+  ...[
+    "niubash",
+    "rubash",
+    "WinuxCmd",
+    "niu-git",
+    "ruline",
+    "oh-my-niu",
+    "shellbench",
+    "diffcorpus",
+    "wpm-source",
+    "wpm-artifacts",
+    "winuxcmd-i18n",
+    "winuxsh-profiles",
+  ].map((n) => ({ name: n, upstream: gh(`unixwin/${n}`) })),
+  { name: "unixwin-github", upstream: gh("unixwin/.github") }, // profil de l'org ; « .github » réservé côté aphrody-labs
+  // Archive APT signée : hors chaîne (docs/deps/POLICY.md : jamais apt) ; scripts et métadonnées, sans paquets.
+  {
+    name: "unixwin-apt",
+    upstream: gh("unixwin/apt"),
+    sparse: [".github", "conf", "meta"],
+  },
+  ...["unixwin.dev", "wpm-gui"].map((n) => ({
+    name: n,
+    upstream: gh(`unixwin/${n}`),
+    dir: `apps/unixwin/upstream/${n}`,
+  })),
 ];
 
 const repo = join(import.meta.dir, "..", "..", "..");
 const check = process.argv.includes("--check");
+// Filtre optionnel : noms de forks en arguments (bun forks.ts --check niubash rubash).
+const only = new Set(process.argv.slice(2).filter((a) => !a.startsWith("--")));
 const norm = (u = "") =>
   u
     .toLowerCase()
@@ -230,7 +259,8 @@ const run = (cwd: string, ...a: string[]) => {
 
 let drift = 0;
 for (const f of FORKS) {
-  const origin = gh(`aphrody-labs/${f.name}`);
+  if (only.size && !only.has(f.name)) continue;
+  const origin = gh(`aphrody-labs/${f.fork ?? f.name}`);
   const want: Record<string, string> = {
     origin,
     upstream: f.upstream,
@@ -240,7 +270,7 @@ for (const f of FORKS) {
   const found = Object.entries(lock.repositories).find(
     ([, v]) => urls.has(norm(v.url)) || urls.has(norm(v.upstream_url)),
   )?.[0];
-  const rel = found ?? `third_party/${f.name}`;
+  const rel = found ?? f.dir ?? `third_party/${f.name}`;
   const dir = join(repo, rel);
   if (!existsSync(join(dir, ".git"))) {
     drift++;

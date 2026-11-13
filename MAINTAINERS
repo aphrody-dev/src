@@ -129,7 +129,6 @@ F:	MAINTAINERS
 F:	crates/unix-cachyos/
 F:	crates/unix-distro/
 F:	crates/unix-omarchy/
-F:	crates/unix-uutils/
 F:	docs/linux-kernel-story/
 F:	docs/patches/
 F:	packages/knowledge-engine/

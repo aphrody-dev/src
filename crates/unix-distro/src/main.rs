@@ -5,12 +5,11 @@ use clap::{Parser, Subcommand};
 use omarchy_cli::{ArchCommand, PatchesCommand, PluginsCommand, ThemesCommand, WslCommand};
 use std::path::PathBuf;
 use unix_cachyos::{CachyOsConfigGenerator, ProtonWineOrchestrator, SystemHardwareProfile};
-use unix_uutils::UutilsRegistry;
 
 #[derive(Parser, Debug)]
 #[command(name = "unix-distro")]
 #[command(
-    about = "Sovereign Unix Distribution & Omarchy/CachyOS/Arch/uutils/WinNT/GPU Orchestrator",
+    about = "Sovereign Unix Distribution & Omarchy/CachyOS/Arch/WinNT/GPU Orchestrator",
     long_about = None
 )]
 struct Cli {
@@ -44,18 +43,6 @@ enum Commands {
     WineOrchestrate {
         #[arg(long)]
         export_sh: bool,
-    },
-    /// List all All-GNU-in-Rust utilities in the uutils registry
-    UutilsList,
-    /// Install isolated uutils shims into C:\src\crates\unix\bin
-    UutilsInstall {
-        #[arg(short, long, default_value = "C:\\src\\crates\\unix\\bin")]
-        target_dir: PathBuf,
-    },
-    /// Dispatch an isolated uutils command
-    UutilsDispatch {
-        utility: String,
-        args: Vec<String>,
     },
     /// Omarchy + Aether-in-Rust theme engine (25 themes -> Hyprland, COSMIC RON, Waybar, Terminal, Neovim, CSS)
     Themes {
@@ -199,66 +186,6 @@ fn main() -> Result<()> {
                 }
             }
         }
-        Commands::UutilsList => {
-            let reg = UutilsRegistry::new();
-            println!(
-                "=== All-GNU-in-Rust Uutils Registry (Total: {}) ===",
-                reg.total_count()
-            );
-            for info in reg.list() {
-                println!(
-                    "{:<12} [{:<12}] {:<18} {}",
-                    info.name,
-                    format!("{:?}", info.category),
-                    info.upstream_crate,
-                    info.summary
-                );
-            }
-        }
-        Commands::UutilsInstall { target_dir } => {
-            let reg = UutilsRegistry::new();
-            let count = reg.install_shims(&target_dir)?;
-            let (ps1, sh) = reg.generate_profile_scripts(&target_dir);
-
-            let ps1_path = target_dir.join("env.ps1");
-            let sh_path = target_dir.join("env.sh");
-            std::fs::write(&ps1_path, ps1)?;
-            std::fs::write(&sh_path, sh)?;
-
-            println!(
-                "Successfully installed {} isolated uutils shims into {}",
-                count,
-                target_dir.display()
-            );
-            println!("Generated environment profiles:");
-            println!("  PowerShell: {}", ps1_path.display());
-            println!("  POSIX sh:   {}", sh_path.display());
-        }
-        Commands::UutilsDispatch { utility, args } => match utility.as_str() {
-            "uname" => {
-                println!(
-                    "Linux sovereign-node 7.4.0-rc2-cachyos-sm89 #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux"
-                );
-            }
-            "whoami" => {
-                println!("sovereign-operator");
-            }
-            "echo" => {
-                println!("{}", args.join(" "));
-            }
-            "pwd" => {
-                let cwd = std::env::current_dir()?;
-                println!("{}", cwd.display());
-            }
-            "true" => std::process::exit(0),
-            "false" => std::process::exit(1),
-            other => {
-                println!(
-                    "[uutils-dispatch] Executed '{}' with args: {:?}",
-                    other, args
-                );
-            }
-        },
         Commands::Themes { command } => omarchy_cli::handle_themes(command)?,
         Commands::Plugins { command } => omarchy_cli::handle_plugins(command)?,
         Commands::Patches { command } => omarchy_cli::handle_patches(command)?,
@@ -267,7 +194,6 @@ fn main() -> Result<()> {
         Commands::Doctor { json } => omarchy_cli::handle_doctor(json)?,
         Commands::Status => {
             let profile = SystemHardwareProfile::probe();
-            let reg = UutilsRegistry::new();
             let orch = ProtonWineOrchestrator::new();
             let doc = aphrody_omarchy::OmarchyDoctorReport::run();
 
@@ -282,10 +208,6 @@ fn main() -> Result<()> {
             println!(
                 "Omarchy WSL2:    {} themes, {} built-in plugins, {} marketplace sources",
                 doc.themes_total, doc.builtin_plugins_total, doc.marketplace_sources_indexed
-            );
-            println!(
-                "GNU Userland:    All-GNU-in-Rust (uutils, {} utilities)",
-                reg.total_count()
             );
             println!(
                 "Gaming / Wine:   Proton-CachyOS ({} active env vars, EAC dispatch: {})",

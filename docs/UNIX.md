@@ -5,7 +5,7 @@ Production-grade Rust 2024 Unix distribution and native WSL2 runtime fusing:
 - **CachyOS (`CachyOS` + `cachyos-wsl`)**: Raptor Lake (`x86-64-v3` AVX2/FMA3/BMI2) `[cachyos-v3]` repositories, Linux `7.4` BORE / `sched-ext` / `dkms-clang` / NVIDIA `sm_89` kernel patch series, `ananicy-cpp`, and Proton-CachyOS `/dev/ntsync` gaming orchestration.
 - **Arch Linux GitLab (`gitlab.archlinux.org/archlinux`)**: Unified `devtools` / `pkgctl` clean-chroot PKGBUILD synthesis and reproducible `.wsl` image builder.
 - **Native Zero-Overhead WSL2 + D3D12 `/dev/dxg`**: Replaces QEMU/WHPX `TryOmarchy.exe` with native WSL2 Hyper-V VMBus + Direct3D 12 Ultimate `/dev/dxg` GPU-PV + Rust WSLg (`C:\src\crates\wayland`).
-- **All-GNU-in-Rust (`uutils`) + Windows NT / GPU SDK**: 73 isolated POSIX utilities plus MSVC 14.51 C++23 and .NET 11/10 WinUI host bridges.
+- **Windows NT / GPU SDK**: MSVC 14.51 C++23 and .NET 11/10 WinUI host bridges. The Windows userland is WinuxCmd under niubash (see docs/unixwin/DEDUP.md); the former `unix-uutils` shim registry was removed on 2026-11-13.
 
 ---
 
@@ -15,12 +15,10 @@ Production-grade Rust 2024 Unix distribution and native WSL2 runtime fusing:
 C:\src\crates\unix\
 ├── Cargo.toml                  # Rust 2024 workspace
 ├── crates\
-│   ├── unix-uutils\            # 73 All-GNU-in-Rust utilities & isolated shim installer
 │   ├── unix-cachyos\           # chwd CPU/GPU hardware probe, pacman/makepkg, Proton/Wine ntsync
 │   ├── unix-omarchy\           # crate `aphrody-omarchy`: Aether themes, plugins, patches, WSL2 builder
 │   └── unix-distro\            # CLIs: `unix-distro.exe` and `omarchy-wsl.exe`
 ├── wsl-distro\                 # Generated native WSL2 bundle (.wslconfig, rootfs, Hyprland/COSMIC, patches)
-├── bin\                        # Isolated userland utility shims (never touches C:\Windows\System32)
 └── winnt-sdk\                  # MSVC C++23 `native_nt_gpu.dll` + .NET 11/10 WinUI Host
 ```
 

@@ -11,6 +11,9 @@ set dotenv-load := false
 root := env("SRC_ROOT", justfile_directory())
 image := env("SRC_IMAGE", "aphrody/monorepo-dev:local")
 
+# Chaîne unixwin (niubash, rubash, WinuxCmd) : recettes unixwin-*
+import "scripts/unixwin/unixwin.just"
+
 # Default recipe: list available commands
 default:
     just --list

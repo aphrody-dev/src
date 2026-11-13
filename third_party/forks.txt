@@ -238,3 +238,11 @@ unixwin/oh-my-niu Python
 unixwin/shellbench Python
 unixwin/diffcorpus Python
 unixwin/wpm-source PowerShell
+unixwin/wpm-artifacts Shell
+unixwin/winuxcmd-i18n PowerShell
+unixwin/winuxsh-profiles Shell
+# unixwin/.github et unixwin/apt : forks aphrody-labs/unixwin-github et unixwin-apt (noms réservé et générique)
+unixwin/.github Markdown
+unixwin/apt GoTemplate
+unixwin/unixwin.dev Astro
+unixwin/wpm-gui Svelte

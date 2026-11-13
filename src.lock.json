@@ -1144,10 +1144,10 @@
             "sparse_paths": null
         },
         "third_party/WinuxCmd": {
-            "path": "C:\\src\\third_party\\WinuxCmd",
+            "path": "third_party/WinuxCmd",
             "url": "https://github.com/aphrody-labs/WinuxCmd.git",
             "upstream_url": "https://github.com/unixwin/WinuxCmd.git",
-            "commit": "c2fa3db050d3e5ef050a20d4de1818cf475500c1",
+            "commit": "c74112c06a1a1946361492baab2a4715b76d95e7",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
@@ -3256,7 +3256,7 @@
             "sparse_paths": null
         },
         "third_party/niu-git": {
-            "path": "C:\\src\\third_party\\niu-git",
+            "path": "third_party/niu-git",
             "url": "https://github.com/aphrody-labs/niu-git.git",
             "upstream_url": "https://github.com/unixwin/niu-git.git",
             "commit": "06bc3435ee8a0bbeddfe1d0050fbb4038dffdec7",
@@ -3270,10 +3270,10 @@
             "sparse_paths": null
         },
         "third_party/niubash": {
-            "path": "C:\\src\\third_party\\niubash",
+            "path": "third_party/niubash",
             "url": "https://github.com/aphrody-labs/niubash.git",
             "upstream_url": "https://github.com/unixwin/niubash.git",
-            "commit": "98853c5036129f02cfb5fcbf58ed7f1fe435c420",
+            "commit": "1acf7953bc1e122944dc095c51c548159e9c3acb",
             "branch": "master",
             "engine": "git",
             "pillar": "git",
@@ -3890,10 +3890,10 @@
             "sparse_paths": null
         },
         "third_party/rubash": {
-            "path": "C:\\src\\third_party\\rubash",
+            "path": "third_party/rubash",
             "url": "https://github.com/aphrody-labs/rubash.git",
             "upstream_url": "https://github.com/unixwin/rubash.git",
-            "commit": "c28a9ddae4f9c3829a75880901c4086f0631cb26",
+            "commit": "ae43f3e56a76d7b35b1df2ab68a8afa8cf6a07f6",
             "branch": "master",
             "engine": "git",
             "pillar": "git",
@@ -6695,6 +6695,178 @@
                 "/crates/sum_tree/",
                 "/crates/util/"
             ]
+        },
+        "third_party/ruline": {
+            "path": "third_party/ruline",
+            "url": "https://github.com/aphrody-labs/ruline.git",
+            "upstream_url": "https://github.com/unixwin/ruline.git",
+            "commit": "d4843d09461b774c23b52dd5ff34dd6b6bedb3ba",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/ruline.git",
+                "upstream": "https://github.com/unixwin/ruline.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/oh-my-niu": {
+            "path": "third_party/oh-my-niu",
+            "url": "https://github.com/aphrody-labs/oh-my-niu.git",
+            "upstream_url": "https://github.com/unixwin/oh-my-niu.git",
+            "commit": "e62230eabd3335ab4b82a1360f25ee91e022b65f",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/oh-my-niu.git",
+                "upstream": "https://github.com/unixwin/oh-my-niu.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/shellbench": {
+            "path": "third_party/shellbench",
+            "url": "https://github.com/aphrody-labs/shellbench.git",
+            "upstream_url": "https://github.com/unixwin/shellbench.git",
+            "commit": "6d08c0e6d8ac7531122a83b1c27515712a87f6d7",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/shellbench.git",
+                "upstream": "https://github.com/unixwin/shellbench.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/diffcorpus": {
+            "path": "third_party/diffcorpus",
+            "url": "https://github.com/aphrody-labs/diffcorpus.git",
+            "upstream_url": "https://github.com/unixwin/diffcorpus.git",
+            "commit": "8d09d7d7eadffc0bd4068074e874204e4b4efc94",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/diffcorpus.git",
+                "upstream": "https://github.com/unixwin/diffcorpus.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/wpm-source": {
+            "path": "third_party/wpm-source",
+            "url": "https://github.com/aphrody-labs/wpm-source.git",
+            "upstream_url": "https://github.com/unixwin/wpm-source.git",
+            "commit": "72ec88dac7dc42ff386f7e8af878c996ea28d892",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/wpm-source.git",
+                "upstream": "https://github.com/unixwin/wpm-source.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/wpm-artifacts": {
+            "path": "third_party/wpm-artifacts",
+            "url": "https://github.com/aphrody-labs/wpm-artifacts.git",
+            "upstream_url": "https://github.com/unixwin/wpm-artifacts.git",
+            "commit": "4dbb59519e81c0d01b978834e6fe3a66f4037e91",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/wpm-artifacts.git",
+                "upstream": "https://github.com/unixwin/wpm-artifacts.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/winuxcmd-i18n": {
+            "path": "third_party/winuxcmd-i18n",
+            "url": "https://github.com/aphrody-labs/winuxcmd-i18n.git",
+            "upstream_url": "https://github.com/unixwin/winuxcmd-i18n.git",
+            "commit": "5738b421b2c82a1c7c4915e5712b6e7c72baf553",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/winuxcmd-i18n.git",
+                "upstream": "https://github.com/unixwin/winuxcmd-i18n.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/winuxsh-profiles": {
+            "path": "third_party/winuxsh-profiles",
+            "url": "https://github.com/aphrody-labs/winuxsh-profiles.git",
+            "upstream_url": "https://github.com/unixwin/winuxsh-profiles.git",
+            "commit": "6ff51162b356873efcbe113c3c59be5e432cf54c",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/winuxsh-profiles.git",
+                "upstream": "https://github.com/unixwin/winuxsh-profiles.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/unixwin-github": {
+            "path": "third_party/unixwin-github",
+            "url": "https://github.com/aphrody-labs/unixwin-github.git",
+            "upstream_url": "https://github.com/unixwin/.github.git",
+            "commit": "0e2b1fa9e322b05d362b270169be19667ea73d15",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/unixwin-github.git",
+                "upstream": "https://github.com/unixwin/.github.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/unixwin-apt": {
+            "path": "third_party/unixwin-apt",
+            "url": "https://github.com/aphrody-labs/unixwin-apt.git",
+            "upstream_url": "https://github.com/unixwin/apt.git",
+            "commit": "ca612ddb262ec066a60f8238f698ca7f88dc6669",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/unixwin-apt.git",
+                "upstream": "https://github.com/unixwin/apt.git"
+            },
+            "sparse_paths": [
+                ".github",
+                "conf",
+                "meta"
+            ]
+        },
+        "apps/unixwin/upstream/unixwin.dev": {
+            "path": "apps/unixwin/upstream/unixwin.dev",
+            "url": "https://github.com/aphrody-labs/unixwin.dev.git",
+            "upstream_url": "https://github.com/unixwin/unixwin.dev.git",
+            "commit": "bfacdea5dec87fbaf7ce2f7f323051472519ac30",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/unixwin.dev.git",
+                "upstream": "https://github.com/unixwin/unixwin.dev.git"
+            },
+            "sparse_paths": null
+        },
+        "apps/unixwin/upstream/wpm-gui": {
+            "path": "apps/unixwin/upstream/wpm-gui",
+            "url": "https://github.com/aphrody-labs/wpm-gui.git",
+            "upstream_url": "https://github.com/unixwin/wpm-gui.git",
+            "commit": "c1178078c2441568a61e1017e7d3a7b673d03a7a",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/wpm-gui.git",
+                "upstream": "https://github.com/unixwin/wpm-gui.git"
+            },
+            "sparse_paths": null
         }
     }
 }

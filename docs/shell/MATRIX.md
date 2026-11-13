@@ -84,7 +84,7 @@ Critère éliminatoire : un exécutable nommé `bash.exe`/`sh.exe` qui source le
 | dépendance msys/cygwin (dumpbin) | non | non | oui |
 | taille | — | niu.exe 14,5 Mo, install 103 Mo | — |
 
-Retenu : **niubash 1.5.0**, `C:\Users\aphro\AppData\Local\Programs\Niubash\winuxcmd\bin\bash.exe` (CLAUDE_CODE_GIT_BASH_PATH ; CLAUDE_CODE_USE_POWERSHELL_TOOL=0). brush reste candidat dès que le fix `-c -l` (#1398, d220c79d, main) est publié et #1359/#1317/#1295 corrigés. Snapshot niubash non mesuré ; ~/.bashrc actuel ≈ 6,5 Ko (NV).
+Retenu : **niubash 1.5.0** (autorité et dédoublonnage : docs/unixwin/DEDUP.md ; binaire construit depuis les forks et installé par `just unixwin-install, docs/unixwin/BUILD.md), `C:\Users\aphro\AppData\Local\Programs\Niubash\winuxcmd\bin\bash.exe` (CLAUDE_CODE_GIT_BASH_PATH ; CLAUDE_CODE_USE_POWERSHELL_TOOL=0). brush reste candidat dès que le fix `-c -l` (#1398, d220c79d, main) est publié et #1359/#1317/#1295 corrigés. Snapshot niubash non mesuré ; ~/.bashrc actuel ≈ 6,5 Ko (NV).
 Partage : nt-03 = bas niveau (binaires, PATH, settings, WT, DSC, patchs Win32, port Oils) ; cette session = haut niveau (docs, candidats, forks, conformité fr1, Lore).
 Doublons de forks à trancher par le propriétaire : coreutils-2/uutils-coreutils, coreutils-3/coreutils, fx-1, wterm-1, skills-3, vcpkg-1.
 
