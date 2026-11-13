@@ -29,6 +29,9 @@ const dynamic = (p: string) =>
   p.startsWith("/api/") ||
   p.startsWith("/g/") ||
   p === "/search" ||
+  p === "/os/catalog.json" ||
+  p.startsWith("/os/api/") ||
+  p.startsWith("/os/vm/") ||
   p === "/healthz";
 
 export default {

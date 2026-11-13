@@ -31,6 +31,7 @@ import { render404 } from "./src/seo/html";
 import { PLAY_CSP, renderPlay } from "./src/play/page";
 import { buildImmersive } from "./src/immersive/build";
 import { buildOs } from "./src/os/build";
+import { OS_CSP } from "./src/os/page";
 import {
   holding404,
   HOME_LOCALES,
@@ -181,6 +182,14 @@ emit(
     "  ! Content-Security-Policy",
     `  Content-Security-Policy: ${PLAY_CSP}`,
     "  Permissions-Policy: microphone=(), camera=(), geolocation=(), gamepad=(self)",
+    "/os",
+    "  ! Content-Security-Policy",
+    `  Content-Security-Policy: ${OS_CSP}`,
+    "  Permissions-Policy: microphone=(), camera=(), geolocation=(), gamepad=(self), fullscreen=(self)",
+    "/os/*",
+    "  ! Content-Security-Policy",
+    `  Content-Security-Policy: ${OS_CSP}`,
+    "  Permissions-Policy: microphone=(), camera=(), geolocation=(), gamepad=(self), fullscreen=(self)",
     "/atkinson-next.woff2",
     "  Cache-Control: public, max-age=31536000, immutable",
     "/icons/*",

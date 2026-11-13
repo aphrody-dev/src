@@ -54,3 +54,7 @@ Kept in the Worker (unchanged, nothing lost): host routing of the Craft studios 
 - Real emulator frames (needs a user ROM), gamepad hardware, Firefox and Safari, mobile and 4K are not tested. Game wasm presence depends on `target/game-web` at build time.
 - EASU is an approximation; compare against AMD FidelityFX before calling it FSR 1.0 output.
 - Gemini review of the deliverable (repo rule) is not done.
+
+## Production check (aphrody.com, 2026-11-13)
+
+`aphrody.com` serves `dist/` from R2 through `apps/aphrody/edge/worker.ts`; headers come from `dist/_headers`, and only paths the Worker lists as dynamic reach the Bun origin. Found on the live site: `/os` and the vendor files were served, but the CSP was the site-wide one (it blocks the font and would block wasm), and `/os/catalog.json` returned the HTML 404 page because it was not routed to the origin. Fixed in the repo: `_headers` rules for `/os` and `/os/*` (same CSP as `server.ts`), and `/os/catalog.json`, `/os/api/*`, `/os/vm/*` added to the Worker's dynamic paths. Not yet verified on prod: it needs the next `ay deploy aphrody` and the Worker deploy, and the prd origin image must contain the new routes.
