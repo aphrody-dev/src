@@ -67,7 +67,7 @@ Prefer the plugin tools over hand-built HTTP calls:
 
 - `web_api_call`: generic `<Interface>/<Method>/v<N>` call. It adds `STEAM_WEB_API_KEY` when that variable is set. Without it, only keyless methods work. A keyless call to `ISteamWebAPIUtil/GetSupportedAPIList/v1/` (2026-11-12) lists exactly the methods that take no `key` parameter. The keyless methods, interface by interface, and the common methods that need a key are listed in [`references/interfaces.md`](references/interfaces.md).
 - `store_appdetails`: wraps `store.steampowered.com/api/appdetails` with `cc`, `l`, and `filters`.
-- `resolve_steamid`: turns a vanity name, profile URL, or SteamID form into a SteamID64. Vanity names use ResolveVanityURL when a key is set, otherwise the public `steamcommunity.com/id/<name>/?xml=1` feed (`plugins/steam/servers/steam-mcp.ts`).
+- `resolve_steamid`: turns a vanity name, profile URL, or SteamID form into a SteamID64. Vanity names use ResolveVanityURL when a key is set, otherwise the public `steamcommunity.com/id/<name>/?xml=1` feed (`apps/rosegriffon/plugins/steam/servers/steam-mcp.ts`).
 
 If a call fails, report the HTTP status and the error body. Do not retry the same call in a loop.
 

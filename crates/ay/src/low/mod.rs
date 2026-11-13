@@ -7,7 +7,8 @@
 //!   host (fr1), delegated over `ay ssh` from any other machine;
 //! - `ay engines`: the engines facade of `packages/chromium-bun` (V8, JavaScriptCore, Dawn, wgpu,
 //!   browsers), run by bun, plus `ay engines js` and `ay engines build`;
-//! - `ay agents`: the ai-os orchestrator (`orch`), run by bun.
+//! - `ay agents`: the ai-os orchestrator (`orch`), run by bun;
+//! - `ay steam`: Steam data of the host as JSON over `crates/steam-depot` (docs/gaming/OWNERSHIP.md).
 //!
 //! Plan and status: docs/ay/MIGRATION.md.
 
@@ -16,6 +17,7 @@ pub mod chromium_chain;
 pub mod docs;
 pub mod engines;
 pub mod flat;
+pub mod steam;
 
 #[derive(clap::Subcommand, Debug, PartialEq)]
 pub enum LowCmd {
@@ -35,6 +37,8 @@ pub enum LowCmd {
     /// ai-os orchestrator (packages/ai-os, `orch`): run <workflow.json>, plan "<goal>", lifecycle --task ...
     #[command(disable_help_flag = true)]
     Agents(crate::Rest),
+    /// Steam data as JSON (crates/steam-depot): root, libraries, apps, vdf, compat, host, env
+    Steam(steam::SteamArgs),
 }
 
 pub fn run(cmd: LowCmd) -> i32 {
@@ -46,5 +50,6 @@ pub fn run(cmd: LowCmd) -> i32 {
         LowCmd::Chromium(a) => chromium_chain::run(a),
         LowCmd::Engines(r) => engines::run(&r.args),
         LowCmd::Agents(r) => agents::run(&r.args),
+        LowCmd::Steam(a) => steam::run_steam(a),
     }
 }
