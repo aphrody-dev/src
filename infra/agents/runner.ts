@@ -19,6 +19,7 @@ import {
   readdirSync,
   readFileSync,
   renameSync,
+  rmSync,
   statSync,
   unlinkSync,
   writeFileSync,
@@ -65,6 +66,9 @@ const FLEET: Fleet = Bun.TOML.parse(
   readFileSync(join(HERE, "fleet.toml"), "utf8"),
 ) as Fleet;
 const WIN = process.platform === "win32";
+// Same PATH whether started by systemd, ssh or tmux: user-level CLI dirs first.
+if (!WIN && process.env.HOME)
+  process.env.PATH = `${process.env.HOME}/.bun/bin:${process.env.HOME}/.local/bin:/usr/local/bin:${process.env.PATH ?? "/usr/bin:/bin"}`;
 const HOST = process.env.AGENTS_HOST ?? hostAlias(hostname());
 const SRC = resolve(
   process.env.SRC_ROOT ?? FLEET.hosts[HOST]?.src ?? join(HERE, "..", ".."),
