@@ -127,6 +127,9 @@ function childEnv(extra: Record<string, string> = {}): Record<string, string> {
     )
       e[k] = v;
   const { CF_QUEUES_TOKEN: _q, ...cred } = credEnv(); // queue token: githubEvents() only
+  for (const k of APP_ONLY) delete cred[k];
+  const gh = ghAppToken();
+  if (gh) cred.GH_TOKEN = cred.GITHUB_TOKEN = gh;
   return { ...e, ...cred, ...extra };
 }
 
@@ -144,10 +147,27 @@ const CRED_NAMES = [
   "APHRODY_APP_CLIENT_ID",
 ];
 const APP_ONLY = ["APHRODY_APP_KEY", "APHRODY_APP_CLIENT_ID"];
+// Installation token (1 h) re-minted every 5 min: a child started with it keeps at least 55 min of GitHub access.
+let ghCache: { at: number; token?: string } | null = null;
+function ghAppToken(): string | undefined {
+  if (ghCache && Date.now() - ghCache.at < 300_000) return ghCache.token;
+  ghCache = { at: Date.now(), token: appToken(credEnv()) };
+  return ghCache.token;
+}
 function appToken(creds: Record<string, string>): string | undefined {
   if (!creds.APHRODY_APP_KEY || !creds.APHRODY_APP_CLIENT_ID) return undefined;
   const r = Bun.spawnSync(
-    [process.execPath, join(HERE, "..", "..", "packages", "env-kit", "src", "github-app.ts"), "token", "--owner", "aphrody-labs"],
+    [
+      process.execPath,
+      join(HERE, "..", "..", "packages", "env-kit", "src", "github-app.ts"),
+      "token",
+      "--owner",
+      "aphrody-labs",
+      // Ce dont les rôles ont besoin (pousser sur main, issues, PR, relancer un run, alertes) ; jamais
+      // administration, secrets, workflows ni organisation.
+      "--perm",
+      "contents=write,pull_requests=write,issues=write,actions=write,checks=read,statuses=read,security_events=write,secret_scanning_alerts=write,vulnerability_alerts=read",
+    ],
     {
       stdout: "pipe",
       stderr: "pipe",
@@ -174,9 +194,6 @@ function credEnv(): Record<string, string> {
     );
     if (r.exitCode === 0) env[name] = r.stdout.toString().trim();
   }
-  const app = appToken(env);
-  if (app) env.GH_TOKEN = env.GITHUB_TOKEN = app;
-  for (const k of APP_ONLY) delete env[k];
   credCache = { at: Date.now(), env };
   return env;
 }
@@ -972,7 +989,7 @@ function githubEvents() {
     stdout: "pipe",
     stderr: "pipe",
     timeout: 90_000,
-    env: { ...process.env, ...env, SRC_ROOT: SRC, AGENTS_HOME: HOME, AGENTS_HOST: HOST },
+    env: { ...process.env, CF_QUEUES_TOKEN: env.CF_QUEUES_TOKEN, SRC_ROOT: SRC, AGENTS_HOME: HOME, AGENTS_HOST: HOST },
   });
   const out = r.stdout.toString().trim();
   if (r.exitCode === 0) {

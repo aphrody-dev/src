@@ -30,8 +30,12 @@ export const APP = {
   owner: "aphrody-labs",
   /** Comptes où l'App est installée (toutes les orgs + le compte utilisateur). */
   targets: ["aphrody-labs", "yolo-rs", "aphrody-dev"],
-  /** Orgs qui reçoivent le secret APHRODY_APP_KEY et la variable APHRODY_APP_CLIENT_ID. */
-  ciOrgs: ["aphrody-labs", "yolo-rs"],
+  /**
+   * Secret d'org APHRODY_APP_KEY : visibilité « selected », limitée aux dépôts dont les workflows mintent un jeton
+   * (une clé visible de tous les dépôts donnerait un jeton complet à n'importe quel workflow). yolo-rs n'a aucun dépôt.
+   */
+  ciOrgs: ["aphrody-labs"],
+  ciRepos: ["src"],
   hook: "https://aphrody-github.aphrody-labs.workers.dev/github",
   port: 47800,
 } as const;
@@ -259,7 +263,7 @@ function open(url: string) {
 }
 
 function ghSecret(name: string, value: string, org: string): boolean {
-  return spawnSync("gh", ["secret", "set", name, "--org", org, "--visibility", "all"], { input: value, encoding: "utf8", windowsHide: true }).status === 0;
+  return spawnSync("gh", ["secret", "set", name, "--org", org, "--visibility", "selected", "--repos", APP.ciRepos.join(",")], { input: value, encoding: "utf8", windowsHide: true }).status === 0;
 }
 
 function ghVariable(name: string, value: string, org: string): boolean {
@@ -272,8 +276,11 @@ async function create(a: string[]): Promise<number> {
   const org = opt(a, "--org") ?? APP.owner;
   const name = opt(a, "--name") ?? APP.name;
   const state = randomBytes(16).toString("hex");
+  // Secret du webhook choisi ici (pas celui de la conversion) : il doit être au coffre et dans le Worker avant que
+  // GitHub n'envoie le premier événement. Pousser ensuite le Worker : cf deploy --secrets-file (docs/infra/GITHUB-APP.md).
+  if (!cred("APHRODY_APP_WEBHOOK_SECRET")) secretSet("APHRODY_APP_WEBHOOK_SECRET", randomBytes(32).toString("hex"));
   const esc = (x: string) => x.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
-  const page = `<!doctype html><meta charset=utf-8><title>GitHub App ${name}</title><form id=f method=post action="https://github.com/organizations/${org}/settings/apps/new?state=${state}"><input type=hidden name=manifest value="${esc(JSON.stringify(manifest(name)))}"><button>Créer l'App GitHub ${name}</button></form><script>document.getElementById("f").submit()</script>`;
+  const page = `<!doctype html><meta charset=utf-8><title>GitHub App ${esc(name)}</title><form id=f method=post action="https://github.com/organizations/${encodeURIComponent(org)}/settings/apps/new?state=${state}"><input type=hidden name=manifest value="${esc(JSON.stringify(manifest(name)))}"><button>Créer l'App GitHub ${esc(name)}</button></form><script>document.getElementById("f").submit()</script>`;
   let finish: (code: number) => void = () => {};
   const done = new Promise<number>((r) => (finish = r));
   const server = Bun.serve({

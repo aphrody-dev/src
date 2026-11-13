@@ -46,7 +46,7 @@ secret_scanning_alert, status, workflow_job, workflow_run. Refusés par le valid
 
 | Commande | Effet |
 |---|---|
-| `ay auth github-app create [--no-open]` | manifest flow (POST du manifeste vers `/organizations/aphrody-labs/settings/apps/new`, conversion `POST /app-manifests/{code}/conversions`) ; clé PEM, client secret, id → coffre ; secret d'org `APHRODY_APP_KEY` et variable d'org `APHRODY_APP_CLIENT_ID` sur aphrody-labs et yolo-rs (stdin) ; webhook posé par `PATCH /app/hook/config` |
+| `ay auth github-app create [--no-open]` | manifest flow (POST du manifeste vers `/organizations/aphrody-labs/settings/apps/new`, conversion `POST /app-manifests/{code}/conversions`) ; clé PEM, client secret, id → coffre ; secret d'org `APHRODY_APP_KEY` (visibilité `selected` : src seul) et variable d'org `APHRODY_APP_CLIENT_ID` sur aphrody-labs (stdin) ; secret du webhook généré au coffre avant la création ; webhook posé par `PATCH /app/hook/config` |
 | `ay auth github-app install` | une page d'installation par compte (`target_id`) |
 | `ay auth github-app status [--json]` | écarts permissions/événements au manifeste, installations, permissions en attente d'acceptation ; exit 1 si écart |
 | `ay auth github-app token [--owner o] [--repos a,b] [--perm k=v,…] -- cmd` | jeton d'installation de 1 h (JWT RS256, `iss` = client id) injecté en `GH_TOKEN`/`GITHUB_TOKEN` ; sans `-- cmd`, écrit seulement dans un tube |
@@ -68,7 +68,7 @@ passe par la page « Permissions & events », puis chaque installation l'accepte
 | Release (`release.yml`, job host) | `GITHUB_TOKEN` : l'événement `release` ne déclenchait rien | jeton de l'App `contents: write` : `release` part au webhook et aux workflows en aval |
 | `claude.yml` | `GITHUB_TOKEN` (commits sans CI) | `github_token` de l'App : contents, pull_requests, issues write ; ses commits déclenchent judge/ci |
 | `ci-revert.yml` | push du revert par `GITHUB_TOKEN` (main jamais revérifié) | push par l'App : judge/ci tournent sur le revert |
-| Agents (`infra/agents/runner.ts`) | `GH_TOKEN` = PAT `gh auth token` dans le credstore prd | `APHRODY_APP_KEY` + `APHRODY_APP_CLIENT_ID` dans le credstore : `GH_TOKEN` = jeton d'installation de 1 h minté par worker (cache 10 min) ; la clé n'atteint jamais les agents ; le PAT reste repli tant que ces deux credentials manquent |
+| Agents (`infra/agents/runner.ts`) | `GH_TOKEN` = PAT `gh auth token` dans le credstore prd | `APHRODY_APP_KEY` + `APHRODY_APP_CLIENT_ID` dans le credstore : `GH_TOKEN` = jeton d'installation de 1 h re-minté toutes les 5 min, borné à contents/pull_requests/issues/actions/security_events/secret_scanning_alerts (write) et checks/statuses/vulnerability_alerts (read) ; la clé n'atteint jamais les agents ; une tâche de plus de 55 min peut perdre GitHub à la fin ; le PAT reste repli tant que ces deux credentials manquent |
 | Miroir steam-depot | push par PAT | sans objet : `aphrody-labs/steam-depot` tire src lui-même avec son `GITHUB_TOKEN` (`mirror.yml`, run 43356990212 vert) |
 | GHCR (`images.yml`) | `GITHUB_TOKEN` | inchangé : le Container registry n'accepte que `GITHUB_TOKEN` en Actions ou un PAT classic (docs « Working with the Container registry ») ; la permission `packages` de l'App sert l'API |
 | Runners auto-hébergés | aucun actif (fr1 hors ligne) | jeton d'enregistrement : `ay auth github-app token -- gh api -X POST orgs/aphrody-labs/actions/runners/registration-token` |
@@ -79,14 +79,19 @@ GitHub → Worker `aphrody-github` (`infra/cloudflare/workers/github-app`, `cf d
 `github-events`) → consommateur HTTP pull (`infra/agents/github-events.ts`, appelé par `runner.ts health` sur
 l'hôte ship toutes les 2 min, jeton `CF_QUEUES_TOKEN` Queues Read+Write) → `var/agents/queue/new/`.
 
-- Le Worker vérifie `X-Hub-Signature-256` (HMAC SHA-256, comparaison en temps constant) et ne met en file qu'un
-  résumé : CI rouge sur la branche par défaut (`workflow_run` failure/timed_out/startup_failure/action_required),
+- Le Worker vérifie `X-Hub-Signature-256` (HMAC SHA-256, 64 hex, comparaison en temps constant), ignore les
+  dépôts hors aphrody-labs, yolo-rs, aphrody-dev (l'App est publique) et ne met en file qu'un résumé : CI rouge sur la branche par défaut (`workflow_run` failure/timed_out/startup_failure/action_required, événement
+  push/schedule/workflow_dispatch/merge_group du dépôt lui-même, jamais une PR de fork),
   push sur la branche par défaut, release publiée, alertes code scanning / Dependabot / secret scanning / advisory,
-  installations. Le reste reçoit 202 sans effet.
+  installations. Le reste reçoit 202 sans effet. Côté consommateur, dépôt, SHA, ref et URL sont validés par
+  expression régulière (sinon aucune tâche) et les titres sont cités comme texte non fiable.
 - Tâches : CI rouge → `sre` (id `ci-fix-<sha>` pour src, partagé avec `ciWatch`, une seule ouverte par dépôt) ;
   push → `reviewer`, regroupés à une revue par dépôt et par heure sur la plage depuis la précédente, sans commit ;
   release → `deployer` en lecture seule ; sécurité → `sre`. Les dépôts hors checkout (ni src ni ses sous-modules)
   donnent un rapport, jamais un commit.
+- Revue Gemini : docs/reviews/gemini-2026-11-13-github-app.md (8/20, corrections dans le commit suivant).
+- prd : `APHRODY_APP_KEY`, `APHRODY_APP_CLIENT_ID`, `CF_QUEUES_TOKEN` chiffrés par `systemd-creds --user` (agent) ;
+  premier `health` : 65 messages tirés, 4 tâches (1 CI rouge rubash, 3 revues).
 - Vérifié le 2026-11-13 : livraisons `workflow_run`/`check_run`/`workflow_job` en 202 ; `pull --dry-run` : 24
   messages, 9 tâches (5 CI rouges src ramenées à 1 par la règle « une ouverte par dépôt »).
 
@@ -104,10 +109,15 @@ Une App GitHub n'authentifie aucun de ces services. Pont retenu pour chacun :
 Les webhooks GitHub de ces services passent par leur propre App ; seuls les événements GitHub (déploiements,
 statuts, releases) arrivent à notre App, puisqu'elle a `deployments` et `statuses`.
 
+## Ancienne App
+
+`aphrody-labs-submodules` (5738448) : désinstallée par sa propre clé (`retire`), secret `SUBMODULES_APP_KEY` et variable
+`SUBMODULES_APP_CLIENT_ID` supprimés de l'org et du coffre, enregistrement supprimé (page « Advanced ») le 2026-11-13 ;
+`gh api /apps/aphrody-labs-submodules` répond 404. Aucun secret `SUBMODULES_TOKEN` ni PAT ne reste dans les secrets
+Actions des dépôts aphrody-labs, aphrody-dev et yolo-rs (inventaire `gh secret list` du 2026-11-13).
+
 ## Reste au propriétaire
 
-1. Supprimer l'ancienne App : page « Advanced » de `aphrody-labs-submodules` → « Delete GitHub App » (ouverte par
-   `ay auth github-app retire`) si la suppression automatisée n'a pas abouti.
-2. Vercel et Cloudflare Workers Builds : installer leurs Apps sur aphrody-labs (pages
-   `https://github.com/apps/vercel/installations/new` et
-   `https://github.com/apps/cloudflare-workers-and-pages/installations/new`), puis lier les projets.
+Vercel et Cloudflare Workers Builds : installer leurs propres Apps sur aphrody-labs
+(`https://github.com/apps/vercel/installations/new`, `https://github.com/apps/cloudflare-workers-and-pages/installations/new`),
+autoriser le compte côté Vercel / Cloudflare, puis lier les projets (`POST /v9/projects/<id>/link` côté Vercel).

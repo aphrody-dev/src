@@ -1,12 +1,16 @@
 import { describe, expect, test } from "bun:test";
 import worker, { classify } from "./index.ts";
 
-const repo = { full_name: "aphrody-labs/src", default_branch: "main" };
+const repo = { full_name: "aphrody-labs/src", default_branch: "main", owner: { login: "aphrody-labs" } };
 
 describe("classify", () => {
   test("CI rouge sur main", () => {
-    const e = classify("workflow_run", "d1", { action: "completed", repository: repo, workflow_run: { conclusion: "failure", head_branch: "main", head_sha: "abc", html_url: "u", name: "ci" } });
+    const e = classify("workflow_run", "d1", { action: "completed", repository: repo, workflow_run: { conclusion: "failure", head_branch: "main", head_sha: "abc", html_url: "u", name: "ci", event: "push", head_repository: { full_name: "aphrody-labs/src" } } });
     expect(e?.kind).toBe("ci_red");
+    // PR de fork dont la branche s appelle main : ignorée.
+    expect(classify("workflow_run", "d4", { action: "completed", repository: repo, workflow_run: { conclusion: "failure", head_branch: "main", event: "pull_request", head_repository: { full_name: "evil/src" } } })).toBeNull();
+    // Installation tierce de l App publique : ignorée.
+    expect(classify("release", "d5", { action: "published", repository: { ...repo, full_name: "x/y", owner: { login: "x" } }, release: { tag_name: "v1" } })).toBeNull();
     expect(classify("workflow_run", "d2", { action: "completed", repository: repo, workflow_run: { conclusion: "failure", head_branch: "feat" } })).toBeNull();
     expect(classify("workflow_run", "d3", { action: "completed", repository: repo, workflow_run: { conclusion: "success", head_branch: "main" } })).toBeNull();
   });

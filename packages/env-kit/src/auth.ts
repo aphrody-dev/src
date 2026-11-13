@@ -391,7 +391,7 @@ export function syncGithubSecrets(m: Manifest, o: AuthOptions, apply: boolean, r
         out.push({ kind: "ci", target, host: "github", status: "action", proof: `${remote.has(name) ? "valeur non synchronisée par ay" : "absent sur GitHub"}`, fix: "ay auth gh-secrets" });
         continue;
       }
-      const r = sh("gh", ["secret", "set", name, scope, owner, ...(scope === "--org" ? ["--visibility", "all"] : []), "--body", "-"], { input: value });
+      const r = sh("gh", ["secret", "set", name, scope, owner, ...(scope === "--org" ? (name === "APHRODY_APP_KEY" ? ["--visibility", "selected", "--repos", "src"] : ["--visibility", "all"]) : []), "--body", "-"], { input: value });
       if (r.ok) state[`${scope}:${target}`] = fp;
       out.push({ kind: "ci", target, host: "github", status: r.ok ? "fixed" : "invalid", proof: `gh secret set ${name} ${scope} ${owner} -> ${r.ok ? "ok" : clean(r.err)}` });
     }

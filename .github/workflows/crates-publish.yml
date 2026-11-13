@@ -26,6 +26,8 @@ concurrency:
 
 jobs:
   publish:
+    # La configuration crates.io autorise le workflow, pas la branche : seule main publie.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:

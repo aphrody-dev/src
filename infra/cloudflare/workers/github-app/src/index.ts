@@ -14,6 +14,8 @@ export type GithubEvent = {
   repo?: string;
   ref?: string;
   sha?: string;
+  /** push : commit de base (payload.before), pour la plage de revue. */
+  before?: string;
   url?: string;
   title?: string;
   actor?: string;
@@ -32,12 +34,16 @@ async function verify(secret: string, body: ArrayBuffer, header: string | null):
   const key = await crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
   const mac = new Uint8Array(await crypto.subtle.sign("HMAC", key, body));
   const hex = header.slice(7);
-  if (hex.length !== mac.length * 2) return false;
+  if (!/^[0-9a-f]{64}$/.test(hex)) return false;
   const got = new Uint8Array(mac.length);
   for (let i = 0; i < got.length; i++) got[i] = Number.parseInt(hex.slice(i * 2, i * 2 + 2), 16);
   return crypto.subtle.timingSafeEqual(mac, got);
 }
 
+/** Comptes où l'App est installée par nous : une installation tierce (App publique) ne crée aucune tâche. */
+export const OWNERS = new Set(["aphrody-labs", "yolo-rs", "aphrody-dev"]);
+// Événements de workflow_run qui reflètent la branche par défaut elle-même (jamais une PR, même de fork).
+const MAIN_EVENTS = new Set(["push", "schedule", "workflow_dispatch", "merge_group"]);
 const FAIL = new Set(["failure", "timed_out", "startup_failure", "action_required"]);
 const SECURITY = new Set(["code_scanning_alert", "dependabot_alert", "secret_scanning_alert", "repository_advisory"]);
 
@@ -53,10 +59,12 @@ export function classify(event: string, delivery: string, p: any): GithubEvent |
     at: new Date().toISOString(),
   };
   const main = p?.repository?.default_branch ?? "main";
-  if (event === "workflow_run" && p.action === "completed" && FAIL.has(p.workflow_run?.conclusion) && p.workflow_run?.head_branch === main)
+  const owner = String(p?.repository?.owner?.login ?? p?.installation?.account?.login ?? "").toLowerCase();
+  if (!OWNERS.has(owner)) return null;
+  if (event === "workflow_run" && p.action === "completed" && FAIL.has(p.workflow_run?.conclusion) && p.workflow_run?.head_branch === main && MAIN_EVENTS.has(p.workflow_run?.event) && p.workflow_run?.head_repository?.full_name === p.repository?.full_name)
     return { ...base, kind: "ci_red", ref: main, sha: p.workflow_run.head_sha, url: p.workflow_run.html_url, title: `${p.workflow_run.name} : ${p.workflow_run.conclusion}` };
   if (event === "push" && p.ref === `refs/heads/${main}` && !p.deleted && p.after && !/^0+$/.test(p.after))
-    return { ...base, kind: "push_main", ref: main, sha: p.after, url: p.compare, title: String(p.head_commit?.message ?? "").split("\n")[0]!.slice(0, 200) };
+    return { ...base, kind: "push_main", ref: main, sha: p.after, before: /^0+$/.test(p.before ?? "") ? undefined : p.before, url: p.compare, title: String(p.head_commit?.message ?? "").split("\n")[0]!.slice(0, 200) };
   if (event === "release" && p.action === "published")
     return { ...base, kind: "release", ref: p.release?.tag_name, url: p.release?.html_url, title: p.release?.name ?? p.release?.tag_name };
   if (SECURITY.has(event) && ["created", "reopened", "published", "reported"].includes(p.action)) {
