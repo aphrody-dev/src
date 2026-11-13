@@ -503,8 +503,8 @@ describe("Zero-copy static serving, hashing and progressive enhancement", () => 
     expect(home).not.toContain('<div id="root"></div>');
     expect(home).toContain('href="/art.svg#volt"');
     expect(existsSync(join(DIST, "art.svg"))).toBe(true);
-    for (const id of ["nt", "aphrody-app", "ay"])
-      expect(existsSync(join(DIST, "icons", `${id}.svg`))).toBe(true);
+    for (const f of ["play.png", "app.png", "nt.ico", "ay.png", "craft.png"])
+      expect(existsSync(join(DIST, "icons", f))).toBe(true);
     // The served favicon set is the generated brand monogram (assets/brand/gen/icons/aphrody-labs), byte for byte.
     const gen = join(
       import.meta.dir,

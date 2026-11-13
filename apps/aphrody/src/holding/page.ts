@@ -219,7 +219,7 @@ function heroScene(alt: string): string {
 /** Public path of a product's own icon (emitted by build.ts from `icon`). */
 const iconPath = (p: ProductBase) => `/icons/${p.id}${extname(p.icon)}`;
 const art = (p: ProductBase, alt: string) =>
-  `<img class="pico" src="${iconPath(p)}" alt="${esc(alt)}" width="72" height="72" loading="lazy">`;
+  `<img class="pico" src="${iconPath(p)}" alt="${esc(alt)}" width="72" height="72">`;
 
 // --- Page ---------------------------------------------------------------------------------------------
 
