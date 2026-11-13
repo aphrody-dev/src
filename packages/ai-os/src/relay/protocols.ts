@@ -53,7 +53,7 @@ export async function call(name: string, args: unknown) {
   if (typeof name !== "string")
     throw Object.assign(new Error("méthode absente"), { code: -32600 });
   const t = toolByName.get(name);
-  if (!t && name.includes("__")) return hubCall(name, args);
+  if (!t && name.includes("__")) return hubCall(name, args ?? {});
   if (!t)
     throw Object.assign(new Error(`outil inconnu : ${name}`), {
       code: -32601,
@@ -111,7 +111,16 @@ export async function mcpRpc(r: Req): Promise<Res | null> {
     });
   const meta = { "io.modelcontextprotocol/serverInfo": serverInfo };
   const complete = (x: Record<string, unknown>) =>
-    modern ? { resultType: "complete", _meta: meta, ...x } : x;
+    modern
+      ? {
+          resultType: "complete",
+          ...x,
+          _meta: {
+            ...meta,
+            ...(x._meta as Record<string, unknown> | undefined),
+          },
+        }
+      : x;
   try {
     switch (r.method) {
       case "server/discover":
@@ -214,18 +223,34 @@ export async function dispatch(
   body: unknown,
   h: (r: Req) => Promise<Res | null>,
 ) {
+  const validId = (id: unknown) =>
+    id === undefined ||
+    id === null ||
+    typeof id === "string" ||
+    (typeof id === "number" && Number.isFinite(id));
   const invalid = (b: unknown) =>
     !b ||
     typeof b !== "object" ||
     Array.isArray(b) ||
     (b as Req).jsonrpc !== "2.0" ||
-    typeof (b as Req).method !== "string";
-  const one = (b: unknown) =>
-    invalid(b)
-      ? Promise.resolve(
-          fail((b as Req)?.id ?? null, -32600, "requête JSON-RPC 2.0 invalide"),
-        )
-      : h(b as Req);
+    typeof (b as Req).method !== "string" ||
+    !validId((b as Req).id) ||
+    ((b as Req).params !== undefined &&
+      ((b as Req).params === null || typeof (b as Req).params !== "object"));
+  // A notification (no id) never gets a response, whatever the handler returns (JSON-RPC 2.0 §4.1).
+  const one = async (b: unknown): Promise<Res | null> => {
+    if (invalid(b)) {
+      const id = (b as any)?.id;
+      return fail(
+        validId(id) ? (id ?? null) : null,
+        -32600,
+        "requête JSON-RPC 2.0 invalide",
+      );
+    }
+    const r = b as Req;
+    const res = await h(r);
+    return r.id === undefined ? null : res;
+  };
   if (Array.isArray(body)) {
     if (!body.length) return fail(null, -32600, "lot JSON-RPC vide");
     const out = (await Promise.all(body.map(one))).filter(Boolean);

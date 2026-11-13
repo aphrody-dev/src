@@ -1,5 +1,7 @@
 // Persistent memory (Hermes memory_tool/memory_manager semantics, MIT, Nous Research).
 // Storage and recall go through Context (attention-style selection); this class is the memory-scoped view.
+import { mkdirSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import { Context, type Embedder } from "./context";
 import { resolveEmbedder } from "./model";
 
@@ -8,9 +10,10 @@ const shared = new Map<string, { m: Memory; refs: number }>();
 export class Memory {
   /** One open store per path, shared by concurrent users (gateway sessions, agent turns); closed when the last one releases. */
   static acquire(path: string): Memory {
-    const e = shared.get(path) ?? { m: new Memory(path), refs: 0 };
+    const key = resolve(path);
+    const e = shared.get(key) ?? { m: new Memory(key), refs: 0 };
     e.refs++;
-    shared.set(path, e);
+    shared.set(key, e);
     return e.m;
   }
   static release(m: Memory) {
@@ -26,6 +29,7 @@ export class Memory {
     path: string,
     embedder: Embedder | undefined = resolveEmbedder(),
   ) {
+    mkdirSync(dirname(resolve(path)), { recursive: true });
     this.ctx = new Context(path, embedder);
     this.ctx.db.run(
       "CREATE TABLE IF NOT EXISTS runs(id INTEGER PRIMARY KEY, task TEXT, result TEXT, steps INTEGER, at TEXT DEFAULT (datetime('now')))",

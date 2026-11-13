@@ -1,3 +1,4 @@
+import type { Mask } from "./context";
 // Tool set exposed to the model (JSON Schema tools, ../llm); names mirror OpenClaw/Hermes core tools.
 import { isAbsolute, relative, resolve } from "node:path";
 import { tool } from "../llm/generate";
@@ -12,6 +13,8 @@ export type ToolCtx = {
   memory: Memory;
   skills: Skills;
   allowShell: boolean;
+  /** The run's permission mask: memory_search and skill_view never read outside it. */
+  mask?: Mask;
 };
 
 function inside(cwd: string, p: string) {
@@ -73,7 +76,18 @@ export function makeTools(ctx: ToolCtx) {
     memory_search: tool({
       description: "Full-text search of long-term memory.",
       inputSchema: s.object({ query: s.string() }),
-      execute: async ({ query }) => ctx.memory.search(query),
+      execute: async ({ query }) => {
+        if (ctx.mask?.sources && !ctx.mask.sources.includes("memory"))
+          return [];
+        const r = await ctx.memory.ctx.select(query, {
+          ...ctx.mask,
+          sources: ["memory"],
+          k: 8,
+          budgetTokens: 1e9,
+          weights: { recency: 0.05 },
+        });
+        return r.map((x) => x.text);
+      },
     }),
     skill_create: tool({
       description:
@@ -95,8 +109,22 @@ export function makeTools(ctx: ToolCtx) {
       description:
         "Load the full body of an agent skill by name before following it.",
       inputSchema: s.object({ name: s.string() }),
-      execute: async ({ name }) =>
-        (await ctx.skills.view(name))?.body ?? `no skill ${name}`,
+      execute: async ({ name }) => {
+        // Skills are indexed as `skill:<name>` entries; the run's mask decides whether this one is visible.
+        const m = ctx.mask;
+        if (m) {
+          const e = ctx.memory.ctx.get(`skill:${name}`);
+          if (
+            !e ||
+            !ctx.memory.ctx.visible(e, {
+              ...m,
+              sources: m.sources ?? ["skill"],
+            })
+          )
+            return `no skill ${name}`;
+        }
+        return (await ctx.skills.view(name))?.body ?? `no skill ${name}`;
+      },
     }),
   };
 }

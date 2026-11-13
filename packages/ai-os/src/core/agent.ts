@@ -23,12 +23,24 @@ export type RunOptions = {
   mask?: Mask;
   /** Force a tool call on the first step (weak local models that otherwise claim success without acting). */
   requireTool?: boolean;
+  /** Cancels the model loop between steps and tools. */
+  signal?: AbortSignal;
 };
+
+/** Homes whose skills and docs were indexed recently: re-indexing every gateway turn is wasted I/O. */
+const indexed = new Map<string, number>();
+const REINDEX_MS = 30_000;
 
 export const INSTRUCTIONS =
   "You are agent, an autonomous assistant running natively on the user's machine. Act through tools. " +
   "When a task succeeds and the procedure is reusable, call skill_create; load a listed skill with skill_view before following it. " +
   "Persist durable facts with memory_add.";
+
+/** Tool instructions only make sense for a model that can call tools. */
+export const instructionsFor = (model: LanguageModel) =>
+  model.tools
+    ? INSTRUCTIONS
+    : "You are agent, an assistant running natively on the user's machine. Answer from the context below; you cannot call tools in this session.";
 
 export async function run(o: RunOptions) {
   const L = layout(o.home);
@@ -37,15 +49,19 @@ export async function run(o: RunOptions) {
   const memory = Memory.acquire(L.memoryDb);
   const skills = new Skills(L.skills, memory.ctx);
   try {
-    await skills.sync();
-    await indexHomeDocs(o.home, memory.ctx);
+    const key = L.memoryDb;
+    if (Date.now() - (indexed.get(key) ?? 0) > REINDEX_MS) {
+      await skills.sync();
+      await indexHomeDocs(o.home, memory.ctx);
+      indexed.set(key, Date.now());
+    }
     const selected = await memory.ctx.select(o.task, {
       sources: ["memory", "skill", "research", "doc"],
       ...cfg.context,
       ...o.mask,
       redact: Bun.env,
     });
-    const prefix = [INSTRUCTIONS, await persona(o.home)]
+    const prefix = [instructionsFor(o.model), await persona(o.home)]
       .filter(Boolean)
       .join("\n\n");
     const ctxBlock = renderContext(selected);
@@ -54,12 +70,16 @@ export async function run(o: RunOptions) {
       model: o.model,
       system,
       messages: [...(o.history ?? []), { role: "user", content: o.task }],
-      tools: makeTools({
-        cwd: o.cwd,
-        memory,
-        skills,
-        allowShell: o.allowShell ?? false,
-      }),
+      tools: o.model.tools
+        ? makeTools({
+            cwd: o.cwd,
+            memory,
+            skills,
+            allowShell: o.allowShell ?? false,
+            mask: o.mask,
+          })
+        : undefined,
+      signal: o.signal,
       maxSteps: o.maxSteps ?? 16,
       requireToolFirst: o.requireTool,
       onStep: Bun.env.AGENT_DEBUG

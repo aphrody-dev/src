@@ -1,9 +1,9 @@
 // Agent core tools served by the relay, the single MCP server and A2A surface of @aphrody/ai-os (it replaces the
 // former stdio server of packages/mcp): long-term memory, skills, council of agent CLIs, and a full agent run on a
 // model discovered at run time. Home: AGENT_HOME, default ~/.agent (same store as the agent CLI).
-import { mkdirSync } from "node:fs";
+import { lstatSync, mkdirSync, realpathSync } from "node:fs";
 import { homedir } from "node:os";
-import { isAbsolute, join, relative, resolve } from "node:path";
+import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { run } from "../core/agent";
 import { CLI, council } from "../core/council";
 import { layout } from "../core/home";
@@ -16,23 +16,44 @@ import type { Tool } from "./tools.ts";
 const home = () => Bun.env.AGENT_HOME ?? join(homedir(), ".agent");
 const str = s.string;
 const withMemory = async <T>(f: (m: Memory) => Promise<T>) => {
-  mkdirSync(home(), { recursive: true });
-  const m = new Memory(layout(home()).memoryDb);
+  const m = Memory.acquire(layout(home()).memoryDb);
   try {
     return await f(m);
   } finally {
-    m.close();
+    Memory.release(m);
   }
 };
 const MEMBERS = Object.keys(CLI);
-/** Remote callers may only pick a workspace inside AGENT_HOME. */
-const workspace = (cwd?: string) => {
-  const abs = resolve(home(), cwd ?? ".");
-  const rel = relative(home(), abs);
-  if (rel.startsWith("..") || isAbsolute(rel))
-    throw new Error(`cwd hors de AGENT_HOME : ${cwd}`);
+const inside = (root: string, target: string) => {
+  const rel = relative(root, target);
+  return (
+    rel === "" ||
+    (rel !== ".." && !rel.startsWith(`..${sep}`) && !isAbsolute(rel))
+  );
+};
+/** Remote callers may only pick a workspace inside AGENT_HOME, symlinks resolved on disk. */
+export const workspace = (cwd?: string) => {
+  mkdirSync(home(), { recursive: true });
+  const root = realpathSync(home());
+  const abs = resolve(root, cwd ?? ".");
+  if (!inside(root, abs)) throw new Error(`cwd hors de AGENT_HOME : ${cwd}`);
+  // Every existing prefix must resolve inside the root before anything is created below it.
+  let cur = root;
+  for (const part of relative(root, abs).split(sep).filter(Boolean)) {
+    cur = join(cur, part);
+    let st;
+    try {
+      st = lstatSync(cur);
+    } catch {
+      break; // the rest does not exist yet
+    }
+    if (st.isSymbolicLink() || !inside(root, realpathSync(cur)))
+      throw new Error(`lien symbolique interdit dans le cwd : ${cwd}`);
+  }
   mkdirSync(abs, { recursive: true });
-  return abs;
+  const real = realpathSync(abs);
+  if (!inside(root, real)) throw new Error(`cwd hors de AGENT_HOME : ${cwd}`);
+  return real;
 };
 
 export const AGENT_TOOLS: Tool[] = [

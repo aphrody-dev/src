@@ -4,7 +4,7 @@
 // A2A is served once, by the relay (A2A 1.0.1 SendMessage, skill agent_run; src/relay/protocols.ts).
 // - channels (/channels/<id>): pluggable adapters; Chat SDK adapters (Slack, Telegram, Discord, Teams...) plug in here.
 // Sessions keep per-id history (multi-turn) and every turn goes through core run() (Context-selected memory/skills).
-import { timingSafeEqual } from "node:crypto";
+import { createHash, timingSafeEqual } from "node:crypto";
 import { run } from "../core/agent";
 import { layout } from "../core/home";
 import { Memory } from "../core/memory";
@@ -57,9 +57,26 @@ export type GatewayOptions = {
   sessionTtlMs?: number;
   /** At most this many sessions are kept; the least recently used goes first (default 1000). */
   maxSessions?: number;
-  /** Messages kept per session history (default 200). */
+  /** Messages kept per session history (default 200), cut at a user turn boundary. */
   maxHistory?: number;
+  /** Agent turns running at once across all sessions; beyond it requests get HTTP 429 (default 16). */
+  maxConcurrentTurns?: number;
 };
+
+export class Busy extends Error {}
+
+/** Drop the oldest messages down to `max`, starting at a user message so no tool result loses its tool call. */
+export function trimHistory(history: Message[], max: number) {
+  if (history.length <= max) return;
+  let cut = history.length - max;
+  while (cut < history.length && history[cut]!.role !== "user") cut++;
+  if (cut >= history.length)
+    cut = Math.max(
+      0,
+      history.findLastIndex((m) => m.role === "user"),
+    );
+  history.splice(0, cut);
+}
 
 export function createGateway(o: GatewayOptions) {
   const sessions = new Map<string, Message[]>();
@@ -67,6 +84,12 @@ export function createGateway(o: GatewayOptions) {
   const ttl = o.sessionTtlMs ?? 3_600_000;
   const maxSessions = o.maxSessions ?? 1000;
   const maxHistory = o.maxHistory ?? 200;
+  const maxActive = o.maxConcurrentTurns ?? 16;
+  let active = 0;
+  const touch = (session: string) => {
+    seen.delete(session);
+    seen.set(session, Date.now());
+  };
   const evict = (now = Date.now()) => {
     for (const [id, at] of seen) {
       if (now - at <= ttl && seen.size <= maxSessions) break;
@@ -83,26 +106,36 @@ export function createGateway(o: GatewayOptions) {
     (o.channels ?? [webhookChannel()]).map((c) => [c.id, c]),
   );
   const queue = new Map<string, Promise<unknown>>(); // serialize turns per session
-  const turn = (session: string, text: string) => {
+  /** One agent turn; `ephemeral` sessions are not kept after the reply. */
+  const turn = (session: string, text: string, ephemeral = false) => {
+    if (active >= maxActive) return Promise.reject(new Busy("too many turns"));
+    active++;
     const prev = queue.get(session) ?? Promise.resolve();
     const next = prev.then(async () => {
-      seen.delete(session);
-      seen.set(session, Date.now());
+      touch(session);
       evict();
       const history = sessions.get(session) ?? [];
-      sessions.set(session, history);
-      const r = await run({
-        task: text,
-        model: o.model,
-        home: o.home,
-        cwd: o.cwd ?? o.home,
-        history,
-        allowShell: o.allowShell,
-      });
-      if (history.length > maxHistory)
-        history.splice(0, history.length - maxHistory);
-      return r.text;
+      if (!ephemeral) sessions.set(session, history);
+      try {
+        const r = await run({
+          task: text,
+          model: o.model,
+          home: o.home,
+          cwd: o.cwd ?? o.home,
+          history,
+          allowShell: o.allowShell,
+        });
+        trimHistory(history, maxHistory);
+        return r.text;
+      } finally {
+        if (ephemeral) seen.delete(session);
+        else touch(session); // idle time counts from the end of the turn
+      }
     });
+    next.then(
+      () => active--,
+      () => active--,
+    );
     const settled = next
       .catch(() => {})
       .finally(() => {
@@ -111,11 +144,16 @@ export function createGateway(o: GatewayOptions) {
     queue.set(session, settled);
     return next;
   };
-  const same = (a: string | null, b: string) => {
-    const x = Buffer.from(a ?? "");
-    const y = Buffer.from(b);
-    return x.length === y.length && timingSafeEqual(x, y);
-  };
+  // Fixed-length digests: the comparison leaks neither content nor token length.
+  const sha256 = (s: string) => createHash("sha256").update(s).digest();
+  const same = (a: string | null, b: string) =>
+    a !== null && timingSafeEqual(sha256(a), sha256(b));
+  const bad = (msg: string) =>
+    Response.json(
+      { error: { message: msg, type: "invalid_request_error" } },
+      { status: 400 },
+    );
+  const busy = () => new Response("too many concurrent turns", { status: 429 });
   const authed = (req: Request) =>
     !o.token || same(req.headers.get("authorization"), `Bearer ${o.token}`);
 
@@ -130,18 +168,37 @@ export function createGateway(o: GatewayOptions) {
         POST: async (req: Bun.BunRequest<"/v1/chat/completions">) => {
           if (!authed(req))
             return new Response("unauthorized", { status: 401 });
-          const j: any = await req.json();
-          const msgs: any[] = j.messages ?? [];
-          const last = [...msgs].reverse().find((m) => m.role === "user");
-          const session = String(
-            j.user ?? req.headers.get("x-session") ?? "openai",
-          );
-          const text = await turn(
-            session,
-            typeof last?.content === "string"
-              ? last.content
-              : JSON.stringify(last?.content ?? ""),
-          );
+          let j: any;
+          try {
+            j = await req.json();
+          } catch {
+            return bad("body is not JSON");
+          }
+          if (!j || typeof j !== "object" || !Array.isArray(j.messages))
+            return bad("messages must be an array");
+          if (j.stream === true) return bad("stream is not supported");
+          const last = [...j.messages]
+            .reverse()
+            .find((m: any) => m?.role === "user");
+          if (!last) return bad("no user message");
+          // Without `user` or `x-session` the turn is ephemeral: no history shared between clients.
+          const named = j.user ?? req.headers.get("x-session");
+          const session = named
+            ? `openai:${String(named)}`
+            : `openai-ephemeral:${crypto.randomUUID()}`;
+          let text: string;
+          try {
+            text = await turn(
+              session,
+              typeof last.content === "string"
+                ? last.content
+                : JSON.stringify(last.content ?? ""),
+              !named,
+            );
+          } catch (e) {
+            if (e instanceof Busy) return busy();
+            throw e;
+          }
           return Response.json({
             id: `chatcmpl-${crypto.randomUUID()}`,
             object: "chat.completion",
@@ -163,9 +220,21 @@ export function createGateway(o: GatewayOptions) {
           if (!ch) return new Response("unknown channel", { status: 404 });
           if (!(ch.verify ? await ch.verify(req.clone()) : authed(req)))
             return new Response("unauthorized", { status: 401 });
-          const msg = await ch.parse(req);
+          let msg: Inbound | Response;
+          try {
+            msg = await ch.parse(req);
+          } catch {
+            return new Response("bad request", { status: 400 });
+          }
           if (msg instanceof Response) return msg;
-          const text = await turn(`${ch.id}:${msg.session}`, msg.text);
+          if (!msg.text) return new Response("empty message", { status: 400 });
+          let text: string;
+          try {
+            text = await turn(`${ch.id}:${msg.session}`, msg.text);
+          } catch (e) {
+            if (e instanceof Busy) return busy();
+            throw e;
+          }
           return (
             (await ch.reply(msg, text)) ?? new Response(null, { status: 204 })
           );

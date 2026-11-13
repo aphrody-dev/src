@@ -252,7 +252,8 @@ export class Context {
   private embedText(e: Pick<Entry, "title" | "text">) {
     return `${e.title ?? ""}\n${e.text}`.slice(0, 8000);
   }
-  private visible(e: Entry, m: Mask) {
+  /** Whether an entry passes a mask (same rule as the SQL filter plus the `allow` predicate). */
+  visible(e: Entry, m: Mask) {
     if (
       m.scopes &&
       !m.scopes.some(

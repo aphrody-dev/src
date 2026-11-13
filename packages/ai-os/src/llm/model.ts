@@ -190,8 +190,16 @@ export function echoModel(name = "echo"): LanguageModel {
 }
 
 /** First model of the first active provider, in providers() order (local servers first). */
+/** First discovered model, preferring providers with a tool-calling chat API (the agent loop needs
+ * tools; CLI-backed providers such as agy or claude only answer prompts). */
 export async function defaultModelId(): Promise<string> {
-  for (const r of await listModels())
+  const all = await listModels();
+  const chat = new Set(
+    providers()
+      .filter((p) => p.chat)
+      .map((p) => p.id),
+  );
+  for (const r of [...all.filter((x) => chat.has(x.provider)), ...all])
     if (r.available && r.models[0]) return r.models[0].id;
   throw new Error(
     "aucun modèle découvert (voir llm_models : Ollama, RELAY_OPENAI_ENDPOINTS, clés API ou CLI agy/claude)",

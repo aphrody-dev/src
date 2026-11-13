@@ -42,8 +42,15 @@ export type GenerateResult = {
   usage: Usage;
 };
 
-const stringify = (v: unknown): string =>
-  typeof v === "string" ? v : JSON.stringify(v ?? null);
+/** Tool output as text; BigInt, cycles, functions and symbols never throw out of the loop. */
+export const stringify = (v: unknown): string => {
+  if (typeof v === "string") return v;
+  try {
+    return JSON.stringify(v ?? null) ?? String(v);
+  } catch {
+    return String(v);
+  }
+};
 
 export async function generateText(
   o: GenerateOptions,
