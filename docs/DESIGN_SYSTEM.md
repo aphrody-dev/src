@@ -1,6 +1,6 @@
 # Aphrody Design System (`crates/aphrody-design-*`)
 
-> 2026-11-13 : le système de design unique est `packages/design` (tokens Material 3 via Material Color Utilities, Material Web, Material Symbols ; `tokens.rs` inclus par `aphrody-brand` et `nt-brand`), voir `docs/ui/STACK.md`. Seuls restent `aphrody-design-shared` (presets de `next` et `react`) et `aphrody-design-layout` (`react_native`) ; tokens, emit, icons, identity, sprite-sheet et `ui` sont supprimés. La suite décrit l ancien ensemble.
+> 2026-11-13 : le système de design unique est `packages/design` (tokens Material 3 via Material Color Utilities, Material Web, Material Symbols), voir `docs/ui/STACK.md` et `docs/ui/INVENTORY.md`. `aphrody-design-emit` est supprimé ; les autres crates sont en cours de retrait (plan dans INVENTORY).
 
 The remaining design crates are members of the root Cargo workspace (`C:/src/Cargo.toml`); the asset catalog lives in `crates/aphrody-design-icons/catalog/`.
 
