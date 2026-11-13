@@ -14,4 +14,4 @@ Applies to all docs, commit messages, PRs and agent reports.
 8. Conflicting sources: both values and their sources are cited, without silent arbitration.
 9. Heavy work (builds, bootstrap, large parsing) on the servers (`nice`), never on the local PC; temporary files outside the repository.
 
-Application reference: `docs/CHROMIUM-FACTORY.md`, section "Modèle et bornes", and `tools/build-model/`.
+Application reference: `docs/CHROMIUM-FACTORY.md`, section "Model and bounds", and `tools/build-model/`.
