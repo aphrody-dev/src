@@ -22,6 +22,8 @@ ARG CARGO_ZIGBUILD_VERSION=0.24.1
 # release = fat LTO (production). iteration = no LTO, for quick smoke builds.
 ARG CARGO_PROFILE=release
 ARG RUST_PACKAGES="-p aphrody -p lore-server -p ring3-agent -p rust-stack"
+# Parallel rustc jobs (each runs -Zthreads=16 from .cargo/config.toml): keep low on a shared host (prd: 2).
+ARG CARGO_BUILD_JOBS=4
 
 FROM oven/bun:${BUN_VERSION}-alpine AS bun-alpine
 FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS go-alpine
@@ -63,6 +65,8 @@ FROM rust-base AS rust-build
 ARG TARGETARCH
 ARG CARGO_PROFILE
 ARG RUST_PACKAGES
+ARG CARGO_BUILD_JOBS
+ENV CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS}
 COPY rust-toolchain.toml ./
 COPY .cargo/config.toml .cargo/config.toml
 COPY third_party/patches/ third_party/patches/

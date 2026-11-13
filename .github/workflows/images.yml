@@ -12,7 +12,7 @@ on:
       targets: { description: "bake group/targets", default: "default" }
 concurrency:
   group: images-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false # Rust LTO builds are long: queue, never cancel on the busy main branch
 permissions:
   contents: read
   packages: write
@@ -21,7 +21,7 @@ permissions:
 jobs:
   bake:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 340
     steps:
       - uses: actions/checkout@v7
       - uses: docker/setup-qemu-action@v4.4.0

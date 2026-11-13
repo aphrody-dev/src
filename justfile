@@ -190,11 +190,11 @@ docker-build targets="default":
     {{docker}} buildx inspect aphrody >/dev/null 2>&1 || {{docker}} buildx create --name aphrody --driver docker-container --bootstrap
     cd "{{root}}" && TAG={{docker_tag}} {{docker}} buildx bake --builder aphrody -f infra/docker/docker-bake.hcl --push {{targets}}
 
-# Local amd64 build loaded into the engine, then health-checked (usage: just docker-smoke, just docker-smoke bun)
-docker-smoke targets="smoke" profile="release":
-    {{docker}} buildx inspect aphrody >/dev/null 2>&1 || {{docker}} buildx create --name aphrody --driver docker-container --bootstrap
-    cd "{{root}}" && TAG={{docker_tag}} CARGO_PROFILE={{profile}} {{docker}} buildx bake --builder aphrody -f infra/docker/docker-bake.hcl --set '*.platform=linux/amd64' --set '*.attest=' --load {{targets}}
-    DOCKER={{docker}} SRC_TAG={{docker_tag}} sh "{{root}}/infra/docker/smoke.sh"
+# amd64 build of a pushed commit ON prd (git context, no upload from the PC), loaded there, then health-checked
+# (usage: just docker-smoke, just docker-smoke bun main iteration)
+docker-smoke targets="smoke" ref="main" profile="release":
+    timeout 5400 ssh prd 'TAG=smoke CARGO_PROFILE={{profile}} CARGO_BUILD_JOBS=2 docker buildx bake --builder aphrody "https://github.com/aphrody-dev/src.git#{{ref}}" -f infra/docker/docker-bake.hcl --set "*.platform=linux/amd64" --set "*.attest=" --set "*.cache-from=" --load --progress quiet {{targets}}'
+    timeout 900 ssh prd 'SRC_TAG=smoke sh -s' < "{{root}}/infra/docker/smoke.sh"
 
 # Deploy the compose stack: profile core on prd, edge on fr2 (usage: just docker-up, just docker-up edge fr2, SRC_TAG=<sha> to roll back)
 docker-up profile="core" ctx="prd":

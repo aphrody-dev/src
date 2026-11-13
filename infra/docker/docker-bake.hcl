@@ -10,6 +10,7 @@ variable "TAG" { default = "dev" }
 variable "PLATFORMS" { default = "linux/amd64,linux/arm64" }
 variable "CARGO_PROFILE" { default = "release" }
 variable "PUSH_CACHE" { default = "false" }
+variable "CARGO_BUILD_JOBS" { default = "4" }
 
 group "default" { targets = ["services", "runtime"] }
 # yolo is not in the groups: it needs packages/google-design/upstream (local clones, not in git). Build it from a full workstation checkout.
@@ -33,6 +34,7 @@ target "_common" {
     CARGO_CHEF_VERSION = "0.1.77"
     CARGO_ZIGBUILD_VERSION = "0.24.1"
     CARGO_PROFILE = CARGO_PROFILE
+    CARGO_BUILD_JOBS = CARGO_BUILD_JOBS
   }
   labels = {
     "org.opencontainers.image.source" = "https://github.com/aphrody-dev/src"
